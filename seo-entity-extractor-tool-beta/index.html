@@ -1,0 +1,1130 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+<!-- SEO Title -->
+<title>Semantic Entity Extractor & Audit Tool | Traffic Torch</title>
+
+<!-- Meta Description -->
+<meta name="description" content="Free semantic entity extractor and audit tool. Detect named entities, score coverage, salience, relationships, on-page practices and overall readiness. Get AI-powered fixes and competitive insights to strengthen topical relevance and rankings.">
+
+<!-- Robots Meta -->
+<meta name="robots" content="index, follow">
+
+<!-- Canonical Link -->
+<link rel="canonical" href="https://traffictorch.net/seo-entity-extractor-tool/">
+
+<!-- Color Scheme Support -->
+<meta name="color-scheme" content="dark light">
+
+<!-- Theme Color -->
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+<!-- Referrer Policy (security + privacy best practice) -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+<!-- Security headers -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/seo-entity-extractor-tool/">
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/seo-entity-extractor-tool/">
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="Semantic Entity Extractor & Audit Tool | Traffic Torch">
+<meta property="og:description" content="Instant entity extraction and semantic audit: coverage, salience, relationships, practices scoring + AI fixes to boost topical authority and rankings.">
+<meta property="og:image" content="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-extractor-tool-1200w.webp">
+<meta property="og:url" content="https://traffictorch.net/seo-entity-extractor-tool/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Traffic Torch">
+
+<!-- Twitter Card Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Semantic Entity Extractor & Audit Tool | Traffic Torch">
+<meta name="twitter:description" content="Extract entities, audit semantic health (coverage, salience, relationships, practices), get 0–100 readiness score and AI-generated fixes. Strengthen topical relevance today.">
+<meta name="twitter:image" content="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-extractor-tool-1200w.webp">
+<meta name="twitter:site" content="@Guitaralize">
+   
+    <!-- Manifest for PWA -->
+    <link rel="manifest" href="/manifest.json">
+   
+    <!-- Icon -->
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+    <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+    <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+   
+<!-- Structured Data (JSON-LD) - Merged Single Block -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Free Semantic Entity Extractor & Audit Tool",
+      "description": "Instant semantic entity analysis tool: Extract named entities, audit coverage, salience, relationships, on-page practices and overall readiness.",
+      "url": "https://traffictorch.net/seo-entity-extractor-tool/",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [
+          "#entity-faq",
+          "p.text-xl.text-gray-500.dark\\:text-gray-300.mt-6",
+          ".max-w-4xl.mx-auto.my-16 details div.mt-8",
+          "section.max-w-4xl.mx-auto.mt-12.mb-12 p.text-2xl.md\\:text-3xl.font-bold.text-center.mb-10.leading-tight",
+          "div.max-w-4xl.mx-auto.my-16 details div.mt-8 section.space-y-5:first-child"
+        ]
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Traffic Torch Semantic Entity Extractor & Audit Tool",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Free semantic entity extraction tool. Detects named entities, scores coverage & diversity, salience & prominence, relationships & clusters, on-page practices, provides 0–100 readiness score, AI fixes, competitive insights, and semantic optimizations.",
+      "url": "https://traffictorch.net/seo-entity-extractor-tool/",
+      "image": "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-extractor-tool-1200w.webp",
+      "author": {
+        "@type": "Person",
+        "name": "Ylia Callan",
+        "url": "https://yliacallan.github.io/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/logo-512.webp",
+          "width": 512,
+          "height": 512
+        }
+      },
+      "datePublished": "2026-03-14T09:34:00+11:00",
+      "dateModified": "2026-03-31T15:31:00+11:00"
+    },
+    {
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/seo-entity-extractor-tool/"
+      },
+      "headline": "Free Semantic Entity Extractor: Strengthen Topical Relevance with Entities",
+      "description": "Instant tool to extract named entities, audit coverage, salience, relationships & practices, and get prioritized AI fixes. Improve rankings by building stronger semantic entity signals.",
+      "url": "https://traffictorch.net/seo-entity-extractor-tool/",
+      "image": [
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-extractor-tool-1200w.webp",
+          "contentUrl": "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-extractor-tool-1200w.webp",
+          "width": 1200,
+          "height": 630,
+          "caption": "Traffic Torch Semantic Entity Extractor dashboard: AI-powered entity detection, coverage, salience, relationships & practices audit, and optimization fixes"
+        },
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp",
+          "contentUrl": "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp",
+          "width": 800,
+          "height": 257,
+          "caption": "Traffic Torch Semantic Entity Tool overview: AI-powered entity extraction, topical cluster analysis, salience scoring, on-page practices audit, and semantic readiness recommendations for rankings"
+        }
+      ],
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/logo-512.webp"
+        }
+      }
+    },
+    {
+      "@type": "Person",
+      "name": "Ylia Callan",
+      "url": "https://yliacallan.github.io/",
+      "sameAs": [
+        "https://www.linkedin.com/in/ylia-callan-8b889976/",
+        "https://x.com/guitaralize",
+        "https://traffictorch.net/"
+      ],
+      "image": "/images/ylia-callan-320w.webp",
+      "jobTitle": "Founder & Builder",
+      "description": "Musician, Author, Web Designer, and Creator of Privacy-First AI SEO/UX Tools like Traffic Torch",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Traffic Torch Semantic Entity Extractor & Audit Tool",
+          "item": "https://traffictorch.net/seo-entity-extractor-tool/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why are semantic entities so critical for SEO",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Google relies heavily on named entities (people, places, things, concepts) and their relationships to understand topic depth and relevance. Pages with clear, salient entities connected logically outrank vague or entity-poor content, especially in AI Overviews and zero-click searches. Traffic Torch scans your page in seconds, extracts visible entities + implied ones, scores salience, and suggests high-impact fixes like entity additions, disambiguation, or relationship markup to recover visibility in entity-driven queries."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I identify and fill topical coverage gaps?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Topical coverage requires comprehensive sub-topic handling with strong entity interconnectivity. Traffic Torch compares your page/cluster against top-ranking competitors, highlights missing sub-entities/topics, and generates fix outlines (new sections, internal links, entity mentions) to build stronger topical authority fast and capture long-tail entity-based traffic."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What makes an entity salient and well-connected in Google's eyes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Salience comes from frequency, context prominence, relationships to main topic, and supporting signals (headings, bolding, images with alt text). Traffic Torch analyzes entity salience scores, relationship strength (co-occurrence, proximity), and suggests optimizations like better placement, schema (Entity markup if advanced), or content expansion to make key entities more prominent and trusted."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does entity optimization beat competitors?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Competitors often miss secondary entities or weak relationships. Traffic Torch runs side-by-side entity extraction vs. top results, reveals gaps (missing brands, concepts, LSI-like terms), and provides exact insertion points + wording suggestions to leapfrog rankings in semantic search and featured snippets."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How fast can entity fixes impact rankings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Many entity optimizations (better mentions, salience boosts, relationship clarity) show movement in days to weeks, especially for mid-competitive queries. Traffic Torch provides quick wins and educates on monitoring entity evolution in Search Console + rankings."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+   
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/seo-entity-extractor-tool/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/seo-entity-extractor-tool/style-v1.0.css">
+  </noscript>
+
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+
+  <link rel="stylesheet" media="print" href="/seo-entity-extractor-tool/print-v1.0.css">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
+  
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+<div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+<div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+		<main class="container mx-auto px-4 py-4 max-w-5xl">
+        <div class="text-center mb-16">
+          <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
+            SEO Entity Extractor and Audit Tool
+          </h1>
+		<p class="text-xl text-gray-500 dark:text-gray-300 mt-6">
+ 		 Extract semantic entities, topics & relationships that search engines see.<br class="hidden md:block">
+		</p>
+        </div>
+      
+<form id="entity-form" class="max-w-2xl mx-auto mb-20 space-y-8">
+  <!-- URL Section -->
+  <div>
+    <div class="flex flex-col md:flex-row gap-4">
+      <input
+        type="text"
+        id="url-input"
+        placeholder="example.com/your-page"
+        aria-label="Enter website URL to analyze"
+        class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+      />
+      <button
+        type="button"
+        id="url-analyze-btn"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
+      >
+        Analyze URL 🧬
+      </button>
+    </div>
+    <!-- Progress for URL analysis -->
+    <div id="url-loading" class="hidden mt-6 flex flex-col items-center justify-center py-8">
+      <div class="w-12 h-12 border-4 border-orange-200 dark:border-gray-700 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+      <p id="url-progress-text" class="text-lg text-gray-700 dark:text-gray-300 text-center">Analyzing Entities...</p>
+    </div>
+  </div>
+
+  <!-- Code Analysis Section -->
+  <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+    <!-- Centered gradient title -->
+    <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
+      📄 Code Analysis
+    </h3>
+   
+    <!-- Centered description -->
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
+      Paste HTML code of the page (for pre-published audits via VS Code / GitHub Actions)
+    </p>
+    <textarea
+      id="code-input"
+      rows="6"
+      placeholder="Paste full HTML code here..."
+      class="w-full px-6 py-4 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-base font-mono resize-y min-h-[140px]"
+    ></textarea>
+   
+    <!-- Progress for Code analysis -->
+    <div id="code-loading" class="hidden mt-6 flex flex-col items-center justify-center py-8">
+      <div class="w-12 h-12 border-4 border-orange-200 dark:border-gray-700 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+      <p id="code-progress-text" class="text-lg text-gray-700 dark:text-gray-300 text-center">Analyzing pasted HTML code...</p>
+    </div>
+    <!-- Centered Analyze Code button -->
+    <div class="mt-6 flex justify-center">
+      <button
+        type="button"
+        id="code-analyze-btn"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+      >
+        Analyze Code 🧬
+      </button>
+    </div>
+  </div>
+</form>
+
+<!-- Loading indicator - tight spacing, centered, modern spinner -->
+<section id="loading" class="hidden text-center mt-0">
+  <div class="inline-flex flex-col items-center gap-4">
+    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
+    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
+      Analyzing Entities...
+    </p>
+  </div>
+</section>
+
+<!-- Empty results container - JavaScript will fill this dynamically -->
+<section id="results" class="hidden space-y-16">
+  <!-- All report content (score, modules, gaps, fixes) goes here via JS -->
+</section>
+
+<div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
+  <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
+    <h2 class="text-xl font-bold mb-4">Daily Limit Reached</h2>
+    <p class="mb-6">You've used all your audits today. Upgrade to Pro USD $48 per year for 25 daily SEO, UX & GEO analysis runs. Secure Stripe Checkout</p>
+    <a href="/pro/" 
+       class="inline-block bg-orange-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-600 transition">
+      Upgrade to Pro
+    </a>
+	<button onclick="document.getElementById('upgradeModal').classList.add('hidden')"
+            class="mt-6 block mx-auto text-gray-600 dark:text-gray-400 underline hover:text-gray-800 dark:hover:text-gray-200">
+      Close
+    </button>
+  </div>
+</div> 
+
+    <div class="center-btn-container mt-12">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
+    data-text="https://traffictorch.net/seo-entity-extractor-tool/"
+  >
+    Copy Link? 🔗
+  </button>
+</div>
+
+<section id="entity-faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Semantic Entities & Topics: Most Common Questions Answered
+  </h2>
+  <p class="text-center text-lg mb-8 max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
+    Traffic Torch instantly extracts semantic entities, topics, relationships & salience Google sees on your page. Then delivers AI-powered fixes, analysis and education to strengthen topical relevance and entity optimization for 2026 rankings.
+  </p>
+  <div class="space-y-6 max-w-3xl mx-auto">
+    <!-- Entity Extraction -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why are semantic entities so critical for SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Google relies heavily on named entities (people, places, things, concepts) and their relationships to understand topic depth and relevance. Pages with clear, salient entities connected logically outrank vague or entity-poor content, especially in AI Overviews and zero-click searches. Traffic Torch scans your page in seconds, extracts visible entities + implied ones, scores salience, and suggests high-impact fixes like entity additions, disambiguation, or relationship markup to recover visibility in entity-driven queries.
+      </div>
+    </details>
+    <!-- Topic Coverage -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How do I identify and fill topical coverage gaps?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Topical coverage requires comprehensive sub-topic handling with strong entity interconnectivity. Traffic Torch compares your page/cluster against top-ranking competitors, highlights missing sub-entities/topics, and generates fix outlines (new sections, internal links, entity mentions) to build stronger topical authority fast and capture long-tail entity-based traffic.
+      </div>
+    </details>
+    <!-- Relationships & Salience -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What makes an entity salient and well-connected in Google's eyes?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Salience comes from frequency, context prominence, relationships to main topic, and supporting signals (headings, bolding, images with alt text). Traffic Torch analyzes entity salience scores, relationship strength (co-occurrence, proximity), and suggests optimizations like better placement, schema (Entity markup if advanced), or content expansion to make key entities more prominent and trusted.
+      </div>
+    </details>
+    <!-- Competitive Analysis -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does entity optimization beat competitors?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Competitors often miss secondary entities or weak relationships. Traffic Torch runs side-by-side entity extraction vs. top results, reveals gaps (missing brands, concepts, LSI-like terms), and provides exact insertion points + wording suggestions to leapfrog rankings in semantic search and featured snippets.
+      </div>
+    </details>
+    <!-- Tool Benefits -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How fast can entity fixes impact rankings?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Many entity optimizations (better mentions, salience boosts, relationship clarity) show movement in days to weeks, especially for mid-competitive queries. Traffic Torch provides quickest wins and educates on monitoring entity evolution in Search Console + rankings.
+      </div>
+    </details>
+  </div>
+</section>
+	
+<!-- Enhanced How the SEO Semantic Entity Extractor Works Accordion -->
+<div class="max-w-4xl mx-auto my-16">
+  <details class="group">
+    <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      <span>How SEO Semantic Entity Extractor & Audit Tool Works?</span>
+      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-10 text-gray-700 dark:text-gray-300 leading-relaxed">
+    
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-orange-600 dark:text-orange-400">Instant Semantic Entity Analysis</h2>
+        <p class="text-lg">
+          This advanced semantic entity extractor performs a deep, real-time client-side analysis of your webpage to identify named entities and evaluate key semantic signals: coverage, salience, relationships, and on-page practices.
+        </p>
+        <p class="text-lg">
+          It detects entities (people, organizations, products, locations, concepts, etc.), measures their prominence, topical connections, type diversity, and markup readiness are the core factors modern search and AI systems use to understand page relevance and topical strength.
+        </p>
+        <p class="text-lg">
+          The tool produces module scores (Coverage, Salience, Relationships, Practices) and combines them into an overall Semantic Readiness score out of 100.
+        </p>
+        <p class="text-base italic bg-gray-100 dark:bg-gray-800 p-4 rounded-xl">
+          All processing is 100% client-side via a secure AI Worker proxy. Your URL and content are never stored or shared. Complete privacy guaranteed.
+        </p>
+      </section>
+
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400">Core Semantic Dimensions Evaluated</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border-l-4 border-blue-500">
+            <h4 class="font-bold text-blue-600 dark:text-blue-400">Entity Coverage & Diversity</h4>
+            <p class="mt-2 text-sm">Counts total entities, type variety (person/org/product/location/concept) and density. Builds topical breadth and authority signals.</p>
+          </div>
+          <div class="p-6 bg-green-50 dark:bg-green-900/20 rounded-xl border-l-4 border-green-500">
+            <h4 class="font-bold text-green-600 dark:text-green-400">Entity Salience & Prominence</h4>
+            <p class="mt-2 text-sm">Measures how prominently entities appear (position, repetition, formatting). Strong salience clarifies main topics for search and AI.</p>
+          </div>
+          <div class="p-6 bg-purple-50 dark:bg-purple-900/20 rounded-xl border-l-4 border-purple-500">
+            <h4 class="font-bold text-purple-600 dark:text-purple-400">Entity Relationships & Clusters</h4>
+            <p class="mt-2 text-sm">Analyzes co-occurrence, type synergy and topical connections. Creates semantic depth and better matches complex queries.</p>
+          </div>
+          <div class="p-6 bg-orange-50 dark:bg-orange-900/20 rounded-xl border-l-4 border-orange-500">
+            <h4 class="font-bold text-orange-600 dark:text-orange-400">On-Page Semantic Practices</h4>
+            <p class="mt-2 text-sm">Evaluates heading usage of entities, name consistency and schema readiness. Improves machine readability and rich result potential.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-5">
+        <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400">How Search & AI Systems Evaluate Semantic Strength</h3>
+        <p class="text-lg">
+          Modern ranking and generative systems look beyond keywords. They assess entity signals to determine topical relevance, depth and trustworthiness.
+        </p>
+        <ul class="space-y-3 text-base list-disc list-inside ml-4">
+          <li>Are sufficient relevant entities detected with good type diversity?</li>
+          <li>Do the most important entities appear prominently in visible areas?</li>
+          <li>Are related entities connected logically through co-occurrence and context?</li>
+          <li>Are key entities used in headings and consistent in naming?</li>
+          <li>Is there schema markup potential for detected entity types (Org, Product, LocalBusiness, etc.)?</li>
+          <li>Does the page structure support clear topical clustering?</li>
+        </ul>
+        <p class="text-lg font-medium">
+          This tool replicates that evaluation by scoring each dimension and delivering an overall Semantic Readiness index + actionable fixes.
+        </p>
+      </section>
+
+      <section class="bg-gradient-to-r from-orange-100 to-pink-100 dark:from-orange-900/30 dark:to-pink-900/30 p-8 rounded-2xl border border-orange-300 dark:border-orange-700">
+        <h3 class="text-2xl font-bold mb-4 text-orange-700 dark:text-orange-300">Key Insight: Strong Entities = Strong Visibility</h3>
+        <p class="text-base leading-relaxed">
+          Pages with clear, prominent, well-connected entities and good on-page practices perform better in entity-aware search, answer engines and generative AI responses. Weak entity signals (low coverage, poor salience, missing relationships) are a primary reason for underperformance, even with good technical SEO.
+        </p>
+      </section>
+
+    </div>
+  </details>
+</div>
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+<!-- Deep Dive into SEO Entity Modules -->
+<section class="py-20 bg-gray dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-2">
+    <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      Deep Dive into SEO Entity Modules
+    </h2>
+    <div id="metric-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+     <!-- 6 cards will be injected here by script.js -->
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS MODERN SEMANTIC ENTITY OPTIMIZATION -->
+<section class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    What is Modern Semantic Entity Optimization?
+  </h2>
+  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-500 dark:text-gray-200">
+    <strong>Modern semantic entity optimization means creating content rich in clear, prominent, well-connected named entities that search engines and AI systems can confidently understand and trust. Which can lead to better rankings, more frequent citations in AI answers, and stronger visibility across SERPs, answer engines, and generative outputs.</strong>
+  </p>
+  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+    <p>Most sites still focus narrowly on keywords: repeating exact phrases, chasing search volume, producing generic long-form pages. That keyword-centric approach is increasingly deprioritized by entity-aware ranking algorithms that value topical depth, semantic clarity, and machine-readable signals over raw keyword density.</p>
+    <p class="font-semibold text-purple-700 dark:text-purple-300">
+      Today’s highest-performing pages excel across these four core semantic dimensions:
+    </p>
+    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
+      <li>→ Entity Coverage & Diversity: broad, relevant set of named entities with varied types (people, organizations, products, locations, concepts).</li>
+      <li>→ Entity Salience & Prominence: main entities clearly emphasized through position, repetition, headings, and formatting.</li>
+      <li>→ Entity Relationships & Clusters: logical co-occurrences and topical connections that form meaningful semantic groups.</li>
+      <li>→ On-Page Semantic Practices: consistent entity naming, strategic heading usage, and strong schema readiness (Organization, Product, LocalBusiness, etc.).</li>
+    </ul>
+    <p class="pt-4">
+      Traffic Torch Semantic Entity Extractor & Audit Tool instantly detects entities on your page, scores each of the four dimensions above, calculates an overall Semantic Readiness score (0–100), and provides actionable fixes to strengthen your entity foundation.
+    </p>
+  </div>
+</section>
+
+
+<!-- 5 HIGH-IMPACT MOVES TO MASTER SEMANTIC ENTITY OPTIMIZATION -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    5 High-Impact Moves to Win on Semantic Entities
+  </h2>
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">1</span>
+      <div>
+        <strong class="text-gray-500">Build strong entity coverage & diversity</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Include a broad, relevant set of named entities (brands, people, products, locations, concepts) with good type variety. This creates topical breadth and authority signals search & AI systems reward.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">2</span>
+      <div>
+        <strong class="text-gray-500">Maximize salience for key entities</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Place your primary entities in title, H1, first 150–250 words, headings, bold text, and prominent images/alt. High salience clearly communicates main topics and boosts extractability.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">3</span>
+      <div>
+        <strong class="text-gray-500">Strengthen entity relationships & clusters</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Group related entities in the same sections, paragraphs, lists, or internal links. Logical co-occurrence and type synergy build topical depth and help search engines form semantic clusters.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">4</span>
+      <div>
+        <strong class="text-gray-500">Implement on-page semantic best practices</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Use top entities consistently in headings (H1–H3), standardize naming, and add JSON-LD schema (Organization, Product, LocalBusiness, etc.) Which makes entities machine-readable and increases rich result / AI citation chances.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">5</span>
+      <div>
+        <strong class="text-gray-500">Monitor & improve overall semantic readiness</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Run Traffic Torch and track Coverage, Salience, Relationships, Practices scores and the combined Readiness index (0–100) to prioritize fixes that deliver the biggest visibility lift in entity-aware search.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OLD KEYWORD SEO vs MODERN SEMANTIC ENTITY OPTIMIZATION -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    Old Keyword SEO vs Modern Semantic Entity Optimization
+  </h2>
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old-School Keyword SEO Focus</th>
+          <th class="px-6 py-5 text-lg font-semibold">Modern Semantic Entity Mastery Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Primary Goal:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank for high-volume exact keywords.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Build strong, machine-readable entity signals → better topical relevance & AI/SERP visibility.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Content Strategy:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High keyword density + long generic articles.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rich entity coverage + diversity + logical topical clusters.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Optimization Focus:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Exact-match phrases repeated throughout.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High salience for key entities + strong relationships & schema readiness.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Trust & Quality Signals:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mostly backlinks & domain age.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Clear entity prominence + consistent naming + structured data (Organization, Product, LocalBusiness).</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">SERP & AI Alignment:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Ignored.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Entity salience + topical clusters mirror top results & support direct extraction.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Future-Proofing:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Vulnerable to algorithm updates.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High Semantic Readiness score → resilient in entity-aware search, AEO & generative AI.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">
+    Pages with strong, clear, connected entities and solid on-page semantic practices are rewarded by modern ranking systems and more frequently cited in AI-generated answers.
+  </p>
+</section>
+
+
+<!-- SEO Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/keyword-research-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📝</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Keyword Research</h3>
+        <p class="text-gray-800 dark:text-gray-100">Keyword generator tool</p>
+      </div>
+    </a>
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO</h3>
+        <p class="text-gray-800 dark:text-gray-100">On-page Local SEO Audit</p>
+      </div>
+    </a>
+    <a href="https://traffictorch.net/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- SEMANTIC ENTITY OPTIMIZATION CHECKLIST -->
+<section id="seo-ux-checklist" class="py-8 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Semantic Entity Optimization Checklist
+  </h2>
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-400 dark:text-gray-300">
+    Master these proven on-page semantic best practices to strengthen entity signals, improve topical relevance and boost visibility in modern search and AI systems.
+  </p>
+  <!-- Semantic-Focused Checklist Inside Single Expandable Box -->
+  <details class="mb-12 max-w-5xl mx-auto">
+    <summary class="px-6 py-5 text-2xl text-center font-black bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      Semantic Entity Checklist 🗝️
+    </summary>
+    <div class="mt-8 p-2 bg-white/80 dark:bg-gray-800/90 rounded-2xl shadow-inner">
+      <!-- Do / Avoid Summary Cards - Semantic Focused -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <!-- Best Practices to Do -->
+        <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-6 shadow-lg">
+          <h3 class="text-xl font-bold mb-6 text-green-400 flex items-center gap-3">
+            <span class="text-3xl">✅</span> Best Practices to Do
+          </h3>
+          <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
+            <li><strong>✅ Build broad entity coverage</strong>: Include a diverse set of relevant named entities (people, organizations, products, locations, concepts).</li>
+            <li><strong>✅ Maximize key entity salience</strong>: Place primary entities in title, H1, opening paragraphs, headings and prominent formatting.</li>
+            <li><strong>✅ Strengthen entity relationships</strong>: Group related entities logically in sections, lists and internal links to form topical clusters.</li>
+            <li><strong>✅ Use consistent entity naming</strong>: Standardize spelling, capitalization and formatting of brands and key terms across the page.</li>
+            <li><strong>✅ Place entities in headings</strong>: Incorporate top entities naturally into H1, H2 and H3 tags for stronger crawlable signals.</li>
+            <li><strong>✅ Add schema markup</strong>: Implement JSON-LD for detected entity types (Organization, Product, LocalBusiness, etc.) to improve machine readability.</li>
+            <li><strong>✅ Support topical depth</strong>: Reference supporting concepts and secondary entities to reinforce semantic clusters.</li>
+            <li><strong>✅ Optimize alt text with entities</strong>: Use descriptive, entity-rich alt attributes on images for better topical context.</li>
+            <li><strong>✅ Maintain high semantic readiness</strong>: Regularly audit with Traffic Torch to keep coverage, salience, relationships and practices scores strong.</li>
+          </ul>
+        </div>
+        <!-- Common Mistakes to Avoid -->
+        <div class="bg-gradient-to-br from-red-900/20 to-orange-900/20 dark:from-red-900/30 dark:to-orange-900/30 rounded-2xl p-6 shadow-lg">
+          <h4 class="text-xl font-bold mb-6 text-red-400 flex items-center gap-3">
+            <span class="text-3xl">⚠️</span> Common Mistakes to Avoid
+          </h4>
+          <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
+            <li><strong>❌ Low entity coverage</strong>: Relying on too few or repetitive entities weakens topical breadth.</li>
+            <li><strong>❌ Weak entity salience</strong>: Burying main entities deep in content reduces prominence signals.</li>
+            <li><strong>❌ Missing entity relationships</strong>: Isolated entities fail to form meaningful topical clusters.</li>
+            <li><strong>❌ Inconsistent naming</strong>: Varying brand or key term spelling harms entity recognition.</li>
+            <li><strong>❌ No entities in headings</strong>: Missing H1–H3 usage limits crawlable topical signals.</li>
+            <li><strong>❌ No schema markup</strong>: Forfeits rich results and machine-readable entity context.</li>
+            <li><strong>❌ Shallow topical depth</strong>: Omitting supporting concepts limits semantic strength.</li>
+            <li><strong>❌ Poor image alt text</strong>: Generic or missing alt attributes miss entity reinforcement opportunities.</li>
+            <li><strong>❌ Ignoring semantic gaps</strong>: Not addressing low module scores from the tool delays visibility gains.</li>
+            <li><strong>❌ Over-relying on keywords</strong>: Keyword stuffing without entity support harms modern rankings.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Left Column -->
+        <div class="space-y-8">
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🗝️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Optimized Title Tag</p>
+              <p class="text-gray-700 dark:text-gray-300">Primary entity near front, under 60 characters, clear and compelling for clicks.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">📜</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Compelling Meta Description</p>
+              <p class="text-gray-700 dark:text-gray-300">150–160 characters featuring key entities and strong call-to-action for better CTR.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🏗️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Proper Heading Hierarchy (H1–H6)</p>
+              <p class="text-gray-700 dark:text-gray-300">One unique H1 with main entity, logical structure using supporting entities for crawlability.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">⚠️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Avoid Entity Stuffing</p>
+              <p class="text-gray-700 dark:text-gray-300">Natural placement only. Forced repetition risks reduced salience and trust signals.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Right Column -->
+        <div class="space-y-8">
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🖼️</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Image Optimization & Alt Text</p>
+              <p class="text-gray-700 dark:text-gray-300">Descriptive alt text containing relevant entities plus compressed files for speed.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">🔗</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Strategic Internal & External Linking</p>
+              <p class="text-gray-700 dark:text-gray-300">Use entity-rich anchor text for internal links to reinforce topical clusters.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">⚡</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Mobile-Friendly & Lightning Fast</p>
+              <p class="text-gray-700 dark:text-gray-300">Core Web Vitals optimized (LCP under 2.5s), fully responsive for entity-rich mobile views.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <span class="text-4xl">✅</span>
+            <div>
+              <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Implement Schema Markup</p>
+              <p class="text-gray-700 dark:text-gray-300">Add JSON-LD for prominent entity types to enable rich results and better AI extraction.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-center mt-12 text-xl font-semibold text-gray-800 dark:text-gray-200 max-w-4xl mx-auto">
+        These on-page semantic best practices form the foundation of high-performing pages in entity-aware search. Run the <strong>Semantic Entity Extractor & Audit Tool</strong> for an instant audit with fixes tailored to your content.
+      </p>
+    </div>
+  </details>
+</section>
+
+<!-- Enhanced Why Semantic Entity Optimization Matters Accordion -->
+<div class="max-w-4xl mx-auto my-16">
+  <details class="group">
+    <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      <span>Why Semantic Entity Optimization Matters?</span>
+      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 py-10 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-10 text-gray-700 dark:text-gray-300 leading-relaxed">
+    
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-purple-600 dark:text-purple-400">Strong Semantic Entities Are the Foundation of Modern Rankings</h2>
+        <p class="text-lg">
+          Modern search and AI systems go far beyond keyword density. They evaluate how clearly, prominently and meaningfully named entities appear on the page while forming logical topical connections and machine-readable signals.
+        </p>
+        <p class="text-lg">
+          A page with perfect keyword placement but weak entity coverage, low salience, poor relationships or missing on-page practices will consistently underperform against competitors with stronger semantic structure.
+        </p>
+        <p class="text-lg font-medium">
+          Low semantic readiness, weak coverage, salience, relationships or practices is one of the leading causes of limited visibility in entity-aware search, answer engines and generative AI responses.
+        </p>
+      </section>
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Proven Benefits of Strong Semantic Entity Optimization</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-xl border-l-4 border-blue-500">
+            <div class="text-4xl mb-3">🎯</div>
+            <h4 class="font-bold text-blue-600 dark:text-blue-400">Higher & More Stable Rankings</h4>
+            <p class="mt-2 text-sm">Pages rich in prominent, well-connected entities gain sustained top positions in entity-driven search results.</p>
+          </div>
+          <div class="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl border-l-4 border-green-500">
+            <div class="text-4xl mb-3">📈</div>
+            <h4 class="font-bold text-green-600 dark:text-green-400">Better AI & Answer Engine Visibility</h4>
+            <p class="mt-2 text-sm">Clear entity salience and strong topical clusters increase chances of direct inclusion in AI overviews and generative summaries.</p>
+          </div>
+          <div class="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl border-l-4 border-purple-500">
+            <div class="text-4xl mb-3">🛡️</div>
+            <h4 class="font-bold text-purple-600 dark:text-purple-400">Future-Proof Against Algorithm Shifts</h4>
+            <p class="mt-2 text-sm">Content built on high semantic readiness consistently performs well during entity-focused ranking updates.</p>
+          </div>
+          <div class="p-6 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/30 dark:to-red-900/30 rounded-xl border-l-4 border-orange-500">
+            <div class="text-4xl mb-3">🔍</div>
+            <h4 class="font-bold text-orange-600 dark:text-orange-400">Improved Topical Authority Signals</h4>
+            <p class="mt-2 text-sm">Robust entity coverage, relationships and practices strengthen how search systems perceive depth and relevance on the topic.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </details>
+</div>
+
+<!-- Author Bio -->
+<section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
+  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <!-- Hero Gradient Header: Gradient only, no solid bg -->
+    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+      <div class="flex flex-col items-center gap-6 mb-6">
+        <!-- Traffic Torch Logo Only in Hero -->
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant Semantic Entity Extraction, Coverage, Salience, Relationships & Practices Audit – Privacy-First Semantic Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+      <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
+        Semantic Entity Extractor & Audit Tool.
+      </p>
+    </div>
+    <!-- Main Content Area: Transparent, inherits page bg -->
+    <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+      <!-- Tool Mission Description -->
+      <div class="space-y-6">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          The Semantic Entity Extractor & Audit Tool detects named entities on your page and scores key dimensions (Coverage, Salience, Relationships, Practices) to reveal semantic strength. It provides clear, fixe suggestions to improve topical relevance, machine readability and performance in entity-aware search systems.
+        </p>
+      </div>
+      <!-- Founder Bio with Smaller Photo -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+          <!-- Perfect circle wrapper for photo -->
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+            <img
+              src="/images/ylia-callan-320w.webp"
+              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+              sizes="(max-width: 768px) 96px, 128px"
+              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools"
+              class="w-full h-full object-cover object-center"
+              loading="lazy">
+          </div>
+          <div class="space-y-4 text-center md:text-left">
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+              Musician • Author • Researcher • Web Designer • TAFE NSW • Creator of privacy-first AI-powered web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+            </p>
+            <p class="text-base text-gray-800 dark:text-gray-200 italic">
+              Explore my work - books on physics, philosophy, consciousness, music, and more – at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
+            </p>
+          </div>
+        </div>
+        <!-- Social Links -->
+        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
+          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
+          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
+        </ul>
+      </div>
+      <!-- Tech Stack -->
+      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations.
+        </p>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+          Refined using live SERP data, user behavior signals, and correlation studies from high-ranking pages across competitive niches.
+        </p>
+        <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2026-03-14</p>
+          <p>Last updated: 2026-03-31</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Share Buttons -->
+<div class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_pinterest"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+<section class="bottom-banner" aria-label="Traffic Torch semantic entity optimization summary">
+  <picture>
+    <source
+      media="(max-width: 640px)"
+      srcset="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-480x154.webp">
+    <source
+      media="(min-width: 641px)"
+      srcset="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp">
+    <img
+      src="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp"
+      alt="Semantic Entity Optimization Tool – Traffic Torch Entity Extractor: Coverage, Salience, Relationships, Practices, Readiness audit with entity graph visualization"
+      width="800"
+      height="257"
+      loading="lazy"
+      decoding="async">
+  </picture>
+</section>
+
+  </main>
+
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+<script src="/main-v1.1.js" type="module"></script>
+<script src="/seo-entity-extractor-tool/metric-explanations-v1.0.js" type="module" defer></script>
+<script src="/seo-entity-extractor-tool-beta/script-v1.0.js" type="module" defer></script>
+  
+
+</body>
+</html>
