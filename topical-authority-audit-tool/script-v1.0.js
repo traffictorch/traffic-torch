@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(`Invalid response from server (not JSON): ${parseErr.message}`);
       }
 
-      // BLOCKED DETECTION - simple user-friendly message 
+      // BLOCKED DETECTION - simple user-friendly message
       if (data && data.blocked === true) {
         // Hide the correct spinner
         if (inputType === 'code') {
@@ -164,33 +164,42 @@ document.addEventListener('DOMContentLoaded', () => {
           const urlLoading = document.getElementById('url-loading');
           if (urlLoading) urlLoading.classList.add('hidden');
         }
-
         loading.classList.add('hidden');
         results.classList.remove('hidden');
-
         results.innerHTML = `
           <div class="max-w-2xl mx-auto px-6 py-12 text-center">
             <div class="text-5xl mb-6">🔒</div>
-            <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Site Blocked by Security</h2>
+            <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
             <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-              This page is protected by Cloudflare or another security service.
+              Whitelist: topical-authority-ai-code-worker.traffictorch.workers.dev or use Code Analysis.
             </p>
             <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
               <p class="font-medium mb-4">Quick fix:</p>
               <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
                 <li>Right-click on the page → <strong>View Page Source</strong></li>
-                <li>Copy everything (Ctrl+A → Ctrl+C)</li>
-                <li>Paste into the <strong>Code Analysis</strong> box below</li>
-                <li>Click <strong>Analyze Code ⚜️</strong></li>
+                <li>Select all and copy code</li>
+                <li>Paste into the <strong>Code Analysis</strong> box</li>
               </ol>
             </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-8">
-              Want the site owner to allow this tool permanently?<br>
-              Ask them to whitelist: <code class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">topical-authority-ai-code-worker.traffictorch.workers.dev</code>
-            </p>
           </div>
         `;
-        return;   // stop normal results rendering
+
+        // Auto-scroll to the blocked message (same smooth behavior as normal results)
+        setTimeout(() => {
+          results.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+          const offset = 100;
+          setTimeout(() => {
+            window.scrollBy({
+              top: -offset,
+              behavior: 'smooth'
+            });
+          }, 300);
+        }, 150);
+
+        return; // stop normal results rendering
       }
 
       if (!data || typeof data !== 'object') {
