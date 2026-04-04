@@ -1,0 +1,82 @@
+/* Suggestions Grid – responsive layout and day/night text */
+#suggestionsGrid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+    #suggestionsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+#suggestionsGrid > div,
+#suggestionsGrid h3 {
+    color: #1f2937; /* gray-800 day */
+}
+.dark #suggestionsGrid > div,
+.dark #suggestionsGrid h3 {
+    color: #e5e7eb; /* dark-gray-200 night */
+}
+#suggestionsGrid > div[title]:hover {
+    cursor: help; /* Tooltip trigger */
+}
+
+/* Loader progress tip text color */
+#progress-tip {
+    color: #4b5563; /* gray-600 day */
+}
+.dark #progress-tip {
+    color: #9ca3af; /* gray-400 night */
+}
+
+/* Emoji alignment fix – prevent clipping in feature checklists */
+.challenge-card .flex.items-center,
+.checklist-card .flex.items-center,
+.checklist-card .flex.items-start {
+    align-items: center;
+}
+.challenge-card span.text-5xl,
+.checklist-card span.text-5xl,
+.checklist-card span.text-4xl {
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 60px;
+}
+
+/* Checklist text colors day/night */
+.challenge-card p,
+.challenge-card .text-xl,
+.challenge-card .text-lg,
+.checklist-card div > div,
+.checklist-card .text-lg {
+    color: #1f2937; /* gray-800 day */
+}
+.dark .challenge-card p,
+.dark .challenge-card .text-xl,
+.dark .challenge-card .text-lg,
+.dark .checklist-card div > div,
+.dark .checklist-card .text-lg {
+    color: #e5e7eb; /* dark-gray-200 night */
+}
+
+/* Form – spacing for two-input layout */
+@media (min-width: 768px) {
+    #keywordForm > div:first-child {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Feedback rating emojis */
+[data-rating] {
+  transition: all 0.2s ease;
+  padding: 0.0rem;
+  border-radius: 9999px; /* fully round for nice ring effect */
+}
+[data-rating]:hover {
+  background-color: rgba(59, 130, 246, 0.1); /* light blue hover */
+}
+
+[data-rating].selected-rating:hover {
+  scale: 1.5 !important;          /* keep enlarged on hover too */
+  background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
+}
