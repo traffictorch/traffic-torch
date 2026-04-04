@@ -66,25 +66,18 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     if (urlLoading) urlLoading.classList.remove('hidden');
   }
 
-  // Show heavy progress in results area
-  results.innerHTML = `
-    <div id="analysis-progress" class="flex flex-col items-center justify-center py-2 min-h-[60vh]">
-      <div class="relative w-20 h-20 mb-10">
-        <svg class="animate-spin" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
-          <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10"
-                  stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
-        </svg>
-      </div>
-      <p id="progress-text" class="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 text-center max-w-2xl px-6 leading-tight">
-        Analyzing Entities...
-      </p>
-      <p class="mt-5 text-lg text-gray-700 dark:text-gray-300 text-center max-w-2xl px-6">
-        Large pages can take up to 2 mins.
-      </p>
-    </div>
-  `;
-  results.classList.remove('hidden');
+  // === ONLY show the small spinner under the form (no big spinner in results) ===
+  if (inputType === 'code') {
+    const codeLoading = document.getElementById('code-loading');
+    if (codeLoading) codeLoading.classList.remove('hidden');
+  } else {
+    const urlLoading = document.getElementById('url-loading');
+    if (urlLoading) urlLoading.classList.remove('hidden');
+  }
+
+  // Clear results area so old big spinner cannot appear
+  results.innerHTML = '';
+  results.classList.add('hidden');   // keep hidden until results are ready
 
   const progressText = document.getElementById('progress-text');
   let current = 0;
