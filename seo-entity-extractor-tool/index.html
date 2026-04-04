@@ -391,24 +391,81 @@
 		</p>
         </div>
       
-<form id="entity-form" class="max-w-2xl mx-auto mb-20 space-y-4">
-  <div class="flex flex-col md:flex-row gap-4">
-    <input
-      type="text"
-      id="url-input"
-      placeholder="example.com/your-page"
-      aria-label="Enter website URL to analyze"
-      required
-      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-    />
-    <button
-      type="submit"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-    >
-      Analyze 🧬
-    </button>
+<form id="entity-form" class="max-w-2xl mx-auto mb-20 space-y-8">
+  <!-- URL Section -->
+  <div>
+    <div class="flex flex-col md:flex-row gap-4">
+      <input
+        type="text"
+        id="url-input"
+        placeholder="example.com/your-page"
+        aria-label="Enter website URL to analyze"
+        class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+      />
+      <button
+        type="button"
+        id="url-analyze-btn"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
+      >
+        Analyze URL 🧬
+      </button>
+    </div>
+  </div>
+
+  <!-- Code Analysis Section -->
+  <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+    <!-- Centered gradient title -->
+    <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
+      Or use Code Analysis
+    </h3>
+ 
+    <!-- Centered description -->
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
+      Paste HTML code of the page
+    </p>
+    <textarea
+      id="code-input"
+      rows="6"
+      placeholder="Paste full HTML code here..."
+      class="w-full px-6 py-4 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-base font-mono resize-y min-h-[140px]"
+    ></textarea>
+
+    <!-- Centered Analyze Code button -->
+    <div class="mt-6 flex justify-center">
+      <button
+        type="button"
+        id="code-analyze-btn"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+      >
+        Analyze Code 🧬
+      </button>
+    </div>
   </div>
 </form>
+
+<!-- Large spinner with progress text -->
+<section id="loading" class="hidden text-center mt-12">
+  <div class="inline-flex flex-col items-center gap-6">
+    <div class="relative w-24 h-24">
+      <svg class="animate-spin w-full h-full" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
+        <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10"
+                stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+      </svg>
+    </div>
+    <p id="progress-text" class="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 text-center max-w-md">
+      Analyzing Entities...
+    </p>
+    <p class="text-lg text-gray-700 dark:text-gray-300 text-center max-w-md">
+      Large pages can take up to 2 mins.
+    </p>
+  </div>
+</section>
+
+<!-- Empty results container - JavaScript will fill this dynamically -->
+<section id="results" class="hidden space-y-16">
+  <!-- All report content (score, modules, gaps, fixes) goes here via JS -->
+</section>
 
 <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
   <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
@@ -424,21 +481,6 @@
     </button>
   </div>
 </div> 
-
-<!-- Loading indicator - tight spacing, centered, modern spinner -->
-<section id="loading" class="hidden text-center mt-0">
-  <div class="inline-flex flex-col items-center gap-4">
-    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
-    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
-      Analyzing Entities...
-    </p>
-  </div>
-</section>
-
-<!-- Empty results container - JavaScript will fill this dynamically -->
-<section id="results" class="hidden space-y-16">
-  <!-- All report content (score, modules, gaps, fixes) goes here via JS -->
-</section>
 
     <div class="center-btn-container mt-12">
   <button
