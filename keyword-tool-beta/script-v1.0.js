@@ -115,13 +115,7 @@ let progressTimeout;
       </div>
     `;
     results.classList.remove('hidden');
-    document.getElementById('module-text').textContent = progressModules[0];
-    currentModuleIndex = 1;
-    moduleInterval = setInterval(() => {
-      if (currentModuleIndex < progressModules.length) {
-        document.getElementById('module-text').textContent = progressModules[currentModuleIndex++];
-      }
-    }, 1500);
+    // Do NOT set text or start interval here - let runAnalysis control it
   }
 function stopSpinnerLoader() {
   if (moduleInterval) clearInterval(moduleInterval);
@@ -401,38 +395,38 @@ const calculateContentScore = (content) => {
     if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
 
     yourScore = Math.min(100, Math.round(yourScore));
+    
+    // === CONTROLLED 5+ SECOND PROGRESS LOADER ===
+    if (moduleInterval) clearInterval(moduleInterval);
+    if (progressTimeout) clearTimeout(progressTimeout);
 
-    // Clear any old conflicting interval from startSpinnerLoader
-    if (moduleInterval) {
-      clearInterval(moduleInterval);
-    }
-
-    let progressTimeout;
-    const totalModules = progressModules.length;
     let currentStep = 0;
+    const totalModules = progressModules.length;
 
     function advanceProgress() {
       if (currentStep < totalModules) {
-        document.getElementById('module-text').textContent = progressModules[currentStep];
+        const moduleEl = document.getElementById('module-text');
+        if (moduleEl) moduleEl.textContent = progressModules[currentStep];
         currentStep++;
-        progressTimeout = setTimeout(advanceProgress, 850); // smooth steps
+        progressTimeout = setTimeout(advanceProgress, 850);
       }
     }
 
-    // Start progress immediately
-    currentStep = 0;
+    // Start first module
+    const moduleEl = document.getElementById('module-text');
+    if (moduleEl) moduleEl.textContent = progressModules[0];
+    currentStep = 1;
     advanceProgress();
 
-    // Guarantee at least 5 seconds before showing results (longer if needed)
+    // Guarantee minimum 5.2 seconds before showing results
     setTimeout(() => {
       stopSpinnerLoader();
       results.classList.remove('hidden');
       setTimeout(() => {
         results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        const offset = 100;
-        setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
+        setTimeout(() => window.scrollBy({ top: -100, behavior: 'smooth' }), 300);
       }, 150);
-    }, 5200);   // minimum 5.2 seconds  
+    }, 5200); 
 
     const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
     const topPriorityFixes = [];
