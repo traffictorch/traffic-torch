@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tips = [
         'Analyzing your keyword and optional page...',
         'Extracting key topics if URL provided...',
-        'Generating high-impact AI keyword suggestions...'
+        'Generating high-impact keyword suggestions...'
     ];
     let tipIndex = 0;
 
@@ -64,22 +64,27 @@ if (sharedUrl) {
           inputUrl = `https://${inputUrl}`;
         }
 
-        // Show spinner and immediately scroll
-        loader.classList.remove('hidden');
-        progressText.textContent = 'Analyzing...';
+// Show spinner and scroll
+loader.classList.remove('hidden');
+progressText.textContent = 'Analyzing...';
 
-        // Auto-scroll to spinner right after it appears
-        setTimeout(() => {
-          loader.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-          });
-        }, 50);
+// Start with first tip and scroll
+progressTip.textContent = tips[0];
+setTimeout(() => {
+  loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}, 50);
 
-        const tipInterval = setInterval(() => {
-          tipIndex = (tipIndex + 1) % tips.length;
-          progressTip.textContent = tips[tipIndex];
-        }, 2200);
+// Improved tip logic: cycle only until the LAST tip, then stay there
+let tipIndex = 0;
+const tipInterval = setInterval(() => {
+  if (tipIndex < tips.length - 1) {
+    tipIndex++;
+    progressTip.textContent = tips[tipIndex];
+  } else {
+    // Stop cycling once we reach the final tip
+    clearInterval(tipInterval);
+  }
+}, 2200);
 
         runAnalysis({ seed: seedValue, url: inputUrl || null, inputType: 'url', rawCode: null, tipInterval });
         hasCheckedLimit = false;
