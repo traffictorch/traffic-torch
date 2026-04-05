@@ -156,9 +156,9 @@ const fetchPage = async (url) => {
       } catch (e) {}
     }
 
-    // Normal HTML response
+    // Normal HTML response 
     const html = await res.text();
-    if (!html || html.trim().length < 200) {
+    if (!html || html.trim().length < 30) {
       return { blocked: true };
     }
     return new DOMParser().parseFromString(html, 'text/html');
