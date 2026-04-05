@@ -266,19 +266,19 @@ const calculateContentScore = (content) => {
     let yourDoc = null;
     let fullUrl = url;
 
-    if (inputType === 'code' && rawCode) {
-      try {
-        yourDoc = new DOMParser().parseFromString(rawCode, 'text/html');
-      } catch (e) {
-        stopSpinnerLoader();
-        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Invalid HTML code.</p>`;
-        return;
-      }
     } else if (inputType === 'url' && url) {
       yourDoc = await fetchPage(url);
       if (!yourDoc) {
         stopSpinnerLoader();
         results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
+        return;
+      }
+    } else if (inputType === 'code' && rawCode) {
+      try {
+        yourDoc = new DOMParser().parseFromString(rawCode, 'text/html');
+      } catch (e) {
+        stopSpinnerLoader();
+        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Invalid HTML code.</p>`;
         return;
       }
     }
@@ -357,43 +357,31 @@ const calculateContentScore = (content) => {
 
     yourScore = Math.min(100, Math.round(yourScore));
 
-    // BLOCKED DETECTION
+    // BLOCKED DETECTION - show custom message instead of 0 score
     if (data && data.blocked === true) {
-    stopSpinnerLoader();
-    results.classList.remove('hidden');
-    // Improved auto-scroll to results (single smooth scroll)
-    setTimeout(() => {
-      results.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-      const offset = 100;
-      setTimeout(() => {
-        window.scrollBy({
-          top: -offset,
-          behavior: 'smooth'
-        });
-      }, 300);
-    }, 150);
+      stopSpinnerLoader();
+      results.classList.remove('hidden');
       results.innerHTML = `
         <div class="max-w-2xl mx-auto px-6 py-12 text-center">
           <div class="text-5xl mb-6">🔒</div>
           <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
           <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-            Whitelist: render.traffictorch.workers.dev or use Code Analysis.
+            The page is protected (Cloudflare / WAF). Use Code Analysis instead.
           </p>
           <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
             <p class="font-medium mb-4">Quick fix:</p>
             <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
-              <li>Right-click on your page → <strong>View Page Source</strong></li>
+              <li>Right-click on the page → <strong>View Page Source</strong></li>
               <li>Select all and copy the full HTML</li>
-              <li>Paste into the Code Analysis box</li>
+              <li>Paste into the Code Analysis box and click Analyze Code</li>
             </ol>
           </div>
         </div>
       `;
-      setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-      return;
+      setTimeout(() => {
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+      return; // stop normal results rendering
     }
 
     stopSpinnerLoader();
