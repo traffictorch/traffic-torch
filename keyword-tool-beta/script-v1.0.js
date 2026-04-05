@@ -127,28 +127,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader');
     if (loader) loader.remove();
   }
-  const fetchPage = async (url) => {
-    try {
-      const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
-      if (!res.ok) return null;
-
-      const contentType = res.headers.get('content-type') || '';
-
-      // Worker returned { blocked: true } as JSON
-      if (contentType.includes('application/json')) {
-        const data = await res.json();
-        if (data && data.blocked === true) {
-          return { blocked: true, data };   // special object for runAnalysis
-        }
+const fetchPage = async (url) => {
+  try {
+    const proxyUrl = PROXY + '?url=' + encodeURIComponent(url);
+    const res = await fetch(proxyUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
       }
+    });
 
-      // Normal HTML
-      const html = await res.text();
-      return new DOMParser().parseFromString(html, 'text/html');
-    } catch {
-      return null;
+    if (!res.ok) {
+      // If proxy itself returns error, treat as blocked for now
+      return { blocked: true };
     }
-  };
+
+    const contentType = res.headers.get('content-type') || '';
+    
+    // Worker returned JSON with blocked flag
+    if (contentType.includes('application/json')) {
+      const data = await res.json();
+      if (data && data.blocked === true) {
+        return { blocked: true };
+      }
+    }
+
+    // Normal HTML response
+    const html = await res.text();
+    if (!html || html.trim().length < 100) {
+      return { blocked: true };
+    }
+    return new DOMParser().parseFromString(html, 'text/html');
+  } catch (e) {
+    return { blocked: true };
+  }
+};
 const countPhrase = (text = '', phrase = '', isUrl = false) => {
   if (!text || !phrase) return 0;
   const lower = text.toLowerCase();
@@ -289,7 +301,7 @@ const calculateContentScore = (content) => {
     } else if (inputType === 'url' && url) {
       yourDoc = await fetchPage(url);
 
-      // Handle ONLY the worker's official {blocked: true} JSON response
+      // Handle blocked response from improved proxy
       if (yourDoc && yourDoc.blocked === true) {
         stopSpinnerLoader();
         results.classList.remove('hidden');
@@ -313,7 +325,6 @@ const calculateContentScore = (content) => {
         setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
         return;
       }
-
       if (!yourDoc) {
         stopSpinnerLoader();
         results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
