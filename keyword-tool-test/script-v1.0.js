@@ -960,6 +960,4 @@ if (failedMetrics.length > 0) {
         initShareReport(results);
         initSubmitFeedback(results);
       
-      
-  });
 });

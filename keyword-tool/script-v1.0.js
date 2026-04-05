@@ -288,10 +288,12 @@ const calculateContentScore = (content) => {
       yourScore += (data.urlSchema.urlMatch > 0 ? 10 : 0) + (data.urlSchema.schema ? 5 : 0);
       if (data.urlSchema.urlMatch === 0) allFixes.push({module: 'URL & Schema', issue: 'Include keyword in URL', how: 'Use a clean, hyphenated URL containing the keyword and set up redirects if changing.'});
       if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
-
       yourScore = Math.min(100, Math.round(yourScore));
+      
+      // Fix: results no longer load too fast – now displays full loading progress text
+      await new Promise(resolve => setTimeout(resolve, 2800));
+      
       stopSpinnerLoader();
-
       const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
       const topPriorityFixes = [];
       const moduleIssues = {};
