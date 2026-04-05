@@ -139,29 +139,24 @@ const fetchPage = async (url) => {
         'Pragma': 'no-cache'
       }
     });
-
     if (!res.ok) {
       return { blocked: true };
     }
-
-    const contentType = res.headers.get('content-type') || '';
-    
-    // Worker returned JSON with blocked flag
-    if (contentType.includes('application/json')) {
+    const text = await res.text();
+    if (!text || text.trim().length < 30) {
+      return { blocked: true };
+    }
+    // Robust blocked detection (works regardless of content-type header)
+    const trimmed = text.trim();
+    if (trimmed.startsWith('{') && trimmed.includes('"blocked":true')) {
       try {
-        const data = await res.json();
+        const data = JSON.parse(trimmed);
         if (data && data.blocked === true) {
           return { blocked: true };
         }
       } catch (e) {}
     }
-
-    // Normal HTML response 
-    const html = await res.text();
-    if (!html || html.trim().length < 30) {
-      return { blocked: true };
-    }
-    return new DOMParser().parseFromString(html, 'text/html');
+    return new DOMParser().parseFromString(text, 'text/html');
   } catch (e) {
     return { blocked: true };
   }
