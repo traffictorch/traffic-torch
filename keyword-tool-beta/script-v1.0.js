@@ -140,6 +140,19 @@ const fetchPage = async (url) => {
       }
     });
     const text = await res.text();
+    if (!text || text.trim().length < 30) {
+      return { blocked: true };
+    }
+    // Detect blocked response from proxy (restored - only change)
+    const trimmed = text.trim();
+    if (trimmed.startsWith('{') && trimmed.includes('"blocked":true')) {
+      try {
+        const data = JSON.parse(trimmed);
+        if (data && data.blocked === true) {
+          return { blocked: true };
+        }
+      } catch (e) {}
+    }
     return new DOMParser().parseFromString(text, 'text/html');
   } catch (e) {
     return { blocked: true };
