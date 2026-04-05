@@ -49,23 +49,22 @@ function getModuleExplanation(moduleName) {
   return explanations[moduleName] || { what: 'No explanation available.', why: '' };
 }
 
-// Dual-input runAnalysis with blocked detection - final clean version
+// Dual-input runAnalysis - blocked detection removed (no longer needed)
 async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   const results = document.getElementById('results');
-  
+ 
   // Show the restored large spinner + keep your progress messages
   const loading = document.getElementById('loading');
   if (loading) {
     loading.classList.remove('hidden');
     loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-  
+ 
   // Clear results area
   results.innerHTML = '';
   results.classList.add('hidden');
-
   // Keep your original progress messages (now applied to the large spinner)
-  const progressText = document.getElementById('progress-text');  // this must exist in HTML
+  const progressText = document.getElementById('progress-text'); // this must exist in HTML
   let current = 0;
   const messages = [
     "Analyzing Entities...",
@@ -88,7 +87,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       }
     }
   }, 4500);
-
   const heavyTimeout = setTimeout(() => {
     if (progressText) {
       progressText.textContent = "Still working — heavy page or slow server detected...";
@@ -96,7 +94,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       progressText.classList.add('text-yellow-600', 'dark:text-yellow-400');
     }
   }, 120000);
-  
+ 
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 180000);
@@ -117,43 +115,11 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     clearTimeout(heavyTimeout);
     clearInterval(interval);
     progressText.textContent = "Processing response...";
-
     if (!res.ok) {
-      if (res.status === 404 || res.status >= 400) {
-        // Hide large spinner
-        const loading = document.getElementById('loading');
-        if (loading) loading.classList.add('hidden');
-
-        results.classList.remove('hidden');
-        results.innerHTML = `
-          <div class="max-w-2xl mx-auto px-6 py-12 text-center">
-            <div class="text-5xl mb-6">🔒</div>
-            <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
-            <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-              Whitelist: entity-ai-proxy.traffictorch.workers.dev/entity-analyze or use Code Analysis.
-            </p>
-            <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
-              <p class="font-medium mb-4">Quick fix:</p>
-              <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
-                <li>Right-click on the page → <strong>View Page Source</strong></li>
-                <li>Select all and copy code</li>
-                <li>Paste into the <strong>Code Analysis</strong> box</li>
-              </ol>
-            </div>
-          </div>
-        `;
-        setTimeout(() => {
-          results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          const offset = 100;
-          setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
-        }, 150);
-        return;
-      }
       let errData = {};
       try { errData = await res.json(); } catch {}
       throw new Error(errData.error || errData.message || `Server error ${res.status} ${res.statusText}`);
     }
-
     let data;
     try {
       data = await res.json();
@@ -161,42 +127,9 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       throw new Error('Invalid response format from server (not valid JSON)');
     }
 
-    // BLOCKED DETECTION
-    if (data && data.blocked === true || (res && (res.status === 404 || res.status >= 400))) {
-      // Hide large spinner
-      const loading = document.getElementById('loading');
-      if (loading) loading.classList.add('hidden');
-
-      results.classList.remove('hidden');
-      results.innerHTML = `
-        <div class="max-w-2xl mx-auto px-6 py-12 text-center">
-          <div class="text-5xl mb-6">🔒</div>
-          <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
-          <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-            Whitelist: entity-ai-proxy.traffictorch.workers.dev/entity-analyze or use Code Analysis.
-          </p>
-          <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
-            <p class="font-medium mb-4">Quick fix:</p>
-            <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
-              <li>Right-click on the page → <strong>View Page Source</strong></li>
-              <li>Select all and copy code</li>
-              <li>Paste into the <strong>Code Analysis</strong> box</li>
-            </ol>
-          </div>
-        </div>
-      `;
-      setTimeout(() => {
-        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        const offset = 100;
-        setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
-      }, 150);
-      return;
-    }
-
     // Hide the large spinner on success
     const loading = document.getElementById('loading');
     if (loading) loading.classList.add('hidden');
-
     // Show results and scroll to them
     results.classList.remove('hidden');
     setTimeout(() => {
@@ -204,7 +137,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       const offset = 100;
       setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
     }, 100);
-
     // === Original results processing (full, no stripping) ===
     const extracted = data.extracted || [];
     const coverage = analyzeCoverage(extracted);
@@ -212,7 +144,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     const relationships = analyzeRelationships(extracted);
     const practices = analyzePractices(extracted);
     const readiness = analyzeReadiness(coverage.score, salience.score, relationships.score, practices.score);
-
     const modules = [
       { name: 'Coverage', result: coverage, color: '#10b981', desc: 'How many & diverse entities are recognized (topical breadth)' },
       { name: 'Salience', result: salience, color: '#f59e0b', desc: 'How prominent/important the entities are (authority strength)' },
@@ -220,15 +151,12 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       { name: 'Practices', result: practices, color: '#ec4899', desc: 'On-page SEO & semantic best practices compliance' },
       { name: 'Readiness', result: readiness, color: '#3b82f6', desc: 'Overall preparedness for semantic search & ranking' }
     ];
-
     const typeCounts = extracted.reduce((acc, e) => {
       const t = e.type || 'OTHER';
       acc[t] = (acc[t] || 0) + 1;
       return acc;
     }, {});
-
     const diversitySummary = `${extracted.length} entities detected (${Object.entries(typeCounts).map(([t,c]) => `${c} ${t}`).join(', ')})`;
-
     const entitiesHTML = extracted.length > 0
       ? extracted.map(entity => `
           <div class="p-4 bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
@@ -243,7 +171,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           </div>
         `).join('')
       : '<p class="text-gray-600 dark:text-gray-400 text-center py-6">No entities detected.</p>';
-
     results.innerHTML = `
 <div class="max-w-5xl mx-auto px-4 py-8">
   <!-- Big Overall Readiness Score Card -->
@@ -296,7 +223,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       </p>
     </div>
   </div>
-
   <!-- Extracted Entities -->
   <div class="mb-16">
     <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Extracted Entities</h3>
@@ -309,7 +235,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       ${entitiesHTML}
     </div>
   </div>
-
   <!-- Radar Chart -->
   <div class="mb-16">
     <h3 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-6">Semantic Health Radar</h3>
@@ -317,7 +242,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       <canvas id="health-radar"></canvas>
     </div>
   </div>
-
   <!-- Coverage + Salience -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
     ${modules.slice(0, 2).map(mod => {
@@ -386,7 +310,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       `;
     }).join('')}
   </div>
-
   <!-- Relationships + Practices + Readiness -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
     ${modules.slice(2).map(mod => {
@@ -455,7 +378,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       `;
     }).join('')}
   </div>
-
   <!-- PDF Share Feedback Buttons -->
   <div class="text-center my-16 px-4">
     <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
@@ -537,7 +459,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   </div>
 </div>
     `;
-
     // Radar chart + init functions + toggle listeners
     setTimeout(() => {
       const canvas = document.getElementById('health-radar');
@@ -545,15 +466,12 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       if (window.myRadarChart) window.myRadarChart.destroy();
-
       const getModuleColor = (score) => {
         if (score >= 80) return '#22c55e';
         if (score >= 40) return '#f59e0b';
         return '#ef4444';
       };
-
       const radarColors = modules.map(m => getModuleColor(m.result.score));
-
       window.myRadarChart = new Chart(ctx, {
         type: 'radar',
         data: {
@@ -596,10 +514,8 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         }
       });
     }, 400);
-
     initShareReport(results);
     initSubmitFeedback(results);
-
     if (!document.body.dataset.toggleListenersAttached) {
       document.body.addEventListener('click', function(e) {
         const button = e.target.closest('.fixes-toggle, .details-toggle');
@@ -609,7 +525,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         const panel = button.nextElementSibling;
         const arrow = button.querySelector('.arrow, .details-arrow');
         if (!panel || !arrow) return;
-
         const isExpanded = panel.classList.contains('expanded');
         if (isExpanded) {
           panel.style.height = `${panel.scrollHeight}px`;
@@ -635,7 +550,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       });
       document.body.dataset.toggleListenersAttached = 'true';
     }
-
   } catch (err) {
     clearInterval(interval);
     clearTimeout(heavyTimeout);
@@ -645,7 +559,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
           ${err.message.includes('timeout') || err.message.includes('fetch')
             ? 'The page is very large or took too long to load. Try a smaller page or check your internet connection.'
-            : err.message || 'An unexpected error occurred. Please check the console for details.'}
+            : err.message || 'Error - Whitelist: entity-ai-proxy.traffictorch.workers.dev/entity-analyze or use Code Analysis.'}
         </p>
         <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl">
           Try Again
@@ -654,75 +568,3 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     `;
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const results = document.getElementById('results');
-  if (!results) return;
-
-  const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
-  const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
-  const urlInput = document.getElementById('url-input');
-  const codeInput = document.getElementById('code-input');
-  let hasCheckedLimit = false;
-
-  if (urlAnalyzeBtn) {
-    urlAnalyzeBtn.addEventListener('click', async () => {
-      if (hasCheckedLimit) return;
-      hasCheckedLimit = true;
-      const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) {
-        hasCheckedLimit = false;
-        return;
-      }
-      let inputValue = urlInput?.value.trim();
-      if (!inputValue && typeof sharedDecodedUrl !== 'undefined' && sharedDecodedUrl) {
-        inputValue = sharedDecodedUrl;
-        if (urlInput) urlInput.value = sharedDecodedUrl;
-      }
-      if (!inputValue) {
-        alert('Please enter a URL');
-        hasCheckedLimit = false;
-        return;
-      }
-      const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
-
-      // Show spinner + smooth scroll
-      const loading = document.getElementById('loading');
-      if (loading) {
-        loading.classList.remove('hidden');
-        loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-
-      runAnalysis({ url, inputType: 'url', rawCode: null });
-      hasCheckedLimit = false;
-    });
-  }
-
-  if (codeAnalyzeBtn) {
-    codeAnalyzeBtn.addEventListener('click', async () => {
-      if (hasCheckedLimit) return;
-      hasCheckedLimit = true;
-      const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) {
-        hasCheckedLimit = false;
-        return;
-      }
-      const rawCode = codeInput?.value.trim();
-      if (!rawCode) {
-        alert('Please paste HTML code');
-        hasCheckedLimit = false;
-        return;
-      }
-
-      // Show spinner + smooth scroll
-      const loading = document.getElementById('loading');
-      if (loading) {
-        loading.classList.remove('hidden');
-        loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-
-      runAnalysis({ url: null, inputType: 'code', rawCode });
-      hasCheckedLimit = false;
-    });
-  }
-});

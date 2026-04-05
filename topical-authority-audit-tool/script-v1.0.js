@@ -63,10 +63,6 @@ if (urlAnalyzeBtn) {
 
     const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
-    // Show URL progress only
-    document.getElementById('url-loading').classList.remove('hidden');
-    document.getElementById('code-loading').classList.add('hidden');
-
     runAnalysis({ url, inputType: 'url', rawCode: null });
     hasCheckedLimit = false;
   });
@@ -90,10 +86,6 @@ if (codeAnalyzeBtn) {
       return;
     }
 
-    // Show Code progress only
-    document.getElementById('code-loading').classList.remove('hidden');
-    document.getElementById('url-loading').classList.add('hidden');
-
     runAnalysis({ url: null, inputType: 'code', rawCode });
     hasCheckedLimit = false;
   });
@@ -108,6 +100,14 @@ if (codeAnalyzeBtn) {
 
     loading.classList.remove('hidden');
     results.classList.add('hidden');
+
+    // Auto scroll to single spinner when URL or Code button is clicked
+    setTimeout(() => {
+      loading.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }, 100);
 
     const progressText = loading.querySelector('p');
     if (progressText) progressText.textContent = inputType === 'code'
@@ -136,13 +136,12 @@ if (codeAnalyzeBtn) {
 
       clearTimeout(timeoutId);
       clearTimeout(heavyTimeout);
-
+      
       if (!res.ok) {
         let errData = {};
         try { errData = await res.json(); } catch {}
         throw new Error(errData.error || `Server returned ${res.status}`);
       }
-
       let data;
       try {
         data = await res.json();
@@ -150,67 +149,11 @@ if (codeAnalyzeBtn) {
         throw new Error(`Invalid response from server (not JSON): ${parseErr.message}`);
       }
 
-      // BLOCKED DETECTION - simple user-friendly message
-      if (data && data.blocked === true) {
-        // Hide the correct spinner
-        if (inputType === 'code') {
-          const codeLoading = document.getElementById('code-loading');
-          if (codeLoading) codeLoading.classList.add('hidden');
-        } else {
-          const urlLoading = document.getElementById('url-loading');
-          if (urlLoading) urlLoading.classList.add('hidden');
-        }
-        loading.classList.add('hidden');
-        results.classList.remove('hidden');
-        results.innerHTML = `
-          <div class="max-w-2xl mx-auto px-6 py-12 text-center">
-            <div class="text-5xl mb-6">🔒</div>
-            <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
-            <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-              Whitelist: topical-authority-ai-code-worker.traffictorch.workers.dev or use Code Analysis.
-            </p>
-            <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
-              <p class="font-medium mb-4">Quick fix:</p>
-              <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
-                <li>Right-click on the page → <strong>View Page Source</strong></li>
-                <li>Select all and copy code</li>
-                <li>Paste into the <strong>Code Analysis</strong> box</li>
-              </ol>
-            </div>
-          </div>
-        `;
-
-        // Auto-scroll to the blocked message (same smooth behavior as normal results)
-        setTimeout(() => {
-          results.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-          const offset = 100;
-          setTimeout(() => {
-            window.scrollBy({
-              top: -offset,
-              behavior: 'smooth'
-            });
-          }, 300);
-        }, 150);
-
-        return; // stop normal results rendering
-      }
-
       if (!data || typeof data !== 'object') {
         throw new Error('Empty or invalid response from analysis server');
       }
 
-      // Hide the correct spinner depending on which analysis was run
-      if (inputType === 'code') {
-        const codeLoading = document.getElementById('code-loading');
-        if (codeLoading) codeLoading.classList.add('hidden');
-      } else {
-        const urlLoading = document.getElementById('url-loading');
-        if (urlLoading) urlLoading.classList.add('hidden');
-      }
-
+      // Hide the single spinner
       loading.classList.add('hidden');
       results.classList.remove('hidden');
 

@@ -1,6 +1,8 @@
+// Searchable text start: REMOVE BLOCKED SECURITY CHECK FROM KEYWORD RESEARCH TOOL
+
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js'; 
+import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -19,72 +21,75 @@ document.addEventListener('DOMContentLoaded', () => {
         'Extracting key topics if URL provided...',
         'Generating high-impact keyword suggestions...'
     ];
+
     let tipIndex = 0;
 
     initShareReport();
     initSubmitFeedback();
-    
+
     // Auto-fill from URL params (for shared reports)
-const params = new URLSearchParams(window.location.search);
-const sharedKeyword = params.get('keyword');
-const sharedUrl = params.get('url');
+    const params = new URLSearchParams(window.location.search);
+    const sharedKeyword = params.get('keyword');
+    const sharedUrl = params.get('url');
+    if (sharedKeyword) {
+      document.getElementById('seed').value = decodeURIComponent(sharedKeyword);
+    }
+    if (sharedUrl) {
+      document.getElementById('url').value = decodeURIComponent(sharedUrl);
+    }
 
-if (sharedKeyword) {
-  document.getElementById('seed').value = decodeURIComponent(sharedKeyword);
-}
-if (sharedUrl) {
-  document.getElementById('url').value = decodeURIComponent(sharedUrl);
-}
-
-    // === NEW DUAL ANALYZE BUTTONS (URL + CODE) ===
+    // === DUAL ANALYZE BUTTONS (URL + CODE) ===
     const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
     const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
     const seedInput = document.getElementById('seed');
     const urlInputEl = document.getElementById('url');
     const codeInput = document.getElementById('code-input');
+
     let hasCheckedLimit = false;
 
     if (urlAnalyzeBtn) {
       urlAnalyzeBtn.addEventListener('click', async () => {
         if (hasCheckedLimit) return;
         hasCheckedLimit = true;
+
         const canProceed = await canRunTool('limit-audit-id');
         if (!canProceed) {
           hasCheckedLimit = false;
           return;
         }
+
         const seedValue = seedInput?.value.trim() || '';
         let inputUrl = urlInputEl?.value.trim();
+
         if (!seedValue && !inputUrl) {
           alert('Please enter at least a keyword or URL');
           hasCheckedLimit = false;
           return;
         }
+
         if (inputUrl && !inputUrl.startsWith('http')) {
           inputUrl = `https://${inputUrl}`;
         }
 
-// Show spinner and scroll
-loader.classList.remove('hidden');
-progressText.textContent = 'Analyzing...';
+        // Show spinner and scroll
+        loader.classList.remove('hidden');
+        progressText.textContent = 'Analyzing...';
+        progressTip.textContent = tips[0];
 
-// Start with first tip and scroll
-progressTip.textContent = tips[0];
-setTimeout(() => {
-  loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}, 50);
+        setTimeout(() => {
+          loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 50);
 
-// Improved tip logic: cycle only until the LAST tip, then stay there
-let tipIndex = 0;
-const tipInterval = setInterval(() => {
-  if (tipIndex < tips.length - 1) {
-    tipIndex++;
-    progressTip.textContent = tips[tipIndex];
-  } else {
-    // Stop cycling once we reach the final tip
-    clearInterval(tipInterval);
-  }
-}, 2200);
+        // Improved tip logic: cycle only until the LAST tip, then stay there
+        let localTipIndex = 0;
+        const tipInterval = setInterval(() => {
+          if (localTipIndex < tips.length - 1) {
+            localTipIndex++;
+            progressTip.textContent = tips[localTipIndex];
+          } else {
+            clearInterval(tipInterval);
+          }
+        }, 2200);
 
         runAnalysis({ seed: seedValue, url: inputUrl || null, inputType: 'url', rawCode: null, tipInterval });
         hasCheckedLimit = false;
@@ -95,28 +100,29 @@ const tipInterval = setInterval(() => {
       codeAnalyzeBtn.addEventListener('click', async () => {
         if (hasCheckedLimit) return;
         hasCheckedLimit = true;
+
         const canProceed = await canRunTool('limit-audit-id');
         if (!canProceed) {
           hasCheckedLimit = false;
           return;
         }
+
         const seedValue = seedInput?.value.trim() || '';
         const rawCode = codeInput?.value.trim();
+
         if (!rawCode) {
           alert('Please paste HTML code');
           hasCheckedLimit = false;
           return;
         }
 
-        // Show spinner and immediately scroll to it
+        // Show spinner and scroll
         loader.classList.remove('hidden');
         progressText.textContent = 'Analyzing...';
+        progressTip.textContent = tips[0];
 
         setTimeout(() => {
-          loader.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-          });
+          loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 50);
 
         const tipInterval = setInterval(() => {
@@ -129,7 +135,7 @@ const tipInterval = setInterval(() => {
       });
     }
 
-    // === runAnalysis function (handles blocked + normal results) ===
+    // === runAnalysis function 
     async function runAnalysis(params) {
       const { seed, url, inputType, rawCode, tipInterval } = params;
 
@@ -138,6 +144,7 @@ const tipInterval = setInterval(() => {
           keyword: seed || 'topic research',
           url: url
         };
+
         if (inputType === 'code' && rawCode) {
           bodyData = {
             keyword: seed || 'topic research',
@@ -157,35 +164,6 @@ const tipInterval = setInterval(() => {
 
         const data = await response.json();
 
-        // BLOCKED DETECTION
-        if (data && data.blocked === true) {
-          loader.classList.add('hidden');
-          results.classList.remove('hidden');
-          results.innerHTML = `
-            <div class="max-w-2xl mx-auto px-6 py-12 text-center">
-              <div class="text-5xl mb-6">🔒</div>
-              <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
-              <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-                Whitelist: keyword-ai.traffictorch.workers.dev or use Code Analysis.
-              </p>
-              <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
-                <p class="font-medium mb-4">Quick fix:</p>
-                <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
-                  <li>Right-click on the page → <strong>View Page Source</strong></li>
-                  <li>Select all and copy code</li>
-                  <li>Paste into the <strong>Code Analysis</strong> box above</li>
-                </ol>
-              </div>
-            </div>
-          `;
-          setTimeout(() => {
-            results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            setTimeout(() => window.scrollBy({ top: -100, behavior: 'smooth' }), 300);
-          }, 150);
-          clearInterval(tipInterval);
-          return;
-        }
-
         // Normal success path
         loader.classList.add('hidden');
         results.classList.remove('hidden');
@@ -195,9 +173,9 @@ const tipInterval = setInterval(() => {
           setTimeout(() => window.scrollBy({ top: -100, behavior: 'smooth' }), 300);
         }, 150);
 
-        // === ORIGINAL RESULTS RENDERING (fully preserved, no stripping) ===
+        // === ORIGINAL RESULTS RENDERING  ===
         const suggestions = Array.isArray(data.suggestions) ? data.suggestions : [];
-        
+
         const titleEl = document.getElementById('analyzed-page-title');
         if (titleEl) {
           let titleText = seed ? `Keyword Research: ${seed}` : 'Keyword Research';
@@ -213,6 +191,7 @@ const tipInterval = setInterval(() => {
 
         suggestionsGrid.innerHTML = '';
         suggestionsGrid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6';
+
         if (suggestions.length === 0) {
           suggestionsGrid.innerHTML = '<p class="text-center text-gray-600 dark:text-gray-400 col-span-full">No suggestions generated – try a more specific keyword or different URL.</p>';
         } else {
@@ -237,7 +216,7 @@ const tipInterval = setInterval(() => {
             suggestionsGrid.appendChild(btn);
           });
         }
-                    
+
         document.body.setAttribute('data-print-date', new Date().toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' }));
         document.body.setAttribute('data-keyword', seed || '—');
         document.body.setAttribute('data-url', url || '—');
@@ -245,7 +224,7 @@ const tipInterval = setInterval(() => {
       } catch (err) {
         loader.classList.add('hidden');
         results.classList.remove('hidden');
-        suggestionsGrid.innerHTML = `<p class="text-center text-red-600 dark:text-red-400">Error: ${err.message || 'Failed to generate suggestions'}. Please try again or check your input.</p>`;
+        suggestionsGrid.innerHTML = `<p class="text-center text-red-600 dark:text-red-400">Error: ${err.message || 'Failed to generate suggestions'}. Try whitelist: keyword-ai.traffictorch.workers.dev or use Code Analysis.</p>`;
       } finally {
         clearInterval(tipInterval);
       }

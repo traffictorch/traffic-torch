@@ -9,7 +9,7 @@ const tools = [
   { name: "📍 Local SEO Tool", url: "https://traffictorch.net/local-seo-tool/" },
   { name: "🛒 Product SEO Tool", url: "https://traffictorch.net/product-seo-tool/" },
   { name: "⛔ Quit Risk Tool", url: "https://traffictorch.net/quit-risk-tool/" },
-  { name: "⚖️ SEO & UX Tool", url: "https://traffictorch.net/#seo-ux-tool" },
+  { name: "⚖️ SEO & UX Tool", url: "https://traffictorch.net/" },
   { name: "⚙️ Schema Generator", url: "https://traffictorch.net/schema-generator/" },
   { name: "📝 Keyword Research Tool", url: "https://traffictorch.net/keyword-research-tool/" },
   { name: "🗝️ Keyword Tool", url: "https://traffictorch.net/keyword-tool/" },
