@@ -572,7 +572,7 @@ const calculateContentScore = (content) => {
     const diagnostics = getModuleDiagnostics({name: m.name}, data, phrase, fullUrl);
     const hasIssues = diagnostics.some(d => d.status === '❌');
     const hashId = moduleHashes[m.name] || '';
-return `
+    return `
       <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
         <h4 class="text-xl font-medium mb-4">${m.name}</h4>
         <div class="relative w-28 h-28 mx-auto">
