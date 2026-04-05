@@ -389,50 +389,15 @@ const calculateContentScore = (content) => {
 
     yourScore = Math.min(100, Math.round(yourScore));
 
-    // BLOCKED DETECTION - show custom message instead of 0 score
-    if (data && data.blocked === true) {
-      stopSpinnerLoader();
-      results.classList.remove('hidden');
-      results.innerHTML = `
-        <div class="max-w-2xl mx-auto px-6 py-12 text-center">
-          <div class="text-5xl mb-6">🔒</div>
-          <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
-          <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-            The page is protected (Cloudflare / WAF). Use Code Analysis instead.
-          </p>
-          <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
-            <p class="font-medium mb-4">Quick fix:</p>
-            <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
-              <li>Right-click on the page → <strong>View Page Source</strong></li>
-              <li>Select all and copy the full HTML</li>
-              <li>Paste into the Code Analysis box and click Analyze Code</li>
-            </ol>
-          </div>
-        </div>
-      `;
-      setTimeout(() => {
-        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-      return; // stop normal results rendering
-    }
-
-    // Delay stop so progress modules ("Fetching page...", "Analyzing metadata", etc.) actually cycle and show
+    // Fix: delay spinner stop so progress text actually shows
     setTimeout(() => {
       stopSpinnerLoader();
       results.classList.remove('hidden');
-      // Improved auto-scroll to results (single smooth scroll)
+      // Improved auto-scroll
       setTimeout(() => {
-        results.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
         const offset = 100;
-        setTimeout(() => {
-          window.scrollBy({
-            top: -offset,
-            behavior: 'smooth'
-          });
-        }, 300);
+        setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
       }, 150);
     }, 1600);
 
