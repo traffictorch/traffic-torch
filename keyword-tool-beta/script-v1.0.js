@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentModuleIndex < progressModules.length) {
         document.getElementById('module-text').textContent = progressModules[currentModuleIndex++];
       }
-    }, 600);
+    }, 950);
   }
   function stopSpinnerLoader() {
     clearInterval(moduleInterval);
@@ -419,7 +419,7 @@ const calculateContentScore = (content) => {
         const offset = 100;
         setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
       }, 150);
-    }, 5500);
+    }, 8000);
 
     const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
     const topPriorityFixes = [];
