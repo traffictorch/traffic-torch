@@ -402,22 +402,28 @@ const calculateContentScore = (content) => {
 
     yourScore = Math.min(100, Math.round(yourScore));
 
-    // === PROGRESS TIMING FIXED 
+    // Clear any old conflicting interval from startSpinnerLoader
+    if (moduleInterval) {
+      clearInterval(moduleInterval);
+    }
+
     let progressTimeout;
     const totalModules = progressModules.length;
+    let currentStep = 0;
+
     function advanceProgress() {
-      if (currentModuleIndex < totalModules - 1) {
-        document.getElementById('module-text').textContent = progressModules[currentModuleIndex];
-        currentModuleIndex++;
-        progressTimeout = setTimeout(advanceProgress, 1000); // 1 second per module
-      } else {
-        document.getElementById('module-text').textContent = progressModules[totalModules - 1];
+      if (currentStep < totalModules) {
+        document.getElementById('module-text').textContent = progressModules[currentStep];
+        currentStep++;
+        progressTimeout = setTimeout(advanceProgress, 850); // smooth steps
       }
     }
-    currentModuleIndex = 1;
-    document.getElementById('module-text').textContent = progressModules[0];
-    progressTimeout = setTimeout(advanceProgress, 1000);
 
+    // Start progress immediately
+    currentStep = 0;
+    advanceProgress();
+
+    // Guarantee at least 5 seconds before showing results (longer if needed)
     setTimeout(() => {
       stopSpinnerLoader();
       results.classList.remove('hidden');
@@ -426,7 +432,7 @@ const calculateContentScore = (content) => {
         const offset = 100;
         setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
       }, 150);
-    }, 5000);  
+    }, 5200);   // minimum 5.2 seconds  
 
     const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
     const topPriorityFixes = [];
