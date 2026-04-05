@@ -139,13 +139,12 @@ const fetchPage = async (url) => {
         'Pragma': 'no-cache'
       }
     });
-    if (!res.ok) {
-      return { blocked: true };
-    }
+
     const text = await res.text();
     if (!text || text.trim().length < 30) {
       return { blocked: true };
     }
+
     // Robust blocked detection (works regardless of content-type header)
     const trimmed = text.trim();
     if (trimmed.startsWith('{') && trimmed.includes('"blocked":true')) {
@@ -156,6 +155,7 @@ const fetchPage = async (url) => {
         }
       } catch (e) {}
     }
+
     return new DOMParser().parseFromString(text, 'text/html');
   } catch (e) {
     return { blocked: true };
