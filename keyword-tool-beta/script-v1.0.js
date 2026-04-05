@@ -266,19 +266,19 @@ const calculateContentScore = (content) => {
     let yourDoc = null;
     let fullUrl = url;
 
-    } else if (inputType === 'url' && url) {
-      yourDoc = await fetchPage(url);
-      if (!yourDoc) {
-        stopSpinnerLoader();
-        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
-        return;
-      }
-    } else if (inputType === 'code' && rawCode) {
+    if (inputType === 'code' && rawCode) {
       try {
         yourDoc = new DOMParser().parseFromString(rawCode, 'text/html');
       } catch (e) {
         stopSpinnerLoader();
         results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Invalid HTML code.</p>`;
+        return;
+      }
+    } else if (inputType === 'url' && url) {
+      yourDoc = await fetchPage(url);
+      if (!yourDoc) {
+        stopSpinnerLoader();
+        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
         return;
       }
     }
