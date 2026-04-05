@@ -2,13 +2,8 @@
   /* ──────────────────────────────────────────────────────────────
      Proven cover page – unchanged & stable
   ─────────────────────────────────────────────────────────────── */
-body::before {
-    content: 
-      "Traffic Torch\A\A" 
-      "Keyword Research Report\A\A" 
-      "Generated on " attr(data-print-date) "\A\A" 
-      "Keyword: " attr(data-keyword) "\A" 
-      "URL: " attr(data-url);
+  body::before {
+    content: "TrafficTorch.net ⚖️\A\A Keyword Audit Tool 📝\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;
@@ -260,51 +255,4 @@ button[onclick*="classList.toggle"] {
     orphans: 4;
     widows: 4;
   }
-}
-
-/* Hide FAQ title and all accordion content – more aggressive targeting */
-h2:where(:contains("Frequently Asked Questions"), :contains("Asked Questions"), :contains("FAQ")) {
-  display: none !important;
-}
-
-details,
-summary,
-#faq-accordion,
-.space-y-4 > details,
-details.group.rounded-2xl,
-details.rounded-2xl {
-  display: none !important;
-}
-
-/* Force keywords visible + readable columns on every page */
-#results,
-#suggestionsGrid,
-#suggestionsGrid button {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  height: auto !important;
-  max-height: none !important;
-  page-break-inside: avoid !important;
-}
-
-#suggestionsGrid {
-  display: block !important;
-  column-count: 2 !important;
-  column-gap: 2cm !important;
-  margin: 1cm 0 !important;
-  break-inside: avoid-column !important;
-}
-
-#suggestionsGrid button {
-  break-inside: avoid !important;
-  page-break-inside: avoid !important;
-  margin-bottom: 1em !important;
-  padding: 0.8em 1em !important;
-  border: 1px solid #d1d5db !important;
-  border-radius: 0.5rem !important;
-  background: #f9fafb !important;
-  color: black !important;
-  font-size: 11pt !important;
-  box-shadow: none !important;
 }

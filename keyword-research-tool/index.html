@@ -364,37 +364,63 @@
 
 <!-- Flexible Input Form -->
 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 md:p-4">
-  <form id="keywordForm" class="space-y-2">
+  <form id="keywordForm" class="space-y-6">
+    <!-- Keyword + URL Section -->
     <div>
-      <label for="seed" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-        Main keywords or topics (optional)
-      </label>
-      <input
-        type="text"
-        id="seed"
-        placeholder="Enter Keywords"
-        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+          <label for="seed" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Main keywords or topics
+          </label>
+          <input
+            type="text"
+            id="seed"
+            placeholder="Enter Keywords"
+            class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
+          >
+          <p class="text-sm text-gray-800 dark:text-gray-200 mt-2">Enter a keyword for direct research (recommended).</p>
+        </div>
+        <div class="flex-1">
+          <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Website URL (optional)
+          </label>
+          <input
+            type="text"
+            id="url"
+            placeholder="example.com/page"
+            class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
+          >
+          <p class="text-sm text-gray-800 dark:text-gray-200 mt-2">Add URL to auto-detect intent.</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        id="url-analyze-btn"
+        class="mt-4 w-full py-4 px-6 bg-gradient-to-r from-orange-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:from-orange-700 hover:to-purple-700 transition shadow-lg"
       >
-      <p class="text-sm text-gray-800 dark:text-gray-200 mt-2">Enter a keyword for direct research (recommended for best results).</p>
+        Analyze with URL 🔑
+      </button>
     </div>
-    <div>
-      <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-        Website URL (optional)
+
+    <!-- Code Analysis Section -->
+    <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        📄 Or paste full HTML Code
       </label>
-		<input
-		  type="text"
-		  id="url"
-		  placeholder="example.com/page"
-		  class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
-		>
-      <p class="text-sm text-gray-800 dark:text-gray-200 mt-2">Add a URL to auto-detect intent and refine suggestions from page content.</p>
+      <textarea
+        id="code-input"
+        rows="6"
+        placeholder="Paste full HTML code here..."
+        class="w-full px-6 py-4 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition text-base font-mono resize-y min-h-[140px]"
+      ></textarea>
+      <button
+        type="button"
+        id="code-analyze-btn"
+        class="mt-4 w-full py-4 px-6 bg-gradient-to-r from-orange-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:from-orange-700 hover:to-purple-700 transition shadow-lg"
+      >
+        Analyze with Code 🔑
+      </button>
     </div>
-    <button
-      type="submit"
-      class="w-full py-4 px-6 bg-gradient-to-r from-orange-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:from-blue-700 hover:to-purple-700 transition shadow-lg"
-    >
-      Generate Keywords
-    </button>
   </form>
 </div>
 
