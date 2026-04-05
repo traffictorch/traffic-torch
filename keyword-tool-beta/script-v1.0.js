@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   }
   
-  const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
+  const PROXY = 'https://render.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",
     "Analyzing metadata",
@@ -359,21 +359,35 @@ const calculateContentScore = (content) => {
 
     // BLOCKED DETECTION
     if (data && data.blocked === true) {
-      stopSpinnerLoader();
-      results.classList.remove('hidden');
+    stopSpinnerLoader();
+    results.classList.remove('hidden');
+    // Improved auto-scroll to results (single smooth scroll)
+    setTimeout(() => {
+      results.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+      const offset = 100;
+      setTimeout(() => {
+        window.scrollBy({
+          top: -offset,
+          behavior: 'smooth'
+        });
+      }, 300);
+    }, 150);
       results.innerHTML = `
         <div class="max-w-2xl mx-auto px-6 py-12 text-center">
           <div class="text-5xl mb-6">🔒</div>
           <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
           <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-            The page is protected. Use Code Analysis instead.
+            Whitelist: render.traffictorch.workers.dev or use Code Analysis.
           </p>
           <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
             <p class="font-medium mb-4">Quick fix:</p>
             <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
-              <li>Right-click on the page → <strong>View Page Source</strong></li>
+              <li>Right-click on your page → <strong>View Page Source</strong></li>
               <li>Select all and copy the full HTML</li>
-              <li>Paste into the Code Analysis box and click Analyze Code</li>
+              <li>Paste into the Code Analysis box</li>
             </ol>
           </div>
         </div>
