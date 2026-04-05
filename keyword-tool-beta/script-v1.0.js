@@ -238,8 +238,14 @@ const calculateContentScore = (content) => {
     urlAnalyzeBtn.addEventListener('click', async () => {
       if (hasCheckedLimit) return;
       hasCheckedLimit = true;
+
+      // === INSTANT SPINNER + AUTO-SCROLL ON BUTTON CLICK ===
+      startSpinnerLoader();
+      results.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) {
+        stopSpinnerLoader();
         hasCheckedLimit = false;
         return;
       }
@@ -249,12 +255,12 @@ const calculateContentScore = (content) => {
         if (urlInput) urlInput.value = sharedUrl;
       }
       if (!inputValue) {
-        alert('Please enter a URL');
+        stopSpinnerLoader();
+        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Please enter a URL</p>`;
         hasCheckedLimit = false;
         return;
       }
       const fullUrl = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
-      startSpinnerLoader();
       runAnalysis({ url: fullUrl, inputType: 'url', rawCode: null, keyword: targetKeywordInput.value.trim() });
       hasCheckedLimit = false;
     });
@@ -264,18 +270,24 @@ const calculateContentScore = (content) => {
     codeAnalyzeBtn.addEventListener('click', async () => {
       if (hasCheckedLimit) return;
       hasCheckedLimit = true;
+
+      // === INSTANT SPINNER + AUTO-SCROLL ON BUTTON CLICK ===
+      startSpinnerLoader();
+      results.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) {
+        stopSpinnerLoader();
         hasCheckedLimit = false;
         return;
       }
       const rawCode = codeInput?.value.trim();
       if (!rawCode) {
-        alert('Please paste HTML code');
+        stopSpinnerLoader();
+        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Please paste HTML code</p>`;
         hasCheckedLimit = false;
         return;
       }
-      startSpinnerLoader();
       runAnalysis({ url: null, inputType: 'code', rawCode, keyword: targetKeywordInput.value.trim() });
       hasCheckedLimit = false;
     });
@@ -397,7 +409,7 @@ const calculateContentScore = (content) => {
 
     yourScore = Math.min(100, Math.round(yourScore));
 
-    // Fix: delay spinner stop so progress text actually shows
+    // Increased delay so ALL 7 progress messages show fully before results ("Fetching page..." → "Generating report")
     setTimeout(() => {
       stopSpinnerLoader();
       results.classList.remove('hidden');
@@ -407,7 +419,7 @@ const calculateContentScore = (content) => {
         const offset = 100;
         setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
       }, 150);
-    }, 1600);
+    }, 5500);
 
     const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
     const topPriorityFixes = [];
