@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentModuleIndex < progressModules.length) {
         document.getElementById('module-text').textContent = progressModules[currentModuleIndex++];
       }
-    }, 950);
+    }, 1500);
   }
   function stopSpinnerLoader() {
     clearInterval(moduleInterval);
@@ -140,7 +140,7 @@ const fetchPage = async (url) => {
       }
     });
     const text = await res.text();
-    if (!text || text.trim().length < 30) {
+    if (!text || text.trim().length < 100) {
       return { blocked: true };
     }
     // Detect blocked response from proxy (restored - only change)
@@ -419,7 +419,7 @@ const calculateContentScore = (content) => {
         const offset = 100;
         setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
       }, 150);
-    }, 8000);
+    }, 15000);
 
     const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
     const topPriorityFixes = [];
