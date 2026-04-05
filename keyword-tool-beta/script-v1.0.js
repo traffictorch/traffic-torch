@@ -145,16 +145,7 @@ const fetchPage = async (url) => {
     if (!text || text.trim().length < 100) {
       return { blocked: true };
     }
-    // Detect blocked response from proxy (restored - only change)
-    const trimmed = text.trim();
-    if (trimmed.startsWith('{') && trimmed.includes('"blocked":true')) {
-      try {
-        const data = JSON.parse(trimmed);
-        if (data && data.blocked === true) {
-          return { blocked: true };
-        }
-      } catch (e) {}
-    }
+    // No blocked detection - worker returns real HTML fast
     return new DOMParser().parseFromString(text, 'text/html');
   } catch (e) {
     return { blocked: true };
@@ -411,35 +402,31 @@ const calculateContentScore = (content) => {
 
     yourScore = Math.min(100, Math.round(yourScore));
 
-    // Each module shows for ~800ms
+    // === PROGRESS TIMING FIXED 
     let progressTimeout;
-    const totalModules = progressModules.length; 
-
+    const totalModules = progressModules.length;
     function advanceProgress() {
       if (currentModuleIndex < totalModules - 1) {
         document.getElementById('module-text').textContent = progressModules[currentModuleIndex];
         currentModuleIndex++;
-        progressTimeout = setTimeout(advanceProgress, 800); // 800ms per step
+        progressTimeout = setTimeout(advanceProgress, 1000); // 1 second per module
       } else {
         document.getElementById('module-text').textContent = progressModules[totalModules - 1];
       }
     }
-
     currentModuleIndex = 1;
     document.getElementById('module-text').textContent = progressModules[0];
-    progressTimeout = setTimeout(advanceProgress, 800);
+    progressTimeout = setTimeout(advanceProgress, 1000);
 
     setTimeout(() => {
       stopSpinnerLoader();
       results.classList.remove('hidden');
-      
-      // Improved auto-scroll after results appear
       setTimeout(() => {
         results.scrollIntoView({ behavior: 'smooth', block: 'start' });
         const offset = 100;
         setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
       }, 150);
-    }, 150); 
+    }, 5000);  
 
     const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
     const topPriorityFixes = [];
