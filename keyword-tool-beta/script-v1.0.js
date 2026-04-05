@@ -414,7 +414,8 @@ const calculateContentScore = (content) => {
     const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
     window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-  results.innerHTML = `
+    results.innerHTML = `
+    
     
 <!-- Overall Score Card (Keyword Tool / Your Page) -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -461,6 +462,7 @@ const calculateContentScore = (content) => {
   </div>
 </div>
 
+
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -476,6 +478,8 @@ const calculateContentScore = (content) => {
     </p>
   </div>
 </div>
+
+
 
 <!-- Small Metric Circles -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
@@ -568,7 +572,7 @@ const calculateContentScore = (content) => {
     const diagnostics = getModuleDiagnostics({name: m.name}, data, phrase, fullUrl);
     const hasIssues = diagnostics.some(d => d.status === '❌');
     const hashId = moduleHashes[m.name] || '';
-    return `
+return `
       <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
         <h4 class="text-xl font-medium mb-4">${m.name}</h4>
         <div class="relative w-28 h-28 mx-auto">
