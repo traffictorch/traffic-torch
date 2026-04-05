@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   }
   
-  const PROXY = 'https://render.traffictorch.workers.dev/';
+  const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",
     "Analyzing metadata",
@@ -207,223 +207,235 @@ const calculateContentScore = (content) => {
   return Math.round(wordScore + densityScore);
 };
 
-  // === DUAL INPUT BUTTON HANDLERS (debugged clean version) ===
-  const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
-  const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
-  const codeInput = document.getElementById('code-input');
-  let hasCheckedLimit = false;
+    // === DUAL INPUT SUPPORT + BLOCKED DETECTION (Keyword Tool Beta) ===
+    const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
+    const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
+    const urlInput = document.getElementById('page-url');
+    const codeInput = document.getElementById('code-input');
+    const keywordInput = document.getElementById('target-keyword');
+    let hasCheckedLimit = false;
 
-  if (urlAnalyzeBtn) {
-    urlAnalyzeBtn.addEventListener('click', async () => {
-      if (hasCheckedLimit) return;
-      hasCheckedLimit = true;
-      const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) { hasCheckedLimit = false; return; }
+    if (urlAnalyzeBtn) {
+      urlAnalyzeBtn.addEventListener('click', async () => {
+        if (hasCheckedLimit) return;
+        hasCheckedLimit = true;
+        const canProceed = await canRunTool('limit-audit-id');
+        if (!canProceed) {
+          hasCheckedLimit = false;
+          return;
+        }
+        let inputValue = urlInput?.value.trim();
+        if (!inputValue) {
+          alert('Please enter a URL');
+          hasCheckedLimit = false;
+          return;
+        }
+        const phrase = keywordInput?.value.trim();
+        if (!phrase) {
+          alert('Please enter a target keyword');
+          hasCheckedLimit = false;
+          return;
+        }
+        const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
+        document.getElementById('url-loading').classList.remove('hidden');
+        document.getElementById('code-loading').classList.add('hidden');
+        runAnalysis({ url, inputType: 'url', rawCode: null, phrase });
+        hasCheckedLimit = false;
+      });
+    }
 
-      const urlValue = pageUrlInput?.value.trim();
-      const keywordValue = targetKeywordInput?.value.trim();
-      if (!urlValue) { alert('Please enter a page URL'); hasCheckedLimit = false; return; }
-      if (!keywordValue) { alert('Please enter a target keyword'); hasCheckedLimit = false; return; }
+    if (codeAnalyzeBtn) {
+      codeAnalyzeBtn.addEventListener('click', async () => {
+        if (hasCheckedLimit) return;
+        hasCheckedLimit = true;
+        const canProceed = await canRunTool('limit-audit-id');
+        if (!canProceed) {
+          hasCheckedLimit = false;
+          return;
+        }
+        const rawCode = codeInput?.value.trim();
+        const phrase = keywordInput?.value.trim();
+        if (!rawCode) {
+          alert('Please paste HTML code');
+          hasCheckedLimit = false;
+          return;
+        }
+        if (!phrase) {
+          alert('Please enter a target keyword');
+          hasCheckedLimit = false;
+          return;
+        }
+        document.getElementById('code-loading').classList.remove('hidden');
+        document.getElementById('url-loading').classList.add('hidden');
+        runAnalysis({ url: null, inputType: 'code', rawCode, phrase });
+        hasCheckedLimit = false;
+      });
+    }
 
-      const url = urlValue.startsWith('http') ? urlValue : `https://${urlValue}`;
-      document.getElementById('url-loading')?.classList.remove('hidden');
-      document.getElementById('code-loading')?.classList.add('hidden');
+    async function runAnalysis({ url, inputType, rawCode, phrase }) {
       startSpinnerLoader();
-      runKeywordAnalysis({ url, keyword: keywordValue, inputType: 'url', rawCode: null });
-      hasCheckedLimit = false;
-    });
-  }
 
-  if (codeAnalyzeBtn) {
-    codeAnalyzeBtn.addEventListener('click', async () => {
-      if (hasCheckedLimit) return;
-      hasCheckedLimit = true;
-      const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) { hasCheckedLimit = false; return; }
+      let yourDoc;
+      if (inputType === 'url') {
+        yourDoc = await fetchPage(url);
+      } else {
+        try {
+          yourDoc = new DOMParser().parseFromString(rawCode, 'text/html');
+        } catch (e) {
+          yourDoc = null;
+        }
+      }
 
-      const rawCode = codeInput?.value.trim();
-      const keywordValue = targetKeywordInput?.value.trim();
-      if (!rawCode) { alert('Please paste HTML code'); hasCheckedLimit = false; return; }
-      if (!keywordValue) { alert('Please enter a target keyword'); hasCheckedLimit = false; return; }
-
-      document.getElementById('code-loading')?.classList.remove('hidden');
-      document.getElementById('url-loading')?.classList.add('hidden');
-      startSpinnerLoader();
-      runKeywordAnalysis({ url: null, keyword: keywordValue, inputType: 'code', rawCode });
-      hasCheckedLimit = false;
-    });
-  }
-
-  // === runKeywordAnalysis - handles URL and Code input + blocked message ===
-  async function runKeywordAnalysis(params) {
-    const { url, keyword: phrase, inputType, rawCode } = params;
-    let yourDoc;
-    let fullUrl = '';
-
-    if (inputType === 'url') {
-      fullUrl = url;
-      yourDoc = await fetchPage(fullUrl);
       if (!yourDoc) {
         stopSpinnerLoader();
-        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
+        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable or invalid HTML.</p>`;
         return;
       }
-    } else if (inputType === 'code') {
-      try {
-        yourDoc = new DOMParser().parseFromString(rawCode, 'text/html');
-        fullUrl = 'Code Analysis (pre-published page)';
-      } catch (e) {
-        stopSpinnerLoader();
-        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Invalid HTML code.</p>`;
-        return;
-      }
-    }
 
-    let yourScore = 0;
-    const data = {};
-    const allFixes = [];
+      let yourScore = 0;
+      const data = {};
+      const allFixes = [];
+      const fullUrl = url || 'Code Analysis';
 
-    // Meta Title & Desc
-    const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
-    const descText = yourDoc.querySelector('meta[name="description"]')?.content.trim() || '';
-    const titleMatch = countPhrase(titleText, phrase);
-    const descMatch = countPhrase(descText, phrase);
-    data.meta = { titleText, descText, titleMatch, descMatch, yourMatches: titleMatch + descMatch };
-    yourScore += data.meta.yourMatches > 0 ? 25 : 0;
-    if (titleMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta title', how: 'Place the keyword near the start of the title (under 60 characters) for maximum relevance.'});
-    if (descMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta description', how: 'Include the keyword once naturally in the description (under 155 characters) to boost click-through rates.'});
+      // Meta Title & Desc
+      const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
+      const descText = yourDoc.querySelector('meta[name="description"]')?.content.trim() || '';
+      const titleMatch = countPhrase(titleText, phrase);
+      const descMatch = countPhrase(descText, phrase);
+      data.meta = { titleText, descText, titleMatch, descMatch, yourMatches: titleMatch + descMatch };
+      yourScore += data.meta.yourMatches > 0 ? 25 : 0;
+      if (titleMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta title', how: 'Place the keyword near the start of the title (under 60 characters) for maximum relevance.'});
+      if (descMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta description', how: 'Include the keyword once naturally in the description (under 155 characters) to boost click-through rates.'});
 
-    // H1 & Headings
-    const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6')).slice(0, 5);
-    const headingsData = headings.map(h => ({ tag: h.tagName, text: h.textContent.trim(), match: countPhrase(h.textContent, phrase) > 0 }));
-    const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
-    data.h1 = { match: countPhrase(yourH1, phrase) };
-    data.headingsData = headingsData;
-    yourScore += data.h1.match > 0 ? 15 : 0;
-    if (data.h1.match === 0) allFixes.push({module: 'H1 & Headings', issue: 'Add keyword to H1', how: 'Rewrite your H1 to include the keyword naturally while keeping it engaging and reader-focused.'});
+      // H1 & Headings
+      const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6')).slice(0, 5);
+      const headingsData = headings.map(h => ({ tag: h.tagName, text: h.textContent.trim(), match: countPhrase(h.textContent, phrase) > 0 }));
+      const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
+      data.h1 = { match: countPhrase(yourH1, phrase) };
+      data.headingsData = headingsData;
+      yourScore += data.h1.match > 0 ? 15 : 0;
+      if (data.h1.match === 0) allFixes.push({module: 'H1 & Headings', issue: 'Add keyword to H1', how: 'Rewrite your H1 to include the keyword naturally while keeping it engaging and reader-focused.'});
 
-    // Content Density
-    const cleanContent = getCleanContent(yourDoc);
-    const yourWords = getWordCount(yourDoc);
-    const yourContentMatches = countPhrase(cleanContent, phrase);
-    const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
-    data.content = { words: yourWords, matches: yourContentMatches, density: yourDensity };
-    yourScore += yourWords > 800 ? 20 : 0;
-    if (yourWords < 800) allFixes.push({module: 'Content Density', issue: `Add depth (${800 - yourWords} words recommended)`, how: 'Expand with examples, FAQs, comparisons, or data to provide comprehensive value.'});
-    if (parseFloat(yourDensity) < 0.5) allFixes.push({module: 'Content Density', issue: 'Increase keyword density', how: 'Add the keyword naturally in intro, subheads, and body (aim for 1-2%).'});
+      // Content Density
+      const cleanContent = getCleanContent(yourDoc);
+      const yourWords = getWordCount(yourDoc);
+      const yourContentMatches = countPhrase(cleanContent, phrase);
+      const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
+      data.content = { words: yourWords, matches: yourContentMatches, density: yourDensity };
+      yourScore += yourWords > 800 ? 20 : 0;
+      if (yourWords < 800) allFixes.push({module: 'Content Density', issue: `Add depth (${800 - yourWords} words recommended)`, how: 'Expand with examples, FAQs, comparisons, or data to provide comprehensive value.'});
+      if (parseFloat(yourDensity) < 0.5) allFixes.push({module: 'Content Density', issue: 'Increase keyword density', how: 'Add the keyword naturally in intro, subheads, and body (aim for 1-2%).'});
 
-    // Image Alts
-    const yourImgs = yourDoc.querySelectorAll('img');
-    const matchingAlts = Array.from(yourImgs)
-      .filter(img => countPhrase(img.alt || '', phrase) > 0)
-      .slice(0, 5)
-      .map(img => img.alt?.trim() || '(empty alt)');
-    data.alts = { total: yourImgs.length, phrase: matchingAlts.length, matchingAlts };
-    yourScore += matchingAlts.length > 0 ? 15 : 0;
-    if (matchingAlts.length === 0 && yourImgs.length > 0) allFixes.push({module: 'Image Alts', issue: 'Add keyword to key image alts', how: 'Update important images with descriptive alt text that includes the keyword naturally.'});
+      // Image Alts
+      const yourImgs = yourDoc.querySelectorAll('img');
+      const matchingAlts = Array.from(yourImgs)
+        .filter(img => countPhrase(img.alt || '', phrase) > 0)
+        .slice(0, 5)
+        .map(img => img.alt?.trim() || '(empty alt)');
+      data.alts = { total: yourImgs.length, phrase: matchingAlts.length, matchingAlts };
+      yourScore += matchingAlts.length > 0 ? 15 : 0;
+      if (matchingAlts.length === 0 && yourImgs.length > 0) allFixes.push({module: 'Image Alts', issue: 'Add keyword to key image alts', how: 'Update important images with descriptive alt text that includes the keyword naturally.'});
 
-    // Anchor Text
-    const matchingAnchors = Array.from(yourDoc.querySelectorAll('a'))
-      .filter(a => countPhrase(a.textContent || '', phrase) > 0)
-      .slice(0, 5)
-      .map(a => ({ text: (a.textContent || '').trim(), href: a.href }));
-    data.anchors = { count: matchingAnchors.length, matchingAnchors };
-    yourScore += matchingAnchors.length > 0 ? 10 : 0;
-    if (matchingAnchors.length === 0) allFixes.push({module: 'Anchor Text', issue: 'Add keyword to anchor text', how: 'Use the keyword naturally as clickable text when linking to related pages.'});
+      // Anchor Text
+      const matchingAnchors = Array.from(yourDoc.querySelectorAll('a'))
+        .filter(a => countPhrase(a.textContent || '', phrase) > 0)
+        .slice(0, 5)
+        .map(a => ({ text: (a.textContent || '').trim(), href: a.href }));
+      data.anchors = { count: matchingAnchors.length, matchingAnchors };
+      yourScore += matchingAnchors.length > 0 ? 10 : 0;
+      if (matchingAnchors.length === 0) allFixes.push({module: 'Anchor Text', issue: 'Add keyword to anchor text', how: 'Use the keyword naturally as clickable text when linking to related pages.'});
 
-    // URL & Schema
-    const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
-    const schemaPresent = !!schemaScript;
-    data.urlSchema = { urlMatch: countPhrase(fullUrl, phrase, true), schema: schemaPresent ? 1 : 0 };
-    yourScore += (data.urlSchema.urlMatch > 0 ? 10 : 0) + (data.urlSchema.schema ? 5 : 0);
-    if (data.urlSchema.urlMatch === 0) allFixes.push({module: 'URL & Schema', issue: 'Include keyword in URL', how: 'Use a clean, hyphenated URL containing the keyword and set up redirects if changing.'});
-    if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
+      // URL & Schema
+      const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
+      const schemaPresent = !!schemaScript;
+      data.urlSchema = { urlMatch: countPhrase(fullUrl, phrase, true), schema: schemaPresent ? 1 : 0 };
+      yourScore += (data.urlSchema.urlMatch > 0 ? 10 : 0) + (data.urlSchema.schema ? 5 : 0);
+      if (data.urlSchema.urlMatch === 0) allFixes.push({module: 'URL & Schema', issue: 'Include keyword in URL', how: 'Use a clean, hyphenated URL containing the keyword and set up redirects if changing.'});
+      if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head.'});
 
-    yourScore = Math.min(100, Math.round(yourScore));
-    stopSpinnerLoader();
+      yourScore = Math.min(100, Math.round(yourScore));
+      stopSpinnerLoader();
 
-    // BLOCKED DETECTION
-    if (data && data.blocked === true) {
-      if (inputType === 'code') {
-        document.getElementById('code-loading')?.classList.add('hidden');
-      } else {
-        document.getElementById('url-loading')?.classList.add('hidden');
-      }
-      results.classList.remove('hidden');
-      results.innerHTML = `
-        <div class="max-w-2xl mx-auto px-6 py-12 text-center">
-          <div class="text-5xl mb-6">🔒</div>
-          <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
-          <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
-            Whitelist: traffic-torch-api.traffictorch.workers.dev or use Code Analysis.
-          </p>
-          <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
-            <p class="font-medium mb-4">Quick fix:</p>
-            <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
-              <li>Right-click on the page → <strong>View Page Source</strong></li>
-              <li>Select all and copy code</li>
-              <li>Paste into the <strong>Code Analysis</strong> box</li>
-            </ol>
+      // BLOCKED DETECTION - simple user-friendly message
+      if (data && data.blocked === true) {
+        if (inputType === 'code') {
+          const codeLoading = document.getElementById('code-loading');
+          if (codeLoading) codeLoading.classList.add('hidden');
+        } else {
+          const urlLoading = document.getElementById('url-loading');
+          if (urlLoading) urlLoading.classList.add('hidden');
+        }
+        loading.classList.add('hidden');
+        results.classList.remove('hidden');
+        results.innerHTML = `
+          <div class="max-w-2xl mx-auto px-6 py-12 text-center">
+            <div class="text-5xl mb-6">🔒</div>
+            <h2 class="text-3xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis Blocked by Security</h2>
+            <p class="text-lg text-gray-700 dark:text-gray-300 mb-8">
+              Whitelist: topical-authority-ai-code-worker.traffictorch.workers.dev or use Code Analysis.
+            </p>
+            <div class="bg-orange-50 dark:bg-orange-950 border border-orange-300 dark:border-orange-700 rounded-3xl p-8 text-left max-w-md mx-auto">
+              <p class="font-medium mb-4">Quick fix:</p>
+              <ol class="text-base space-y-3 text-gray-700 dark:text-gray-300 list-decimal list-inside">
+                <li>Right-click on the page → <strong>View Page Source</strong></li>
+                <li>Select all and copy code</li>
+                <li>Paste into the <strong>Code Analysis</strong> box</li>
+              </ol>
+            </div>
           </div>
-        </div>
-      `;
-      setTimeout(() => {
-        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-      return;
-    }
-
-    // === ALL ORIGINAL RESULTS RENDERING (unchanged) ===
-    const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
-    const topPriorityFixes = [];
-    const moduleIssues = {};
-    allFixes.forEach(f => {
-      if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
-      moduleIssues[f.module].push(f);
-    });
-    moduleOrder.forEach(mod => {
-      if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
-        topPriorityFixes.push(moduleIssues[mod][0]);
+        `;
+        setTimeout(() => {
+          results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+        return;
       }
-    });
-    if (topPriorityFixes.length < 3) {
-      const topMod = topPriorityFixes.length > 0 ? topPriorityFixes[0].module : null;
-      if (topMod && moduleIssues[topMod] && moduleIssues[topMod].length > 1) {
-        topPriorityFixes.push(moduleIssues[topMod][1]);
+
+      // === Original results rendering code (full, unchanged) ===
+      const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
+      const topPriorityFixes = [];
+      const moduleIssues = {};
+      allFixes.forEach(f => {
+        if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
+        moduleIssues[f.module].push(f);
+      });
+      moduleOrder.forEach(mod => {
+        if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
+          topPriorityFixes.push(moduleIssues[mod][0]);
+        }
+      });
+      if (topPriorityFixes.length < 3) {
+        const topMod = topPriorityFixes.length > 0 ? topPriorityFixes[0].module : null;
+        if (topMod && moduleIssues[topMod] && moduleIssues[topMod].length > 1) {
+          topPriorityFixes.push(moduleIssues[topMod][1]);
+        }
       }
-    }
-    topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
+      topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
 
-    const levels = ['Page 2+', 'Page 1 Possible', 'Top 10', 'Top 3 Potential'];
-    const currentLevel = yourScore >= 90 ? 3 : yourScore >= 80 ? 2 : yourScore >= 60 ? 1 : 0;
-    const projectedLevel = Math.min(3, currentLevel + (topPriorityFixes.length >= 2 ? 2 : topPriorityFixes.length));
-    const hasMetaOrContent = topPriorityFixes.some(f => f.module === 'Meta Title & Desc' || f.module === 'Content Density');
-    const bigGrade = getGrade(yourScore);
+      const levels = ['Page 2+', 'Page 1 Possible', 'Top 10', 'Top 3 Potential'];
+      const currentLevel = yourScore >= 90 ? 3 : yourScore >= 80 ? 2 : yourScore >= 60 ? 1 : 0;
+      const projectedLevel = Math.min(3, currentLevel + (topPriorityFixes.length >= 2 ? 2 : topPriorityFixes.length));
+      const hasMetaOrContent = topPriorityFixes.some(f => f.module === 'Meta Title & Desc' || f.module === 'Content Density');
+      const bigGrade = getGrade(yourScore);
 
-    const modules = [
-      { name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0 },
-      { name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0 },
-      { name: 'Content Density', score: calculateContentScore(data.content) },
-      { name: 'Image Alts', score: data.alts.phrase > 0 ? 100 : 0 },
-      { name: 'Anchor Text', score: data.anchors.count > 0 ? 100 : 0 },
-      { name: 'URL & Schema', score: Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0)) }
-    ];
-    const scores = modules.map(m => m.score);
+      const modules = [
+        { name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0 },
+        { name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0 },
+        { name: 'Content Density', score: calculateContentScore(data.content) },
+        { name: 'Image Alts', score: data.alts.phrase > 0 ? 100 : 0 },
+        { name: 'Anchor Text', score: data.anchors.count > 0 ? 100 : 0 },
+        { name: 'URL & Schema', score: Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0)) }
+      ];
+      const scores = modules.map(m => m.score);
 
-    const offset = 280;
-    const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-    window.scrollTo({ top: targetY, behavior: 'smooth' });
+      const offset = 280;
+      const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-    results.innerHTML = `
-    
-    
+      results.innerHTML = `
 <!-- Overall Score Card (Keyword Tool / Your Page) -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
-    
     <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Your Page</p>
-    
-    <!-- Responsive SVG wrapper -->
     <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
       <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
         <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -446,14 +458,12 @@ const calculateContentScore = (content) => {
         </div>
       </div>
     </div>
-
     ${(() => {
       const title = (yourDoc?.title || '').trim();
       if (!title) return '';
       const truncated = title.length > 65 ? title.substring(0, 65) + '...' : title;
       return `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
     })()}
-
     <div class="mt-6 text-center">
       <p class="text-5xl sm:text-6xl font-bold ${bigGrade.color} drop-shadow-lg">
         ${bigGrade.emoji} ${bigGrade.grade}
@@ -461,8 +471,6 @@ const calculateContentScore = (content) => {
     </div>
   </div>
 </div>
-
-
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -478,9 +486,6 @@ const calculateContentScore = (content) => {
     </p>
   </div>
 </div>
-
-
-
 <!-- Small Metric Circles -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
   ${[
@@ -518,7 +523,7 @@ const calculateContentScore = (content) => {
       fixEdu = data.h1.match === 0 ?
         `Your main H1 heading does not contain the target keyword. The H1 is the most important heading and tells search engines the primary topic of the page. Without the keyword here, Google may struggle to understand your page focus clearly.` : '';
     } else if (m.name === 'Content Density') {
-  score = calculateContentScore(data.content);
+      score = calculateContentScore(data.content);
       details = `
         <div class="mt-4 text-center space-y-2 text-sm">
           <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Word count:</span> ${data.content.words}</p>
@@ -641,7 +646,6 @@ const calculateContentScore = (content) => {
     `;
   }).join('')}
 </div>
-
 <!-- Top Priority Fixes -->
 <div class="my-16">
   <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Top Priority Fixes</h3>
@@ -668,7 +672,6 @@ const calculateContentScore = (content) => {
 </div>
 <!-- Score Improvement & Potential Gains -->
 <div class="max-w-6xl mx-auto my-20 grid md:grid-cols-2 gap-8">
-  <!-- Left: Ranking Potential Improvement -->
   <div class="p-4 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4 border-orange-500/20">
     <h3 class="text-4xl font-black text-center mb-10 text-orange-600 dark:text-orange-400">Ranking Potential Improvement</h3>
     <div class="flex justify-center items-baseline gap-8 mb-10">
@@ -690,23 +693,20 @@ const calculateContentScore = (content) => {
       <div class="space-y-4">
         <p class="text-center text-lg font-medium text-gray-700 dark:text-gray-300 mb-6">Top priority fixes & impact:</p>
         ${topPriorityFixes.map((fix, i) => `
-<div class="p-5 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800">
-  <div class="flex items-start gap-4">
-    <!-- Number -->
-    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/40 text-xl font-bold text-orange-700 dark:text-orange-300">
-      ${i+1}
-    </div>
-    
-    <!-- Content -->
-    <div class="flex-1 min-w-0">
-      <p class="text-gray-900 dark:text-gray-100 font-medium leading-relaxed">
-        <span class="font-bold text-orange-700 dark:text-orange-300">${fix.issue}</span>
-        <br class="sm:hidden">
-        ${fix.how}
-      </p>
-    </div>
-  </div>
-</div>
+          <div class="p-5 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/40 text-xl font-bold text-orange-700 dark:text-orange-300">
+                ${i+1}
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-gray-900 dark:text-gray-100 font-medium leading-relaxed">
+                  <span class="font-bold text-orange-700 dark:text-orange-300">${fix.issue}</span>
+                  <br class="sm:hidden">
+                  ${fix.how}
+                </p>
+              </div>
+            </div>
+          </div>
         `).join('')}
       </div>
     ` : `
@@ -725,7 +725,6 @@ const calculateContentScore = (content) => {
       </div>
     </details>
   </div>
-  <!-- Right: Expected Performance Gains -->
   <div class="p-4 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-3xl shadow-2xl">
     <h3 class="text-4xl font-black text-center mb-10">Expected Performance Gains</h3>
     <div class="space-y-8">
@@ -788,27 +787,17 @@ const calculateContentScore = (content) => {
 <!-- PDF Share Feedback Buttons -->
 <div class="text-center my-16 px-4">
   <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-    <!-- Share Report - Green - first -->
-    <button id="share-report-btn"
-            class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+    <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
       Share Report ↗️
     </button>
-    <!-- Save Report - Orange - second -->
-    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-            class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
       Save Report 📥
     </button>
-    <!-- Submit Feedback - Blue - third -->
-    <button id="feedback-btn"
-            class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+    <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
      Submit Feedback 💬
     </button>
   </div>
-
-  <!-- Share message - placed directly below buttons, always visible when triggered -->
   <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-
-  <!-- Share Report Form (still hidden/expandable) -->
   <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
       <div>
@@ -834,8 +823,6 @@ const calculateContentScore = (content) => {
       <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
     </form>
   </div>
-
-  <!-- Feedback Form (unchanged) -->
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
       <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
@@ -876,48 +863,41 @@ const calculateContentScore = (content) => {
     </div>
   </div>
 </div>
-    `;
-    
-// === Plugin Solutions - adapted for Keyword Tool (4 metrics only) ===
-const pluginSection = document.createElement('div');
-pluginSection.id = 'plugin-solutions-section';
-pluginSection.className = 'mt-20';
-results.appendChild(pluginSection);
-// Collect failed/average metrics that plugins can solve (using existing data object)
-const failedMetrics = [];
-// 1. Meta Title (missing keyword or empty = fail)
-if (data.meta.titleMatch === 0 || !data.meta.titleText || data.meta.titleText.trim() === '') {
-  failedMetrics.push({ name: "Meta Title", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-// 2. Meta Description (missing or empty = fail)
-if (data.meta.descMatch === 0 || !data.meta.descText || data.meta.descText.trim() === '') {
-  failedMetrics.push({ name: "Meta Description", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-// 3. Structured Data (Schema) - missing = fail
-if (data.urlSchema.schema === 0) {
-  failedMetrics.push({ name: "Structured Data (Schema)", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-// 4. Image Alts (no keyword in alts on pages with images = fail)
-if (data.alts.phrase === 0 && data.alts.total > 0) {
-  failedMetrics.push({ name: "Image Alts", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-}
-// Render only if we have fixes
-if (failedMetrics.length > 0) {
-  renderPluginSolutions(failedMetrics);
-}
-    
-          // === RADAR CHART INITIALIZATION ===
+      `;
+
+      // Plugin Solutions
+      const pluginSection = document.createElement('div');
+      pluginSection.id = 'plugin-solutions-section';
+      pluginSection.className = 'mt-20';
+      results.appendChild(pluginSection);
+
+      const failedMetrics = [];
+      if (data.meta.titleMatch === 0 || !data.meta.titleText || data.meta.titleText.trim() === '') {
+        failedMetrics.push({ name: "Meta Title", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (data.meta.descMatch === 0 || !data.meta.descText || data.meta.descText.trim() === '') {
+        failedMetrics.push({ name: "Meta Description", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (data.urlSchema.schema === 0) {
+        failedMetrics.push({ name: "Structured Data (Schema)", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (data.alts.phrase === 0 && data.alts.total > 0) {
+        failedMetrics.push({ name: "Image Alts", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+      }
+      if (failedMetrics.length > 0) {
+        renderPluginSolutions(failedMetrics);
+      }
+
+      // Radar Chart
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) return;
-
         try {
           const ctx = canvas.getContext('2d');
-          const labelColor = '#9ca3af'; // gray-400 — perfect day/night
+          const labelColor = '#9ca3af';
           const gridColor = 'rgba(156, 163, 175, 0.3)';
           const borderColor = '#fb923c';
           const fillColor = 'rgba(251, 146, 60, 0.15)';
-
           window.myChart = new Chart(ctx, {
             type: 'radar',
             data: {
@@ -952,14 +932,11 @@ if (failedMetrics.length > 0) {
               plugins: { legend: { display: false } }
             }
           });
-        } catch (e) {
-          // no console in production
-        }
+        } catch (e) {}
       }, 150);
-      
-        initShareReport(results);
-        initSubmitFeedback(results);
-      
-      
+
+      initShareReport(results);
+      initSubmitFeedback(results);
+    }
   });
 });
