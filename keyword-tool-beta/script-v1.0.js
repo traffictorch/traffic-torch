@@ -289,7 +289,7 @@ const calculateContentScore = (content) => {
     } else if (inputType === 'url' && url) {
       yourDoc = await fetchPage(url);
 
-      // Handle worker's {blocked: true} response
+      // Handle ONLY the worker's official {blocked: true} JSON response
       if (yourDoc && yourDoc.blocked === true) {
         stopSpinnerLoader();
         results.classList.remove('hidden');
@@ -319,12 +319,6 @@ const calculateContentScore = (content) => {
         results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
         return;
       }
-    }
-
-    if (!yourDoc) {
-      stopSpinnerLoader();
-      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: No document to analyze.</p>`;
-      return;
     }
 
     if (!phrase) {
