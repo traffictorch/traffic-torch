@@ -54,8 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
     "Checking URL & schema",
     "Generating report"
   ];
-  let currentModuleIndex = 0;
-  let moduleInterval;
+let currentModuleIndex = 0;
+let moduleInterval;
+let progressTimeout;   
 
   const getGrade = (score) => {
     if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
@@ -122,11 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, 1500);
   }
-  function stopSpinnerLoader() {
-    clearInterval(moduleInterval);
-    const loader = document.getElementById('loader');
-    if (loader) loader.remove();
-  }
+function stopSpinnerLoader() {
+  if (moduleInterval) clearInterval(moduleInterval);
+  if (progressTimeout) clearTimeout(progressTimeout);
+  const loader = document.getElementById('loader');
+  if (loader) loader.remove();
+}
 const fetchPage = async (url) => {
   try {
     const proxyUrl = PROXY + '?url=' + encodeURIComponent(url);
@@ -409,17 +411,35 @@ const calculateContentScore = (content) => {
 
     yourScore = Math.min(100, Math.round(yourScore));
 
-    // Increased delay so ALL 7 progress messages show fully before results ("Fetching page..." → "Generating report")
+    // Each module shows for ~800ms
+    let progressTimeout;
+    const totalModules = progressModules.length; 
+
+    function advanceProgress() {
+      if (currentModuleIndex < totalModules - 1) {
+        document.getElementById('module-text').textContent = progressModules[currentModuleIndex];
+        currentModuleIndex++;
+        progressTimeout = setTimeout(advanceProgress, 800); // 800ms per step
+      } else {
+        document.getElementById('module-text').textContent = progressModules[totalModules - 1];
+      }
+    }
+
+    currentModuleIndex = 1;
+    document.getElementById('module-text').textContent = progressModules[0];
+    progressTimeout = setTimeout(advanceProgress, 800);
+
     setTimeout(() => {
       stopSpinnerLoader();
       results.classList.remove('hidden');
-      // Improved auto-scroll
+      
+      // Improved auto-scroll after results appear
       setTimeout(() => {
         results.scrollIntoView({ behavior: 'smooth', block: 'start' });
         const offset = 100;
         setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
       }, 150);
-    }, 15000);
+    }, 150); 
 
     const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
     const topPriorityFixes = [];
