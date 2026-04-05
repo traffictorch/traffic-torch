@@ -132,12 +132,15 @@ const fetchPage = async (url) => {
     const proxyUrl = PROXY + '?url=' + encodeURIComponent(url);
     const res = await fetch(proxyUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
       }
     });
 
     if (!res.ok) {
-      // If proxy itself returns error, treat as blocked for now
       return { blocked: true };
     }
 
@@ -145,15 +148,17 @@ const fetchPage = async (url) => {
     
     // Worker returned JSON with blocked flag
     if (contentType.includes('application/json')) {
-      const data = await res.json();
-      if (data && data.blocked === true) {
-        return { blocked: true };
-      }
+      try {
+        const data = await res.json();
+        if (data && data.blocked === true) {
+          return { blocked: true };
+        }
+      } catch (e) {}
     }
 
     // Normal HTML response
     const html = await res.text();
-    if (!html || html.trim().length < 100) {
+    if (!html || html.trim().length < 200) {
       return { blocked: true };
     }
     return new DOMParser().parseFromString(html, 'text/html');
@@ -301,7 +306,7 @@ const calculateContentScore = (content) => {
     } else if (inputType === 'url' && url) {
       yourDoc = await fetchPage(url);
 
-      // Handle blocked response from improved proxy
+      // Handle blocked response from proxy
       if (yourDoc && yourDoc.blocked === true) {
         stopSpinnerLoader();
         results.classList.remove('hidden');
