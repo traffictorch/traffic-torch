@@ -568,3 +568,78 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     `;
   }
 }
+
+// ── Button event listeners ──────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const results = document.getElementById('results');
+  if (!results) return;
+
+  const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
+  const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
+  const urlInput = document.getElementById('url-input');
+  const codeInput = document.getElementById('code-input');
+  let hasCheckedLimit = false;
+
+  if (urlAnalyzeBtn) {
+    urlAnalyzeBtn.addEventListener('click', async () => {
+      if (hasCheckedLimit) return;
+      hasCheckedLimit = true;
+
+      const canProceed = await canRunTool('limit-audit-id');
+      if (!canProceed) {
+        hasCheckedLimit = false;
+        return;
+      }
+
+      let inputValue = urlInput?.value.trim();
+      if (!inputValue && typeof sharedDecodedUrl !== 'undefined' && sharedDecodedUrl) {
+        inputValue = sharedDecodedUrl;
+        if (urlInput) urlInput.value = sharedDecodedUrl;
+      }
+      if (!inputValue) {
+        alert('Please enter a URL');
+        hasCheckedLimit = false;
+        return;
+      }
+      const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
+
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.classList.remove('hidden');
+        loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      runAnalysis({ url, inputType: 'url', rawCode: null });
+      hasCheckedLimit = false;
+    });
+  }
+
+  if (codeAnalyzeBtn) {
+    codeAnalyzeBtn.addEventListener('click', async () => {
+      if (hasCheckedLimit) return;
+      hasCheckedLimit = true;
+
+      const canProceed = await canRunTool('limit-audit-id');
+      if (!canProceed) {
+        hasCheckedLimit = false;
+        return;
+      }
+
+      const rawCode = codeInput?.value.trim();
+      if (!rawCode) {
+        alert('Please paste HTML code');
+        hasCheckedLimit = false;
+        return;
+      }
+
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.classList.remove('hidden');
+        loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      runAnalysis({ url: null, inputType: 'code', rawCode });
+      hasCheckedLimit = false;
+    });
+  }
+});
