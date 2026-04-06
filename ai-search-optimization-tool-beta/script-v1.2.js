@@ -32,6 +32,7 @@ const waitForElements = () => {
 
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
+
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
   if (sharedUrl) {
@@ -44,7 +45,7 @@ const initTool = (form, results, progressContainer) => {
     }
   }
 
-  // Handle Analyze URL button with auto-scroll to spinner
+  // URL Button - dispatch submit + scroll
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   if (analyzeUrlBtn) {
     analyzeUrlBtn.addEventListener('click', () => {
@@ -54,8 +55,7 @@ const initTool = (form, results, progressContainer) => {
         return;
       }
       form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-      
-      // Auto scroll to spinner immediately after click
+
       setTimeout(() => {
         const spinner = document.getElementById('analysis-progress');
         if (spinner) {
@@ -63,13 +63,23 @@ const initTool = (form, results, progressContainer) => {
           const targetY = spinner.getBoundingClientRect().top + window.pageYOffset - offset;
           window.scrollTo({ top: targetY, behavior: 'smooth' });
         }
-      }, 50);
+      }, 80);
     });
   }
 
+  // Code Analysis Button (was missing)
+  const analyzeCodeBtn = document.getElementById('analyze-code-btn');
+  if (analyzeCodeBtn) {
+    analyzeCodeBtn.addEventListener('click', () => {
+      alert('Code analysis coming soon – please use URL analysis for now.');
+      // Future implementation placeholder
+    });
+  }
+
+  // Form submit handler - preventDefault MUST be first
   form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-   
+    e.preventDefault();   // This stops page reload
+
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
 
@@ -90,6 +100,7 @@ const initTool = (form, results, progressContainer) => {
     }
     const url = inputUrl;
 
+    // Rest of your analysis code stays exactly the same from here...
     progressContainer.classList.remove('hidden');
     results.classList.add('hidden');
 

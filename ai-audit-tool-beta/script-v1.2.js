@@ -11,6 +11,7 @@ import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
+const PROXY = 'https://render.traffictorch.workers.dev/?url=';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
