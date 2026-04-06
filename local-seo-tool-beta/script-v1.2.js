@@ -242,9 +242,9 @@ if (sharedUrl && sharedLocation) {
 
       // Auto-scroll to spinner
       startSpinnerLoader();
-      window.scrollTo({ 
-        top: results.getBoundingClientRect().top + window.pageYOffset - 240, 
-        behavior: 'smooth' 
+      window.scrollTo({
+        top: results.getBoundingClientRect().top + window.pageYOffset - 240,
+        behavior: 'smooth'
       });
 
       let yourDoc = await fetchPage(fullUrl);
@@ -296,14 +296,14 @@ if (sharedUrl && sharedLocation) {
 
       // Auto-scroll to spinner
       startSpinnerLoader();
-      window.scrollTo({ 
-        top: results.getBoundingClientRect().top + window.pageYOffset - 240, 
-        behavior: 'smooth' 
+      window.scrollTo({
+        top: results.getBoundingClientRect().top + window.pageYOffset - 240,
+        behavior: 'smooth'
       });
 
       try {
         const yourDoc = new DOMParser().parseFromString(htmlCode, 'text/html');
-        analyzePage(yourDoc, city, null, location);   // fullUrl = null when using direct HTML
+        analyzePage(yourDoc, city, null, location); // fullUrl = null when using direct HTML
       } catch (err) {
         stopSpinnerLoader();
         results.innerHTML = '<p class="text-red-500 text-center text-xl p-10">Invalid HTML. Please paste valid full page source.</p>';
@@ -311,41 +311,6 @@ if (sharedUrl && sharedLocation) {
       }
     });
   }
-    let fullUrl = yourUrl;
-    if (!/^https?:\/\//i.test(yourUrl)) {
-      fullUrl = 'https://' + yourUrl;
-      pageUrlInput.value = fullUrl;
-    }
-    const city = location.split(',')[0].trim().toLowerCase();
-    startSpinnerLoader();
-    let yourDoc = await fetchPage(fullUrl);
-    if (!yourDoc) {
-      stopSpinnerLoader();
-      results.innerHTML = `
-        <div class="text-center p-10 bg-white dark:bg-gray-950 rounded-2xl shadow-xl border border-red-500">
-          <p class="text-xl text-red-600 dark:text-red-400 mb-6">Could not fetch the page (CORS or network issue).</p>
-          <p class="text-gray-700 dark:text-gray-300 mb-4">Paste your page HTML source below to analyze:</p>
-          <textarea id="paste-html" class="w-full h-64 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-mono text-sm"></textarea>
-          <button id="analyze-paste" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition">
-            Analyze Pasted HTML
-          </button>
-        </div>
-      `;
-      results.classList.remove('hidden');
-      document.getElementById('analyze-paste')?.addEventListener('click', () => {
-        const pasted = document.getElementById('paste-html').value.trim();
-        if (!pasted) return;
-        try {
-          yourDoc = new DOMParser().parseFromString(pasted, 'text/html');
-          analyzePage(yourDoc, city, fullUrl, location);
-        } catch {
-          results.innerHTML += '<p class="text-red-500 mt-4">Invalid HTML pasted. Please copy the full source code.</p>';
-        }
-      });
-      return;
-    }
-    analyzePage(yourDoc, city, fullUrl, location);
-  });
 
   async function analyzePage(doc, city, fullUrl, location) {
     const data = {};

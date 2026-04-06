@@ -443,10 +443,14 @@
   </div>
 </form>
 
-<!-- Main shared loading indicator -->
+<!-- Main single loading spinner - Exact Epic Laser Style Match -->
 <div id="loading" class="hidden mt-12 flex flex-col items-center justify-center py-12 bg-white dark:bg-gray-900 rounded-3xl shadow-inner border border-orange-200 dark:border-gray-700">
-  <div class="w-14 h-14 border-4 border-orange-200 dark:border-gray-700 border-t-orange-500 rounded-full animate-spin mb-6"></div>
-  <p class="text-xl font-medium text-gray-700 dark:text-gray-300">Analyzing Topics...</p>
+  <div class="relative">
+    <!-- Responsive spinning circle only (no text inside the circle) - exact match -->
+    <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+    <div class="absolute inset-0 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-transparent border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
+  </div>
+  <p class="text-xl font-medium text-gray-700 dark:text-gray-300 mt-8">Analyzing Topics...</p>
 </div>
 
 <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
