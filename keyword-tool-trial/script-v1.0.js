@@ -193,10 +193,21 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ====================== NEW BUTTON HANDLERS ======================
+  // URL Analyze Button
   urlAnalyzeBtn.addEventListener('click', async () => {
     const yourUrl = pageUrlInput.value.trim();
     const phrase = targetKeywordInput.value.trim();
-    if (!yourUrl || !phrase) return;
+
+    if (!yourUrl) {
+      alert("Please enter a page URL");
+      pageUrlInput.focus();
+      return;
+    }
+    if (!phrase) {
+      alert("Please enter a target keyword");
+      targetKeywordInput.focus();
+      return;
+    }
 
     let fullUrl = yourUrl;
     if (!/^https?:\/\//i.test(yourUrl)) {
@@ -208,25 +219,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const yourDoc = await fetchPage(fullUrl);
     if (!yourDoc) {
       stopSpinnerLoader();
-      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable. Whitelist: render.traffictorch.workers.dev or use Code Analysis.</p>`;
+      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
       return;
     }
+
     await runAnalysis(yourDoc, phrase, fullUrl, 'url');
   });
 
+  // Code Analyze Button
   codeAnalyzeBtn.addEventListener('click', async () => {
     const phrase = targetKeywordInput.value.trim();
     const rawCode = codeInput.value.trim();
+
     if (!phrase) {
       alert("Please enter a target keyword");
+      targetKeywordInput.focus();
       return;
     }
     if (!rawCode) {
       alert("Please paste the full HTML code");
+      codeInput.focus();
       return;
     }
 
     startSpinnerLoader();
+
     let yourDoc;
     try {
       yourDoc = new DOMParser().parseFromString(rawCode, 'text/html');
@@ -235,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Invalid HTML code.</p>`;
       return;
     }
+
     const displayUrl = "https://code-analysis.traffictorch.net";
     await runAnalysis(yourDoc, phrase, displayUrl, 'code');
   });

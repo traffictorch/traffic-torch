@@ -98,7 +98,12 @@ if (codeAnalyzeBtn) {
     const results = document.getElementById('results');
     if (!loading || !results) return;
 
+    // Force show spinner with multiple methods for reliability
     loading.classList.remove('hidden');
+    loading.style.display = 'flex';           // Force flex display
+    loading.style.visibility = 'visible';
+    loading.style.opacity = '1';
+
     results.classList.add('hidden');
 
     // Auto scroll to single spinner when URL or Code button is clicked
@@ -155,6 +160,7 @@ if (codeAnalyzeBtn) {
 
       // Hide the single spinner
       loading.classList.add('hidden');
+      loading.style.display = 'none';
       results.classList.remove('hidden');
 
       // Improved auto-scroll to results
@@ -402,6 +408,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
     } catch (err) {
       clearTimeout(heavyTimeout);
       loading.classList.add('hidden');
+      loading.style.display = 'none';
       results.classList.remove('hidden');
       results.innerHTML = `
         <div class="text-center py-12 px-6">

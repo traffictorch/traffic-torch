@@ -5,47 +5,48 @@ export function initShareReport(resultsContainer) {
   }
 
   shareBtn.addEventListener('click', async () => {
-    const inputUrl = document.getElementById('page-url')?.value.trim();
-    if (!inputUrl) {
-      showMessage('No URL entered yet', 'error');
+    const pageUrlInput = document.getElementById('page-url');
+    const locationInput = document.getElementById('location');
+
+    const inputUrl = pageUrlInput?.value.trim() || '';
+    const inputLocation = locationInput?.value.trim() || '';
+
+    if (!inputUrl || !inputLocation) {
+      showMessage('Missing URL or location to share', 'error');
       return;
     }
 
     const baseUrl = window.location.origin + window.location.pathname;
-    const inputKeyword = document.getElementById('target-keyword')?.value.trim();
-    const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}&keyword=${encodeURIComponent(inputKeyword || '')}`;
+    const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}&location=${encodeURIComponent(inputLocation)}`;
 
-    let pageTitle = 'this page';
+    let pageTitle = 'this local page';
     const titleElement = document.getElementById('analyzed-page-title');
     if (titleElement) {
       pageTitle = titleElement.textContent.trim();
     } else {
-      pageTitle = document.title.trim() || 'this page';
+      pageTitle = document.title.trim() || 'this local page';
     }
 
     pageTitle = pageTitle
-      .replace(/Keyword Optimizer & SEO Checker – Audit Tool | Traffic Torch/gi, '')
-      .trim() || 'this page';
+      .replace(/Local SEO On-Page Checker – Audit Tool | Traffic Torch/gi, '')
+      .trim() || 'this local page';
 
-    const shareText = `Check out ${pageTitle} on Traffic Torch Keyword Tool: ${shareUrl}`;
+    const shareText = `Check out ${pageTitle} local SEO report for ${inputLocation} on Traffic Torch: ${shareUrl}`;
 
     try {
       if (navigator.share) {
-        // Native share – no clipboard involved unless user cancels
         await navigator.share({
           text: shareText
         });
         showMessage('Shared successfully!', 'success');
       } else if (navigator.clipboard) {
-        // No share API available → fallback to clipboard (this may show prompt once)
         await navigator.clipboard.writeText(shareText);
         showMessage('Report link & description copied!<br>Paste anywhere to share.', 'success');
       } else {
-        // Very old browser – manual copy instruction
         showMessage('Copy manually:<br>' + shareText, 'info');
       }
     } catch (err) {
-      // Do NOT attempt clipboard.writeText() here to avoid permission popup on cancel
+      // Silent on cancel/close/error
     }
   });
 
