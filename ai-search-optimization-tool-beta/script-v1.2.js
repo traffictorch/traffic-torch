@@ -34,7 +34,6 @@ const waitForElements = () => {
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
 
-  // Shared URL handling
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
   if (sharedUrl) {
@@ -45,7 +44,6 @@ const initTool = (form, results, progressContainer) => {
     }
   }
 
-  // URL Button
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   if (analyzeUrlBtn) {
     analyzeUrlBtn.addEventListener('click', () => {
@@ -57,19 +55,25 @@ const initTool = (form, results, progressContainer) => {
           const targetY = spinner.getBoundingClientRect().top + window.pageYOffset - offset;
           window.scrollTo({ top: targetY, behavior: 'smooth' });
         }
-      }, 100);
+      }, 80);
     });
   }
 
-  // Code Button (stub)
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   if (analyzeCodeBtn) {
     analyzeCodeBtn.addEventListener('click', () => {
-      alert('Code analysis is not yet implemented. Please use the URL button for now.');
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      setTimeout(() => {
+        const spinner = document.getElementById('analysis-progress');
+        if (spinner) {
+          const offset = 120;
+          const targetY = spinner.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: targetY, behavior: 'smooth' });
+        }
+      }, 80);
     });
   }
 
-  // Form submit handler
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -109,11 +113,7 @@ const initTool = (form, results, progressContainer) => {
           inputUrl = 'https://' + inputUrl;
           document.getElementById('url-input').value = inputUrl;
         }
-        try {
-          new URL(inputUrl);
-        } catch (_) {
-          throw new Error('Invalid URL');
-        }
+        try { new URL(inputUrl); } catch (_) { throw new Error('Invalid URL'); }
         analyzedUrl = inputUrl;
 
         const res = await fetch("https://render.traffictorch.workers.dev/?url=" + encodeURIComponent(analyzedUrl));
@@ -161,14 +161,8 @@ const initTool = (form, results, progressContainer) => {
       const antiAiSafety = antiData.score;
 
       const overall = Math.round(
-        answerability * 0.25 +
-        structuredData * 0.15 +
-        eeat * 0.15 +
-        scannability * 0.10 +
-        conversational * 0.12 +
-        readability * 0.10 +
-        uniqueInsights * 0.08 +
-        antiAiSafety * 0.05
+        answerability * 0.25 + structuredData * 0.15 + eeat * 0.15 + scannability * 0.10 +
+        conversational * 0.12 + readability * 0.10 + uniqueInsights * 0.08 + antiAiSafety * 0.05
       );
       const yourScore = overall;
 
@@ -323,7 +317,6 @@ const initTool = (form, results, progressContainer) => {
             </div>
           `;
         };
-
         if (name === "Answerability") {
           if (!ansData.flags.hasBoldInFirst) addFix('Bold/strong formatting in opening', 'Place the main answer in bold text within the first paragraph so AI can easily quote it.');
           if (!ansData.flags.hasDefinition) addFix('Clear definition pattern in opening', 'Start with clear phrases like “X means…” or “X is defined as…” to directly satisfy definitional queries.');
@@ -373,7 +366,6 @@ const initTool = (form, results, progressContainer) => {
           if (!antiData.flags.lowRepetition) addFix('Low word repetition', 'Use synonyms instead of repeating the same terms.');
           if (!antiData.flags.noPredictable) addFix('No predictable sentence starts', 'Avoid starting multiple sentences the same way.');
         }
-
         const anchorMap = {
           "Answerability": "answerability",
           "Structured Data": "structured-data",
@@ -411,7 +403,6 @@ const initTool = (form, results, progressContainer) => {
 
       const scores = modules.map(m => m.score);
 
-      // Scroll to results
       const offset = 240;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
@@ -744,7 +735,6 @@ const initTool = (form, results, progressContainer) => {
         </div>
       `;
 
-      // RADAR CHART
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) return;

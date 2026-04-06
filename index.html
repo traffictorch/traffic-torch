@@ -424,17 +424,13 @@
   SEO & UX Audit Tool
 </h2>
 
-<!-- Ready for Cloudflare Pages + VS Code Extension + GitHub Action -->
-<div class="max-w-3xl mx-auto space-y-16 px-4 py-8">
+<!-- Traffic Torch - URL & Code Analysis Section -->
+<div class="max-w-3xl mx-auto space-y-16 px-4 py-2">
 
   <!-- URL Analysis Form -->
   <div>
-    <div class="text-center mb-8">
-      <h2 class="text-3xl font-bold text-orange-500">Analyze Any URL</h2>
-      <p class="text-gray-600 dark:text-gray-400 mt-2">Get instant 360° SEO + UX health score</p>
-    </div>
 
-    <form id="url-form" class="mb-12">
+    <form id="url-form" class="mb-2">
       <div class="flex flex-col md:flex-row gap-4">
         <input
           type="text"
@@ -459,16 +455,15 @@
         </button>
       </div>
       <p id="url-help" class="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center md:text-left">
-        Tip: Works with or without https:// — we normalize it automatically.
+        Tip: Works with or without https://
       </p>
     </form>
   </div>
 
   <!-- Code Analysis Section - Ready for VS Code Extension auto-fill -->
   <div>
-    <div class="text-center mb-6">
-      <h2 class="text-3xl font-bold text-orange-500">Or Analyze Your Code</h2>
-      <p class="text-gray-600 dark:text-gray-400 mt-2">Paste HTML or let the VS Code extension / GitHub Action fill it automatically</p>
+    <div class="text-center mb-4">
+      <h2 class="text-2xl font-bold text-orange-500">Or use Code Analysis</h2>
     </div>
 
     <textarea
@@ -476,7 +471,7 @@
       name="htmlcode"
       rows="14"
       placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Page Title&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Your HTML code here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
-      class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[280px] shadow-sm"
+      class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[120px] shadow-sm"
       aria-label="HTML code to analyze"
       aria-describedby="code-help"
       autocomplete="off"
@@ -496,7 +491,7 @@
     </div>
 
     <p id="code-help" class="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
-      💡 When you install the Traffic Torch VS Code extension or run the GitHub Action, your current file’s HTML will appear here automatically.
+      💡 When you install the Traffic Torch VS Code extension or run the GitHub Action (Coming Soon), your current file’s HTML will appear here automatically.
     </p>
   </div>
 </div>
