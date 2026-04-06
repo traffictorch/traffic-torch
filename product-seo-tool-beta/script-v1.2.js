@@ -1,39 +1,42 @@
 // product-seo-tool/script.js - COMPLETE WORKING VERSION - all modules, plugin solutions, radar chart, priority fixes
 // PRODUCTION CLEAN - Only debug console statements removed
-// Dynamic import for plugin solutions
+
 let renderPluginSolutions;
 import('./plugin-solutions-v1.0.js')
   .then(module => {
     renderPluginSolutions = module.renderPluginSolutions;
   })
   .catch(() => {});
+
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
+
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
-// ────────────────────────────────────────────────
 // Dynamic imports for core analysis modules
-// ────────────────────────────────────────────────
 let analyzeOnPageSEO;
 import('./modules/on-page.js')
   .then(module => {
     analyzeOnPageSEO = module.analyzeOnPageSEO;
   })
   .catch(() => {});
+
 let analyzeTechnicalSEO;
 import('./modules/technical.js')
   .then(module => {
     analyzeTechnicalSEO = module.analyzeTechnicalSEO;
   })
   .catch(() => {});
+
 let analyzeContentMedia;
 import('./modules/content-media.js')
   .then(module => {
     analyzeContentMedia = module.analyzeContentMedia;
   })
   .catch(() => {});
+
 let analyzeEcommerceSEO;
 import('./modules/ecommerce.js')
   .then(module => {
@@ -94,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Helper functions
+  // All original helper functions restored
   function countWords(text) {
     return text.trim().split(/\s+/).filter(w => w.length > 0).length;
   }
@@ -162,26 +165,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function extractProductSchema(doc) {
     const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
     const schemas = [];
-    let debugInfo = { scriptCount: scripts.length, parsedCount: 0, productCount: 0, errors: [] };
-    scripts.forEach((script, index) => {
+    scripts.forEach((script) => {
       const text = script.textContent?.trim();
-      if (!text) {
-        debugInfo.errors.push(`Script ${index}: empty or missing content`);
-        return;
-      }
+      if (!text) return;
       let data;
       try {
         data = JSON.parse(text);
-        debugInfo.parsedCount++;
       } catch (e) {
-        debugInfo.errors.push(`Script ${index}: JSON parse failed - ${e.message}`);
         return;
       }
       function findProducts(obj, currentPath = 'root') {
         if (typeof obj !== 'object' || obj === null) return;
         if (obj['@type'] === 'Product') {
           schemas.push({ ...obj, _debugPath: currentPath });
-          debugInfo.productCount++;
           return;
         }
         if (Array.isArray(obj)) {
@@ -477,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
   }
 
-  // URL Analyze Button
+  // UI Elements
   const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
   const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
   const urlInput = document.getElementById('url-input');
@@ -495,8 +491,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     results.innerHTML = '';
     loading.classList.remove('hidden');
-
-    // Auto-scroll to spinner
     loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     const steps = [
@@ -581,6 +575,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const health = getHealthLabel(seo.score);
       loading.classList.add('hidden');
 
+      if (results) {
+        results.classList.remove('hidden');
+        results.classList.add('block');
+      }
+
       const safeScore = isNaN(seo.score) ? 60 : seo.score;
       const overallGrade = getGradeInfo(safeScore);
       const ringColor = safeScore < 50 ? '#ef4444' : safeScore < 70 ? '#fb923c' : safeScore < 85 ? '#22c55e' : '#10b981';
@@ -626,37 +625,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const failedCount = failedModules.length;
-      let projectedHealth;
-      let healthImprovement = '';
-      if (failedCount >= 3) {
-        projectedHealth = 'Very Good';
-        healthImprovement = `${health.text} → Very Good (major lift expected)`;
-      } else if (failedCount === 2) {
-        projectedHealth = health.text === 'Needs Work' ? 'Needs Improvement' : 'Very Good';
-        healthImprovement = `${health.text} → ${projectedHealth}`;
-      } else if (failedCount === 1) {
-        projectedHealth = health.text;
-        healthImprovement = 'Moderate improvement expected';
-      } else if (failedCount === 0) {
-        if (health.text === 'Excellent') {
-          projectedHealth = 'Excellent';
-          healthImprovement = 'Already at peak performance – maintain it!';
-        } else if (health.text === 'Very Good') {
-          projectedHealth = 'Excellent';
-          healthImprovement = 'Strong foundation – push to Excellent with minor tweaks';
-        } else if (health.text === 'Needs Improvement') {
-          projectedHealth = 'Very Good';
-          healthImprovement = 'Needs Improvement → Very Good (realistic next step)';
-        } else {
-          projectedHealth = 'Needs Improvement';
-          healthImprovement = 'Needs Work → Needs Improvement (first realistic step)';
-        }
-      }
-
-      const projectedColor = projectedHealth === 'Excellent' ? 'from-green-400 to-emerald-600' :
-                             projectedHealth === 'Very Good' ? 'from-green-200 to-green-400' :
-                             projectedHealth === 'Needs Improvement' ? 'from-orange-400 to-orange-600' :
-                             'from-red-400 to-red-600';
 
       let impactHTML = `
         <div class="max-w-5xl mx-auto my-20 px-4">
@@ -710,9 +678,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
 
       const scores = modules.map(m => m.score);
-      const offset = 140;
-      const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({ top: targetY, behavior: 'smooth' });
 
       const wrapper = document.createElement('div');
       wrapper.className = 'container mx-auto px-4 py-8';
@@ -991,18 +956,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
+      // Scroll to results
+      const offset = 140;
+      const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+
     } catch (err) {
       loading.classList.add('hidden');
-      results.innerHTML = `
-        <div class="text-center py-16 px-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-red-400 dark:border-red-600 max-w-2xl mx-auto">
-          <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">Analysis Failed</p>
-          <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">
-            ${err.message || 'Could not fetch or parse the page'}
-          </p>
-          <p class="text-lg text-gray-600 dark:text-gray-400">
-            Please try a different public product page URL or valid HTML code.
-          </p>
-        </div>`;
+      if (results) {
+        results.classList.remove('hidden');
+        results.classList.add('block');
+        results.innerHTML = `
+          <div class="text-center py-16 px-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-red-400 dark:border-red-600 max-w-2xl mx-auto">
+            <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">Analysis Failed</p>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">
+              ${err.message || 'Could not fetch or parse the page'}
+            </p>
+            <p class="text-lg text-gray-600 dark:text-gray-400">
+              Please try a different public product page URL or valid HTML code.
+            </p>
+          </div>`;
+      }
     }
   }
 

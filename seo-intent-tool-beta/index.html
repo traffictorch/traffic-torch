@@ -403,49 +403,61 @@
           </p>
         </div>
       
-<form id="audit-form" class="max-w-2xl mx-auto mb-20 space-y-8">
+<!-- Traffic Torch - URL + Code Analysis Form (Screenshot-Accurate) -->
+<form id="audit-form" class="max-w-3xl mx-auto space-y-8">
+  
   <!-- URL Section -->
-  <div>
-    <div class="flex flex-col md:flex-row gap-4">
+  <div class="space-y-3">
+    <div class="flex flex-col md:flex-row gap-4 items-center">
       <input
         type="text"
         id="url-input"
-        placeholder="example.com/your-page"
+        value="https://www.surffx.com.au/"
+        placeholder="https://example.com"
         aria-label="Enter website URL to analyze"
-        class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+        required
+        class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/30 focus:border-orange-500 text-lg shadow-sm"
       />
       <button
         type="button"
         id="analyze-url-btn"
-        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 hover:brightness-110 active:scale-95 text-white font-semibold rounded-2xl transition-all shadow-lg flex-shrink-0 text-base min-w-[180px]"
       >
         Analyze URL 🎯
       </button>
     </div>
   </div>
 
-  <!-- Code Analysis Section - always visible, no toggle -->
-  <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
-    <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
-      Or use Code Analysis 📄
-    </h3>
-  
-    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
+  <!-- Code Analysis Section -->
+  <div class="space-y-4">
+    <div class="flex items-center gap-3">
+      <h2 class="text-3xl font-semibold text-orange-600 dark:text-orange-400">
+        Or use Code Analysis
+      </h2>
+      <div class="h-px flex-1 bg-gradient-to-r from-orange-200 to-transparent dark:from-orange-800"></div>
+      <span class="text-4xl">📄</span>
+    </div>
+
+    <p class="text-sm text-gray-600 dark:text-gray-400">
       Paste HTML code of the page
     </p>
-    
-    <textarea
-      id="code-input"
-      rows="6"
-      placeholder="Paste full HTML code here..."
-      class="w-full px-6 py-4 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-base font-mono resize-y min-h-[140px]"
-    ></textarea>
-  
-    <div class="mt-6 flex justify-center">
+
+    <!-- Orange-bordered Textarea -->
+    <div class="relative">
+      <textarea
+        id="code-input"
+        rows="8"
+        placeholder="Paste full HTML code here..."
+        class="w-full px-6 py-5 rounded-3xl border-2 border-orange-400 dark:border-orange-500 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/20 font-mono text-sm resize-y min-h-[220px] shadow-inner"
+      ></textarea>
+    </div>
+
+    <!-- Analyze Code Button -->
+    <div class="flex justify-center">
       <button
         type="button"
         id="analyze-code-btn"
-        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+        class="px-12 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 hover:brightness-110 active:scale-95 text-white font-semibold rounded-2xl transition-all shadow-lg text-base min-w-[200px]"
       >
         Analyze Code 🎯
       </button>
@@ -471,7 +483,7 @@
 <!-- Main single loading spinner -->
 <div id="loading" class="hidden mt-12 flex flex-col items-center justify-center py-12 bg-white dark:bg-gray-900 rounded-3xl shadow-inner border border-orange-200 dark:border-gray-700">
   <div class="relative">
-    <!-- Responsive spinning  -->
+    <!-- Responsive spinning circle only (no text inside the circle) - exact match -->
     <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
     <div class="absolute inset-0 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-transparent border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
   </div>

@@ -70,9 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.getElementById('code-input');
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
-  const toggleCodeBtn = document.getElementById('toggle-code-btn');
-  const codeContainer = document.getElementById('code-input-container');
-  const toggleIcon = document.getElementById('toggle-icon');
+
 
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
 
@@ -102,11 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return text.trim();
   }
-
-  toggleCodeBtn.addEventListener('click', () => {
-    codeContainer.classList.toggle('hidden');
-    toggleIcon.textContent = codeContainer.classList.contains('hidden') ? '▼' : '▲';
-  });
 
   analyzeUrlBtn.addEventListener('click', async () => {
     const canProceed = await canRunTool('limit-audit-id');

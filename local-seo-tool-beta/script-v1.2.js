@@ -23,9 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
   
 // New elements for HTML input + separate buttons
-  const toggleCodeBtn = document.getElementById('toggle-code-btn');
-  const codeInputContainer = document.getElementById('code-input-container');
-  const codeChevron = document.getElementById('code-chevron');
   const pageHtmlTextarea = document.getElementById('page-html');
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
@@ -208,14 +205,6 @@ if (sharedUrl && sharedLocation) {
     clone.querySelectorAll('nav, header, footer, aside, script, style, noscript').forEach(el => el.remove());
     return clone.textContent.replace(/\s+/g, ' ').trim();
   };
-
-  // ── TOGGLE CODE INPUT ─────────────────────────────────────────────────────
-  if (toggleCodeBtn && codeInputContainer && codeChevron) {
-    toggleCodeBtn.addEventListener('click', () => {
-      codeInputContainer.classList.toggle('hidden');
-      codeChevron.style.transform = codeInputContainer.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(90deg)';
-    });
-  }
 
   // ── ANALYZE URL BUTTON ───────────────────────────────────────────────────
   if (analyzeUrlBtn) {
