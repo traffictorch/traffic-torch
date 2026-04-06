@@ -1,29 +1,30 @@
 // module-structured-data.js
-
 import { moduleFixes } from "../fixes-v1.0.js";
 
 export function analyzeStructuredData(doc) {
   const fixes = [];
 
-  // 5. Structured Data
   const schemaScripts = doc.querySelectorAll('script[type="application/ld+json"]');
   let schemaData = null;
 
   const findLocalBusiness = (obj) => {
     if (!obj) return null;
     if (obj['@type'] === 'LocalBusiness') return obj;
-    // Support common subtypes that behave like LocalBusiness
+
+    // Support common subtypes
     if (['ProfessionalService', 'Store', 'Restaurant', 'Dentist', 'VeterinaryCare', 'LocalBusiness'].includes(obj['@type']) && obj.address) {
       return obj;
     }
-    // Check @graph array
+
+    // Check @graph
     if (obj['@graph'] && Array.isArray(obj['@graph'])) {
       for (const item of obj['@graph']) {
         const found = findLocalBusiness(item);
         if (found) return found;
       }
     }
-    // Check nested (e.g. Organization contains department LocalBusiness)
+
+    // Check nested department
     if (obj.department && Array.isArray(obj.department)) {
       for (const dep of obj.department) {
         const found = findLocalBusiness(dep);
@@ -39,9 +40,9 @@ export function analyzeStructuredData(doc) {
       const candidate = findLocalBusiness(parsed);
       if (candidate) {
         schemaData = candidate;
-        break; // take the first valid one
+        break;
       }
-    } catch {}
+    } catch (e) {}
   }
 
   const localSchemaPresent = !!schemaData;
@@ -54,7 +55,6 @@ export function analyzeStructuredData(doc) {
     hours: hoursPresent
   };
 
-  // Push fixes for failed checks
   if (!localSchemaPresent) {
     fixes.push({
       module: 'Structured Data',
