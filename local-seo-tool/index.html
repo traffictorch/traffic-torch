@@ -385,43 +385,65 @@
       </h1>
       <p class="text-xl text-gray-600 dark:text-gray-300 mb-4 max-w-3xl mx-auto">
         Local SEO audit tool: Enter any URL and business location.
-      </p>
-      
+      </p> 
      
-<form id="audit-form" class="max-w-4xl mx-auto space-y-4">
-  <div class="flex flex-col md:flex-row gap-4">
-    <div class="flex-1">
-      <label for="page-url" class="sr-only">Enter page URL to analyze</label>
+<form id="audit-form" class="max-w-4xl mx-auto space-y-8">
+  <!-- URL + Location Section (matches screenshot layout) -->
+  <div>
+    <div class="flex flex-col md:flex-row gap-4">
       <input
         type="text"
         id="page-url"
         placeholder="yourbusiness.com/contact"
         aria-label="Enter page URL to analyze"
         required
-        class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+        class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
       />
-    </div>
-    <div class="flex-1">
-      <label for="location" class="sr-only">Enter business location (e.g., City, State)</label>
       <input
         type="text"
         id="location"
         placeholder="Enter Location"
         aria-label="Enter business location"
         required
-        class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
+        class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
       />
+      <button
+        type="button"
+        id="analyze-url-btn"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
+      >
+        Analyze URL 📍
+      </button>
     </div>
   </div>
-  <div class="flex justify-center">
-    <button
-      type="submit"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-    >
-      Analyze
-    </button>
+
+  <!-- Code Analysis Section - always visible, clean layout matching screenshot -->
+  <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+    <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
+      Or use Code Analysis
+    </h3>
+  
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
+      Paste full HTML code of the page
+    </p>
+    <textarea
+      id="page-html"
+      rows="6"
+      placeholder="Paste full HTML code here..."
+      class="w-full px-6 py-4 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-base font-mono resize-y min-h-[140px]"
+    ></textarea>
+    <div class="mt-6 flex justify-center">
+      <button
+        type="button"
+        id="analyze-code-btn"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+      >
+        Analyze Code 📍
+      </button>
+    </div>
   </div>
 </form>
+
     </div>
     
 <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">

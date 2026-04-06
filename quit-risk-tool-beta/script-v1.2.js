@@ -449,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // New button handlers for URL and Code Analysis (keeps original shared auto-trigger intact)
+  // Analyze URL button
   analyzeUrlBtn.addEventListener('click', async () => {
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
@@ -464,9 +465,15 @@ document.addEventListener('DOMContentLoaded', () => {
       url = 'https://' + url;
       urlInput.value = url;
     }
+
+    results.classList.remove('hidden');
+    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
     triggerAnalysis(url, null);
   });
 
+  // Analyze Code button
   analyzeCodeBtn.addEventListener('click', async () => {
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
@@ -478,6 +485,11 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => codeInput.classList.remove('!border-red-500'), 2000);
       return;
     }
+
+    results.classList.remove('hidden');
+    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
     triggerAnalysis(null, htmlCode);
   });
 

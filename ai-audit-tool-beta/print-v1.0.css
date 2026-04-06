@@ -3,7 +3,7 @@
      Proven cover page – unchanged & stable
   ─────────────────────────────────────────────────────────────── */
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A Local SEO Audit Tool 📝\A\A Report:\A " attr(data-url);
+    content: "TrafficTorch.net ⚖️\A\A Ai Content Audit Tool 🤖\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;
@@ -81,22 +81,15 @@
   }
 
   /* ──────────────────────────────────────────────────────────────
-     TARGETED HIDING – safe & specific for ALL tools (no :not breakage)
+     TARGETED HIDING – safe & specific (no :not breakage)
   ─────────────────────────────────────────────────────────────── */
-  .max-w-4xl.mx-auto.my-16 details,               /* how/why accordions */
-  .max-w-4xl.mx-auto.my-20 details,
-  section.py-20.bg-gray-50.dark\:bg-gray-900,     /* deep dive modules */
-  section.py-16.px-3.max-w-6xl.mx-auto,           /* checklists */
-  section.py-16.px-1.max-w-6xl.mx-auto,
-  #seo-ux-checklist,
-  #quit-risk-seo-checklist,
-  #keyword-gap-checklist,
-  #ai-audit-seo-checklist,
-  #ai-search-seo-checklist,
+  .max-w-1xl.mx-auto.my-16 details,               /* how AI detector works accordion */
+  .max-w-2xl.mx-auto.my-10 details,               /* why AI content matters accordion */
+  section.py-20.bg-gray-50.dark\:bg-gray-900,     /* metric explanations section */
+  #ai-audit-seo-checklist,                        /* ultimate audit checklist */
   .tools-grid,
-  section.max-w-5xl.mx-auto.my-24,                /* author bios */
-  section.max-w-4xl.mx-auto.my-20,
-  div[style*="display: flex; justify-content: center; margin: 30px 0;"],  /* share */
+  section.max-w-5xl.mx-auto.my-24,                /* author bio */
+  div[style*="display: flex; justify-content: center; margin: 30px 0;"],  /* share blocks */
   .a2a_kit,
   div.max-w-5xl.mx-auto.px-6.py-4.text-center,    /* breadcrumbs */
   section.bottom-banner,
@@ -106,7 +99,7 @@
     display: none !important;
   }
   
-/* Hide upgrade modal and share section in print */
+  /* Hide upgrade modal and share section in print */
   #upgradeModal,
   .py-8.text-center,
   .a2a_kit,
@@ -126,7 +119,6 @@
   details:not(.fixes-panel details, .full-details details) {
     display: none !important;
   }
-  
 
   /* ──────────────────────────────────────────────────────────────
      Always show important report content
@@ -152,7 +144,7 @@
   details > summary {
     display: none !important;
   }
-  
+
 /* Hide promotional / educational blocks + share/feedback + AI Content Audit explanation section */
 #author-bio,
 #promo-high-impact-cards,
