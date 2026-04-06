@@ -412,60 +412,99 @@
       Discover how likely AI engines are to cite your page in generative answers.
     </p>
     
-<form id="audit-form" novalidate class="max-w-3xl mx-auto space-y-8">
-  <!-- URL Section -->
-  <div class="flex flex-col sm:flex-row gap-3 items-end">
-    <div class="flex-1">
-      <input
-        type="text"
-        id="url-input"
-        placeholder="example.com/your-page"
-        aria-label="Enter website URL to analyze"
-        required
-        class="w-full px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
-      />
+<!-- Traffic Torch AI Search Geo Audit Form - URL & Code Analysis -->
+<div class="max-w-3xl mx-auto space-y-12 px-4 py-8">
+
+  <form id="audit-form" novalidate class="space-y-8">
+
+    <!-- URL Analysis Section -->
+    <div>
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-orange-500">AI Search Geo Audit</h2>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">Analyze local search performance, geo-targeting, schema, and voice + AI search readiness</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 items-end">
+        <div class="flex-1">
+          <input
+            type="text"
+            id="url-input"
+            name="url"
+            placeholder="example.com/your-page"
+            aria-label="Enter website URL to analyze for geo search"
+            aria-describedby="url-help"
+            required
+            class="w-full px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+            autocomplete="url"
+            inputmode="url"
+            spellcheck="false"
+            data-lpignore="true"
+          />
+        </div>
+        <button
+          type="button"
+          id="analyze-url-btn"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2 min-w-[180px] justify-center"
+        >
+          Analyze URL
+          <span class="text-xl">🤖</span>
+        </button>
+      </div>
+
+      <p id="url-help" class="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+        Tip: Enter any URL — we’ll check local pack ranking factors, geo-schema, hreflang, and AI/voice search optimization.
+      </p>
     </div>
-    <button
-      type="button"
-      id="analyze-url-btn"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2 min-w-[180px] justify-center"
-    >
-      Analyze URL
-      <span class="text-xl">🤖</span>
-    </button>
-  </div>
-  <!-- Separator -->
-  <div class="relative flex items-center py-2">
-    <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-    <div class="px-6 text-orange-500 dark:text-orange-400 font-semibold text-xl tracking-wide">
-      Or use Code Analysis
-      <span class="inline-block ml-2 text-2xl">📄</span>
+
+    <!-- Separator -->
+    <div class="relative flex items-center py-6">
+      <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+      <div class="px-8 text-orange-500 dark:text-orange-400 font-semibold text-xl tracking-wide flex items-center gap-2">
+        OR use Code Analysis
+        <span class="text-2xl">📄</span>
+      </div>
+      <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
     </div>
-    <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
-  </div>
-  <!-- Code Analysis Section -->
-  <div class="space-y-3">
-    <p class="text-gray-600 dark:text-gray-300 text-sm font-medium pl-1">
-      Paste HTML code of the page
-    </p>
-    <textarea
-      id="code-input"
-      rows="8"
-      placeholder="Paste full HTML code here..."
-      class="w-full px-6 py-5 rounded-3xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[180px] shadow-sm"
-    ></textarea>
-  </div>
-  <div class="flex justify-center pt-2">
-    <button
-      type="button"
-      id="analyze-code-btn"
-      class="px-12 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-xl text-lg flex items-center gap-3"
-    >
-      Analyze Code
-      <span class="text-2xl">🤖</span>
-    </button>
-  </div>
-</form>
+
+    <!-- Code Analysis Section - Ready for VS Code Extension & GitHub Action -->
+    <div class="space-y-4">
+      <p class="text-gray-600 dark:text-gray-400 text-sm font-medium pl-1">
+        Paste the full HTML of the page (or let the VS Code extension automatically fill it)
+      </p>
+
+      <textarea
+        id="code-input"
+        name="htmlcode"
+        rows="12"
+        placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Your Local Business Page&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Your HTML with schema, addresses, etc. --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
+        class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[260px] shadow-sm"
+        aria-label="Paste HTML code for AI Search Geo Audit"
+        aria-describedby="code-help"
+        autocomplete="off"
+        spellcheck="false"
+        data-vscode-ignore="true"
+      ></textarea>
+
+      <div class="flex justify-center pt-2">
+        <button
+          type="button"
+          id="analyze-code-btn"
+          class="px-12 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl text-lg flex items-center gap-3"
+        >
+          Analyze Code
+          <span class="text-2xl">🤖</span>
+        </button>
+      </div>
+
+      <p id="code-help" class="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
+        💡 Pro tip: When using the Traffic Torch VS Code extension or GitHub Action, your current file’s HTML will appear here automatically for geo search analysis.
+      </p>
+    </div>
+  </form>
+</div>
+
+<!-- Shared VS Code Bridge - Works across ALL Traffic Torch tools -->
+<script nonce="${nonce}" src="${vscodeBridgeUri}"></script>
 
 <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
   <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">

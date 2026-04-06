@@ -424,53 +424,85 @@
   SEO & UX Audit Tool
 </h2>
 
-<!-- URL Analysis Form - matches screenshot -->
-<form id="url-form" class="max-w-3xl mx-auto mb-12">
-  <div class="flex flex-col md:flex-row gap-4">
-    <input
-      type="text"
-      id="url-input"
-      placeholder="example.com/your-page"
-      class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
-      aria-label="Enter website URL to analyze"
-      required
-      autocomplete="url"
-    />
-    <button
-      type="submit"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 whitespace-nowrap md:min-w-[180px]"
-    >
-      Analyze URL 
-      <span class="text-xl">⚖️</span>
-    </button>
-  </div>
-</form>
+<!-- Ready for Cloudflare Pages + VS Code Extension + GitHub Action -->
+<div class="max-w-3xl mx-auto space-y-16 px-4 py-8">
 
-<!-- Code Analysis Section - matches screenshot -->
-<div class="max-w-3xl mx-auto">
-  <div class="text-center mb-6">
-    <h2 class="text-3xl font-bold text-orange-500">Or use Code Analysis</h2>
-    <p class="text-gray-600 dark:text-gray-400 mt-2">Paste HTML code of the page</p>
+  <!-- URL Analysis Form -->
+  <div>
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-orange-500">Analyze Any URL</h2>
+      <p class="text-gray-600 dark:text-gray-400 mt-2">Get instant 360° SEO + UX health score</p>
+    </div>
+
+    <form id="url-form" class="mb-12">
+      <div class="flex flex-col md:flex-row gap-4">
+        <input
+          type="text"
+          id="url-input"
+          name="url"
+          placeholder="example.com/your-page"
+          class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+          aria-label="Enter website URL to analyze"
+          aria-describedby="url-help"
+          required
+          autocomplete="url"
+          inputmode="url"
+          spellcheck="false"
+          data-lpignore="true"
+        />
+        <button
+          type="submit"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 whitespace-nowrap md:min-w-[180px]"
+        >
+          Analyze URL
+          <span class="text-xl">⚖️</span>
+        </button>
+      </div>
+      <p id="url-help" class="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center md:text-left">
+        Tip: Works with or without https:// — we normalize it automatically.
+      </p>
+    </form>
   </div>
-  
-  <textarea
-    id="code-input"
-    rows="8"
-    placeholder="Paste full HTML code here..."
-    class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[180px] shadow-sm"
-  ></textarea>
-  
-  <div class="flex justify-center mt-6">
-    <button
-      type="button"
-      id="analyze-code-btn"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-    >
-      Analyze Code 
-      <span class="text-xl">⚖️</span>
-    </button>
+
+  <!-- Code Analysis Section - Ready for VS Code Extension auto-fill -->
+  <div>
+    <div class="text-center mb-6">
+      <h2 class="text-3xl font-bold text-orange-500">Or Analyze Your Code</h2>
+      <p class="text-gray-600 dark:text-gray-400 mt-2">Paste HTML or let the VS Code extension / GitHub Action fill it automatically</p>
+    </div>
+
+    <textarea
+      id="code-input"
+      name="htmlcode"
+      rows="14"
+      placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Page Title&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Your HTML code here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
+      class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[280px] shadow-sm"
+      aria-label="HTML code to analyze"
+      aria-describedby="code-help"
+      autocomplete="off"
+      spellcheck="false"
+      data-vscode-ignore="true"
+    ></textarea>
+
+    <div class="flex justify-center mt-6 gap-4">
+      <button
+        type="button"
+        id="analyze-code-btn"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+      >
+        Analyze Code
+        <span class="text-xl">⚖️</span>
+      </button>
+    </div>
+
+    <p id="code-help" class="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
+      💡 When you install the Traffic Torch VS Code extension or run the GitHub Action, your current file’s HTML will appear here automatically.
+    </p>
   </div>
 </div>
+
+<!-- Shared VS Code Bridge - Load this in your webview HTML -->
+<script nonce="${nonce}" src="${vscodeBridgeUri}"></script>
 
 <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
   <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">

@@ -403,66 +403,99 @@
           </p>
         </div>
       
-<!-- Traffic Torch - URL + Code Analysis Form (Screenshot-Accurate) -->
-<form id="audit-form" class="max-w-3xl mx-auto space-y-8">
-  
-  <!-- URL Section -->
-  <div class="space-y-3">
-    <div class="flex flex-col md:flex-row gap-4 items-center">
-      <input
-        type="text"
-        id="url-input"
-        placeholder="https://example.com"
-        aria-label="Enter website URL to analyze"
-        required
-        class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/30 focus:border-orange-500 text-lg shadow-sm"
-      />
-      <button
-        type="button"
-        id="analyze-url-btn"
-        class="px-10 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 hover:brightness-110 active:scale-95 text-white font-semibold rounded-2xl transition-all shadow-lg flex-shrink-0 text-base min-w-[180px]"
-      >
-        Analyze URL 🎯
-      </button>
-    </div>
-  </div>
+<!-- Traffic Torch SEO Intent Audit Form - URL + Code Analysis -->
+<div class="max-w-3xl mx-auto space-y-12 px-4 py-8">
 
-  <!-- Code Analysis Section -->
-  <div class="space-y-4">
-    <div class="flex items-center gap-3">
-      <h2 class="text-3xl font-semibold text-orange-600 dark:text-orange-400">
-        Or use Code Analysis
-      </h2>
-      <div class="h-px flex-1 bg-gradient-to-r from-orange-200 to-transparent dark:from-orange-800"></div>
-      <span class="text-4xl">📄</span>
-    </div>
+  <form id="audit-form" novalidate class="space-y-10">
 
-    <p class="text-sm text-gray-600 dark:text-gray-400">
-      Paste HTML code of the page
-    </p>
+    <!-- URL Analysis Section -->
+    <div class="space-y-3">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-orange-500">SEO Intent Audit</h2>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">Analyze search intent alignment, content relevance, user expectations vs. page delivery, and intent gaps</p>
+      </div>
 
-    <!-- Orange-bordered Textarea -->
-    <div class="relative">
-      <textarea
-        id="code-input"
-        rows="8"
-        placeholder="Paste full HTML code here..."
-        class="w-full px-6 py-5 rounded-3xl border-2 border-orange-400 dark:border-orange-500 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/20 font-mono text-sm resize-y min-h-[220px] shadow-inner"
-      ></textarea>
+      <div class="flex flex-col md:flex-row gap-4 items-center">
+        <input
+          type="text"
+          id="url-input"
+          name="url"
+          placeholder="https://example.com"
+          aria-label="Enter website URL to analyze for search intent"
+          aria-describedby="url-help"
+          required
+          class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/30 focus:border-orange-500 text-lg shadow-sm"
+          autocomplete="url"
+          inputmode="url"
+          spellcheck="false"
+          data-lpignore="true"
+        />
+        <button
+          type="button"
+          id="analyze-url-btn"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 hover:brightness-110 active:scale-95 text-white font-semibold rounded-2xl transition-all shadow-lg flex-shrink-0 text-base min-w-[180px]"
+        >
+          Analyze URL 
+          <span class="text-xl">🎯</span>
+        </button>
+      </div>
+
+      <p id="url-help" class="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+        Tip: We’ll evaluate how well the page matches commercial, informational, transactional, or navigational intent and suggest improvements.
+      </p>
     </div>
 
-    <!-- Analyze Code Button -->
-    <div class="flex justify-center">
-      <button
-        type="button"
-        id="analyze-code-btn"
-        class="px-12 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 hover:brightness-110 active:scale-95 text-white font-semibold rounded-2xl transition-all shadow-lg text-base min-w-[200px]"
-      >
-        Analyze Code 🎯
-      </button>
+    <!-- Code Analysis Section -->
+    <div class="space-y-4">
+      <div class="flex items-center gap-3">
+        <h2 class="text-3xl font-semibold text-orange-600 dark:text-orange-400">
+          Or use Code Analysis
+        </h2>
+        <div class="h-px flex-1 bg-gradient-to-r from-orange-200 to-transparent dark:from-orange-800"></div>
+        <span class="text-4xl">📄</span>
+      </div>
+
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        Paste the full HTML of the page (or let the VS Code extension automatically fill it)
+      </p>
+
+      <!-- Orange-bordered Textarea -->
+      <div class="relative">
+        <textarea
+          id="code-input"
+          name="htmlcode"
+          rows="10"
+          placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Best Wireless Headphones 2026 - Buy Now&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your full page HTML here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
+          class="w-full px-6 py-5 rounded-3xl border-2 border-orange-400 dark:border-orange-500 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/20 font-mono text-sm resize-y min-h-[260px] shadow-inner"
+          aria-label="Paste HTML code for SEO Intent Audit"
+          aria-describedby="code-help"
+          autocomplete="off"
+          spellcheck="false"
+          data-vscode-ignore="true"
+        ></textarea>
+      </div>
+
+      <!-- Analyze Code Button -->
+      <div class="flex justify-center">
+        <button
+          type="button"
+          id="analyze-code-btn"
+          class="px-12 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 hover:brightness-110 active:scale-95 text-white font-semibold rounded-2xl transition-all shadow-lg text-base min-w-[200px]"
+        >
+          Analyze Code 
+          <span class="text-xl">🎯</span>
+        </button>
+      </div>
+
+      <p id="code-help" class="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
+        💡 Pro tip: When using the Traffic Torch VS Code extension or GitHub Action, your current file’s HTML will be automatically inserted here for intent analysis.
+      </p>
     </div>
-  </div>
-</form>
+  </form>
+</div>
+
+<!-- Shared VS Code Bridge - Works across ALL Traffic Torch tools -->
+<script nonce="${nonce}" src="${vscodeBridgeUri}"></script>
 
 <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
   <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">

@@ -16,33 +16,60 @@ import { initSubmitFeedback } from './submit-feedback-v1.js';
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
-// Wait for required elements to exist before attaching listeners
+// Wait for required elements with better reliability
 const waitForElements = () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
   const progressContainer = document.getElementById('analysis-progress');
+
   if (form && results && progressContainer) {
     initTool(form, results, progressContainer);
   } else {
-    requestAnimationFrame(waitForElements);
+    // Try again next frame or after a short delay
+    setTimeout(waitForElements, 10);
   }
 };
 
+// Main initialization
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
+
+  // Shared URL handling
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
   if (sharedUrl) {
     const input = document.getElementById('url-input');
     if (input) {
       input.value = decodeURIComponent(sharedUrl);
-      // Auto-submit form to run analysis immediately on shared link load
-      setTimeout(() => {
-        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-      }, 300); // small delay to ensure DOM/input is ready
+      setTimeout(() => form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })), 300);
     }
   }
 
+  // URL Button
+  const analyzeUrlBtn = document.getElementById('analyze-url-btn');
+  if (analyzeUrlBtn) {
+    analyzeUrlBtn.addEventListener('click', () => {
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      setTimeout(() => {
+        const spinner = document.getElementById('analysis-progress');
+        if (spinner) {
+          const offset = 120;
+          const targetY = spinner.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: targetY, behavior: 'smooth' });
+        }
+      }, 100);
+    });
+  }
+
+  // Code Button (stub)
+  const analyzeCodeBtn = document.getElementById('analyze-code-btn');
+  if (analyzeCodeBtn) {
+    analyzeCodeBtn.addEventListener('click', () => {
+      alert('Code analysis is not yet implemented. Please use the URL button for now.');
+    });
+  }
+
+  // Form submit handler
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -52,98 +79,52 @@ const initTool = (form, results, progressContainer) => {
     const urlInput = document.getElementById('url-input').value.trim();
     const codeInput = document.getElementById('code-input').value.trim();
 
-    let html = '';
-    let analyzedUrl = '';
-
-    // Scroll to spinner immediately when either button is clicked
-    progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    // URL path
-    if (urlInput) {
-      let inputUrl = urlInput;
-      if (!/^https?:\/\//i.test(inputUrl)) {
-        inputUrl = 'https://' + inputUrl;
-        document.getElementById('url-input').value = inputUrl;
-      }
-      try {
-        new URL(inputUrl);
-      } catch (_) {
-        alert('Please enter a valid URL (e.g., example.com or https://example.com)');
-        return;
-      }
-      analyzedUrl = inputUrl;
-
-      progressContainer.classList.remove('hidden');
-      results.classList.add('hidden');
-
-      const progressMessages = [
-        'Fetching page...',
-        'Extracting main content',
-        'Analyzing Answerability',
-        'Analyzing Structured Data',
-        'Evaluating EEAT Signals',
-        'Testing Scannability',
-        'Analyzing Readability',
-        'Detecting Unique Insights',
-        'Checking Anti-AI Patterns',
-        'Generating Report...'
-      ];
-      let step = 0;
-      progressText.textContent = progressMessages[step++];
-
-      const updateProgress = () => {
-        if (step < progressMessages.length) {
-          progressText.textContent = progressMessages[step++];
-        }
-      };
-      const interval = setInterval(updateProgress, 2000);
-
-      try {
-        const res = await fetch("https://render.traffictorch.workers.dev/?url=" + encodeURIComponent(analyzedUrl));
-        if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
-        html = await res.text();
-      } catch (fetchErr) {
-        clearInterval(interval);
-        progressContainer.classList.add('hidden');
-        results.classList.remove('hidden');
-        results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error fetching URL: ${fetchErr.message}</p>`;
-        return;
-      }
-    } 
-    // Code Analysis path
-    else if (codeInput) {
-      html = codeInput;
-      analyzedUrl = 'Code Analysis (Pasted HTML)';
-      progressContainer.classList.remove('hidden');
-      results.classList.add('hidden');
-
-      const progressMessages = [
-        'Parsing provided HTML...',
-        'Extracting main content',
-        'Analyzing Answerability',
-        'Analyzing Structured Data',
-        'Evaluating EEAT Signals',
-        'Testing Scannability',
-        'Analyzing Readability',
-        'Detecting Unique Insights',
-        'Checking Anti-AI Patterns',
-        'Generating Report...'
-      ];
-      let step = 0;
-      progressText.textContent = progressMessages[step++];
-      const interval = setInterval(() => {
-        if (step < progressMessages.length) {
-          progressText.textContent = progressMessages[step++];
-        }
-      }, 1500);
-    } 
-    else {
+    if (!urlInput && !codeInput) {
       alert('Please enter a URL or paste HTML code to analyze.');
       return;
     }
 
+    let html = '';
+    let analyzedUrl = '';
+
+    progressContainer.classList.remove('hidden');
+    results.classList.add('hidden');
+
+    const progressMessages = urlInput
+      ? ['Fetching page...', 'Extracting main content', 'Analyzing Answerability', 'Analyzing Structured Data', 'Evaluating EEAT Signals', 'Testing Scannability', 'Analyzing Readability', 'Detecting Unique Insights', 'Checking Anti-AI Patterns', 'Generating Report...']
+      : ['Parsing provided HTML...', 'Extracting main content', 'Analyzing Answerability', 'Analyzing Structured Data', 'Evaluating EEAT Signals', 'Testing Scannability', 'Analyzing Readability', 'Detecting Unique Insights', 'Checking Anti-AI Patterns', 'Generating Report...'];
+
+    let step = 0;
+    progressText.textContent = progressMessages[step++];
+
+    const updateProgress = () => {
+      if (step < progressMessages.length) progressText.textContent = progressMessages[step++];
+    };
+    const interval = setInterval(updateProgress, 1800);
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (urlInput) {
+        let inputUrl = urlInput;
+        if (!/^https?:\/\//i.test(inputUrl)) {
+          inputUrl = 'https://' + inputUrl;
+          document.getElementById('url-input').value = inputUrl;
+        }
+        try {
+          new URL(inputUrl);
+        } catch (_) {
+          throw new Error('Invalid URL');
+        }
+        analyzedUrl = inputUrl;
+
+        const res = await fetch("https://render.traffictorch.workers.dev/?url=" + encodeURIComponent(analyzedUrl));
+        if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
+        html = await res.text();
+      } else {
+        html = codeInput;
+        analyzedUrl = 'Pasted HTML Code';
+      }
+
+      await new Promise(r => setTimeout(r, 800));
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
       let mainText = '';
@@ -153,59 +134,32 @@ const initTool = (form, results, progressContainer) => {
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
       const first300 = mainText.slice(0, 1200);
 
-      // ──────────────────────────────────────────────
-      // Answerability
-      // ──────────────────────────────────────────────
       const ansData = computeAnswerability(doc, first300);
       const answerability = ansData.score;
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      // updateProgress() is already handled by interval
+      await new Promise(r => setTimeout(r, 1200));
+      updateProgress();
 
-      // ──────────────────────────────────────────────
-      // Structured Data
-      // ──────────────────────────────────────────────
       const structData = computeStructuredData(doc);
       const structuredData = structData.score;
 
-      // ──────────────────────────────────────────────
-      // EEAT Signals
-      // ──────────────────────────────────────────────
-      const eeatData = computeEEAT(doc, urlInput || analyzedUrl);
+      const eeatData = computeEEAT(doc, analyzedUrl);
       const eeat = eeatData.score;
 
-      // ──────────────────────────────────────────────
-      // Scannability
-      // ──────────────────────────────────────────────
       const scanData = computeScannability(doc, mainEl);
       const scannability = scanData.score;
 
-      // ──────────────────────────────────────────────
-      // Conversational Tone
-      // ──────────────────────────────────────────────
       const convData = computeConversational(mainText);
       const conversational = convData.score;
 
-      // ──────────────────────────────────────────────
-      // Readability
-      // ──────────────────────────────────────────────
       const readData = computeReadability(mainText);
       const readability = readData.score;
 
-      // ──────────────────────────────────────────────
-      // Unique Insights
-      // ──────────────────────────────────────────────
       const uniqueData = computeUniqueInsights(mainText, readData.words);
       const uniqueInsights = uniqueData.score;
 
-      // ──────────────────────────────────────────────
-      // Anti-AI Safety
-      // ──────────────────────────────────────────────
       const antiData = computeAntiAiSafety(mainText, readData.variationScore);
       const antiAiSafety = antiData.score;
 
-      // ──────────────────────────────────────────────
-      // Final weighted score
-      // ──────────────────────────────────────────────
       const overall = Math.round(
         answerability * 0.25 +
         structuredData * 0.15 +
@@ -240,6 +194,7 @@ const initTool = (form, results, progressContainer) => {
       }
 
       const lowScoring = modules.filter(m => m.score < 70).sort((a, b) => a.score - b.score);
+
       const tests = [
         { emoji: ansData.flags.hasBoldInFirst ? '✅' : '❌', text: 'Bold/strong formatting in opening', passed: ansData.flags.hasBoldInFirst },
         { emoji: ansData.flags.hasDefinition ? '✅' : '❌', text: 'Clear definition pattern in opening', passed: ansData.flags.hasDefinition },
@@ -280,48 +235,23 @@ const initTool = (form, results, progressContainer) => {
       const topLowScoring = lowScoring.slice(0, 3);
       const prioritisedFixes = [];
       if (topLowScoring.some(m => m.name === "Answerability")) {
-        prioritisedFixes.push({
-          title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
-          what: "A clear, bold, quotable answer AI engines can cite directly",
-          how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.",
-          why: "Answerability is the #1 factor for AI citation and source selection"
-        });
+        prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600", what: "A clear, bold, quotable answer AI engines can cite directly", how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.", why: "Answerability is the #1 factor for AI citation and source selection" });
       }
       if (topLowScoring.some(m => m.name === "EEAT Signals")) {
-        prioritisedFixes.push({
-          title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600",
-          what: "Visible byline proving who wrote this",
-          how: "Headshot + name + bio + credentials + social links",
-          why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal"
-        });
+        prioritisedFixes.push({ title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600", what: "Visible byline proving who wrote this", how: "Headshot + name + bio + credentials + social links", why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal" });
       }
       if (topLowScoring.some(m => m.name === "Structured Data")) {
-        prioritisedFixes.push({
-          title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600",
-          what: "Structured data that AI engines read directly",
-          how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.",
-          why: "Triggers rich answers and massive citation boost"
-        });
+        prioritisedFixes.push({ title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600", what: "Structured data that AI engines read directly", how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.", why: "Triggers rich answers and massive citation boost" });
       }
       if (topLowScoring.some(m => m.name === "Scannability")) {
-        prioritisedFixes.push({
-          title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
-          what: "Easy-to-extract facts via structured formatting",
-          how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs",
-          why: "AI prioritizes instantly extractable content"
-        });
+        prioritisedFixes.push({ title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600", what: "Easy-to-extract facts via structured formatting", how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs", why: "AI prioritizes instantly extractable content" });
       }
       if (topLowScoring.some(m => m.name === "Unique Insights")) {
-        prioritisedFixes.push({
-          title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600",
-          what: "Original insights that stand out from generic content",
-          how: "Include “I tested”, case studies, personal results, dated experiences",
-          why: "Prevents de-duplication and boosts originality"
-        });
+        prioritisedFixes.push({ title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600", what: "Original insights that stand out from generic content", how: "Include “I tested”, case studies, personal results, dated experiences", why: "Prevents de-duplication and boosts originality" });
       }
 
       await new Promise(resolve => setTimeout(resolve, 1500));
-      clearInterval(interval); // safe even if interval not defined in code path
+      clearInterval(interval);
       progressContainer.classList.add('hidden');
       results.classList.remove('hidden');
 
@@ -377,11 +307,7 @@ const initTool = (form, results, progressContainer) => {
           if (passed === true) {
             emoji = '✅';
             titleColor = 'text-green-600 dark:text-green-400';
-          } else if (metricText.includes('Trusted outbound links') ||
-                     metricText.includes('shown') ||
-                     metricText.includes('present') ||
-                     metricText.includes('mentioned') ||
-                     metricText.includes('JSON-LD structured data present')) {
+          } else if (metricText.includes('Trusted outbound links') || metricText.includes('shown') || metricText.includes('present') || metricText.includes('mentioned') || metricText.includes('JSON-LD structured data present')) {
             emoji = '⚠️';
             titleColor = 'text-orange-600 dark:text-orange-400';
           }
@@ -738,96 +664,87 @@ const initTool = (form, results, progressContainer) => {
             </div>
           </div>
         </div>
-<div class="text-center my-16 px-4">
-  <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-    <!-- Share Report - Green - first -->
-    <button id="share-report-btn"
-            class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Share Report ↗️
-    </button>
-    <!-- Save Report - Orange - second -->
-    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-            class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Save Report 📥
-    </button>
-    <!-- Submit Feedback - Blue - third -->
-    <button id="feedback-btn"
-            class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-     Submit Feedback 💬
-    </button>
-  </div>
-  <!-- Share message - placed directly below buttons, always visible when triggered -->
-  <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-  <!-- Share Report Form (still hidden/expandable) -->
-  <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
-      <div>
-        <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
-        <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
-        <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
-        <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
-        <input id="share-title" type="text" required placeholder="Traffic Torch AI Search Optimization Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
-        <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
-      </div>
-      <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
-    </form>
-  </div>
-  <!-- Feedback Form (unchanged) -->
-  <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
-      <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-        Feedback for AI Search Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
-      </p>
-      <form id="feedback-form" class="space-y-6">
-        <div>
-          <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
-          <div class="flex gap-3 text-3xl justify-center sm:justify-start">
-            <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
-            <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
-            <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
-            <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
-            <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
+        <div class="text-center my-16 px-4">
+          <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
+            <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+              Share Report ↗️
+            </button>
+            <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+              Save Report 📥
+            </button>
+            <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+              Submit Feedback 💬
+            </button>
           </div>
-          <input type="hidden" id="feedback-rating" name="rating">
+          <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
+          <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
+            <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
+              <div>
+                <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
+                <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+              </div>
+              <div>
+                <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
+                <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+              </div>
+              <div>
+                <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
+                <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+              </div>
+              <div>
+                <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
+                <input id="share-title" type="text" required placeholder="Traffic Torch AI Search Optimization Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+              </div>
+              <div>
+                <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
+                <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
+              </div>
+              <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
+            </form>
+          </div>
+          <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
+            <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
+              <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
+                Feedback for AI Search Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
+              </p>
+              <form id="feedback-form" class="space-y-6">
+                <div>
+                  <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
+                  <div class="flex gap-3 text-3xl justify-center sm:justify-start">
+                    <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
+                    <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
+                    <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
+                    <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
+                    <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
+                  </div>
+                  <input type="hidden" id="feedback-rating" name="rating">
+                </div>
+                <div>
+                  <label class="flex items-center gap-2 justify-center sm:justify-start">
+                    <input type="checkbox" id="reply-requested" class="w-5 h-5">
+                    <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
+                  </label>
+                </div>
+                <div id="email-group" class="hidden">
+                  <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
+                  <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                  <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
+                  <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
+                    <span id="char-count">0</span>/1000 characters
+                  </p>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
+              </form>
+              <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
+            </div>
+          </div>
         </div>
-        <div>
-          <label class="flex items-center gap-2 justify-center sm:justify-start">
-            <input type="checkbox" id="reply-requested" class="w-5 h-5">
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
-          </label>
-        </div>
-        <div id="email-group" class="hidden">
-          <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
-          <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
-          <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
-            <span id="char-count">0</span>/1000 characters
-          </p>
-        </div>
-        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
-      </form>
-      <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
-    </div>
-  </div>
-</div>
       `;
 
-      // === RADAR CHART INITIALIZATION ===
+      // RADAR CHART
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) return;
@@ -871,9 +788,7 @@ const initTool = (form, results, progressContainer) => {
               plugins: { legend: { display: false } }
             }
           });
-        } catch (e) {
-          // no console in production
-        }
+        } catch (e) {}
       }, 150);
 
       initShareReport(results);
@@ -915,8 +830,9 @@ const initTool = (form, results, progressContainer) => {
           }
         }
       });
+
     } catch (err) {
-      clearInterval(interval); // safe even if interval not defined
+      clearInterval(interval);
       progressContainer.classList.add('hidden');
       results.classList.remove('hidden');
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;

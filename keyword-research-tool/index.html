@@ -362,67 +362,116 @@
 </p>
     </div>
 
-<!-- Flexible Input Form -->
-<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 md:p-4">
-  <form id="keywordForm" class="space-y-6">
-    <!-- Keyword + URL Section -->
-    <div>
-      <div class="flex flex-col md:flex-row gap-4">
-        <div class="flex-1">
-          <label for="seed" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Main keywords or topics
-          </label>
-          <input
-            type="text"
-            id="seed"
-            placeholder="Enter Keywords"
-            class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
-          >
-          <p class="text-sm text-gray-800 dark:text-gray-200 mt-2">Enter a keyword for direct research (recommended).</p>
-        </div>
-        <div class="flex-1">
-          <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Website URL (optional)
-          </label>
-          <input
-            type="text"
-            id="url"
-            placeholder="example.com/page"
-            class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-4 focus:ring-blue-500/30 focus:border-blue-500 transition"
-          >
-          <p class="text-sm text-gray-800 dark:text-gray-200 mt-2">Add URL to auto-detect intent.</p>
-        </div>
-      </div>
-      <button
-        type="button"
-        id="url-analyze-btn"
-        class="mt-4 w-full py-4 px-6 bg-gradient-to-r from-orange-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:from-orange-700 hover:to-purple-700 transition shadow-lg"
-      >
-        Analyze with URL 🔑
-      </button>
-    </div>
+<!-- Traffic Torch Keyword Research Tool Form -->
+<div class="max-w-2xl mx-auto space-y-12 px-4 py-8">
 
-    <!-- Code Analysis Section -->
-    <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-        📄 Or paste full HTML Code
-      </label>
-      <textarea
-        id="code-input"
-        rows="6"
-        placeholder="Paste full HTML code here..."
-        class="w-full px-6 py-4 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition text-base font-mono resize-y min-h-[140px]"
-      ></textarea>
-      <button
-        type="button"
-        id="code-analyze-btn"
-        class="mt-4 w-full py-4 px-6 bg-gradient-to-r from-orange-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:from-orange-700 hover:to-purple-700 transition shadow-lg"
-      >
-        Analyze with Code 🔑
-      </button>
-    </div>
-  </form>
+  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+
+    <form id="keywordForm" novalidate class="space-y-10">
+
+      <!-- Header -->
+      <div class="text-center">
+        <h2 class="text-3xl font-bold text-orange-500">Keyword Research Tool</h2>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">Discover high-potential keywords, search volume signals, intent clusters, and content opportunities</p>
+      </div>
+
+      <!-- Keyword + URL Section -->
+      <div class="space-y-6">
+        <div class="flex flex-col md:flex-row gap-4">
+          <!-- Main Keywords / Seed -->
+          <div class="flex-1">
+            <label for="seed" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Main keywords or topics
+            </label>
+            <input
+              type="text"
+              id="seed"
+              name="seed"
+              placeholder="wireless headphones, noise cancelling"
+              aria-label="Enter main keywords or topics"
+              aria-describedby="seed-help"
+              required
+              class="w-full px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <p id="seed-help" class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              Enter one or more seed keywords (recommended)
+            </p>
+          </div>
+
+          <!-- Website URL (optional) -->
+          <div class="flex-1">
+            <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Website URL (optional)
+            </label>
+            <input
+              type="text"
+              id="url"
+              name="url"
+              placeholder="example.com/page"
+              aria-label="Enter website URL to analyze"
+              aria-describedby="url-help"
+              class="w-full px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+              autocomplete="url"
+              inputmode="url"
+              spellcheck="false"
+              data-lpignore="true"
+            />
+            <p id="url-help" class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              Add URL to auto-detect intent and competitor keywords
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          id="url-analyze-btn"
+          class="w-full py-4 px-6 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold text-lg rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+        >
+          Analyze with URL 
+          <span class="text-xl">🔑</span>
+        </button>
+      </div>
+
+      <!-- Code Analysis Section -->
+      <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          📄 Or paste full HTML Code
+        </label>
+
+        <textarea
+          id="code-input"
+          name="htmlcode"
+          rows="10"
+          placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Best Wireless Headphones 2026&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your full page HTML here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
+          class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[220px] shadow-sm"
+          aria-label="Paste HTML code for keyword research"
+          aria-describedby="code-help"
+          autocomplete="off"
+          spellcheck="false"
+          data-vscode-ignore="true"
+        ></textarea>
+
+        <button
+          type="button"
+          id="code-analyze-btn"
+          class="mt-6 w-full py-4 px-6 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold text-lg rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+        >
+          Analyze with Code 
+          <span class="text-xl">🔑</span>
+        </button>
+
+        <p id="code-help" class="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
+          💡 Pro tip: When using the Traffic Torch VS Code extension or GitHub Action, your current page HTML will be automatically inserted here.
+        </p>
+      </div>
+    </form>
+  </div>
 </div>
+
+<!-- Shared VS Code Bridge - Works across ALL Traffic Torch tools -->
+<script nonce="${nonce}" src="${vscodeBridgeUri}"></script>
 
 <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
   <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
