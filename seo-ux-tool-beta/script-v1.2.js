@@ -179,17 +179,16 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
-    // Auto scroll to spinner
+    // Fix: Show spinner immediately before scroll and await
     if (progressContainer) {
+      progressContainer.classList.remove('hidden');
       progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
 
-    progressContainer.classList.remove('hidden');
     progressText.textContent = 'Fetching page...';
-
     const originalInput = urlInput.value.trim();
     const url = cleanUrl(originalInput);
     if (!url) {
@@ -231,8 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (analyzeCodeBtn && codeInput) {
     analyzeCodeBtn.addEventListener('click', async () => {
 
-      // Auto scroll to spinner
+      // Fix: Show spinner immediately before scroll and await
       if (progressContainer) {
+        progressContainer.classList.remove('hidden');
         progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
 
@@ -245,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      progressContainer.classList.remove('hidden');
       progressText.textContent = 'Analyzing pasted HTML code...';
 
       try {
