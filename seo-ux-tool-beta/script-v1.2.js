@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
-    // Fix: Show spinner immediately before scroll and await
+    // Show spinner immediately and keep it visible
     if (progressContainer) {
       progressContainer.classList.remove('hidden');
       progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -193,44 +193,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = cleanUrl(originalInput);
     if (!url) {
       alert('Please enter a valid URL');
-      progressContainer.classList.add('hidden');
+      if (progressContainer) progressContainer.classList.add('hidden');
       return;
     }
 
-    const proxyUrl = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+    const proxyUrl = 'https://render.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
     try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
-      runFullAnalysis(html, doc, url, originalInput);
+      // Await the full analysis so spinner stays visible
+      await runFullAnalysis(html, doc, url, originalInput);
     } catch (err) {
       alert('Failed to analyze — try another site or check the URL');
-    } finally {
-      progressContainer.classList.add('hidden');
-      let fullUrl = urlInput.value.trim();
-      let displayUrl = 'traffictorch.net';
-      if (fullUrl) {
-        let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
-        const firstSlash = cleaned.indexOf('/');
-        if (firstSlash !== -1) {
-          const domain = cleaned.slice(0, firstSlash);
-          const path = cleaned.slice(firstSlash);
-          displayUrl = domain + '\n' + path;
-        } else {
-          displayUrl = cleaned;
-        }
-      }
-      document.body.setAttribute('data-url', displayUrl);
     }
+    // NO finally block here - hide happens only at the end of runFullAnalysis
   });
 
   // Code Analysis Button Handler - uses HTML textarea input
   if (analyzeCodeBtn && codeInput) {
     analyzeCodeBtn.addEventListener('click', async () => {
 
-      // Fix: Show spinner immediately before scroll and await
+      // Show spinner immediately and keep it visible
       if (progressContainer) {
         progressContainer.classList.remove('hidden');
         progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -249,14 +235,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         const doc = new DOMParser().parseFromString(htmlCode, 'text/html');
-        const url = 'https://example.com/pasted-code'; // fallback URL for modules needing it
+        const url = 'https://example.com/pasted-code';
 
-        runFullAnalysis(htmlCode, doc, url, '');
+        // Await the full analysis so spinner stays visible
+        await runFullAnalysis(htmlCode, doc, url, '');
       } catch (err) {
         alert('Failed to analyze pasted code');
-      } finally {
-        progressContainer.classList.add('hidden');
       }
+      // NO finally block here - hide happens only at the end of runFullAnalysis
     });
   }
 
@@ -273,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: 'security', name: 'Security', fn: analyzeSecurity },
       { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
     ];
-
+    
     const scores = [];
     const allIssues = [];
 
