@@ -423,25 +423,54 @@
 <h2 id="seo-ux-tool" class="text-2xl md:text-2xl font-black text-center mt-2 mb-2 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
   SEO & UX Audit Tool
 </h2>
-    
-<form id="url-form" class="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-12">
-  <label for="url-input" class="sr-only">Enter website URL to analyze</label>
-  <input
-    type="text"
-    id="url-input"
-    placeholder="example.com/page/"
-    class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-    aria-label="Enter website URL to analyze"
-    required
-    autocomplete="url"
-  />
-  <button
-    type="submit"
-    class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-  >
-    <span>Analyze 💡</span>
-  </button>
+
+<!-- URL Analysis Form - matches screenshot -->
+<form id="url-form" class="max-w-3xl mx-auto mb-12">
+  <div class="flex flex-col md:flex-row gap-4">
+    <input
+      type="text"
+      id="url-input"
+      placeholder="example.com/your-page"
+      class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+      aria-label="Enter website URL to analyze"
+      required
+      autocomplete="url"
+    />
+    <button
+      type="submit"
+      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 whitespace-nowrap md:min-w-[180px]"
+    >
+      Analyze URL 
+      <span class="text-xl">⚖️</span>
+    </button>
+  </div>
 </form>
+
+<!-- Code Analysis Section - matches screenshot -->
+<div class="max-w-3xl mx-auto">
+  <div class="text-center mb-6">
+    <h2 class="text-3xl font-bold text-orange-500">Or use Code Analysis</h2>
+    <p class="text-gray-600 dark:text-gray-400 mt-2">Paste HTML code of the page</p>
+  </div>
+  
+  <textarea
+    id="code-input"
+    rows="8"
+    placeholder="Paste full HTML code here..."
+    class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[180px] shadow-sm"
+  ></textarea>
+  
+  <div class="flex justify-center mt-6">
+    <button
+      type="button"
+      id="analyze-code-btn"
+      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+    >
+      Analyze Code 
+      <span class="text-xl">⚖️</span>
+    </button>
+  </div>
+</div>
 
 <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
   <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
@@ -2013,8 +2042,7 @@
 <script src="/seo-ux-tool/plugin-solutions-v1.0.js" type="module" defer></script>
 <script src="/seo-ux-tool/metric-explanations-v1.0.js" type="module" defer></script>
 <script src="/seo-ux-tool/priority-gains-v1.0.js" type="module" defer></script>
-<script src="/seo-ux-tool/script-v1.2.js" type="module" defer></script>
-
+<script src="/seo-ux-tool-beta/script-v1.2.js" type="module" defer></script>
 
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b5ec7016f72456a9b4484d5dc706b79","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>

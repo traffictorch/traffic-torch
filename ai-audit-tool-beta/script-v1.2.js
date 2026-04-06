@@ -1,5 +1,4 @@
 // ai-audit-tool/script-v1.2.js
-
 import { computePerplexity } from './modules/perplexity.js';
 import { computeBurstiness } from './modules/burstiness.js';
 import { computeRepetition } from './modules/repetition.js';
@@ -8,43 +7,117 @@ import { computeVocabulary } from './modules/vocabulary.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
-
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
-const PROXY = 'https://render.traffictorch.workers.dev/?url=';
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
-
-  // Auto-fill input from shared report deep link (?url=...)
-  const urlParams = new URLSearchParams(window.location.search);
-  const sharedUrl = urlParams.get('url');
-  if (sharedUrl && input) {
-    input.value = decodeURIComponent(sharedUrl);
-    // Auto-submit form to run analysis immediately on shared link load
-    setTimeout(() => {
-      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    }, 300);
+     // Auto-fill input from shared report deep link (?url=...)
+     const urlParams = new URLSearchParams(window.location.search);
+     const sharedUrl = urlParams.get('url');
+     if (sharedUrl && input) {
+       input.value = decodeURIComponent(sharedUrl);
+       // Auto-submit form to run analysis immediately on shared link load
+       setTimeout(() => {
+         form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+       }, 300);
+     }
+  const PROXY = 'https://render.traffictorch.workers.dev/?url=';
+  let analyzedText = '';
+  let wordCount = 0;
+  function getMainContent(doc) {
+    const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
+    if (main && main.textContent.trim().length > 600) return main;
+    const candidates = doc.querySelectorAll('div, section, article');
+    let best = null;
+    let bestScore = 0;
+    candidates.forEach(el => {
+      if (el.closest('header, nav, footer, aside, .menu, .sidebar')) return;
+      const paragraphs = el.querySelectorAll('p');
+      const textLength = el.textContent.trim().length;
+      const pCount = paragraphs.length;
+      const score = pCount * 100 + textLength;
+      if (score > bestScore && textLength > 600 && textLength < 20000) {
+        bestScore = score;
+        best = el;
+      }
+    });
+    if (best) return best;
+    const body = doc.body.cloneNode(true);
+    const removeSelectors = 'header, nav, footer, aside, .menu, .navbar, .sidebar, .cookie-banner, .popup, .social-links, .breadcrumbs';
+    body.querySelectorAll(removeSelectors).forEach(e => e.remove());
+    return body;
   }
-
+  function analyzeAIContent(text) {
+    if (!text || text.length < 200) {
+      return { moduleScores: [10,10,10,10,10], totalScore: 50 };
+    }
+    text = text.replace(/\s+/g, ' ').trim().toLowerCase();
+    const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+    const words = text.split(/\s+/).filter(w => w.length > 0);
+    wordCount = words.length;
+    const perplexity = computePerplexity(words);
+    const burstiness = computeBurstiness(sentences, words);
+    const repetition = computeRepetition(words);
+    const sentenceLength = computeSentenceLength(sentences);
+    const vocabulary = computeVocabulary(words, wordCount);
+    const moduleScores = [
+      perplexity.moduleScore,
+      burstiness.moduleScore,
+      repetition.moduleScore,
+      sentenceLength.moduleScore,
+      vocabulary.moduleScore
+    ];
+    const totalScore = moduleScores.reduce((a, b) => a + b, 0);
+    return {
+      moduleScores,
+      totalScore,
+      details: {
+        perplexity: perplexity.details,
+        burstiness: burstiness.details,
+        repetition: repetition.details,
+        sentenceLength: sentenceLength.details,
+        vocabulary: vocabulary.details
+      }
+    };
+  }
+  function getGradeColor(humanNormalized10) {
+    if (humanNormalized10 >= 8.0) return '#10b981'; // green
+    if (humanNormalized10 >= 5.0) return '#f97316'; // orange
+    return '#ef4444'; // red
+  }
+  function getOverallEmojiGrade(score) {
+    if (score >= 80) return { emoji: '✅', text: 'Likely Human', color: '#10b981' };
+    if (score >= 50) return { emoji: '⚠️', text: 'Moderate AI Patterns', color: '#f97316' };
+    return { emoji: '❌', text: 'Very Likely AI', color: '#ef4444' };
+  }
+  function getModuleGrade(score) {
+    if (score === 20) return { emoji: '✅', text: 'Excellent', color: '#10b981' };
+    if (score === 10) return { emoji: '⚠️', text: 'Good', color: '#f97316' };
+    return { emoji: '❌', text: 'Needs Work', color: '#ef4444' };
+  }
+  function getSubEmoji(score) {
+    return score === 10 ? '✅' : '❌';
+  }
+  function getSubColor(score) {
+    return score === 10 ? '#10b981' : '#ef4444';
+  }
   form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const canProceed = await canRunTool('limit-audit-id');
-    if (!canProceed) return;
-
-    const url = input.value.trim();
-    if (!url) return;
-
+  e.preventDefault();
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) return;
+  const url = input.value.trim();
     let normalizedUrl = url;
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
       normalizedUrl = 'https://' + normalizedUrl;
     }
     const urlToFetch = normalizedUrl;
+    if (!url) return;
 
-    // Show spinner and auto-scroll to it immediately
+    // Immediate scroll to spinner
+    results.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
     results.innerHTML = `
       <div class="py-0 text-center">
         <div class="inline-block w-16 h-16 mb-8">
@@ -57,17 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     results.classList.remove('hidden');
-
-    // Auto scroll to spinner right after showing it
-    setTimeout(() => {
-      const offset = 240;
-      const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({
-        top: targetY,
-        behavior: 'smooth'
-      });
-    }, 50);
-
     const progressText = document.getElementById('progressText');
     const messages = [
       "Fetching page...",
@@ -86,10 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }, delay);
       delay += 800;
     });
-
     const minLoadTime = 5500;
     const startTime = Date.now();
-
     try {
       const res = await fetch(PROXY + encodeURIComponent(urlToFetch));
       if (!res.ok) throw new Error('Page not reachable');
@@ -108,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const mainGradeColor = mainGrade.color;
       const verdict = mainGrade.text;
       const verdictEmoji = mainGrade.emoji;
-
+      // Define the 5 core AI Audit modules with correct scores
       const modules = [
         { name: 'Perplexity', score: analysis.moduleScores[0] },
         { name: 'Burstiness', score: analysis.moduleScores[1] },
@@ -116,22 +176,20 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Sentence Length', score: analysis.moduleScores[3] },
         { name: 'Vocabulary', score: analysis.moduleScores[4] }
       ];
-      const scores = modules.map(m => m.score);
+      const scores = modules.map(m => m.score); // for radar chart
       const failingModules = modules.filter(m => m.score < 20).length;
       const boost = failingModules * 15;
       const optimizedScore = Math.min(100, yourScore + boost);
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);
-
       setTimeout(() => {
-        // Scroll to final results
+        // Scroll to results
         const offset = 240;
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({
           top: targetY,
           behavior: 'smooth'
         });
-
         results.innerHTML = `
 <!-- Overall Score Card (AI Audit) -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -173,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })()}
   </div>
 </div>
-
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -189,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </p>
   </div>
 </div>
-
 <!-- Metrics Layout -->
 <div class="space-y-8">
   <!-- Perplexity - Full width -->
@@ -260,7 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
     })()}
   </div>
-
   <!-- Remaining 4 metrics -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
     ${[
@@ -325,7 +380,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('')}
   </div>
 </div>
-
 <!-- Top Priority Fixes -->
 <div class="mt-20 space-y-8">
   <h2 class="text-4xl md:text-5xl font-black text-center text-gray-500 dark:text-gray-100">Top Priority Fixes</h2>
@@ -377,12 +431,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ].filter(f => f).join('<br><br>')
       }
     ];
-
     const priority = priorityModules
       .filter(m => m.score < 20 && m.fixes)
       .sort((a, b) => a.score - b.score)
       .slice(0, 3);
-
     if (priority.length === 0) {
       return `
         <div class="bg-green-50 dark:bg-green-900/20 rounded-3xl p-10 md:p-12 shadow-lg border-l-8 border-green-500">
@@ -390,13 +442,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-lg text-center text-gray-800 dark:text-gray-200">All modules scored 20/20. Your content is highly human-like and optimized.</p>
         </div>`;
     }
-
     return priority.map((m, i) => {
       const sub1Score = m.name === 'Perplexity' ? m.details.scores.trigram : m.name === 'Burstiness' ? m.details.scores.sentence : m.name === 'Repetition' ? m.details.scores.bigram : m.name === 'Sentence Length' ? m.details.scores.avg : m.details.scores.diversity;
       const sub2Score = m.name === 'Perplexity' ? m.details.scores.bigram : m.name === 'Burstiness' ? m.details.scores.word : m.name === 'Repetition' ? m.details.scores.trigram : m.name === 'Sentence Length' ? m.details.scores.complexity : m.details.scores.rare;
       const sub1Name = m.name === 'Perplexity' ? 'Trigram Entropy' : m.name === 'Burstiness' ? 'Sentence Length Variation' : m.name === 'Repetition' ? 'Bigram Repetition' : m.name === 'Sentence Length' ? 'Average Length' : 'Diversity';
       const sub2Name = m.name === 'Perplexity' ? 'Bigram Entropy' : m.name === 'Burstiness' ? 'Word Length Burstiness' : m.name === 'Repetition' ? 'Trigram Repetition' : m.name === 'Sentence Length' ? 'Sentence Complexity' : 'Rare Word Frequency';
-
       return `
         <div class="bg-orange-50 dark:bg-orange-900/20 rounded-3xl p-8 md:p-10 shadow-lg border-l-8 border-orange-500">
           <div class="flex items-center mb-4">
@@ -414,7 +464,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   })()}
 </div>
-
 <!-- Human Score & Potential Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
@@ -461,7 +510,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </details>
   </div>
-
   <div class="p-8 bg-gradient-to-br from-orange-500 to-pink-600 text-white rounded-3xl shadow-2xl">
     <h3 class="text-3xl font-bold text-center mb-8">Potential Ranking & Traffic Gains</h3>
     ${failingModules === 0 ? `
@@ -508,7 +556,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-
 <div class="text-center my-16 px-4">
   <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
     <!-- Share Report - Green - first -->
@@ -527,10 +574,8 @@ document.addEventListener('DOMContentLoaded', () => {
      Submit Feedback 💬
     </button>
   </div>
-
   <!-- Share message - placed directly below buttons, always visible when triggered -->
   <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-
   <!-- Share Report Form (still hidden/expandable) -->
   <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
@@ -557,7 +602,6 @@ document.addEventListener('DOMContentLoaded', () => {
       <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
     </form>
   </div>
-
   <!-- Feedback Form (unchanged) -->
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
@@ -600,9 +644,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
         `;
-
-
-        // RADAR CHART + init functions (unchanged)
+        // RADAR CHART
         setTimeout(() => {
           const canvas = document.getElementById('health-radar');
           if (!canvas) return;
@@ -657,13 +699,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
               }
             });
-          } catch (e) {}
+          } catch (e) {
+            // no console in production
+          }
         }, 150);
-
+       
         initShareReport(results);
         initSubmitFeedback(results);
-
-        let fullUrl = input.value.trim();
+        // Clean URL for PDF/print
+        let fullUrl = document.getElementById('url-input').value.trim();
         let displayUrl = 'traffictorch.net';
         if (fullUrl) {
           let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
@@ -678,7 +722,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.body.setAttribute('data-url', displayUrl);
       }, remaining);
-
     } catch (err) {
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);

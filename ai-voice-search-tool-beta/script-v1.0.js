@@ -114,15 +114,25 @@ document.addEventListener('DOMContentLoaded', () => {
             <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
           </svg>
         </div>
-        <p id="progressText" class="text-2xl font-bold text-orange-600 dark:text-orange-400">Fetching page...</p>
-        <p class="mt-4 text-sm text-gray-500 dark:text-gray-500">Analyzing content for AI patterns – please wait</p>
+        <p id="progressText" class="text-2xl font-bold text-orange-600 dark:text-orange-400">Analyzing content...</p>
+        <p class="mt-4 text-sm text-gray-500 dark:text-gray-500">Please wait while we process for AI voice search</p>
       </div>
     `;
     results.classList.remove('hidden');
 
+    // Auto scroll to spinner immediately when any button is clicked
+    setTimeout(() => {
+      const offset = 240;
+      const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({
+        top: targetY,
+        behavior: 'smooth'
+      });
+    }, 50);
+
     const progressText = document.getElementById('progressText');
     const messages = [
-      "Fetching page...",
+      "Analyzing content...",
       "Extracting main content",
       "Analyzing AI Visibility",
       "Measuring Content Quality",
@@ -131,12 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
       "Assessing Traditional Keywords",
       "Calculating final score..."
     ];
-    let delay = 800;
+    let delay = 600;
     messages.forEach(msg => {
       setTimeout(() => {
         if (progressText) progressText.textContent = msg;
       }, delay);
-      delay += 800;
+      delay += 700;
     });
 
     const minLoadTime = 5500;

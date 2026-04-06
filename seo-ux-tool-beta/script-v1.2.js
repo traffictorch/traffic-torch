@@ -1,0 +1,791 @@
+import { renderPriorityAndGains } from './priority-gains-v1.0.js';
+import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
+import { analyzeSEO } from './modules/analyze-seo-v1.0.js';
+import { analyzeMobile } from './modules/analyze-mobile-v1.0.js';
+import { analyzePerf } from './modules/analyze-perf-v1.0.js';
+import { analyzeAccess } from './modules/analyze-access-v1.0.js';
+import { analyzeContentQuality } from './modules/analyze-content-v1.0.js';
+import { analyzeUXDesign } from './modules/analyze-ux-v1.0.js';
+import { analyzeSecurity } from './modules/analyze-security-v1.0.js';
+import { analyzeIndexability } from './modules/analyze-indexability-v1.0.js';
+import { initShareReport } from './share-report-v1.js';
+import { initSubmitFeedback } from './submit-feedback-v1.js';
+import { canRunTool } from '/main-v1.1.js';
+
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
+
+const moduleInfo = {
+  seo: {
+    what: 'On-Page SEO evaluates the core elements search engines read directly to understand your page topic and relevance.',
+    how: 'Write a unique title (50–60 characters) with your main keyword near the start. Add a compelling meta description (120–158 characters). Use proper heading hierarchy and include structured data where applicable.',
+    whyUx: 'Clear titles and descriptions set accurate user expectations in search results.',
+    whySeo: 'These are the strongest direct ranking factors Google uses.'
+  },
+  mobile: {
+    what: 'Mobile & PWA checks if your site is fully mobile-friendly and ready to be installed as a progressive web app.',
+    how: 'Add the viewport meta tag, create and link a manifest.json file, provide multiple icon sizes, and register a service worker.',
+    whyUx: 'Ensures flawless experience on phones and allows users to add your site to their home screen.',
+    whySeo: 'Google uses mobile-first indexing – non-mobile-friendly sites are penalized.'
+  },
+  perf: {
+    what: 'Performance analyzes page weight, requests, fonts, and render-blocking resources.',
+    how: 'Compress images to WebP format and use lazy-loading. Minify HTML, CSS, and JS. Limit custom fonts and defer non-critical scripts.',
+    whyUx: 'Fast loading keeps users engaged and reduces bounce rates.',
+    whySeo: 'Core Web Vitals are direct ranking factors.'
+  },
+  access: {
+    what: 'Accessibility ensures your site is usable by everyone, including people with disabilities.',
+    how: 'Add meaningful alt text to all images. Use proper heading order and landmarks. Label form fields and declare the page language.',
+    whyUx: 'Makes content available to screen readers and keyboard users.',
+    whySeo: 'Google treats accessibility as a quality signal.'
+  },
+  content: {
+    what: 'Content Quality assesses depth, readability, structure, and scannability.',
+    how: 'Write comprehensive content with short sentences and paragraphs. Use frequent H2/H3 headings and bullet lists. Include tables where helpful.',
+    whyUx: 'Helps users quickly find and understand information.',
+    whySeo: 'In-depth, structured content ranks higher.'
+  },
+  ux: {
+    what: 'UX Design reviews clarity of actions and navigation flow.',
+    how: 'Highlight 1–3 primary CTAs with contrasting buttons. Reduce excessive links. Add breadcrumbs on deep pages.',
+    whyUx: 'Reduces confusion and helps users complete goals faster.',
+    whySeo: 'Better engagement signals improve rankings.'
+  },
+  security: {
+    what: 'Security confirms HTTPS and no mixed content.',
+    how: 'Install a valid SSL certificate. Update all resources to HTTPS. Regularly scan for insecure links.',
+    whyUx: 'Prevents browser warnings that scare users away.',
+    whySeo: 'Google marks HTTP sites as Not Secure and downgrades them.'
+  },
+  indexability: {
+    what: 'Indexability ensures the page can appear in search results.',
+    how: 'Remove noindex tags unless intentional. Add a canonical link to the preferred URL.',
+    whyUx: 'No direct user impact.',
+    whySeo: 'Without indexability the page is invisible in search.'
+  }
+};
+
+// Map short module IDs to deep-dive card IDs
+const deepDiveIdMap = {
+  seo: 'on-page-seo',
+  mobile: 'mobile-pwa',
+  perf: 'performance',
+  access: 'accessibility',
+  content: 'content-quality',
+  ux: 'ux-design',
+  security: 'security',
+  indexability: 'indexability'
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
+
+  const form = document.getElementById('url-form');
+  const urlInput = document.getElementById('url-input');
+  const codeInput = document.getElementById('code-input');
+  const analyzeCodeBtn = document.getElementById('analyze-code-btn');
+
+  const results = document.getElementById('results');
+  const overallContainer = document.getElementById('overall-container');
+  const progressContainer = document.getElementById('progress-container');
+  const progressText = document.getElementById('progress-text');
+  const priorityFixes = document.getElementById('priority-fixes');
+  const copyBadgeBtn = document.getElementById('copy-badge');
+
+  function cleanUrl(u) {
+    const trimmed = u.trim();
+    if (!trimmed) return '';
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return 'https://' + trimmed;
+  }
+
+  function updateScore(id, score) {
+    const circle = document.querySelector('#' + id + ' .score-circle');
+    const card = circle?.closest('.score-card');
+    if (!circle) return;
+    score = Math.round(score);
+    const radius = id === 'overall-score' ? 108 : 54;
+    const circumference = 2 * Math.PI * radius;
+    const dash = (score / 100) * circumference;
+    const progress = circle.querySelector('.progress');
+    progress.style.strokeDasharray = `${dash} ${circumference}`;
+    const num = circle.querySelector('.number');
+    num.textContent = score;
+    num.style.opacity = '1';
+    progress.classList.remove('stroke-red-400', 'stroke-orange-400', 'stroke-green-400');
+    num.classList.remove('text-red-400', 'text-orange-400', 'text-green-400');
+    if (card) card.classList.remove('red', 'orange', 'green');
+    let colorClass;
+    if (score < 60) {
+      colorClass = 'red';
+      progress.classList.add('stroke-red-400');
+      num.classList.add('text-red-400');
+    } else if (score < 80) {
+      colorClass = 'orange';
+      progress.classList.add('stroke-orange-400');
+      num.classList.add('text-orange-400');
+    } else {
+      colorClass = 'green';
+      progress.classList.add('stroke-green-400');
+      num.classList.add('text-green-400');
+    }
+    if (card) card.classList.add(colorClass);
+  }
+
+  function populateIssues(id, issues) {
+    const ul = document.getElementById(id);
+    if (!ul) return;
+    ul.innerHTML = '';
+    issues.forEach(i => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <div class="p-5 bg-white/10 backdrop-blur rounded-2xl mb-4 border border-white/20">
+          <strong class="text-xl text-gray-800 dark:text-gray-200 block mb-3">${i.issue}</strong>
+          <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+            <span class="font-bold text-green-400">How to fix:</span><br>
+            ${i.fix}
+          </p>
+        </div>
+      `;
+      ul.appendChild(li);
+    });
+  }
+
+  if (copyBadgeBtn) {
+    copyBadgeBtn.addEventListener('click', () => {
+      const badgeHtml = `
+<!-- Traffic Torch Optimized Badge -->
+<a href="https://traffictorch.net/" target="_blank" style="display: inline-block; position: relative; font-family: system-ui, -apple-system, sans-serif; font-weight: bold; font-size: 13px; color: #969696; text-decoration: none;">
+  Traffic Torch Optimized 🛡️
+  <span style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 8px; padding: 8px 16px; background: #1f2937; color: white; font-size: 14px; border-radius: 8px; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10;">
+    UX, SEO & AI Optimization
+  </span>
+</a>
+<style>
+  a:hover { color: #fb923c !important; }
+  a:hover > span { opacity: 1 !important; }
+</style>
+      `.trim();
+      navigator.clipboard.writeText(badgeHtml).then(() => {
+        alert('Badge code copied! Paste anywhere on your site — fully inline, works everywhere.');
+      }).catch(() => {
+        prompt('Copy this badge code:', badgeHtml);
+      });
+    });
+  }
+
+  // URL Form Submit Handler
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+
+    // Auto scroll to spinner
+    if (progressContainer) {
+      progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
+
+    progressContainer.classList.remove('hidden');
+    progressText.textContent = 'Fetching page...';
+
+    const originalInput = urlInput.value.trim();
+    const url = cleanUrl(originalInput);
+    if (!url) {
+      alert('Please enter a valid URL');
+      progressContainer.classList.add('hidden');
+      return;
+    }
+
+    const proxyUrl = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+    try {
+      const res = await fetch(proxyUrl);
+      if (!res.ok) throw new Error('Network response was not ok');
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      runFullAnalysis(html, doc, url, originalInput);
+    } catch (err) {
+      alert('Failed to analyze — try another site or check the URL');
+    } finally {
+      progressContainer.classList.add('hidden');
+      let fullUrl = urlInput.value.trim();
+      let displayUrl = 'traffictorch.net';
+      if (fullUrl) {
+        let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+        const firstSlash = cleaned.indexOf('/');
+        if (firstSlash !== -1) {
+          const domain = cleaned.slice(0, firstSlash);
+          const path = cleaned.slice(firstSlash);
+          displayUrl = domain + '\n' + path;
+        } else {
+          displayUrl = cleaned;
+        }
+      }
+      document.body.setAttribute('data-url', displayUrl);
+    }
+  });
+
+  // Code Analysis Button Handler - uses HTML textarea input
+  if (analyzeCodeBtn && codeInput) {
+    analyzeCodeBtn.addEventListener('click', async () => {
+
+      // Auto scroll to spinner
+      if (progressContainer) {
+        progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      const canProceed = await canRunTool('limit-audit-id');
+      if (!canProceed) return;
+
+      const htmlCode = codeInput.value.trim();
+      if (!htmlCode || htmlCode.length < 50) {
+        alert('Please paste a valid full HTML code of the page');
+        return;
+      }
+
+      progressContainer.classList.remove('hidden');
+      progressText.textContent = 'Analyzing pasted HTML code...';
+
+      try {
+        const doc = new DOMParser().parseFromString(htmlCode, 'text/html');
+        const url = 'https://example.com/pasted-code'; // fallback URL for modules needing it
+
+        runFullAnalysis(htmlCode, doc, url, '');
+      } catch (err) {
+        alert('Failed to analyze pasted code');
+      } finally {
+        progressContainer.classList.add('hidden');
+      }
+    });
+  }
+
+  // Shared analysis function used by both URL and Code paths
+  async function runFullAnalysis(html, doc, url, originalInput) {
+    const resultsWrapper = document.getElementById('results-wrapper');
+    const modules = [
+      { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
+      { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
+      { id: 'perf', name: 'Performance', fn: analyzePerf },
+      { id: 'access', name: 'Accessibility', fn: analyzeAccess },
+      { id: 'content', name: 'Content Quality', fn: analyzeContentQuality },
+      { id: 'ux', name: 'UX Design', fn: analyzeUXDesign },
+      { id: 'security', name: 'Security', fn: analyzeSecurity },
+      { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
+    ];
+
+    const scores = [];
+    const allIssues = [];
+
+    for (const mod of modules) {
+      progressText.textContent = `Analyzing ${mod.name}...`;
+      const analysisUrl = mod.id === 'security' && originalInput ? originalInput : url;
+      const result = mod.fn(html, doc, analysisUrl);
+      const info = moduleInfo[mod.id];
+      if (info) {
+        const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
+        if (infoDiv) {
+          const howTested = document.createElement('p');
+          howTested.className = 'mb-8 text-center';
+          howTested.innerHTML =
+            '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
+            'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
+            'How ' + mod.name + ' is tested?' +
+            '</a>';
+          infoDiv.prepend(howTested);
+          infoDiv.querySelector('.what').innerHTML = `<strong class="text-cyan-400">What is it?</strong><br>${info.what}`;
+          infoDiv.querySelector('.how').innerHTML = `<strong class="text-blue-400">How to improve overall:</strong><br>${info.how}`;
+          infoDiv.querySelector('.why').innerHTML = `<strong class="text-purple-400">Why it matters:</strong><br>
+            <strong>UX:</strong> ${info.whyUx}<br>
+            <strong>SEO:</strong> ${info.whySeo}`;
+        }
+      }
+      scores.push(result.score);
+      updateScore(`${mod.id}-score`, result.score);
+
+      const moduleScore = result.score;
+      const gradeElement = document.querySelector(`.module-grade[data-module="${mod.id}"]`);
+      if (gradeElement) {
+        let gradeText = '';
+        let gradeEmoji = '';
+        let colorClass = '';
+        if (moduleScore < 60) {
+          gradeText = 'Needs Work';
+          gradeEmoji = '❌';
+          colorClass = 'text-red-500';
+        } else if (moduleScore < 80) {
+          gradeText = 'Needs Improvement';
+          gradeEmoji = '⚠️';
+          colorClass = 'text-orange-500';
+        } else {
+          gradeText = 'Excellent';
+          gradeEmoji = '🟢';
+          colorClass = 'text-green-500';
+        }
+        gradeElement.querySelector('.grade-text').textContent = gradeText;
+        gradeElement.querySelector('.grade-emoji').textContent = gradeEmoji;
+        gradeElement.classList.add(colorClass);
+        gradeElement.classList.remove('opacity-0');
+        gradeElement.classList.add('opacity-100');
+      }
+
+      populateIssues(`${mod.id}-issues`, result.issues);
+      result.issues.forEach(iss => {
+        allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
+      });
+
+      await new Promise(r => setTimeout(r, 600));
+    }
+
+    // Final report generation
+    progressText.textContent = 'Generating report...';
+    await new Promise(r => setTimeout(r, 1400));
+
+    const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+    updateScore('overall-score', overallScore);
+
+    allIssues.sort((a, b) => b.impact - a.impact);
+    const top3 = allIssues.slice(0, 3);
+
+    const prioritisedFixes = top3.map(issue => ({
+      title: issue.issue,
+      how: issue.fix,
+      what: `Failing metric: ${issue.issue.toLowerCase().split('(')[0].trim()}`,
+      why: 'Improving this metric strengthens on-page signals, crawlability, or user experience.',
+      emoji: '⚠️',
+      impact: issue.impact || (100 - overallScore)
+    }));
+
+    const yourScore = Math.round(overallScore * 0.92);
+    setTimeout(() => {
+      const priorityContainer = document.getElementById('priority-cards-container');
+      if (priorityContainer) {
+        renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
+      }
+    }, 500);
+
+    // Display truncated analyzed page title
+    const titleElement = doc.querySelector('title');
+    let pageTitle = titleElement ? titleElement.textContent.trim() : 'Analyzed Page';
+    pageTitle = pageTitle.replace(/ \| Traffic Torch SEO UX Audit Tool|Traffic Torch/gi, '').trim();
+    if (pageTitle.length > 65) {
+      pageTitle = pageTitle.substring(0, 62) + '...';
+    }
+    const titleDisplay = document.getElementById('page-title-display');
+    if (titleDisplay) {
+      titleDisplay.textContent = pageTitle;
+    }
+
+    // Overall grade
+    let gradeText = '';
+    let gradeEmoji = '';
+    const overallGradeEl = document.getElementById('overall-grade');
+    if (overallScore < 60) {
+      gradeText = 'Needs Work';
+      gradeEmoji = '❌';
+      overallGradeEl.className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-red-500';
+    } else if (overallScore < 80) {
+      gradeText = 'Needs Improvement';
+      gradeEmoji = '⚠️';
+      overallGradeEl.className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-orange-500';
+    } else {
+      gradeText = 'Excellent';
+      gradeEmoji = '🟢';
+      overallGradeEl.className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-green-500';
+    }
+    overallGradeEl.querySelector('.grade-text').textContent = gradeText;
+    overallGradeEl.querySelector('.grade-emoji').textContent = gradeEmoji;
+
+    // Build detailed module cards with checklist + expand fixes
+    modules.forEach(mod => {
+      const card = document.getElementById(`${mod.id}-score`);
+      if (!card) return;
+      const expandBtn = card.querySelector('.expand');
+      if (!expandBtn) return;
+      const analysisUrl = mod.id === 'security' && originalInput ? originalInput : url;
+      const { issues: modIssues } = mod.fn(html, doc, analysisUrl);
+
+      let checks = [];
+      if (mod.id === 'seo') {
+        checks = [
+          { text: 'Title optimized (30–65 chars, keyword early)', passed: !modIssues.some(i => i.issue.toLowerCase().includes('title')) },
+          { text: 'Meta description present & optimal', passed: !modIssues.some(i => i.issue.toLowerCase().includes('meta description')) },
+          { text: 'Main heading includes keyword', passed: !modIssues.some(i => i.issue.toLowerCase().includes('main heading') || i.issue.toLowerCase().includes('keyword')) },
+          { text: 'Structured data (schema) detected', passed: !modIssues.some(i => i.issue.toLowerCase().includes('schema') || i.issue.toLowerCase().includes('structured data')) },
+          { text: 'All images have meaningful alt text', passed: !modIssues.some(i => i.issue.toLowerCase().includes('alt text')) }
+        ];
+      } else if (mod.id === 'mobile') {
+        checks = [
+          { text: 'Viewport meta tag correct', passed: !modIssues.some(i => i.issue.includes('Viewport')) },
+          { text: 'Web app manifest linked', passed: !modIssues.some(i => i.issue.includes('manifest')) },
+          { text: 'Homescreen icons (192px+) provided', passed: !modIssues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
+          { text: 'Service worker', passed: !modIssues.some(i => i.issue.includes('service worker')) }
+        ];
+      } else if (mod.id === 'perf') {
+        checks = [
+          { text: 'Page weight reasonable (<300KB HTML)', passed: !modIssues.some(i => i.issue.includes('Page weight')) },
+          { text: 'Number of HTTP requests', passed: !modIssues.some(i => i.issue.includes('HTTP requests')) },
+          { text: 'Render-blocking resources', passed: !modIssues.some(i => i.issue.includes('render-blocking')) },
+          { text: 'Web fonts optimized', passed: !modIssues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
+        ];
+      } else if (mod.id === 'access') {
+        checks = [
+          { text: 'All images have alt text', passed: !modIssues.some(i => i.issue.includes('alt text')) },
+          { text: 'Lang attribute on <html>', passed: !modIssues.some(i => i.issue.includes('lang attribute')) },
+          { text: 'Main landmark present', passed: !modIssues.some(i => i.issue.includes('main landmark')) },
+          { text: 'Proper heading hierarchy', passed: !modIssues.some(i => i.issue.includes('Heading order')) },
+          { text: 'Form fields properly labeled', passed: !modIssues.some(i => i.issue.includes('form fields') || i.issue.includes('labels')) }
+        ];
+      } else if (mod.id === 'content') {
+        checks = [
+          { text: 'Sufficient unique content depth', passed: !modIssues.some(i => i.issue.includes('Thin content')) },
+          { text: 'Readability (short sentences)', passed: !modIssues.some(i => i.issue.includes('Readability')) },
+          { text: 'Strong heading structure', passed: !modIssues.some(i => i.issue.includes('heading structure')) },
+          { text: 'Uses lists for better scannability', passed: !modIssues.some(i => i.issue.includes('lists')) }
+        ];
+      } else if (mod.id === 'ux') {
+        checks = [
+          { text: 'Clear primary calls-to-action', passed: !modIssues.some(i => i.issue.includes('calls-to-action')) },
+          { text: 'Breadcrumb navigation (on deep pages)', passed: !modIssues.some(i => i.issue.includes('breadcrumb')) }
+        ];
+      } else if (mod.id === 'security') {
+        checks = [
+          { text: 'Served over HTTPS', passed: !modIssues.some(i => i.issue.includes('HTTPS')) },
+          { text: 'No mixed content', passed: !modIssues.some(i => i.issue.includes('mixed content')) }
+        ];
+      } else if (mod.id === 'indexability') {
+        checks = [
+          { text: 'No noindex tag', passed: !modIssues.some(i => i.issue.includes('noindex')) },
+          { text: 'Canonical tag present', passed: !modIssues.some(i => i.issue.includes('canonical')) }
+        ];
+      }
+
+      let checklist = card.querySelector('.checklist');
+      if (!checklist) {
+        checklist = document.createElement('div');
+        checklist.className = 'checklist mt-4 px-2 space-y-1 text-left text-gray-200 text-sm';
+        expandBtn.parentNode.insertBefore(checklist, expandBtn);
+      }
+      checklist.innerHTML = checks.map(c => `
+        <p class="${c.passed ? 'text-green-400' : 'text-red-400'} font-medium">
+          ${c.passed ? '✅' : '❌'} ${c.text}
+        </p>
+      `).join('');
+
+      let expand = card.querySelector('.expand-content');
+      if (!expand) {
+        expand = document.createElement('div');
+        expand.className = 'expand-content hidden mt-6 px-2 space-y-8 pb-6';
+        card.appendChild(expand);
+      }
+      expand.innerHTML = '';
+      modIssues.forEach(iss => {
+        const block = document.createElement('div');
+        block.className = 'p-2 bg-white/5 backdrop-blur rounded-xl border border-white/10';
+        block.innerHTML = `
+          <strong class="text-xl block mb-4 text-orange-500">${iss.issue}</strong>
+          <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+            <span class="font-bold text-green-400">How to fix:</span><br>
+            ${iss.fix}
+          </p>
+        `;
+        expand.appendChild(block);
+      });
+
+      const learnMore = document.createElement('p');
+      learnMore.className = 'mt-10 text-center';
+      learnMore.innerHTML =
+        '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
+        'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
+        'Learn more about ' + mod.name + '?' +
+        '</a>';
+      expand.appendChild(learnMore);
+
+      expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
+      expandBtn.textContent = 'Show Fixes';
+      expandBtn.onclick = () => {
+        expand.classList.toggle('hidden');
+        expandBtn.textContent = expand.classList.contains('hidden') ? 'Show Fixes' : 'Hide Fixes';
+      };
+    });
+
+    resultsWrapper.classList.remove('hidden');
+    document.getElementById('radar-title').classList.remove('hidden');
+    document.getElementById('copy-badge').classList.remove('hidden');
+
+    resultsWrapper.style.opacity = '0';
+    resultsWrapper.style.transform = 'translateY(40px)';
+    resultsWrapper.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
+    requestAnimationFrame(() => {
+      resultsWrapper.style.opacity = '1';
+      resultsWrapper.style.transform = 'translateY(0)';
+    });
+
+    // Plugin solutions section
+    const pluginSection = document.getElementById('plugin-solutions-section');
+    if (pluginSection) {
+      pluginSection.innerHTML = '';
+      pluginSection.classList.remove('hidden');
+      const failedMetrics = [];
+      const supportedMetricNames = [
+        "Title optimized (30–65 chars, keyword early)",
+        "Meta description present & optimal",
+        "Structured data (schema) detected",
+        "Canonical tag present",
+        "All images have meaningful alt text",
+        "Web app manifest linked",
+        "Homescreen icons (192px+) provided",
+        "Service worker",
+        "Page weight reasonable (<300KB HTML)",
+        "Number of HTTP requests",
+        "Render-blocking resources",
+        "Web fonts optimized",
+        "Form fields properly labeled",
+        "Clear primary calls-to-action",
+        "Breadcrumb navigation (on deep pages)",
+        "Served over HTTPS / No mixed content"
+      ];
+      modules.forEach(mod => {
+        const card = document.getElementById(`${mod.id}-score`);
+        if (!card) return;
+        const checklistItems = card.querySelectorAll('.checklist p');
+        checklistItems.forEach(item => {
+          const text = item.textContent.trim();
+          if (text.startsWith('❌')) {
+            let issueName = text.replace(/^❌\s*/, '').trim();
+            if (issueName.includes('Title optimized')) issueName = supportedMetricNames[0];
+            if (issueName.includes('Meta description')) issueName = supportedMetricNames[1];
+            if (issueName.includes('Structured data')) issueName = supportedMetricNames[2];
+            if (issueName.includes('Canonical tag')) issueName = supportedMetricNames[3];
+            if (issueName.includes('alt text')) issueName = supportedMetricNames[4];
+            if (issueName.includes('manifest')) issueName = supportedMetricNames[5];
+            if (issueName.includes('homescreen') || issueName.includes('icon')) issueName = supportedMetricNames[6];
+            if (issueName.includes('service worker')) issueName = supportedMetricNames[7];
+            if (issueName.includes('Page weight')) issueName = supportedMetricNames[8];
+            if (issueName.includes('HTTP requests')) issueName = supportedMetricNames[9];
+            if (issueName.includes('Render-blocking')) issueName = supportedMetricNames[10];
+            if (issueName.includes('Web fonts')) issueName = supportedMetricNames[11];
+            if (issueName.includes('Form fields')) issueName = supportedMetricNames[12];
+            if (issueName.includes('calls-to-action')) issueName = supportedMetricNames[13];
+            if (issueName.includes('Breadcrumb')) issueName = supportedMetricNames[14];
+            if (issueName.includes('HTTPS') || issueName.includes('mixed content')) issueName = supportedMetricNames[15];
+            if (supportedMetricNames.includes(issueName)) {
+              failedMetrics.push({
+                name: issueName,
+                grade: { emoji: '🔴', color: 'text-red-400' }
+              });
+            }
+          }
+        });
+      });
+      if (failedMetrics.length > 0) {
+        renderPluginSolutions(failedMetrics);
+      } else {
+        pluginSection.innerHTML = `
+          <div class="mt-20 text-center">
+            <p class="text-xl text-gray-400">No issues found among the 16 supported areas that need plugin fixes.</p>
+          </div>
+        `;
+      }
+    }
+
+    // More Details toggle
+    document.querySelectorAll('.more-details').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.score-card');
+        const infoDiv = card.querySelector('.module-info');
+        const isHidden = infoDiv.classList.contains('hidden');
+        infoDiv.classList.toggle('hidden');
+        btn.textContent = isHidden ? 'Hide Details' : 'More Details';
+        if (isHidden) {
+          infoDiv.style.opacity = '0';
+          infoDiv.classList.remove('hidden');
+          requestAnimationFrame(() => {
+            infoDiv.style.opacity = '1';
+          });
+        }
+      });
+    });
+
+    const offset = 240;
+    const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({ top: targetY, behavior: 'smooth' });
+
+    // Radar Chart
+    try {
+      if (window.innerWidth >= 768 && document.getElementById('health-radar')) {
+        const radarCtx = document.getElementById('health-radar').getContext('2d');
+        const isDark = document.documentElement.classList.contains('dark');
+        const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)';
+        const labelColor = '#9ca3af';
+        const lineColor = '#9ca3af';
+        const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
+        const radarLabels = modules.map(m => m.name);
+        const radarScores = modules.map(mod => {
+          const scoreEl = document.querySelector(`#${mod.id}-score .number`);
+          return scoreEl ? parseInt(scoreEl.textContent.trim(), 10) || 0 : 0;
+        });
+        new Chart(radarCtx, {
+          type: 'radar',
+          data: {
+            labels: radarLabels,
+            datasets: [{
+              label: 'Health Score',
+              data: radarScores,
+              backgroundColor: fillColor,
+              borderColor: lineColor,
+              borderWidth: 4,
+              pointRadius: 9,
+              pointHoverRadius: 14,
+              pointBackgroundColor: (ctx) => {
+                const v = ctx.parsed?.r ?? ctx.raw ?? 0;
+                if (v < 60) return '#f87171';
+                if (v < 80) return '#fb923c';
+                return '#34d399';
+              },
+              pointHoverBackgroundColor: (ctx) => {
+                const v = ctx.parsed?.r ?? ctx.raw ?? 0;
+                if (v < 60) return '#ef4444';
+                if (v < 80) return '#f97316';
+                return '#10b981';
+              }
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { intersect: true, mode: 'point' },
+            scales: {
+              r: {
+                beginAtZero: true,
+                min: 0,
+                max: 100,
+                ticks: {
+                  stepSize: 20,
+                  color: labelColor,
+                  backdropColor: 'transparent',
+                  callback: (value) => value
+                },
+                grid: { color: gridColor },
+                angleLines: { color: gridColor },
+                pointLabels: {
+                  color: labelColor,
+                  font: { size: 14, weight: 'bold' }
+                }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  title: (ctx) => ctx[0].label,
+                  label: (ctx) => {
+                    const value = Math.round(ctx.parsed.r || ctx.raw || 0);
+                    let grade = value >= 80 ? 'Excellent' :
+                                value >= 60 ? 'Good (room for improvement)' :
+                                value >= 40 ? 'Fair (major issues)' : 'Poor';
+                    const lines = [`Score: ${value}/100`, `Grade: ${grade}`];
+                    if (value < 100) {
+                      lines.push('', 'How to Improve:', 'Click "Show Fixes" below for detailed recommendations');
+                    } else {
+                      lines.push('', 'Strong performance – keep it up!');
+                    }
+                    return lines;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    } catch (chartErr) {}
+
+    // Mobile preview
+    try {
+      const previewIframe = document.getElementById('preview-iframe');
+      const phoneFrame = document.getElementById('phone-frame');
+      const viewToggle = document.getElementById('view-toggle');
+      const deviceToggle = document.getElementById('device-toggle');
+      if (previewIframe && phoneFrame) {
+        previewIframe.src = url;
+        let isMobile = true;
+        let isIphone = true;
+        if (viewToggle) {
+          viewToggle.addEventListener('click', () => {
+            isMobile = !isMobile;
+            phoneFrame.style.width = isMobile ? '375px' : 'min(100%, 1280px)';
+            phoneFrame.style.height = isMobile ? '812px' : 'min(90vh, 900px)';
+            phoneFrame.style.margin = isMobile ? '0 auto' : '0';
+            viewToggle.textContent = isMobile ? 'Switch to Desktop' : 'Switch to Mobile';
+          });
+        }
+        if (deviceToggle) {
+          deviceToggle.addEventListener('click', () => {
+            isIphone = !isIphone;
+            phoneFrame.classList.toggle('iphone-frame', isIphone);
+            phoneFrame.classList.toggle('android-frame', !isIphone);
+            deviceToggle.textContent = isIphone ? 'Android Frame' : 'iPhone Frame';
+          });
+        }
+      }
+    } catch (previewErr) {}
+
+    // Initialize share & feedback
+    const resultsContainer = document.getElementById('results-wrapper') || document.body;
+    initShareReport(resultsContainer);
+    initSubmitFeedback(resultsContainer);
+  }
+
+  // Auto-analyze from shared deep link
+  const urlParams = new URLSearchParams(window.location.search);
+  const sharedUrl = urlParams.get('url');
+  if (sharedUrl && urlInput && form) {
+    let cleanUrl = decodeURIComponent(sharedUrl.trim());
+    if (!/^https?:\/\//i.test(cleanUrl)) {
+      cleanUrl = 'https://' + cleanUrl;
+    }
+    urlInput.value = cleanUrl;
+    const progressContainer = document.getElementById('progress-container');
+    if (progressContainer) {
+      progressContainer.classList.remove('hidden');
+      const progressText = document.getElementById('progress-text');
+      if (progressText) progressText.textContent = 'Loading shared report...';
+    }
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  }
+});
+
+// Global smooth internal navigation + auto-expand for deep-dive cards
+function handleDeepDiveHash() {
+  if (!window.location.hash) return;
+  const targetId = window.location.hash.substring(1);
+  const targetElement = document.getElementById(targetId);
+  if (targetElement) {
+    const detailsElement = targetElement.querySelector('details');
+    if (detailsElement) detailsElement.open = true;
+    setTimeout(() => {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      });
+    }, 100);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  handleDeepDiveHash();
+});
+
+window.addEventListener('hashchange', handleDeepDiveHash);
+
+document.addEventListener('click', function(event) {
+  const clickedLink = event.target.closest('a[href^="#"]');
+  if (clickedLink && clickedLink.getAttribute('href') !== '#') {
+    event.preventDefault();
+    const targetHash = clickedLink.getAttribute('href');
+    history.replaceState(null, null, targetHash);
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
+  }
+}, { passive: false });
