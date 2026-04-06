@@ -12,132 +12,38 @@ import { initSubmitFeedback } from './submit-feedback-v1.js';
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const input = document.getElementById('url-input');
   const results = document.getElementById('results');
-     // Auto-fill input from shared report deep link (?url=...)
-     const urlParams = new URLSearchParams(window.location.search);
-     const sharedUrl = urlParams.get('url');
-     if (sharedUrl && input) {
-       input.value = decodeURIComponent(sharedUrl);
-       // Auto-submit form to run analysis immediately on shared link load
-       setTimeout(() => {
-         form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-       }, 300);
-     }
-  const PROXY = 'https://render.traffictorch.workers.dev/?url=';
-  let analyzedText = '';
-  let wordCount = 0;
 
-  function getMainContent(doc) {
-    const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
-    if (main && main.textContent.trim().length > 600) return main;
-
-    const candidates = doc.querySelectorAll('div, section, article');
-    let best = null;
-    let bestScore = 0;
-
-    candidates.forEach(el => {
-      if (el.closest('header, nav, footer, aside, .menu, .sidebar')) return;
-      const paragraphs = el.querySelectorAll('p');
-      const textLength = el.textContent.trim().length;
-      const pCount = paragraphs.length;
-      const score = pCount * 100 + textLength;
-      if (score > bestScore && textLength > 600 && textLength < 20000) {
-        bestScore = score;
-        best = el;
-      }
-    });
-
-    if (best) return best;
-
-    const body = doc.body.cloneNode(true);
-    const removeSelectors = 'header, nav, footer, aside, .menu, .navbar, .sidebar, .cookie-banner, .popup, .social-links, .breadcrumbs';
-    body.querySelectorAll(removeSelectors).forEach(e => e.remove());
-    return body;
-  }
-
-  function analyzeAIContent(text) {
-    if (!text || text.length < 200) {
-      return { moduleScores: [10,10,10,10,10], totalScore: 50 };
-    }
-
-    text = text.replace(/\s+/g, ' ').trim().toLowerCase();
-    const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
-    const words = text.split(/\s+/).filter(w => w.length > 0);
-    wordCount = words.length;
-
-    const perplexity = computePerplexity(words);
-    const burstiness = computeBurstiness(sentences, words);
-    const repetition = computeRepetition(words);
-    const sentenceLength = computeSentenceLength(sentences);
-    const vocabulary = computeVocabulary(words, wordCount);
-
-    const moduleScores = [
-      perplexity.moduleScore,
-      burstiness.moduleScore,
-      repetition.moduleScore,
-      sentenceLength.moduleScore,
-      vocabulary.moduleScore
-    ];
-
-    const totalScore = moduleScores.reduce((a, b) => a + b, 0);
-
-    return {
-      moduleScores,
-      totalScore,
-      details: {
-        perplexity: perplexity.details,
-        burstiness: burstiness.details,
-        repetition: repetition.details,
-        sentenceLength: sentenceLength.details,
-        vocabulary: vocabulary.details
-      }
-    };
-  }
-
-  function getGradeColor(humanNormalized10) {
-    if (humanNormalized10 >= 8.0) return '#10b981'; // green
-    if (humanNormalized10 >= 5.0) return '#f97316'; // orange
-    return '#ef4444'; // red
-  }
-
-  function getOverallEmojiGrade(score) {
-    if (score >= 80) return { emoji: '✅', text: 'Likely Human', color: '#10b981' };
-    if (score >= 50) return { emoji: '⚠️', text: 'Moderate AI Patterns', color: '#f97316' };
-    return { emoji: '❌', text: 'Very Likely AI', color: '#ef4444' };
-  }
-
-  function getModuleGrade(score) {
-    if (score === 20) return { emoji: '✅', text: 'Excellent', color: '#10b981' };
-    if (score === 10) return { emoji: '⚠️', text: 'Good', color: '#f97316' };
-    return { emoji: '❌', text: 'Needs Work', color: '#ef4444' };
-  }
-
-  function getSubEmoji(score) {
-    return score === 10 ? '✅' : '❌';
-  }
-
-  function getSubColor(score) {
-    return score === 10 ? '#10b981' : '#ef4444';
+  // Auto-fill input from shared report deep link (?url=...)
+  const urlParams = new URLSearchParams(window.location.search);
+  const sharedUrl = urlParams.get('url');
+  if (sharedUrl && input) {
+    input.value = decodeURIComponent(sharedUrl);
+    // Auto-submit form to run analysis immediately on shared link load
+    setTimeout(() => {
+      form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }, 300);
   }
 
   form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const canProceed = await canRunTool('limit-audit-id');
-  if (!canProceed) return;
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
 
-  const url = input.value.trim();
+    const url = input.value.trim();
+    if (!url) return;
+
     let normalizedUrl = url;
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
       normalizedUrl = 'https://' + normalizedUrl;
     }
     const urlToFetch = normalizedUrl;
-    if (!url) return;
 
+    // Show spinner and auto-scroll to it immediately
     results.innerHTML = `
       <div class="py-0 text-center">
         <div class="inline-block w-16 h-16 mb-8">
@@ -150,6 +56,16 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     results.classList.remove('hidden');
+
+    // Auto scroll to spinner right after showing it
+    setTimeout(() => {
+      const offset = 240;
+      const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({
+        top: targetY,
+        behavior: 'smooth'
+      });
+    }, 50);
 
     const progressText = document.getElementById('progressText');
     const messages = [
@@ -185,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
       text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
       wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
       analyzedText = text;
-
       const analysis = analyzeAIContent(text);
       const yourScore = analysis.totalScore;
       const mainGrade = getOverallEmojiGrade(yourScore);
@@ -193,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const verdict = mainGrade.text;
       const verdictEmoji = mainGrade.emoji;
 
-      // Define the 5 core AI Audit modules with correct scores
       const modules = [
         { name: 'Perplexity', score: analysis.moduleScores[0] },
         { name: 'Burstiness', score: analysis.moduleScores[1] },
@@ -201,17 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Sentence Length', score: analysis.moduleScores[3] },
         { name: 'Vocabulary', score: analysis.moduleScores[4] }
       ];
-
-      const scores = modules.map(m => m.score); // for radar chart
+      const scores = modules.map(m => m.score);
       const failingModules = modules.filter(m => m.score < 20).length;
       const boost = failingModules * 15;
       const optimizedScore = Math.min(100, yourScore + boost);
-
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);
 
       setTimeout(() => {
-        // Scroll to results
+        // Scroll to final results
         const offset = 240;
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({
@@ -688,7 +600,8 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
         `;
 
-        // RADAR CHART
+
+        // RADAR CHART + init functions (unchanged)
         setTimeout(() => {
           const canvas = document.getElementById('health-radar');
           if (!canvas) return;
@@ -698,9 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const gridColor = 'rgba(156, 163, 175, 0.3)';
             const borderColor = '#fb923c';
             const fillColor = 'rgba(251, 146, 60, 0.15)';
-
             const normalizedScores = modules.map(m => m.score * 5);
-
             window.myChart = new Chart(ctx, {
               type: 'radar',
               data: {
@@ -745,16 +656,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
               }
             });
-          } catch (e) {
-            // no console in production
-          }
+          } catch (e) {}
         }, 150);
-        
+
         initShareReport(results);
         initSubmitFeedback(results);
 
-        // Clean URL for PDF/print
-        let fullUrl = document.getElementById('url-input').value.trim();
+        let fullUrl = input.value.trim();
         let displayUrl = 'traffictorch.net';
         if (fullUrl) {
           let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
@@ -768,8 +676,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
         document.body.setAttribute('data-url', displayUrl);
-
       }, remaining);
+
     } catch (err) {
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);
