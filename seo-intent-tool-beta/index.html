@@ -403,58 +403,49 @@
           </p>
         </div>
       
-<!-- Updated form with Permanent URL input + expandable Code input + separate Analyze buttons -->
-<form id="audit-form" class="max-w-2xl mx-auto mb-20 space-y-6">
+<form id="audit-form" class="max-w-2xl mx-auto mb-20 space-y-8">
   <!-- URL Section -->
-  <div class="space-y-2">
-    <label for="url-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-      Website URL to analyze
-    </label>
+  <div>
     <div class="flex flex-col md:flex-row gap-4">
       <input
         type="text"
         id="url-input"
-        placeholder="https://example.com/your-page"
+        placeholder="example.com/your-page"
         aria-label="Enter website URL to analyze"
-        required
         class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
       />
       <button
         type="button"
         id="analyze-url-btn"
-        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex-shrink-0"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
       >
         Analyze URL 🎯
       </button>
     </div>
   </div>
 
-  <!-- Expandable Code Input Section -->
-  <div class="space-y-2">
-    <button
-      type="button"
-      id="toggle-code-btn"
-      class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
-    >
-      <span id="toggle-icon">▼</span>
-      <span>Analyze custom HTML / Code (optional)</span>
-    </button>
+  <!-- Code Analysis Section - always visible, no toggle -->
+  <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+    <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
+      Or use Code Analysis 📄
+    </h3>
+  
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
+      Paste HTML code of the page
+    </p>
     
-    <div id="code-input-container" class="hidden">
-      <label for="code-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-        Paste HTML / Page Code
-      </label>
-      <textarea
-        id="code-input"
-        rows="10"
-        placeholder="Paste your full HTML here..."
-        class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-base font-mono resize-y min-h-[200px]"
-      ></textarea>
-      
+    <textarea
+      id="code-input"
+      rows="6"
+      placeholder="Paste full HTML code here..."
+      class="w-full px-6 py-4 rounded-2xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-base font-mono resize-y min-h-[140px]"
+    ></textarea>
+  
+    <div class="mt-6 flex justify-center">
       <button
         type="button"
         id="analyze-code-btn"
-        class="mt-4 px-10 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+        class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
       >
         Analyze Code 🎯
       </button>
@@ -477,15 +468,15 @@
   </div>
 </div>
 
-<!-- Loading indicator - tight spacing, centered, modern spinner -->
-<section id="loading" class="hidden text-center mt-0">
-  <div class="inline-flex flex-col items-center gap-4">
-    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
-    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
-      Analyzing Signals...
-    </p>
+<!-- Main single loading spinner -->
+<div id="loading" class="hidden mt-12 flex flex-col items-center justify-center py-12 bg-white dark:bg-gray-900 rounded-3xl shadow-inner border border-orange-200 dark:border-gray-700">
+  <div class="relative">
+    <!-- Responsive spinning  -->
+    <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+    <div class="absolute inset-0 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-transparent border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
   </div>
-</section>
+  <p class="text-xl font-medium text-gray-700 dark:text-gray-300 mt-8">Analyzing Signals...</p>
+</div>
 
 <!-- Empty results container - JavaScript will fill this dynamically -->
 <section id="results" class="hidden space-y-16">
