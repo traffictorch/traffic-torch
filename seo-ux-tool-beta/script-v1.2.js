@@ -720,7 +720,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsContainer = document.getElementById('results-wrapper') || document.body;
     initShareReport(resultsContainer);
     initSubmitFeedback(resultsContainer);
-  }
+
+    // === FINAL FIX: Hide spinner only after ALL results are fully loaded and displayed ===
+    if (progressContainer) {
+      progressContainer.classList.add('hidden');
+    }
+
+  } // end of runFullAnalysis function
 
   // Auto-analyze from shared deep link
   const urlParams = new URLSearchParams(window.location.search);

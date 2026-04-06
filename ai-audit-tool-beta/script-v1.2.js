@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 300);
   }
 
-  const PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=';
+  const PROXY = 'https://render.traffictorch.workers.dev/?url=';
   let analyzedText = '';
   let wordCount = 0;
 
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==================== URL FORM HANDLER ====================
-  urlForm.addEventListener('submit', async (e) => {
+    urlForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlToFetch = normalizedUrl;
     if (!url) return;
 
-    // Auto scroll to spinner
+    // FIXED: Scroll FIRST, before any innerHTML change
     results.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     results.innerHTML = `
