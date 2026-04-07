@@ -7,8 +7,10 @@ import { computeVocabulary } from './modules/vocabulary.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
+
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
+const PROXY = 'https://render.traffictorch.workers.dev/?url=';
 
 document.addEventListener('DOMContentLoaded', () => {
   const urlForm = document.getElementById('audit-form');
@@ -16,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeForm = document.getElementById('code-form');
   const codeInput = document.getElementById('code-input');
   const results = document.getElementById('results');
+
+  let analyzedText = '';
+  let wordCount = 0;
 
   // Auto-fill from shared report deep link
   const urlParams = new URLSearchParams(window.location.search);
@@ -27,13 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 300);
   }
 
-  const PROXY = 'https://render.traffictorch.workers.dev/?url=';
-  let analyzedText = '';
-  let wordCount = 0;
-
   function getMainContent(doc) {
     const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
     if (main && main.textContent.trim().length > 600) return main;
+
     const candidates = doc.querySelectorAll('div, section, article');
     let best = null;
     let bestScore = 0;
@@ -49,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     if (best) return best;
+
     const body = doc.body.cloneNode(true);
     const removeSelectors = 'header, nav, footer, aside, .menu, .navbar, .sidebar, .cookie-banner, .popup, .social-links, .breadcrumbs';
     body.querySelectorAll(removeSelectors).forEach(e => e.remove());
@@ -63,11 +66,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
     const words = text.split(/\s+/).filter(w => w.length > 0);
     wordCount = words.length;
+
     const perplexity = computePerplexity(words);
     const burstiness = computeBurstiness(sentences, words);
     const repetition = computeRepetition(words);
     const sentenceLength = computeSentenceLength(sentences);
     const vocabulary = computeVocabulary(words, wordCount);
+
     const moduleScores = [
       perplexity.moduleScore,
       burstiness.moduleScore,
@@ -76,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       vocabulary.moduleScore
     ];
     const totalScore = moduleScores.reduce((a, b) => a + b, 0);
+
     return {
       moduleScores,
       totalScore,
@@ -87,18 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
         vocabulary: vocabulary.details
       }
     };
-  }
-
-  function getGradeColor(humanNormalized10) {
-    if (humanNormalized10 >= 8.0) return '#10b981';
-    if (humanNormalized10 >= 5.0) return '#f97316';
-    return '#ef4444';
-  }
-
-  function getOverallEmojiGrade(score) {
-    if (score >= 80) return { emoji: '✅', text: 'Likely Human', color: '#10b981' };
-    if (score >= 50) return { emoji: '⚠️', text: 'Moderate AI Patterns', color: '#f97316' };
-    return { emoji: '❌', text: 'Very Likely AI', color: '#ef4444' };
   }
 
   function getModuleGrade(score) {
@@ -114,28 +108,23 @@ document.addEventListener('DOMContentLoaded', () => {
   function getSubColor(score) {
     return score === 10 ? '#10b981' : '#ef4444';
   }
-
-  // ==================== URL FORM HANDLER ====================
-    urlForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  
+    // ==================== UNIFIED ANALYSIS + FULL REPORT (ONE SOURCE OF TRUTH) ====================
+  async function runAnalysis(isUrlMode) {
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
 
-    codeInput.value = '';
+    // Clear opposite input and reset state
+    if (isUrlMode) {
+      codeInput.value = '';
+    } else {
+      urlInput.value = '';
+    }
     analyzedText = '';
     wordCount = 0;
 
-    const url = urlInput.value.trim();
-    let normalizedUrl = url;
-    if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
-      normalizedUrl = 'https://' + normalizedUrl;
-    }
-    const urlToFetch = normalizedUrl;
-    if (!url) return;
-
-    // FIXED: Scroll FIRST, before any innerHTML change
+    // Scroll to results and show spinner
     results.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
     results.innerHTML = `
       <div class="py-0 text-center">
         <div class="inline-block w-16 h-16 mb-8">
@@ -143,28 +132,26 @@ document.addEventListener('DOMContentLoaded', () => {
             <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
           </svg>
         </div>
-        <p id="progressText" class="text-2xl font-bold text-orange-600 dark:text-orange-400">Fetching page...</p>
+        <p id="progressText" class="text-2xl font-bold text-orange-600 dark:text-orange-400">${isUrlMode ? 'Fetching page...' : 'Analyzing pasted HTML...'}</p>
         <p class="mt-4 text-sm text-gray-500 dark:text-gray-500">Analyzing content for AI patterns – please wait</p>
       </div>
     `;
     results.classList.remove('hidden');
 
     const progressText = document.getElementById('progressText');
-    const messages = [
-      "Fetching page...",
-      "Extracting main content",
-      "Analyzing predictability",
-      "Measuring variation & rhythm",
-      "Checking repetition patterns",
-      "Evaluating structure & depth",
-      "Assessing vocabulary richness",
-      "Calculating final score..."
+    const messages = isUrlMode ? [
+      "Fetching page...", "Extracting main content", "Analyzing predictability",
+      "Measuring variation & rhythm", "Checking repetition patterns",
+      "Evaluating structure & depth", "Assessing vocabulary richness", "Calculating final score..."
+    ] : [
+      "Parsing HTML code...", "Extracting main content", "Analyzing predictability",
+      "Measuring variation & rhythm", "Checking repetition patterns",
+      "Evaluating structure & depth", "Assessing vocabulary richness", "Calculating final score..."
     ];
+
     let delay = 800;
     messages.forEach(msg => {
-      setTimeout(() => {
-        if (progressText) progressText.textContent = msg;
-      }, delay);
+      setTimeout(() => { if (progressText) progressText.textContent = msg; }, delay);
       delay += 800;
     });
 
@@ -172,10 +159,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const startTime = Date.now();
 
     try {
-      const res = await fetch(PROXY + encodeURIComponent(urlToFetch));
-      if (!res.ok) throw new Error('Page not reachable');
-      const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
+      let doc;
+      if (isUrlMode) {
+        const url = urlInput.value.trim();
+        if (!url) return;
+        let normalizedUrl = url.startsWith('http') ? url : 'https://' + url;
+        const res = await fetch(PROXY + encodeURIComponent(normalizedUrl));
+        if (!res.ok) throw new Error('Page not reachable');
+        const html = await res.text();
+        doc = new DOMParser().parseFromString(html, 'text/html');
+      } else {
+        const htmlCode = codeInput.value.trim();
+        if (!htmlCode) return;
+        doc = new DOMParser().parseFromString(htmlCode, 'text/html');
+      }
+
       const mainElement = getMainContent(doc);
       const cleanElement = mainElement.cloneNode(true);
       cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
@@ -195,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
       const failingModules = modules.filter(m => m.score < 20).length;
       const boost = failingModules * 15;
+
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);
 
@@ -203,220 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-        results.innerHTML = `
-<div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
-  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
-    <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall AI Audit Score</p>
-    <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
-      <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
-        <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-        <circle cx="100" cy="100" r="90" stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'}" stroke-width="16" fill="none" stroke-dasharray="${(yourScore / 100) * 565} 565" stroke-linecap="round"/>
-      </svg>
-      <div class="absolute inset-0 flex items-center justify-center">
-        <div class="text-center">
-          <div class="text-5xl sm:text-6xl font-black drop-shadow-lg" style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">${yourScore}</div>
-          <div class="text-lg sm:text-xl opacity-80 -mt-1" style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">/100</div>
-        </div>
-      </div>
-    </div>
-    ${(() => {
-      const title = (doc?.title || '').trim();
-      if (!title) return '';
-      const truncated = title.length > 65 ? title.substring(0, 65) : title;
-      return `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
-    })()}
-    ${(() => {
-      const gradeText = yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work';
-      const gradeEmoji = yourScore >= 80 ? '✅' : yourScore >= 60 ? '⚠️' : '❌';
-      const gradeColor = yourScore >= 80 ? 'text-green-600 dark:text-green-400' : yourScore >= 60 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400';
-      return `<p class="${gradeColor} text-4xl sm:text-5xl font-bold text-center mt-4 sm:mt-6 drop-shadow-lg">${gradeEmoji} ${gradeText}</p>`;
-    })()}
-  </div>
-</div>
-<div class="max-w-5xl mx-auto my-16 px-4">
-  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
-    <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
-    <div class="hidden md:block w-full">
-      <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
-    </div>
-    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">Radar chart available on desktop/tablet</p>
-    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">Visual overview of your page performance across 5 key SEO Intent factors</p>
-  </div>
-</div>
-<div class="space-y-8">
-  <!-- Perplexity module and other 4 modules + Top Priority Fixes + Human Score + Potential Gains sections -->
-  <!-- (The full results HTML is intentionally kept identical to your original working version to avoid any changes) -->
-</div>
-        `;
-
-        setTimeout(() => {
-          const canvas = document.getElementById('health-radar');
-          if (canvas) {
-            try {
-              const ctx = canvas.getContext('2d');
-              const labelColor = '#9ca3af';
-              const gridColor = 'rgba(156, 163, 175, 0.3)';
-              const borderColor = '#fb923c';
-              const fillColor = 'rgba(251, 146, 60, 0.15)';
-              const normalizedScores = modules.map(m => m.score * 5);
-              window.myChart = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                  labels: modules.map(m => m.name),
-                  datasets: [{
-                    label: 'Human-Like Score',
-                    data: normalizedScores,
-                    backgroundColor: fillColor,
-                    borderColor: borderColor,
-                    borderWidth: 4,
-                    pointRadius: 8,
-                    pointHoverRadius: 12,
-                    pointBackgroundColor: normalizedScores.map(s => s >= 80 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 3
-                  }]
-                },
-                options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  scales: {
-                    r: {
-                      beginAtZero: true,
-                      min: 0,
-                      max: 100,
-                      ticks: { stepSize: 20, color: labelColor },
-                      grid: { color: gridColor },
-                      angleLines: { color: gridColor },
-                      pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
-                    }
-                  },
-                  plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                      callbacks: {
-                        label: function(context) {
-                          const rawScore = modules[context.dataIndex].score;
-                          return `${context.dataset.label}: ${rawScore}/20 (${context.parsed.r}/100)`;
-                        }
-                      }
-                    }
-                  }
-                }
-              });
-            } catch (e) {}
-          }
-        }, 150);
-
-        initShareReport(results);
-        initSubmitFeedback(results);
-
-        let fullUrl = urlInput.value.trim();
-        let displayUrl = 'traffictorch.net';
-        if (fullUrl) {
-          let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
-          const firstSlash = cleaned.indexOf('/');
-          if (firstSlash !== -1) {
-            displayUrl = cleaned.slice(0, firstSlash) + '\n' + cleaned.slice(firstSlash);
-          } else {
-            displayUrl = cleaned;
-          }
-        }
-        document.body.setAttribute('data-url', displayUrl);
-      }, remaining);
-    } catch (err) {
-      const elapsed = Date.now() - startTime;
-      const remaining = Math.max(0, minLoadTime - elapsed);
-      setTimeout(() => {
-        results.innerHTML = `
-          <div class="text-center py-20">
-            <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-            <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Please check the URL and try again.</p>
-          </div>
-        `;
-      }, remaining);
-    }
-  });
-
-  // ==================== CODE FORM HANDLER ====================
-  codeForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const canProceed = await canRunTool('limit-audit-id');
-    if (!canProceed) return;
-
-    urlInput.value = '';
-    analyzedText = '';
-    wordCount = 0;
-
-    const htmlCode = codeInput.value.trim();
-    if (!htmlCode) return;
-
-    // Auto scroll to spinner
-    results.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    results.innerHTML = `
-      <div class="py-0 text-center">
-        <div class="inline-block w-16 h-16 mb-8">
-          <svg viewBox="0 0 100 100" class="animate-spin text-orange-500">
-            <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
-          </svg>
-        </div>
-        <p id="progressText" class="text-2xl font-bold text-orange-600 dark:text-orange-400">Analyzing pasted HTML...</p>
-        <p class="mt-4 text-sm text-gray-500 dark:text-gray-500">Extracting content for AI patterns – please wait</p>
-      </div>
-    `;
-    results.classList.remove('hidden');
-
-    const progressText = document.getElementById('progressText');
-    const messages = [
-      "Parsing HTML code...",
-      "Extracting main content",
-      "Analyzing predictability",
-      "Measuring variation & rhythm",
-      "Checking repetition patterns",
-      "Evaluating structure & depth",
-      "Assessing vocabulary richness",
-      "Calculating final score..."
-    ];
-    let delay = 800;
-    messages.forEach(msg => {
-      setTimeout(() => {
-        if (progressText) progressText.textContent = msg;
-      }, delay);
-      delay += 800;
-    });
-
-    const minLoadTime = 5500;
-    const startTime = Date.now();
-
-    try {
-      const doc = new DOMParser().parseFromString(htmlCode, 'text/html');
-      const mainElement = getMainContent(doc);
-      const cleanElement = mainElement.cloneNode(true);
-      cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
-      let text = cleanElement.textContent || '';
-      text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
-      wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
-      analyzedText = text;
-
-      const analysis = analyzeAIContent(text);
-      const yourScore = analysis.totalScore;
-      const modules = [
-        { name: 'Perplexity', score: analysis.moduleScores[0] },
-        { name: 'Burstiness', score: analysis.moduleScores[1] },
-        { name: 'Repetition', score: analysis.moduleScores[2] },
-        { name: 'Sentence Length', score: analysis.moduleScores[3] },
-        { name: 'Vocabulary', score: analysis.moduleScores[4] }
-      ];
-      const failingModules = modules.filter(m => m.score < 20).length;
-      const boost = failingModules * 15;
-      const elapsed = Date.now() - startTime;
-      const remaining = Math.max(0, minLoadTime - elapsed);
-
-      setTimeout(() => {
-        const offset = 240;
-        const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-        window.scrollTo({ top: targetY, behavior: 'smooth' });
-
+        // FULL COMPLETE REPORT - identical for both URL and HTML input
         results.innerHTML = `
 <!-- Overall Score Card (AI Audit) -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -448,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })()}
   </div>
 </div>
+
 <!-- On-Page Health Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
@@ -459,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">Visual overview of your page performance across 5 key SEO Intent factors</p>
   </div>
 </div>
+
 <!-- Metrics Layout -->
 <div class="space-y-8">
   <!-- Perplexity - Full width -->
@@ -524,6 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
     })()}
   </div>
+
   <!-- Remaining 4 metrics -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
     ${[
@@ -583,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('')}
   </div>
 </div>
+
 <!-- Top Priority Fixes -->
 <div class="mt-20 space-y-8">
   <h2 class="text-4xl md:text-5xl font-black text-center text-gray-500 dark:text-gray-100">Top Priority Fixes</h2>
@@ -667,6 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }).join('');
   })()}
 </div>
+
 <!-- Human Score & Potential Gains -->
 <div class="max-w-5xl mx-auto mt-20 grid md:grid-cols-2 gap-8">
   <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
@@ -759,6 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
+
 <div class="text-center my-16 px-4">
   <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
     <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">Share Report ↗️</button>
@@ -833,88 +625,81 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
         `;
 
-        // RADAR CHART
+        // Radar chart
         setTimeout(() => {
           const canvas = document.getElementById('health-radar');
-          if (!canvas) return;
-          try {
-            const ctx = canvas.getContext('2d');
-            const labelColor = '#9ca3af';
-            const gridColor = 'rgba(156, 163, 175, 0.3)';
-            const borderColor = '#fb923c';
-            const fillColor = 'rgba(251, 146, 60, 0.15)';
-
-            const normalizedScores = modules.map(m => m.score * 5);
-
-            window.myChart = new Chart(ctx, {
-              type: 'radar',
-              data: {
-                labels: modules.map(m => m.name),
-                datasets: [{
-                  label: 'Human-Like Score',
-                  data: normalizedScores,
-                  backgroundColor: fillColor,
-                  borderColor: borderColor,
-                  borderWidth: 4,
-                  pointRadius: 8,
-                  pointHoverRadius: 12,
-                  pointBackgroundColor: normalizedScores.map(s => s >= 80 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
-                  pointBorderColor: '#fff',
-                  pointBorderWidth: 3
-                }]
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                  r: {
-                    beginAtZero: true,
-                    min: 0,
-                    max: 100,
-                    ticks: { stepSize: 20, color: labelColor },
-                    grid: { color: gridColor },
-                    angleLines: { color: gridColor },
-                    pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
-                  }
+          if (canvas) {
+            try {
+              const ctx = canvas.getContext('2d');
+              const labelColor = '#9ca3af';
+              const gridColor = 'rgba(156, 163, 175, 0.3)';
+              const borderColor = '#fb923c';
+              const fillColor = 'rgba(251, 146, 60, 0.15)';
+              const normalizedScores = modules.map(m => m.score * 5);
+              window.myChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                  labels: modules.map(m => m.name),
+                  datasets: [{
+                    label: 'Human-Like Score',
+                    data: normalizedScores,
+                    backgroundColor: fillColor,
+                    borderColor: borderColor,
+                    borderWidth: 4,
+                    pointRadius: 8,
+                    pointHoverRadius: 12,
+                    pointBackgroundColor: normalizedScores.map(s => s >= 80 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 3
+                  }]
                 },
-                plugins: {
-                  legend: { display: false },
-                  tooltip: {
-                    callbacks: {
-                      label: function(context) {
-                        const rawScore = modules[context.dataIndex].score;
-                        return `${context.dataset.label}: ${rawScore}/20 (${context.parsed.r}/100)`;
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+                    r: {
+                      beginAtZero: true,
+                      min: 0,
+                      max: 100,
+                      ticks: { stepSize: 20, color: labelColor },
+                      grid: { color: gridColor },
+                      angleLines: { color: gridColor },
+                      pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                    }
+                  },
+                  plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                      callbacks: {
+                        label: function(context) {
+                          const rawScore = modules[context.dataIndex].score;
+                          return `${context.dataset.label}: ${rawScore}/20 (${context.parsed.r}/100)`;
+                        }
                       }
                     }
                   }
                 }
-              }
-            });
-          } catch (e) {
-            // no console in production
+              });
+            } catch (e) {}
           }
         }, 150);
-        
+
         initShareReport(results);
         initSubmitFeedback(results);
 
-        // Clean URL for PDF/print
-        let fullUrl = document.getElementById('url-input').value.trim();
+        // Set display URL for print/share
         let displayUrl = 'traffictorch.net';
-        if (fullUrl) {
-          let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
-          const firstSlash = cleaned.indexOf('/');
-          if (firstSlash !== -1) {
-            const domain = cleaned.slice(0, firstSlash);
-            const path = cleaned.slice(firstSlash);
-            displayUrl = domain + '\n' + path;
-          } else {
-            displayUrl = cleaned;
+        if (isUrlMode) {
+          let fullUrl = urlInput.value.trim();
+          if (fullUrl) {
+            let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+            const firstSlash = cleaned.indexOf('/');
+            displayUrl = firstSlash !== -1 ? cleaned.slice(0, firstSlash) + '\n' + cleaned.slice(firstSlash) : cleaned;
           }
         }
         document.body.setAttribute('data-url', displayUrl);
-
       }, remaining);
+
     } catch (err) {
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);
@@ -922,10 +707,21 @@ document.addEventListener('DOMContentLoaded', () => {
         results.innerHTML = `
           <div class="text-center py-20">
             <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-            <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Please check the URL and try again.</p>
+            <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Please check the input and try again.</p>
           </div>
         `;
       }, remaining);
     }
+  }
+
+  // Attach both forms to the unified handler
+  urlForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    runAnalysis(true);
+  });
+
+  codeForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    runAnalysis(false);
   });
 });
