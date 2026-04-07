@@ -918,8 +918,8 @@ async function performAnalysis(source, isCode = false) {
         } catch (e) {}
       }, 150);
 
-      // Only run share/feedback for real URLs - skip for pasted HTML to prevent URL constructor error
-      if (inputUrl !== 'Pasted HTML Code') {
+// Only run share/feedback for real URLs - skip for pasted HTML to prevent URL constructor error
+      if (inputUrl !== 'Pasted HTML Code' && inputUrl !== 'HTML Code Analysis') {
         initShareReport(results);
         initSubmitFeedback(results);
       }
