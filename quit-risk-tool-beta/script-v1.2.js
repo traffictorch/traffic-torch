@@ -448,50 +448,51 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
   }
 
-  // New button handlers for URL and Code Analysis (keeps original shared auto-trigger intact)
   // Analyze URL button
-  analyzeUrlBtn.addEventListener('click', async () => {
-    const canProceed = await canRunTool('limit-audit-id');
-    if (!canProceed) return;
-
-    let url = urlInput.value.trim();
-    if (!url) {
-      urlInput.focus();
-      urlInput.classList.add('!border-red-500');
-      setTimeout(() => urlInput.classList.remove('!border-red-500'), 2000);
-      return;
-    }
-    if (!/^https?:\/\//i.test(url)) {
-      url = 'https://' + url;
-      urlInput.value = url;
-    }
-
-    results.classList.remove('hidden');
-    document.getElementById('loading').classList.remove('hidden');
-    document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    triggerAnalysis(url, null);
-  });
+analyzeUrlBtn.addEventListener('click', async () => {
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) return;
+  
+  // Clear HTML code input to prevent state leakage
+  codeInput.value = '';
+  
+  let url = urlInput.value.trim();
+  if (!url) {
+    urlInput.focus();
+    urlInput.classList.add('!border-red-500');
+    setTimeout(() => urlInput.classList.remove('!border-red-500'), 2000);
+    return;
+  }
+  if (!/^https?:\/\//i.test(url)) {
+    url = 'https://' + url;
+    urlInput.value = url;
+  }
+  results.classList.remove('hidden');
+  document.getElementById('loading').classList.remove('hidden');
+  document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  triggerAnalysis(url, null);
+});
 
   // Analyze Code button
-  analyzeCodeBtn.addEventListener('click', async () => {
-    const canProceed = await canRunTool('limit-audit-id');
-    if (!canProceed) return;
-
-    const htmlCode = codeInput.value.trim();
-    if (!htmlCode) {
-      codeInput.focus();
-      codeInput.classList.add('!border-red-500');
-      setTimeout(() => codeInput.classList.remove('!border-red-500'), 2000);
-      return;
-    }
-
-    results.classList.remove('hidden');
-    document.getElementById('loading').classList.remove('hidden');
-    document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    triggerAnalysis(null, htmlCode);
-  });
+analyzeCodeBtn.addEventListener('click', async () => {
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) return;
+  
+  // Clear URL input to prevent state leakage
+  urlInput.value = '';
+  
+  const htmlCode = codeInput.value.trim();
+  if (!htmlCode) {
+    codeInput.focus();
+    codeInput.classList.add('!border-red-500');
+    setTimeout(() => codeInput.classList.remove('!border-red-500'), 2000);
+    return;
+  }
+  results.classList.remove('hidden');
+  document.getElementById('loading').classList.remove('hidden');
+  document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  triggerAnalysis(null, htmlCode);
+});
 
   // Shared trigger function (supports both URL via proxy and direct HTML code)
   async function triggerAnalysis(url, htmlCode) {

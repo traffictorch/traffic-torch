@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
   
 // New elements for HTML input + separate buttons
-  const pageHtmlTextarea = document.getElementById('page-html') || { value: '' }; // safe fallback if element missing
+  const pageHtmlTextarea = document.getElementById('code-input');
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   
@@ -211,7 +211,7 @@ if (sharedUrl && sharedLocation) {
     analyzeUrlBtn.addEventListener('click', async () => {
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) return;
-      pageHtmlTextarea.value = '';
+      if (pageHtmlTextarea) pageHtmlTextarea.value = '';
 
       const yourUrl = pageUrlInput.value.trim();
       const location = locationInput.value.trim();

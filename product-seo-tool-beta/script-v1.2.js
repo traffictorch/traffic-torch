@@ -517,17 +517,17 @@ document.addEventListener('DOMContentLoaded', () => {
     runStep();
   }
 
-  async function performAnalysis(source, isCode = false) {
-    try {
-      let html;
-      let inputUrl = urlInput.value.trim();
-
-      if (isCode) {
-        html = source;
-        if (!html || html.length < 100) {
-          throw new Error('Please paste valid HTML code');
-        }
-      } else {
+async function performAnalysis(source, isCode = false) {
+  try {
+    let html;
+    let inputUrl;
+    if (isCode) {
+      html = source;
+      if (!html || html.length < 100) {
+        throw new Error('Please paste valid HTML code');
+      }
+      inputUrl = 'Pasted HTML Code';
+    } else {
         if (!source) throw new Error('Please enter a product page URL');
         let url = source.trim();
         if (!/^https?:\/\//i.test(url)) {
@@ -980,20 +980,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Button handlers
-  if (urlAnalyzeBtn) {
-    urlAnalyzeBtn.addEventListener('click', () => {
-      const url = urlInput.value.trim();
-      runProductSEOAnalysis(url, false);
-    });
-  }
-
-  if (codeAnalyzeBtn) {
-    codeAnalyzeBtn.addEventListener('click', () => {
-      const code = codeInput.value.trim();
-      runProductSEOAnalysis(code, true);
-    });
-  }
+// Button handlers
+if (urlAnalyzeBtn) {
+  urlAnalyzeBtn.addEventListener('click', () => {
+    codeInput.value = '';
+    const url = urlInput.value.trim();
+    runProductSEOAnalysis(url, false);
+  });
+}
+if (codeAnalyzeBtn) {
+  codeAnalyzeBtn.addEventListener('click', () => {
+    urlInput.value = '';
+    const code = codeInput.value.trim();
+    runProductSEOAnalysis(code, true);
+  });
+}
 
   // Shared URL logic
   const urlParams = new URLSearchParams(window.location.search);
