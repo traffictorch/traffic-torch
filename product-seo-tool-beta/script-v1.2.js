@@ -543,7 +543,6 @@ async function performAnalysis(source, isCode = false) {
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const seoData = getProductPageContent(doc, inputUrl);
       const seo = analyzeProductSEO(doc, inputUrl);
-
       const failedFactors = [];
       const modulesData = [
         { name: "On-Page SEO", result: seo.onPage, definitions: factorDefinitions.onPage },
@@ -551,7 +550,6 @@ async function performAnalysis(source, isCode = false) {
         { name: "Content & Media", result: seo.contentMedia, definitions: factorDefinitions.contentMedia },
         { name: "E-Commerce Signals", result: seo.ecommerce, definitions: factorDefinitions.ecommerce }
       ];
-
       modulesData.forEach(mod => {
         if (mod.result.details) {
           mod.definitions.factors.forEach(f => {
@@ -570,36 +568,29 @@ async function performAnalysis(source, isCode = false) {
           });
         }
       });
-
       const health = getHealthLabel(seo.score);
       loading.classList.add('hidden');
-
       if (results) {
         results.classList.remove('hidden');
         results.classList.add('block');
       }
-
       const safeScore = isNaN(seo.score) ? 60 : seo.score;
       const overallGrade = getGradeInfo(safeScore);
       const ringColor = safeScore < 50 ? '#ef4444' : safeScore < 70 ? '#fb923c' : safeScore < 85 ? '#22c55e' : '#10b981';
-
       const onPageHTML = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details);
       const technicalHTML = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details);
       const contentMediaHTML = buildModuleHTML('Content & Media', seo.contentMedia.score, factorDefinitions.contentMedia, seo.contentMedia.details);
       const ecommerceHTML = buildModuleHTML('E-Commerce Signals', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details);
-
       const modulePriority = [
         { name: 'On-Page SEO', score: seo.onPage.score, threshold: 70, data: factorDefinitions.onPage },
         { name: 'Technical SEO', score: seo.technical.score, threshold: 80, data: factorDefinitions.technical },
         { name: 'Content & Media', score: seo.contentMedia.score, threshold: 70, data: factorDefinitions.contentMedia },
         { name: 'E-Commerce Signals', score: seo.ecommerce.score, threshold: 75, data: factorDefinitions.ecommerce }
       ];
-
       const failedModules = modulePriority.filter(m => m.score < m.threshold);
       const priorityFixes = failedFactors
         .sort((a, b) => a.score - b.score)
         .slice(0, 3);
-
       let priorityFixesHTML = '';
       if (priorityFixes.length > 0) {
         priorityFixesHTML = priorityFixes.map((fix, index) => `
@@ -622,9 +613,7 @@ async function performAnalysis(source, isCode = false) {
             <p class="text-2xl text-gray-800 dark:text-gray-200">No critical metric failures detected.</p>
           </div>`;
       }
-
       const failedCount = failedModules.length;
-
       let impactHTML = `
         <div class="max-w-5xl mx-auto my-20 px-4">
           <div class="p-2 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
@@ -668,19 +657,15 @@ async function performAnalysis(source, isCode = false) {
             </p>
           </div>
         </div>`;
-
       const modules = [
         { name: 'On-Page SEO', score: seo.onPage.score },
         { name: 'Technical SEO', score: seo.technical.score },
         { name: 'Content & Media', score: seo.contentMedia.score },
         { name: 'E-Commerce Signals', score: seo.ecommerce.score }
       ];
-
       const scores = modules.map(m => m.score);
-
       const wrapper = document.createElement('div');
       wrapper.className = 'container mx-auto px-4 py-8';
-
       const scoreCard = document.createElement('div');
       scoreCard.innerHTML = `
         <div class="flex justify-center my-8 sm:my-12 px-0 sm:px-6">
@@ -710,8 +695,8 @@ async function performAnalysis(source, isCode = false) {
               const pageTitle = doc?.title?.trim() || '';
               const truncated = pageTitle.length > 65 ? pageTitle.substring(0, 65) + '...' : pageTitle;
               const displayUrl = (inputUrl && inputUrl !== 'Pasted HTML Code') ? inputUrl : 'HTML Code Analysis';
-              return truncated 
-                ? `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>` 
+              return truncated
+                ? `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`
                 : `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${displayUrl}</p>`;
             })()}
             <div class="mt-6 text-center">
@@ -747,7 +732,6 @@ async function performAnalysis(source, isCode = false) {
         </div>
       `;
       wrapper.appendChild(scoreCard);
-
       const radarSection = document.createElement('div');
       radarSection.innerHTML = `
         <div class="max-w-5xl mx-auto my-16 px-4">
@@ -766,7 +750,6 @@ async function performAnalysis(source, isCode = false) {
         </div>
       `;
       wrapper.appendChild(radarSection);
-
       const modulesGrid = document.createElement('div');
       modulesGrid.className = 'grid gap-8 my-16 max-w-7xl mx-auto px-0';
       modulesGrid.innerHTML = `
@@ -774,7 +757,6 @@ async function performAnalysis(source, isCode = false) {
         <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>
       `;
       wrapper.appendChild(modulesGrid);
-
       const prioritySection = document.createElement('div');
       prioritySection.className = 'text-center my-20';
       prioritySection.innerHTML = `
@@ -790,16 +772,13 @@ async function performAnalysis(source, isCode = false) {
           </p>` : ''}
       `;
       wrapper.appendChild(prioritySection);
-
       const impactSection = document.createElement('div');
       impactSection.innerHTML = impactHTML;
       wrapper.appendChild(impactSection);
-
       const pluginSection = document.createElement('div');
       pluginSection.id = 'plugin-solutions-section';
       pluginSection.className = 'mt-16 px-1';
       wrapper.appendChild(pluginSection);
-
       const pdfSection = document.createElement('div');
       pdfSection.className = 'text-center my-16';
       pdfSection.innerHTML = `
@@ -884,7 +863,6 @@ async function performAnalysis(source, isCode = false) {
       `;
       wrapper.appendChild(pdfSection);
       results.appendChild(wrapper);
-
       if (typeof renderPluginSolutions === 'function') {
         renderPluginSolutions(failedFactors, 'plugin-solutions-section');
       } else {
@@ -894,7 +872,6 @@ async function performAnalysis(source, isCode = false) {
           }
         }, 500);
       }
-
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) return;
@@ -940,10 +917,8 @@ async function performAnalysis(source, isCode = false) {
           });
         } catch (e) {}
       }, 150);
-
       initShareReport(results);
       initSubmitFeedback(results);
-
       document.addEventListener('click', e => {
         const target = e.target.closest('.more-details, .show-fixes');
         if (!target) return;
@@ -957,12 +932,10 @@ async function performAnalysis(source, isCode = false) {
           if (panel) panel.classList.toggle('hidden');
         }
       });
-
       // Scroll to results
       const offset = 140;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
-
     } catch (err) {
       loading.classList.add('hidden');
       if (results) {

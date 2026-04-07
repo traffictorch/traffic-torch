@@ -5,32 +5,50 @@ export function computeStructuredData(doc) {
   const jsonLdScripts = doc.querySelectorAll('script[type="application/ld+json"]');
   let structuredData = 0;
   let hasValidJsonLd = false;
+
   jsonLdScripts.forEach(s => {
     try {
-      const data = JSON.parse(s.textContent);
+      let data = JSON.parse(s.textContent.trim());
       hasValidJsonLd = true;
+
+      // Handle common wrappers: @graph array, top-level array, or single object
+      if (data['@graph'] && Array.isArray(data['@graph'])) {
+        data = data['@graph'];
+      }
       const items = Array.isArray(data) ? data : [data];
+
       items.forEach(item => {
-        if (!item?.['@type']) return;
+        if (!item || typeof item !== 'object') return;
+
         const type = item['@type'];
-        if (['Article', 'BlogPosting', 'NewsArticle', 'TechArticle', 'ScholarlyArticle'].includes(type)) {
-          hasArticle = true;
-        }
-        if (['FAQPage', 'HowTo'].includes(type)) {
-          hasFaqHowto = true;
-        }
-        if (type === 'Person') {
-          if (hasArticle || item.name?.length > 3 || item.givenName || item.familyName) {
-            hasPerson = true;
+        if (!type) return;
+
+        const types = Array.isArray(type) ? type : [type];
+
+        types.forEach(t => {
+          if (['Article', 'BlogPosting', 'NewsArticle', 'TechArticle', 'ScholarlyArticle'].includes(t)) {
+            hasArticle = true;
           }
-        }
+          if (['FAQPage', 'HowTo'].includes(t)) {
+            hasFaqHowto = true;
+          }
+          if (t === 'Person') {
+            if (hasArticle || (item.name && item.name.length > 3) || item.givenName || item.familyName) {
+              hasPerson = true;
+            }
+          }
+        });
       });
-    } catch {}
+    } catch (e) {
+      // silently skip invalid JSON
+    }
   });
+
   if (hasValidJsonLd) structuredData += 20;
   if (hasArticle) structuredData += 35;
   if (hasFaqHowto) structuredData += 18;
   if (hasPerson) structuredData += 22;
+
   return {
     score: structuredData,
     flags: {
