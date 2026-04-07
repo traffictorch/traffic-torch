@@ -425,22 +425,12 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
       <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
         <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-        <circle cx="100" cy="100" r="90"
-                stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'}"
-                stroke-width="16" fill="none"
-                stroke-dasharray="${(yourScore / 100) * 565} 565"
-                stroke-linecap="round"/>
+        <circle cx="100" cy="100" r="90" stroke="${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'}" stroke-width="16" fill="none" stroke-dasharray="${(yourScore / 100) * 565} 565" stroke-linecap="round"/>
       </svg>
       <div class="absolute inset-0 flex items-center justify-center">
         <div class="text-center">
-          <div class="text-5xl sm:text-6xl font-black drop-shadow-lg"
-               style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
-            ${yourScore}
-          </div>
-          <div class="text-lg sm:text-xl opacity-80 -mt-1"
-               style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">
-            /100
-          </div>
+          <div class="text-5xl sm:text-6xl font-black drop-shadow-lg" style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">${yourScore}</div>
+          <div class="text-lg sm:text-xl opacity-80 -mt-1" style="color: ${yourScore >= 80 ? '#22c55e' : yourScore >= 60 ? '#f97316' : '#ef4444'};">/100</div>
         </div>
       </div>
     </div>
@@ -465,12 +455,8 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="hidden md:block w-full">
       <canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas>
     </div>
-    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">
-      Radar chart available on desktop/tablet
-    </p>
-    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
-      Visual overview of your page performance across 5 key SEO Intent factors
-    </p>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">Radar chart available on desktop/tablet</p>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">Visual overview of your page performance across 5 key SEO Intent factors</p>
   </div>
 </div>
 <!-- Metrics Layout -->
@@ -498,8 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="relative w-40 h-40 mx-auto">
           <svg viewBox="0 0 160 160" class="-rotate-90">
             <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="16" fill="none"/>
-            <circle cx="80" cy="80" r="70" stroke="${gradeColor}" stroke-width="16" fill="none"
-                    stroke-dasharray="${m.score * 22} 440" stroke-linecap="round"/>
+            <circle cx="80" cy="80" r="70" stroke="${gradeColor}" stroke-width="16" fill="none" stroke-dasharray="${m.score * 22} 440" stroke-linecap="round"/>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
             <div class="text-5xl font-bold" style="color: ${gradeColor}">${m.score}</div>
@@ -512,18 +497,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} Trigram Entropy</p>
           <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} Bigram Entropy</p>
         </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
-          More Details
-        </button>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">More Details</button>
         <div class="hidden mt-6 space-y-6 text-base text-gray-700 dark:text-gray-300 leading-relaxed">
           <p class="text-center mb-8"><a href="#perplexity" class="text-orange-500 font-bold hover:underline">How Perplexity is tested? →</a></p>
           <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info}</p>
           <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve Overall:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
           <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
         </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
-          Show Fixes (${failedCount})
-        </button>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">Show Fixes (${failedCount})</button>
         <div class="hidden mt-6 space-y-8">
           ${failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All tests passed! ✅</p>` : ''}
           ${sub1Score < 10 ? `
@@ -561,8 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="relative w-32 h-32 mx-auto">
           <svg viewBox="0 0 128 128" class="-rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-            <circle cx="64" cy="64" r="56" stroke="${gradeColor}" stroke-width="12" fill="none"
-                    stroke-dasharray="${m.score * 17.6} 352" stroke-linecap="round"/>
+            <circle cx="64" cy="64" r="56" stroke="${gradeColor}" stroke-width="12" fill="none" stroke-dasharray="${m.score * 17.6} 352" stroke-linecap="round"/>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
             <div class="text-3xl font-bold" style="color: ${gradeColor}">${m.score}</div>
@@ -575,18 +555,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} ${m.subNames[0]}</p>
           <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} ${m.subNames[1]}</p>
         </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
-          More Details
-        </button>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">More Details</button>
         <div class="hidden mt-4 space-y-6 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
           <p class="text-center mb-8"><a href="#${m.id}" class="text-orange-500 font-bold hover:underline">How ${m.name} is tested? →</a></p>
           <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is?:</span> ${m.info}</p>
           <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve?:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
           <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters?:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
         </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
-          Show Fixes (${failedCount})
-        </button>
+        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">Show Fixes (${failedCount})</button>
         <div class="hidden mt-4 space-y-8">
           ${failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold">All tests passed! ✅</p>` : ''}
           ${sub1Score < 10 ? `
@@ -785,25 +761,11 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 <div class="text-center my-16 px-4">
   <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-    <!-- Share Report - Green - first -->
-    <button id="share-report-btn"
-            class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Share Report ↗️
-    </button>
-    <!-- Save Report - Orange - second -->
-    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-            class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Save Report 📥
-    </button>
-    <!-- Submit Feedback - Blue - third -->
-    <button id="feedback-btn"
-            class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-     Submit Feedback 💬
-    </button>
+    <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">Share Report ↗️</button>
+    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">Save Report 📥</button>
+    <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">Submit Feedback 💬</button>
   </div>
-  <!-- Share message - placed directly below buttons, always visible when triggered -->
   <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-  <!-- Share Report Form (still hidden/expandable) -->
   <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
       <div>
@@ -829,7 +791,6 @@ document.addEventListener('DOMContentLoaded', () => {
       <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
     </form>
   </div>
-  <!-- Feedback Form (unchanged) -->
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
       <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
