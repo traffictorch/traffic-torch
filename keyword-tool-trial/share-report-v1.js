@@ -5,6 +5,14 @@ export function initShareReport(resultsContainer) {
   }
 
   shareBtn.addEventListener('click', async () => {
+    // Detect analysis type from the last run (set in runAnalysis)
+    const analysisType = resultsContainer.getAttribute('data-analysis-type') || 'url';
+
+    if (analysisType === 'code') {
+      showMessage('⚠️ Share Report only works for URL audits.<br>For HTML code audit use the "Save Report" button.', 'error');
+      return;
+    }
+
     const inputUrl = document.getElementById('page-url')?.value.trim();
     if (!inputUrl) {
       showMessage('No URL entered yet', 'error');
@@ -22,7 +30,6 @@ export function initShareReport(resultsContainer) {
     } else {
       pageTitle = document.title.trim() || 'this page';
     }
-
     pageTitle = pageTitle
       .replace(/Keyword Optimizer & SEO Checker – Audit Tool | Traffic Torch/gi, '')
       .trim() || 'this page';
@@ -70,7 +77,6 @@ export function initShareReport(resultsContainer) {
     messageDiv.innerHTML = prefix + text;
     messageDiv.className = classNames;
     messageDiv.classList.remove('hidden');
-
     setTimeout(() => messageDiv.classList.add('hidden'), 9000);
   }
 }

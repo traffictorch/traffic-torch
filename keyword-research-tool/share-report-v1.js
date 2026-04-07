@@ -7,9 +7,17 @@ export function initShareReport() {
   shareBtn.addEventListener('click', async () => {
     const keywordInput = document.getElementById('seed');
     const urlInput = document.getElementById('url');
+    const codeInput = document.getElementById('code-input');
 
     const keyword = keywordInput?.value.trim() || '';
     const url = urlInput?.value.trim() || '';
+    const hasCode = codeInput && codeInput.value.trim() !== '';
+
+    // Detect if user is in HTML Code mode (has content in code input)
+    if (hasCode) {
+      showMessage('⚠️ Share Report only works for URL audits.<br>For HTML code audit use "Save Report" button.', 'error');
+      return;
+    }
 
     if (!keyword && !url) {
       showMessage('Please enter a keyword or URL to share a report', 'error');
@@ -18,10 +26,10 @@ export function initShareReport() {
 
     const baseUrl = window.location.origin + window.location.pathname;
 
-    // Clean keyword for URL (encode spaces, commas, etc.)
-    const encodedKeyword = encodeURIComponent(keyword.trim());
+    // Clean keyword for URL
+    const encodedKeyword = encodeURIComponent(keyword);
 
-    // Clean URL param + readable domain for text
+    // Clean URL param + readable domain
     let encodedUrl = '';
     let displayDomain = '';
     if (url) {
@@ -35,10 +43,11 @@ export function initShareReport() {
       }
     }
 
-    // Build short share URL with params
+    // Build short share URL with params (only keyword + url, never code)
     let shareParams = '';
     if (keyword) shareParams += `keyword=${encodedKeyword}`;
     if (url) shareParams += (shareParams ? '&' : '') + `url=${encodedUrl}`;
+
     const shareUrl = `${baseUrl}${shareParams ? '?' + shareParams : ''}`;
 
     // Short, clean share text
@@ -78,7 +87,7 @@ export function initShareReport() {
       prefix = '✅ ';
     } else if (type === 'error') {
       classNames += 'bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200';
-      prefix = '⚠️ ';
+      prefix = '';
     } else {
       classNames += 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200';
       prefix = 'ℹ️ ';
@@ -87,7 +96,6 @@ export function initShareReport() {
     messageDiv.innerHTML = prefix + text;
     messageDiv.className = classNames;
     messageDiv.classList.remove('hidden');
-
     setTimeout(() => messageDiv.classList.add('hidden'), 9000);
   }
 }

@@ -869,4 +869,35 @@ setTimeout(() => {
 }, 0);
     
   }
+  
+  // Validation popup functions
+function showValidationPopup(message) {
+  const popup = document.getElementById('validation-popup');
+  const popupMsg = document.getElementById('popup-message');
+  if (popup && popupMsg) {
+    popupMsg.textContent = message;
+    popup.classList.remove('hidden');
+    // Optional: prevent background scroll
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeValidationPopup() {
+  const popup = document.getElementById('validation-popup');
+  if (popup) {
+    popup.classList.add('hidden');
+    document.body.style.overflow = 'visible';
+  }
+}
+
+// Close popup when clicking outside the content area
+document.addEventListener('click', (e) => {
+  const popup = document.getElementById('validation-popup');
+  if (popup && !popup.classList.contains('hidden')) {
+    const content = popup.querySelector('div');
+    if (e.target === popup) {
+      closeValidationPopup();
+    }
+  }
+});
 });

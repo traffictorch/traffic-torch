@@ -51,31 +51,28 @@ document.addEventListener('DOMContentLoaded', () => {
       urlAnalyzeBtn.addEventListener('click', async () => {
         if (hasCheckedLimit) return;
         hasCheckedLimit = true;
-
         const canProceed = await canRunTool('limit-audit-id');
         if (!canProceed) {
           hasCheckedLimit = false;
           return;
         }
-
         const seedValue = seedInput?.value.trim() || '';
         let inputUrl = urlInputEl?.value.trim();
-
         if (!seedValue && !inputUrl) {
           alert('Please enter at least a keyword or URL');
           hasCheckedLimit = false;
           return;
         }
-
         if (inputUrl && !inputUrl.startsWith('http')) {
           inputUrl = `https://${inputUrl}`;
         }
+        // Explicitly clear the opposite input to prevent state leakage
+        if (codeInput) codeInput.value = '';
 
         // Show spinner and scroll
         loader.classList.remove('hidden');
         progressText.textContent = 'Analyzing...';
         progressTip.textContent = tips[0];
-
         setTimeout(() => {
           loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 50);
@@ -100,27 +97,25 @@ document.addEventListener('DOMContentLoaded', () => {
       codeAnalyzeBtn.addEventListener('click', async () => {
         if (hasCheckedLimit) return;
         hasCheckedLimit = true;
-
         const canProceed = await canRunTool('limit-audit-id');
         if (!canProceed) {
           hasCheckedLimit = false;
           return;
         }
-
         const seedValue = seedInput?.value.trim() || '';
         const rawCode = codeInput?.value.trim();
-
         if (!rawCode) {
           alert('Please paste HTML code');
           hasCheckedLimit = false;
           return;
         }
+        // Explicitly clear the opposite input to prevent state leakage
+        if (urlInputEl) urlInputEl.value = '';
 
         // Show spinner and scroll
         loader.classList.remove('hidden');
         progressText.textContent = 'Analyzing...';
         progressTip.textContent = tips[0];
-
         setTimeout(() => {
           loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 50);

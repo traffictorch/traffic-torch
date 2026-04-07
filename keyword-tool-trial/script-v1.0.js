@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
       targetKeywordInput.focus();
       return;
     }
-
+    codeInput.value = '';
     let fullUrl = yourUrl;
     if (!/^https?:\/\//i.test(yourUrl)) {
       fullUrl = 'https://' + yourUrl;
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
       codeInput.focus();
       return;
     }
-
+    pageUrlInput.value = '';
     startSpinnerLoader();
 
     let yourDoc;
