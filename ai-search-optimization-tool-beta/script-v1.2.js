@@ -144,7 +144,7 @@ const initTool = (form, results, progressContainer) => {
       const structData = computeStructuredData(doc);
       const structuredData = structData.score;
 
-      const eeatData = computeEEAT(doc, analyzedUrl);
+      const eeatData = computeEEAT(doc, codeInput ? null : analyzedUrl);
       const eeat = eeatData.score;
 
       const scanData = computeScannability(doc, mainEl);
