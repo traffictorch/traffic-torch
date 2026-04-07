@@ -917,8 +917,13 @@ async function performAnalysis(source, isCode = false) {
           });
         } catch (e) {}
       }, 150);
-      initShareReport(results);
-      initSubmitFeedback(results);
+
+      // Only run share/feedback for real URLs - skip for pasted HTML to prevent URL constructor error
+      if (inputUrl !== 'Pasted HTML Code') {
+        initShareReport(results);
+        initSubmitFeedback(results);
+      }
+
       document.addEventListener('click', e => {
         const target = e.target.closest('.more-details, .show-fixes');
         if (!target) return;
@@ -971,18 +976,18 @@ if (codeAnalyzeBtn) {
   });
 }
 
-  // Shared URL logic
-  const urlParams = new URLSearchParams(window.location.search);
-  const sharedUrl = urlParams.get('url');
-  if (sharedUrl && urlInput) {
-    const cleanUrl = sharedUrl.trim()
-      .replace(/^https?:\/\//i, '')
-      .replace(/\/$/, '');
-    urlInput.value = cleanUrl;
-    if (cleanUrl && cleanUrl.length > 5) {
-      setTimeout(() => {
-        if (urlAnalyzeBtn) urlAnalyzeBtn.click();
-      }, 100);
-    }
+// Shared URL logic - safely guarded to prevent URL constructor error on HTML paste
+const urlParams = new URLSearchParams(window.location.search);
+const sharedUrl = urlParams.get('url');
+if (sharedUrl && urlInput) {
+  const cleanUrl = sharedUrl.trim()
+    .replace(/^https?:\/\//i, '')
+    .replace(/\/$/, '');
+  urlInput.value = cleanUrl;
+  if (cleanUrl && cleanUrl.length > 5) {
+    setTimeout(() => {
+      if (urlAnalyzeBtn) urlAnalyzeBtn.click();
+    }, 100);
   }
+}
 });

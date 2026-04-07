@@ -123,8 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
     analyzedText = '';
     wordCount = 0;
 
-    // Scroll to results and show spinner
-    results.scrollIntoView({ behavior: 'smooth', block: 'center' });
     results.innerHTML = `
       <div class="py-0 text-center">
         <div class="inline-block w-16 h-16 mb-8">
@@ -137,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     results.classList.remove('hidden');
-
+    results.scrollIntoView({ behavior: 'smooth', block: 'center' });
     const progressText = document.getElementById('progressText');
     const messages = isUrlMode ? [
       "Fetching page...", "Extracting main content", "Analyzing predictability",
