@@ -520,7 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function performAnalysis(source, isCode = false) {
   try {
     let html;
-    let inputUrl;
+    let inputUrl = '';
     if (isCode) {
       html = source;
       if (!html || html.length < 100) {
@@ -528,18 +528,17 @@ async function performAnalysis(source, isCode = false) {
       }
       inputUrl = 'Pasted HTML Code';
     } else {
-        if (!source) throw new Error('Please enter a product page URL');
-        let url = source.trim();
-        if (!/^https?:\/\//i.test(url)) {
-          url = 'https://' + url;
-          urlInput.value = url;
-        }
-        inputUrl = url;
-
-        const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
-        if (!res.ok) throw new Error('Page not reachable or blocked');
-        html = await res.text();
+      if (!source) throw new Error('Please enter a product page URL');
+      let url = source.trim();
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+        urlInput.value = url;
       }
+      inputUrl = url;
+      const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
+      if (!res.ok) throw new Error('Page not reachable or blocked');
+      html = await res.text();
+    }
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const seoData = getProductPageContent(doc, inputUrl);
@@ -710,7 +709,10 @@ async function performAnalysis(source, isCode = false) {
             ${(() => {
               const pageTitle = doc?.title?.trim() || '';
               const truncated = pageTitle.length > 65 ? pageTitle.substring(0, 65) + '...' : pageTitle;
-              return truncated ? `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>` : '';
+              const displayUrl = (inputUrl && inputUrl !== 'Pasted HTML Code') ? inputUrl : 'HTML Code Analysis';
+              return truncated 
+                ? `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>` 
+                : `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${displayUrl}</p>`;
             })()}
             <div class="mt-6 text-center">
               <p class="text-6xl sm:text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">
@@ -842,7 +844,7 @@ async function performAnalysis(source, isCode = false) {
   <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
       <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-        Feedback for Product SEO Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
+        Feedback for Product SEO Tool on <strong>${inputUrl && inputUrl !== 'Pasted HTML Code' ? inputUrl : 'Pasted HTML Code'}</strong>
       </p>
       <form id="feedback-form" class="space-y-6">
         <div>

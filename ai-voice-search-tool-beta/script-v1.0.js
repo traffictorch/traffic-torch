@@ -104,6 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Unified analysis function used by both URL and Code buttons
   async function runAnalysis(htmlContent, pageUrl = '') {
+    analyzedText = '';
+    wordCount = 0;
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
 
@@ -584,12 +586,11 @@ ${(() => {
     e.preventDefault();
     const url = urlInput.value.trim();
     if (!url) return;
-
+    codeInput.value = '';
     let normalizedUrl = url;
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
       normalizedUrl = 'https://' + normalizedUrl;
     }
-
     try {
       const res = await fetch(PROXY + encodeURIComponent(normalizedUrl));
       if (!res.ok) throw new Error('Page not reachable');
@@ -613,6 +614,7 @@ ${(() => {
       codeInput.focus();
       return;
     }
+    urlInput.value = '';
     runAnalysis(htmlCode, 'Pasted HTML Code');
   });
 });

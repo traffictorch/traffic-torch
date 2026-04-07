@@ -121,6 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
 
+    codeInput.value = '';
+    analyzedText = '';
+    wordCount = 0;
+
     const url = urlInput.value.trim();
     let normalizedUrl = url;
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
@@ -338,6 +342,10 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
+
+    urlInput.value = '';
+    analyzedText = '';
+    wordCount = 0;
 
     const htmlCode = codeInput.value.trim();
     if (!htmlCode) return;
