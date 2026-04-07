@@ -918,7 +918,7 @@ async function performAnalysis(source, isCode = false) {
         } catch (e) {}
       }, 150);
 
-// Only run share/feedback for real URLs - skip for pasted HTML to prevent URL constructor error
+      // Only run share/feedback for real URLs - skip for pasted HTML to prevent URL constructor error
       if (inputUrl !== 'Pasted HTML Code' && inputUrl !== 'HTML Code Analysis') {
         initShareReport(results);
         initSubmitFeedback(results);
@@ -937,6 +937,7 @@ async function performAnalysis(source, isCode = false) {
           if (panel) panel.classList.toggle('hidden');
         }
       });
+
       // Scroll to results
       const offset = 140;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
@@ -957,8 +958,8 @@ async function performAnalysis(source, isCode = false) {
             </p>
           </div>`;
       }
+      console.error('Product SEO Analysis Error:', err);
     }
-  }
 
 // Button handlers
 if (urlAnalyzeBtn) {
