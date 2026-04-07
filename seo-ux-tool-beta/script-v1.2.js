@@ -78,8 +78,9 @@ const deepDiveIdMap = {
   indexability: 'indexability'
 };
 
-  let currentAnalysisMode = null; // 'url' or 'code'
-  let currentAnalysisHtml = '';   // Stores only the HTML actually being analyzed
+  let currentAnalysisMode = null; 
+  let currentAnalysisHtml = '';  
+  let healthRadarChart = null;  
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
@@ -614,18 +615,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Radar Chart
     try {
       if (window.innerWidth >= 768 && document.getElementById('health-radar')) {
-        const radarCtx = document.getElementById('health-radar').getContext('2d');
+        const radarCanvas = document.getElementById('health-radar');
+        
+        if (healthRadarChart) {
+          healthRadarChart.destroy();
+          healthRadarChart = null;
+        }
+
+        const radarCtx = radarCanvas.getContext('2d');
         const isDark = document.documentElement.classList.contains('dark');
         const gridColor = isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(0, 0, 0, 0.2)';
         const labelColor = '#9ca3af';
         const lineColor = '#9ca3af';
         const fillColor = isDark ? 'rgba(156, 163, 175, 0.25)' : 'rgba(156, 163, 175, 0.1)';
+
         const radarLabels = modules.map(m => m.name);
         const radarScores = modules.map(mod => {
           const scoreEl = document.querySelector(`#${mod.id}-score .number`);
           return scoreEl ? parseInt(scoreEl.textContent.trim(), 10) || 0 : 0;
         });
-        new Chart(radarCtx, {
+
+        healthRadarChart = new Chart(radarCtx, {
           type: 'radar',
           data: {
             labels: radarLabels,
