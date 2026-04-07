@@ -78,6 +78,9 @@ const deepDiveIdMap = {
   indexability: 'indexability'
 };
 
+  let currentAnalysisMode = null; // 'url' or 'code'
+  let currentAnalysisHtml = '';   // Stores only the HTML actually being analyzed
+
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
 
@@ -179,7 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
-    // Show spinner immediately and keep it visible
+    // Clear opposite input to prevent leakage
+    if (codeInput) codeInput.value = '';
+
     if (progressContainer) {
       progressContainer.classList.remove('hidden');
       progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -189,34 +194,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!canProceed) return;
 
     progressText.textContent = 'Fetching page...';
+
     const originalInput = urlInput.value.trim();
     const url = cleanUrl(originalInput);
+
     if (!url) {
       alert('Please enter a valid URL');
       if (progressContainer) progressContainer.classList.add('hidden');
       return;
     }
 
+    currentAnalysisMode = 'url';
+
     const proxyUrl = 'https://render.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+
     try {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
+      currentAnalysisHtml = html; // Store only this analysis data
 
-      // Await the full analysis so spinner stays visible
+      const doc = new DOMParser().parseFromString(html, 'text/html');
       await runFullAnalysis(html, doc, url, originalInput);
     } catch (err) {
       alert('Failed to analyze — try another site or check the URL');
+      if (progressContainer) progressContainer.classList.add('hidden');
     }
-    // NO finally block here - hide happens only at the end of runFullAnalysis
   });
 
   // Code Analysis Button Handler - uses HTML textarea input
   if (analyzeCodeBtn && codeInput) {
     analyzeCodeBtn.addEventListener('click', async () => {
+      // Clear opposite input to prevent leakage
+      if (urlInput) urlInput.value = '';
 
-      // Show spinner immediately and keep it visible
       if (progressContainer) {
         progressContainer.classList.remove('hidden');
         progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -228,26 +239,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const htmlCode = codeInput.value.trim();
       if (!htmlCode || htmlCode.length < 50) {
         alert('Please paste a valid full HTML code of the page');
+        if (progressContainer) progressContainer.classList.add('hidden');
         return;
       }
 
       progressText.textContent = 'Analyzing pasted HTML code...';
 
+      currentAnalysisMode = 'code';
+      currentAnalysisHtml = htmlCode; // Store only this analysis data
+
       try {
         const doc = new DOMParser().parseFromString(htmlCode, 'text/html');
         const url = 'https://example.com/pasted-code';
-
-        // Await the full analysis so spinner stays visible
         await runFullAnalysis(htmlCode, doc, url, '');
       } catch (err) {
         alert('Failed to analyze pasted code');
+        if (progressContainer) progressContainer.classList.add('hidden');
       }
-      // NO finally block here - hide happens only at the end of runFullAnalysis
     });
   }
 
-  // Shared analysis function used by both URL and Code paths
+  // Shared analysis function - now receives clean isolated data only
   async function runFullAnalysis(html, doc, url, originalInput) {
+
     const resultsWrapper = document.getElementById('results-wrapper');
     const modules = [
       { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
