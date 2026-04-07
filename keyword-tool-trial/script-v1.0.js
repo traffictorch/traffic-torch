@@ -117,6 +117,13 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     results.classList.remove('hidden');
+
+    // Auto scroll to spinner when loader starts (works for both URL and Code buttons)
+    results.scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'center' 
+    });
+
     document.getElementById('module-text').textContent = progressModules[0];
     currentModuleIndex = 1;
     moduleInterval = setInterval(() => {

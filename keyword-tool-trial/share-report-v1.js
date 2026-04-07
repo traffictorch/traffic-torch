@@ -15,7 +15,7 @@ export function initShareReport(resultsContainer) {
 
     const inputUrl = document.getElementById('page-url')?.value.trim();
     if (!inputUrl) {
-      showMessage('No URL entered yet', 'error');
+      showMessage('⚠️ Share Report only works for URL audits.<br>For HTML code audit use the "Save Report" button.', 'error');
       return;
     }
 

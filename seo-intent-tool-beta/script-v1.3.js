@@ -1,4 +1,6 @@
-// script-v1.3.js → v1.4 - Complete full replacement, no omissions
+// script-v1.3 - Complete 
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { analyzeExperience } from './modules/experience.js';
 import { analyzeExpertise } from './modules/expertise.js';
@@ -10,7 +12,6 @@ import { analyzeSchema } from './modules/schema.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
-
 document.addEventListener('DOMContentLoaded', () => {
   const defaultConfig = {
     parsing: {
@@ -40,10 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     }
   };
-
   let config = { ...defaultConfig };
   const urlParams = new URLSearchParams(window.location.search);
-
   const sharedUrlParam = urlParams.get('url');
   if (sharedUrlParam) {
     try {
@@ -52,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (input) input.value = decoded;
     } catch (e) {}
   }
-
   function deepMerge(target, source) {
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
@@ -64,25 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return target;
   }
-
   const results = document.getElementById('results');
   const urlInput = document.getElementById('url-input');
   const codeInput = document.getElementById('code-input');
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
-
-
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
-
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
   function cleanUrl(u) {
     const trimmed = u.trim();
     if (!trimmed) return '';
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
     return 'https://' + trimmed;
   }
-
   function getVisibleText(root) {
     let text = '';
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
@@ -100,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return text.trim();
   }
-
   analyzeUrlBtn.addEventListener('click', async () => {
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
@@ -109,9 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
       alert("Please enter a valid URL");
       return;
     }
+    codeInput.value = '';
     startAnalysis(url, null);
   });
-
   analyzeCodeBtn.addEventListener('click', async () => {
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
@@ -120,15 +111,14 @@ document.addEventListener('DOMContentLoaded', () => {
       alert("Please paste HTML code to analyze");
       return;
     }
+    urlInput.value = '';
     startAnalysis(null, customHtml);
   });
-
   async function startAnalysis(url, customHtml) {
     results.classList.remove('hidden');
     const offset = 120;
     const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
     window.scrollTo({ top: targetY, behavior: 'smooth' });
-
     results.innerHTML = `
       <div id="analysis-progress" class="flex flex-col items-center justify-center py-12 mt-8">
         <div class="relative w-20 h-20">
@@ -141,13 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <p id="progress-text" class="mt-6 text-xl font-medium text-orange-500"></p>
       </div>
     `;
-
     const progressText = document.getElementById('progress-text');
-
     try {
       let html = '';
       let doc;
-
       if (customHtml) {
         progressText.textContent = "Analyzing provided HTML...";
         html = customHtml;
@@ -159,31 +146,25 @@ document.addEventListener('DOMContentLoaded', () => {
         html = await res.text();
         doc = new DOMParser().parseFromString(html, 'text/html');
       }
-
       const text = getVisibleText(doc.body) || '';
       const cleanedText = text.replace(/\s+/g, ' ').trim();
-
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(2000);
-
       const expResult = analyzeExperience(cleanedText, doc);
       const experienceScore = expResult.score;
       const experienceMetrics = expResult.metrics;
       const failedExperience = expResult.failed;
-
       const expertiseResult = analyzeExpertise(doc, cleanedText, config);
       const expertiseScore = expertiseResult.score;
       const expertiseMetrics = expertiseResult.metrics;
       const failedExpertise = expertiseResult.failed;
       const hasAuthorByline = expertiseResult.hasAuthorByline;
       const hasAuthorBio = expertiseResult.hasAuthorBio;
-
       const auth = analyzeAuthoritativeness(doc, cleanedText);
       const authoritativenessScore = auth.score;
       const authoritativenessMetrics = auth.metrics;
       const failedAuthoritativeness = auth.failed;
       const hasAboutLinks = auth.hasAboutLinks;
-
       const trust = analyzeTrustworthiness(url || 'https://custom-html.example', doc, config, cleanedText);
       const trustworthinessScore = trust.score;
       const trustworthinessMetrics = trust.metrics;
@@ -191,22 +172,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const hasContact = trust.hasContact;
       const hasPolicies = trust.hasPolicies;
       const hasUpdateDate = trust.hasUpdateDate;
-
       const depth = analyzeDepth(cleanedText);
       const words = depth.words;
       const normalizeDepth = depth.normalized;
-
       const read = analyzeReadability(cleanedText);
       const readability = read.score;
       const normalizeReadability = read.normalized;
-
       const sch = analyzeSchema(html, doc);
       const schemaTypes = sch.schemaTypes;
       const normalizeSchema = typeof sch?.normalized === 'number' ? sch.normalized : 20;
-
       progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);
-
       const titleLower = (doc.title || '').toLowerCase();
       let intent = 'Informational';
       let confidence = 60;
@@ -214,19 +190,16 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (/how|what|why|guide|tutorial|step|learn|explain|best way/i.test(titleLower)) { intent = 'Informational'; confidence = 94; }
       else if (/near me|location|store|city|local|hours|map|address/i.test(titleLower)) { intent = 'Local'; confidence = 87; }
       else if (/sign up|login|purchase|buy now|order|checkout|book/i.test(titleLower)) { intent = 'Transactional'; confidence = 91; }
-
       const eeatAvg = Math.round((experienceScore + expertiseScore + authoritativenessScore + trustworthinessScore) / 4);
       const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
       const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
       const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
-
       const currentScore = overall;
       let projectedScore = currentScore;
       const totalFailed = failedExperience.length + failedExpertise.length + failedAuthoritativeness.length + failedTrustworthiness.length;
       const hasDepthGap = words < 1500;
       const hasSchemaGap = schemaTypes.length < 2;
       const hasAuthorGap = !hasAuthorByline;
-
       if (totalFailed > 0 || hasDepthGap || hasSchemaGap || hasAuthorGap) {
         projectedScore = Math.min(100, currentScore +
           (totalFailed * 5) +
@@ -235,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
           (hasAuthorGap ? 15 : 0)
         );
       }
-
       const scoreDelta = Math.round(projectedScore - currentScore);
       const isOptimal = scoreDelta <= 5;
       const priorityFixes = [];
@@ -247,10 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (failedExpertise.length > 0) priorityFixes.push({text: "Add credentials & citations", impact: "+10–18 points"});
       }
       const topFixes = priorityFixes.slice(0, 3);
-
       progressText.textContent = "Generating Report";
       await sleep(600);
-
       function getGrade(score, type = 'eeat') {
         let text, emoji, color;
         if (type === 'depth') {
@@ -272,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return { text, emoji, color };
       }
-
       const modules = [
         { name: 'Experience', score: experienceScore },
         { name: 'Expertise', score: expertiseScore },
@@ -283,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Schema', score: normalizeSchema }
       ];
       const scores = modules.map(m => m.score);
-
       results.innerHTML = `
         <!-- Overall Score Card (SEO Intent) -->
         <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -734,13 +702,11 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
       `;
-
       // All code AFTER report HTML - this is critical
       const pluginSection = document.createElement('div');
       pluginSection.id = 'plugin-solutions-section';
       pluginSection.className = 'mt-20';
       results.appendChild(pluginSection);
-
       const failedMetrics = [];
       const schemaGrade = getGrade(schemaTypes.length, 'schema');
       if (schemaGrade.text !== 'Excellent') failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
@@ -750,11 +716,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!hasContact) failedMetrics.push({ name: "Contact Info Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
       if (!hasPolicies) failedMetrics.push({ name: "Privacy & Terms Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
       if (!hasAboutLinks) failedMetrics.push({ name: "About/Team Links", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
-
       if (failedMetrics.length > 0) {
         renderPluginSolutions(failedMetrics);
       }
-
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (canvas) {
@@ -801,10 +765,8 @@ document.addEventListener('DOMContentLoaded', () => {
           } catch (e) {}
         }
       }, 150);
-
       initShareReport(results);
       initSubmitFeedback(results);
-
       results.addEventListener('click', (e) => {
         if (e.target.matches('.fixes-toggle')) {
           const card = e.target.closest('.score-card');
@@ -817,10 +779,8 @@ document.addEventListener('DOMContentLoaded', () => {
           e.target.closest('.score-card').querySelector('.full-details').classList.toggle('hidden');
         }
       });
-
       let displayUrl = url || "Custom HTML Analysis";
       document.body.setAttribute('data-url', displayUrl);
-
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }
