@@ -10,7 +10,7 @@ export function initShareReport(resultsContainer) {
     if (!urlInput && codeInput) {
       const messageDiv = document.getElementById('share-message');
       if (messageDiv) {
-        messageDiv.innerHTML = `⚠️ Share Report only works for URL audits.<br>For pasted HTML code use "Save Report" button.`;
+        messageDiv.innerHTML = `⚠️ Share Report only works for URL audits.<br>For HTML code audit use "Save Report" button.`;
         messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-200`;
         messageDiv.classList.remove('hidden');
         setTimeout(() => messageDiv.classList.add('hidden'), 6000);
@@ -22,7 +22,7 @@ export function initShareReport(resultsContainer) {
 
     // Build clean deep link
     const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
+    const shareUrl = `${baseUrl}?url=${encodeURIComponent(urlInput)}`;
 
     // Get the tested page title directly from the visible element in the score card
     let pageTitle = 'this page';

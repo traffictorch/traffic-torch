@@ -43,12 +43,14 @@ if (urlAnalyzeBtn) {
   urlAnalyzeBtn.addEventListener('click', async () => {
     if (hasCheckedLimit) return;
     hasCheckedLimit = true;
-
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) {
       hasCheckedLimit = false;
       return;
     }
+
+    // Clear opposite input to prevent state leakage
+    if (codeInput) codeInput.value = '';
 
     let inputValue = urlInput?.value.trim();
     if (!inputValue && sharedDecodedUrl) {
@@ -58,11 +60,10 @@ if (urlAnalyzeBtn) {
     if (!inputValue) {
       alert('Please enter a URL');
       hasCheckedLimit = false;
-      return;             
+      return;
     }
 
     const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
-
     runAnalysis({ url, inputType: 'url', rawCode: null });
     hasCheckedLimit = false;
   });
@@ -72,12 +73,14 @@ if (codeAnalyzeBtn) {
   codeAnalyzeBtn.addEventListener('click', async () => {
     if (hasCheckedLimit) return;
     hasCheckedLimit = true;
-
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) {
       hasCheckedLimit = false;
-      return;                  
+      return;
     }
+
+    // Clear opposite input to prevent state leakage
+    if (urlInput) urlInput.value = '';
 
     const rawCode = codeInput?.value.trim();
     if (!rawCode) {

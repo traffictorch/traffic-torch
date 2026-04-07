@@ -1,15 +1,18 @@
 export function initShareReport(resultsContainer) {
   const shareBtn = document.getElementById('share-report-btn');
-  if (!shareBtn) {
-    return;
-  }
+  if (!shareBtn) return;
 
   shareBtn.addEventListener('click', async () => {
     const pageUrlInput = document.getElementById('page-url');
     const locationInput = document.getElementById('location');
-
     const inputUrl = pageUrlInput?.value.trim() || '';
     const inputLocation = locationInput?.value.trim() || '';
+
+    // NEW: Detect if this report came from HTML paste (URL field is empty)
+    if (!inputUrl) {
+      showMessage('⚠️ Share Report only works for URL audits.<br>For HTML code audit use "Save Report" button.', 'error');
+      return;
+    }
 
     if (!inputUrl || !inputLocation) {
       showMessage('Missing URL or location to share', 'error');
@@ -35,9 +38,7 @@ export function initShareReport(resultsContainer) {
 
     try {
       if (navigator.share) {
-        await navigator.share({
-          text: shareText
-        });
+        await navigator.share({ text: shareText });
         showMessage('Shared successfully!', 'success');
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(shareText);
@@ -53,10 +54,8 @@ export function initShareReport(resultsContainer) {
   function showMessage(text, type = 'success') {
     const messageDiv = document.getElementById('share-message');
     if (!messageDiv) return;
-
     let classNames = 'mt-6 p-5 rounded-2xl text-center font-medium max-w-xl mx-auto shadow-sm ';
     let prefix = '';
-
     if (type === 'success') {
       classNames += 'bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200';
       prefix = '✅ ';
@@ -67,11 +66,9 @@ export function initShareReport(resultsContainer) {
       classNames += 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200';
       prefix = 'ℹ️ ';
     }
-
     messageDiv.innerHTML = prefix + text;
     messageDiv.className = classNames;
     messageDiv.classList.remove('hidden');
-
     setTimeout(() => messageDiv.classList.add('hidden'), 9000);
   }
 }

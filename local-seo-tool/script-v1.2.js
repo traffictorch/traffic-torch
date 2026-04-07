@@ -211,15 +211,15 @@ if (sharedUrl && sharedLocation) {
     analyzeUrlBtn.addEventListener('click', async () => {
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) return;
+      pageHtmlTextarea.value = '';
 
       const yourUrl = pageUrlInput.value.trim();
       const location = locationInput.value.trim();
 
-      if (!yourUrl || !location) {
-        results.innerHTML = '<p class="text-red-500 text-center text-xl p-10">Please enter both URL and location.</p>';
-        results.classList.remove('hidden');
-        return;
-      }
+if (!yourUrl || !location) {
+  alert("Please enter both location and url.");
+  return;
+}
 
       let fullUrl = yourUrl;
       if (!/^https?:\/\//i.test(yourUrl)) {
@@ -271,15 +271,16 @@ if (sharedUrl && sharedLocation) {
     analyzeCodeBtn.addEventListener('click', async () => {
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) return;
+      pageUrlInput.value = '';
+      
 
       const htmlCode = pageHtmlTextarea.value.trim();
       const location = locationInput.value.trim();
 
-      if (!htmlCode || !location) {
-        results.innerHTML = '<p class="text-red-500 text-center text-xl p-10">Please paste HTML code and enter location.</p>';
-        results.classList.remove('hidden');
-        return;
-      }
+if (!htmlCode || !location) {
+  alert("Please enter a location and HTML code.");
+  return;
+}
 
       const city = location.split(',')[0].trim().toLowerCase();
 

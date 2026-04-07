@@ -578,6 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
   const urlInput = document.getElementById('url-input');
   const codeInput = document.getElementById('code-input');
+
   let hasCheckedLimit = false;
 
   if (urlAnalyzeBtn) {
@@ -591,16 +592,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // === FIX: Clear opposite input + isolate data ===
+      if (codeInput) codeInput.value = '';
+
       let inputValue = urlInput?.value.trim();
       if (!inputValue && typeof sharedDecodedUrl !== 'undefined' && sharedDecodedUrl) {
         inputValue = sharedDecodedUrl;
         if (urlInput) urlInput.value = sharedDecodedUrl;
       }
+
       if (!inputValue) {
         alert('Please enter a URL');
         hasCheckedLimit = false;
         return;
       }
+
       const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
       const loading = document.getElementById('loading');
@@ -624,6 +630,9 @@ document.addEventListener('DOMContentLoaded', () => {
         hasCheckedLimit = false;
         return;
       }
+
+      // === FIX: Clear opposite input + isolate data ===
+      if (urlInput) urlInput.value = '';
 
       const rawCode = codeInput?.value.trim();
       if (!rawCode) {

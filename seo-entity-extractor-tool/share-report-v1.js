@@ -20,9 +20,9 @@ export function initShareReport(resultsContainer) {
 
     if (!urlInput) return; // fallback safety
 
-    // Build clean deep link
+    // Build clean deep link - use the correctly defined urlInput variable
     const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
+    const shareUrl = `${baseUrl}?url=${encodeURIComponent(urlInput)}`;
 
     // Get the tested page title — prioritised from the big readiness score card
     let pageTitle = 'this page';
