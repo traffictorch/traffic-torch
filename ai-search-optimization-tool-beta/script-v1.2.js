@@ -110,7 +110,10 @@ const initTool = (form, results, progressContainer) => {
     const interval = setInterval(updateProgress, 1800);
 
     try {
-      if (urlInput !== '') {
+      if (codeInput) {
+        html = codeInput;
+        analyzedUrl = 'Pasted HTML Code';
+      } else if (urlInput) {
         let inputUrl = urlInput;
         if (!/^https?:\/\//i.test(inputUrl)) {
           inputUrl = 'https://' + inputUrl;
@@ -121,9 +124,6 @@ const initTool = (form, results, progressContainer) => {
         const res = await fetch("https://render.traffictorch.workers.dev/?url=" + encodeURIComponent(analyzedUrl));
         if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
         html = await res.text();
-      } else {
-        html = codeInput;
-        analyzedUrl = 'Pasted HTML Code';
       }
 
       await new Promise(r => setTimeout(r, 800));
