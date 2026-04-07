@@ -44,7 +44,7 @@ const initTool = (form, results, progressContainer) => {
     }
   }
 
-  const analyzeUrlBtn = document.getElementById('analyze-url-btn');
+const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   if (analyzeUrlBtn) {
     analyzeUrlBtn.addEventListener('click', () => {
       form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
@@ -55,11 +55,11 @@ const initTool = (form, results, progressContainer) => {
           const targetY = spinner.getBoundingClientRect().top + window.pageYOffset - offset;
           window.scrollTo({ top: targetY, behavior: 'smooth' });
         }
-      }, 80);
+      }, 100);
     });
   }
 
-  const analyzeCodeBtn = document.getElementById('analyze-code-btn');
+const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   if (analyzeCodeBtn) {
     analyzeCodeBtn.addEventListener('click', () => {
       form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
@@ -70,7 +70,7 @@ const initTool = (form, results, progressContainer) => {
           const targetY = spinner.getBoundingClientRect().top + window.pageYOffset - offset;
           window.scrollTo({ top: targetY, behavior: 'smooth' });
         }
-      }, 80);
+      }, 100);
     });
   }
 
@@ -107,19 +107,19 @@ const initTool = (form, results, progressContainer) => {
     const interval = setInterval(updateProgress, 1800);
 
     try {
-      if (urlInput) {
-        let inputUrl = urlInput;
+      if (urlInput.trim() !== '') {
+        let inputUrl = urlInput.trim();
         if (!/^https?:\/\//i.test(inputUrl)) {
           inputUrl = 'https://' + inputUrl;
           document.getElementById('url-input').value = inputUrl;
         }
         try { new URL(inputUrl); } catch (_) { throw new Error('Invalid URL'); }
         analyzedUrl = inputUrl;
-
         const res = await fetch("https://render.traffictorch.workers.dev/?url=" + encodeURIComponent(analyzedUrl));
         if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
         html = await res.text();
       } else {
+        // HTML code input path
         html = codeInput;
         analyzedUrl = 'Pasted HTML Code';
       }
