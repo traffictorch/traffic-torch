@@ -86,8 +86,8 @@ const initTool = (form, results, progressContainer) => {
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
 
-    const urlInput = document.getElementById('url-input').value.trim();
-    const codeInput = document.getElementById('code-input').value.trim();
+    let urlInput = document.getElementById('url-input').value.trim();
+    let codeInput = document.getElementById('code-input').value.trim();
     if (!urlInput && !codeInput) {
       alert('Please enter a URL or paste HTML code to analyze.');
       return;
