@@ -44,33 +44,39 @@ const initTool = (form, results, progressContainer) => {
     }
   }
 
-const analyzeUrlBtn = document.getElementById('analyze-url-btn');
+  const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   if (analyzeUrlBtn) {
     analyzeUrlBtn.addEventListener('click', () => {
+      const codeInput = document.getElementById('code-input');
+      if (codeInput) codeInput.value = '';
       form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
       setTimeout(() => {
         const spinner = document.getElementById('analysis-progress');
         if (spinner) {
-          const offset = 120;
+          spinner.classList.remove('hidden');
+          const offset = 140;
           const targetY = spinner.getBoundingClientRect().top + window.pageYOffset - offset;
           window.scrollTo({ top: targetY, behavior: 'smooth' });
         }
-      }, 100);
+      }, 50);
     });
   }
 
-const analyzeCodeBtn = document.getElementById('analyze-code-btn');
+  const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   if (analyzeCodeBtn) {
     analyzeCodeBtn.addEventListener('click', () => {
+      const urlInput = document.getElementById('url-input');
+      if (urlInput) urlInput.value = '';
       form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
       setTimeout(() => {
         const spinner = document.getElementById('analysis-progress');
         if (spinner) {
-          const offset = 120;
+          spinner.classList.remove('hidden');
+          const offset = 140;
           const targetY = spinner.getBoundingClientRect().top + window.pageYOffset - offset;
           window.scrollTo({ top: targetY, behavior: 'smooth' });
         }
-      }, 100);
+      }, 50);
     });
   }
 
@@ -82,15 +88,12 @@ const analyzeCodeBtn = document.getElementById('analyze-code-btn');
 
     const urlInput = document.getElementById('url-input').value.trim();
     const codeInput = document.getElementById('code-input').value.trim();
-
     if (!urlInput && !codeInput) {
       alert('Please enter a URL or paste HTML code to analyze.');
       return;
     }
-
     let html = '';
     let analyzedUrl = '';
-
     progressContainer.classList.remove('hidden');
     results.classList.add('hidden');
 
@@ -107,8 +110,8 @@ const analyzeCodeBtn = document.getElementById('analyze-code-btn');
     const interval = setInterval(updateProgress, 1800);
 
     try {
-      if (urlInput.trim() !== '') {
-        let inputUrl = urlInput.trim();
+      if (urlInput !== '') {
+        let inputUrl = urlInput;
         if (!/^https?:\/\//i.test(inputUrl)) {
           inputUrl = 'https://' + inputUrl;
           document.getElementById('url-input').value = inputUrl;
@@ -119,7 +122,6 @@ const analyzeCodeBtn = document.getElementById('analyze-code-btn');
         if (!res.ok) throw new Error('Page not reachable – check URL or try HTTPS');
         html = await res.text();
       } else {
-        // HTML code input path
         html = codeInput;
         analyzedUrl = 'Pasted HTML Code';
       }
