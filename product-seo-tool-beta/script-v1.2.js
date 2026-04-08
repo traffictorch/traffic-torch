@@ -542,7 +542,7 @@ async function performAnalysis(source, isCode = false) {
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const seoData = getProductPageContent(doc, inputUrl);
-      const seo = analyzeProductSEO(doc, inputUrl);
+      const seo = analyzeProductSEO(doc, inputUrl === 'HTML Code Analysis' ? 'https://example.com/pasted-html' : inputUrl);
       const failedFactors = [];
       const modulesData = [
         { name: "On-Page SEO", result: seo.onPage, definitions: factorDefinitions.onPage },
