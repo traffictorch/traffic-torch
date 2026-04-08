@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
 // Auto-fill from shared report link (?url=...&location=...)
 const urlParams = new URLSearchParams(window.location.search);
-
 const sharedUrl = urlParams.get('url');
 if (sharedUrl) {
   try {
@@ -38,9 +37,7 @@ if (sharedUrl) {
       decodedUrl = 'https://' + decodedUrl;
     }
     pageUrlInput.value = decodedUrl;
-  } catch (err) {
-    // Silent fail in production
-  }
+  } catch (err) {}
 }
 
 // Auto-fill shared location from URL parameter (?location=...)
@@ -51,17 +48,17 @@ if (sharedLocation) {
     if (decodedLocation) {
       locationInput.value = decodedLocation;
     }
-  } catch (err) {
-    // Silent fail in production - no console output
-  }
+  } catch (err) {}
 }
 
-// Optional: auto-analyze if both fields are filled from share link (recommended for shared reports)
+// Minimal auto-run - click the button instead of form submit (prevents reload loop)
 if (sharedUrl && sharedLocation) {
-  // Small delay to ensure inputs are set before submit
   setTimeout(() => {
-    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-  }, 300);
+    const analyzeBtn = document.getElementById('analyze-url-btn');
+    if (analyzeBtn) {
+      analyzeBtn.click();
+    }
+  }, 500);
 }
   
   const PROXY = 'https://render.traffictorch.workers.dev/';

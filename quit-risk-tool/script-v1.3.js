@@ -33,22 +33,24 @@ document.addEventListener('DOMContentLoaded', () => {
   if (sharedUrl) {
     try {
       let cleanUrl = decodeURIComponent(sharedUrl).trim();
-  
       if (!/^https?:\/\//i.test(cleanUrl)) {
         cleanUrl = 'https://' + cleanUrl;
       }
-  
       urlInput.value = cleanUrl;
-  
-      // Optional: trigger analysis automatically for shared links
+
+      // Minimal auto-run - click button instead of form submit (prevents infinite refresh)
       setTimeout(() => {
-        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-      }, 500);
-  
+        const analyzeBtn = document.getElementById('analyze-url-btn');
+        if (analyzeBtn) {
+          analyzeBtn.click();
+        }
+      }, 600);
+
     } catch (err) {
-      // silent fail – user can still edit manually
+      // silent fail
     }
   }
+  
   const PROXY = 'https://render.traffictorch.workers.dev/';
 
   const factorDefinitions = {

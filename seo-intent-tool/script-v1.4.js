@@ -1,6 +1,5 @@
 // script-v1.4 - Complete 
-const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-const TOKEN_KEY = 'traffic_torch_jwt';
+
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { analyzeExperience } from './modules/experience.js';
 import { analyzeExpertise } from './modules/expertise.js';
@@ -12,6 +11,26 @@ import { analyzeSchema } from './modules/schema.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
+
+const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
+
+// Minimal Prefill + Auto Submit for SEO Intent Tool
+function simpleIntentPrefillAndRun() {
+  const params = new URLSearchParams(window.location.search);
+  const urlParam = params.get('url');
+  if (!urlParam) return;
+
+  const cleanUrl = decodeURIComponent(urlParam).trim();
+  const urlInput = document.getElementById('url-input');
+  if (urlInput) urlInput.value = cleanUrl;
+
+  setTimeout(() => {
+    const analyzeBtn = document.getElementById('analyze-url-btn');
+    if (analyzeBtn) analyzeBtn.click();
+  }, 400);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const defaultConfig = {
     parsing: {
@@ -51,6 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (input) input.value = decoded;
     } catch (e) {}
   }
+  
+  simpleIntentPrefillAndRun();
+  
   function deepMerge(target, source) {
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
