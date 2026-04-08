@@ -183,7 +183,7 @@
         }
       },
       "datePublished": "2025-12-21T14:56:00+11:00",
-      "dateModified": "2026-03-06T14:09:00+11:00"
+      "dateModified": "2026-04-07T15:09:00+11:00"
     },
     {
       "@type": "Person",
@@ -396,40 +396,104 @@
         SEO audit tool: Enter any URL and target keywords for analysis.
       </p>
 
-<form id="audit-form" class="max-w-4xl mx-auto space-y-4">
-  <div class="flex flex-col md:flex-row gap-4">
-    <div class="flex-1">
-      <label for="page-url" class="sr-only">Enter page URL to analyze</label>
-      <input
-        type="text"
-        id="page-url"
-        placeholder="yourpage.com/blog-post"
-        aria-label="Enter page URL to analyze"
-        required
-        class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-      />
+<!-- Traffic Torch Keyword Placement Audit Form - URL + Keyword + Code Analysis -->
+<div class="max-w-2xl mx-auto mb-10 space-y-4 px-4 py-2">
+
+  <form id="audit-form" novalidate class="space-y-10">
+
+    <!-- URL + Keyword Section -->
+    <div>
+
+      <div class="flex flex-col md:flex-row gap-4">
+        <input
+          type="text"
+          id="target-keyword"
+          name="keyword"
+          placeholder="enter target keyword..."
+          aria-label="Enter target keyword"
+          aria-describedby="keyword-help"
+          required
+          class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        
+        <input
+          type="text"
+          id="page-url"
+          name="url"
+          placeholder="yourpage.com/blog-post"
+          aria-label="Enter page URL to analyze"
+          aria-describedby="url-help"
+          required
+          class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+          autocomplete="url"
+          inputmode="url"
+          spellcheck="false"
+          data-lpignore="true"
+        />
+
+        <button
+          type="button"
+          id="url-analyze-btn"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2"
+        >
+          Analyze URL 
+          <span class="text-xl">🗝️</span>
+        </button>
+      </div>
+
+      <p id="url-help" class="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
+        💡 Enter the page URL + your target keyword. We’ll analyze placement in title, headings, content, meta, alt text, and suggest improvements for better ranking.
+      </p>
     </div>
-    <div class="flex-1">
-      <label for="target-keyword" class="sr-only">Enter target keyword</label>
-      <input
-        type="text"
-        id="target-keyword"
-        placeholder="enter keyword..."
-        aria-label="Enter target keyword"
-        required
-        class="w-full px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-      />
+
+    <!-- Code Analysis Section -->
+    <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
+      <!-- Centered gradient title (kept your styling) -->
+      <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
+        Or use Code Analysis 📄
+      </h3>
+
+      <!-- Centered description -->
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
+        Paste the full HTML of the page.
+      </p>
+
+      <textarea
+        id="code-input"
+        name="htmlcode"
+        rows="2"
+        placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Best Wireless Headphones Review 2026&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your full page HTML here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
+        class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[120px] shadow-sm"
+        aria-label="Paste HTML code for Keyword Placement Audit"
+        aria-describedby="code-help"
+        autocomplete="off"
+        spellcheck="false"
+        data-vscode-ignore="true"
+      ></textarea>
+
+      <!-- Centered Analyze Code button -->
+      <div class="mt-8 flex justify-center">
+        <button
+          type="button"
+          id="code-analyze-btn"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+        >
+          Analyze Code 
+          <span class="text-xl">🗝️</span>
+        </button>
+      </div>
+
+      <p id="code-help" class="text-xs text-gray-500 dark:text-gray-400 mt-6 text-center">
+        💡 Pro tip: When using the Traffic Torch VS Code extension or GitHub Action (Coming Soon), your current page HTML will be automatically inserted here for keyword placement analysis.
+      </p>
     </div>
-  </div>
-  <div class="flex justify-center">
-    <button
-      type="submit"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-    >
-      Analyze
-    </button>
-  </div>
-</form>
+  </form>
+</div>
+
+<!-- Shared VS Code Bridge - Works across ALL Traffic Torch tools -->
+<script nonce="${nonce}" src="${vscodeBridgeUri}"></script>
 
     </div>
     
@@ -1120,7 +1184,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2025-12-21</p>
-          <p>Last updated: 2026-03-06</p>
+          <p>Last updated: 2026-04-07</p>
         </div>
       </div>
     </div>
@@ -1184,9 +1248,7 @@
   <script src="/main-v1.1.js" type="module"></script>
   <script src="/keyword-tool/plugin-solutions-v1.0.js" type="module" defer></script>
   <script src="/keyword-tool/metric-explanations-v1.0.js" type="module" defer></script>
-  <script src="/keyword-tool/script-v1.0.js" type="module" defer></script>
-
-
+  <script src="/keyword-tool/script-v1.1.js" type="module" defer></script>
 
 </body>
 </html>

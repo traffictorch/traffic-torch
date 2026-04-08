@@ -201,7 +201,7 @@
         }
       },
       "datePublished": "2025-11-27T14:56:00+11:00",
-      "dateModified": "2026-03-25T20:06:00+11:00"
+      "dateModified": "2026-04-08T10:06:00+11:00"
     },
     {
       "@type": "Person",
@@ -394,34 +394,100 @@
       </header>
 
 		<main class="container mx-auto px-4 py-4 max-w-5xl">
-        <div class="text-center mb-16">
+        <div class="text-center mb-4">
           <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
-            SEO Intent Tool
+            SEO Intent Audit Tool
           </h1>
           <p class="text-xl text-gray-500 dark:text-gray-300 mt-6">
-            Does Google trust your E-E-A-T signals? Use our search intent tool for deep analysis.<br class="hidden md:block">
+            Analyze search intent alignment, content relevance, user expectations vs. page delivery, and intent gaps.<br class="hidden md:block">
           </p>
         </div>
       
-<form id="audit-form" class="max-w-2xl mx-auto mb-20 space-y-4">
-  <div class="flex flex-col md:flex-row gap-4">
-    <label for="url-input" class="sr-only">Enter website URL to analyze</label>
-    <input
-      type="text"
-      id="url-input"
-      placeholder="example.com/your-page"
-      aria-label="Enter website URL to analyze"
-      required
-      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-    />
-    <button
-      type="submit"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-    >
-      Analyze 🎯
-    </button>
-  </div>
-</form>
+<!-- Traffic Torch SEO Intent Audit Form - URL + Code Analysis -->
+<div class="max-w-3xl mx-auto space-y-4 px-4 py-2">
+
+  <form id="audit-form" novalidate class="space-y-4">
+
+    <!-- URL Analysis Section -->
+    <div class="space-y-3">
+
+      <div class="flex flex-col md:flex-row gap-4 items-center">
+        <input
+          type="text"
+          id="url-input"
+          name="url"
+          placeholder="https://example.com"
+          aria-label="Enter website URL to analyze for search intent"
+          aria-describedby="url-help"
+          required
+          class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/30 focus:border-orange-500 text-lg shadow-sm"
+          autocomplete="url"
+          inputmode="url"
+          spellcheck="false"
+          data-lpignore="true"
+        />
+        <button
+          type="button"
+          id="analyze-url-btn"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 hover:brightness-110 active:scale-95 text-white font-semibold rounded-2xl transition-all shadow-lg flex-shrink-0 text-base min-w-[180px]"
+        >
+          Analyze URL 
+          <span class="text-xl">🎯</span>
+        </button>
+      </div>
+
+      <p id="url-help" class="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+        💡 We’ll evaluate how well the page matches commercial, informational, transactional, or navigational intent and suggest improvements.
+      </p>
+    </div>
+
+    <!-- Code Analysis Section -->
+    <div class="space-y-4">
+        <h2 class="text-3xl text-center font-semibold text-orange-600 dark:text-orange-400">
+          Or use Code Analysis 📄
+        </h2>
+
+      <p class="text-sm text-center text-gray-600 dark:text-gray-400">
+        Paste the full HTML of the page.
+      </p>
+
+      <!-- Orange-bordered Textarea -->
+      <div class="relative">
+        <textarea
+          id="code-input"
+          name="htmlcode"
+          rows="2"
+          placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Best Wireless Headphones 2026 - Buy Now&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your full page HTML here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
+          class="w-full px-6 py-5 rounded-3xl border-2 border-orange-400 dark:border-orange-500 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/20 font-mono text-sm resize-y min-h-[120px] shadow-inner"
+          aria-label="Paste HTML code for SEO Intent Audit"
+          aria-describedby="code-help"
+          autocomplete="off"
+          spellcheck="false"
+          data-vscode-ignore="true"
+        ></textarea>
+      </div>
+
+      <!-- Analyze Code Button -->
+      <div class="flex justify-center">
+        <button
+          type="button"
+          id="analyze-code-btn"
+          class="px-12 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 hover:brightness-110 active:scale-95 text-white font-semibold rounded-2xl transition-all shadow-lg text-base min-w-[200px]"
+        >
+          Analyze Code 
+          <span class="text-xl">🎯</span>
+        </button>
+      </div>
+
+      <p id="code-help" class="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
+        💡 Pro tip: When using the Traffic Torch VS Code extension or GitHub Action (Coming Soon), your current file’s HTML will be automatically inserted here for intent analysis.
+      </p>
+    </div>
+  </form>
+</div>
+
+<!-- Shared VS Code Bridge - Works across ALL Traffic Torch tools -->
+<script nonce="${nonce}" src="${vscodeBridgeUri}"></script>
 
 <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
   <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
@@ -438,15 +504,15 @@
   </div>
 </div>
 
-<!-- Loading indicator - tight spacing, centered, modern spinner -->
-<section id="loading" class="hidden text-center mt-0">
-  <div class="inline-flex flex-col items-center gap-4">
-    <div class="w-20 h-20 border-8 border-gray-200 dark:border-gray-700 border-t-orange-500 dark:border-t-orange-400 rounded-full animate-spin"></div>
-    <p class="text-2xl font-medium text-orange-600 dark:text-orange-400">
-      Analyzing Signals...
-    </p>
+<!-- Main single loading spinner -->
+<div id="loading" class="hidden mt-12 flex flex-col items-center justify-center py-12 bg-white dark:bg-gray-900 rounded-3xl shadow-inner border border-orange-200 dark:border-gray-700">
+  <div class="relative">
+    <!-- Responsive spinning circle only (no text inside the circle) - exact match -->
+    <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+    <div class="absolute inset-0 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-transparent border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
   </div>
-</section>
+  <p class="text-xl font-medium text-gray-700 dark:text-gray-300 mt-8">Analyzing Signals...</p>
+</div>
 
 <!-- Empty results container - JavaScript will fill this dynamically -->
 <section id="results" class="hidden space-y-16">
@@ -1087,7 +1153,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2025-11-27</p>
-          <p>Last updated: 2026-03-25</p>
+          <p>Last updated: 2026-04-08</p>
         </div>
       </div>
     </div>
@@ -1150,8 +1216,7 @@
 <script src="/main-v1.1.js" type="module"></script>
 <script src="/seo-intent-tool/plugin-solutions-v1.0.js" type="module" defer></script>
 <script src="/seo-intent-tool/metric-explanations-v1.0.js" type="module" defer></script>
-<script src="/seo-intent-tool/script-v1.3.js" type="module" defer></script>
+<script src="/seo-intent-tool/script-v1.4.js" type="module" defer></script>
   
-
 </body>
 </html>

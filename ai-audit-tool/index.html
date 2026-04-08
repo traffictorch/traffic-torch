@@ -184,7 +184,7 @@
         }
       },
       "datePublished": "2026-01-12T18:12:00+11:00",
-      "dateModified": "2026-03-19T11:55:00+11:00"
+      "dateModified": "2026-04-08T12:55:00+11:00"
     },
     {
       "@type": "Person",
@@ -384,33 +384,90 @@
       </header>
 
 <main class="container mx-auto px-4 py-4 max-w-5xl">
-    <div class="text-center mb-16">
-      <h1 class="text-3xl md:text-4xl lg:text-4xl font-black bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent mb-8 leading-tight">
+    <div class="text-center mb-10">
+      <h1 class="text-3xl md:text-4xl lg:text-4xl font-black bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent mb-4 leading-tight">
         AI Content Detector Tool
       </h1>
-      <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
-        Perplexity &amp; burstiness audit with repetition, vocabulary and sentence analysis.
+      <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+        Perplexity &amp; burstiness, repetition, vocabulary and sentence analysis with SEO-friendly improvement suggestions.
       </p>    
       
-<form id="audit-form" class="max-w-2xl mx-auto mt-10 space-y-4">
-  <div class="flex flex-col sm:flex-row gap-4">
-    <label for="url-input" class="sr-only">Enter website URL to analyze</label>
-    <input
-      id="url-input"
-      type="text"
-      placeholder="example.com/article"
-      aria-label="Enter website URL to analyze"
-      required
-      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-    />
-    <button
-      type="submit"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-    >
-      Analyze
-    </button>
+<!-- Traffic Torch AI Content Detector Form - URL & Code Analysis -->
+<div class="max-w-2xl mx-auto space-y-4 px-4 py-2">
+
+  <!-- URL Analysis Section -->
+  <div>
+
+    <form id="audit-form" class="space-y-6">
+      <div class="flex flex-col sm:flex-row gap-4">
+        <label for="url-input" class="sr-only">Enter website URL to analyze</label>
+        <input
+          id="url-input"
+          name="url"
+          type="text"
+          placeholder="example.com/your-page"
+          aria-label="Enter website URL to analyze for AI content detection"
+          aria-describedby="url-help"
+          required
+          class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+          autocomplete="url"
+          inputmode="url"
+          spellcheck="false"
+          data-lpignore="true"
+        />
+        <button
+          type="submit"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 whitespace-nowrap flex-shrink-0"
+        >
+          Analyze URL 
+          <span class="text-xl">🤖</span>
+        </button>
+      </div>
+
+      <p id="url-help" class="text-xs text-gray-500 dark:text-gray-400 text-center">
+        💡 Paste any URL — we’ll analyze content quality, AI probability, and suggest human-like improvements.
+      </p>
+    </form>
   </div>
-</form>
+
+  <!-- Code Analysis Section - Ready for VS Code Extension & GitHub Action auto-fill -->
+  <div>
+      <h3 class="text-2xl font-semibold mb-2 text-center text-orange-500 dark:text-orange-400">Or Use Code Analysis 📄</h3>
+
+    <p class="text-gray-600 dark:text-gray-400 mb-6">Paste the full HTML of the page.</p>
+
+    <form id="code-form" class="space-y-4">
+      <textarea
+        id="code-input"
+        name="htmlcode"
+        rows="2"
+        placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Your Page Title&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your HTML content here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
+        class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all resize-y font-mono text-base leading-relaxed min-h-[120px] shadow-sm"
+        aria-label="Paste HTML code for AI Content Detector analysis"
+        aria-describedby="code-help"
+        autocomplete="off"
+        spellcheck="false"
+        data-vscode-ignore="true"
+      ></textarea>
+
+      <button
+        type="submit"
+        id="analyze-code-btn"
+        class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 mx-auto"
+      >
+        Analyze Code 
+        <span class="text-xl">🤖</span>
+      </button>
+    </form>
+
+    <p id="code-help" class="text-xs text-gray-500 dark:text-gray-400 mt-4 text-center">
+      💡 When using the Traffic Torch VS Code extension or running the GitHub Action (Coming Soon), your current file’s HTML will be automatically inserted here for AI content detection.
+    </p>
+  </div>
+</div>
+
+<!-- Shared VS Code Bridge - Works across ALL Traffic Torch tools  -->
+<script nonce="${nonce}" src="${vscodeBridgeUri}"></script>
 
     </div>
     
@@ -431,10 +488,10 @@
 
     <!-- Results container (JS will populate this) -->
     <div id="results" class="hidden space-y-16 mt-16">
-      <!-- Your existing report sections go here – keep them exactly as in your script.js output -->
+      <!-- Report sections goes here -->
     </div>
     
-        <div class="center-btn-container mt-4 mb-4">
+<div class="center-btn-container mt-4 mb-4">
   <button
     class="copy-link-btn"
     onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
@@ -1001,7 +1058,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-01-12</p>
-          <p>Last updated: 2026-03-19</p>
+          <p>Last updated: 2026-04-08</p>
         </div>
       </div>
     </div>
@@ -1065,8 +1122,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="/main-v1.1.js" type="module"></script>
   <script src="/ai-audit-tool/metric-explanations-v1.2.js" type="module" defer></script>
-  <script src="/ai-audit-tool/script-v1.2.js" type="module" defer></script>
-
+  <script src="/ai-audit-tool/script-v1.3.js" type="module" defer></script>
 
 </body>
 </html>

@@ -3,12 +3,30 @@ export function initShareReport(resultsContainer) {
   if (!shareBtn) return;
 
   shareBtn.addEventListener('click', async () => {
-    const inputUrl = document.getElementById('url-input')?.value.trim();
-    if (!inputUrl) return; // silent fail – button shouldn't be visible anyway
+    const urlInput = document.getElementById('url-input')?.value.trim();
+    const codeInput = document.getElementById('code-input')?.value.trim();
+
+    // Detect if this is an HTML code audit (more reliable check)
+    const isHtmlAudit = !urlInput || urlInput === '' || 
+                       (resultsContainer.querySelector('#analyzed-page-title') && 
+                        resultsContainer.querySelector('#analyzed-page-title').textContent.includes('HTML Code Analysis'));
+
+    if (isHtmlAudit) {
+      const messageDiv = document.getElementById('share-message');
+      if (messageDiv) {
+        messageDiv.innerHTML = `⚠️ Share Report only works for URL audits.<br>For HTML code audit use "Save Report" button.`;
+        messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-200`;
+        messageDiv.classList.remove('hidden');
+        setTimeout(() => messageDiv.classList.add('hidden'), 6000);
+      }
+      return;
+    }
+
+    if (!urlInput) return; // fallback safety
 
     // Build clean deep link
     const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?url=${encodeURIComponent(inputUrl)}`;
+    const shareUrl = `${baseUrl}?url=${encodeURIComponent(urlInput)}`;
 
     // Get the tested page title directly from the visible element in the score card
     let pageTitle = 'this page';
@@ -16,7 +34,7 @@ export function initShareReport(resultsContainer) {
     if (titleElement) {
       pageTitle = titleElement.textContent.trim();
     } else {
-      // Fallback if ID not found (e.g. old deploy)
+      // Fallback if ID not found
       pageTitle = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl.shadow-2xl.p-6.sm\\:p-8.md\\:p-10 p.mt-6.text-base.sm\\:text-lg')?.textContent.trim() ||
                   document.title.trim() ||
                   'this page';

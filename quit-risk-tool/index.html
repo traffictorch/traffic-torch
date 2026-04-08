@@ -183,7 +183,7 @@
         }
       },
       "datePublished": "2025-12-18T14:56:00+11:00",
-      "dateModified": "2026-03-06T13:39:00+11:00"
+      "dateModified": "2026-04-07T14:39:00+11:00"
     },
     {
       "@type": "Person",
@@ -380,33 +380,103 @@
       </header>
       
 <main class="container mx-auto px-4 py-4 max-w-5xl">
-    <div class="text-center mb-16">
+    <div class="text-center mb-10">
       <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">
-        Quit Risk Audit Tool
+        Quit Risk UX Audit Tool
       </h1>
-      <p class="text-xl text-gray-600 dark:text-gray-200 mb-10 max-w-3xl mx-auto">
-        Predict bounce rates • Analyze readability • Accessibility • Performance 
+      <p class="text-xl text-gray-600 dark:text-gray-200 mb-4 max-w-3xl mx-auto">
+        Detect high quit-risk elements, friction points, poor UX signals, and conversion killers.
       </p>
-      
-<form id="audit-form" class="max-w-2xl mx-auto space-y-4">
-  <div class="flex flex-col sm:flex-row gap-4">
-    <label for="url-input" class="sr-only">Enter website URL to analyze</label>
-    <input
-      type="text"
-      id="url-input"
-      placeholder="example.com/your-page"
-      aria-label="Enter website URL to analyze"
-      required
-      class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-    />
-    <button
-      type="submit"
-      class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-    >
-      Analyze
-    </button>
-  </div>
-</form>
+
+<!-- Traffic Torch Quit Risk UX Audit Form - URL & Code Analysis -->
+<div class="max-w-3xl mx-auto space-y-4 px-4 py-2">
+
+  <form id="audit-form" novalidate class="space-y-4">
+
+    <!-- URL Analysis Section -->
+    <div>
+
+      <div class="flex flex-col sm:flex-row gap-4 items-center">
+        <div class="flex-1">
+          <input
+            type="text"
+            id="url-input"
+            name="url"
+            placeholder="example.com/your-page"
+            aria-label="Enter website URL to analyze for quit risk"
+            aria-describedby="url-help"
+            required
+            class="w-full px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+            autocomplete="url"
+            inputmode="url"
+            spellcheck="false"
+            data-lpignore="true"
+          />
+        </div>
+        <button
+          type="button"
+          id="analyze-url-btn"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2 min-w-[180px] justify-center"
+        >
+          Analyze URL
+          <span class="text-xl">⛔</span>
+        </button>
+      </div>
+
+      <p id="url-help" class="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+        💡 We’ll scan high bounce signals, confusing navigation, slow interactions, and other quit-risk factors.
+      </p>
+    </div>
+
+    <!-- Separator -->
+    <div class="relative flex items-center py-2">
+      <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+      <div class="px-8 text-orange-500 dark:text-orange-400 font-semibold text-xl tracking-wide flex items-center gap-2">
+        OR use Code Analysis
+        <span class="text-2xl">📄</span>
+      </div>
+      <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+    </div>
+
+    <!-- Code Analysis Section - Ready for VS Code Extension & GitHub Action -->
+    <div class="space-y-4">
+      <p class="text-gray-600 dark:text-gray-400 text-sm font-medium pl-1">
+        Paste the full HTML of the page.
+      </p>
+
+      <textarea
+        id="code-input"
+        name="htmlcode"
+        rows="2"
+        placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Your Page&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your HTML with navigation, forms, buttons, etc. --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
+        class="w-full px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[120px] shadow-sm"
+        aria-label="Paste HTML code for Quit Risk UX Audit"
+        aria-describedby="code-help"
+        autocomplete="off"
+        spellcheck="false"
+        data-vscode-ignore="true"
+      ></textarea>
+
+      <div class="flex justify-center pt-2">
+        <button
+          type="button"
+          id="analyze-code-btn"
+          class="px-12 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl text-lg flex items-center gap-3"
+        >
+          Analyze Code
+          <span class="text-2xl">⛔</span>
+        </button>
+      </div>
+
+      <p id="code-help" class="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
+        💡 When using the Traffic Torch VS Code extension or GitHub Action (Coming Soon), your current file’s HTML will be automatically inserted here for quit risk analysis.
+      </p>
+    </div>
+  </form>
+</div>
+
+<!-- Shared VS Code Bridge - Works across ALL Traffic Torch tools (main, voice, content, geo, quit risk, etc.) -->
+<script nonce="${nonce}" src="${vscodeBridgeUri}"></script>
 
     </div>
     
@@ -424,10 +494,10 @@
     </button>
   </div>
 </div> 
-    
+
     <!-- Loading indicator - modern thick orange ring spinner matching other tools -->
     <section id="loading" class="hidden flex flex-col items-center justify-center py-0 space-y-12">
-      <div class="w-20 h-20 rounded-full border-8 border-gray-300/50 dark:border-gray-700/50 border-t-orange-500 dark:border-t-orange-400 animate-spin"></div>
+      <div class="w-20 h-20 rounded-full border-8 border-gray-300/50 dark:border-gray-700/50 border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
       <div class="text-center space-y-4">
         <p class="text-2xl font-black text-orange-500 dark:text-orange-400">Analyzing Quit Risk...</p>
         <p id="progressText" class="text-xl font-medium text-orange-500 dark:text-orange-400 max-w-2xl px-8"></p>
@@ -529,7 +599,6 @@
 </div>
 <script defer src="https://static.addtoany.com/menu/page.js"></script>
 
-	
 <!-- How UX Audit Works Accordion -->
 <div class="max-w-4xl mx-auto my-16">
   <details>
@@ -587,7 +656,6 @@
         </div>
       </section>
       
-  
 <!-- WHY IT MATTERS           -->
 <section class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
   <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
@@ -787,7 +855,6 @@
     </a>
   </div>
 </div>
-
 
 <section id="quit-risk-seo-checklist" class="py-16 px-3 max-w-7xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900">
   <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-cyan-600">
@@ -1066,7 +1133,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-200 italic mt-6">
           <p>Published: 2025-12-18</p>
-          <p>Last updated: 2026-03-06</p>
+          <p>Last updated: 2026-04-07</p>
         </div>
       </div>
     </div>
@@ -1112,8 +1179,6 @@
     .trim();
 </script>
 
-
-
 <section class="bottom-banner" aria-label="Traffic Torch visual summary">
   <picture style="--banner-ratio: 33.33%;"> <!-- 400 / 1200 -->
 <img src="/images/tool-banners/quit-risk-tool-infographic-1200w.webp" srcset="/images/tool-banners/quit-risk-tool-infographic-480w.webp 480w, /images/tool-banners/quit-risk-tool-infographic-800w.webp 800w, /images/tool-banners/quit-risk-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch Quit Risk Tool – AI-powered bounce rate risk analysis with user quit signals and UX optimization recommendations" width="1200" height="400" loading="lazy" decoding="async">
@@ -1121,7 +1186,6 @@
 </section>
 
 </main>
-
 
 <!-- Footer -->
 <div id="footer-placeholder"></div>
@@ -1132,9 +1196,7 @@
   <script src="/main-v1.1.js" type="module"></script>
   <script src="/quit-risk-tool/plugin-solutions-v1.0.js" type="module" defer></script>
   <script src="/quit-risk-tool/metric-explanations-v1.0.js" type="module" defer></script>
-  <script src="/quit-risk-tool/script-v1.2.js" type="module" defer></script>
-
-
+  <script src="/quit-risk-tool/script-v1.3.js" type="module" defer></script>
 
 </body>
 </html>
