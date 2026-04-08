@@ -1,5 +1,4 @@
 // product-seo-tool/modules/helpers.js
-
 export function countWords(text) {
   return text.trim().split(/\s+/).filter(w => w.length > 0).length;
 }
@@ -49,7 +48,6 @@ export function countMissingAlt(doc) {
       goodDescriptive++;
     }
   });
-  // Image alt debug removed for production
   return {
     missingCount: missing,
     filenameOnlyCount: filenameOnly,
@@ -68,26 +66,19 @@ export function hasViewportMeta(doc) {
 export function extractProductSchema(doc) {
   const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
   const schemas = [];
-  let debugInfo = { scriptCount: scripts.length, parsedCount: 0, productCount: 0, errors: [] };
   scripts.forEach((script, index) => {
     const text = script.textContent?.trim();
-    if (!text) {
-      debugInfo.errors.push(`Script ${index}: empty or missing content`);
-      return;
-    }
+    if (!text) return;
     let data;
     try {
       data = JSON.parse(text);
-      debugInfo.parsedCount++;
     } catch (e) {
-      debugInfo.errors.push(`Script ${index}: JSON parse failed - ${e.message}`);
       return;
     }
     function findProducts(obj, currentPath = 'root') {
       if (typeof obj !== 'object' || obj === null) return;
       if (obj['@type'] === 'Product') {
         schemas.push({ ...obj, _debugPath: currentPath });
-        debugInfo.productCount++;
         return;
       }
       if (Array.isArray(obj)) {
@@ -103,7 +94,6 @@ export function extractProductSchema(doc) {
   const uniqueSchemas = schemas.filter((schema, index, self) =>
     index === self.findIndex((t) => JSON.stringify(t) === JSON.stringify(schema))
   );
-  // Schema extraction debug removed for production
   uniqueSchemas.forEach(s => delete s._debugPath);
   return uniqueSchemas;
 }
@@ -132,7 +122,6 @@ export function hasReviewSection(doc) {
       hasSchemaRating = true;
     }
   });
-  // Review/UGC detection debug removed for production
   return hasVisibleWidget || hasSchemaRating;
 }
 
@@ -151,6 +140,7 @@ export function getProductPageContent(doc, url) {
   const images = doc.querySelectorAll('img');
   const links = doc.querySelectorAll('a[href]');
   const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
+
   return {
     fullText,
     wordCount: countWords(fullText),
@@ -160,6 +150,6 @@ export function getProductPageContent(doc, url) {
     linkCount: links.length,
     hasViewport: hasViewportMeta(doc),
     viewportContent: doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '',
-    url
+    url: url || 'https://example.com/pasted-html'   // Safe fallback for HTML paste mode
   };
 }
