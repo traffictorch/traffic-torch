@@ -526,7 +526,6 @@ export async function canRunTool(toolName = 'default') {
     return false;
   }
 }
-// === UPDATED CANRUNTOOL WITH COMBINED LIMITING END ===
 
 // Poll for webhook completion & replace token automatically
 async function pollForProUpgrade(sessionId) {

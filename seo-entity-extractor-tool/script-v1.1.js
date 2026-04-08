@@ -8,7 +8,33 @@ import { analyzeSalience } from './modules/salience.js';
 import { analyzeRelationships } from './modules/relationships.js';
 import { analyzePractices } from './modules/practices.js';
 import { analyzeReadiness } from './modules/readiness.js';
-// ─────────────────────────────────────────────────────────────────
+
+// Minimal URL Prefill + Auto Submit
+function simplePrefillAndRun() {
+  const params = new URLSearchParams(window.location.search);
+  const urlParam = params.get('url');
+  if (!urlParam) return;
+
+  const cleanUrl = decodeURIComponent(urlParam).trim();
+  const urlInput = document.getElementById('url-input');
+  
+  if (urlInput) {
+    urlInput.value = cleanUrl;
+  }
+
+  // Auto click the button (triggers your existing handler)
+  setTimeout(() => {
+    const analyzeBtn = document.getElementById('url-analyze-btn');
+    if (analyzeBtn) {
+      analyzeBtn.click();
+    }
+  }, 400);
+}
+
+// Run it
+document.addEventListener('DOMContentLoaded', simplePrefillAndRun);
+window.addEventListener('load', simplePrefillAndRun);
+
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 const ANALYZE_ENDPOINT = 'https://entity-ai-proxy.traffictorch.workers.dev/entity-analyze';
