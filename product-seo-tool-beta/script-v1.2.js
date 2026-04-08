@@ -960,6 +960,7 @@ async function performAnalysis(source, isCode = false) {
       }
       console.error('Product SEO Analysis Error:', err);
     }
+  }
 
 // Button handlers
 if (urlAnalyzeBtn) {
