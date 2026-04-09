@@ -21,6 +21,14 @@ function simplePrefillAndRun() {
     if (urlInput) {
       urlInput.value = cleanUrl;
     }
+
+    // Auto click URL analyze button for shared ?url=
+    const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
+    if (urlAnalyzeBtn) {
+      setTimeout(() => {
+        urlAnalyzeBtn.click();
+      }, 300);
+    }
   }
 
   // Handle ?input= for HTML auto-fill + auto-run

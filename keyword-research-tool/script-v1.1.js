@@ -27,29 +27,27 @@ document.addEventListener('DOMContentLoaded', () => {
     initShareReport();
     initSubmitFeedback();
     
-      // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
-  function autoFillFromUrl() {
+  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
+  function autoFillAndRunFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
-    
-    if (inputData) {
-      const textarea = document.getElementById('code-input');
-      if (textarea) {
-        textarea.value = decodeURIComponent(inputData);
-        
-        // Optional: Auto-click the Analyze button after a tiny delay
-        const analyzeBtn = document.getElementById('analyze-code-btn');
-        if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);   // Give the page time to render
-        }
-      }
+    if (!inputData) return;
+
+    const textarea = document.getElementById('code-input');
+    if (!textarea) return;
+
+    textarea.value = decodeURIComponent(inputData);
+
+    const analyzeBtn = document.getElementById('analyze-code-btn') || document.getElementById('code-analyze-btn');
+    if (analyzeBtn) {
+      setTimeout(() => {
+        analyzeBtn.click();
+      }, 300);
     }
   }
 
-  // Run when page loads
-  window.addEventListener('load', autoFillFromUrl);
+  // Run after DOM is ready
+  setTimeout(autoFillAndRunFromUrl, 150);
 
     // Auto-fill from URL params (for shared reports)
     const params = new URLSearchParams(window.location.search);
