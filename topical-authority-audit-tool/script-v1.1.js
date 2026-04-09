@@ -27,38 +27,35 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!form || !loading || !results || !urlAnalyzeBtn || !codeAnalyzeBtn) {
     return;
   }
-  
-    // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
-  function autoFillFromUrl() {
+
+  // === AUTO-FILL + AUTO-RUN FROM ?input= QUERY PARAM (VS Code extension + direct links) ===
+  function autoFillAndRunFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
-    
-    if (inputData) {
-      const textarea = document.getElementById('code-input');
-      if (textarea) {
-        textarea.value = decodeURIComponent(inputData);
-        
-        // Optional: Auto-click the Analyze button after a tiny delay
-        const analyzeBtn = document.getElementById('analyze-code-btn');
-        if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);   // Give the page time to render
-        }
-      }
+    if (!inputData) return;
+
+    const textarea = document.getElementById('code-input');
+    if (!textarea) return;
+
+    textarea.value = decodeURIComponent(inputData);
+
+    // Clear the opposite field to avoid leakage
+    const urlInputEl = document.getElementById('url-input');
+    if (urlInputEl) urlInputEl.value = '';
+
+    // Support both possible button IDs for maximum compatibility
+    const analyzeBtn = document.getElementById('code-analyze-btn') || 
+                       document.getElementById('analyze-code-btn');
+
+    if (analyzeBtn) {
+      setTimeout(() => {
+        analyzeBtn.click();
+      }, 300);
     }
   }
 
-  // Run when page loads
-  window.addEventListener('load', autoFillFromUrl);
-
-  // Auto-fill from shared link
-  const urlParams = new URLSearchParams(window.location.search);
-  const sharedUrl = urlParams.get('url');
-  let sharedDecodedUrl = '';
-  if (sharedUrl) {
-    sharedDecodedUrl = decodeURIComponent(sharedUrl);
-  }
+  // Run auto-fill (we are already inside DOMContentLoaded)
+  setTimeout(autoFillAndRunFromUrl, 150);
 
   // Respects anon vs logged-in Pro user limits via canRunTool
   let hasCheckedLimit = false;
