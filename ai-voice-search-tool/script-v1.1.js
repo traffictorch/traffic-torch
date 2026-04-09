@@ -17,6 +17,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.getElementById('code-input');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   const results = document.getElementById('results');
+  
+    // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
+  function autoFillFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const inputData = params.get('input');
+    
+    if (inputData) {
+      const textarea = document.getElementById('code-input');
+      if (textarea) {
+        textarea.value = decodeURIComponent(inputData);
+        
+        // Optional: Auto-click the Analyze button after a tiny delay
+        const analyzeBtn = document.getElementById('analyze-code-btn');
+        if (analyzeBtn) {
+          setTimeout(() => {
+            analyzeBtn.click();
+          }, 800);   // Give the page time to render
+        }
+      }
+    }
+  }
+
+  // Run when page loads
+  window.addEventListener('load', autoFillFromUrl);
 
   // Auto-fill input from shared report deep link (?url=...)
   const urlParams = new URLSearchParams(window.location.search);
