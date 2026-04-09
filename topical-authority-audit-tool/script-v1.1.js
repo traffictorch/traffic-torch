@@ -57,6 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Run auto-fill (we are already inside DOMContentLoaded)
   setTimeout(autoFillAndRunFromUrl, 150);
 
+  // Auto-fill from shared link ?url= (kept for backward compatibility)
+  const urlParams = new URLSearchParams(window.location.search);
+  const sharedUrl = urlParams.get('url');
+  let sharedDecodedUrl = '';
+  if (sharedUrl) {
+    sharedDecodedUrl = decodeURIComponent(sharedUrl);
+  }
+
   // Respects anon vs logged-in Pro user limits via canRunTool
   let hasCheckedLimit = false;
 

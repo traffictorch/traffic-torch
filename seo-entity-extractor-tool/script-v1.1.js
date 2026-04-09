@@ -12,52 +12,36 @@ import { analyzeReadiness } from './modules/readiness.js';
 // Minimal URL Prefill + Auto Submit
 function simplePrefillAndRun() {
   const params = new URLSearchParams(window.location.search);
-  const urlParam = params.get('url');
-  if (!urlParam) return;
 
-  const cleanUrl = decodeURIComponent(urlParam).trim();
-  const urlInput = document.getElementById('url-input');
-  
-  if (urlInput) {
-    urlInput.value = cleanUrl;
+  // Handle shared ?url= 
+  const urlParam = params.get('url');
+  if (urlParam) {
+    const cleanUrl = decodeURIComponent(urlParam).trim();
+    const urlInput = document.getElementById('url-input');
+    if (urlInput) {
+      urlInput.value = cleanUrl;
+    }
   }
-  
-    // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
-  function autoFillFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const inputData = params.get('input');
-    
-    if (inputData) {
-      const textarea = document.getElementById('code-input');
-      if (textarea) {
-        textarea.value = decodeURIComponent(inputData);
-        
-        // Optional: Auto-click the Analyze button after a tiny delay
-        const analyzeBtn = document.getElementById('analyze-code-btn');
-        if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);   // Give the page time to render
-        }
+
+  // Handle ?input= for HTML auto-fill + auto-run
+  const inputData = params.get('input');
+  if (inputData) {
+    const textarea = document.getElementById('code-input');
+    if (textarea) {
+      textarea.value = decodeURIComponent(inputData);
+
+      const analyzeBtn = document.getElementById('analyze-code-btn') || document.getElementById('code-analyze-btn');
+      if (analyzeBtn) {
+        setTimeout(() => {
+          analyzeBtn.click();
+        }, 300);
       }
     }
   }
-
-  // Run when page loads
-  window.addEventListener('load', autoFillFromUrl);
-
-  // Auto click the button (triggers your existing handler)
-  setTimeout(() => {
-    const analyzeBtn = document.getElementById('url-analyze-btn');
-    if (analyzeBtn) {
-      analyzeBtn.click();
-    }
-  }, 400);
 }
 
 // Run it
 document.addEventListener('DOMContentLoaded', simplePrefillAndRun);
-window.addEventListener('load', simplePrefillAndRun);
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
