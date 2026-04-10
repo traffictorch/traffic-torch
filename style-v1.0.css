@@ -46,10 +46,6 @@ body {
   margin: 0;
 }
 
-.dark body {
-  color: #e5e7eb; /* gray-200 dark */
-}
-
 /* Preserve gradient on logo/title (desktop + mobile variants) */
 #sidebarTitle,
 p.text-\[1\.25rem\].font-black.bg-gradient-to-r,
@@ -70,11 +66,6 @@ span.bg-gradient-to-r.text-transparent,
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
-
-
-
-
-
 
 /* Mobile menu – full-height right-side drawer, scrollable content, modern mobile standard */
 #mobileMenu {
@@ -159,27 +150,9 @@ body.overflow-hidden {
 }
 
 
-
-
-
-
-/* Targeted dark mode text overrides */
-.dark .sidebar-link,
-.dark .tool-card p,
-.dark .author-bio p,
-.dark footer p,
-.dark footer a,
-.dark .text-center p {
-  color: #e5e7eb !important;
-}
-
 /* Sidebar links - base + stronger hover (both modes) */
 .sidebar-link {
   transition: color 0.3s ease;
-}
-
-.dark .sidebar-link {
-  color: #e5e7eb !important;
 }
 
 /* Stronger sidebar hover override to beat Tailwind utilities */
@@ -464,23 +437,6 @@ details > div,
 @keyframes appear {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Enforce day/night text – targeted (exclude sidebar-link & gradient elements) */
-body, p:not([class*="bg-gradient"]), li, span:not([class*="bg-gradient"]), a:not(.sidebar-link):not(footer a), small, strong, em, blockquote {
-  color: #1f2937; /* gray-800 light */
-} 
-
-.dark body,
-.dark p:not([class*="bg-gradient"]),
-.dark li,
-.dark span:not([class*="bg-gradient"]),
-.dark a:not(.sidebar-link):not(footer a),
-.dark small,
-.dark strong,
-.dark em,
-.dark blockquote {
-  color: #e5e7eb !important; /* gray-200 dark */
 }
 
 /*  Paragraph spacing – readable + accessible */
