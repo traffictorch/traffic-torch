@@ -44,7 +44,6 @@ body {
   background: var(--bg-gradient);
   min-height: 100vh;
   margin: 0;
-  color: #1f2937; /* gray-800 light */
 }
 
 .dark body {
@@ -176,7 +175,6 @@ body.overflow-hidden {
 
 /* Sidebar links - base + stronger hover (both modes) */
 .sidebar-link {
-  color: white;
   transition: color 0.3s ease;
 }
 
@@ -471,7 +469,7 @@ details > div,
 /* Enforce day/night text – targeted (exclude sidebar-link & gradient elements) */
 body, p:not([class*="bg-gradient"]), li, span:not([class*="bg-gradient"]), a:not(.sidebar-link):not(footer a), small, strong, em, blockquote {
   color: #1f2937; /* gray-800 light */
-}
+} 
 
 .dark body,
 .dark p:not([class*="bg-gradient"]),
