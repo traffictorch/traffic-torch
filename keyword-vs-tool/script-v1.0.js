@@ -201,7 +201,7 @@ const countPhrase = (text = '', phrase = '', isUrl = false) => {
         <div class="text-center py-32 px-6 max-w-3xl mx-auto">
           <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-8">Error: Could not load one or both pages</p>
           <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
-            Please check URLs and try again.
+            Whitelist: render.traffictorch.workers.dev and try again.
           </p>
         </div>
       `;

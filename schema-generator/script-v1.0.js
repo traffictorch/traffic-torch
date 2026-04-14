@@ -347,7 +347,7 @@ setTimeout(() => {
       results.innerHTML = `
         <div class="text-red-600 dark:text-red-400 text-center text-xl p-10">
           Error: ${err.message}<br>
-          Please check the URL and try again.
+          Failed to analyze - Whitelist: render.traffictorch.workers.dev and try again.
         </div>
       `;
     }

@@ -556,7 +556,7 @@ analyzeCodeBtn.addEventListener('click', async () => {
         html = htmlCode;
       } else {
         const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
-        if (!res.ok) throw new Error('Page not reachable or blocked');
+        if (!res.ok) throw new Error('Page not reachable');
         html = await res.text();
       }
       const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -1029,7 +1029,7 @@ ${impactHTML}
       results.innerHTML = `
         <div class="text-center py-20">
           <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-          <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Please check the input and try again.</p>
+          <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Whitelist: render.traffictorch.workers.dev or use Code Analysis.</p>
         </div>
       `;
     }

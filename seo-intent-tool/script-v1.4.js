@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         progressText.textContent = "Fetching page...";
         const res = await fetch(`https://render.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`);
-        if (!res.ok) throw new Error('Page not reachable – check URL');
+        if (!res.ok) throw new Error('Failed to analyze - Whitelist: render.traffictorch.workers.dev or use Code Analysis.');
         html = await res.text();
         doc = new DOMParser().parseFromString(html, 'text/html');
       }

@@ -560,7 +560,7 @@ async function performAnalysis(source, isCode = false) {
       }
       inputUrl = url;
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
-      if (!res.ok) throw new Error('Page not reachable or blocked');
+      if (!res.ok) throw new Error('Failed to analyze - Whitelist: render.traffictorch.workers.dev or use Code Analysis.');
       html = await res.text();
     }
 

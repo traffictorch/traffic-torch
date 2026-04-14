@@ -262,7 +262,7 @@ if (!yourUrl || !location) {
         stopSpinnerLoader();
         results.innerHTML = `
           <div class="text-center p-10 bg-white dark:bg-gray-950 rounded-2xl shadow-xl border border-red-500">
-            <p class="text-xl text-red-600 dark:text-red-400 mb-6">Could not fetch the page (CORS or network issue).</p>
+            <p class="text-xl text-red-600 dark:text-red-400 mb-6">Failed to analyze - Whitelist: render.traffictorch.workers.dev or use Code Analysis.</p>
             <p class="text-gray-700 dark:text-gray-300 mb-4">Paste your page HTML source below to analyze:</p>
             <textarea id="paste-html" class="w-full h-64 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-mono text-sm"></textarea>
             <button id="analyze-paste" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition">

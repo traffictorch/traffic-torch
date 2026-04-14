@@ -601,7 +601,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
           ${err.message.includes('timeout') || err.message.includes('fetch')
             ? 'The page is very large or took too long to load. Try a smaller page or check your internet connection.'
-            : err.message || 'Error - Whitelist: entity-ai-proxy.traffictorch.workers.dev/entity-analyze or use Code Analysis.'}
+            : err.message || 'Error - Failed to analyze - Whitelist: entity-ai-proxy.traffictorch.workers.dev/entity-analyze or use Code Analysis.'}
         </p>
         <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl">
           Try Again

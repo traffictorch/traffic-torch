@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const yourDoc = await fetchPage(fullUrl);
     if (!yourDoc) {
       stopSpinnerLoader();
-      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Page not reachable.</p>`;
+      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Failed to analyze - Whitelist: render.traffictorch.workers.dev or use Code Analysis.</p>`;
       return;
     }
 

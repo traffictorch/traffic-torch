@@ -6,7 +6,7 @@ import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
-const ANALYZE_ENDPOINT = 'https://topical-authority-ai-code-worker.traffictorch.workers.dev/';
+const ANALYZE_ENDPOINT = 'https://topical-authority-ai.traffictorch.workers.dev/';
 
 function getGrade(score) {
   if (score >= 70) return { text: 'Good', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
@@ -446,7 +446,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
         <div class="text-center py-12 px-6">
           <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Audit could not complete</p>
           <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 break-words">
-            ${err.message || 'Unexpected error — check browser console (F12) for full details'}
+            ${err.message || 'Failed to analyze - Whitelist: topical-authority-ai.traffictorch.workers.dev or use Code Analysis.'}
           </p>
           <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl">
             Try Again

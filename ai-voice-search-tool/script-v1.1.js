@@ -605,40 +605,66 @@ ${(() => {
     }
   }
 
-  // URL Form Submit
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const url = urlInput.value.trim();
-    if (!url) return;
-    codeInput.value = '';
-    let normalizedUrl = url;
-    if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
-      normalizedUrl = 'https://' + normalizedUrl;
-    }
-    try {
-      const res = await fetch(PROXY + encodeURIComponent(normalizedUrl));
-      if (!res.ok) throw new Error('Page not reachable');
-      const html = await res.text();
-      runAnalysis(html, normalizedUrl);
-    } catch (err) {
+// URL Form Submit
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const url = urlInput.value.trim();
+  if (!url) return;
+
+  codeInput.value = '';
+  let normalizedUrl = url;
+  if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+    normalizedUrl = 'https://' + normalizedUrl;
+  }
+
+  // Show loader BEFORE any async calls or checks
+  results.innerHTML = `
+    <div class="py-0 text-center">
+      <div class="inline-block w-16 h-16 mb-8">
+        <svg viewBox="0 0 100 100" class="animate-spin text-orange-500">
+          <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" stroke-dasharray="126" stroke-dashoffset="63" stroke-linecap="round" />
+        </svg>
+      </div>
+      <p id="progressText" class="text-2xl font-bold text-orange-600 dark:text-orange-400">Analyzing content...</p>
+      <p class="mt-4 text-sm text-gray-500 dark:text-gray-500">Please wait while we process for AI voice search</p>
+    </div>
+  `;
+  results.classList.remove('hidden');
+
+  // Auto scroll to spinner immediately
+  setTimeout(() => {
+    const offset = 240;
+    const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth'
+    });
+  }, 50);
+
+  try {
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) {
       results.innerHTML = `
         <div class="text-center py-20">
-          <p class="text-3xl text-red-500 font-bold">Error: ${err.message}</p>
-          <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Please check the URL and try again.</p>
+          <p class="text-3xl text-red-500 font-bold">Usage limit reached</p>
+          <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Please try again later or contact support.</p>
         </div>
       `;
-    }
-  });
-
-  // Code Analysis Button
-  analyzeCodeBtn.addEventListener('click', () => {
-    const htmlCode = codeInput.value.trim();
-    if (!htmlCode) {
-      alert('Please paste full HTML code to analyze.');
-      codeInput.focus();
       return;
     }
-    urlInput.value = '';
-    runAnalysis(htmlCode, 'Pasted HTML Code');
-  });
+
+    const res = await fetch(PROXY + encodeURIComponent(normalizedUrl));
+    if (!res.ok) throw new Error('Page not reachable');
+
+    const html = await res.text();
+    runAnalysis(html, normalizedUrl);   // Now safe — loader already shown, canRunTool already passed
+  } catch (err) {
+    results.innerHTML = `
+      <div class="text-center py-20">
+        <p class="text-3xl text-red-500 font-bold">Error: ${err.message}</p>
+        <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Please check the URL and try again.</p>
+      </div>
+    `;
+  }
+});
 });
