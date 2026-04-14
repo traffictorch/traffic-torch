@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const doc = new DOMParser().parseFromString(html, 'text/html');
       await runFullAnalysis(html, doc, url, originalInput);
     } catch (err) {
-      alert('Failed to analyze — try another site or check the URL');
+      alert('Failed to analyze — Whitelist: render.traffictorch.workers.dev or use Code Analysis.');
       if (progressContainer) progressContainer.classList.add('hidden');
     }
   });
