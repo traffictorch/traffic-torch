@@ -656,7 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(err => console.error('Desktop menu load error:', err));
 
-  // Mobile menu — FIXED hash navigation for same-page links (#extensions etc.)
+  // Mobile menu — Bulletproof #hash fix for same-page links (#extensions etc.) on home page
   fetch('/mobile-menu.html')
     .then(response => {
       if (!response.ok) throw new Error('Mobile menu fetch failed: ' + response.status);
@@ -668,33 +668,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
       attachMenuToggles('mobileMenu');
 
-      // ── STRONG FIX: Mobile hash links (works on home page when menu is opened) ──
+      // ── BULLETPROOF FIX: Mobile hash links (works reliably on iOS Safari when already on home page) ──
       const mobileMenu = document.getElementById('mobileMenu');
       const menuToggleBtn = document.getElementById('menuToggle');
 
       if (mobileMenu && menuToggleBtn) {
         const setupHashLinks = () => {
           mobileMenu.querySelectorAll('a[href^="#"]').forEach(link => {
-            // Remove any previous handler to avoid duplicates
             if (link._trafficHashHandler) {
               link.removeEventListener('click', link._trafficHashHandler);
             }
 
-            link._trafficHashHandler = function (e) {
-              // 1. Close menu first (body scroll + aria)
+            link._trafficHashHandler = function () {
+              // Close menu FIRST (this was the main blocker)
               mobileMenu.classList.add('hidden');
               document.body.classList.remove('overflow-hidden');
               menuToggleBtn.setAttribute('aria-expanded', 'false');
 
-              // 2. Handle smooth scroll to section
               const targetId = this.getAttribute('href').substring(1);
               if (!targetId) return;
 
               const target = document.getElementById(targetId);
               if (target) {
-                // Delay gives menu close time to finish (critical on iOS Safari)
+                // Force a longer delay + reflow for stubborn mobile Safari
                 setTimeout(() => {
-                  const headerOffset = 100; // increased for your fixed header/sidebar on mobile
+                  const headerOffset = 110; // safe value for your fixed header/sidebar on mobile
                   const elementPosition = target.getBoundingClientRect().top;
                   const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -702,7 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     top: offsetPosition,
                     behavior: 'smooth'
                   });
-                }, 320);
+                }, 400); // 400ms gives menu close animation time to fully finish
               }
             };
 
@@ -710,29 +708,29 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         };
 
-        // Initial setup
-        setupHashLinks();
+        // Run once after menu loads
+        setTimeout(setupHashLinks, 100);
 
-        // Re-setup every time user opens the hamburger (handles dynamic cases)
+        // Re-run every time hamburger is tapped (very important for iOS)
         menuToggleBtn.addEventListener('click', () => {
-          setTimeout(setupHashLinks, 60);
+          setTimeout(setupHashLinks, 80);
         });
       }
     })
     .catch(err => console.error('Mobile menu load error:', err));
 });
 
-// Global hash handler for direct links like https://traffictorch.net/#extensions
+// Global hash handler for direct links like /#extensions (also helps on refresh)
 function scrollToHash() {
   if (!window.location.hash) return;
   const target = document.querySelector(window.location.hash);
   if (target) {
     setTimeout(() => {
-      const headerOffset = 100;
+      const headerOffset = 110;
       const elementPosition = target.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-    }, 180);
+    }, 200);
   }
 }
 
