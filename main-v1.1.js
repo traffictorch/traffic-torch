@@ -646,63 +646,78 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) throw new Error('Desktop menu fetch failed: ' + response.status);
       return response.text();
     })
-.then(html => {
-  const placeholder = document.getElementById('desktop-menu-placeholder');
-  placeholder.innerHTML = html;
- 
-  // Trigger fade-in after a tiny delay (helps perceived smoothness)
-  setTimeout(() => {
-    placeholder.classList.add('loaded');
-  }, 50);
- 
-  attachMenuToggles('desktopSidebar');
-})
-// Mobile menu — now with proper #hash link handling AFTER dynamic load
-fetch('/mobile-menu.html')
-  .then(response => {
-    if (!response.ok) throw new Error('Mobile menu fetch failed: ' + response.status);
-    return response.text();
-  })
-  .then(html => {
-    const placeholder = document.getElementById('mobile-menu-placeholder');
-    placeholder.innerHTML = html;
-    
-    // IMPORTANT: attach toggles + FIXED hash link handler RIGHT AFTER HTML is inserted
-    attachMenuToggles('mobileMenu');
+    .then(html => {
+      const placeholder = document.getElementById('desktop-menu-placeholder');
+      placeholder.innerHTML = html;
+      // Trigger fade-in after a tiny delay (helps perceived smoothness)
+      setTimeout(() => {
+        placeholder.classList.add('loaded');
+      }, 50);
+      attachMenuToggles('desktopSidebar');
+    })
+    .catch(err => console.error('Desktop menu load error:', err));
 
-    // ── FIXED mobile #hash links (extensions, features, etc.) ──
-    const menu = document.getElementById('mobileMenu');
-    const button = document.getElementById('menuToggle');
-    
-    if (menu && button) {
-      menu.querySelectorAll('a[href^="#"]').forEach(link => {
-        link.addEventListener('click', function(e) {
-          // Close menu immediately
-          menu.classList.add('hidden');
-          document.body.classList.remove('overflow-hidden');
-          button.setAttribute('aria-expanded', 'false');
+  // Mobile menu — now with proper #hash link handling AFTER dynamic load
+  fetch('/mobile-menu.html')
+    .then(response => {
+      if (!response.ok) throw new Error('Mobile menu fetch failed: ' + response.status);
+      return response.text();
+    })
+    .then(html => {
+      const placeholder = document.getElementById('mobile-menu-placeholder');
+      placeholder.innerHTML = html;
 
-          const targetId = this.getAttribute('href').substring(1);
-          if (!targetId) return;
+      // IMPORTANT: attach toggles + FIXED hash link handler RIGHT AFTER HTML is inserted
+      attachMenuToggles('mobileMenu');
 
-          const targetElement = document.getElementById(targetId);
-          if (targetElement) {
-            // Tiny delay so menu close animation finishes (iOS Safari needs this)
-            setTimeout(() => {
-              const headerOffset = 90; // your fixed header/sidebar height on mobile
-              const elementPosition = targetElement.getBoundingClientRect().top;
-              const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      // ── FIXED mobile #hash links (extensions, features, etc.) ──
+      const menu = document.getElementById('mobileMenu');
+      const button = document.getElementById('menuToggle');
 
-              window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-              });
-            }, 280);
-          }
+      if (menu && button) {
+        menu.querySelectorAll('a[href^="#"]').forEach(link => {
+          link.addEventListener('click', function () {
+            // Close menu immediately
+            menu.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+            button.setAttribute('aria-expanded', 'false');
+
+            const targetId = this.getAttribute('href').substring(1);
+            if (!targetId) return;
+
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+              // Tiny delay so menu close animation finishes (iOS Safari needs this)
+              setTimeout(() => {
+                const headerOffset = 90; // your fixed header/sidebar height on mobile
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({
+                  top: offsetPosition,
+                  behavior: 'smooth'
+                });
+              }, 280);
+            }
+          });
         });
-      });
-    }
-  })
-  .catch(err => {
-    console.error('Mobile menu load error:', err);
-  });
+      }
+    })
+    .catch(err => console.error('Mobile menu load error:', err));
+});
+
+// Global smooth scroll to #hash on page load or direct links (/#extensions etc.)
+function scrollToHash() {
+  if (!window.location.hash) return;
+  const targetElement = document.querySelector(window.location.hash);
+  if (targetElement) {
+    setTimeout(() => {
+      const headerOffset = 90;
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    }, 150);
+  }
+}
+
+window.addEventListener('load', scrollToHash);
+window.addEventListener('hashchange', scrollToHash);
