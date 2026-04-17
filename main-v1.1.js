@@ -649,7 +649,6 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(html => {
       const placeholder = document.getElementById('desktop-menu-placeholder');
       placeholder.innerHTML = html;
-      // Trigger fade-in after a tiny delay (helps perceived smoothness)
       setTimeout(() => {
         placeholder.classList.add('loaded');
       }, 50);
@@ -657,7 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(err => console.error('Desktop menu load error:', err));
 
-  // Mobile menu — now with proper #hash link handling AFTER dynamic load
+  // Mobile menu — FIXED hash navigation for same-page links (#extensions etc.)
   fetch('/mobile-menu.html')
     .then(response => {
       if (!response.ok) throw new Error('Mobile menu fetch failed: ' + response.status);
@@ -667,55 +666,73 @@ document.addEventListener('DOMContentLoaded', () => {
       const placeholder = document.getElementById('mobile-menu-placeholder');
       placeholder.innerHTML = html;
 
-      // IMPORTANT: attach toggles + FIXED hash link handler RIGHT AFTER HTML is inserted
       attachMenuToggles('mobileMenu');
 
-      // ── FIXED mobile #hash links (extensions, features, etc.) ──
-      const menu = document.getElementById('mobileMenu');
-      const button = document.getElementById('menuToggle');
+      // ── STRONG FIX: Mobile hash links (works on home page when menu is opened) ──
+      const mobileMenu = document.getElementById('mobileMenu');
+      const menuToggleBtn = document.getElementById('menuToggle');
 
-      if (menu && button) {
-        menu.querySelectorAll('a[href^="#"]').forEach(link => {
-          link.addEventListener('click', function () {
-            // Close menu immediately
-            menu.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-            button.setAttribute('aria-expanded', 'false');
-
-            const targetId = this.getAttribute('href').substring(1);
-            if (!targetId) return;
-
-            const targetElement = document.getElementById(targetId);
-            if (targetElement) {
-              // Tiny delay so menu close animation finishes (iOS Safari needs this)
-              setTimeout(() => {
-                const headerOffset = 90; // your fixed header/sidebar height on mobile
-                const elementPosition = targetElement.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                window.scrollTo({
-                  top: offsetPosition,
-                  behavior: 'smooth'
-                });
-              }, 280);
+      if (mobileMenu && menuToggleBtn) {
+        const setupHashLinks = () => {
+          mobileMenu.querySelectorAll('a[href^="#"]').forEach(link => {
+            // Remove any previous handler to avoid duplicates
+            if (link._trafficHashHandler) {
+              link.removeEventListener('click', link._trafficHashHandler);
             }
+
+            link._trafficHashHandler = function (e) {
+              // 1. Close menu first (body scroll + aria)
+              mobileMenu.classList.add('hidden');
+              document.body.classList.remove('overflow-hidden');
+              menuToggleBtn.setAttribute('aria-expanded', 'false');
+
+              // 2. Handle smooth scroll to section
+              const targetId = this.getAttribute('href').substring(1);
+              if (!targetId) return;
+
+              const target = document.getElementById(targetId);
+              if (target) {
+                // Delay gives menu close time to finish (critical on iOS Safari)
+                setTimeout(() => {
+                  const headerOffset = 100; // increased for your fixed header/sidebar on mobile
+                  const elementPosition = target.getBoundingClientRect().top;
+                  const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                  });
+                }, 320);
+              }
+            };
+
+            link.addEventListener('click', link._trafficHashHandler);
           });
+        };
+
+        // Initial setup
+        setupHashLinks();
+
+        // Re-setup every time user opens the hamburger (handles dynamic cases)
+        menuToggleBtn.addEventListener('click', () => {
+          setTimeout(setupHashLinks, 60);
         });
       }
     })
     .catch(err => console.error('Mobile menu load error:', err));
 });
 
-// Global smooth scroll to #hash on page load or direct links (/#extensions etc.)
+// Global hash handler for direct links like https://traffictorch.net/#extensions
 function scrollToHash() {
   if (!window.location.hash) return;
-  const targetElement = document.querySelector(window.location.hash);
-  if (targetElement) {
+  const target = document.querySelector(window.location.hash);
+  if (target) {
     setTimeout(() => {
-      const headerOffset = 90;
-      const elementPosition = targetElement.getBoundingClientRect().top;
+      const headerOffset = 100;
+      const elementPosition = target.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-    }, 150);
+    }, 180);
   }
 }
 
