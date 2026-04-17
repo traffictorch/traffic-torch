@@ -249,13 +249,31 @@ document.addEventListener('DOMContentLoaded', () => {
       button.setAttribute('aria-expanded', 'false');
     });
   }
-  // Close on link click
-  menu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      menu.classList.add('hidden');
-      document.body.classList.remove('overflow-hidden');
-      button.setAttribute('aria-expanded', 'false');
-    });
+// Close on link click — FIXED for in-page #hash anchors on mobile (same-page + from other pages)
+menu.querySelectorAll('a[href^="#"]').forEach(link => {   // Only target internal hash links
+  link.addEventListener('click', function(e) {
+    // Always close menu first (critical on mobile)
+    menu.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+    button.setAttribute('aria-expanded', 'false');
+
+    const targetId = this.getAttribute('href').substring(1); // e.g. "extensions"
+    if (!targetId) return;
+
+    const targetElement = document.getElementById(targetId);
+    if (targetElement) {
+      // Small delay so menu close animation finishes + iOS Safari behaves reliably
+      setTimeout(() => {
+        const headerOffset = 90; // Adjust if your fixed header/sidebar is taller/shorter on mobile
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }, 280); // Matches typical Tailwind transition duration for menu close
+    }
   });
 });
 // Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
