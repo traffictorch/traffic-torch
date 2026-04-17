@@ -249,33 +249,40 @@ document.addEventListener('DOMContentLoaded', () => {
       button.setAttribute('aria-expanded', 'false');
     });
   }
-// Close on link click — FIXED for in-page #hash anchors on mobile (same-page + from other pages)
-menu.querySelectorAll('a[href^="#"]').forEach(link => {   // Only target internal hash links
-  link.addEventListener('click', function(e) {
-    // Always close menu first (critical on mobile)
-    menu.classList.add('hidden');
-    document.body.classList.remove('overflow-hidden');
-    button.setAttribute('aria-expanded', 'false');
-
-    const targetId = this.getAttribute('href').substring(1); // e.g. "extensions"
-    if (!targetId) return;
-
-    const targetElement = document.getElementById(targetId);
-    if (targetElement) {
-      // Small delay so menu close animation finishes + iOS Safari behaves reliably
-      setTimeout(() => {
-        const headerOffset = 90; // Adjust if your fixed header/sidebar is taller/shorter on mobile
-        const elementPosition = targetElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
-      }, 280); // Matches typical Tailwind transition duration for menu close
-    }
+  // Close on link click
+  menu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+      button.setAttribute('aria-expanded', 'false');
+    });
   });
 });
+
+// Global hash scroll handler — works on direct links, refreshes, and after menu clicks
+function scrollToHash() {
+  if (!window.location.hash) return;
+  const targetElement = document.querySelector(window.location.hash);
+  if (targetElement) {
+    setTimeout(() => {
+      const headerOffset = 90;
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }, 150);
+  }
+}
+
+// Run on load (covers direct #extensions links)
+window.addEventListener('load', scrollToHash);
+
+// Also run when hash changes (browser back/forward or manual hash navigation)
+window.addEventListener('hashchange', scrollToHash);
+
 // Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
