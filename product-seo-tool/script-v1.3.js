@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loading = document.getElementById('loading');
   const progressText = document.getElementById('progressText');
 
-  const PROXY = 'https://render.traffictorch.workers.dev/';
+  const PROXY = 'https://render-ai.traffictorch.workers.dev/';
 
   // Shared analysis runner
   async function runProductSEOAnalysis(source, isCode = false) {
