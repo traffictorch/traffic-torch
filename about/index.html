@@ -51,7 +51,7 @@
   
   <!-- Optimized SEO Title & Description -->
   <title>About Traffic Torch – SEO, GEO, AEO & AIO search Tools Suite</title>
-  <meta name="description" content="Learn about Traffic Torch: 360 SEO, GEO, AEO & AIO search tools for instant SEO audits, plugin solutions, AI search optimization, bounce prediction &amp; keyword research – all mobile-friendly with educational reports." />
+  <meta name="description" content="Learn about Traffic Torch: 360 UX, SEO & GEO search tools for instant audits, priority fixes & plugin solutions, all mobile-friendly with educational reports." />
   
   <!-- Robots & Canonical -->
   <meta name="robots" content="index, follow" />
@@ -86,58 +86,110 @@
   <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
   <meta name="twitter:site" content="@Guitaralize" />
   
-<!-- Structured Data (JSON-LD) -->
+<!-- Unified Structured Data – AboutPage + Organization + FAQPage + BreadcrumbList -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "AboutPage",
-  "name": "About Traffic Torch",
-  "description": "Learn about Traffic Torch – the free instant 360° SEO & UX health analysis suite. Instant scores, deep audits, competitive gap insights, priority fixes, and predictive forecasts across keyword optimization, AI search readiness, content authenticity, bounce risk, local signals, and more.",
-  "url": "https://traffictorch.net/about/",
-  "mainEntity": {
-    "@type": "Organization",
-    "name": "Traffic Torch",
-    "url": "https://traffictorch.net/",
-    "logo": "https://traffictorch.net/logo-512.webp"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Traffic Torch"
-  }
-}
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Traffic Torch",
-  "url": "https://traffictorch.net/",
-  "logo": "https://traffictorch.net/logo-512.webp",
-  "description": "Creators of free SEO, GEO, AEO & AIO search analysis tools that help websites improve rankings, user engagement, and visibility in both traditional and AI-powered search.",
-  "sameAs": [
-    "https://www.linkedin.com/in/ylia-callan-8b889976/"
-  ]
-}
-</script>
-
-<!-- Optional but recommended: BreadcrumbList for better site hierarchy signals -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
+  "@graph": [
     {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://traffictorch.net/"
+      "@type": "AboutPage",
+      "name": "About Traffic Torch",
+      "description": "Learn about Traffic Torch – the free instant 360° SEO & UX health analysis suite. Instant scores, deep audits, competitive gap insights, priority fixes, and predictive forecasts across keyword optimization, AI search readiness, content authenticity, bounce risk, local signals, and more.",
+      "url": "https://traffictorch.net/about/",
+      "mainEntity": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/",
+        "logo": "https://traffictorch.net/logo-512.webp",
+        "description": "Creators of free SEO, GEO, AEO & AIO search analysis tools that help websites improve rankings, user engagement, and visibility in both traditional and AI-powered search.",
+        "sameAs": [
+          "https://github.com/traffictorch/traffic-torch",
+          "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+          "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+          "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+          "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+          "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+          "https://www.framer.com/marketplace/plugins/traffic-torch/",
+          "https://github.com/marketplace/actions/traffic-torch-audit",
+          "https://www.linkedin.com/in/ylia-callan-8b889976/",
+          "https://x.com/Guitaralize",
+          "https://yliacallan.github.io/"
+        ]
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch"
+      }
     },
     {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "About Traffic Torch",
-      "item": "https://traffictorch.net/about/"
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Traffic Torch?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Traffic Torch is a free, privacy-first suite of instant 360° SEO, GEO, AEO & AIO analysis tools. It delivers health scores, deep educational audits, priority fixes, and predictive forecasts directly in your browser."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Who created Traffic Torch?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Traffic Torch was founded and is maintained by Ylia Callan, a web designer, researcher, and creator passionate about privacy-first tools, SEO correlation research, and modern web experiences."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Traffic Torch a physical product?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Traffic Torch is a digital toolkit only. It is not related to any physical traffic torches, LED batons, or safety equipment."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Traffic Torch free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes — every tool on traffictorch.net is completely free to use. No sign-up, no paywalls, no data collection. We also offer free browser extensions and plugins for Chrome, Firefox, Edge, WordPress, VS Code, and Framer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What platforms does Traffic Torch support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Traffic Torch works on any modern browser (desktop & mobile). Official extensions and plugins are available for Chrome, Firefox, Edge, WordPress, VS Code, Framer, and GitHub Actions. All tools are fully responsive and PWA-ready."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How private is Traffic Torch?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "100% private. Every analysis runs client-side in your browser using secure proxy fetching only when needed. No data is stored, logged, or shared with us or any third party."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "About Traffic Torch",
+          "item": "https://traffictorch.net/about/"
+        }
+      ]
     }
   ]
 }
@@ -566,77 +618,318 @@
 
   </div>
 </div>
+
+<!-- TRAFFIC TORCH EXTENSIONS, TOOLS & INTEGRATIONS SECTION -->
+<section id="extensions-tools-integrations" class="py-8">
+  <div class="max-w-7xl mx-auto px-6">
+    <!-- Title & Unified Description -->
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-500">
+        Traffic Torch Extensions, Tools & Integrations
+      </h2>
+      <p class="text-xl text-gray-800 dark:text-gray-200 max-w-3xl mx-auto leading-relaxed">
+        Supercharge your workflow with Traffic Torch AI SEO & UX tools. Install browser extensions for instant audits, 
+        add developer tools to your VS Code and Github, and bring powerful analysis directly into WordPress, Figma, Framer 
+        and more. One-click 360° health scoring, reports, fixes, and insights wherever you work.
+      </p>
+    </div>
+
+    <!-- 4-Column Plugin-Style Cards Grid -->
+    <div class="grid md:grid-cols-4 xl:grid-cols-4 gap-8">
+      
+      <!-- Chrome -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-red-500/50 group-hover:border-red-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:scale-110 transition-transform">🌐</div>
+            <h3 class="text-red-400 text-2xl text-center font-bold mb-3">Chrome Extension</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              Full AI SEO & UX audit toolkit directly in Chrome. Instant 360° health score, reports, and fixes.
+            </p>
+          </div>
+          <a href="https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
+      </div>
+
+      <!-- Firefox -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-orange-500/50 group-hover:border-orange-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:scale-110 transition-transform">🦊</div>
+            <h3 class="text-orange-400 text-2xl text-center font-bold mb-3">Firefox Extension</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              360° AI SEO & UX health score, reports, and priority fixes inside Firefox.
+            </p>
+          </div>
+          <a href="https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
+      </div>
+
+      <!-- Edge -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-blue-500 group-hover:border-blue-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:scale-110 transition-transform">🔷</div>
+            <h3 class="text-blue-400 text-2xl text-center font-bold mb-3">Edge Extension</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              Traffic Torch SEO, GEO & UX toolkit with help guides for Microsoft Edge.
+            </p>
+          </div>
+          <a href="https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
+      </div>
+
+      <!-- VS Code -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-purple-500 group-hover:border-purple-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:scale-110 transition-transform">🛠️</div>
+            <h3 class="text-purple-400 text-2xl text-center font-bold mb-3">VS Code Extension</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              Real-time SEO, GEO & UX health scoring and implementation analysis for HTML in Visual Studio Code.
+            </p>
+          </div>
+          <a href="https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
+      </div>
+
+      <!-- WordPress -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-red-500/50 group-hover:border-red-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:scale-110 transition-transform">📘</div>
+            <h3 class="text-red-400 text-2xl text-center font-bold mb-3">WordPress Plugin</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              One-click AI SEO & UX analysis in your WordPress dashboard. Auto-scans posts, pages & products.
+            </p>
+          </div>
+          <a href="https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
+      </div>
+
+      <!-- Figma -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-blue-500 group-hover:border-cyan-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:scale-110 transition-transform">🎨</div>
+            <h3 class="text-cyan-400 text-2xl text-center font-bold mb-3">Figma Plugin</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              Real-time AI SEO & UX scoring inside Figma. Check headings, contrast, mobile layouts before hand-off.
+            </p>
+          </div>
+          <span class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-purple-600 text-white font-bold rounded-xl shadow-lg text-center">
+            Coming Soon →
+          </span>
+        </div>
+      </div>
+
+      <!-- Framer -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300 border border-green-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-green-500/50 group-hover:border-green-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:scale-110 transition-transform">🔥</div>
+            <h3 class="text-emerald-400 text-2xl text-center font-bold mb-3">Framer Plugin</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              Official plugin for Framer. Auto-detects site URL and launches any Traffic Torch tool with one click.
+            </p>
+          </div>
+          <a href="https://www.framer.com/marketplace/plugins/traffic-torch/"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-green-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
+      </div>
+
+      <!-- GitHub Action -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-orange-500 group-hover:border-orange-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:scale-110 transition-transform">🚀</div>
+            <h3 class="text-orange-400 text-2xl text-center font-bold mb-3">GitHub Action</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              One-click SEO + GEO + UX Health Analysis. Instantly opens the full Traffic Torch experience with your URL pre-filled.
+            </p>
+          </div>
+          <a href="https://github.com/marketplace/actions/traffic-torch-audit"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Add →
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Official Surfaces – Strongest entity signal for Google -->
+<section id="official-surfaces" class="py-12 border-t border-gray-200 dark:border-gray-700">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+      Official Traffic Torch Surfaces
+    </h2>
+    <p class="text-center text-xl text-gray-800 dark:text-gray-200 mb-10 max-w-2xl mx-auto">
+      Traffic Torch is available on these verified official platforms. All are maintained by the same team.
+    </p>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-gray-800 dark:text-gray-200">
+      <a href="https://traffictorch.net/" target="_blank" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-800 rounded-2xl hover:bg-orange-50 dark:hover:bg-gray-700 transition">🌐 <span class="font-semibold">Official Website</span></a>
+      <a href="https://github.com/traffictorch/traffic-torch" target="_blank" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-800 rounded-2xl hover:bg-orange-50 dark:hover:bg-gray-700 transition">🐙 <span class="font-semibold">GitHub Repository</span></a>
+      <a href="https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl" target="_blank" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-800 rounded-2xl hover:bg-orange-50 dark:hover:bg-gray-700 transition">🌐 <span class="font-semibold">Chrome Web Store</span></a>
+      <a href="https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/" target="_blank" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-800 rounded-2xl hover:bg-orange-50 dark:hover:bg-gray-700 transition">🦊 <span class="font-semibold">Firefox Add-ons</span></a>
+      <a href="https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb" target="_blank" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-800 rounded-2xl hover:bg-orange-50 dark:hover:bg-gray-700 transition">🔷 <span class="font-semibold">Microsoft Edge Add-ons</span></a>
+      <a href="https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools" target="_blank" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-800 rounded-2xl hover:bg-orange-50 dark:hover:bg-gray-700 transition">🛠️ <span class="font-semibold">VS Code Marketplace</span></a>
+      <a href="https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/" target="_blank" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-800 rounded-2xl hover:bg-orange-50 dark:hover:bg-gray-700 transition">📘 <span class="font-semibold">WordPress.org Plugin</span></a>
+      <a href="https://www.framer.com/marketplace/plugins/traffic-torch/" target="_blank" class="flex items-center gap-4 p-6 bg-white dark:bg-gray-800 rounded-2xl hover:bg-orange-50 dark:hover:bg-gray-700 transition">🎨 <span class="font-semibold">Framer Marketplace</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- What Traffic Torch Is NOT – Brand disambiguation -->
+<section class="py-12 border-t border-gray-200 dark:border-gray-700">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+      What Traffic Torch Is NOT
+    </h2>
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 max-w-3xl mx-auto text-center">
+      <p class="text-gray-800 dark:text-gray-200 text-lg">
+        Traffic Torch (<strong>traffictorch.net</strong>) is a digital SEO, GEO, AEO &amp; AIO analysis toolkit.<br>
+        It is <strong>not</strong> related to any physical traffic torches, LED batons, safety wands, or traffic-control products.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- History & Timeline -->
+<section class="py-12 border-t border-gray-200 dark:border-gray-700">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+      Traffic Torch Timeline
+    </h2>
+    <div class="max-w-2xl mx-auto space-y-8">
+      <div class="flex gap-6">
+        <div class="font-mono text-sm text-orange-500 w-20">Nov 2025</div>
+        <div class="flex-1">Initial prototype created</div>
+      </div>
+      <div class="flex gap-6">
+        <div class="font-mono text-sm text-orange-500 w-20">Jan 2026</div>
+        <div class="flex-1">Public launch of Traffic Torch website</div>
+      </div>
+      <div class="flex gap-6">
+        <div class="font-mono text-sm text-orange-500 w-20">Apr 2026</div>
+        <div class="flex-1">WordPress Plugin released on WordPress.org</div>
+      </div>
+      <div class="flex gap-6">
+        <div class="font-mono text-sm text-orange-500 w-20">Apr 2026</div>
+        <div class="flex-1">Chrome, Firefox &amp; Edge extensions published</div>
+      </div>
+      <div class="flex gap-6">
+        <div class="font-mono text-sm text-orange-500 w-20">Apr 2026</div>
+        <div class="flex-1">VS Code extension + Framer plugin + 14+ tools live</div>
+      </div>
+      <div class="flex gap-6">
+        <div class="font-mono text-sm text-orange-500 w-20">Ongoing</div>
+        <div class="flex-1">Continuous updates aligned with latest SEO/UX/AI search guidelines</div>
+      </div>
+    </div>
+  </div>
+</section>
     
-<!-- Author Bio -->
+<!-- Enhanced Creator Entity Section  -->
 <section class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
   <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-    <!-- Hero Gradient Header: Gradient only, no solid bg -->
+    <!-- Hero Gradient Header -->
     <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
       <div class="flex flex-col items-center gap-6 mb-6">
-        <!-- Traffic Torch Logo Only in Hero -->
-        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Deep-Dive Reports, Competitive Gaps, AI Fixes – Privacy-First Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" 
+             sizes="(max-width: 768px) 100px, 160px" 
+             alt="Traffic Torch: Instant 360° SEO + UX Health Analysis" 
+             class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" 
+             width="160" height="160" loading="lazy">
       </div>
       <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
       <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
-        360° SEO • UX • AI Optimization Toolkit. Deep Diagnostics, Plugin Solutions, Fix suggestions & Educational Insights.
+        360° SEO • UX • AI Optimization Toolkit. Deep Diagnostics, Plugin Solutions, Fix suggestions &amp; Educational Insights.
       </p>
     </div>
-    <!-- Main Content Area: Transparent, inherits page bg -->
+
+    <!-- Main Content -->
     <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
-      <!-- Tool Mission Description -->
       <div class="space-y-6">
         <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
           Traffic Torch delivers transparent, client-side, privacy-first SEO and UX analysis powered by real correlation research, algorithm insights, and performance testing. From instant health scores to competitive gap breakdowns, AI-suggested optimizations, and educational guidance. Empowering creators, agencies, and businesses to achieve better rankings and superior user experiences.
         </p>
       </div>
-      <!-- Founder Bio with Smaller Photo -->
+
+      <!-- Creator Entity -->
       <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
         <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
-          <!-- Perfect circle wrapper for photo -->
           <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
-            <img
-              src="/images/ylia-callan-320w.webp"
-              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
-              sizes="(max-width: 768px) 96px, 128px"
-              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools"
-              class="w-full h-full object-cover object-center"
-              loading="lazy">
+            <img src="/images/ylia-callan-320w.webp" 
+                 srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+                 sizes="(max-width: 768px) 96px, 128px"
+                 alt="Ylia Callan – Founder of Traffic Torch" 
+                 class="w-full h-full object-cover object-center" loading="lazy">
           </div>
           <div class="space-y-4 text-center md:text-left">
-            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Founder &amp; Lead Developer</h3>
             <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
-              Musician • Author • Researcher • Web Designer • TAFE NSW • Creator of privacy-first SEO, GEO, AEO & AIO search web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+              Musician • Author • Researcher • Web Designer • TAFE NSW Australia • Creator of privacy-first SEO, GEO, AEO &amp; AIO search web tools. 
+              Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
             </p>
-            <p class="text-base text-gray-800 dark:text-gray-200 italic">
-              Explore my work - books on physics, philosophy, consciousness, music, and more – at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
-            </p>
+            <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+              <a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">LinkedIn</a>
+              <a href="https://x.com/Guitaralize" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">X (Twitter)</a>
+              <a href="https://github.com/traffictorch/traffic-torch" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">GitHub</a>
+              <a href="https://yliacallan.github.io/" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Personal Site</a>
+            </div>
           </div>
         </div>
-        <!-- Social Links -->
-        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
-          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
-          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
-        </ul>
       </div>
-      <!-- Tech Stack for E-E-A-T -->
+
+      <!-- Tech Stack -->
       <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
-        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack &amp; Infrastructure</h3>
         <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
           Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations.
         </p>
         <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
           Core Expertise: SEO Correlation Research • UX Optimization • Privacy-First Development • AI-Assisted Diagnostics. Continuously aligned with the latest guidelines, best practices, and real-world data.
         </p>
-          <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+        <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2025-12-12</p>
-          <p>Last updated: 2026-03-21</p>
+          <p>Last updated: 2026-04-29</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-              <!-- Our Commitment -->
+ <!-- Our Commitment -->
               <div>
                 <h2 class="text-2xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Our Commitment</h2>
                 <p>
@@ -649,6 +942,74 @@
             </div>
           </section>
         </header>
+        
+        <!-- FAQ Section – Entity + Long-tail Ranking + Education -->
+<section class="py-12 border-t border-gray-200 dark:border-gray-700">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+      Frequently Asked Questions
+    </h2>
+    <p class="text-center text-xl text-gray-800 dark:text-gray-200 mb-10 max-w-2xl mx-auto">
+      Everything you need to know about Traffic Torch.
+    </p>
+
+    <div class="max-w-3xl mx-auto space-y-4">
+      <!-- FAQ Item 1 -->
+      <details class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+        <summary class="flex justify-between items-center cursor-pointer font-semibold text-lg text-gray-900 dark:text-white">
+          What is Traffic Torch?
+          <span class="text-2xl group-open:rotate-180 transition">↓</span>
+        </summary>
+        <p class="mt-4 text-gray-800 dark:text-gray-200">Traffic Torch is a free, privacy-first suite of instant 360° SEO, GEO, AEO &amp; AIO analysis tools. It delivers health scores, deep educational audits, priority fixes, and predictive forecasts directly in your browser.</p>
+      </details>
+
+      <!-- FAQ Item 2 -->
+      <details class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+        <summary class="flex justify-between items-center cursor-pointer font-semibold text-lg text-gray-900 dark:text-white">
+          Who created Traffic Torch?
+          <span class="text-2xl group-open:rotate-180 transition">↓</span>
+        </summary>
+        <p class="mt-4 text-gray-800 dark:text-gray-200">Traffic Torch was founded and is maintained by <strong>Ylia Callan</strong>, a web designer, researcher, and creator passionate about privacy-first tools, SEO correlation research, and modern web experiences. See the Creator section above for full bio and links.</p>
+      </details>
+
+      <!-- FAQ Item 3 -->
+      <details class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+        <summary class="flex justify-between items-center cursor-pointer font-semibold text-lg text-gray-900 dark:text-white">
+          Is Traffic Torch a physical product?
+          <span class="text-2xl group-open:rotate-180 transition">↓</span>
+        </summary>
+        <p class="mt-4 text-gray-800 dark:text-gray-200">No. Traffic Torch is a digital toolkit only. It is not related to any physical traffic torches, LED batons, or safety equipment. See our “What Traffic Torch Is NOT” section for full disambiguation.</p>
+      </details>
+
+      <!-- FAQ Item 4 -->
+      <details class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+        <summary class="flex justify-between items-center cursor-pointer font-semibold text-lg text-gray-900 dark:text-white">
+          Is Traffic Torch free?
+          <span class="text-2xl group-open:rotate-180 transition">↓</span>
+        </summary>
+        <p class="mt-4 text-gray-800 dark:text-gray-200">Yes — every tool on traffictorch.net is completely free to use. No sign-up, no paywalls, no data collection. We also offer free browser extensions and plugins for Chrome, Firefox, Edge, WordPress, VS Code, and Framer.</p>
+      </details>
+
+      <!-- FAQ Item 5 -->
+      <details class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+        <summary class="flex justify-between items-center cursor-pointer font-semibold text-lg text-gray-900 dark:text-white">
+          What platforms does Traffic Torch support?
+          <span class="text-2xl group-open:rotate-180 transition">↓</span>
+        </summary>
+        <p class="mt-4 text-gray-800 dark:text-gray-200">Traffic Torch works on any modern browser (desktop &amp; mobile). Official extensions and plugins are available for Chrome, Firefox, Edge, WordPress, VS Code, Framer, and GitHub Actions. All tools are fully responsive and PWA-ready.</p>
+      </details>
+
+      <!-- FAQ Item 6 -->
+      <details class="group bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
+        <summary class="flex justify-between items-center cursor-pointer font-semibold text-lg text-gray-900 dark:text-white">
+          How private is Traffic Torch?
+          <span class="text-2xl group-open:rotate-180 transition">↓</span>
+        </summary>
+        <p class="mt-4 text-gray-800 dark:text-gray-200">100% private. Every analysis runs client-side in your browser using secure proxy fetching only when needed. No data is stored, logged, or shared with us or any third party. This is a core philosophy of the project.</p>
+      </details>
+    </div>
+  </div>
+</section>
 
 <!-- Share Buttons -->
 <div class="py-8 text-center">
