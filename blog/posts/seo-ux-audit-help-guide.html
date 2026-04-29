@@ -1212,7 +1212,7 @@
 <p>Traffic Torch parses the <head> section and meta tags with these exact client-side checks:</p>
 <ul class="list-disc pl-6 space-y-3 mt-4">
   <li>No meta name="robots" tag contains "no index" (checked case-insensitive in content attribute): Flags any no index directive that hides the page from search results.</li>
-  <li>A canonical link tag exists (<link rel="canonical" href="...">) and points to the preferred/preferred URL version: Verifies self-referencing or correct consolidation.</li>
+  <li>A canonical link tag exists <code>&lt;link rel="canonical" href="https://example.com/current-page/"&gt;</code> and points to the preferred/preferred URL version: Verifies self-referencing or correct consolidation.</li>
   <li>No other obvious blocking directives: Notes that client-side analysis cannot fully detect server-side x-robots-tag headers or robots.txt disallows, but flags potential issues in visible HTML.</li>
 </ul>
 <p class="mt-4">Scoring starts at 0-100. The heaviest penalty applies to a present no index directive (explicitly removes page from search). Deductions trigger for missing canonical tag (risks duplicate content confusion and split authority). Smaller penalties apply to ambiguous or incomplete signals that could affect crawlability.</p>
