@@ -841,9 +841,9 @@
   </div>
 </section>
 
-<!-- See It In Action – Visual Brand Proof + Tool Results -->
-<section id="tool-results-gallery" class="py-16 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950">
-  <div class="max-w-7xl mx-auto px-6">
+<!-- See It In Action – Tool Results -->
+<section id="tool-results-gallery" class="py-4 border-t border-gray-200 dark:border-gray-700 bg-gray dark:bg-gray-950">
+  <div class="max-w-7xl mx-auto px-2">
     
     <!-- Header with Logo -->
     <div class="flex flex-col items-center text-center mb-12">
@@ -860,82 +860,82 @@
       </p>
     </div>
 
-    <!-- Screenshot Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
-      
-      <!-- Card 1: GEO Audit -->
-      <div onclick="showScreenshotModal(0)" 
-           class="group cursor-pointer bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-700">
-        <div class="relative">
-          <img src="/about/images/geo-audit-results-screenshot.webp" 
-               alt="Traffic Torch GEO Audit Tool results – AI search optimization scores for Perplexity, Grok, Gemini and ChatGPT Search" 
-               class="w-full h-auto object-cover aspect-[16/10]" loading="lazy" width="1280" height="800">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
-        </div>
-        <div class="p-6">
-          <div class="flex items-center gap-3 mb-2">
-            <span class="text-2xl">🔍</span>
-            <h3 class="font-bold text-xl text-gray-900 dark:text-white">GEO Audit Tool</h3>
-          </div>
-          <p class="text-sm text-gray-600 dark:text-gray-400">AI search visibility scores across Perplexity, Grok, Gemini &amp; ChatGPT</p>
-        </div>
-      </div>
-
-      <!-- Card 2: SEO Health Radar -->
-      <div onclick="showScreenshotModal(1)" 
-           class="group cursor-pointer bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-700">
-        <div class="relative">
-          <img src="/about/images/seo-health-radar-screenshot.webp" 
-               alt="Traffic Torch SEO Health Radar dashboard – 360° UX and on-page SEO score with detailed module breakdowns" 
-               class="w-full h-auto object-cover aspect-[16/10]" loading="lazy" width="1280" height="800">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
-        </div>
-        <div class="p-6">
-          <div class="flex items-center gap-3 mb-2">
-            <span class="text-2xl">📊</span>
-            <h3 class="font-bold text-xl text-gray-900 dark:text-white">SEO Health Radar</h3>
-          </div>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Instant 360° overall score with deep-dive module analysis</p>
-        </div>
-      </div>
-
-      <!-- Card 3: SEO Intent Tool -->
-      <div onclick="showScreenshotModal(2)" 
-           class="group cursor-pointer bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-700">
-        <div class="relative">
-          <img src="/about/images/seo-intent-tool-results-screenshot.webp" 
-               alt="Traffic Torch SEO Intent Tool – User intent matching, E-E-A-T audit and content optimization results" 
-               class="w-full h-auto object-cover aspect-[16/10]" loading="lazy" width="1280" height="800">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
-        </div>
-        <div class="p-6">
-          <div class="flex items-center gap-3 mb-2">
-            <span class="text-2xl">🎯</span>
-            <h3 class="font-bold text-xl text-gray-900 dark:text-white">SEO Intent Tool</h3>
-          </div>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Intent matching + E-E-A-T audit with prioritized fixes</p>
-        </div>
-      </div>
-
-      <!-- Card 4: Keyword Research (Dark Mode) -->
-      <div onclick="showScreenshotModal(3)" 
-           class="group cursor-pointer bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-700">
-        <div class="relative">
-          <img src="/about/images/keyword-research-results-screenshot-darkmode.webp" 
-               alt="Traffic Torch Keyword Research Tool in dark mode – Search volume, difficulty, opportunity and topic ideas" 
-               class="w-full h-auto object-cover aspect-[16/10]" loading="lazy" width="1280" height="800">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
-        </div>
-        <div class="p-6">
-          <div class="flex items-center gap-3 mb-2">
-            <span class="text-2xl">📝</span>
-            <h3 class="font-bold text-xl text-gray-900 dark:text-white">Keyword Research</h3>
-          </div>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Volume, difficulty, intent &amp; high-opportunity keyword discovery</p>
-        </div>
-      </div>
-
+<!-- Screenshot Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+  
+  <!-- Card 1 -->
+  <div onclick="showScreenshotModal(0); event.stopImmediatePropagation();" 
+       class="group cursor-pointer bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-700">
+    <div class="relative">
+      <img src="/about/images/geo-audit-results-screenshot.webp" 
+           alt="Traffic Torch GEO Audit Tool results – AI search optimization scores for Perplexity, Grok, Gemini and ChatGPT Search" 
+           class="w-full h-auto object-cover aspect-[16/10]" loading="lazy" width="1280" height="800">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
     </div>
+    <div class="p-6">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">🔍</span>
+        <h3 class="font-bold text-xl text-gray-900 dark:text-white">GEO Audit Tool</h3>
+      </div>
+      <p class="text-sm text-gray-600 dark:text-gray-400">AI search visibility scores across Perplexity, Grok, Gemini &amp; ChatGPT</p>
+    </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div onclick="showScreenshotModal(1); event.stopImmediatePropagation();" 
+       class="group cursor-pointer bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-700">
+    <div class="relative">
+      <img src="/about/images/seo-health-radar-screenshot.webp" 
+           alt="Traffic Torch SEO Health Radar dashboard – 360° UX and on-page SEO score with detailed module breakdowns" 
+           class="w-full h-auto object-cover aspect-[16/10]" loading="lazy" width="1280" height="800">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+    </div>
+    <div class="p-6">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">📊</span>
+        <h3 class="font-bold text-xl text-gray-900 dark:text-white">SEO Health Radar</h3>
+      </div>
+      <p class="text-sm text-gray-600 dark:text-gray-400">Instant 360° overall score with deep-dive module analysis</p>
+    </div>
+  </div>
+
+  <!-- Card 3 -->
+  <div onclick="showScreenshotModal(2); event.stopImmediatePropagation();" 
+       class="group cursor-pointer bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-700">
+    <div class="relative">
+      <img src="/about/images/seo-intent-tool-results-screenshot.webp" 
+           alt="Traffic Torch SEO Intent Tool – User intent matching, E-E-A-T audit and content optimization results" 
+           class="w-full h-auto object-cover aspect-[16/10]" loading="lazy" width="1280" height="800">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+    </div>
+    <div class="p-6">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">🎯</span>
+        <h3 class="font-bold text-xl text-gray-900 dark:text-white">SEO Intent Tool</h3>
+      </div>
+      <p class="text-sm text-gray-600 dark:text-gray-400">Intent matching + E-E-A-T audit with prioritized fixes</p>
+    </div>
+  </div>
+
+  <!-- Card 4 -->
+  <div onclick="showScreenshotModal(3); event.stopImmediatePropagation();" 
+       class="group cursor-pointer bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-700">
+    <div class="relative">
+      <img src="/about/images/keyword-research-results-screenshot-darkmode.webp" 
+           alt="Traffic Torch Keyword Research Tool in dark mode – Search volume, difficulty, opportunity and topic ideas" 
+           class="w-full h-auto object-cover aspect-[16/10]" loading="lazy" width="1280" height="800">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition"></div>
+    </div>
+    <div class="p-6">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-2xl">📝</span>
+        <h3 class="font-bold text-xl text-gray-900 dark:text-white">Keyword Research</h3>
+      </div>
+      <p class="text-sm text-gray-600 dark:text-gray-400">Volume, difficulty, intent &amp; high-opportunity keyword discovery</p>
+    </div>
+  </div>
+
+</div>
 
     <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
       All screenshots taken from live tools • Mobile responsive • Dark &amp; light mode supported
@@ -946,7 +946,7 @@
 <!-- Screenshot Modal -->
 <div id="screenshotModal" onclick="hideScreenshotModal()" class="hidden fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
   <div onclick="event.stopImmediatePropagation()" class="relative max-w-[95vw] max-h-[90vh] w-full">
-    <button onclick="hideScreenshotModal()" 
+    <button onclick="hideScreenshotModal(); event.stopImmediatePropagation()" 
             class="absolute -top-12 right-0 text-white text-4xl hover:text-orange-400 transition">✕</button>
     
     <img id="modalImage" 
