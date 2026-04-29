@@ -14,19 +14,6 @@
   transform: scale(1.03);
 }
 
-#imageModal {
-  animation: fadeIn 0.2s ease;
-}
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-#screenshotSlider::-webkit-scrollbar {
-  height: 6px;
-}
-#screenshotSlider::-webkit-scrollbar-thumb {
-  background: #f97316;
-  border-radius: 3px;
-}
-
 /* Mobile improvements */
 @media (max-width: 640px) {
   #tool-results-gallery img {

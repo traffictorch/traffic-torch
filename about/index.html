@@ -841,49 +841,59 @@
   </div>
 </section>
 
-<!-- See Traffic Torch In Action – Tap to Enlarge + Arrows -->
+<!-- See Traffic Torch In Action – Responsive Horizontal Gallery -->
 <section id="tool-results-gallery" class="py-8 border-t border-gray-200 dark:border-gray-700">
   <div class="max-w-7xl mx-auto px-2">
     <div class="flex flex-col items-center text-center mb-10">
-      <img src="https://traffictorch.net/logo.webp" alt="Traffic Torch" class="w-20 h-20 md:w-24 md:h-24 mb-6 rounded-2xl shadow-xl">
+      <img src="https://traffictorch.net/logo.webp" 
+           alt="Traffic Torch Official Logo" 
+           class="w-20 h-20 md:w-24 md:h-24 mb-6 rounded-2xl shadow-xl" 
+           loading="eager">
       <h2 class="text-3xl md:text-4xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
         See Traffic Torch In Action
       </h2>
+      <p class="text-xl text-gray-800 dark:text-gray-200 max-w-2xl">
+        Screenshots from live tools
+      </p>
     </div>
 
-    <!-- Gallery -->
-    <div class="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-2 px-2" id="screenshotSlider">
-      <div class="flex-shrink-0 w-[88vw] max-w-[380px] snap-center cursor-pointer" onclick="showImage(0)">
-        <img src="/about/images/geo-audit-results-screenshot.webp" alt="GEO Audit" class="w-full rounded-3xl shadow-xl object-contain border border-gray-200 dark:border-gray-700">
-        <p class="text-center mt-3 text-sm">GEO Audit Tool</p>
+    <!-- Responsive Horizontal Scroll Gallery -->
+    <div class="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-2 px-2">
+      
+      <div class="flex-shrink-0 w-[88vw] max-w-[380px] snap-center">
+        <img src="/about/images/geo-audit-results-screenshot.webp" 
+             alt="GEO Audit Tool" 
+             class="w-full h-auto rounded-3xl shadow-xl object-contain border border-gray-200 dark:border-gray-700">
+        <p class="text-center mt-4 text-sm font-medium text-gray-800 dark:text-gray-200">GEO Audit Tool – AI Search Scores</p>
       </div>
-      <div class="flex-shrink-0 w-[88vw] max-w-[380px] snap-center cursor-pointer" onclick="showImage(1)">
-        <img src="/about/images/seo-health-radar-screenshot.webp" alt="SEO Health Radar" class="w-full rounded-3xl shadow-xl object-contain border border-gray-200 dark:border-gray-700">
-        <p class="text-center mt-3 text-sm">SEO Health Radar</p>
+
+      <div class="flex-shrink-0 w-[88vw] max-w-[380px] snap-center">
+        <img src="/about/images/seo-health-radar-screenshot.webp" 
+             alt="SEO Health Radar" 
+             class="w-full h-auto rounded-3xl shadow-xl object-contain border border-gray-200 dark:border-gray-700">
+        <p class="text-center mt-4 text-sm font-medium text-gray-800 dark:text-gray-200">SEO Health Radar Dashboard</p>
       </div>
-      <div class="flex-shrink-0 w-[88vw] max-w-[380px] snap-center cursor-pointer" onclick="showImage(2)">
-        <img src="/about/images/seo-intent-tool-results-screenshot.webp" alt="SEO Intent Tool" class="w-full rounded-3xl shadow-xl object-contain border border-gray-200 dark:border-gray-700">
-        <p class="text-center mt-3 text-sm">SEO Intent Tool</p>
+
+      <div class="flex-shrink-0 w-[88vw] max-w-[380px] snap-center">
+        <img src="/about/images/seo-intent-tool-results-screenshot.webp" 
+             alt="SEO Intent Tool" 
+             class="w-full h-auto rounded-3xl shadow-xl object-contain border border-gray-200 dark:border-gray-700">
+        <p class="text-center mt-4 text-sm font-medium text-gray-800 dark:text-gray-200">SEO Intent + E-E-A-T Tool</p>
       </div>
-      <div class="flex-shrink-0 w-[88vw] max-w-[380px] snap-center cursor-pointer" onclick="showImage(3)">
-        <img src="/about/images/keyword-research-results-screenshot-darkmode.webp" alt="Keyword Research" class="w-full rounded-3xl shadow-xl object-contain border border-gray-200 dark:border-gray-700">
-        <p class="text-center mt-3 text-sm">Keyword Research Tool</p>
+
+      <div class="flex-shrink-0 w-[88vw] max-w-[380px] snap-center">
+        <img src="/about/images/keyword-research-results-screenshot-darkmode.webp" 
+             alt="Keyword Research Tool" 
+             class="w-full h-auto rounded-3xl shadow-xl object-contain border border-gray-200 dark:border-gray-700">
+        <p class="text-center mt-4 text-sm font-medium text-gray-800 dark:text-gray-200">Keyword Research Tool (Dark Mode)</p>
       </div>
     </div>
+
+    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+      Scroll horizontally
+    </p>
   </div>
 </section>
-
-<!-- Simple Lightbox Modal -->
-<div id="imageModal" class="hidden fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4">
-  <div class="relative max-w-[95vw] max-h-[92vh]">
-    <button onclick="closeModal()" class="absolute -top-12 right-4 text-white text-5xl hover:text-orange-400">×</button>
-    
-    <button onclick="prevImage()" class="absolute left-4 top-1/2 -translate-y-1/2 text-white text-5xl hover:text-orange-400">‹</button>
-    <button onclick="nextImage()" class="absolute right-4 top-1/2 -translate-y-1/2 text-white text-5xl hover:text-orange-400">›</button>
-    
-    <img id="modalBigImage" class="max-h-[85vh] max-w-full rounded-3xl shadow-2xl" alt="">
-  </div>
-</div>
 
 <!-- What Traffic Torch Is NOT – Brand disambiguation -->
 <section class="py-4 border-t border-gray-200 dark:border-gray-700">
@@ -1142,43 +1152,6 @@
 
   <!-- Load JS last -->
   <script src="/main-v1.1.js" type="module"></script>
-  
-  <script>
-let currentIndex = 0;
-const images = [
-  "/about/images/geo-audit-results-screenshot.webp",
-  "/about/images/seo-health-radar-screenshot.webp",
-  "/about/images/seo-intent-tool-results-screenshot.webp",
-  "/about/images/keyword-research-results-screenshot-darkmode.webp"
-];
-
-function showImage(index) {
-  currentIndex = index;
-  document.getElementById('modalBigImage').src = images[index];
-  document.getElementById('imageModal').classList.remove('hidden');
-  document.getElementById('imageModal').classList.add('flex');
-}
-
-function closeModal() {
-  document.getElementById('imageModal').classList.add('hidden');
-  document.getElementById('imageModal').classList.remove('flex');
-}
-
-function nextImage() {
-  currentIndex = (currentIndex + 1) % images.length;
-  document.getElementById('modalBigImage').src = images[currentIndex];
-}
-
-function prevImage() {
-  currentIndex = (currentIndex - 1 + images.length) % images.length;
-  document.getElementById('modalBigImage').src = images[currentIndex];
-}
-
-// Close with Escape key
-document.addEventListener('keydown', e => {
-  if (e.key === "Escape") closeModal();
-});
-</script>
 
 </body>
 </html>
