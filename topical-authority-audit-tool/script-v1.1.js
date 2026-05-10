@@ -152,7 +152,7 @@ if (codeAnalyzeBtn) {
       : 'Analyzing Topics...';
 
     const heavyTimeout = setTimeout(() => {
-      if (progressText) progressText.textContent = 'Still processing — may take longer for large sites...';
+      if (progressText) progressText.textContent = 'Still processing - may take longer for large sites...';
     }, 45000);
 
     try {
