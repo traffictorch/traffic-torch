@@ -18,6 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   const results = document.getElementById('results');
   
+  // === ADD THIS EVENT LISTENER RIGHT AFTER THE VARIABLE DECLARATIONS ===
+  analyzeCodeBtn.addEventListener('click', async () => {
+    const htmlContent = codeInput.value.trim();
+    if (!htmlContent) {
+      alert("Please paste HTML code into the textarea first.");
+      codeInput.focus();
+      return;
+    }
+    urlInput.value = ''; // clear URL field when using code analysis
+    await runAnalysis(htmlContent);
+  });
+  
     // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
