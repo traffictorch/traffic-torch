@@ -880,16 +880,51 @@
  		 Feedback for SEO UX Tool on <strong>the analyzed page</strong>
 		</p>
       <form id="feedback-form" class="space-y-6">
-        <div>
-          <label for="feedback-rating-hidden" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
-          <div class="flex gap-3 text-3xl justify-center sm:justify-start">
-            <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
-            <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
-            <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
-            <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
-            <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
-          </div>
-          <input type="hidden" id="feedback-rating-hidden" name="rating">
+<div class="mb-6">
+  <fieldset>
+    <legend class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">
+      Rating (optional)
+    </legend>
+    
+    <div class="flex gap-3 text-3xl justify-center sm:justify-start" role="radiogroup" aria-label="Feedback rating">
+      <button 
+        type="button" 
+        data-rating="1" 
+        class="hover:scale-125 transition focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-xl p-1"
+        aria-label="Very dissatisfied - 1 star">
+        😞
+      </button>
+      <button 
+        type="button" 
+        data-rating="2" 
+        class="hover:scale-125 transition focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-xl p-1"
+        aria-label="Dissatisfied - 2 stars">
+        🙁
+      </button>
+      <button 
+        type="button" 
+        data-rating="3" 
+        class="hover:scale-125 transition focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-xl p-1"
+        aria-label="Neutral - 3 stars">
+        😐
+      </button>
+      <button 
+        type="button" 
+        data-rating="4" 
+        class="hover:scale-125 transition focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-xl p-1"
+        aria-label="Satisfied - 4 stars">
+        🙂
+      </button>
+      <button 
+        type="button" 
+        data-rating="5" 
+        class="hover:scale-125 transition focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-xl p-1"
+        aria-label="Very satisfied - 5 stars">
+        😍
+      </button>
+    </div>
+  </fieldset>
+          <input type="hidden" id="feedback-rating" name="rating">
         </div>
         <div>
           <label class="flex items-center gap-2 justify-center sm:justify-start">
