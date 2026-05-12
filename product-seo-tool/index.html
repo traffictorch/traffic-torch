@@ -2,52 +2,6 @@
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  
-<!-- Deferred Google Analytics – loads only after interaction -->
-<script>
-  (function() {
-    // Change this to false if you want to test without loading GA
-    const enableGA = true;
-    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
-
-    function loadGA() {
-      // Prevent double-loading
-      if (window.gtag) return;
-
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-      document.head.appendChild(script);
-
-      script.onload = function() {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', MEASUREMENT_ID);
-      };
-    }
-
-    // Trigger on first interaction (scroll, click, touch, key)
-    let fired = false;
-    function fireOnce() {
-      if (fired) return;
-      fired = true;
-      loadGA();
-      cleanup();
-    }
-
-    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
-    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
-
-    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
-    setTimeout(fireOnce, 4500);
-
-    function cleanup() {
-      events.forEach(ev => window.removeEventListener(ev, fireOnce));
-    }
-  })();
-</script>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <!-- Optimized SEO Title & Description -->
@@ -426,9 +380,9 @@
     <!-- Code Analysis Section -->
     <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
       <!-- Centered gradient title (kept your nice styling) -->
-      <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
+      <h2 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
         Or use Code Analysis 📄
-      </h3>
+      </h2>
 
       <!-- Centered description -->
       <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
@@ -1366,6 +1320,7 @@
   <script src="/product-seo-tool/plugin-solutions-v1.0.js" type="module" defer></script>
   <script src="/product-seo-tool/metric-explanations-v1.0.js" type="module" defer></script>
   <script src="/product-seo-tool/script-v1.3.js" type="module" defer></script>
+  <script type="module" src="/shared/google-analytics.js"></script>
 
 </body>
 </html>
