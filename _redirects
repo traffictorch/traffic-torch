@@ -1,0 +1,21 @@
+# Traffic Torch - Clean SEO-friendly redirects
+
+# 1. Force trailing slashes (preferred for content pages)
+# This helps with canonical consistency
+/blog/posts/*     /blog/posts/:splat/     301
+/news             /news/                  301
+/*                /:splat/                301     # Broad rule - careful with assets
+
+# 2. Strip ALL referral & tracking parameters (this solves ?ref= issue)
+# These redirect to the clean URL without any query string
+/?ref=*           /                       301
+/*?ref=*          /:splat/                301
+/*?utm_*          /:splat/                301
+/*?*              /:splat/                301     # Catch any other query parameters
+
+# 3. Old page cleanups (add more as needed)
+ /news.html       /news/                  301
+ /*.html          /:splat/                301
+
+# 4. Homepage specific
+ /?*              /                       301
