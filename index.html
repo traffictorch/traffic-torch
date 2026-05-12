@@ -3,51 +3,6 @@
 <head>
   <meta charset="UTF-8" />
 
-<!-- Deferred Google Analytics – loads only after interaction -->
-<script>
-  (function() {
-    // Change this to false if you want to test without loading GA
-    const enableGA = true;
-    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
-
-    function loadGA() {
-      // Prevent double-loading
-      if (window.gtag) return;
-
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-      document.head.appendChild(script);
-
-      script.onload = function() {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', MEASUREMENT_ID);
-      };
-    }
-
-    // Trigger on first interaction (scroll, click, touch, key)
-    let fired = false;
-    function fireOnce() {
-      if (fired) return;
-      fired = true;
-      loadGA();
-      cleanup();
-    }
-
-    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
-    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
-
-    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
-    setTimeout(fireOnce, 4500);
-
-    function cleanup() {
-      events.forEach(ev => window.removeEventListener(ev, fireOnce));
-    }
-  })();
-</script>
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  
   <!-- Optimized SEO Title & Description -->
@@ -2280,6 +2235,7 @@
 <script src="/seo-ux-tool/metric-explanations-v1.0.js" type="module" defer></script>
 <script src="/seo-ux-tool/priority-gains-v1.0.js" type="module" defer></script>
 <script src="/seo-ux-tool/script-v1.3.js" type="module" defer></script>
+<script type="module" src="/shared/google-analytics.js"></script>
 
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b5ec7016f72456a9b4484d5dc706b79","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
