@@ -10,6 +10,7 @@ Live site: https://traffictorch.net
   <br>
   <a href="https://traffictorch.net">Traffic Torch SEO Toolkit</a> • 
   <a href="https://github.com/traffictorch/traffic-torch/releases">Releases</a>
+  <a href="https://zenodo.org/records/20149616">Zenodo Archive</a>
 </div>
 
 ---
