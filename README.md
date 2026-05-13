@@ -1,9 +1,20 @@
-# Traffic Torch 🔥
+# Traffic Torch 🚥
 
 **Instant 360° SEO + UX Health Scanner**  
 Fast, fully client-side tool that analyzes any website for SEO health, Performance, UX frustration signals, AI-content probability, E-E-A-T signals, intent alignment, topical authority gaps, predictive rank health, and more — with educational metric explanations, plugin solutions and shareable results.
 
-Live site: https://traffictorch.net  
+Live site: https://traffictorch.net 
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20149616.svg)](https://doi.org/10.5281/zenodo.20149616)
+  
+  <br>
+  <a href="https://traffictorch.net">Traffic Torch SEO Toolkit</a> • 
+  <a href="https://github.com/traffictorch/traffic-torch/releases">Releases</a>
+</div>
+
+---
+
+**Latest Version:** v1.0.0 • DOI: [10.5281/zenodo.20149616](https://doi.org/10.5281/zenodo.20149616) 
 
 <p align="center">
   <img src="https://img.shields.io/badge/built%20with-Vite-%23646CFF?style=flat&logo=vite&logoColor=white" alt="Vite">
