@@ -1,0 +1,10 @@
+{
+  "title": "Traffic Torch – Instant 360° SEO + UX Health Scanner",
+  "description": "Fast, fully client-side SEO/UX analysis tool with educational reports, AI signals, E-E-A-T checks, and more. Built with Vite, Tailwind, Alpine.js.",
+  "creators": [
+    {"name": "Ylia Callan", "affiliation": "Independent", "orcid": "0009-0006-4084-0241"}
+  ],
+  "license": "MIT", 
+  "keywords": ["seo", "ux", "web-development", "audit-tool", "e-e-a-t", "ai-seo"],
+  "upload_type": "software"
+}
