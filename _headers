@@ -1,3 +1,4 @@
+# Global Security Headers
 /*
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Frame-Options: SAMEORIGIN
@@ -5,12 +6,17 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=()
 
-  # Allow PDF to be embedded in iframe on the same site
-  /research/traffic-torch-whitepaper/traffic-torch-whitepaper.pdf
+  # Global CSP
+  Content-Security-Policy: default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://static.addtoany.com https://cdn.jsdelivr.net https://static.cloudflareinsights.com https://www.googletagmanager.com https://traffic-torch-api.traffictorch.workers.dev https://js.stripe.com; style-src 'self' 'unsafe-inline' https: https://fonts.googleapis.com; font-src 'self' https: data:; img-src 'self' data: https: blob:; connect-src 'self' https: https://api.stripe.com; frame-src 'self' https: https://static.addtoany.com https://js.stripe.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://js.stripe.com; upgrade-insecure-requests; report-to csp-endpoint;
+  Report-To: {"group":"csp-endpoint","max_age":10886400,"endpoints":[{"url":"https://csp-reporting.traffictorch.workers.dev/"}]}
+
+# ====================== PDF EMBEDDING ======================
+# Specific rule for whitepaper PDF
+/research/traffic-torch-whitepaper/traffic-torch-whitepaper.pdf
   Content-Security-Policy: frame-ancestors 'self'
   X-Frame-Options: SAMEORIGIN
-  
-  # Production CSP with Stripe added
-  Content-Security-Policy: default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: https://static.addtoany.com https://cdn.jsdelivr.net https://static.cloudflareinsights.com https://www.googletagmanager.com https://traffic-torch-api.traffictorch.workers.dev https://js.stripe.com; style-src 'self' 'unsafe-inline' https: https://fonts.googleapis.com; font-src 'self' https: data:; img-src 'self' data: https: blob:; connect-src 'self' https: https://api.stripe.com; frame-src 'self' https: https://static.addtoany.com https://js.stripe.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://js.stripe.com; upgrade-insecure-requests; report-to csp-endpoint;
 
-  Report-To: {"group":"csp-endpoint","max_age":10886400,"endpoints":[{"url":"https://csp-reporting.traffictorch.workers.dev/"}]}
+# Also allow the research page itself to embed content
+/research/traffic-torch-whitepaper/*
+  Content-Security-Policy: frame-ancestors 'self'
+  X-Frame-Options: SAMEORIGIN
