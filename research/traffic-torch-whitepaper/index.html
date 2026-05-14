@@ -214,97 +214,139 @@
             </h1>
             <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">WhitePaper By Ylia Callan</p>
               
-<article>
+<article class="prose dark:prose-invert prose-lg max-w-none leading-relaxed">
 
-            <h2 class="text-3xl font-semibold mt-12 mb-6">Abstract</h2>
-            <p class="text-lg leading-relaxed">
-                Traffic Torch is a privacy‑first, research‑grade SEO and UX diagnostic framework designed to help creators, developers, and organizations understand how modern search engines - including AI answer engines - interpret, evaluate, and surface web content. 
-            </p>
-            <p class="text-lg mt-2 leading-relaxed">
-                Unlike traditional SEO tools that rely on proprietary datasets, opaque scoring systems, and invasive tracking, Traffic Torch uses transparent heuristics, client‑side analysis, and anti‑fragile design principles to deliver actionable insights without compromising user privacy.
-            </p>
-            <p class="text-lg mt-2 leading-relaxed">
-                This whitepaper outlines the conceptual foundations, methodology, architecture, and research implications of Traffic Torch. It also introduces a new paradigm for web optimization in the AI era: <strong>Cooperative Search Optimization (CSO)</strong> - a shift from competitive ranking tactics toward sustainable, user‑aligned, system‑cooperative design.
-            </p>
+    <h2 class="text-3xl font-semibold mt-12 mb-6">Abstract</h2>
+    <p>Traffic Torch is a privacy‑first, research‑grade SEO and UX diagnostic framework designed to help creators, developers, and organizations understand how modern search engines — including AI answer engines — interpret, evaluate, and surface web content.</p>
+    <p>Unlike traditional SEO tools that rely on proprietary datasets, opaque scoring systems, and invasive tracking, Traffic Torch uses transparent heuristics, client‑side analysis, and anti‑fragile design principles to deliver actionable insights without compromising user privacy.</p>
+    <p>This whitepaper outlines the conceptual foundations, methodology, architecture, and research implications of Traffic Torch. It also introduces a new paradigm for web optimization in the AI era: <strong>Cooperative Search Optimization (CSO)</strong> — a shift from competitive ranking tactics toward sustainable, user‑aligned, system‑cooperative design.</p>
 
-            <h2 class="text-3xl font-semibold mt-16 mb-6">1. Introduction</h2>
-            <p>Search is undergoing a structural transformation. AI answer engines, voice interfaces, and entity‑based retrieval systems are replacing traditional keyword‑driven ranking models. Websites are no longer competing solely for “positions” but for interpretability, credibility, and machine‑readability.</p>
-            <p>Traffic Torch was created to address this shift by providing:</p>
-            <ul class="list-disc pl-6 space-y-2">
-                <li>Transparent, explainable diagnostics</li>
-                <li>Privacy‑first client‑side auditing</li>
-                <li>UX frustration signal detection</li>
-                <li>Entity and schema mapping</li>
-                <li>AI voice search optimization</li>
-                <li>Predictive ranking health indicators</li>
-            </ul>
-            <p>Traffic Torch is built as a freemium SaaS with open components, enabling both commercial use and academic research.</p>
+    <h2 class="text-3xl font-semibold mt-16 mb-6">1. Introduction</h2>
+    <p>Search is undergoing a structural transformation. AI answer engines, voice interfaces, and entity‑based retrieval systems are replacing traditional keyword‑driven ranking models. Websites are no longer competing solely for “positions” but for interpretability, credibility, and machine‑readability.</p>
+    <p>Traffic Torch was created to address this shift by providing:</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li>transparent, explainable diagnostics</li>
+        <li>privacy‑first client‑side auditing</li>
+        <li>UX frustration signal detection</li>
+        <li>entity and schema mapping</li>
+        <li>AI voice search optimization</li>
+        <li>predictive ranking health indicators</li>
+    </ul>
+    <p>Traffic Torch is built as a freemium SaaS with open components, enabling both commercial use and academic research.</p>
 
-            <h2 class="text-3xl font-semibold mt-16 mb-6">2. Problem Statement</h2>
-            <h3 class="text-2xl font-medium mt-10 mb-4">2.1 Opaque Scoring Systems</h3>
-            <p>Commercial platforms rely on proprietary metrics that cannot be independently verified or reproduced. This creates methodological opacity, vendor lock‑in, and inconsistent interpretations of ranking factors.</p>
+    <h2 class="text-3xl font-semibold mt-16 mb-6">2. Problem Statement</h2>
+    <p>Traditional SEO tools suffer from three systemic issues:</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">2.1 Opaque Scoring Systems</h3>
+    <p>Commercial platforms rely on proprietary metrics that cannot be independently verified or reproduced. This creates:</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li>methodological opacity</li>
+        <li>vendor lock‑in</li>
+        <li>inconsistent interpretations of ranking factors</li>
+    </ul>
 
-            <h3 class="text-2xl font-medium mt-10 mb-4">2.2 Privacy and Data Extraction</h3>
-            <p>Most SEO tools rely on third‑party tracking, behavioral profiling, large‑scale scraping, and centralized data harvesting - contradicting modern privacy expectations and regulatory trends.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">2.2 Privacy and Data Extraction</h3>
+    <p>Most SEO tools rely on:</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li>third‑party tracking</li>
+        <li>behavioral profiling</li>
+        <li>large‑scale scraping</li>
+        <li>centralized data harvesting</li>
+    </ul>
+    <p>This contradicts modern privacy expectations and regulatory trends.</p>
 
-            <h3 class="text-2xl font-medium mt-10 mb-4">2.3 Misalignment With AI‑Era Search</h3>
-            <p>Legacy tools focus on keyword rankings, backlinks, and SERP snapshots, while AI search engines prioritize entity coherence, structured data, content clarity, UX quality, trust signals, and answerability.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">2.3 Misalignment With AI‑Era Search</h3>
+    <p>Legacy SEO tools are built for keyword rankings, backlink counts, and SERP snapshots. But AI search engines prioritize entity coherence, structured data, content clarity, UX quality, trust signals, and answerability.</p>
+    <p>Traffic Torch addresses these gaps with a transparent, privacy‑first, AI‑aligned methodology.</p>
 
-            <h2 class="text-3xl font-semibold mt-16 mb-6">3. Conceptual Framework</h2>
-            <h3 class="text-2xl font-medium mt-8 mb-4">3.1 Anti‑Fragile Web Optimization</h3>
-            <p>“A website should improve under stress, not degrade.” No fragile hacks. Emphasis on clarity, structure, and genuine user experience.</p>
+    <h2 class="text-3xl font-semibold mt-16 mb-6">3. Conceptual Framework</h2>
+    <p>Traffic Torch is built on three foundational principles:</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">3.1 Anti‑Fragile Web Optimization</h3>
+    <p>Borrowing from systems theory, Traffic Torch assumes: “A website should improve under stress, not degrade.”</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li>no reliance on fragile hacks</li>
+        <li>no dependence on algorithm loopholes</li>
+        <li>resilience to search engine changes</li>
+        <li>emphasis on clarity, structure, and user experience</li>
+    </ul>
 
-            <h3 class="text-2xl font-medium mt-8 mb-4">3.2 Cooperative Search Optimization (CSO)</h3>
-            <p>Instead of competing against search engines, CSO aligns with them: search engines want clarity, users want usability, creators want visibility.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">3.2 Cooperative Search Optimization (CSO)</h3>
+    <p>Instead of competing against search engines, CSO aligns with them.</p>
+    <p>CSO asserts that:</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li>search engines want clarity</li>
+        <li>users want usability</li>
+        <li>creators want visibility</li>
+    </ul>
+    <p>Traffic Torch optimizes for all three simultaneously.</p>
 
-            <h3 class="text-2xl font-medium mt-8 mb-4">3.3 Privacy‑First Diagnostics</h3>
-            <p>All audits run client‑side with no tracking or data storage.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">3.3 Privacy‑First Diagnostics</h3>
+    <p>Traffic Torch performs all audits client‑side without tracking or storing user data. This makes it suitable for academic research, privacy‑sensitive industries, and regulated environments.</p>
 
-            <h2 class="text-3xl font-semibold mt-16 mb-6">4. Methodology</h2>
-            <h3 class="text-2xl font-medium mt-8 mb-4">4.1 Structural Analysis</h3>
-            <p>HTML semantics, heading hierarchy, schema markup, entity relationships, internal linking.</p>
+    <h2 class="text-3xl font-semibold mt-16 mb-6">4. Methodology</h2>
+    <p>Traffic Torch uses a multi‑layer diagnostic model:</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">4.1 Structural Analysis</h3>
+    <p>Evaluates: HTML semantics, performance, schema markup, entity relationships.</p>
 
-            <h3 class="text-2xl font-medium mt-8 mb-4">4.2 UX Frustration Signals</h3>
-            <p>Slow interaction readiness, intrusive UI patterns, readability issues, accessibility gaps.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">4.2 UX Frustration Signals</h3>
+    <p>Detects: slow interaction readiness, intrusive UI patterns, readability issues, accessibility gaps.</p>
 
-            <h3 class="text-2xl font-medium mt-8 mb-4">4.3 AI Voice Search Readiness</h3>
-            <p>Answerability, conversational clarity, entity grounding, snippet‑friendly structure.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">4.3 AI Voice Search Readiness</h3>
+    <p>Assesses: answerability, conversational clarity, entity grounding, snippet‑friendly structure, question‑response patterns.</p>
 
-            <h3 class="text-2xl font-medium mt-8 mb-4">4.4 Predictive Ranking Health</h3>
-            <p>Content clarity, crawlability, indexability, semantic coherence.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">4.4 Predictive Ranking Health</h3>
+    <p>Uses heuristic indicators to estimate: content clarity, crawlability, indexability, user experience quality, semantic coherence.</p>
 
-            <h3 class="text-2xl font-medium mt-8 mb-4">4.5 Privacy‑First Performance Metrics</h3>
-            <p>Client‑side timing and browser APIs - fully GDPR & CCPA compliant.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">4.5 Privacy‑First Performance Metrics</h3>
+    <p>Traffic Torch avoids invasive telemetry and instead uses client‑side timing, browser APIs, and non‑identifying heuristics. This ensures compliance with GDPR, CCPA, and global privacy norms.</p>
 
-            <h2 class="text-3xl font-semibold mt-16 mb-6">5. System Architecture</h2>
-            <h3 class="text-2xl font-medium mt-8 mb-4">5.1 Core Web App</h3>
-            <p>Lightweight, fully client‑side JavaScript interface.</p>
+    <h2 class="text-3xl font-semibold mt-16 mb-6">5. System Architecture</h2>
+    <p>Traffic Torch is built as a modular, extensible ecosystem:</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">5.1 Core Web App</h3>
+    <p>A lightweight, JavaScript‑powered interface that runs entirely client‑side.</p>
 
-            <h3 class="text-2xl font-medium mt-8 mb-4">5.2 AI Integration Layer</h3>
-            <p>Cloudflare Workers AI for entity extraction, topical authority, and advanced scoring.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">5.2 AI Integration Layer</h3>
+    <p>Uses Cloudflare Workers AI for topical authority, entity extraction, and keyword research.</p>
 
-            <h3 class="text-2xl font-medium mt-8 mb-4">5.3 Extensions & Integrations</h3>
-            <p>Browser extensions, VS Code extension, GitHub Action, WordPress plugin.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">5.3 Extensions & Integrations</h3>
+    <p>Traffic Torch supports: browser extensions, VS Code extension, GitHub Action, WordPress plugin.</p>
 
-            <h3 class="text-2xl font-medium mt-8 mb-4">5.4 Open Components</h3>
-            <p>Open-source modules for transparency and academic use.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">5.4 Open Components</h3>
+    <p>Certain modules are open‑source to support transparency, reproducibility, and academic use.</p>
 
-            <h2 class="text-3xl font-semibold mt-16 mb-6">6. Research Implications</h2>
-            <p>Traffic Torch contributes to Information Retrieval, Human-Computer Interaction, Web Science, and AI Search Behavior research.</p>
+    <h2 class="text-3xl font-semibold mt-16 mb-6">6. Research Implications</h2>
+    <p>Traffic Torch contributes to several research domains:</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">6.1 Information Retrieval (IR)</h3>
+    <p>Provides a transparent model for entity‑based ranking, answerability scoring, and semantic structure analysis.</p>
 
-            <h2 class="text-3xl font-semibold mt-16 mb-6">7. Use Cases</h2>
-            <p>Developers, content creators, SEO practitioners, researchers, educators, and digital agencies use Traffic Torch for site audits, AI optimization, UX improvement, and teaching.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">6.2 Human–Computer Interaction (HCI)</h3>
+    <p>Offers a framework for UX frustration detection, readability heuristics, and interaction readiness.</p>
 
-            <h2 class="text-3xl font-semibold mt-16 mb-6">8. Licensing & Distribution</h2>
-            <p>Freemium SaaS with open-source components and research-friendly licensing.</p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">6.3 Web Science</h3>
+    <p>Supports studies on privacy‑first analytics, decentralized diagnostics, and anti‑fragile system design.</p>
 
-            <h2 class="text-3xl font-semibold mt-16 mb-6">9. Conclusion</h2>
-            <p class="text-lg leading-relaxed">
-                Traffic Torch represents a new class of SEO/UX diagnostic tools - one built for the AI era, grounded in transparency, privacy, and research‑grade methodology. 
-                By combining anti‑fragile design, cooperative search optimization, and client‑side privacy‑first auditing, Traffic Torch provides a sustainable, future‑proof framework for web optimization.
-            </p>
+    <h3 class="text-2xl font-medium mt-8 mb-4">6.4 AI Search Behavior</h3>
+    <p>Enables research into voice search optimization, AI answer engine alignment, and content interpretability.</p>
 
-        </article>
+    <h2 class="text-3xl font-semibold mt-16 mb-6">7. Use Cases</h2>
+    <p>Traffic Torch is used by developers, content creators, SEO practitioners, researchers, educators, and digital agencies.</p>
+    <p>Common applications include:</p>
+    <ul class="list-disc pl-6 space-y-2">
+        <li>auditing new websites</li>
+        <li>optimizing for AI search</li>
+        <li>improving UX clarity</li>
+        <li>teaching SEO/UX principles</li>
+        <li>conducting research studies</li>
+    </ul>
+
+    <h2 class="text-3xl font-semibold mt-16 mb-6">8. Licensing & Distribution</h2>
+    <p>Traffic Torch is distributed as a freemium SaaS with open-source components and research‑friendly licensing.</p>
+    <p>This hybrid model allows commercial sustainability, academic reproducibility, and community contribution.</p>
+
+    <h2 class="text-3xl font-semibold mt-16 mb-6">9. Conclusion</h2>
+    <p>Traffic Torch represents a new class of SEO/UX diagnostic tools — one built for the AI era, grounded in transparency, privacy, and research‑grade methodology. By combining anti‑fragile design, cooperative search optimization, and client‑side privacy‑first auditing, Traffic Torch provides a sustainable, future‑proof framework for web optimization.</p>
+    <p>As search continues to evolve toward AI‑driven retrieval, tools like Traffic Torch will play a critical role in helping creators build websites that are clear, interpretable, and aligned with both user needs and machine understanding.</p>
+
+</article>
 
 <div class="mt-16 flex flex-wrap justify-center gap-4">
             <a href="/research/traffic-torch-whitepaper/traffic-torch-whitepaper.pdf"
