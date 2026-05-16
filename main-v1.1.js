@@ -258,19 +258,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-// Desktop Sidebar Collapse - Icons + Centered Logo Only - with persistence + NO layout shift
+// Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
 const desktopMenuToggle = document.getElementById('desktopMenuToggle');
-
 if (sidebar && (collapseBtn || desktopMenuToggle)) {
   const toggleSidebar = () => {
     sidebar.classList.toggle('collapsed');
     const isCollapsed = sidebar.classList.contains('collapsed');
-    
-    // Save state
-    localStorage.setItem('sidebarCollapsed', isCollapsed);
-    
     // Button icons
     if (collapseBtn) {
       collapseBtn.textContent = isCollapsed ? '→' : '←';
@@ -279,26 +274,10 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
       desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖';
     }
   };
-
   collapseBtn?.addEventListener('click', toggleSidebar);
   desktopMenuToggle?.addEventListener('click', toggleSidebar);
-
-  // Restore saved state BEFORE paint (synchronous + class already on HTML if possible)
-  const savedCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-  
-  if (savedCollapsed) {
-    sidebar.classList.add('collapsed');
-  } else {
-    sidebar.classList.remove('collapsed');
-  }
-  
-  // Update icons immediately
-  if (collapseBtn) {
-    collapseBtn.textContent = savedCollapsed ? '→' : '←';
-  }
-  if (desktopMenuToggle) {
-    desktopMenuToggle.textContent = savedCollapsed ? '☰' : '✖';
-  }
+  // Start expanded
+  if (sidebar.classList.contains('collapsed')) toggleSidebar();
 }
 // Login/Register Modal (mobile-first, Tailwind, dark mode)
 function showLoginModal() {
