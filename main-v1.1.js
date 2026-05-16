@@ -259,11 +259,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 // Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
-const sidebar = document.getElementById('desktopSidebar');
-const collapseBtn = document.getElementById('sidebarCollapse');
-const desktopMenuToggle = document.getElementById('desktopMenuToggle');
+function initDesktopSidebarCollapse() {
+  const sidebar = document.getElementById('desktopSidebar');
+  const collapseBtn = document.getElementById('sidebarCollapse');
+  const desktopMenuToggle = document.getElementById('desktopMenuToggle');
 
-if (sidebar && (collapseBtn || desktopMenuToggle)) {
+  if (!sidebar || (!collapseBtn && !desktopMenuToggle)) return;
+
   const toggleSidebar = () => {
     sidebar.classList.toggle('collapsed');
     const isCollapsed = sidebar.classList.contains('collapsed');
@@ -283,23 +285,27 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
   collapseBtn?.addEventListener('click', toggleSidebar);
   desktopMenuToggle?.addEventListener('click', toggleSidebar);
 
-  // Restore saved state (default expanded)
+  // Restore saved state (default = expanded)
   const savedState = localStorage.getItem('desktopSidebarCollapsed');
   const shouldCollapse = savedState === 'true';
-  
-  if (shouldCollapse !== sidebar.classList.contains('collapsed')) {
-    // Force the correct state without triggering toggle logic twice
-    sidebar.classList.toggle('collapsed', shouldCollapse);
-    const isCollapsed = sidebar.classList.contains('collapsed');
-    
-    if (collapseBtn) {
-      collapseBtn.textContent = isCollapsed ? '→' : '←';
-    }
-    if (desktopMenuToggle) {
-      desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖';
-    }
+
+  if (shouldCollapse) {
+    sidebar.classList.add('collapsed');
+  } else {
+    sidebar.classList.remove('collapsed');
   }
+
+  const isCollapsed = sidebar.classList.contains('collapsed');
+  if (collapseBtn) collapseBtn.textContent = isCollapsed ? '→' : '←';
+  if (desktopMenuToggle) desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖';
 }
+
+// Run after menu is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Re-init after fetch completes
+  const originalThen = window.fetchDesktopMenuThen || function(){};
+  // hook into the existing fetch
+});
 // Login/Register Modal (mobile-first, Tailwind, dark mode)
 function showLoginModal() {
   const modal = document.createElement('div');
@@ -670,6 +676,17 @@ document.addEventListener('DOMContentLoaded', () => {
 .then(html => {
   const placeholder = document.getElementById('desktop-menu-placeholder');
   placeholder.innerHTML = html;
+  
+  // Trigger fade-in
+  setTimeout(() => {
+    placeholder.classList.add('loaded');
+  }, 50);
+
+  attachMenuToggles('desktopSidebar');
+  
+  // Initialize sidebar collapse AFTER menu HTML is inserted
+  initDesktopSidebarCollapse();
+})
  
   // Trigger fade-in after a tiny delay (helps perceived smoothness)
   setTimeout(() => {
