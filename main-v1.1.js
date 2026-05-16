@@ -270,10 +270,8 @@ function initDesktopSidebarCollapse() {
     sidebar.classList.toggle('collapsed');
     const isCollapsed = sidebar.classList.contains('collapsed');
     
-    // Save state
     localStorage.setItem('desktopSidebarCollapsed', isCollapsed);
     
-    // Button icons
     if (collapseBtn) {
       collapseBtn.textContent = isCollapsed ? '→' : '←';
     }
@@ -285,7 +283,7 @@ function initDesktopSidebarCollapse() {
   collapseBtn?.addEventListener('click', toggleSidebar);
   desktopMenuToggle?.addEventListener('click', toggleSidebar);
 
-  // Restore saved state (default = expanded)
+  // Restore saved state (default expanded)
   const savedState = localStorage.getItem('desktopSidebarCollapsed');
   const shouldCollapse = savedState === 'true';
 
@@ -299,13 +297,6 @@ function initDesktopSidebarCollapse() {
   if (collapseBtn) collapseBtn.textContent = isCollapsed ? '→' : '←';
   if (desktopMenuToggle) desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖';
 }
-
-// Run after menu is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  // Re-init after fetch completes
-  const originalThen = window.fetchDesktopMenuThen || function(){};
-  // hook into the existing fetch
-});
 // Login/Register Modal (mobile-first, Tailwind, dark mode)
 function showLoginModal() {
   const modal = document.createElement('div');
@@ -677,14 +668,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const placeholder = document.getElementById('desktop-menu-placeholder');
   placeholder.innerHTML = html;
   
-  // Trigger fade-in
+  // Trigger fade-in after a tiny delay
   setTimeout(() => {
     placeholder.classList.add('loaded');
   }, 50);
-
+  
   attachMenuToggles('desktopSidebar');
   
-  // Initialize sidebar collapse AFTER menu HTML is inserted
+  // Initialize sidebar collapse AFTER menu is loaded
   initDesktopSidebarCollapse();
 })
  
