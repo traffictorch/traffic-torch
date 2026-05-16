@@ -262,10 +262,15 @@ document.addEventListener('DOMContentLoaded', () => {
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
 const desktopMenuToggle = document.getElementById('desktopMenuToggle');
+
 if (sidebar && (collapseBtn || desktopMenuToggle)) {
   const toggleSidebar = () => {
     sidebar.classList.toggle('collapsed');
     const isCollapsed = sidebar.classList.contains('collapsed');
+    
+    // Save state
+    localStorage.setItem('desktopSidebarCollapsed', isCollapsed);
+    
     // Button icons
     if (collapseBtn) {
       collapseBtn.textContent = isCollapsed ? '→' : '←';
@@ -274,10 +279,26 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
       desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖';
     }
   };
+
   collapseBtn?.addEventListener('click', toggleSidebar);
   desktopMenuToggle?.addEventListener('click', toggleSidebar);
-  // Start expanded
-  if (sidebar.classList.contains('collapsed')) toggleSidebar();
+
+  // Restore saved state (default expanded)
+  const savedState = localStorage.getItem('desktopSidebarCollapsed');
+  const shouldCollapse = savedState === 'true';
+  
+  if (shouldCollapse !== sidebar.classList.contains('collapsed')) {
+    // Force the correct state without triggering toggle logic twice
+    sidebar.classList.toggle('collapsed', shouldCollapse);
+    const isCollapsed = sidebar.classList.contains('collapsed');
+    
+    if (collapseBtn) {
+      collapseBtn.textContent = isCollapsed ? '→' : '←';
+    }
+    if (desktopMenuToggle) {
+      desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖';
+    }
+  }
 }
 // Login/Register Modal (mobile-first, Tailwind, dark mode)
 function showLoginModal() {
