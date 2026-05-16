@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-// Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text) - with persistence
+// Desktop Sidebar Collapse - Icons + Centered Logo Only - with persistence + NO layout shift
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
 const desktopMenuToggle = document.getElementById('desktopMenuToggle');
@@ -283,22 +283,21 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
   collapseBtn?.addEventListener('click', toggleSidebar);
   desktopMenuToggle?.addEventListener('click', toggleSidebar);
 
-  // Restore saved state (default expanded = false)
+  // Restore saved state BEFORE paint (synchronous + class already on HTML if possible)
   const savedCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-  if (savedCollapsed !== sidebar.classList.contains('collapsed')) {
-    // Force the correct state
-    if (savedCollapsed) {
-      sidebar.classList.add('collapsed');
-    } else {
-      sidebar.classList.remove('collapsed');
-    }
-    // Update icons
-    if (collapseBtn) {
-      collapseBtn.textContent = savedCollapsed ? '→' : '←';
-    }
-    if (desktopMenuToggle) {
-      desktopMenuToggle.textContent = savedCollapsed ? '☰' : '✖';
-    }
+  
+  if (savedCollapsed) {
+    sidebar.classList.add('collapsed');
+  } else {
+    sidebar.classList.remove('collapsed');
+  }
+  
+  // Update icons immediately
+  if (collapseBtn) {
+    collapseBtn.textContent = savedCollapsed ? '→' : '←';
+  }
+  if (desktopMenuToggle) {
+    desktopMenuToggle.textContent = savedCollapsed ? '☰' : '✖';
   }
 }
 // Login/Register Modal (mobile-first, Tailwind, dark mode)
