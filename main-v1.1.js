@@ -664,28 +664,22 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) throw new Error('Desktop menu fetch failed: ' + response.status);
       return response.text();
     })
-.then(html => {
-  const placeholder = document.getElementById('desktop-menu-placeholder');
-  placeholder.innerHTML = html;
-  
-  // Trigger fade-in after a tiny delay
-  setTimeout(() => {
-    placeholder.classList.add('loaded');
-  }, 50);
-  
-  attachMenuToggles('desktopSidebar');
-  
-  // Initialize sidebar collapse AFTER menu is loaded
-  initDesktopSidebarCollapse();
-})
- 
-  // Trigger fade-in after a tiny delay (helps perceived smoothness)
-  setTimeout(() => {
-    placeholder.classList.add('loaded');
-  }, 50);
- 
-  attachMenuToggles('desktopSidebar');
-})
+    .then(html => {
+      const placeholder = document.getElementById('desktop-menu-placeholder');
+      placeholder.innerHTML = html;
+      
+      // Trigger fade-in after a tiny delay
+      setTimeout(() => {
+        placeholder.classList.add('loaded');
+      }, 50);
+      
+      attachMenuToggles('desktopSidebar');
+      
+      // Initialize sidebar collapse AFTER menu is loaded
+      initDesktopSidebarCollapse();
+    })
+    .catch(err => {});
+
   // Mobile menu
   fetch('/mobile-menu.html')
     .then(response => {
