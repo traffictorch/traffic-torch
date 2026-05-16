@@ -258,20 +258,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
-// Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
-function initDesktopSidebarCollapse() {
-  const sidebar = document.getElementById('desktopSidebar');
-  const collapseBtn = document.getElementById('sidebarCollapse');
-  const desktopMenuToggle = document.getElementById('desktopMenuToggle');
+// Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text) - with persistence
+const sidebar = document.getElementById('desktopSidebar');
+const collapseBtn = document.getElementById('sidebarCollapse');
+const desktopMenuToggle = document.getElementById('desktopMenuToggle');
 
-  if (!sidebar || (!collapseBtn && !desktopMenuToggle)) return;
-
+if (sidebar && (collapseBtn || desktopMenuToggle)) {
   const toggleSidebar = () => {
     sidebar.classList.toggle('collapsed');
     const isCollapsed = sidebar.classList.contains('collapsed');
     
-    localStorage.setItem('desktopSidebarCollapsed', isCollapsed);
+    // Save state
+    localStorage.setItem('sidebarCollapsed', isCollapsed);
     
+    // Button icons
     if (collapseBtn) {
       collapseBtn.textContent = isCollapsed ? '→' : '←';
     }
@@ -283,19 +283,23 @@ function initDesktopSidebarCollapse() {
   collapseBtn?.addEventListener('click', toggleSidebar);
   desktopMenuToggle?.addEventListener('click', toggleSidebar);
 
-  // Restore saved state (default expanded)
-  const savedState = localStorage.getItem('desktopSidebarCollapsed');
-  const shouldCollapse = savedState === 'true';
-
-  if (shouldCollapse) {
-    sidebar.classList.add('collapsed');
-  } else {
-    sidebar.classList.remove('collapsed');
+  // Restore saved state (default expanded = false)
+  const savedCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+  if (savedCollapsed !== sidebar.classList.contains('collapsed')) {
+    // Force the correct state
+    if (savedCollapsed) {
+      sidebar.classList.add('collapsed');
+    } else {
+      sidebar.classList.remove('collapsed');
+    }
+    // Update icons
+    if (collapseBtn) {
+      collapseBtn.textContent = savedCollapsed ? '→' : '←';
+    }
+    if (desktopMenuToggle) {
+      desktopMenuToggle.textContent = savedCollapsed ? '☰' : '✖';
+    }
   }
-
-  const isCollapsed = sidebar.classList.contains('collapsed');
-  if (collapseBtn) collapseBtn.textContent = isCollapsed ? '→' : '←';
-  if (desktopMenuToggle) desktopMenuToggle.textContent = isCollapsed ? '☰' : '✖';
 }
 // Login/Register Modal (mobile-first, Tailwind, dark mode)
 function showLoginModal() {
@@ -664,22 +668,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) throw new Error('Desktop menu fetch failed: ' + response.status);
       return response.text();
     })
-    .then(html => {
-      const placeholder = document.getElementById('desktop-menu-placeholder');
-      placeholder.innerHTML = html;
-      
-      // Trigger fade-in after a tiny delay
-      setTimeout(() => {
-        placeholder.classList.add('loaded');
-      }, 50);
-      
-      attachMenuToggles('desktopSidebar');
-      
-      // Initialize sidebar collapse AFTER menu is loaded
-      initDesktopSidebarCollapse();
-    })
-    .catch(err => {});
-
+.then(html => {
+  const placeholder = document.getElementById('desktop-menu-placeholder');
+  placeholder.innerHTML = html;
+ 
+  // Trigger fade-in after a tiny delay (helps perceived smoothness)
+  setTimeout(() => {
+    placeholder.classList.add('loaded');
+  }, 50);
+ 
+  attachMenuToggles('desktopSidebar');
+})
   // Mobile menu
   fetch('/mobile-menu.html')
     .then(response => {
