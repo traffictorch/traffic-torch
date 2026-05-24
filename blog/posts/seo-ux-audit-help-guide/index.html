@@ -62,7 +62,7 @@
          "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
          "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
          "https://www.framer.com/marketplace/plugins/traffic-torch/",
-         "https://www.figma.com/community/plugin/1624971170654319802",
+         "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
          "https://github.com/marketplace/actions/traffic-torch-audit",
          "https://www.linkedin.com/in/ylia-callan-8b889976/",
          "https://x.com/Guitaralize"
@@ -111,7 +111,7 @@
          "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
          "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
          "https://www.framer.com/marketplace/plugins/traffic-torch/",
-         "https://www.figma.com/community/plugin/1624971170654319802",
+         "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
          "https://github.com/marketplace/actions/traffic-torch-audit",
          "https://www.linkedin.com/in/ylia-callan-8b889976/",
          "https://x.com/Guitaralize"
@@ -175,7 +175,7 @@
          "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
          "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
          "https://www.framer.com/marketplace/plugins/traffic-torch/",
-         "https://www.figma.com/community/plugin/1624971170654319802",
+         "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
          "https://github.com/marketplace/actions/traffic-torch-audit",
          "https://www.linkedin.com/in/ylia-callan-8b889976/",
          "https://x.com/Guitaralize"
@@ -721,7 +721,7 @@
 </h3>
 <p>Traffic Torch performs these exact client-side checks on the rendered HTML and linked resources:</p>
 <ul class="list-disc pl-6 space-y-3 mt-4">
-  <li>A viewport meta tag is present in <head> with content="width=device-width, initial-scale=1" (or equivalent responsive settings) to ensure proper mobile scaling.</li>
+  <li>A viewport meta tag is present in the head with content="width=device-width, initial-scale=1" (or equivalent responsive settings) to ensure proper mobile scaling.</li>
   <li>A web app manifest is linked via <link rel="manifest" href="..."> pointing to a valid manifest.json file.</li>
   <li>High-resolution homescreen icons are provided — minimum 192×192 pixels, ideally also 512×512, in PNG or WebP format (checked via manifest icons array and apple-touch-icon links).</li>
   <li>A service worker registration is detected — looks for navigator.serviceWorker.register() calls in inline or external JavaScript.</li>
@@ -757,7 +757,7 @@
       Quick high-impact fixes for Mobile & PWA
     </h3>
     <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
-      <li>Add or correct the viewport meta tag in the <head>: <meta name="viewport" content="width=device-width, initial-scale=1">. Place it early.</li>
+      <li>Add or correct the viewport meta tag in the head: <meta name="viewport" content="width=device-width, initial-scale=1">. Place it early.</li>
       <li>Create a manifest.json file with name, short_name, icons (at least 192 and 512 pixels), start_url, display: standalone, and theme/background colors. Link it with <link rel="manifest" href="/manifest.json"></li>
       <li>Provide high-resolution PNG or WebP icons (192×192 and 512×512 minimum). Link them as apple-touch-icon and in the manifest.</li>
       <li>Register a service worker with a simple caching strategy (even a basic one improves repeat visits). Use <code>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }</code> in your main script.</li>
@@ -794,7 +794,7 @@
 <p>Traffic Torch analyzes the initial HTML payload and resource references with these exact client-side checks:</p>
 <ul class="list-disc pl-6 space-y-3 mt-4">
   <li>HTML payload size (after minification and compression): Ideally under 120 KB to avoid bloating the initial download.</li>
-  <li>Render-blocking resources count: Focuses on external CSS files in <head> and synchronous (non-defer/async) JavaScript; flags when >6 as they delay First Contentful Paint.</li>
+  <li>Render-blocking resources count: Focuses on external CSS files in head and synchronous (non-defer/async) JavaScript; flags when >6 as they delay First Contentful Paint.</li>
   <li>External font requests: Counts how many font families are loaded (Google Fonts or similar); penalizes >3 as they cause FOIT/FOUT and delay text rendering.</li>
   <li>Page weight contributors: Detects excessive inline styles, large inline scripts, or unoptimized markup that inflates the HTML and slows parsing/rendering.</li>
 </ul>
@@ -835,7 +835,7 @@
     <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
       <li>Minify HTML, CSS, and JavaScript. Remove unused code and whitespace. Use tools like HTMLMinifier or build-step processors.</li>
       <li>Inline critical above-the-fold CSS and defer non-critical CSS with <link rel="stylesheet" media="print" onload="this.media='all'"> or async loading.</li>
-      <li>Add defer or async attributes to non-critical script tags. Move them to the end of <body> when possible.</li>
+      <li>Add defer or async attributes to non-critical script tags. Move them to the end of body tag when possible.</li>
       <li>Limit web fonts to 1–2 families. Apply font-display: swap. Preload important font files with <link rel="preload" as="font">.</li>
       <li>Compress images to WebP or AVIF format. Implement lazy loading with loading="lazy" on below-the-fold images.</li>
     </ol>
@@ -1184,7 +1184,7 @@
 <h3 id="indexability-how" class="text-2xl font-semibold mt-10 text-gray-800 dark:text-gray-200">
   How it's tested
 </h3>
-<p>Traffic Torch parses the <head> section and meta tags with these exact client-side checks:</p>
+<p>Traffic Torch parses the head section and meta tags with these exact client-side checks:</p>
 <ul class="list-disc pl-6 space-y-3 mt-4">
   <li>No meta name="robots" tag contains "no index" (checked case-insensitive in content attribute): Flags any no index directive that hides the page from search results.</li>
   <li>A canonical link tag exists <code>&lt;link rel="canonical" href="https://example.com/current-page/"&gt;</code> and points to the preferred/preferred URL version: Verifies self-referencing or correct consolidation.</li>
@@ -1222,7 +1222,7 @@
     </h3>
     <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
       <li>Remove any <meta name="robots" content="no index"> tag from production pages unless the page is intentionally private.</li>
-      <li>Add a self-referencing canonical tag in the <head>: <code>&lt;link rel="canonical" href="https://example.com/current-page/"&gt;</code>. Use the exact preferred URL.</li>
+      <li>Add a self-referencing canonical tag in the head: <code>&lt;link rel="canonical" href="https://example.com/current-page/"&gt;</code>. Use the exact preferred URL.</li>
       <li>Check robots.txt (via yoursite.com/robots.txt) to ensure the page path is not disallowed for User-agent: * or Googlebot.</li>
       <li>After fixes request indexing in Google Search Console using the URL Inspection tool.</li>
       <li>Audit staging, development, or parameter URLs to prevent accidental indexing of duplicates.</li>
