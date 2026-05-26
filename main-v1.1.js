@@ -519,7 +519,7 @@ export async function canRunTool(toolName = 'default') {
       if (data.remaining !== undefined) updateRunsBadge?.(data.remaining);
       return true;
     }
-    showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro - $48 USD per/year for 25 runs/day.');
+    showUpgradeModal(data.message || 'Upgrade to Traffic Torch Pro');
     return false;
   } catch (err) {
     showUpgradeModal('Connection error – please try again.');
