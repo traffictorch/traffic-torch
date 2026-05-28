@@ -105,7 +105,7 @@
       "name": "What exactly do I get with Traffic Torch Pro?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "25 daily full AI-powered SEO & UX audit runs across all modules (SEO + UX, Local SEO, SEO Intent, Product SEO, Quit Risk, Keywords, Keyword Competition, AI Search Optimiser, AI Content Detector), deep-dive reports, competitive gaps, AI fixes/code suggestions, predictive forecasting, educational guides, priority support, and more."
+        "text": "25 daily full AI-powered SEO & UX audit runs across all modules (SEO + UX, Local SEO, SEO Intent, Product SEO, Quit Risk, Keywords, Keyword Competition, AI Search Optimiser, AI Content Detector), deep-dive reports, competitive gaps, AI fixes/code suggestions, predictive forecasting, educational guides and priority support."
       }
     },
     {
@@ -113,7 +113,7 @@
       "name": "How does billing work?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Annual payment of $48 via Stripe. You'll be charged immediately upon upgrade. Your Pro access renews automatically each year unless canceled. Manage/cancel anytime directly in your Stripe portal – no lock-in."
+        "text": "Annual payment of $48 via Stripe. Your Pro access renews automatically each year unless canceled. Manage/cancel anytime directly in your Stripe portal – no lock-in."
       }
     },
     {
@@ -121,7 +121,7 @@
       "name": "Is there a refund policy?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes – full refund within 14 days of purchase if you're not satisfied. Just contact support via the feedback form or contact page (link in footer). After that, no prorated refunds as it's an annual plan."
+        "text": "Yes – full refund within 7 days of purchase if you're not satisfied. Just contact support via the feedback form or contact page (link in footer). After that, no prorated refunds as it's an annual plan."
       }
     },
     {
@@ -264,10 +264,11 @@
     <header class="text-center mb-16">
 <section class="py-1 px-1 max-w-7xl mx-auto">
   <h1 class="text-3xl md:text-3xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-    Upgrade to Traffic Torch Pro
+    Traffic Torch Pro - UX and SEO Tools for Site Owners & Agencies
   </h1>
 <p class="text-gray-800 dark:text-gray-200 mb-12 text-center max-w-3xl mx-auto leading-relaxed">
-  Unlock 25 daily SEO, GEO, AEO & UX audit tool runs. Secure login required. Powered by Stripe – privacy-first, no data collection.
+  25 daily audits for just $4/month billed annually $48/year. 7-day money-back guarantee, cancel anytime. 
+  Secure Stripe payment, 100% client-side analysis. Nothing stored, nothing tracked.
 </p>
 
 <style>
@@ -389,28 +390,22 @@
         </button>
       </div>
 
-      <!-- Math verification -->
-      <div class="flex items-center gap-4">
-        <label for="math-answer" class="text-sm font-medium text-white/90">What is 7 + 5? (anti-spam)</label>
-        <input type="number" id="math-answer" required placeholder="?" class="w-20 p-2 rounded-lg border border-white/30 bg-white/10 text-white focus:outline-none focus:border-white">
-      </div>
-
       <button type="submit" id="submit-btn" class="w-full py-4 bg-white text-blue-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
-        Create Account & Pay USD $48/year
+        Unlock Pro access
       </button>
     </form>
 
     <!-- Logged-in upgrade button -->
     <div id="pro-upgrade-section" class="hidden mt-8">
       <button type="button" id="upgrade-btn" class="w-full py-4 bg-white text-blue-600 font-bold text-lg rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
-        Upgrade to Pro – USD $48/year
+        Upgrade to Pro
       </button>
     </div>
 
     <!-- Payment & error display -->
     <div id="checkout-container" class="mt-6 min-h-[400px] rounded-lg border border-white/30 bg-white/10 hidden"></div>
     <div id="checkout-errors" class="text-center text-sm text-red-300 min-h-[1.25rem]" role="alert"></div>
-    <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • Cancel anytime</p>
+    <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • 7-day money-back guarantee • Cancel anytime</p>
   </div>
 </div>
 
@@ -578,50 +573,6 @@
     });
 
     const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
-
-    // Signup handler with math check
-    document.getElementById('signup-form')?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('name')?.value.trim();
-      const email = document.getElementById('email')?.value.trim();
-      const password = document.querySelector('#signup-form .password-with-eye input')?.value;
-      const mathAnswer = document.getElementById('math-answer')?.value.trim();
-      const errors = document.getElementById('checkout-errors');
-
-      if (!name || !email || !password) {
-        errors.textContent = 'Please fill name, email and password';
-        return;
-      }
-      if (mathAnswer !== '12') {
-        errors.textContent = 'Incorrect anti-spam answer.';
-        document.getElementById('math-answer').classList.add('math-error');
-        return;
-      } else {
-        document.getElementById('math-answer').classList.remove('math-error');
-      }
-
-      try {
-        const res = await fetch(API_BASE + '/api/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, password })
-        });
-        if (!res.ok) {
-          const err = await res.json();
-          throw new Error(err.error || 'Signup failed');
-        }
-        const { token } = await res.json();
-        localStorage.setItem('authToken', token);
-        errors.textContent = 'Account created! Click Upgrade to Pro';
-        document.getElementById('signup-form').classList.add('hidden');
-        document.getElementById('pro-upgrade-section').classList.remove('hidden');
-        document.getElementById('section-title').textContent = 'Upgrade to Pro';
-        updateUI();
-      } catch (err) {
-        console.error('Signup error:', err);
-        errors.textContent = err.message;
-      }
-    });
 
     // Login handler with reload
 document.getElementById('login-form')?.addEventListener('submit', async (e) => {
@@ -846,7 +797,7 @@ document.getElementById('login-form')?.addEventListener('submit', async (e) => {
       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition text-center">
         <div class="text-5xl mb-4">🛠️</div>
         <h3 class="text-xl font-bold mb-3 text-gray-800 dark:text-gray-200">AI-Generated Fixes & Code Suggestions</h3>
-        <p class="text-gray-600 dark:text-gray-300">Get prioritized, actionable recommendations with code snippets (HTML, CSS, schema), plugin suggestions, and high-impact fixes for every module – from meta tags to UX CTAs and AI content humanizing.</p>
+        <p class="text-gray-600 dark:text-gray-300">Get prioritized, actionable recommendations with code snippets (HTML, CSS, schema), plugin suggestions, and high-impact fixes for every module.</p>
       </div>
       
       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition text-center">
@@ -886,21 +837,21 @@ document.getElementById('login-form')?.addEventListener('submit', async (e) => {
       <details class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
         <summary class="font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200">What exactly do I get with Traffic Torch Pro?</summary>
         <div class="mt-4 text-gray-600 dark:text-gray-300">
-          <p>25 daily full AI-powered SEO & UX audit runs across all modules (SEO + UX, Local SEO, SEO Intent, Product SEO, Quit Risk, Keywords, Keyword Competition, AI Search Optimiser, AI Content Detector), deep-dive reports, competitive gaps, AI fixes/code suggestions, predictive forecasting, educational guides, priority support, and more.</p>
+          <p>25 daily full AI-powered SEO & UX audit runs across all modules (SEO + UX, Local SEO, SEO Intent, Product SEO, Quit Risk, Keywords, Keyword Competition, AI Search Optimiser, AI Content Detector), deep-dive reports, competitive gaps, AI fixes/code suggestions, predictive forecasting, educational guides and priority support.</p>
         </div>
       </details>
       
       <details class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
         <summary class="font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200">How does billing work?</summary>
         <div class="mt-4 text-gray-600 dark:text-gray-300">
-          <p>Annual payment of $48 via Stripe. You'll be charged immediately upon upgrade. Your Pro access renews automatically each year unless canceled. Manage/cancel anytime directly in your Stripe portal – no lock-in.</p>
+          <p>Annual payment of $48 via Stripe. Your Pro access renews automatically each year unless canceled. Manage/cancel anytime directly in your Stripe portal – no lock-in.</p>
         </div>
       </details>
       
       <details class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow">
         <summary class="font-bold text-lg cursor-pointer text-gray-800 dark:text-gray-200">Is there a refund policy?</summary>
         <div class="mt-4 text-gray-600 dark:text-gray-300">
-          <p>Yes – full refund within 14 days of purchase if you're not satisfied. Just contact support via the feedback form or contact page (link in footer). After that, no prorated refunds as it's an annual plan.</p>
+          <p>Yes – full refund within 7 days of purchase if you're not satisfied. Just contact support via the feedback form or contact page (link in footer). After that, no prorated refunds as it's an annual plan.</p>
         </div>
       </details>
       
