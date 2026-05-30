@@ -258,15 +258,15 @@
   <form id="contactForm" class="space-y-6 bg-white/10 dark:bg-black/40 backdrop-blur-xl p-8 rounded-3xl border border-orange-500/20">
     <div>
       <label for="contact-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
-      <input id="contact-name" type="text" name="name" required="true" class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500">
+      <input id="contact-name" type="text" name="name" required aria-required="true" class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500">
     </div>
     <div>
       <label for="contact-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Address</label>
-      <input id="contact-email" type="email" name="email" required="true" class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500">
+      <input id="contact-email" type="email" name="email" required aria-required="true" class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500">
     </div>
     <div>
       <label for="contact-message" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
-      <textarea id="contact-message" name="message" required rows="6" required="true" class="w-full bg-white/10 border border-white/20 rounded-3xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500"></textarea>
+      <textarea id="contact-message" name="message" required rows="6" aria-required="true" class="w-full bg-white/10 border border-white/20 rounded-3xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500"></textarea>
     </div>
     <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Message →</button>
   </form>
@@ -324,6 +324,7 @@
           ← Back to Dashboard
         </a>
       </div>
+    </div>
     
     </main>
    
