@@ -1,6 +1,6 @@
-// seo-intent-tool/metric-explanations.js
+// seo-intent-tool/module-explanations.js
 
-const metricExplanations = [
+const moduleExplanations = [
   {
     id: "experience",
     emoji: "🧑‍💻",
@@ -90,13 +90,13 @@ function openDetailsFromHash() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('metric-cards-container');
+  const container = document.getElementById('module-cards-container');
   if (!container) return;
 
   // Responsive 3×3 grid for 9 cards
   container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center max-w-7xl mx-auto px-6';
 
-  container.innerHTML = metricExplanations.map(m => `
+  container.innerHTML = moduleExplanations.map(m => `
     <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center w-full max-w-md">
       <div class="text-6xl mb-6">${m.emoji}</div>
       <div class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-8">${m.name}</div>

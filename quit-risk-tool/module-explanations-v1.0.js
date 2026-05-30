@@ -1,4 +1,4 @@
-const metricExplanations = [
+const moduleExplanations = [
   {
     id: "readability",
     emoji: "📖",
@@ -56,10 +56,10 @@ function openDetailsFromHash() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('metric-cards-container');
+  const container = document.getElementById('module-cards-container');
   if (!container) return;
 
-  const moduleCards = metricExplanations.map(m => `
+  const moduleCards = moduleExplanations.map(m => `
     <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-purple-500 text-center">
       <div class="text-6xl mb-6">${m.emoji}</div>
       <div class="text-3xl font-black text-purple-600 dark:text-purple-400 mb-8">${m.name}</div>
