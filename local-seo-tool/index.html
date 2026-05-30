@@ -648,33 +648,39 @@
 
 <!-- Two-column infographic grid – stacks on mobile, side-by-side on md+ -->
 <div class="grid md:grid-cols-2 gap-4 my-4 max-w-6xl mx-auto px-4">
-  <!-- Left image: Local SEO Optimizations (NAP, Keywords, Content) -->
+  <!-- Left image -->
   <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
     <img
       src="/local-seo-tool/images/local-seo-optimizations-infographic-800w.webp"
+      srcset="/local-seo-tool/images/local-seo-optimizations-infographic-480w.webp 480w,
+              /local-seo-tool/images/local-seo-optimizations-infographic-800w.webp 800w,
+              /local-seo-tool/images/local-seo-optimizations-infographic-1200w.webp 1200w"
+      sizes="(max-width: 767px) 100vw, 50vw"
       alt="Local SEO Optimizations Infographic – NAP & Contact, Local Keywords & Titles, Local Content & Relevance"
       class="w-full h-auto object-cover"
       width="800"
       height="1200"
       loading="lazy"
-      decoding="async"
-      sizes="(max-width: 767px) 100vw, 50vw">
+      decoding="async">
     <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
       Core on-page local signals Traffic Torch audits for better Local Pack visibility.
     </figcaption>
   </figure>
 
-  <!-- Right image: Local Maps and Schema (Maps, Structured Data, Reviews) -->
+  <!-- Right image -->
   <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
     <img
       src="/local-seo-tool/images/local-maps-schema-infographic-800w.webp"
+      srcset="/local-seo-tool/images/local-maps-schema-infographic-480w.webp 480w,
+              /local-seo-tool/images/local-maps-schema-infographic-800w.webp 800w,
+              /local-seo-tool/images/local-maps-schema-infographic-1200w.webp 1200w"
+      sizes="(max-width: 767px) 100vw, 50vw"
       alt="Local Maps and Schema Infographic – Maps & Visuals, Structured Data, Reviews & Structure"
       class="w-full h-auto object-cover"
       width="800"
       height="1200"
       loading="lazy"
-      decoding="async"
-      sizes="(max-width: 767px) 100vw, 50vw">
+      decoding="async">
     <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
       Visual, schema & trust signals Traffic Torch checks to unlock rich results and trust.
     </figcaption>
@@ -806,10 +812,10 @@
       <div class="bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-3xl p-2 shadow-2xl border border-gray-200 dark:border-gray-700">
         <h2 class="text-3xl font-bold text-center mb-10 text-orange-600 dark:text-orange-400">
           Key Local SEO Practices: What to Do & What to Avoid?
-        </h3>
+        </h2>
         <div class="grid md:grid-cols-2 gap-8 text-lg">
           <div class="space-y-6">
-            <h4 class="text-2xl font-bold text-green-600 dark:text-green-400">✅ Best Practices to Implement</h4>
+            <h3 class="text-2xl font-bold text-green-600 dark:text-green-400">✅ Best Practices to Implement</h3>
             <ul class="space-y-4 list-disc list-inside text-gray-700 dark:text-gray-300">
               <li>Include consistent NAP in footer and contact page.</li>
               <li>Add LocalBusiness schema with geo coords and hours.</li>
