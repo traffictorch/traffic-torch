@@ -1,4 +1,4 @@
-const metricExplanations = [
+const moduleExplanations = [
   {
     id: "perplexity",
     emoji: "🧠",
@@ -64,12 +64,12 @@ function openDetailsFromHash() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('metric-cards-container');
+  const container = document.getElementById('module-cards-container');
   if (!container) {
-    // #metric-cards-container not found in DOM - silently ignored in production
+    // #module-cards-container not found in DOM - silently ignored in production
     return;
   }
-  container.innerHTML = metricExplanations.map((m, index) => {
+  container.innerHTML = moduleExplanations.map((m, index) => {
     if (m.id === "ai-content-overview") {
       return `
         <div id="${m.id}" class="bg-gradient-to-br from-pink-50 to-orange-50 dark:from-pink-950/30 dark:to-orange-950/20 rounded-3xl shadow-xl p-8 md:p-12 text-center border-2 border-pink-400 dark:border-pink-600">
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // Normal metric card
+    // Normal module card
     return `
       <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center">
         <div class="text-6xl mb-6">${m.emoji}</div>

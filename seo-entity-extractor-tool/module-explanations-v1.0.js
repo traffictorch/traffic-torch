@@ -1,6 +1,6 @@
-// seo-entity-extractor-tool/metric-explanations.js
+// seo-entity-extractor-tool/module-explanations.js
 
-const metricExplanations = [
+const moduleExplanations = [
   {
     id: "seo-entities",
     emoji: "🧬",
@@ -52,12 +52,12 @@ const metricExplanations = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('metric-cards-container');
+  const container = document.getElementById('module-cards-container');
   if (!container) return;
 
   container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 justify-items-center max-w-7xl mx-auto px-4 sm:px-6';
 
-  container.innerHTML = metricExplanations.map(m => `
+  container.innerHTML = moduleExplanations.map(m => `
     <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border-l-4 border-orange-500 w-full max-w-md">
       <div class="text-7xl mb-6 text-center">${m.emoji}</div>
       <h3 class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-6 text-center">${m.name}</h3>

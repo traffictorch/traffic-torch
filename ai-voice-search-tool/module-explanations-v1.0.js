@@ -13,7 +13,7 @@ function openDetailsFromHash() {
   }
 }
 
-const metricExplanations = [
+const moduleExplanations = [
   {
     id: "ai-visibility",
     emoji: "🌐",
@@ -65,12 +65,12 @@ const metricExplanations = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-  const container = document.getElementById('metric-cards-container');
+  const container = document.getElementById('module-cards-container');
   if (!container) {
     return;
   }
 
-  container.innerHTML = metricExplanations.map((m, index) => {
+  container.innerHTML = moduleExplanations.map((m, index) => {
 
     // Special overview card (last one)
     if (m.id === "ai-voice-overview") {
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // Normal metric card – inline Learn more links inside each <details>
+    // Normal module card – inline Learn more links inside each <details>
     return `
       <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500">
         <div class="text-5xl md:text-6xl mb-5 text-center">${m.emoji}</div>
