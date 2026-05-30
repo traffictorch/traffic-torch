@@ -151,6 +151,62 @@
   <noscript>
     <link rel="stylesheet" href="/style-v1.0.css">
   </noscript>
+  
+      <!-- Inline CSS overrides for Giscus (beefed-up look: better spacing, colors, buttons, avatars) -->
+      <style>
+        .giscus-frame {
+          width: 100% !important;
+          min-height: 600px !important;
+          border: none !important;
+        }
+        .giscus .giscus-comment-box,
+        .giscus .giscus-comment-box textarea {
+          background: transparent !important;
+          border-color: #e5e7eb !important;
+          color: #111827 !important;
+          border-radius: 12px !important;
+          padding: 16px !important;
+          font-family: inherit !important;
+        }
+        .dark .giscus .giscus-comment-box,
+        .dark .giscus .giscus-comment-box textarea {
+          background: transparent !important;
+          border-color: #4b5563 !important;
+          color: #e5e7eb !important;
+        }
+        .giscus .giscus-button,
+        .giscus .giscus-reaction-button,
+        .giscus .giscus-login-button {
+          background: linear-gradient(to right, #f97316, #ec4899) !important;
+          color: white !important;
+          border-radius: 9999px !important;
+          padding: 10px 20px !important;
+          font-weight: 600 !important;
+          transition: all 0.3s ease !important;
+          box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.2) !important;
+        }
+        .giscus .giscus-button:hover,
+        .giscus .giscus-reaction-button:hover,
+        .giscus .giscus-login-button:hover {
+          transform: translateY(-2px) !important;
+          box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.3) !important;
+        }
+        .giscus .giscus-avatar {
+          border-radius: 9999px !important;
+          border: 2px solid #f97316 !important;
+        }
+        .giscus .giscus-comment {
+          border-bottom: 1px solid #e5e7eb !important;
+          padding: 20px 0 !important;
+        }
+        .dark .giscus .giscus-comment {
+          border-bottom: 1px solid #4b5563 !important;
+        }
+        .giscus .giscus-reaction-count {
+          color: #f97316 !important;
+          font-weight: bold !important;
+        }
+      </style>
 
   <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
   <!-- Tailwind output – comes last so utilities can override -->
@@ -254,7 +310,7 @@
           </p>
 
           <div>
-            <h4 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">How to Participate</h4>
+            <h2 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">How to Participate</h2>
             <ul class="list-disc pl-6 space-y-2">
               <li><strong>Read-only:</strong> No account needed — scroll and read everything</li>
               <li><strong>Post, reply, react:</strong> Free GitHub account required (sign up at <a href="https://github.com/signup" class="text-blue-600 dark:text-blue-400 hover:underline">github.com/signup</a> — takes ~30 seconds)</li>
@@ -264,7 +320,7 @@
           </div>
 
           <div>
-            <h4 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Posting with Rich Formatting (GitHub Flavored Markdown)</h4>
+            <h3 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Posting with Rich Formatting (GitHub Flavored Markdown)</h3>
             <p>Everything supports full GitHub Markdown — no plain text only:</p>
             <ul class="list-disc pl-6 space-y-2">
               <li><strong>Links:</strong> <code>[Traffic Torch](https://traffictorch.net)</code> or raw URL auto-links</li>
@@ -298,7 +354,7 @@
           </div>
 
           <div>
-            <h4 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Quick Tips for Best Experience</h4>
+            <h5 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">Quick Tips for Best Experience</h5>
             <ul class="list-disc pl-6 space-y-2">
               <li>Search existing threads before posting (top search bar)</li>
               <li>Use threads/replies for long discussions</li>
@@ -318,61 +374,6 @@
     </h2>
 
     <div class="max-w-5xl mx-auto bg-white dark:bg-gray-950 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden min-h-[600px] relative">
-      <!-- Inline CSS overrides for Giscus (beefed-up look: better spacing, colors, buttons, avatars) -->
-      <style>
-        .giscus-frame {
-          width: 100% !important;
-          min-height: 600px !important;
-          border: none !important;
-        }
-        .giscus .giscus-comment-box,
-        .giscus .giscus-comment-box textarea {
-          background: transparent !important;
-          border-color: #e5e7eb !important;
-          color: #111827 !important;
-          border-radius: 12px !important;
-          padding: 16px !important;
-          font-family: inherit !important;
-        }
-        .dark .giscus .giscus-comment-box,
-        .dark .giscus .giscus-comment-box textarea {
-          background: transparent !important;
-          border-color: #4b5563 !important;
-          color: #e5e7eb !important;
-        }
-        .giscus .giscus-button,
-        .giscus .giscus-reaction-button,
-        .giscus .giscus-login-button {
-          background: linear-gradient(to right, #f97316, #ec4899) !important;
-          color: white !important;
-          border-radius: 9999px !important;
-          padding: 10px 20px !important;
-          font-weight: 600 !important;
-          transition: all 0.3s ease !important;
-          box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.2) !important;
-        }
-        .giscus .giscus-button:hover,
-        .giscus .giscus-reaction-button:hover,
-        .giscus .giscus-login-button:hover {
-          transform: translateY(-2px) !important;
-          box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.3) !important;
-        }
-        .giscus .giscus-avatar {
-          border-radius: 9999px !important;
-          border: 2px solid #f97316 !important;
-        }
-        .giscus .giscus-comment {
-          border-bottom: 1px solid #e5e7eb !important;
-          padding: 20px 0 !important;
-        }
-        .dark .giscus .giscus-comment {
-          border-bottom: 1px solid #4b5563 !important;
-        }
-        .giscus .giscus-reaction-count {
-          color: #f97316 !important;
-          font-weight: bold !important;
-        }
-      </style>
 
       <script src="https://giscus.app/client.js"
               data-repo="traffictorch/traffic-torch-discussions"
