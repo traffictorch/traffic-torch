@@ -450,13 +450,13 @@
 </div> 
 
     <!-- Loading indicator - modern thick orange ring spinner matching other tools -->
-    <section id="loading" class="hidden flex flex-col items-center justify-center py-0 space-y-12">
+    <div id="loading" class="hidden flex flex-col items-center justify-center py-0 space-y-12">
       <div class="w-20 h-20 rounded-full border-8 border-gray-300/50 dark:border-gray-700/50 border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
       <div class="text-center space-y-4">
         <p class="text-2xl font-black text-orange-500 dark:text-orange-400">Analyzing Quit Risk...</p>
         <p id="progressText" class="text-xl font-medium text-orange-500 dark:text-orange-400 max-w-2xl px-8"></p>
       </div>
-    </section>
+    </div>
 
     <!-- Results container (JS will populate this) -->
     <div id="results" class="hidden space-y-16 mt-16">
@@ -501,6 +501,7 @@
         </ul>
       </section>
       <section class="space-y-4">
+      <h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">User Experience Audit</h3>
         <p class="leading-relaxed">
           These factors combine into a 0–100 <strong>Usability Score</strong> that predicts potential bounce rate ranges.
         </p>
@@ -640,34 +641,40 @@
 
 <!-- Two-column infographic grid – stacks on mobile, side-by-side on md+ -->
 <div class="grid md:grid-cols-2 gap-4 my-4 max-w-6xl mx-auto px-4">
-  <!-- Left image: Quit Risk Pyramid (Readability / Navigation / Accessibility focus) -->
+  <!-- Left image -->
   <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
     <img
       src="/quit-risk-tool/images/quit-risk-pyramid-infographic-800w.webp"
+      srcset="/quit-risk-tool/images/quit-risk-pyramid-infographic-480w.webp 480w,
+              /quit-risk-tool/images/quit-risk-pyramid-infographic-800w.webp 800w,
+              /quit-risk-tool/images/quit-risk-pyramid-infographic-1200w.webp 1200w"
+      sizes="(max-width: 767px) 100vw, 50vw"
       alt="Quit Risk Pyramid Infographic – Readability, Navigation, Accessibility layers"
       class="w-full h-auto object-cover"
       width="800"
       height="1200"
       loading="lazy"
-      decoding="async"
-      sizes="(max-width: 767px) 100vw, 50vw">
-    <figcaption class="p-5 text-center text-sm text-gray-800 dark:text-gray-200">
+      decoding="async">
+    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
       Quit Risk Pyramid: Build from Readability → Navigation → Accessibility to eliminate early exits.
     </figcaption>
   </figure>
 
-  <!-- Right image: UX Flow Reactor (Performance / Mobile / PWA focus) -->
+  <!-- Right image -->
   <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
     <img
       src="/quit-risk-tool/images/ux-flow-reactor-infographic-800w.webp"
+      srcset="/quit-risk-tool/images/ux-flow-reactor-infographic-480w.webp 480w,
+              /quit-risk-tool/images/ux-flow-reactor-infographic-800w.webp 800w,
+              /quit-risk-tool/images/ux-flow-reactor-infographic-1200w.webp 1200w"
+      sizes="(max-width: 767px) 100vw, 50vw"
       alt="UX Flow Reactor Infographic – Performance, Mobile, PWA as energy cores powering peak engagement"
       class="w-full h-auto object-cover"
       width="800"
       height="1200"
       loading="lazy"
-      decoding="async"
-      sizes="(max-width: 767px) 100vw, 50vw">
-    <figcaption class="p-5 text-center text-sm text-gray-800 dark:text-gray-200">
+      decoding="async">
+    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
       UX Flow Reactor: Performance + Mobile + PWA combine for peak engagement and lowest quit risk.
     </figcaption>
   </figure>
