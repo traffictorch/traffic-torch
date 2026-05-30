@@ -152,7 +152,7 @@
         }
       },
       "datePublished": "2025-11-27T14:56:00+11:00",
-      "dateModified": "2026-05-20T09:14:00+11:00"
+      "dateModified": "2026-05-30T16:32:00+11:00"
     },
     {
       "@type": "Person",
@@ -470,9 +470,9 @@
 </div>
 
 <!-- Empty results container - JavaScript will fill this dynamically -->
-<section id="results" class="hidden space-y-16">
+<div id="results" class="hidden space-y-16">
   <!-- All report content (score, modules, gaps, forecast, fixes) goes here via JS -->
-</section>
+</div>
 
     <div class="center-btn-container mt-4 mb-4">
   <button
@@ -1301,7 +1301,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2025-11-27</p>
-          <p>Last updated: 2026-05-20</p>
+          <p>Last updated: 2026-05-30</p>
         </div>
       </div>
     </div>
@@ -1366,6 +1366,1201 @@
 <script src="/seo-intent-tool/module-explanations-v1.0.js" type="module"></script>
 <script src="/seo-intent-tool/script-v1.4.js" type="module"></script>
 <script type="module" src="/shared/google-analytics.js"></script>
+
+<noscript>
+<h2>TrafficTorch SEO Intent Audit Tool</h2>
+<p>Free on-page SEO analyzer for E-E-A-T signals, search intent, content depth, readability, and schema markup.</p>
+<p>
+  <a href="https://traffictorch.net/seo-intent-tool/">
+    Use the live interactive tool at traffictorch.net/seo-intent-tool/
+  </a>
+</p>
+
+<hr />
+
+<h2>What This Tool Audits</h2>
+<p>
+  Enter any public URL and the tool fetches and analyzes the rendered page, then generates a scored report across 7
+  on-page SEO intent factors:
+</p>
+<ol>
+  <li>
+    <strong>Experience</strong>
+    — First-person language, anecdotes, timelines, original media
+  </li>
+  <li>
+    <strong>Expertise</strong>
+    — Author byline, bio section, credentials, citations
+  </li>
+  <li>
+    <strong>Authoritativeness</strong>
+    — Schema markup, awards/endorsements, About/Team page links
+  </li>
+  <li>
+    <strong>Trustworthiness</strong>
+    — HTTPS, contact info, privacy/terms links, update date
+  </li>
+  <li>
+    <strong>Content Depth</strong>
+    — Word count benchmarked against ranking thresholds
+  </li>
+  <li>
+    <strong>Readability</strong>
+    — Flesch Reading Ease score
+  </li>
+  <li>
+    <strong>Schema Markup</strong>
+    — JSON-LD structured data type detection
+  </li>
+</ol>
+<p>
+  The tool also detects
+  <strong>Search Intent</strong>
+  (Informational, Commercial, Local, or Transactional) from the page title, and projects potential ranking and traffic
+  improvements if identified issues are fixed.
+</p>
+
+<hr />
+
+<h2>How Scoring Works</h2>
+<p>Each of the 7 modules scores 0–100. Grades:</p>
+<ul>
+  <li>
+    <strong>Excellent</strong>
+    — Score 80–100
+  </li>
+  <li>
+    <strong>Good</strong>
+    — Score 60–79
+  </li>
+  <li>
+    <strong>Needs Work</strong>
+    — Score below 60
+  </li>
+</ul>
+<p>
+  The
+  <strong>Overall SEO Intent Score</strong>
+  (0–100) combines content depth (~35%), E-E-A-T signals (~40%), intent match and schema (~25%). Top-ranking pages
+  typically score 85+.
+</p>
+<p>
+  The tool calculates a
+  <strong>Projected Score</strong>
+  showing potential improvement from fixing identified gaps, with estimated organic traffic uplift, ranking position
+  lift (e.g., Page 2 to Page 1), and CTR boost from rich results and intent alignment.
+</p>
+
+<hr />
+
+<h2>Module 1: Experience</h2>
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#what-experience">
+    Full Experience guide at traffictorch.net
+  </a>
+</p>
+
+<h3>What is Experience?</h3>
+<p>
+  Proof that the content creator has genuine first-hand involvement with the topic through personal anecdotes,
+  real-world testing, timelines, and original media. It makes advice more relatable and credible compared to purely
+  theoretical content.
+</p>
+
+<h3>How Experience is Tested</h3>
+<p>The tool scans the rendered page text for four signals:</p>
+<ul>
+  <li>
+    <strong>First-person language:</strong>
+    Counts occurrences of I, we, my, our, me, us, I've, we've, myself, ourselves. Excellent = 15+ mentions; Good = 6–14;
+    Needs Work = 0–5.
+  </li>
+  <li>
+    <strong>Personal anecdotes:</strong>
+    Detects phrases such as "in my experience," "I tested," "we found that," "from my trials," "hands-on," "real-world,"
+    "after testing," "client case," "personal review." Excellent = 3+; Good = 1–2; Needs Work = 0.
+  </li>
+  <li>
+    <strong>Timeline/date mentions:</strong>
+    Looks for date or year references tied to first-person context, e.g., "last year I tried," "since 2020 we've used,"
+    "over the past 18 months." Excellent = 2+; Good = 1; Needs Work = 0.
+  </li>
+  <li>
+    <strong>Personal media/captions:</strong>
+    Checks image alt text and figure captions for personal markers ("my," "our," original context). Present = Excellent;
+    Absent = Needs Work.
+  </li>
+</ul>
+
+<h3>Why Experience Matters</h3>
+<p>
+  Google prioritizes content demonstrating real experience over theoretical advice. Strong experience signals improve
+  trust, dwell time, engagement, and rankings — especially in YMYL (Your Money or Your Life) and competitive niches.
+</p>
+
+<h3>How to Improve Experience Score</h3>
+<ul>
+  <li>
+    Add more first-person language (I/we/my/our) naturally in intros, examples, and conclusions to show personal
+    involvement.
+  </li>
+  <li>
+    Include personal anecdotes: share specific stories such as "I tested this method on 5 client sites and saw…" or "In
+    my experience working with…"
+  </li>
+  <li>
+    Mention specific timelines or dates: "Last year I tried…", "Since 2020 we've used this approach…", "Over the past 18
+    months our team has…"
+  </li>
+  <li>
+    Add original photos, screenshots, or videos with personal captions like "My setup for testing…" or "Our results
+    after 3 months."
+  </li>
+</ul>
+
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#how-experience">
+    How Experience is tested (full guide)
+  </a>
+  |
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#why-experience">
+    Why Experience matters (full guide)
+  </a>
+</p>
+
+<hr />
+
+<h2>Module 2: Expertise</h2>
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#what-expertise">
+    Full Expertise guide at traffictorch.net
+  </a>
+</p>
+
+<h3>What is Expertise?</h3>
+<p>
+  Evidence of deep knowledge and qualifications through author identification, credentials, professional background, and
+  supporting citations. Expertise shows the author is a reliable, qualified source.
+</p>
+
+<h3>How Expertise is Tested</h3>
+<ul>
+  <li>
+    <strong>Author byline present:</strong>
+    Searches common byline selectors — meta[name="author"], [rel="author"], .author, .byline, [itemprop="author"],
+    .post-author, .entry-author, .writer-name, .blog-author, .h-card .p-name, .author-name. Excellent = detected; Needs
+    Work = not found.
+  </li>
+  <li>
+    <strong>Author bio section:</strong>
+    Looks for bio containers — .author-bio, .bio, [class*="bio"], .about-author, .author-description, .author-box,
+    .author-info, .author-details, .writer-bio, .contributor-bio, .author-profile, .about-the-author. Excellent =
+    detected; Needs Work = not found.
+  </li>
+  <li>
+    <strong>Credentials mentioned:</strong>
+    Counts credential keywords including PhD, MD, doctor, Dr., certified, licensed, "years of experience," "expert in,"
+    specialist, "award-winning," "published in," fellow, board-certified, MBA, CPA, CFA, PMP, JD, LLB, engineer,
+    architect, scientist, professor, consultant, coach. Excellent = 3+; Good = 1–2; Needs Work = 0.
+  </li>
+  <li>
+    <strong>Citations/references:</strong>
+    Detects cite elements, .references, .sources, and links to doi.org, pubmed, researchgate. Excellent = detected;
+    Needs Work = not found.
+  </li>
+</ul>
+
+<h3>Why Expertise Matters</h3>
+<p>
+  Expertise establishes credibility and reduces misinformation risk. Search engines reward content from demonstrably
+  qualified authors with higher visibility and authority, particularly for health, finance, and legal content.
+</p>
+
+<h3>How to Improve Expertise Score</h3>
+<ul>
+  <li>Add a clear, visible author name linked to the content, placed above or below the article with proper markup.</li>
+  <li>
+    Create a dedicated author box with professional photo, detailed biography highlighting relevant education or
+    experience, and links to social profiles or other work.
+  </li>
+  <li>
+    Mention relevant qualifications, certifications, years of experience, publications, or awards directly in content or
+    bio.
+  </li>
+  <li>Include links to supporting studies, sources, tools, or references; add a references section if appropriate.</li>
+</ul>
+
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#how-expertise">
+    How Expertise is tested (full guide)
+  </a>
+  |
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#why-expertise">
+    Why Expertise matters (full guide)
+  </a>
+</p>
+
+<hr />
+
+<h2>Module 3: Authoritativeness</h2>
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#what-authoritativeness">
+    Full Authoritativeness guide at traffictorch.net
+  </a>
+</p>
+
+<h3>What is Authoritativeness?</h3>
+<p>
+  Recognition of the author or site as a leading voice in the niche — evidenced through structured data, awards,
+  endorsements, media mentions, and transparent entity information like About and Team pages.
+</p>
+
+<h3>How Authoritativeness is Tested</h3>
+<ul>
+  <li>
+    <strong>Schema markup:</strong>
+    Detects and counts valid schema types in script[type="application/ld+json"] blocks. Excellent = 2+ relevant types
+    (e.g., Article + Person); Good = 1 type; Needs Work = none found.
+  </li>
+  <li>
+    <strong>Awards/endorsements mentioned:</strong>
+    Scans text for award-related keywords — award, winner, awarded, "featured in," "as seen on," "recognized by,"
+    "endorsed by," best, top, honored, accolade, prize, nominee, finalist, ranked, "trusted by," testimonials, "case
+    study success," "media mention," "press coverage." Present = Excellent; Absent = Needs Work.
+  </li>
+  <li>
+    <strong>About/Team links:</strong>
+    Checks navigation and footer for links containing /about or /team in href, and nav link text containing "about."
+    Present = Excellent; Absent = Needs Work.
+  </li>
+</ul>
+
+<h3>Why Authoritativeness Matters</h3>
+<p>
+  Authoritative sources earn topical leadership, richer search features, and stronger link-building opportunities. It
+  boosts entity trust and long-term ranking stability. Established entities with About pages are seen as more
+  authoritative than anonymous sites.
+</p>
+
+<h3>How to Improve Authoritativeness Score</h3>
+<ul>
+  <li>
+    Implement JSON-LD schema for Article, Person, Organization, FAQPage, or HowTo in the page head — use at least two
+    types matching your content.
+  </li>
+  <li>Mention any awards, media features, client testimonials, or industry recognition earned by you or your site.</li>
+  <li>Add clear links to About, Team, or Company pages in navigation or footer.</li>
+  <li>Earn high-quality backlinks from trusted sites and contribute to industry forums or publications.</li>
+</ul>
+
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#how-authoritativeness">
+    How Authoritativeness is tested (full guide)
+  </a>
+  |
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#why-authoritativeness">
+    Why Authoritativeness matters (full guide)
+  </a>
+</p>
+
+<hr />
+
+<h2>Module 4: Trustworthiness</h2>
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#what-trustworthiness">
+    Full Trustworthiness guide at traffictorch.net
+  </a>
+</p>
+
+<h3>What is Trustworthiness?</h3>
+<p>
+  Clear indicators of reliability, security, transparency, and accountability that build user and search engine
+  confidence. Trustworthy sites protect users, disclose policies, and remain contactable.
+</p>
+
+<h3>How Trustworthiness is Tested</h3>
+<ul>
+  <li>
+    <strong>Secure HTTPS:</strong>
+    Checks whether the page URL begins with https://. Excellent = HTTPS; Needs Work = HTTP only.
+  </li>
+  <li>
+    <strong>Contact info present:</strong>
+    Scans for contact links (a[href*="/contact"], mailto:, tel:), footer contact text, and elements containing
+    "contact," "get in touch," "email," "phone," "call," "reach us," "say hello." Present = Excellent; Absent = Needs
+    Work.
+  </li>
+  <li>
+    <strong>Privacy/Terms links:</strong>
+    Looks for links containing /privacy, /terms, /legal, /policy, /cookie, /gdpr in href, plus footer text matching
+    "privacy," "terms," "cookie," "gdpr," "legal," "disclaimer," "imprint." Present = Excellent; Absent = Needs Work.
+  </li>
+  <li>
+    <strong>Update date shown:</strong>
+    Searches for time[datetime], .updated, .last-modified, .date-updated, .published, .post-date, .entry-date,
+    meta[name="date"], meta[property="article:modified_time"], meta[property="og:updated_time"], [class*="update"],
+    [class*="date"], .modified-date, .publish-date, plus visible text matching "Updated," "Last updated," "Published,"
+    "Modified on." Present = Excellent; Absent = Needs Work.
+  </li>
+</ul>
+
+<h3>Why Trustworthiness Matters</h3>
+<p>
+  Trust signals prevent user bounces, build loyalty, and align with search engine guidelines. Google favors secure,
+  transparent sites to protect users, and missing trust signals can trigger ranking downgrades.
+</p>
+
+<h3>How to Improve Trustworthiness Score</h3>
+<ul>
+  <li>Switch to HTTPS with a valid SSL certificate if not already done.</li>
+  <li>Add a dedicated Contact page with email, phone, or a contact form; include contact details in the footer.</li>
+  <li>Add links to Privacy Policy and Terms of Service pages, especially in the footer.</li>
+  <li>Display a visible "Last updated" or "Published" date on all content pages.</li>
+</ul>
+
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#how-trustworthiness">
+    How Trustworthiness is tested (full guide)
+  </a>
+  |
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#why-trustworthiness">
+    Why Trustworthiness matters (full guide)
+  </a>
+</p>
+
+<hr />
+
+<h2>Module 5: Content Depth</h2>
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#what-content-depth">
+    Full Content Depth guide at traffictorch.net
+  </a>
+</p>
+
+<h3>What is Content Depth?</h3>
+<p>
+  The comprehensiveness and thoroughness of coverage that fully satisfies user intent. Deep content provides detailed,
+  valuable information that leaves no important question unanswered.
+</p>
+
+<h3>How Content Depth is Tested</h3>
+<p>
+  Counts visible words in the rendered page body (excluding scripts, styles, hidden elements). Benchmarks: Excellent =
+  1,500+ words; Good = 800–1,499 words; Needs Work = fewer than 800 words.
+</p>
+
+<h3>Why Content Depth Matters</h3>
+<p>
+  Depth is the strongest on-page ranking factor. Search engines reward the most thorough, helpful answer with top
+  positions. Comprehensive content satisfies user intent fully, reduces pogo-sticking, and drives longer dwell time and
+  higher traffic.
+</p>
+
+<h3>How to Improve Content Depth</h3>
+<p>
+  Expand with real-world examples, statistics, screenshots, step-by-step breakdowns, comparisons, templates, expert
+  quotes, case studies, and deeper FAQs. Aim to be the most comprehensive resource on the topic without padding or
+  fluff. Target 1,500+ words minimum.
+</p>
+
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#how-content-depth">
+    How Content Depth is tested (full guide)
+  </a>
+  |
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#why-content-depth">
+    Why Content Depth matters (full guide)
+  </a>
+</p>
+
+<hr />
+
+<h2>Module 6: Readability</h2>
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#what-readability">
+    Full Readability guide at traffictorch.net
+  </a>
+</p>
+
+<h3>What is Readability?</h3>
+<p>
+  How easy and enjoyable the text is to read — assessed through clear structure, simple language, and natural flow.
+  Readable content keeps users engaged and reduces bounce rates.
+</p>
+
+<h3>How Readability is Tested</h3>
+<p>
+  Calculates the
+  <strong>Flesch Reading Ease score</strong>
+  using the formula: 206.835 minus 1.015 times (words/sentences) minus 84.6 times (syllables/words). Score ranges:
+  Excellent = 60–70 (plain English); Good = 50–80; Needs Work = outside this range. Higher scores indicate easier
+  reading.
+</p>
+
+<h3>Why Readability Matters</h3>
+<p>
+  Readable content improves comprehension, engagement, and user satisfaction signals. Search engines track dwell time
+  and bounce rate as proxies for satisfaction. Easy-to-read pages engage more visitors, improve conversions, and rank
+  higher.
+</p>
+
+<h3>How to Improve Readability</h3>
+<p>
+  Use short sentences (under 20 words), simple vocabulary, active voice, clear subheadings, bullet points, short
+  paragraphs (3–4 lines), and transitional phrases. Avoid jargon and complex sentence structures.
+</p>
+
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#how-readability">
+    How Readability is tested (full guide)
+  </a>
+  |
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#why-readability">
+    Why Readability matters (full guide)
+  </a>
+</p>
+
+<hr />
+
+<h2>Module 7: Schema Markup</h2>
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#what-schema">
+    Full Schema guide at traffictorch.net
+  </a>
+</p>
+
+<h3>What is Schema Markup?</h3>
+<p>
+  Structured data (JSON-LD) that helps search engines understand content type, entities, and page context — enabling
+  enhanced display in search results such as rich snippets, FAQ accordions, product carousels, and review stars.
+</p>
+
+<h3>How Schema Markup is Tested</h3>
+<p>
+  Detects valid JSON-LD script blocks (script[type="application/ld+json"]) and counts the number of relevant @type
+  values found. Excellent = 2+ relevant types; Good = 1 type; Needs Work = none found. Types checked include Article,
+  Person, Organization, FAQPage, HowTo, Product, BreadcrumbList, and more.
+</p>
+
+<h3>Why Schema Markup Matters</h3>
+<p>
+  Schema unlocks rich snippets, dramatically increases click-through rates, strengthens E-E-A-T signals, and helps
+  search engines feature content prominently. Proper markup is one of the clearest authority signals available.
+</p>
+
+<h3>How to Improve Schema Score</h3>
+<p>
+  Add JSON-LD script blocks for relevant types: Article + Person author, FAQPage, HowTo, Product, BreadcrumbList. Use at
+  least two types matching your content type. Validate with Google's Rich Results Test tool.
+</p>
+
+<p>
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#how-schema">How Schema is tested (full guide)</a>
+  |
+  <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/#why-schema">Why Schema matters (full guide)</a>
+</p>
+
+<hr />
+
+<h2>Search Intent Detection</h2>
+<p>The tool classifies the page's search intent from its title and assigns a confidence percentage:</p>
+<ul>
+  <li>
+    <strong>Informational</strong>
+    — Triggered by how, what, why, guide, tutorial, step, learn, explain, "best way" — typically 94% confidence.
+  </li>
+  <li>
+    <strong>Commercial</strong>
+    — Triggered by buy, best, review, price, deal, shop, discount, vs, comparison — typically 90% confidence.
+  </li>
+  <li>
+    <strong>Local</strong>
+    — Triggered by "near me," location, store, city, local, hours, map, address — typically 87% confidence.
+  </li>
+  <li>
+    <strong>Transactional</strong>
+    — Triggered by "sign up," login, purchase, "buy now," order, checkout, book — typically 91% confidence.
+  </li>
+</ul>
+<p>
+  Matching your content structure, tone, and CTAs to the detected intent is a core ranking factor. Mismatched intent
+  causes high bounce rates and ranking drops.
+</p>
+
+<hr />
+
+<h2>Metric Fix Recommendations — Quick Reference</h2>
+<p>All actionable fixes the tool recommends when a metric does not reach Excellent:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Fix</th>
+      <th>Estimated Impact</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>First-person language</strong></td>
+      <td>Add I/we/my/our throughout intros, examples, and conclusions to show personal involvement.</td>
+      <td>+8–15 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Personal anecdotes</strong></td>
+      <td>Share specific stories: "I tested this on 5 sites and saw…" or "In my experience working with…"</td>
+      <td>+8–15 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Timeline/date mentions</strong></td>
+      <td>Mention specific dates: "Last year I tried…", "Since 2020 we've used…", "Over the past 18 months…"</td>
+      <td>+8–15 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Personal media/captions</strong></td>
+      <td>Add original photos/videos with personal captions: "My setup," "Our results after 3 months."</td>
+      <td>+5–10 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Author byline present</strong></td>
+      <td>Add a clear, visible author name with proper markup above or below the article content.</td>
+      <td>+15–25 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Author bio section</strong></td>
+      <td>Create an author box with professional photo, background, qualifications, and links to social/other work.</td>
+      <td>+10–18 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Credentials mentioned</strong></td>
+      <td>Mention qualifications, certifications, years of experience, publications, or awards in content or bio.</td>
+      <td>+8–15 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Citations/references</strong></td>
+      <td>Include links to supporting studies, sources, or tools; add a references section if appropriate.</td>
+      <td>+8–15 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Schema markup</strong></td>
+      <td>
+        Add JSON-LD for Article + Person, FAQPage, HowTo, or BreadcrumbList. Use 2+ types. Validate with Google's Rich
+        Results Test.
+      </td>
+      <td>+10–18 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Awards/endorsements</strong></td>
+      <td>Mention awards, media features, client testimonials, or industry recognition on the page.</td>
+      <td>+5–12 pts</td>
+    </tr>
+    <tr>
+      <td><strong>About/Team links</strong></td>
+      <td>Add clear links to About, Team, or Company pages in navigation or footer.</td>
+      <td>+5–10 pts</td>
+    </tr>
+    <tr>
+      <td><strong>HTTPS</strong></td>
+      <td>Switch to HTTPS with a valid SSL certificate. Required for all modern sites.</td>
+      <td>+10–20 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Contact info present</strong></td>
+      <td>Add a Contact page with email, phone, or form. Include contact details in the footer.</td>
+      <td>+5–10 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Privacy/Terms links</strong></td>
+      <td>Add Privacy Policy and Terms of Service links, especially in the footer.</td>
+      <td>+5–10 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Update date shown</strong></td>
+      <td>Display a visible "Last updated" or "Published" date on each content page.</td>
+      <td>+5–10 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Content depth (under 1,500 words)</strong></td>
+      <td>Expand with examples, statistics, case studies, step-by-step breakdowns, and FAQs. Target 1,500+ words.</td>
+      <td>+12–20 pts</td>
+    </tr>
+    <tr>
+      <td><strong>Readability (poor Flesch score)</strong></td>
+      <td>Use short sentences under 20 words, simple words, active voice, short paragraphs, and clear subheadings.</td>
+      <td>+5–12 pts</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2>Plugin Solutions by CMS</h2>
+<p>
+  The interactive audit report recommends specific free or freemium plugins for each failed metric, covering WordPress,
+  Shopify, Wix, Squarespace, Joomla, and Drupal. The full reference is listed below.
+</p>
+
+<h3>Schema Markup — Recommended Plugins</h3>
+
+<h4>WordPress</h4>
+<ul>
+  <li>
+    <strong>Yoast SEO</strong>
+    —
+    <a href="https://wordpress.org/plugins/wordpress-seo/">wordpress.org/plugins/wordpress-seo/</a>
+    |
+    <a href="https://yoast.com/wordpress/plugins/seo/">yoast.com</a>
+    — Leading SEO plugin with robust built-in schema for Article, FAQ, HowTo, Product, and Person types. Automatic
+    markup with rich snippet previews.
+  </li>
+  <li>
+    <strong>Rank Math</strong>
+    —
+    <a href="https://wordpress.org/plugins/seo-by-rank-math/">wordpress.org/plugins/seo-by-rank-math/</a>
+    |
+    <a href="https://rankmath.com/">rankmath.com</a>
+    — Advanced freemium schema generator with 20+ types, custom fields, and AI suggestions. Includes testing tools for
+    maximum rich result impact.
+  </li>
+  <li>
+    <strong>All in One SEO</strong>
+    —
+    <a href="https://wordpress.org/plugins/all-in-one-seo-pack/">wordpress.org/plugins/all-in-one-seo-pack/</a>
+    |
+    <a href="https://aioseo.com/">aioseo.com</a>
+    — Guided schema setup with TruSEO scoring. Automatic markup for common types with strong defaults. Trusted by
+    millions.
+  </li>
+  <li>
+    <strong>Schema and Structured Data for WP</strong>
+    —
+    <a href="https://wordpress.org/plugins/schema-and-structured-data-for-wp/">
+      wordpress.org/plugins/schema-and-structured-data-for-wp/
+    </a>
+    |
+    <a href="https://wpschema.com/">wpschema.com</a>
+    — Dedicated plugin with advanced types (Review, Recipe, etc.), full AMP support, and conditional display.
+  </li>
+</ul>
+
+<h4>Shopify</h4>
+<ul>
+  <li>
+    <strong>Schema Plus for SEO</strong>
+    —
+    <a href="https://apps.shopify.com/schema-plus">apps.shopify.com/schema-plus</a>
+    |
+    <a href="https://schemaplus.io/">schemaplus.io</a>
+    — Automatic JSON-LD schema for products, collections, and blogs. Fixes Google errors and enables rich results.
+  </li>
+  <li>
+    <strong>Webrex AI SEO Optimizer Schema</strong>
+    —
+    <a href="https://apps.shopify.com/webrex-seo-schema-jsonld">apps.shopify.com/webrex-seo-schema-jsonld</a>
+    |
+    <a href="https://webrexstudio.com/">webrexstudio.com</a>
+    — AI-powered schema generation with duplicate removal. Integrates with 30+ review apps.
+  </li>
+</ul>
+
+<h4>Wix</h4>
+<ul>
+  <li>
+    <strong>Built-in Structured Data</strong>
+    — Wix auto-generates basic schema for pages, products, and blogs. Custom options available via SEO settings and
+    Velo.
+  </li>
+</ul>
+
+<h4>Squarespace</h4>
+<ul>
+  <li>
+    <strong>Built-in Markup</strong>
+    — Native schema for pages, products, events, and blogs. Automatic and always updated. No extra tools needed.
+  </li>
+</ul>
+
+<h4>Joomla</h4>
+<ul>
+  <li>
+    <strong>Google Structured Data</strong>
+    —
+    <a href="https://extensions.joomla.org/extension/google-structured-data/">extensions.joomla.org</a>
+    |
+    <a href="https://stackideas.com/">stackideas.com</a>
+    — Free extension for breadcrumb, article, and organization schema.
+  </li>
+  <li>
+    <strong>EFSEO</strong>
+    —
+    <a href="https://extensions.joomla.org/extension/efseo-easy-frontend-seo/">extensions.joomla.org</a>
+    |
+    <a href="https://stackideas.com/">stackideas.com</a>
+    — Freemium tool for structured data and meta tags with frontend editing.
+  </li>
+</ul>
+
+<h4>Drupal</h4>
+<ul>
+  <li>
+    <strong>Schema.org Metatag</strong>
+    —
+    <a href="https://www.drupal.org/project/schema_metatag">drupal.org/project/schema_metatag</a>
+    — Full Schema.org support with high configurability for any entity type.
+  </li>
+  <li>
+    <strong>Metatag</strong>
+    —
+    <a href="https://www.drupal.org/project/metatag">drupal.org/project/metatag</a>
+    — Base module for structured data extensions. Required foundation for most schema setups.
+  </li>
+</ul>
+
+<h3>Author Byline Present — Recommended Plugins</h3>
+
+<h4>WordPress</h4>
+<ul>
+  <li>
+    <strong>PublishPress Authors</strong>
+    —
+    <a href="https://wordpress.org/plugins/publishpress-authors/">wordpress.org/plugins/publishpress-authors/</a>
+    |
+    <a href="https://publishpress.com/">publishpress.com</a>
+    — Best plugin for bylines, co-authors, guest authors, and rich author boxes. Customizable with social links and bio.
+  </li>
+  <li>
+    <strong>Simple Author Box</strong>
+    —
+    <a href="https://wordpress.org/plugins/simple-author-box/">wordpress.org/plugins/simple-author-box/</a>
+    |
+    <a href="https://webfactoryltd.com/">webfactoryltd.com</a>
+    — Lightweight responsive author/guest box with gravatar, bio, and social icons.
+  </li>
+  <li>
+    <strong>WP Post Author</strong>
+    —
+    <a href="https://wordpress.org/plugins/wp-post-author/">wordpress.org/plugins/wp-post-author/</a>
+    |
+    <a href="https://afthemes.com/">afthemes.com</a>
+    — Author boxes, co-authors, guest authors, social links, and byline display. Theme-agnostic.
+  </li>
+</ul>
+
+<h4>Shopify</h4>
+<ul>
+  <li>
+    <strong>Staff Accounts (built-in)</strong>
+    — Shopify's built-in tool for assigning authors and displaying bylines on blog posts.
+  </li>
+</ul>
+
+<h4>Wix</h4>
+<ul>
+  <li>
+    <strong>Blog Authors (built-in)</strong>
+    — Native Wix feature to assign authors and display bylines on blog posts.
+  </li>
+</ul>
+
+<h4>Squarespace</h4>
+<ul>
+  <li>
+    <strong>Built-in Blog Authors</strong>
+    — Native setting to add authors and show bylines on posts. Simple profile setup.
+  </li>
+</ul>
+
+<h4>Joomla</h4>
+<ul>
+  <li>
+    <strong>Author List</strong>
+    —
+    <a href="https://extensions.joomla.org/extension/author-list/">extensions.joomla.org</a>
+    — Extension to display author bylines and profiles.
+  </li>
+</ul>
+
+<h4>Drupal</h4>
+<ul>
+  <li>
+    <strong>Author</strong>
+    —
+    <a href="https://www.drupal.org/project/author">drupal.org/project/author</a>
+    — Module for enhanced author byline display and profiles.
+  </li>
+</ul>
+
+<h3>Author Bio Section — Recommended Plugins</h3>
+
+<h4>WordPress</h4>
+<ul>
+  <li>
+    <strong>PublishPress Authors</strong>
+    —
+    <a href="https://wordpress.org/plugins/publishpress-authors/">wordpress.org/plugins/publishpress-authors/</a>
+    |
+    <a href="https://publishpress.com/">publishpress.com</a>
+    — Rich author bios, social links, custom credential fields, multiple author and guest support.
+  </li>
+  <li>
+    <strong>Simple Author Box</strong>
+    —
+    <a href="https://wordpress.org/plugins/simple-author-box/">wordpress.org/plugins/simple-author-box/</a>
+    |
+    <a href="https://webfactoryltd.com/">webfactoryltd.com</a>
+    — Responsive author box with bio, gravatar, and social icons. Customizable design.
+  </li>
+  <li>
+    <strong>WP Post Author</strong>
+    —
+    <a href="https://wordpress.org/plugins/wp-post-author/">wordpress.org/plugins/wp-post-author/</a>
+    |
+    <a href="https://afthemes.com/">afthemes.com</a>
+    — Full author box with bio, social links, and credentials fields. Theme-independent.
+  </li>
+</ul>
+
+<h4>Shopify</h4>
+<ul>
+  <li>
+    <strong>Staff Bio App</strong>
+    —
+    <a href="https://apps.shopify.com/staff-bio">apps.shopify.com/staff-bio</a>
+    — Customizable staff/author bio sections with social links.
+  </li>
+</ul>
+
+<h4>Wix</h4>
+<ul>
+  <li>
+    <strong>Team Members (built-in)</strong>
+    — Built-in app for team/author bios with photos and social links.
+  </li>
+</ul>
+
+<h4>Squarespace</h4>
+<ul>
+  <li>
+    <strong>Built-in Author Profiles</strong>
+    — Native blog author profiles with bio and social links. Simple setup.
+  </li>
+</ul>
+
+<h4>Joomla</h4>
+<ul>
+  <li>
+    <strong>Community Builder</strong>
+    —
+    <a href="https://extensions.joomla.org/extension/community-builder/">extensions.joomla.org</a>
+    — User profiles with bio and social fields for rich author bios.
+  </li>
+</ul>
+
+<h4>Drupal</h4>
+<ul>
+  <li>
+    <strong>Profile</strong>
+    —
+    <a href="https://www.drupal.org/project/profile">drupal.org/project/profile</a>
+    — Extends user profiles with bio and custom fields.
+  </li>
+</ul>
+
+<h3>Update Date Shown — Recommended Plugins</h3>
+
+<h4>WordPress</h4>
+<ul>
+  <li>
+    <strong>Post Updated Date</strong>
+    —
+    <a href="https://wordpress.org/plugins/post-updated-date/">wordpress.org/plugins/post-updated-date/</a>
+    — Displays last updated date on posts. Customizable format and placement.
+  </li>
+  <li>
+    <strong>Display Last Modified Date</strong>
+    —
+    <a href="https://wordpress.org/plugins/display-last-modified-date/">
+      wordpress.org/plugins/display-last-modified-date/
+    </a>
+    — Shows last modified date in posts/pages. Theme-agnostic with shortcodes/widgets.
+  </li>
+  <li>
+    <strong>Last Modified Timestamp</strong>
+    —
+    <a href="https://wordpress.org/plugins/last-modified-timestamp/">wordpress.org/plugins/last-modified-timestamp/</a>
+    — Adds updated timestamp with custom styling via shortcode.
+  </li>
+</ul>
+
+<h4>Shopify</h4>
+<ul>
+  <li>
+    <strong>Updated Date Display</strong>
+    —
+    <a href="https://apps.shopify.com/updated-date-display">apps.shopify.com/updated-date-display</a>
+    — Shows last updated date on products/pages.
+  </li>
+</ul>
+
+<h4>Wix and Squarespace</h4>
+<ul>
+  <li>
+    <strong>Built-in date display</strong>
+    — Both platforms include native blog post date display (published and last-updated) configurable in settings.
+  </li>
+</ul>
+
+<h4>Joomla</h4>
+<ul>
+  <li>
+    <strong>Last Updated Date</strong>
+    —
+    <a href="https://extensions.joomla.org/extension/last-updated-date/">extensions.joomla.org</a>
+    — Displays last modified date with customizable format.
+  </li>
+</ul>
+
+<h4>Drupal</h4>
+<ul>
+  <li>
+    <strong>Last Updated</strong>
+    —
+    <a href="https://www.drupal.org/project/last_updated">drupal.org/project/last_updated</a>
+    — Module to show last modified date. Integrates with content types.
+  </li>
+</ul>
+
+<h3>Contact Info Present — Recommended Plugins</h3>
+
+<h4>WordPress</h4>
+<ul>
+  <li>
+    <strong>Contact Form 7</strong>
+    —
+    <a href="https://wordpress.org/plugins/contact-form-7/">wordpress.org/plugins/contact-form-7/</a>
+    |
+    <a href="https://contactform7.com/">contactform7.com</a>
+    — Most popular form plugin. Easy shortcode placement anywhere on site.
+  </li>
+  <li>
+    <strong>WPForms</strong>
+    —
+    <a href="https://wordpress.org/plugins/wpforms-lite/">wordpress.org/plugins/wpforms-lite/</a>
+    |
+    <a href="https://wpforms.com/">wpforms.com</a>
+    — User-friendly form builder with contact templates, drag-and-drop, and spam protection.
+  </li>
+  <li>
+    <strong>Simple Contact Form</strong>
+    —
+    <a href="https://wordpress.org/plugins/simple-contact-form/">wordpress.org/plugins/simple-contact-form/</a>
+    — Lightweight contact form with email notifications. Easy widget/shortcode integration.
+  </li>
+</ul>
+
+<h4>Shopify</h4>
+<ul>
+  <li>
+    <strong>Contact Form by POWR</strong>
+    —
+    <a href="https://apps.shopify.com/contact-form">apps.shopify.com/contact-form</a>
+    — Customizable contact form with spam protection. Easy embed on pages.
+  </li>
+</ul>
+
+<h4>Wix and Squarespace</h4>
+<ul>
+  <li>
+    <strong>Built-in contact forms</strong>
+    — Both platforms provide native form builders with drag-and-drop customization for contact pages.
+  </li>
+</ul>
+
+<h4>Joomla</h4>
+<ul>
+  <li>
+    <strong>Contact Enhanced</strong>
+    —
+    <a href="https://extensions.joomla.org/extension/contact-enhanced/">extensions.joomla.org</a>
+    — Advanced contact forms with multiple fields for easy page integration.
+  </li>
+</ul>
+
+<h4>Drupal</h4>
+<ul>
+  <li>
+    <strong>Contact (Core)</strong>
+    —
+    <a href="https://www.drupal.org/docs/core-modules-and-themes/core-modules/contact-module">drupal.org</a>
+    — Core contact form module. Simple and reliable for basic contact presence.
+  </li>
+</ul>
+
+<h3>Privacy and Terms Links — Recommended Plugins</h3>
+
+<h4>WordPress</h4>
+<ul>
+  <li>
+    <strong>Complianz GDPR/CCPA Cookie Consent</strong>
+    —
+    <a href="https://wordpress.org/plugins/complianz-gdpr/">wordpress.org/plugins/complianz-gdpr/</a>
+    |
+    <a href="https://complianz.io/">complianz.io</a>
+    — Generates privacy policy pages and adds footer links. Includes terms templates for full legal compliance
+    visibility.
+  </li>
+  <li>
+    <strong>Auto Terms and Privacy Policy</strong>
+    —
+    <a href="https://wordpress.org/plugins/auto-terms-privacy-policy/">
+      wordpress.org/plugins/auto-terms-privacy-policy/
+    </a>
+    — Automatically creates privacy/terms pages with footer links from customizable templates.
+  </li>
+  <li>
+    <strong>GDPR Cookie Consent</strong>
+    —
+    <a href="https://wordpress.org/plugins/cookie-law-info/">wordpress.org/plugins/cookie-law-info/</a>
+    — Adds privacy policy link and consent banner. Easy setup for legal terms visibility.
+  </li>
+</ul>
+
+<h4>Shopify</h4>
+<ul>
+  <li>
+    <strong>Privacy Policy Generator</strong>
+    —
+    <a href="https://apps.shopify.com/privacy-policy-generator">apps.shopify.com/privacy-policy-generator</a>
+    — Creates privacy/terms pages with automatic footer links.
+  </li>
+</ul>
+
+<h4>Wix and Squarespace</h4>
+<ul>
+  <li>
+    <strong>Built-in legal pages</strong>
+    — Both platforms provide native privacy policy and terms pages with easy footer link configuration.
+  </li>
+</ul>
+
+<h4>Joomla</h4>
+<ul>
+  <li>
+    <strong>Privacy Policy Component</strong>
+    —
+    <a href="https://extensions.joomla.org/extension/privacy-policy-component/">extensions.joomla.org</a>
+    — Generates privacy/terms pages with footer links and customizable templates.
+  </li>
+</ul>
+
+<h4>Drupal</h4>
+<ul>
+  <li>
+    <strong>Privacy Policy</strong>
+    —
+    <a href="https://www.drupal.org/project/privacy_policy">drupal.org/project/privacy_policy</a>
+    — Module for creating privacy/terms pages with easy integration.
+  </li>
+</ul>
+
+<h3>About and Team Links — Recommended Plugins</h3>
+
+<h4>WordPress</h4>
+<ul>
+  <li>
+    <strong>Team Members</strong>
+    —
+    <a href="https://wordpress.org/plugins/team-members/">wordpress.org/plugins/team-members/</a>
+    — Creates team/author pages with links in menus/footers. Customizable profiles.
+  </li>
+  <li>
+    <strong>Simple Staff List</strong>
+    —
+    <a href="https://wordpress.org/plugins/simple-staff-list/">wordpress.org/plugins/simple-staff-list/</a>
+    — Lightweight team display with menu integration. Easy About/Team page addition.
+  </li>
+</ul>
+
+<h4>Shopify</h4>
+<ul>
+  <li>
+    <strong>Team Showcase</strong>
+    —
+    <a href="https://apps.shopify.com/team-showcase">apps.shopify.com/team-showcase</a>
+    — App for team pages with menu/footer links and customizable profiles.
+  </li>
+</ul>
+
+<h4>Wix</h4>
+<ul>
+  <li>
+    <strong>Team Members (built-in)</strong>
+    — Built-in app for team pages with navigation menu links.
+  </li>
+</ul>
+
+<h4>Squarespace</h4>
+<ul>
+  <li>
+    <strong>Team Page Plugin</strong>
+    —
+    <a href="https://sparkplugin.com/plugins/team-page">sparkplugin.com/plugins/team-page</a>
+    — Adds team sections with navigation links. Customizable display.
+  </li>
+</ul>
+
+<h4>Joomla</h4>
+<ul>
+  <li>
+    <strong>Team Manager</strong>
+    —
+    <a href="https://extensions.joomla.org/extension/team-manager/">extensions.joomla.org</a>
+    — Creates team pages with menu integration.
+  </li>
+</ul>
+
+<h4>Drupal</h4>
+<ul>
+  <li>
+    <strong>Team</strong>
+    —
+    <a href="https://www.drupal.org/project/team">drupal.org/project/team</a>
+    — Module for team pages with menu links.
+  </li>
+</ul>
+
+<hr />
+
+<h2>Other TrafficTorch SEO Tools</h2>
+<ul>
+  <li>
+    <a href="https://traffictorch.net/keyword-tool/"><strong>Keyword Research Tool</strong></a>
+    — Search volume, difficulty scores, intent classification, trending data, and competitor gap analysis.
+  </li>
+  <li>
+    <a href="https://traffictorch.net/ai-seo-ux-tools/"><strong>AI SEO and UX Tools</strong></a>
+    — Technical SEO audits, Core Web Vitals, UX health checks, content optimization, and predictive performance
+    insights.
+  </li>
+  <li>
+    <a href="https://traffictorch.net/blog/posts/seo-intent-help-guide/"><strong>SEO Intent Help Guide</strong></a>
+    — Full documentation on every module, metric, and scoring methodology used in this tool.
+  </li>
+  <li>
+    <a href="https://traffictorch.net/"><strong>TrafficTorch Home</strong></a>
+    — All free SEO tools and resources.
+  </li>
+</ul>
+
+<hr />
+<p>
+  TrafficTorch SEO Intent Audit Tool —
+  <a href="https://traffictorch.net/seo-intent-tool/">traffictorch.net/seo-intent-tool/</a>
+  . This noscript section is provided for search engines and AI agents to understand tool functionality and results. All
+  scores, results, and audit recommendations are generated dynamically from live page analysis when JavaScript is
+  enabled.
+</p>
+</noscript>
   
 </body>
 </html>
