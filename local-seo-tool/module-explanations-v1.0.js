@@ -1,4 +1,4 @@
-const metricExplanations = [
+const moduleExplanations = [
   {
     id: 'nap-contact',
     emoji: '📍',
@@ -70,8 +70,8 @@ function openDetailsFromHash() {
 
 window.openModuleDetails = openModuleDetails;
 
-function injectMetricCards() {
-  const container = document.getElementById('metric-cards-container');
+function injectModuleCards() {
+  const container = document.getElementById('module-cards-container');
   if (!container) {
     // Container not found - silently ignored in production
     return;
@@ -80,8 +80,8 @@ function injectMetricCards() {
     return;
   }
   let cardsHTML = '';
-  for (let i = 0; i < metricExplanations.length; i++) {
-    const m = metricExplanations[i];
+  for (let i = 0; i < moduleExplanations.length; i++) {
+    const m = moduleExplanations[i];
     try {
       cardsHTML += '<div id="' + m.id + '" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-orange-500 text-center w-full max-w-md">';
       cardsHTML += ' <div class="text-6xl mb-6">' + m.emoji + '</div>';
@@ -117,7 +117,7 @@ function injectMetricCards() {
 
 // Run immediately or on load
 if (document.readyState !== 'loading') {
-  injectMetricCards();
+  injectModuleCards();
 } else {
-  document.addEventListener('DOMContentLoaded', injectMetricCards);
+  document.addEventListener('DOMContentLoaded', injectModuleCards);
 }
