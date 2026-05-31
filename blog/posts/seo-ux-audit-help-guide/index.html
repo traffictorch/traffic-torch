@@ -756,8 +756,8 @@
       Quick high-impact fixes for Mobile & PWA
     </h3>
     <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
-      <li>Add or correct the viewport meta tag in the head: <meta name="viewport" content="width=device-width, initial-scale=1">. Place it early.</li>
-      <li>Create a manifest.json file with name, short_name, icons (at least 192 and 512 pixels), start_url, display: standalone, and theme/background colors. Link it with <link rel="manifest" href="/manifest.json"></li>
+      <li>Add or correct the viewport meta tag in the head: <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>. Place it early.</li>
+      <li>Create a manifest.json file with name, short_name, icons (at least 192 and 512 pixels), start_url, display: standalone, and theme/background colors. Link it with <code>&lt;link rel="manifest" href="/manifest.json"&gt;</code></li>
       <li>Provide high-resolution PNG or WebP icons (192×192 and 512×512 minimum). Link them as apple-touch-icon and in the manifest.</li>
       <li>Register a service worker with a simple caching strategy (even a basic one improves repeat visits). Use <code>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }</code> in your main script.</li>
       <li>Test installability with Chrome DevTools (Application tab → Manifest) and Lighthouse in incognito mode.</li>
@@ -833,9 +833,9 @@
     </h3>
     <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
       <li>Minify HTML, CSS, and JavaScript. Remove unused code and whitespace. Use tools like HTMLMinifier or build-step processors.</li>
-      <li>Inline critical above-the-fold CSS and defer non-critical CSS with <link rel="stylesheet" media="print" onload="this.media='all'"> or async loading.</li>
+      <li>Inline critical above-the-fold CSS and defer non-critical CSS with <code>&lt;link rel="stylesheet" media="print" onload="this.media='all'"&gt;</code> or async loading.</li>
       <li>Add defer or async attributes to non-critical script tags. Move them to the end of body tag when possible.</li>
-      <li>Limit web fonts to 1–2 families. Apply font-display: swap. Preload important font files with <link rel="preload" as="font">.</li>
+      <li>Limit web fonts to 1–2 families. Apply font-display: swap. Preload important font files with <code>&lt;link rel="preload" as="font"&gt;</code>.</li>
       <li>Compress images to WebP or AVIF format. Implement lazy loading with loading="lazy" on below-the-fold images.</li>
     </ol>
   </div>
@@ -929,8 +929,7 @@
     width="800"
     height="1200"
     loading="lazy"
-    decoding="async"
-    sizes="(max-width: 767px) 100vw, 800px">
+    decoding="async">
   <figcaption class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
     Quick reference: Core areas Traffic Torch audits & optimizes.
   </figcaption>
@@ -975,7 +974,7 @@
   <li>Scannability elements: Detects presence of bulleted/numbered lists and tables; flags long-form pages (>500 words) without them as harder to digest.</li>
   <li>Complexity indicators: Measures average sentence length and syllable density to catch excessive complexity that hurts mobile reading and comprehension.</li>
 </ul>
-<p class="mt-4">Scoring starts at 0-100. Significant penalties apply for thin content (<300 words) or very low readability (Flesch <60). Smaller deductions occur for insufficient headings, no lists/tables on longer pages, or overly complex language.</p>
+<p class="mt-4">Scoring starts at 0-100. Significant penalties apply for thin content (Under 300 words) or very low readability (Flesch under 60). Smaller deductions occur for insufficient headings, no lists/tables on longer pages, or overly complex language.</p>
 
 <!-- Why – split into two cards like other posts -->
 <div id="content-quality-why" class="grid md:grid-cols-2 gap-6 mt-10">
@@ -1220,7 +1219,7 @@
       Quick high-impact fixes for Indexability
     </h3>
     <ol class="list-decimal pl-6 space-y-4 font-medium mt-4">
-      <li>Remove any <meta name="robots" content="no index"> tag from production pages unless the page is intentionally private.</li>
+      <li>Remove any <code>&lt;meta name="robots" content="no index"&gt;</code> tag from production pages unless the page is intentionally private.</li>
       <li>Add a self-referencing canonical tag in the head: <code>&lt;link rel="canonical" href="https://example.com/current-page/"&gt;</code>. Use the exact preferred URL.</li>
       <li>Check robots.txt (via yoursite.com/robots.txt) to ensure the page path is not disallowed for User-agent: * or Googlebot.</li>
       <li>After fixes request indexing in Google Search Console using the URL Inspection tool.</li>
@@ -1244,8 +1243,7 @@
     width="800"
     height="1200"
     loading="lazy"
-    decoding="async"
-    sizes="(max-width: 767px) 100vw, 800px">
+    decoding="async">
   <figcaption class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
     Core areas Traffic Torch audits for better rankings and user experience.
   </figcaption>
