@@ -344,7 +344,7 @@
 
 <!-- Updated Blog Post Content Area (glassmorphism card matching site style) -->
 <main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
-  <article class="max-w-7xl mx-auto px-2">
+  
     <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-2 md:p-4 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
       
       <!-- Hero - Featured Image -->
@@ -366,12 +366,12 @@
     height="630">
 </picture>
 
+<article class="max-w-7xl mx-auto px-2">
+
 <!-- H1 + Subtitle + Introduction – Mobile-first, SEO-optimized, day/night ready -->
 <section class="pt-8 pb-12 md:pt-12 md:pb-16 px-2 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-  <h1 class="text-4xl sm:text-3xl md:text-4xl font-black text-center mb-6 
-             bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 
-             bg-clip-text text-transparent leading-tight tracking-tight">
-    Product SEO Help Guide 2026
+  <h1 class="text-3xl md:text-4xl lg:text-5xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
+  Product SEO Help Guide
   </h1>
 
   <p class="text-xl sm:text-2xl md:text-3xl font-semibold text-center 
@@ -616,7 +616,7 @@
         <h4 class="text-xl font-bold mb-3">Title Tag Optimization</h4>
         <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
           <li>Optimal length: 50–60 characters → 100 points.</li>
-          <li>Deducts for <30 or >70 chars.</li>
+          <li>Deducts for under 30 or over 70 chars.</li>
           <li>Bonuses: primary keyword near start, brand at end, no all-caps or emoji spam.</li>
           <li>Penalty: risk of truncation in SERPs (checked via pixel-width estimation).</li>
         </ul>
@@ -645,7 +645,7 @@
         <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
           <li>URL: /category/product-name (hyphens, no ?id= or session IDs).</li>
           <li>Keyword density: 0.4–3%, front-loaded in first 100–150 words.</li>
-          <li>Natural long-tail variations detected (no stuffing penalty if density <4%).</li>
+          <li>Natural long-tail variations detected (no stuffing penalty if density under 4%).</li>
         </ul>
       </div>
     </div>
@@ -941,7 +941,7 @@
         <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
           <li>Word count: 300+ ideal (400–800 for competitive niches) → higher score.</li>
           <li>Structure bonus: bullets, subheadings (H2/H3), tables.</li>
-          <li>Penalty: <100 words, duplicate boilerplate, keyword stuffing.</li>
+          <li>Penalty: under 100 words, duplicate boilerplate, keyword stuffing.</li>
           <li>Benefit-focused language detected via keyword patterns.</li>
         </ul>
       </div>
@@ -951,14 +951,14 @@
         <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
           <li>Classifies images: decorative vs meaningful (ignores icons, spacers, logos).</li>
           <li>Alt text scoring: descriptive & keyword-rich = high points; missing/filename-only = penalties.</li>
-          <li>Checks: loading="lazy", srcset/sizes present, file size hints (<100KB ideal).</li>
+          <li>Checks: loading="lazy", srcset/sizes present, file size hints (Under 100KB ideal).</li>
         </ul>
       </div>
 
       <div class="bg-white dark:bg-gray-800 p-2 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
         <h4 class="text-xl font-bold mb-3">Video, UGC, Internal Links & Breadcrumbs</h4>
         <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
-          <li>Video: YouTube/Vimeo embeds with <track> captions or auto-captions detected.</li>
+          <li>Video: YouTube/Vimeo embeds with <code>&lt;track&gt;</code> captions or auto-captions detected.</li>
           <li>UGC: searches common review widget classes + schema AggregateRating.</li>
           <li>Internal links: counts 3+ contextual links with descriptive, keyword-rich anchors.</li>
           <li>Breadcrumbs: detects hierarchy selectors + BreadcrumbList JSON-LD.</li>
