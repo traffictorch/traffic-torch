@@ -134,14 +134,10 @@
 
   <link rel="preconnect" href="https://static.cloudflareinsights.com">
 
-  <!-- Preload Critical Base Stylesheets (Standard Syntax) -->
-  <link rel="stylesheet" href="/style-v1.0.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="/research/traffic-torch-whitepaper/style-v1.0.css" media="print" onload="this.media='all'">
-
-  <!-- Tailwind CSS File (Unified Non-Blocking Pattern) -->
-  <link rel="stylesheet" href="/tailwind-local-v1.0.css" media="print" onload="this.media='all'">
-
-  <!-- Fallback Directory for Browsers with JavaScript Disabled -->
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/research/traffic-torch-whitepaper/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
   <noscript>
     <link rel="stylesheet" href="/style-v1.0.css">
     <link rel="stylesheet" href="/research/traffic-torch-whitepaper/style-v1.0.css">
