@@ -670,15 +670,15 @@
 
       <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
         <li>
-          <strong>Share of Voice % (SOV)</strong><br />
+          <strong>Share of Voice % (SOV)</strong>
           Extracts named entities (people, places, organizations) using compromise.js NLP. Calculates entity density as a percentage of total words. Combines this with schema detection (looking for SpeakableSpecification, FAQPage, Article, Product types in JSON-LD scripts). Final SOV is the weighted average (entity density × 2 + schema score) / 3, capped at 100.
         </li>
         <li>
-          <strong>Citation Frequency</strong><br />
+          <strong>Citation Frequency</strong>
           Counts verifiable elements that make content citable: numbers/percentages (e.g. 42%, 1.5m), quoted phrases, and source-reference phrases ("according to", "source", "cite"). Normalizes the total count per 1,000 characters and scales to 0–100.
         </li>
         <li>
-          <strong>Presence Rate</strong><br />
+          <strong>Presence Rate</strong>
           Splits content into paragraphs (>50 chars). Counts how many fall in the ideal voice-answer sweet spot: 40–60 words, contain at least one fact/number, and form complete sentences. Percentage of qualifying paragraphs becomes the score (0–100).
         </li>
       </ol>
@@ -765,19 +765,19 @@
 
     <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
       <li>
-        <strong>Readability Score</strong><br />
+        <strong>Readability Score</strong>
         Approximates Flesch-Kincaid readability using sentence count, word count, and syllable estimation. Formula: 206.835 – 1.015 × (words/sentences) – 84.6 × (syllables/words). Normalized to 0–100, with higher values (easier to read, ideal grade 6–8) scoring better.
       </li>
       <li>
-        <strong>Answer Conciseness</strong><br />
+        <strong>Answer Conciseness</strong>
         Calculates average sentence length across all sentences. Scores peak around 50 words per sentence (ideal for voice answers), with linear drop-off on either side. Formula clamps between 0–100.
       </li>
       <li>
-        <strong>Pronoun Ratio</strong><br />
+        <strong>Pronoun Ratio</strong>
         Counts first/second/third-person pronouns via compromise.js. Calculates raw percentage of pronouns vs total words, then scales aggressively (×20) so >5 % pronoun usage reaches near-full points. This rewards conversational tone.
       </li>
       <li>
-        <strong>Entity Coverage</strong><br />
+        <strong>Entity Coverage</strong>
         Extracts named entities (people, places, organizations) using compromise.js. Calculates raw percentage of entities vs total words, then scales (×33.3) so >3 % entity density reaches near-full points. This rewards authority and E-E-A-T signals.
       </li>
     </ol>
@@ -863,15 +863,15 @@
 
     <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
       <li>
-        <strong>Snippet Ownership %</strong><br />
+        <strong>Snippet Ownership %</strong>
         Scans all headings (h1–h4) in the DOM. Counts how many are question-based using compromise.js NLP. Also checks if the immediate next sibling after each heading is a list (ul/ol) or table. Calculates percentage of headings that qualify as question + structured content. Score = (questionHeadings + structuredUnder) / total headings × 100.
       </li>
       <li>
-        <strong>Zero-Click Share</strong><br />
+        <strong>Zero-Click Share</strong>
         Scans all paragraph elements (p tags) in the DOM. Counts how many meet the ideal voice/snippet criteria: 40–60 words, contain at least one fact/number or question, and are concise/direct. Score = (qualifying paragraphs / total paragraphs) × 100.
       </li>
       <li>
-        <strong>AI Overview Appearances</strong><br />
+        <strong>AI Overview Appearances</strong>
         Combines schema detection (FAQPage, HowTo, SpeakableSpecification types in JSON-LD scripts, +33 points each) with structure score (structuredUnder × 10 + questionHeadings × 5, capped at 100). Final score = average of schemaScore and structureScore.
       </li>
     </ol>
@@ -957,15 +957,15 @@
 
     <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
       <li>
-        <strong>Sentiment Score</strong><br />
+        <strong>Sentiment Score</strong>
         Converts text to lowercase and splits into words. Counts matches against predefined positive words (excellent, great, positive, best, reliable, trustworthy, helpful, accurate, recommended) and negative words (bad, poor, negative, worst, unreliable, inaccurate, confusing, misleading). Computes net positive percentage: (positive count – negative count) / total words × 100. Normalizes to 0–100 with a bias toward neutral/high scores (base 50 + raw value).
       </li>
       <li>
-        <strong>Hallucination Risk</strong><br />
+        <strong>Hallucination Risk</strong>
         Extracts named entities (people, places, organizations) across the full text using compromise.js. Then checks each sentence for entity presence combined with speculative language ("may", "might", "possible"). Calculates inconsistency percentage (sentences with both entities and speculation / total sentences × 100). Inverts to score: higher consistency = higher score (100 – risk %).
       </li>
       <li>
-        <strong>Mention Sentiment</strong><br />
+        <strong>Mention Sentiment</strong>
         Detects potential brand mentions (capitalised nouns via compromise.js). For each mention extracts ~50 characters of surrounding context. Counts positive vs negative words in that context. Averages tone across all mentions and scales to 0–100 (neutral default 50 if no mentions found).
       </li>
     </ol>
@@ -1051,15 +1051,15 @@
 
     <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
       <li>
-        <strong>Conversational Rankings Sim</strong><br />
+        <strong>Conversational Rankings Sim</strong>
         Uses compromise.js to extract all question sentences from the text. Calculates the percentage of sentences that are questions. Scales aggressively (×10) so >10 % question-based content reaches near-full points. This simulates how well the page aligns with natural voice query phrasing.
       </li>
       <li>
-        <strong>Long-Tail Density</strong><br />
+        <strong>Long-Tail Density</strong>
         Extracts clauses/phrases via compromise.js. Counts how many have 4+ words (approximating long-tail expressions). Calculates raw percentage and scales (×20) so >5 % long-tail density reaches near-full points. This rewards natural, specific phrasing over short keywords.
       </li>
       <li>
-        <strong>Query Volume/Difficulty</strong><br />
+        <strong>Query Volume/Difficulty</strong>
         Calculates average phrase/clause length across the text. Combines with an estimated commonality score (percentage of very common words like "the", "a", "and", etc.). Longer phrases + lower commonality (more unique terms) = higher score, simulating higher volume potential and lower difficulty for specific voice queries.
       </li>
     </ol>
