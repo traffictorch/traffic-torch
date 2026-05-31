@@ -721,7 +721,7 @@
 <p>Traffic Torch performs these exact client-side checks on the rendered HTML and linked resources:</p>
 <ul class="list-disc pl-6 space-y-3 mt-4">
   <li>A viewport meta tag is present in the head with content="width=device-width, initial-scale=1" (or equivalent responsive settings) to ensure proper mobile scaling.</li>
-  <li>A web app manifest is linked via <link rel="manifest" href="..."> pointing to a valid manifest.json file.</li>
+  <li>A web app manifest is linked via <code>&lt;link rel="manifest" href="..."&gt;</code> pointing to a valid manifest.json file.</li>
   <li>High-resolution homescreen icons are provided — minimum 192×192 pixels, ideally also 512×512, in PNG or WebP format (checked via manifest icons array and apple-touch-icon links).</li>
   <li>A service worker registration is detected — looks for navigator.serviceWorker.register() calls in inline or external JavaScript.</li>
 </ul>
