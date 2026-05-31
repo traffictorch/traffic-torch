@@ -173,6 +173,38 @@
   <link rel="manifest" href="/manifest.json">
  
   <!-- Preload critical CSS -->
+  <style>
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 5xl;
+    margin: 0 auto;
+  }
+  @media (min-width: 768px) {
+    .form-container {
+      flex-direction: row;
+    }
+    .form-container > div {
+      flex: 1;
+      max-width: none;
+    }
+  }
+  .math-error {
+    border-color: #ef4444 !important;
+  }
+  /* Extra padding for eye icon inside input */
+  .password-with-eye input {
+    padding-right: 3.5rem !important;
+  }
+  .password-with-eye button {
+    transition: all 0.15s ease;
+  }
+  .password-with-eye button:hover {
+    transform: scale(1.1);
+  }
+</style>
+
   <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="style" href="/pro/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
@@ -196,8 +228,6 @@
       }
     })();
   </script>
-
-  <meta http-equiv="Content-Encoding" content="br"> 
 
 </head>
 
@@ -270,38 +300,6 @@
   25 daily audits for just $4/month billed annually $48/year. 7-day money-back guarantee, cancel anytime. 
   Secure Stripe payment, 100% client-side analysis. Nothing stored, nothing tracked.
 </p>
-
-<style>
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    max-width: 5xl;
-    margin: 0 auto;
-  }
-  @media (min-width: 768px) {
-    .form-container {
-      flex-direction: row;
-    }
-    .form-container > div {
-      flex: 1;
-      max-width: none;
-    }
-  }
-  .math-error {
-    border-color: #ef4444 !important;
-  }
-  /* Extra padding for eye icon inside input */
-  .password-with-eye input {
-    padding-right: 3.5rem !important;
-  }
-  .password-with-eye button {
-    transition: all 0.15s ease;
-  }
-  .password-with-eye button:hover {
-    transform: scale(1.1);
-  }
-</style>
 
 <div class="form-container px-0">
   <!-- Logged-in card -->
@@ -408,6 +406,8 @@
     <p class="mt-4 text-center text-sm opacity-90">Secure payment via Stripe • 7-day money-back guarantee • Cancel anytime</p>
   </div>
 </div>
+
+</section>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
