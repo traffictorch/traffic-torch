@@ -89,6 +89,16 @@
   <link rel="manifest" href="/manifest.json">
  
   <!-- Preload critical CSS -->
+  <style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+</style>
+
   <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
     <link rel="stylesheet" href="/style-v1.0.css">
@@ -172,18 +182,6 @@
 <div id="mobile-menu-placeholder"></div>
         </div>
       </header>
- 
-<body class="min-h-screen bg-gradient-to-b from-gray-950 via-indigo-950 to-purple-950 text-gray-100 flex flex-col">
-  
-<style>
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
-  }
-</style>
 
   <!-- Main centered content -->
 <main class="flex-1 flex items-center justify-center p-1 md:p-12 bg-gradient-to-br from-gray-950 via-indigo-950 to-purple-950">
