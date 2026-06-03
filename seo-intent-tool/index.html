@@ -3,6 +3,50 @@
 <head>
   <meta charset="UTF-8" />
 
+<!-- Deferred Google Analytics – loads only after interaction -->
+<script>
+  (function() {
+    // Change this to false if you want to test without loading GA
+    const enableGA = true;
+    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+
+    function loadGA() {
+      // Prevent double-loading
+      if (window.gtag) return;
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', MEASUREMENT_ID);
+      };
+    }
+
+    // Trigger on first interaction (scroll, click, touch, key)
+    let fired = false;
+    function fireOnce() {
+      if (fired) return;
+      fired = true;
+      loadGA();
+      cleanup();
+    }
+
+    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
+
+    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
+    setTimeout(fireOnce, 4500);
+
+    function cleanup() {
+      events.forEach(ev => window.removeEventListener(ev, fireOnce));
+    }
+  })();
+</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
    
     <!-- SEO Title -->
@@ -89,11 +133,11 @@
     {
       "@type": "SoftwareApplication",
       "name": "Traffic Torch SEO Intent Analyzer",
-      "applicationCategory": "BusinessApplication",
-      "operatingSystem": "Web Browser",
+      "applicationCategory": "BusinessApplication, UtilitiesApplication, SEO Tool",
+      "operatingSystem": "Web",
       "offers": {
         "@type": "Offer",
-        "price": "0",
+        "price": "0.00",
         "priceCurrency": "USD"
       },
       "description": "Free SEO intent analysis tool. Classifies keyword search intent, checks on-page content alignment, audits E-E-A-T signals, provides 0–100 intent match score, prioritized AI fixes, competitive gap insights, and ranking improvement forecasts.",
@@ -379,20 +423,20 @@
   </div>
 </form>
 
-    <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
+<div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
   <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
     <h2 class="text-xl font-bold mb-4">Daily Limit Reached</h2>
     <p class="mb-6">You've used all your audits today. Upgrade to Pro USD $48 per year for 25 daily SEO, UX & GEO analysis runs. Secure Stripe Checkout</p>
     <a href="/pro/" 
-       class="inline-block bg-orange-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition">
+       class="inline-block bg-orange-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-600 transition">
       Upgrade to Pro
     </a>
-    <button onclick="document.getElementById('upgradeModal').classList.add('hidden')" 
-            class="mt-4 text-gray-600 dark:text-gray-400 underline hover:text-gray-800 dark:hover:text-gray-200">
+	<button onclick="document.getElementById('upgradeModal').classList.add('hidden')"
+            class="mt-6 block mx-auto text-gray-600 dark:text-gray-400 underline hover:text-gray-800 dark:hover:text-gray-200">
       Close
     </button>
   </div>
-</div> 
+</div>
 
 <!-- Loading indicator - tight spacing, centered, modern spinner -->
 <section id="loading" class="hidden text-center mt-0">
@@ -409,7 +453,7 @@
   <!-- All report content (score, modules, gaps, forecast, fixes) goes here via JS -->
 </section>
 
-    <div class="center-btn-container mt-12">
+    <div class="center-btn-container mt-4 mb-4">
   <button
     class="copy-link-btn"
     onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
@@ -1106,7 +1150,7 @@
 <script src="/main-v1.1.js" type="module"></script>
 <script src="/seo-intent-tool/plugin-solutions-v1.0.js" type="module" defer></script>
 <script src="/seo-intent-tool/metric-explanations-v1.0.js" type="module" defer></script>
-<script src="/seo-intent-tool/script-v1.2.js" type="module" defer></script>
+<script src="/seo-intent-tool/script-v1.3.js" type="module" defer></script>
   
 
 </body>
