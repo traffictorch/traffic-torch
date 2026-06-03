@@ -28,16 +28,16 @@
   }
 
   /* Report starts cleanly on next page */
-  #results-wrapper {
+  #results {
     page-break-before: always;
     margin-top: 0 !important;
   }
 
   /* Full-width content inside results (keeps previous full-page fix) */
-  #results-wrapper,
-  #results-wrapper .container,
-  #results-wrapper .max-w-*,
-  #results-wrapper .mx-auto {
+  #results,
+  #results .container,
+  #results .max-w-*,
+  #results .mx-auto {
     max-width: none !important;
     width: 100% !important;
     margin: 0 !important;
