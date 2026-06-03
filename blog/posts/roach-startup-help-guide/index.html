@@ -309,36 +309,35 @@
    <!-- Centered MENU Button + Expanding TOC -->
 <nav class="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 py-4">
   <div class="max-w-3xl mx-auto px-6 flex justify-center">
-    
-    <!-- MENU Button -->
+  
+  <!-- Centered MENU Dropdown -->
+<nav id="toc-menu" class="sticky top-4 z-50 max-w-3xl mx-auto px-6">
+  <div class="flex justify-center">
     <button id="toc-toggle" 
-            class="group flex items-center gap-x-3 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-lg tracking-wide transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:-translate-y-0.5">
-      <span class="text-2xl">☰</span>
-      <span>MENU</span>
+            class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-lg tracking-wide flex items-center gap-x-2 transition-colors">
+      MENU 
+      <span id="toc-arrow" class="text-xl transition-transform">↓</span>
     </button>
-
   </div>
 
-  <!-- Expanding Dropdown Menu -->
-  <div id="toc-menu" class="hidden max-w-3xl mx-auto mt-3 px-6">
-    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 py-8 px-8 max-h-[70vh] overflow-auto">
-      <h3 class="text-sm uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-6 text-center">Jump to Section</h3>
-      
-      <ul class="space-y-2 text-base">
-        <li><a href="#unicorns-vs-roaches" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Unicorns</a></li>
-        <li><a href="#the-beginning" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">The Beginning</a></li>
-        <li><a href="#month-one" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month One</a></li>
-        <li><a href="#month-two" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month Two</a></li>
-        <li><a href="#month-three" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month Three</a></li>
-        <li><a href="#month-four" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month Four</a></li>
-        <li><a href="#month-five" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month Five</a></li>
-        <li><a href="#acquisition-loop" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Acquisition Loop</a></li>
-        <li><a href="#month-six" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month Six</a></li>
-        <li><a href="#the-fun-part" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">The Fun Part</a></li>       
-        <li><a href="#why-roaches" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Why Roaches</a></li>
-        <li><a href="#final-thoughts" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Final Thoughts</a></li>
-      </ul>
-    </div>
+  <!-- Expanding Menu Box -->
+  <div id="toc-menu" class="hidden mt-4 bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 py-6 px-8 max-h-[65vh] overflow-auto">
+    <h3 class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-5 text-center">Table of Contents</h3>
+    
+    <ul class="space-y-1 text-[15px]">
+      <li><a href="#unicorns-vs-roaches" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">Unicorns</a></li>
+      <li><a href="#the-beginning" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">The Beginning</a></li>
+      <li><a href="#month-one" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">Month One</a></li>
+      <li><a href="#month-two" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">Month Two</a></li>
+      <li><a href="#month-three" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">Month Three</a></li>
+      <li><a href="#month-four" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">Month Four</a></li>
+      <li><a href="#month-five" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">Month Five</a></li>
+      <li><a href="#acquisition-loop" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">Acquisition Loop</a></li>
+      <li><a href="#depression-dip" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">Depression Dip</a></li>
+      <li><a href="#the-fun-part" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">The Fun Part</a></li>      
+      <li><a href="#why-roaches" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">Why Roaches</a></li>
+      <li><a href="#final-thoughts" class="toc-link block py-2.5 px-4 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200">Final Thoughts</a></li>
+    </ul>
   </div>
 </nav>
 
@@ -397,8 +396,8 @@
       So when AI coding assistants became genuinely useful, I started wondering: “What if I built something properly lean?” No expensive infrastructure. No giant software stack. No team of twelve. Just me, AI, GitHub, Cloudflare, and caffeine’s less exciting cousin.
     </p>
     
-    <p class="text-right mt-8">
-     <a href="#toc" 
+    <p class="text-center mt-8">
+     <a href="#toc-menu" 
      class="inline-flex items-center gap-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors">
     ↑ Return to TOC
     </a>
@@ -437,7 +436,7 @@
       So I built Traffic Torch differently. Every audit tool links to a help guide. Every help guide links to related tools. Every tool generates reports people want to share. Every open-source plugin links back to entry points. Every extension creates another discovery point. Every article teaches something useful and points readers toward another solution. A visitor might arrive through Google looking for an SEO audit. Then read a help guide. Then discover another tool. Then install a browser extension. Then bookmark the site. Then share a report. Then come back a month later. That’s the entire acquisition strategy. Build useful things that naturally lead to other useful things. No ad budget. No sales team. No growth hacks. Just a giant interconnected web of tools, guides, plugins, reports, articles, and resources that help people solve problems. The best marketing asset isn’t an advertisement. It’s usefulness. A roach startup can’t afford a million-dollar marketing budget. But it can afford to be genuinely useful. And usefulness compounds.
     </p>
 
-    <h3 id="month-six" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Six: The Depression Dip</h3>
+    <h3 id="depression-dip" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Six: The Depression Dip</h3>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       Every founder eventually makes a terrible mistake. They look at their competitors. Suddenly you’re comparing your little project to companies with venture capital, marketing teams, and enough funding to launch a small moon mission. For a few weeks I genuinely felt defeated. Then it clicked. Traffic Torch isn’t competing with unicorn startups. It’s competing with extinction. And it will win.
     </p>
@@ -445,8 +444,8 @@
       Every tool feeds another set of optimizations. Every optimization feeds another guide. Every plugin feeds better user experience. Every report creates another entry point. Every visitor has multiple pathways through the ecosystem. That’s the beauty of a roach startup. Growth isn’t powered by funding rounds. It’s powered by compounding usefulness. The entire platform runs on infrastructure that costs next to nothing. The pages load ridiculously fast. The site is lightweight. The costs are tiny. The risk is zero. The stress is nil. That’s the entire point.
     </p>
     
-    <p class="text-right mt-8">
-     <a href="#toc" 
+    <p class="text-center mt-8">
+     <a href="#toc-menu" 
      class="inline-flex items-center gap-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors">
     ↑ Return to TOC
     </a>
@@ -783,43 +782,30 @@
   <script src="/main-v1.1.js" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
   
-  <script>
-  const toggleBtn = document.getElementById('toc-toggle');
+<script>
+  const toggle = document.getElementById('toc-toggle');
   const menu = document.getElementById('toc-menu');
-  
-  toggleBtn.addEventListener('click', () => {
+  const arrow = document.getElementById('toc-arrow');
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
     menu.classList.toggle('hidden');
-    
-    // Rotate icon on open
-    const icon = toggleBtn.querySelector('span:first-child');
-    if (!menu.classList.contains('hidden')) {
-      icon.style.transform = 'rotate(90deg)';
-    } else {
-      icon.style.transform = 'rotate(0deg)';
-    }
+    arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
   });
 
-  // Smooth scroll for TOC links
+  // Close menu when clicking a link
   document.querySelectorAll('.toc-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetId = link.getAttribute('href').substring(1);
-      const target = document.getElementById(targetId);
-      
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-        // Close menu after click on mobile
-        if (window.innerWidth < 768) {
-          menu.classList.add('hidden');
-        }
-      }
+    link.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      arrow.style.transform = 'rotate(0deg)';
     });
   });
 
   // Close menu when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!toggleBtn.contains(e.target) && !menu.contains(e.target)) {
+  document.addEventListener('click', () => {
+    if (!menu.classList.contains('hidden')) {
       menu.classList.add('hidden');
+      arrow.style.transform = 'rotate(0deg)';
     }
   });
 </script>
