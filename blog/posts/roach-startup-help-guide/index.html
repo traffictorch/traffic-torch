@@ -305,6 +305,42 @@
     <h1 class="text-3xl md:text-3xl lg:text-3xl font-black text-center mb-4 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent">
     How to Build a Roach Startup for Near Zero
    </h1>
+   
+   <!-- Centered MENU Button + Expanding TOC -->
+<nav class="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 py-4">
+  <div class="max-w-3xl mx-auto px-6 flex justify-center">
+    
+    <!-- MENU Button -->
+    <button id="toc-toggle" 
+            class="group flex items-center gap-x-3 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-lg tracking-wide transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:-translate-y-0.5">
+      <span class="text-2xl">☰</span>
+      <span>MENU</span>
+    </button>
+
+  </div>
+
+  <!-- Expanding Dropdown Menu -->
+  <div id="toc-menu" class="hidden max-w-3xl mx-auto mt-3 px-6">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 py-8 px-8 max-h-[70vh] overflow-auto">
+      <h3 class="text-sm uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-6 text-center">Jump to Section</h3>
+      
+      <ul class="space-y-2 text-base">
+        <li><a href="#unicorns-vs-roaches" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Unicorns</a></li>
+        <li><a href="#the-beginning" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">The Beginning</a></li>
+        <li><a href="#month-one" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month One</a></li>
+        <li><a href="#month-two" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month Two</a></li>
+        <li><a href="#month-three" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month Three</a></li>
+        <li><a href="#month-four" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month Four</a></li>
+        <li><a href="#month-five" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month Five</a></li>
+        <li><a href="#acquisition-loop" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Acquisition Loop</a></li>
+        <li><a href="#month-six" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Month Six</a></li>
+        <li><a href="#the-fun-part" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">The Fun Part</a></li>       
+        <li><a href="#why-roaches" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Why Roaches</a></li>
+        <li><a href="#final-thoughts" class="toc-link block px-5 py-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">Final Thoughts</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       Most startup articles read like they were written by a management consultant trapped in a lift with a PowerPoint presentation. So I strapped in my daily decaf, fired up the laptop, and figured I’d write this while the kettle was still making noises that sound suspiciously like a dying possum.
@@ -329,7 +365,7 @@
       The startup equivalent of that cockroach you hit with a thong three times and somehow still find alive behind the fridge six months later.
     </p>
 
-    <h2 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Unicorns vs Roaches</h2>
+    <h2 id="unicorns-vs-roaches" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Unicorns vs Roaches</h2>
     
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       A unicorn startup is a mythical creature. Massive funding rounds. Fancy offices. Bean bags. Free kombucha. A valuation worth more than several small countries. Everyone claps. Everyone posts rocket emojis on LinkedIn and Instagram. Everyone pretends they’re changing the world when they’re really building a slightly different food delivery app.
@@ -339,7 +375,7 @@
       A roach startup is different. A roach startup survives. The economy crashes? Still alive. Google changes the algorithm? Still alive. AI eats half the internet? Still alive. Meteor strike? Probably still alive. A roach startup doesn’t care about headlines. It cares about not dying.
     </p>
 
-    <h2 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">The Beginning: Dial-Up Internet and Life Choices</h2>
+    <h2 id="the-beginning" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">The Beginning: Dial-Up Internet and Life Choices</h2>
     
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       My journey started back in 1996 when my parents got internet. For young readers, the internet used to arrive through a machine that sounded like two fax machines having an argument. <em>Beeeeeeeep. Screeeeeeeech. Kkkkkkkkrrrrrrr.</em> That noise meant knowledge was about to happen.
@@ -360,33 +396,40 @@
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       So when AI coding assistants became genuinely useful, I started wondering: “What if I built something properly lean?” No expensive infrastructure. No giant software stack. No team of twelve. Just me, AI, GitHub, Cloudflare, and caffeine’s less exciting cousin.
     </p>
+    
+    <p class="text-right mt-8">
+     <a href="#toc" 
+     class="inline-flex items-center gap-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors">
+    ↑ Return to TOC
+    </a>
+   </p>
 
-    <h3 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month One: Can This Actually Work?</h3>
+    <h3 id="month-one" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month One: Can This Actually Work?</h3>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       The first month was mostly spent trying to prove myself wrong. Research. Testing. More testing. Breaking things. Fixing things. Breaking them again. I wanted to know whether a serious SEO platform could run without expensive APIs and ongoing monthly costs. By the end of the month, I had my answer. Yep. Turns out modern browsers and PWAs are ridiculously powerful. GitHub is free. Cloudflare is generous. And most websites are dramatically overcomplicated. The green traffic light was go.
     </p>
 
-    <h3 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Two: The Website Was Too Fast</h3>
+    <h3 id="month-two" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Two: The Website Was Too Fast</h3>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       This sounds like a made-up problem. It isn’t. The audit tools were returning results in under a second. People would click the button and instantly get answers. The problem? Nobody would believe it. Apparently, we’ve all been conditioned by modern software to expect a loading spinner, a progress bar, and enough waiting time to make a coffee. So I actually had to slow parts of it down. Imagine telling your boss: “Mate, we’re going to need to make this less efficient.” The irony still makes me laugh.
     </p>
 
-    <h3 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Three: Becoming One With the Keyboard</h3>
+    <h3 id="month-three" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Three: Becoming One With the Keyboard</h3>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       This was the month of the roached-out 16-hour days. Cloudflare Worker AI. Authentication systems. Databases. Logins. Stripe integrations. Documentation. Bug fixes. At one point, I was dreaming about code. Not metaphorically. Actually dreaming about code. I’d wake up at 3 am thinking: “Hang on… what if I move those functions into their own modules?” That’s usually the signal to build it the next morning.
     </p>
 
-    <h3 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Four: Launch First, Panic Later</h3>
+    <h3 id="month-four" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Four: Launch First, Panic Later</h3>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       Perfection is the natural enemy of launching. I kept tweaking. Kept polishing. Kept adjusting tiny details nobody will ever notice. Meanwhile, the project never left the garage. Eventually, I realised something important: Every website on Earth is unfinished. Google is unfinished. Facebook is unfinished. Your favourite website is currently being held together by duct tape, hope, and one developer who hasn’t slept properly since 2018. So I launched <a href="/ai-seo-ux-tools/" class="text-orange-600 dark:text-orange-400 hover:underline">Traffic Torch SEO Toolkit</a>. Then immediately found seventeen things I wanted to improve. Which is exactly how launching goes.
     </p>
 
-    <h3 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Five: The Open-Source Madness</h3>
+    <h3 id="month-five" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Five: The Open-Source Madness</h3>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       This was the month I went slightly feral. Browser extension. VS Code extension. WordPress plugin. GitHub Actions. Framer plugin. Additional tools. More documentation. More features. More coffee that technically wasn’t coffee. At some point, I stopped asking whether I should build something and started asking how quickly I could build it. AI had essentially turned four-day jobs into four-minute jobs. Sometimes even forty-second jobs. Builders today have no idea how ridiculous this superpower is.
     </p>
 
-    <h3 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Five and a Half: Building the Roach Loop</h3>
+    <h3 id="acquisition-loop" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Five and a Half: Building the Roach Loop</h3>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       This was the point where I realised something important. Most startups spend a fortune trying to acquire users. Google Ads. Facebook Ads. LinkedIn Ads. Influencers. Sponsored posts. Retargeting campaigns. Marketing agencies. Growth hackers. SEO ninjas. Conversion wizards. Before long, they’re spending ten grand a month trying to make five grand a month. That’s not a business. That’s an expensive hobby.
     </p>
@@ -394,25 +437,32 @@
       So I built Traffic Torch differently. Every audit tool links to a help guide. Every help guide links to related tools. Every tool generates reports people want to share. Every open-source plugin links back to entry points. Every extension creates another discovery point. Every article teaches something useful and points readers toward another solution. A visitor might arrive through Google looking for an SEO audit. Then read a help guide. Then discover another tool. Then install a browser extension. Then bookmark the site. Then share a report. Then come back a month later. That’s the entire acquisition strategy. Build useful things that naturally lead to other useful things. No ad budget. No sales team. No growth hacks. Just a giant interconnected web of tools, guides, plugins, reports, articles, and resources that help people solve problems. The best marketing asset isn’t an advertisement. It’s usefulness. A roach startup can’t afford a million-dollar marketing budget. But it can afford to be genuinely useful. And usefulness compounds.
     </p>
 
-    <h3 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Six: The Depression Dip</h3>
+    <h3 id="month-six" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Month Six: The Depression Dip</h3>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       Every founder eventually makes a terrible mistake. They look at their competitors. Suddenly you’re comparing your little project to companies with venture capital, marketing teams, and enough funding to launch a small moon mission. For a few weeks I genuinely felt defeated. Then it clicked. Traffic Torch isn’t competing with unicorn startups. It’s competing with extinction. And it will win.
     </p>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       Every tool feeds another set of optimizations. Every optimization feeds another guide. Every plugin feeds better user experience. Every report creates another entry point. Every visitor has multiple pathways through the ecosystem. That’s the beauty of a roach startup. Growth isn’t powered by funding rounds. It’s powered by compounding usefulness. The entire platform runs on infrastructure that costs next to nothing. The pages load ridiculously fast. The site is lightweight. The costs are tiny. The risk is zero. The stress is nil. That’s the entire point.
     </p>
+    
+    <p class="text-right mt-8">
+     <a href="#toc" 
+     class="inline-flex items-center gap-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors">
+    ↑ Return to TOC
+    </a>
+   </p>
 
-    <h2 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">The Funny Part</h2>
+    <h2 id="the-fun-part" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">The Funny Part</h2>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       The headline says six months. That’s technically true. It’s also complete rubbish. Because websites are never finished. Traffic Torch is still evolving. I’m still improving things. Still building features. Still finding new optimizations to make things more efficient and to strengthen topical authority, entity and knowledge graphs. The difference is that now I’m doing it from a position of survival. And survival is underrated.
     </p>
 
-    <h2 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Why More Founders Should Build Roaches</h2>
+    <h2 id="why-roaches" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Why More Founders Should Build Roaches</h2>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       Everyone wants to build the next billion-dollar company. Almost nobody wants to build the next twenty-year company. That’s a mistake. The internet doesn’t need another startup burning investor money like it’s firewood. It needs useful tools. Useful websites. Useful communities. Things that solve real problems and don’t require a funding round every time somebody sneezes. A roach startup isn’t sexy. It’s not glamorous. But it might still be here ten years from now. And honestly? That’s a pretty good outcome.
     </p>
 
-    <h2 class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Final Thoughts</h2>
+    <h2 id="final-thoughts" class="text-2xl font-bold mt-12 mb-6 text-gray-900 dark:text-gray-100">Final Thoughts</h2>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
       If you’re waiting for perfect conditions to start building something, stop. You don’t need investors. You don’t need a team. You don’t need a fancy office. You don’t need a LinkedIn post announcing you’ve “embarked on a new entrepreneurial journey.” You need an idea. A bit of stubbornness. And enough determination to keep going when things get hard. Build something useful. Keep the costs low. Keep learning. Keep shipping. Be the cockroach. The dinosaurs had all the size, power, and attention. Guess who will still be there when the hourglass drops.
     </p>
@@ -732,6 +782,47 @@
   <!-- Load JS last for speed -->
   <script src="/main-v1.1.js" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
+  
+  <script>
+  const toggleBtn = document.getElementById('toc-toggle');
+  const menu = document.getElementById('toc-menu');
+  
+  toggleBtn.addEventListener('click', () => {
+    menu.classList.toggle('hidden');
+    
+    // Rotate icon on open
+    const icon = toggleBtn.querySelector('span:first-child');
+    if (!menu.classList.contains('hidden')) {
+      icon.style.transform = 'rotate(90deg)';
+    } else {
+      icon.style.transform = 'rotate(0deg)';
+    }
+  });
+
+  // Smooth scroll for TOC links
+  document.querySelectorAll('.toc-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href').substring(1);
+      const target = document.getElementById(targetId);
+      
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+        // Close menu after click on mobile
+        if (window.innerWidth < 768) {
+          menu.classList.add('hidden');
+        }
+      }
+    });
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!toggleBtn.contains(e.target) && !menu.contains(e.target)) {
+      menu.classList.add('hidden');
+    }
+  });
+</script>
     
 </body>
 </html>
