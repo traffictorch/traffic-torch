@@ -282,25 +282,18 @@
   <!-- Main Styles -->
   <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-  
-  
 
   <!-- Preload critical CSS -->
   <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="style" href="/seo-ux-tool/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
-
   <noscript>
     <link rel="stylesheet" href="/style-v1.0.css">
     <link rel="stylesheet" href="/seo-ux-tool/style-v1.0.css">
   </noscript>
 
-  <!-- Main Styles -->
-  <link rel="stylesheet" href="/style-v1.0.css">
-  <link rel="stylesheet" href="/seo-ux-tool/style-v1.0.css">
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
+  <!-- Tailwind output – comes last so utilities can override -->
   <link rel="stylesheet" href="/tailwind-local-v1.0.css">
-  
-  
 
   <link rel="stylesheet" media="print" href="/seo-ux-tool/print-v1.0.css">
 
@@ -2351,6 +2344,37 @@
 
     <p><strong>Website:</strong> <a href="https://traffictorch.net/">Traffic Torch SEO Toolkit</a></p>
 </noscript>
+
+<script>
+  // Debug Print/PDF issues
+  function debugPrintReady() {
+    console.log('%c🔍 Traffic Torch Print Debug: Starting...', 'color: #10b981; font-weight: bold');
+    
+    // Force expand all sections
+    document.querySelectorAll('.report-section, .tool-result, .analysis-block, [id*="result"], .tab-content').forEach(el => {
+      el.style.display = 'block';
+      el.style.visibility = 'visible';
+      el.style.height = 'auto';
+      el.style.maxHeight = 'none';
+      el.style.opacity = '1';
+      console.log('Expanded:', el.id || el.className);
+    });
+
+    // Trigger print
+    setTimeout(() => {
+      console.log('%c🖨️ Triggering window.print() now...', 'color: #3b82f6');
+      window.print();
+    }, 800);
+  }
+
+  // Auto-run when report is ready (adjust selector to your report container)
+  window.addEventListener('load', () => {
+    const reportContainer = document.getElementById('report-container') || document.querySelector('.report');
+    if (reportContainer) {
+      console.log('Report detected - ready for PDF debug');
+    }
+  });
+</script>
 
 </body>
 </html>
