@@ -1,3 +1,5 @@
+/* /seo-ux-tool/print-v1.0.css */
+
 @media print {
   @page {
     size: A4 portrait;
@@ -5,42 +7,150 @@
   }
 
   html, body {
-    background: #fff !important;
+    background: #ffffff !important;
     color: #111827 !important;
+    font-size: 11pt;
+    line-height: 1.5;
+    margin: 0 !important;
+    padding: 0 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  .dark body {
-    background: #111827 !important;
-    color: #f3f4f6 !important;
+  /* ──────── COVER PAGE (stable & proven) ──────── */
+  body::before {
+    content: "TrafficTorch.net ⚖️\A\A SEO UX Audit Tool \A\A Report:\A " attr(data-url);
+    display: block;
+    height: 100vh;
+    min-height: 100vh;
+    page-break-after: always;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    padding-top: 22vh;
+    line-height: 1.35;
+    white-space: pre;
+    font-size: 2.4rem;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.6);
   }
 
-  /* Force visibility of dynamic content */
-  .report-section, .tool-result, .analysis-block, .keyword-gap-table, 
-  .seo-score-card, .priority-gains, .module-explanations,
-  [class*="result"], [id*="result"] {
+  /* Start real report content on new page */
+  #results-wrapper {
+    page-break-before: always;
+    margin-top: 0 !important;
+  }
+
+  /* Full width + proper padding for print */
+  #results-wrapper,
+  #results-wrapper .container,
+  #results-wrapper .max-w-7xl,
+  #results-wrapper .max-w-6xl,
+  #results-wrapper .max-w-5xl,
+  #results-wrapper .max-w-4xl {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm 1.2cm !important;
+    box-sizing: border-box;
+  }
+
+  /* ──────── FORCE SHOW REPORT CONTENT ──────── */
+  .report-section,
+  .tool-result,
+  .analysis-block,
+  .score-card,
+  .fixes-panel,
+  .full-details,
+  .priority-gains,
+  .keyword-gap-table,
+  .seo-score-card,
+  #results .score-card,
+  #priority-gains-section,
+  #priority-cards-container,
+  .expand-content,
+  .hidden.mt-6,
+  .hidden.mt-4,
+  .hidden.space-y-6,
+  .hidden.space-y-8 {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     height: auto !important;
     max-height: none !important;
     overflow: visible !important;
-    break-inside: auto;
   }
 
-  .no-print, nav, .floating-ui, .share-buttons, button[onclick*="pdf"] {
+  /* ──────── PREVENT BREAKS INSIDE IMPORTANT MODULES ──────── */
+  .score-card,
+  .metric-card,
+  .fixes-panel,
+  .full-details,
+  .bg-white.dark\:bg-gray-800,
+  .bg-orange-50.dark\:bg-orange-900\/20 {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ──────── TARGETED HIDING (much more selective) ──────── */
+  .no-print,
+  header,
+  footer,
+  nav,
+  aside,
+  button,
+  .a2a_kit,
+  #keyword-form,
+  #analysis-progress,
+  #upgradeModal,
+  #author-bio,
+  #promo-high-impact-cards,
+  #promo-old-vs-modern-seo,
+  #share-form-container,
+  #feedback-form-container,
+  #plugin-solutions-section,
+  #seo-ux-checklist,
+  .tools-grid,
+  .checklist-card,
+  .bottom-banner,
+  details > summary {
     display: none !important;
   }
 
-  /* Better page breaks */
-  h1, h2, h3, .report-cover {
-    page-break-after: avoid;
-    break-after: avoid-page;
+  /* ──────── CLEANUP & READABILITY ──────── */
+  .shadow-lg,
+  .shadow-xl,
+  [class*="shadow"] {
+    box-shadow: none !important;
   }
 
-  table, img {
-    page-break-inside: avoid;
+  img {
     max-width: 100% !important;
+    height: auto !important;
+  }
+
+  table {
+    page-break-inside: auto;
+    width: 100% !important;
+  }
+
+  /* Dark mode safety */
+  .dark body,
+  body.dark {
+    background: #111827 !important;
+    color: #f3f4f6 !important;
+  }
+
+  /* Better page breaks */
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Grid → Stack for print */
+  #results.grid,
+  .grid {
+    display: block !important;
   }
 }

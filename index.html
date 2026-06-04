@@ -2345,36 +2345,5 @@
     <p><strong>Website:</strong> <a href="https://traffictorch.net/">Traffic Torch SEO Toolkit</a></p>
 </noscript>
 
-<script>
-  // Debug Print/PDF issues
-  function debugPrintReady() {
-    console.log('%c🔍 Traffic Torch Print Debug: Starting...', 'color: #10b981; font-weight: bold');
-    
-    // Force expand all sections
-    document.querySelectorAll('.report-section, .tool-result, .analysis-block, [id*="result"], .tab-content').forEach(el => {
-      el.style.display = 'block';
-      el.style.visibility = 'visible';
-      el.style.height = 'auto';
-      el.style.maxHeight = 'none';
-      el.style.opacity = '1';
-      console.log('Expanded:', el.id || el.className);
-    });
-
-    // Trigger print
-    setTimeout(() => {
-      console.log('%c🖨️ Triggering window.print() now...', 'color: #3b82f6');
-      window.print();
-    }, 800);
-  }
-
-  // Auto-run when report is ready (adjust selector to your report container)
-  window.addEventListener('load', () => {
-    const reportContainer = document.getElementById('report-container') || document.querySelector('.report');
-    if (reportContainer) {
-      console.log('Report detected - ready for PDF debug');
-    }
-  });
-</script>
-
 </body>
 </html>
