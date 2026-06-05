@@ -1,65 +1,76 @@
 /* /seo-ux-tool/print-v1.0.css */
-/* Clean Print-Only Report – Cover + Tool Results Only */
+/* Optimized: Cover via body::before + Only Tool Results Visible */
 
 @media print {
   @page {
     size: A4 portrait;
-    margin: 12mm 10mm;
+    margin: 12mm 10mm 15mm;
   }
 
-  /* Reset everything */
+  /* Force light mode for clean PDF */
   html, body {
-    margin: 0;
-    padding: 0;
     background: #ffffff !important;
     color: #111827 !important;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     line-height: 1.6;
+    margin: 0;
+    padding: 0;
   }
 
-  /* Hide EVERYTHING by default */
-  body > *:not(.report-container),
-  nav, header, footer, .no-print, button, .share-buttons,
-  .floating-ui, .controls, .sidebar, .header, .menu,
-  .dark-toggle, .save-pdf-btn, .ads, .promotions {
+  /* Hide EVERYTHING first */
+  body * {
     display: none !important;
+    visibility: hidden !important;
   }
 
-  /* Only show report container and its children */
+  /* Restore body for cover */
+  body {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* Show only the report content container and everything inside it */
   .report-container,
-  .report-container * {
+  #report,
+  .report,
+  [id*="report"],
+  .tool-results,
+  .analysis-results,
+  .seo-results,
+  .main-content,
+  .results-container {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .report-container *,
+  #report *,
+  .report *,
+  [id*="report"] *,
+  .tool-results *,
+  .analysis-results *,
+  .seo-results *,
+  .main-content *,
+  .results-container * {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     height: auto !important;
     max-height: none !important;
     overflow: visible !important;
-    break-inside: avoid;
+    break-inside: avoid-page;
   }
 
-  /* Force expand all accordions, tabs, collapsed sections */
-  .accordion-content,
-  .tab-content,
-  details[open],
-  .collapsed,
-  [class*="hidden"],
-  [class*="collapse"],
-  .tool-result,
-  .analysis-block,
-  .keyword-gap-table,
-  .seo-score-card,
-  .deep-dive-module,
-  .competitive-gap,
-  .predictive-section {
+  /* Force expand all dynamic sections (accordions, tabs, details, etc.) */
+  details, summary, .accordion, .tab-content, .collapse, 
+  [class*="hidden"], [class*="collapsed"], [open] {
     display: block !important;
-    max-height: none !important;
-    height: auto !important;
   }
 
-  /* Cover Page – using body::before */
+  /* Cover Page */
   body::before {
     content: "TrafficTorch.net ⚖️\A\A SEO UX Audit Tool \A\A Report:\A " attr(data-url);
-    display: block;
+    display: block !important;
     height: 100vh;
     min-height: 100vh;
     page-break-after: always;
@@ -84,18 +95,23 @@
       0 10px 30px rgba(0,0,0,0.5);
     box-sizing: border-box;
     width: 100%;
+    visibility: visible !important;
   }
 
-  /* Report content after cover */
-  .report-container {
-    margin-top: 20px;
+  /* Report content styling after cover */
+  .report-container,
+  #report,
+  .report,
+  .main-content {
+    margin-top: 30px;
+    padding: 10px 0;
   }
 
-  h1, h2, h3, h4 {
+  h1, h2, h3, h4, h5 {
     page-break-after: avoid;
     break-after: avoid-page;
     color: #111827;
-    margin-top: 1.5em;
+    margin: 1.8em 0 0.8em;
   }
 
   table, img {
@@ -107,9 +123,8 @@
     page-break-inside: avoid;
   }
 
-  /* Dark mode override for print (we want light for PDF) */
-  .dark * {
-    color: #111827 !important;
-    background: #ffffff !important;
+  /* Clean up extra spacing */
+  p, ul, ol, li {
+    margin-bottom: 0.8em;
   }
 }
