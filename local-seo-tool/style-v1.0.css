@@ -49,8 +49,6 @@ body {
 @media (max-width: 768px) {
   .container, .max-w-5xl, .max-w-4xl, .max-w-3xl {
     max-width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
   }
 
   .p-12, .p-10, .p-8, .p-6 {
