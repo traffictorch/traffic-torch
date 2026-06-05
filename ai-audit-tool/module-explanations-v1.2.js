@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ${m.what}
           </p>
           <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide"
-             class="inline-flex items-center px-10 py-5 bg-gradient-to-r from-pink-500 to-orange-600 text-white text-xl font-bold rounded-2xl shadow-lg hover:scale-105 hover:shadow-pink-500/40 transition duration-300">
+             class="inline-flex items-center px-10 py-5 bg-gradient-to-r from-red-500 to-orange-600 text-white text-xl font-bold rounded-2xl shadow-lg hover:scale-105 hover:shadow-pink-500/40 transition duration-300">
             Full Guide →
           </a>
         </div>
