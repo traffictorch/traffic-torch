@@ -286,9 +286,12 @@
     <link rel="stylesheet" href="/ai-search-optimization-tool/style-v1.0.css">
   </noscript>
 
-  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
-  <!-- Tailwind output – comes last so utilities can override -->
-  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.6s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  </noscript>
 
   <link rel="stylesheet" media="print" href="/ai-search-optimization-tool/print-v1.0.css">
 
