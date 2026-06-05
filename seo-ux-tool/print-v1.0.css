@@ -1,130 +1,215 @@
-/* /seo-ux-tool/print-v1.0.css */
-/* Optimized: Cover via body::before + Only Tool Results Visible */
-
+/* /seo-ux-tool/print-v2.0.css */
 @media print {
+
   @page {
     size: A4 portrait;
-    margin: 12mm 10mm 15mm;
+    margin: 12mm;
   }
 
-  /* Force light mode for clean PDF */
+  /* ══════════════════════════════════════════════════════════════
+     1. RESET — hide EVERYTHING on the page by default
+     We whitelist only what we want, rather than trying to blacklist
+     every promo/nav/form element.
+  ══════════════════════════════════════════════════════════════ */
+  body > * {
+    display: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     2. BASE — shared print safety
+  ══════════════════════════════════════════════════════════════ */
   html, body {
     background: #ffffff !important;
     color: #111827 !important;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
+    font-size: 11pt;
+    line-height: 1.5;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
-  /* Hide EVERYTHING first */
-  body * {
-    display: none !important;
-    visibility: hidden !important;
-  }
-
-  /* Restore body for cover */
-  body {
-    display: block !important;
-    visibility: visible !important;
-  }
-
-  /* Show only the report content container and everything inside it */
-  .report-container,
-  #report,
-  .report,
-  [id*="report"],
-  .tool-results,
-  .analysis-results,
-  .seo-results,
-  .main-content,
-  .results-container {
-    display: block !important;
-    visibility: visible !important;
-  }
-
-  .report-container *,
-  #report *,
-  .report *,
-  [id*="report"] *,
-  .tool-results *,
-  .analysis-results *,
-  .seo-results *,
-  .main-content *,
-  .results-container * {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    height: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-    break-inside: avoid-page;
-  }
-
-  /* Force expand all dynamic sections (accordions, tabs, details, etc.) */
-  details, summary, .accordion, .tab-content, .collapse, 
-  [class*="hidden"], [class*="collapsed"], [open] {
-    display: block !important;
-  }
-
-  /* Cover Page */
+  /* ══════════════════════════════════════════════════════════════
+     3. COVER PAGE
+  ══════════════════════════════════════════════════════════════ */
   body::before {
     content: "TrafficTorch.net ⚖️\A\A SEO UX Audit Tool \A\A Report:\A " attr(data-url);
-    display: block !important;
+    display: block !important;  /* override the body > * hide above */
     height: 100vh;
     min-height: 100vh;
     page-break-after: always;
+    break-after: page;
     background: linear-gradient(135deg, #10b981, #059669);
-    color: #4b5563;
+    color: #ffffff;
     font-family: system-ui, -apple-system, sans-serif;
     font-weight: 900;
     text-align: center;
-    padding-top: 20vh;
-    line-height: 1.4;
+    padding-top: 22vh;
+    line-height: 1.35;
     white-space: pre;
-    font-size: 2.5rem;
-    text-shadow:
-      -2px -2px 0 #fb923c,
-      2px -2px 0 #fb923c,
-      -2px 2px 0 #fb923c,
-      2px 2px 0 #fb923c,
-      -2px 0 0 #fb923c,
-      2px 0 0 #fb923c,
-      0 -2px 0 #fb923c,
-      0 2px 0 #fb923c,
-      0 10px 30px rgba(0,0,0,0.5);
+    font-size: 2.4rem;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     4. WHITELIST — show the results wrapper and everything in it
+  ══════════════════════════════════════════════════════════════ */
+  #results-wrapper {
+    display: block !important;
+    visibility: visible !important;
+    page-break-before: always;
+    break-before: page;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
     box-sizing: border-box;
-    width: 100%;
+  }
+
+  /* All direct children and descendants of results-wrapper get un-hidden */
+  #results-wrapper * {
     visibility: visible !important;
   }
 
-  /* Report content styling after cover */
-  .report-container,
-  #report,
-  .report,
-  .main-content {
-    margin-top: 30px;
-    padding: 10px 0;
+  /* ══════════════════════════════════════════════════════════════
+     5. UNHIDE — results-wrapper internal elements that use
+        Tailwind's `hidden` class (display:none) by default
+  ══════════════════════════════════════════════════════════════ */
+
+  /* The wrapper itself */
+  #results-wrapper,
+  /* Radar chart block */
+  #radar-container,
+  #radar-title,
+  /* Overall score */
+  #overall-container,
+  /* The score cards grid */
+  #results,
+  /* Priority section */
+  #priority-gains-section,
+  #priority-cards-container,
+  #gains-container {
+    display: block !important;
   }
 
-  h1, h2, h3, h4, h5 {
-    page-break-after: avoid;
-    break-after: avoid-page;
-    color: #111827;
-    margin: 1.8em 0 0.8em;
+  /* ══════════════════════════════════════════════════════════════
+     6. FORCE-EXPAND — "More Details" and "Show Fixes" panels
+        Both use class="... hidden ..." — target them precisely
+  ══════════════════════════════════════════════════════════════ */
+
+  /* "More Details" panel */
+  .score-card .module-info.hidden,
+  .score-card .module-info {
+    display: block !important;
   }
 
-  table, img {
+  /* "Show Fixes" panel */
+  .score-card .details.hidden,
+  .score-card .details {
+    display: block !important;
+  }
+
+  /* Grade badges (opacity:0 by default until JS runs) */
+  .module-grade {
+    opacity: 1 !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     7. HIDE — buttons and interactive chrome inside results
+        (we're showing the content they reveal, not the buttons)
+  ══════════════════════════════════════════════════════════════ */
+  button,
+  .more-details,
+  .expand {
+    display: none !important;
+  }
+
+  /* Explicitly kill the plugin section even if it gets un-hidden */
+  #plugin-solutions-section {
+    display: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     8. LAYOUT — grid → stacked columns for print
+  ══════════════════════════════════════════════════════════════ */
+  #results.grid,
+  #results {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  /* Full-width containers inside results */
+  #results-wrapper .container,
+  #results-wrapper [class*="max-w-"],
+  #results-wrapper [class*="mx-auto"] {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 1cm !important;
+    padding-right: 1cm !important;
+    box-sizing: border-box;
+  }
+
+  /* Each score card on its own page */
+  .score-card {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 0.8cm 1cm !important;
+    margin: 0 !important;
+    page-break-before: always !important;
+    break-before: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    box-shadow: none !important;
+  }
+
+  /* First card follows directly after overall score — no extra page break */
+  #results .score-card:first-child {
+    page-break-before: auto !important;
+    break-before: auto !important;
+  }
+
+  /* Overall score card */
+  #overall-score {
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  /* Priority section starts fresh */
+  #priority-gains-section {
+    page-break-before: always !important;
+    break-before: page !important;
+    padding: 0 1cm !important;
+    max-width: none !important;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     9. CLEANUP
+  ══════════════════════════════════════════════════════════════ */
+  [class*="shadow"] {
+    box-shadow: none !important;
+  }
+
+  img, canvas {
     max-width: 100% !important;
-    page-break-inside: avoid;
+    height: auto !important;
   }
 
-  tr {
-    page-break-inside: avoid;
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+    break-after: avoid;
   }
 
-  /* Clean up extra spacing */
-  p, ul, ol, li {
-    margin-bottom: 0.8em;
+  p, li {
+    orphans: 3;
+    widows: 3;
   }
+
+  table {
+    width: 100% !important;
+    page-break-inside: auto;
+  }
+
 }
