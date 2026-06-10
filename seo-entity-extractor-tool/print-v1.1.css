@@ -1,4 +1,4 @@
-/* /local-seo-tool/print-v1.1.css */
+/* /seo-entity-extractor-tool/print-v1.1.css */
 
 @media print {
   @page {
@@ -19,7 +19,7 @@
 
   /* ──────── COVER PAGE ──────── */
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A Local SEO Audit Tool 📝\A\A Report:\A " attr(data-url);
+    content: "TrafficTorch.net ⚖️\A\A Semantic Entity Audit Tool 🎯\A\A Report:\A " attr(data-page-title);
     display: block;
     height: 100vh;
     min-height: 100vh;
@@ -110,12 +110,12 @@
   aside,
   button,
   .a2a_kit,
-  #eeat-faq,
+  #entity-faq,
   #share-buttons,
   #tools-grid,
   #extensions-tools-integrations,
   #dev-tools,
-  #ai-seo-plugins,
+  #how-it-works,
   #faq,
   #deep-dive,
   #infographics,
@@ -130,6 +130,7 @@
   #promo-old-vs-modern-seo,
   #share-form-container,
   #feedback-form-container,
+  #plugin-solutions-section,
   #seo-ux-checklist,
   .tools-grid,
   .checklist-card,

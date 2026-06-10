@@ -1,4 +1,4 @@
-/* /local-seo-tool/print-v1.1.css */
+/* /keyword-tool/print-v1.1.css */
 
 @media print {
   @page {
@@ -19,7 +19,7 @@
 
   /* ──────── COVER PAGE ──────── */
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A Local SEO Audit Tool 📝\A\A Report:\A " attr(data-url);
+    content: "TrafficTorch.net ⚖️\A\A Keyword Audit Tool 📝\A\A Report:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;
@@ -76,6 +76,7 @@
   .seo-score-card,
   #results .score-card,
   #priority-gains-section,
+  #health-radar,
   #priority-cards-container,
   #plugin-solutions-section,
   .expand-content,
@@ -110,7 +111,10 @@
   aside,
   button,
   .a2a_kit,
-  #eeat-faq,
+  #copy-link-btn,
+  #how-it-works,
+  #rank-higher,
+  #keyword-gap-checklist,
   #share-buttons,
   #tools-grid,
   #extensions-tools-integrations,
