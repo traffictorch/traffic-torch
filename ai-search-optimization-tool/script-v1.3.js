@@ -145,8 +145,8 @@ const initTool = (form, results, progressContainer) => {
         }
         try { new URL(inputUrl); } catch (_) { throw new Error('Invalid URL'); }
         analyzedUrl = inputUrl;
-        const res = await fetch("https://render.traffictorch.workers.dev/?url=" + encodeURIComponent(analyzedUrl));
-        if (!res.ok) throw new Error('Failed to analyze - Whitelist: render.traffictorch.workers.dev or use Code Analysis.');
+        const res = await fetch("https://full-render.traffictorch.workers.dev/?url=" + encodeURIComponent(analyzedUrl));
+        if (!res.ok) throw new Error('Failed to analyze - Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.');
         html = await res.text();
       }
 
