@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   }
  
-  const PROXY = 'https://render.traffictorch.workers.dev/';
+  const PROXY = 'https://full-render.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",
     "Analyzing metadata",
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const yourDoc = await fetchPage(fullUrl);
     if (!yourDoc) {
       stopSpinnerLoader();
-      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Failed to analyze - Whitelist: render.traffictorch.workers.dev or use Code Analysis.</p>`;
+      results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Failed to analyze - Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.</p>`;
       return;
     }
 

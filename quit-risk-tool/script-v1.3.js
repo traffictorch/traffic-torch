@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  const PROXY = 'https://render.traffictorch.workers.dev/';
+  const PROXY = 'https://full-render.traffictorch.workers.dev/';
 
   const factorDefinitions = {
     readability: {
@@ -1029,7 +1029,7 @@ ${impactHTML}
       results.innerHTML = `
         <div class="text-center py-20">
           <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-          <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Whitelist: render.traffictorch.workers.dev or use Code Analysis.</p>
+          <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.</p>
         </div>
       `;
     }

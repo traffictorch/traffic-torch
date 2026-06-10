@@ -7,7 +7,7 @@ import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
 import { prettyJsonLd } from './modules/schema-base.js';
 
-const API_PROXY = 'https://rendered-proxy-basic.traffictorch.workers.dev/?url=';
+const API_PROXY = 'https://full-render.traffictorch.workers.dev/?url=';
 
 const waitForElements = () => {
   const form = document.getElementById('audit-form');
@@ -347,7 +347,7 @@ setTimeout(() => {
       results.innerHTML = `
         <div class="text-red-600 dark:text-red-400 text-center text-xl p-10">
           Error: ${err.message}<br>
-          Failed to analyze - Whitelist: render.traffictorch.workers.dev and try again.
+          Failed to analyze - Whitelist: full-render.traffictorch.workers.dev and try again.
         </div>
       `;
     }

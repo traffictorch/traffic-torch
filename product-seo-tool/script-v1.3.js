@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loading = document.getElementById('loading');
   const progressText = document.getElementById('progressText');
 
-  const PROXY = 'https://render.traffictorch.workers.dev/';
+  const PROXY = 'https://full-render.traffictorch.workers.dev/';
 
   // Shared analysis runner
   async function runProductSEOAnalysis(source, isCode = false) {
@@ -560,7 +560,7 @@ async function performAnalysis(source, isCode = false) {
       }
       inputUrl = url;
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
-      if (!res.ok) throw new Error('Failed to analyze - Whitelist: render.traffictorch.workers.dev or use Code Analysis.');
+      if (!res.ok) throw new Error('Failed to analyze - Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.');
       html = await res.text();
     }
 

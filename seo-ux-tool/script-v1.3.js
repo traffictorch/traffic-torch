@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     currentAnalysisMode = 'url';
 
-    const proxyUrl = 'https://render.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+    const proxyUrl = 'https://full-render.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
 
     try {
       const res = await fetch(proxyUrl);
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const doc = new DOMParser().parseFromString(html, 'text/html');
       await runFullAnalysis(html, doc, url, originalInput);
     } catch (err) {
-      alert('Failed to analyze - Whitelist: render.traffictorch.workers.dev or use Code Analysis.');
+      alert('Failed to analyze - Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.');
       if (progressContainer) progressContainer.classList.add('hidden');
     }
   });

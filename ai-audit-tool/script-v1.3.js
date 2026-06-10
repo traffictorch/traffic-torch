@@ -10,7 +10,7 @@ import { initSubmitFeedback } from './submit-feedback-v1.js';
 
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
-const PROXY = 'https://render.traffictorch.workers.dev/?url=';
+const PROXY = 'https://full-render.traffictorch.workers.dev/?url=';
 
 document.addEventListener('DOMContentLoaded', () => {
   const urlForm = document.getElementById('audit-form');
@@ -729,7 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
         results.innerHTML = `
           <div class="text-center py-20">
             <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-            <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Whitelist: render.traffictorch.workers.dev or use Code Analysis.</p>
+            <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.</p>
           </div>
         `;
       }, remaining);
