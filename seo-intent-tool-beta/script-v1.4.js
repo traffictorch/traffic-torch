@@ -1,4 +1,4 @@
-// script-v1.4 - Complete 
+// script-v1.4 
 
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { analyzeExperience } from './modules/experience.js';
@@ -15,40 +15,113 @@ import { initSubmitFeedback } from './submit-feedback-v1.js';
 const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
-  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
-  function autoFillFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const inputData = params.get('input');
-    
-    if (inputData) {
-      const textarea = document.getElementById('code-input');
-      if (textarea) {
-        textarea.value = decodeURIComponent(inputData);
-        
-        // Optional: Auto-click the Analyze button after a tiny delay
-        const analyzeBtn = document.getElementById('analyze-code-btn');
-        if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);   // Give the page time to render
-        }
+// ─── CMS Detection ───────────────────────────────────────────────────────────
+function detectCMS(htmlContent) {
+  const lower = (htmlContent || document.documentElement.outerHTML || '').toLowerCase();
+  if (lower.includes('wp-content') || lower.includes('wordpress') || lower.includes('wp-') || lower.includes('generator" content="wordpress')) return 'WordPress';
+  if (lower.includes('shopify') || lower.includes('shopify-cdn')) return 'Shopify';
+  if (lower.includes('wix') || lower.includes('wixstatic')) return 'Wix';
+  if (lower.includes('squarespace') || lower.includes('squarespace-cdn')) return 'Squarespace';
+  if (lower.includes('joomla') || lower.includes('generator" content="joomla')) return 'Joomla';
+  if (lower.includes('drupal') || lower.includes('generator" content="drupal')) return 'Drupal';
+  return 'Custom Code';
+}
+
+// ─── AI Report ───────────────────────────────────────────────────────────────
+async function generateAIReport() {
+  const section = document.getElementById('ai-report-section');
+  section.style.display = 'block';
+
+  const loading = document.getElementById('report-loading');
+  const textarea = document.getElementById('ai-report-text');
+  const actions = document.getElementById('report-actions');
+
+  loading.style.display = 'block';
+  textarea.style.display = 'none';
+  actions.style.display = 'none';
+
+  try {
+    const urlInput = document.getElementById('url-input') || { value: window.location.href };
+    const url = urlInput.value.trim();
+    const cms = detectCMS('');
+
+    // Collect failed metric labels from rendered result cards
+    const failedMetrics = Array.from(
+      document.querySelectorAll('.fail, .metric-fail, .needs-improvement, [class*="fail"]')
+    )
+      .map(el => el.textContent.trim())
+      .filter(Boolean)
+      .slice(0, 12);
+
+    const payload = { url, cms, failedMetrics };
+
+    const response = await fetch('https://seo-intent-ai.traffictorch.workers.dev/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+    const reportText = data.report || 'AI report generated successfully.';
+
+    loading.style.display = 'none';
+    textarea.value = reportText;
+    textarea.style.display = 'block';
+    actions.style.display = 'flex';
+  } catch (e) {
+    loading.style.display = 'none';
+    textarea.value = 'Error generating report. Please try again later.';
+    textarea.style.display = 'block';
+  }
+}
+
+function shareReport() {
+  const text = document.getElementById('ai-report-text').value;
+  if (navigator.share) {
+    navigator.share({ title: 'Traffic Torch AI Custom Report', text });
+  } else {
+    navigator.clipboard.writeText(text).then(() => alert('Report copied to clipboard'));
+  }
+}
+
+function printReport() {
+  const text = document.getElementById('ai-report-text').value;
+  const win = window.open('', '_blank');
+  win.document.write(`<pre style="font-family: monospace; padding: 20px;">${text}</pre>`);
+  win.document.close();
+  win.print();
+}
+
+// Expose AI report functions globally so onclick attributes can reach them
+window.generateAIReport = generateAIReport;
+window.shareReport = shareReport;
+window.printReport = printReport;
+
+// ─── Auto-fill HTML from ?input= query parameter (VS Code extension / direct links) ─
+function autoFillFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const inputData = params.get('input');
+  if (inputData) {
+    const textarea = document.getElementById('code-input');
+    if (textarea) {
+      textarea.value = decodeURIComponent(inputData);
+      const analyzeBtn = document.getElementById('analyze-code-btn');
+      if (analyzeBtn) {
+        setTimeout(() => analyzeBtn.click(), 800);
       }
     }
   }
+}
+window.addEventListener('load', autoFillFromUrl);
 
-  // Run when page loads
-  window.addEventListener('load', autoFillFromUrl);
-
-// Minimal Prefill + Auto Submit for SEO Intent Tool
+// ─── Minimal Prefill + Auto Submit for SEO Intent Tool ───────────────────────
 function simpleIntentPrefillAndRun() {
   const params = new URLSearchParams(window.location.search);
   const urlParam = params.get('url');
   if (!urlParam) return;
-
   const cleanUrl = decodeURIComponent(urlParam).trim();
   const urlInput = document.getElementById('url-input');
   if (urlInput) urlInput.value = cleanUrl;
-
   setTimeout(() => {
     const analyzeBtn = document.getElementById('analyze-url-btn');
     if (analyzeBtn) analyzeBtn.click();
@@ -94,9 +167,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (input) input.value = decoded;
     } catch (e) {}
   }
-  
+
   simpleIntentPrefillAndRun();
-  
+
   function deepMerge(target, source) {
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
@@ -227,6 +300,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const sch = analyzeSchema(html, doc);
       const schemaTypes = sch.schemaTypes;
       const normalizeSchema = typeof sch?.normalized === 'number' ? sch.normalized : 20;
+
+      // Detect CMS from fetched HTML
+      const detectedCMS = detectCMS(html);
+
       progressText.textContent = "Analyzing Search Intent";
       await sleep(2000);
       const titleLower = (doc.title || '').toLowerCase();
@@ -335,6 +412,10 @@ document.addEventListener('DOMContentLoaded', () => {
               const g = getGrade(overall);
               return `<p class="${g.color} text-4xl sm:text-5xl font-bold text-center mt-4 sm:mt-6 drop-shadow-lg">${g.emoji} ${g.text}</p>`;
             })()}
+            <!-- CMS Badge -->
+            <p class="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+              Detected CMS: <span class="font-semibold text-orange-500">${detectedCMS}</span>
+            </p>
           </div>
         </div>
         <!-- On-Page Health Radar Chart -->
@@ -385,20 +466,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const border = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-orange-400' : 'border-red-500';
             const signals = key === 'Experience' ? [
               { name: 'Strong first-person language', value: metrics.firstPerson,
-                fix: 'Add more first-person language (“I/we/my/our”) throughout the content. Use it naturally in intros, examples, and conclusions to show personal involvement.',
+                fix: 'Add more first-person language ("I/we/my/our") throughout the content. Use it naturally in intros, examples, and conclusions to show personal involvement.',
                 how: 'The tool counts occurrences of first-person pronouns (I, we, my, our, me, us) and related forms. Strong = 15+ mentions across the page.',
                 why: 'First-person writing signals genuine hands-on experience to Google and readers. It increases trust, engagement, and dwell time — all positive ranking factors. Pages with strong personal voice often outperform third-person corporate content.' },
               { name: 'Personal anecdotes included', value: metrics.anecdotes,
-                fix: 'Include personal anecdotes or real-world examples. Share specific stories like “I tested this method on 5 client sites and saw…” or “In my experience working with…” to make advice relatable.',
-                how: 'Scans for phrases like “I tested”, “in my experience”, “we found that”, “hands-on”, “real-world”. Strong = 3+ detections.',
-                why: 'Anecdotes prove you’ve actually done what you’re teaching. They build emotional connection with readers and reduce bounce rates. Google favors content that demonstrates real application over theoretical advice.' },
+                fix: 'Include personal anecdotes or real-world examples. Share specific stories like "I tested this method on 5 client sites and saw…" or "In my experience working with…" to make advice relatable.',
+                how: 'Scans for phrases like "I tested", "in my experience", "we found that", "hands-on", "real-world". Strong = 3+ detections.',
+                why: 'Anecdotes prove you've actually done what you're teaching. They build emotional connection with readers and reduce bounce rates. Google favors content that demonstrates real application over theoretical advice.' },
               { name: 'Timeline/date mentions', value: metrics.timelines,
-                fix: 'Mention specific timelines or dates from your experience, e.g., “Last year I tried…”, “Since 2020 we’ve used this approach…”, “Over the past 18 months our team has…”',
+                fix: 'Mention specific timelines or dates from your experience, e.g., "Last year I tried…", "Since 2020 we've used this approach…", "Over the past 18 months our team has…"',
                 how: 'Looks for date/year references tied to first-person context. Strong = 2+ personal timeline mentions.',
                 why: 'Timelines show recency and depth of experience. They help Google assess content freshness and real-world testing. Dated personal experience outperforms generic evergreen claims.' },
               { name: 'Personal media/captions', value: metrics.personalMedia,
-                fix: 'Add original photos, screenshots, or videos with personal captions like “My setup for testing…”, “Our results after 3 months”, or “Client dashboard I managed”.',
-                how: 'Checks image alt text, captions, and figures for personal context (“my”, “our”, “I took this”). Strong = at least one detected.',
+                fix: 'Add original photos, screenshots, or videos with personal captions like "My setup for testing…", "Our results after 3 months", or "Client dashboard I managed".',
+                how: 'Checks image alt text, captions, and figures for personal context ("my", "our", "I took this"). Strong = at least one detected.',
                 why: 'Original media with personal context proves you actually did the work. It boosts credibility, reduces perceived AI content risk, and increases user trust and time on page.' }
             ] : key === 'Expertise' ? [
               { name: 'Author byline present', value: metrics.byline,
@@ -440,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 how: 'Looks for policy links across common locations. Strong = at least one found.',
                 why: 'Policy pages demonstrate legal compliance and transparency. They are expected on professional sites. Missing policies can trigger trust issues.' },
               { name: 'Update date shown', value: metrics.updateDate,
-                fix: 'Display a visible “Last updated” or “Published” date on the page.',
+                fix: 'Display a visible "Last updated" or "Published" date on the page.',
                 how: 'Searches common date selectors and visible text. Strong = date detected.',
                 why: 'Update dates signal content freshness and maintenance. Google prioritizes current information. Dated content builds confidence in accuracy.' }
             ];
@@ -520,7 +601,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   : key === 'Authoritativeness' ? 'Recognition of the site or author as a leading voice in the niche, often through citations, references from reputable sources, or industry accolades.'
                   : 'Indicators that the site and content are reliable, secure, and transparent, fostering user confidence through clear policies and ethical practices.'}</p>
                 <p class="text-green-500 font-bold">How to improve?</p>
-                <p>${key === 'Experience' ? 'Incorporate first-person language like “I” or “we,” add personal photos or videos, include detailed case studies with outcomes, mention specific dates or timelines, and share lessons learned from your own trials and errors to make it authentic.'
+                <p>${key === 'Experience' ? 'Incorporate first-person language like "I" or "we," add personal photos or videos, include detailed case studies with outcomes, mention specific dates or timelines, and share lessons learned from your own trials and errors to make it authentic.'
                   : key === 'Expertise' ? 'Add an author bio box with a professional photo, detailed biography highlighting relevant education or experience, list certifications, degrees, or publications, and link to other works or speaking engagements to build proof.'
                   : key === 'Authoritativeness' ? 'Earn high-quality backlinks from trusted sites, get featured in press or media mentions, implement relevant schema markup like Organization or Person, display awards or endorsements, and contribute to industry forums or publications.'
                   : 'Switch to HTTPS if not already, create a dedicated contact page with real details, add a privacy policy and terms of service, include content update dates, and ensure no misleading claims or ads to maintain transparency.'}</p>
@@ -686,6 +767,57 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             `).join('');
           })()}
+        </div>
+        <!-- AI Report Section -->
+        <div class="mt-20 max-w-4xl mx-auto px-4">
+          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 border border-orange-500/30">
+            <div class="text-center mb-8">
+              <h2 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100 mb-3">
+                🤖 AI Custom Report
+              </h2>
+              <p class="text-gray-600 dark:text-gray-400 text-lg">
+                Get a personalised action plan tailored to your CMS and detected issues
+              </p>
+              <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                Detected CMS: <span class="font-semibold text-orange-500">${detectedCMS}</span>
+              </p>
+            </div>
+            <div class="text-center mb-6">
+              <button
+                onclick="generateAIReport()"
+                class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-xl font-bold rounded-2xl shadow-lg hover:opacity-90 transition">
+                Generate AI Report ✨
+              </button>
+            </div>
+            <div id="ai-report-section" style="display:none;">
+              <div id="report-loading" class="flex flex-col items-center py-8" style="display:none;">
+                <svg class="animate-spin w-10 h-10 text-orange-500" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-opacity="0.3"/>
+                  <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <p class="mt-4 text-orange-500 font-medium">Generating your personalised report…</p>
+              </div>
+              <textarea
+                id="ai-report-text"
+                rows="16"
+                readonly
+                style="display:none;"
+                class="w-full mt-4 p-6 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-2xl text-sm text-gray-800 dark:text-gray-200 font-mono resize-y focus:outline-none focus:border-orange-500">
+              </textarea>
+              <div id="report-actions" class="flex flex-col sm:flex-row justify-center gap-4 mt-6" style="display:none;">
+                <button
+                  onclick="shareReport()"
+                  class="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-2xl shadow hover:opacity-90 transition">
+                  Share Report ↗️
+                </button>
+                <button
+                  onclick="printReport()"
+                  class="px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-2xl shadow hover:opacity-90 transition">
+                  Print / Save 📥
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <!-- Plugin Solutions Section - placed above share buttons -->
         <div id="plugin-solutions-section" class="mt-20"></div>
