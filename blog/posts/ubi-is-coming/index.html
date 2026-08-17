@@ -258,7 +258,41 @@
         <article class="max-w-7xl mx-auto px-2">
           <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-2 md:p-4 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
             
-            <!-- No hero image – image-free template -->
+            <!-- No hero image -->
+            
+                <!-- SVG Hero (replaces picture) -->
+    <div class="w-full aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] bg-gradient-to-br from-orange-500/20 to-pink-600/20 flex items-center justify-center p-8">
+      <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full max-h-[60vh]">
+        <!-- Background pattern (subtle) -->
+        <defs>
+          <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f97316" stop-opacity="0.2" />
+            <stop offset="100%" stop-color="#ec4899" stop-opacity="0.2" />
+          </linearGradient>
+          <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f97316" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#ec4899" stop-opacity="0.8" />
+          </linearGradient>
+        </defs>
+        <rect width="800" height="400" fill="url(#g1)" rx="20" />
+        <!-- Coin with rising arrow -->
+        <circle cx="400" cy="200" r="100" fill="#1f2937" stroke="url(#g2)" stroke-width="6" />
+        <circle cx="400" cy="200" r="80" fill="#111827" />
+        <!-- Dollar sign -->
+        <text x="400" y="230" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="url(#g2)" text-anchor="middle" dominant-baseline="central">$</text>
+        <!-- Rising arrow -->
+        <path d="M300 300 L400 180 L500 300" fill="none" stroke="url(#g2)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+        <polygon points="400,160 390,190 410,190" fill="url(#g2)" />
+        <!-- UBI text -->
+        <text x="400" y="340" font-family="Arial, sans-serif" font-size="50" font-weight="bold" fill="#f97316" text-anchor="middle" letter-spacing="8">UBI</text>
+        <text x="400" y="380" font-family="Arial, sans-serif" font-size="24" fill="#ec4899" text-anchor="middle" letter-spacing="2">PRODUCTIVITY DIVIDEND</text>
+        <!-- Small sparkles -->
+        <circle cx="200" cy="120" r="8" fill="#f97316" opacity="0.6" />
+        <circle cx="600" cy="100" r="10" fill="#ec4899" opacity="0.6" />
+        <circle cx="180" cy="300" r="6" fill="#f97316" opacity="0.5" />
+        <circle cx="620" cy="280" r="7" fill="#ec4899" opacity="0.5" />
+      </svg>
+    </div>
 
             <!-- Post Title -->
             <h1 class="text-2xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
