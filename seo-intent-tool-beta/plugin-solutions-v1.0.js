@@ -1,3 +1,5 @@
+// pluginData
+
 const pluginData = {
   "Schema Markup": {
     WordPress: [

@@ -1,0 +1,177 @@
+/* /quit-risk-tool/print-v1.1.css */
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 11pt;
+    line-height: 1.5;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ──────── COVER PAGE ──────── */
+  body::before {
+    content: "TrafficTorch.net ⚖️\A\A Quit Risk Audit Tool ⚡\A\A Report:\A " attr(data-url);
+    display: block;
+    height: 100vh;
+    min-height: 100vh;
+    page-break-after: always;
+    color: #4b5563;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    padding-top: 20vh;
+    line-height: 1.4;
+    white-space: pre;
+    font-size: 2rem;
+    text-shadow:
+      -2px -2px 0 #fb923c,
+      2px -2px 0 #fb923c,
+      -2px 2px 0 #fb923c,
+      2px 2px 0 #fb923c,
+      -2px 0 0 #fb923c,
+      2px 0 0 #fb923c,
+      0 -2px 0 #fb923c,
+      0 2px 0 #fb923c,
+      0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  /* Start real report content on new page */
+  #results-wrapper {
+    page-break-before: always;
+    margin-top: 0 !important;
+  }
+
+  /* Full width + proper padding for print */
+  #results-wrapper,
+  #results-wrapper .container,
+  #results-wrapper .max-w-7xl,
+  #results-wrapper .max-w-6xl,
+  #results-wrapper .max-w-5xl,
+  #results-wrapper .max-w-4xl {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm 1.2cm !important;
+    box-sizing: border-box;
+  }
+
+  /* ──────── FORCE SHOW REPORT CONTENT ──────── */
+  .report-section,
+  .tool-result,
+  .analysis-block,
+  .score-card,
+  .fixes-panel,
+  .full-details,
+  .priority-gains,
+  .keyword-gap-table,
+  .seo-score-card,
+  #results .score-card,
+  #priority-gains-section,
+  #priority-cards-container,
+  #plugin-solutions-section,
+  .expand-content,
+  .hidden.mt-6,
+  .hidden.mt-4,
+  .hidden.space-y-6,
+  .hidden.space-y-8 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* ──────── PREVENT BREAKS INSIDE IMPORTANT MODULES ──────── */
+  .score-card,
+  .metric-card,
+  .fixes-panel,
+  .full-details,
+  .bg-white.dark\:bg-gray-800,
+  .bg-orange-50.dark\:bg-orange-900\/20 {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ──────── TARGETED HIDING ──────── */
+  .no-print,
+  header,
+  footer,
+  nav,
+  aside,
+  button,
+  .a2a_kit,
+  #eeat-faq,
+  #share-buttons,
+  #tools-grid,
+  #extensions-tools-integrations,
+  #quit-risk-seo-checklist,
+  #dev-tools,
+  #ai-seo-plugins,
+  #faq,
+  #deep-dive,
+  #infographics,
+  #what-is,
+  #three-pillars,
+  #comparison,
+  #keyword-form,
+  #analysis-progress,
+  #upgradeModal,
+  #author-bio,
+  #promo-high-impact-cards,
+  #promo-old-vs-modern-seo,
+  #share-form-container,
+  #feedback-form-container,
+  #seo-ux-checklist,
+  .tools-grid,
+  .checklist-card,
+  .bottom-banner,
+  details > summary {
+    display: none !important;
+  }
+
+  /* ──────── CLEANUP & READABILITY ──────── */
+  .shadow-lg,
+  .shadow-xl,
+  [class*="shadow"] {
+    box-shadow: none !important;
+  }
+
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  table {
+    page-break-inside: auto;
+    width: 100% !important;
+  }
+
+  /* Dark mode safety */
+  .dark body,
+  body.dark {
+    background: #111827 !important;
+    color: #f3f4f6 !important;
+  }
+
+  /* Better page breaks */
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Grid → Stack for print */
+  #results.grid,
+  .grid {
+    display: block !important;
+  }
+}

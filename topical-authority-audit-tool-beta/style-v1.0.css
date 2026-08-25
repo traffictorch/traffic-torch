@@ -1,4 +1,4 @@
-/* Local Style CSS */
+/* Remove any old body background rules – we use the wrapper div now */
 body { transition: background-color 0.3s ease; }
 
 /* Fix green card once and for all */
@@ -131,3 +131,41 @@ html, body {
   background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
 }
 
+/* Results - More Details + Show Fixes – FIXED CSS (max-height + visibility) */
+.fixes-toggle,
+.details-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.fixes-panel,
+.details-panel {
+  transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+  overflow: hidden;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.fixes-panel.expanded,
+.details-panel.expanded {
+  max-height: 4000px;     /* large enough for any realistic content */
+  padding: 1.25rem 1rem;  /* your original padding */
+}
+
+/* Optional: nicer open state padding transition */
+.fixes-panel,
+.details-panel {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.arrow,
+.details-arrow {
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}

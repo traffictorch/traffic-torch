@@ -1,4 +1,4 @@
-// ShareReport
+// Share Report
 
 export function initShareReport(resultsContainer) {
   const shareBtn = resultsContainer.querySelector('#share-report-btn');
@@ -8,7 +8,7 @@ export function initShareReport(resultsContainer) {
     const urlInput = document.getElementById('url-input')?.value.trim();
     const codeInput = document.getElementById('code-input')?.value.trim();
 
-    // For HTML code audits we cannot create a deep link, so show helpful message
+    // For HTML code audits we cannot create a deep link
     if (!urlInput && codeInput) {
       const messageDiv = document.getElementById('share-message');
       if (messageDiv) {
@@ -20,28 +20,37 @@ export function initShareReport(resultsContainer) {
       return;
     }
 
-    if (!urlInput) return; // fallback safety
+    if (!urlInput) {
+      // Fallback safety - try to get the original analyzed URL from page title display or main input
+      const titleDisplay = document.getElementById('page-title-display');
+      if (titleDisplay && titleDisplay.textContent.includes('http')) {
+        // rare case - but we still need a proper URL for sharing
+      } else {
+        const messageDiv = document.getElementById('share-message');
+        if (messageDiv) {
+          messageDiv.innerHTML = `⚠️ No URL found to share.<br>Please run a URL analysis first.`;
+          messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-200`;
+          messageDiv.classList.remove('hidden');
+          setTimeout(() => messageDiv.classList.add('hidden'), 6000);
+        }
+        return;
+      }
+    }
 
-    // Build clean deep link
+    // Build clean deep link using the current urlInput value
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?url=${encodeURIComponent(urlInput)}`;
 
-    // Get the tested page title directly from the visible element in the score card
+    // Get the tested page title
     let pageTitle = 'this page';
-    const titleElement = document.getElementById('analyzed-page-title');
-    if (titleElement) {
-      pageTitle = titleElement.textContent.trim();
+    const titleDisplay = document.getElementById('page-title-display');
+    if (titleDisplay && titleDisplay.textContent.trim()) {
+      pageTitle = titleDisplay.textContent.trim();
     } else {
-      // Fallback if ID not found (e.g. old deploy)
-      pageTitle = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl.shadow-2xl.p-6.sm\\:p-8.md\\:p-10 p.mt-6.text-base.sm\\:text-lg')?.textContent.trim() ||
-                  document.title.trim() ||
-                  'this page';
+      pageTitle = document.title.replace(/ \| Traffic Torch SEO UX Audit Tool|Traffic Torch/gi, '').trim() || 'this page';
     }
 
-    // Remove any leftover tool name if needed
-    pageTitle = pageTitle.replace(/SEO Intent Tool & Search Intent Audit | Traffic Torch/gi, '').trim() || 'this page';
-
-    const shareText = `Check out ${pageTitle} on Traffic Torch SEO Intent Tool ${shareUrl}`;
+    const shareText = `Check out ${pageTitle} on Traffic Torch SEO UX Audit Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {
@@ -54,7 +63,7 @@ export function initShareReport(resultsContainer) {
         showMessage('Report link copied!<br>Paste anywhere to share.', 'success');
       }
     } catch (err) {
-      // Silent fail on error – no error message shown to user
+      // Silent fail on error
     }
   });
 

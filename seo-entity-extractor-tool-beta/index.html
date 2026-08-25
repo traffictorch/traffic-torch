@@ -1,0 +1,2496 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO Title -->
+  <title>Semantic Entity Extractor & Audit Tool | Traffic Torch</title>
+
+  <!-- Meta Description -->
+  <meta name="description" content="Free semantic entity extractor and audit tool. Detect named entities, score coverage, salience, relationships, on-page practices and overall readiness.">
+
+  <!-- Robots Meta -->
+  <meta name="robots" content="index, follow">
+
+  <!-- Canonical Link -->
+  <link rel="canonical" href="https://traffictorch.net/seo-entity-extractor-tool/">
+
+  <!-- Color Scheme Support -->
+  <meta name="color-scheme" content="dark light">
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/seo-entity-extractor-tool/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/seo-entity-extractor-tool/">
+
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="Semantic Entity Extractor & Audit Tool | Traffic Torch">
+  <meta property="og:description" content="Instant entity extraction and semantic audit: coverage, salience, relationships, practices scoring + AI fixes to boost topical authority and rankings.">
+  <meta property="og:image" content="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-extractor-tool-1200w.webp">
+  <meta property="og:url" content="https://traffictorch.net/seo-entity-extractor-tool/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Semantic Entity Extractor & Audit Tool | Traffic Torch">
+  <meta name="twitter:description" content="Extract entities, audit semantic health (coverage, salience, relationships, practices), get 0–100 readiness score and AI-generated fixes. Strengthen topical relevance today.">
+  <meta name="twitter:image" content="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-extractor-tool-1200w.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <!-- ========== EXTERNAL CSS (exactly as original) ========== -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  </noscript>
+
+  <!-- Prevent FOUC until Tailwind loads -->
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+  </noscript>
+
+  <!-- Inlined local CSS (tool‑specific overrides) -->
+  <style>
+    /* style-v1.0.css (entity tool) */
+    body { transition: background-color 0.3s ease; }
+    .health-score polygon { fill: rgba(16, 185, 129, 0.3); }
+    .radar { width: 180px; height: 180px; margin: 1.5rem auto; display: block; }
+    .health-score h2 { margin-bottom: 0.5rem; }
+
+    @media (max-width: 1024px) {
+      .container, .max-w-5xl, .max-w-3xl, .max-w-4xl { max-width: 100% !important; }
+      .p-12, .p-10, .p-8 { padding: 1.5rem !important; }
+      .text-5xl { font-size: 2rem !important; line-height: 1.1 !important; }
+      .text-9xl { font-size: 6rem !important; line-height: 1 !important; }
+    }
+    @media (max-width: 480px) {
+      .p-12, .p-10 { padding: 1.25rem !important; }
+      .text-5xl { font-size: 1.875rem !important; }
+      .text-9xl { font-size: 5.5rem !important; }
+    }
+    @media (max-width: 768px) {
+      .max-w-5xl { max-width: 100% !important; padding-left: 4px !important; padding-right: 4px !important; }
+      .p-8, .p-6, .p-12 { padding: 1.5rem !important; }
+      .text-7xl, .text-8xl { font-size: 4rem !important; }
+      .text-5xl { font-size: 2.5rem !important; }
+      .text-4xl { font-size: 2rem !important; }
+      .grid { grid-template-columns: 1fr !important; }
+      .md\:grid-cols-3, .md\:grid-cols-4 { grid-template-columns: 1fr !important; }
+      table { font-size: 0.875rem !important; }
+      table th, table td { padding: 0.75rem !important; }
+    }
+    @media (max-width: 480px) {
+      .p-8, .p-6, .p-12 { padding: 1rem !important; }
+      .text-7xl, .text-8xl { font-size: 3.5rem !important; }
+      .text-5xl { font-size: 2.25rem !important; }
+    }
+    html, body { overscroll-behavior-x: none; }
+    #results .max-w-5xl { max-width: 100% !important; padding-left: 1rem !important; padding-right: 1rem !important; }
+    #results .overflow-x-auto, #results table { width: 100% !important; max-width: 100% !important; table-layout: fixed; overflow-wrap: break-word; }
+    #results table th, #results table td { word-break: break-word; overflow-wrap: anywhere; }
+    .overflow-x-auto { -webkit-overflow-scrolling: touch; }
+    [data-rating] { transition: all 0.2s ease; padding: 0.0rem; border-radius: 9999px; }
+    [data-rating]:hover { background-color: rgba(59, 130, 246, 0.1); }
+    [data-rating].selected-rating:hover { scale: 1.5 !important; background-color: rgba(59, 130, 246, 0.2) !important; }
+    .fixes-toggle, .details-toggle { cursor: pointer; user-select: none; }
+    .fixes-panel, .details-panel { transition: max-height 0.4s ease-out, padding 0.4s ease-out; overflow: hidden; max-height: 0; padding-top: 0; padding-bottom: 0; }
+    .fixes-panel.expanded, .details-panel.expanded { max-height: 4000px; padding: 1.25rem 1rem; }
+    .fixes-panel, .details-panel { padding-left: 1rem; padding-right: 1rem; }
+    .arrow, .details-arrow { transition: transform 0.25s ease; display: inline-block; }
+    .rotate-180 { transform: rotate(180deg); }
+  </style>
+
+  <!-- Inlined print CSS -->
+  <style media="print">
+    /* /seo-entity-extractor-tool/print-v1.1.css */
+    @media print {
+      @page { size: A4 portrait; margin: 12mm; }
+      html, body { background: #ffffff !important; color: #111827 !important; font-size: 11pt; line-height: 1.5; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body::before { content: "TrafficTorch.net ⚖️\A\A Semantic Entity Audit Tool 🎯\A\A Report:\A " attr(data-page-title); display: block; height: 100vh; min-height: 100vh; page-break-after: always; color: #4b5563; font-family: system-ui, -apple-system, sans-serif; font-weight: 900; text-align: center; padding-top: 20vh; line-height: 1.4; white-space: pre; font-size: 2rem; text-shadow: -2px -2px 0 #fb923c, 2px -2px 0 #fb923c, -2px 2px 0 #fb923c, 2px 2px 0 #fb923c, -2px 0 0 #fb923c, 2px 0 0 #fb923c, 0 -2px 0 #fb923c, 0 2px 0 #fb923c, 0 10px 30px rgba(0,0,0,0.5); }
+      #results-wrapper { page-break-before: always; margin-top: 0 !important; }
+      #results-wrapper, #results-wrapper .container, #results-wrapper .max-w-7xl, #results-wrapper .max-w-6xl, #results-wrapper .max-w-5xl, #results-wrapper .max-w-4xl { max-width: none !important; width: 100% !important; margin: 0 !important; padding: 1cm 1.2cm !important; box-sizing: border-box; }
+      .report-section, .tool-result, .analysis-block, .score-card, .fixes-panel, .full-details, .priority-gains, .keyword-gap-table, .seo-score-card, #results .score-card, #priority-gains-section, #priority-cards-container, #plugin-solutions-section, .expand-content, .hidden.mt-6, .hidden.mt-4, .hidden.space-y-6, .hidden.space-y-8 { display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; max-height: none !important; overflow: visible !important; }
+      .score-card, .metric-card, .fixes-panel, .full-details, .bg-white.dark\:bg-gray-800, .bg-orange-50.dark\:bg-orange-900\/20 { page-break-inside: avoid !important; break-inside: avoid !important; }
+      .no-print, header, footer, nav, aside, button, .a2a_kit, #entity-faq, #share-buttons, #tools-grid, #extensions-tools-integrations, #dev-tools, #how-it-works, #faq, #deep-dive, #infographics, #what-is, #three-pillars, #comparison, #keyword-form, #analysis-progress, #upgradeModal, #author-bio, #promo-high-impact-cards, #promo-old-vs-modern-seo, #share-form-container, #feedback-form-container, #plugin-solutions-section, #seo-ux-checklist, .tools-grid, .checklist-card, .bottom-banner, details > summary { display: none !important; }
+      .shadow-lg, .shadow-xl, [class*="shadow"] { box-shadow: none !important; }
+      img { max-width: 100% !important; height: auto !important; }
+      table { page-break-inside: auto; width: 100% !important; }
+      .dark body, body.dark { background: #111827 !important; color: #f3f4f6 !important; }
+      h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+      #results.grid, .grid { display: block !important; }
+    }
+  </style>
+
+  <!-- Structured Data (unchanged) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "name": "Free Semantic Entity Extractor & Audit Tool",
+          "description": "Instant semantic entity analysis tool: Extract named entities, audit coverage, salience, relationships, on-page practices and overall readiness.",
+          "url": "https://traffictorch.net/seo-entity-extractor-tool/",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              "#entity-faq",
+              "p.text-xl.text-gray-500.dark\\:text-gray-300.mt-6",
+              ".max-w-4xl.mx-auto.my-16 details div.mt-8",
+              "section.max-w-4xl.mx-auto.mt-12.mb-12 p.text-2xl.md\\:text-3xl.font-bold.text-center.mb-10.leading-tight",
+              "div.max-w-4xl.mx-auto.my-16 details div.mt-8 section.space-y-5:first-child"
+            ]
+          },
+          "publisher": { "@type": "Organization", "name": "Traffic Torch" }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Traffic Torch Semantic Entity Extractor & Audit Tool",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web Browser",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "description": "Free semantic entity extraction tool. Detects named entities, scores coverage & diversity, salience & prominence, relationships & clusters, on-page practices, provides 0–100 readiness score, AI fixes, competitive insights, and semantic optimizations.",
+          "url": "https://traffictorch.net/seo-entity-extractor-tool/",
+          "image": "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-extractor-tool-1200w.webp",
+          "author": { "@type": "Person", "name": "Ylia Callan", "url": "https://yliacallan.github.io/" },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Traffic Torch",
+            "logo": { "@type": "ImageObject", "url": "https://traffictorch.net/logo-512.webp", "width": 512, "height": 512 }
+          },
+          "datePublished": "2026-03-14T09:34:00+11:00",
+          "dateModified": "2026-06-01T09:49:00+11:00"
+        },
+        {
+          "@type": "Article",
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://traffictorch.net/seo-entity-extractor-tool/" },
+          "headline": "Free Semantic Entity Extractor: Strengthen Topical Relevance with Entities",
+          "description": "Instant tool to extract named entities, audit coverage, salience, relationships & practices, and get prioritized AI fixes. Improve rankings by building stronger semantic entity signals.",
+          "url": "https://traffictorch.net/seo-entity-extractor-tool/",
+          "image": [
+            {
+              "@type": "ImageObject",
+              "url": "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-extractor-tool-1200w.webp",
+              "contentUrl": "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-extractor-tool-1200w.webp",
+              "width": 1200,
+              "height": 630,
+              "caption": "Traffic Torch Semantic Entity Extractor dashboard: AI-powered entity detection, coverage, salience, relationships & practices audit, and optimization fixes"
+            },
+            {
+              "@type": "ImageObject",
+              "url": "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp",
+              "contentUrl": "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp",
+              "width": 800,
+              "height": 257,
+              "caption": "Traffic Torch Semantic Entity Tool overview: AI-powered entity extraction, topical cluster analysis, salience scoring, on-page practices audit, and semantic readiness recommendations for rankings"
+            }
+          ],
+          "author": { "@type": "Person", "name": "Traffic Torch Team", "url": "https://traffictorch.net" },
+          "publisher": { "@type": "Organization", "name": "Traffic Torch", "logo": { "@type": "ImageObject", "url": "https://traffictorch.net/logo-512.webp" } }
+        },
+        {
+          "@type": "Person",
+          "name": "Ylia Callan",
+          "url": "https://yliacallan.github.io/",
+          "sameAs": [
+            "https://g.dev/traffictorch",
+            "https://github.com/traffictorch/",
+            "https://orcid.org/0009-0006-4084-0241",
+            "https://www.wikidata.org/wiki/Q139815165",
+            "https://zenodo.org/records/20149616",
+            "https://github.com/traffictorch/traffic-torch",
+            "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+            "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+            "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+            "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+            "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+            "https://www.framer.com/marketplace/plugins/traffic-torch/",
+            "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+            "https://github.com/marketplace/actions/traffic-torch-audit",
+            "https://www.linkedin.com/in/ylia-callan-8b889976/",
+            "https://x.com/Guitaralize"
+          ],
+          "image": "/images/ylia-callan-320w.webp",
+          "jobTitle": "Founder & Builder",
+          "description": "Musician, Author, Web Designer, and Creator of Privacy-First AI SEO/UX Tools like Traffic Torch",
+          "worksFor": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" },
+            { "@type": "ListItem", "position": 2, "name": "Traffic Torch Semantic Entity Extractor & Audit Tool", "item": "https://traffictorch.net/seo-entity-extractor-tool/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why are semantic entities so critical for SEO",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Google relies heavily on named entities (people, places, things, concepts) and their relationships to understand topic depth and relevance. Pages with clear, salient entities connected logically outrank vague or entity-poor content, especially in AI Overviews and zero-click searches. Traffic Torch scans your page in seconds, extracts visible entities + implied ones, scores salience, and suggests high-impact fixes like entity additions, disambiguation, or relationship markup to recover visibility in entity-driven queries."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I identify and fill topical coverage gaps?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Topical coverage requires comprehensive sub-topic handling with strong entity interconnectivity. Traffic Torch compares your page/cluster against top-ranking competitors, highlights missing sub-entities/topics, and generates fix outlines (new sections, internal links, entity mentions) to build stronger topical authority fast and capture long-tail entity-based traffic."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What makes an entity salient and well-connected in Google's eyes?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Salience comes from frequency, context prominence, relationships to main topic, and supporting signals (headings, bolding, images with alt text). Traffic Torch analyzes entity salience scores, relationship strength (co-occurrence, proximity), and suggests optimizations like better placement, schema (Entity markup if advanced), or content expansion to make key entities more prominent and trusted."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does entity optimization beat competitors?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Competitors often miss secondary entities or weak relationships. Traffic Torch runs side-by-side entity extraction vs. top results, reveals gaps (missing brands, concepts, LSI-like terms), and provides exact insertion points + wording suggestions to leapfrog rankings in semantic search and featured snippets."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How fast can entity fixes impact rankings?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Many entity optimizations (better mentions, salience boosts, relationship clarity) show movement in days to weeks, especially for mid-competitive queries. Traffic Torch provides quick wins and educates on monitoring entity evolution in Search Console + rankings."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <!-- Shared GA4 -->
+  <script src="/shared/google-analytics.js" defer></script>
+  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop Sticky Sidebar -->
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <!-- Main Content – Tool-Specific HTML -->
+      <main class="container mx-auto px-4 py-4 max-w-7xl">
+        <div class="text-center mb-4">
+          <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
+            SEO Entity Extractor & Audit Tool
+          </h1>
+          <p class="text-xl text-gray-500 dark:text-gray-300 mt-4">
+            Extract semantic entities, topics & relationships that search engines see.<br class="hidden md:block">
+          </p>
+        </div>
+
+        <!-- Form -->
+        <div class="max-w-3xl mx-auto mb-10 space-y-4 px-4 py-2">
+          <form id="entity-form" novalidate class="space-y-4">
+            <div>
+              <div class="flex flex-col md:flex-row gap-4">
+                <input type="text" id="url-input" name="url" placeholder="example.com/your-page" aria-label="Enter website URL to analyze for entity extraction" required class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm" autocomplete="url" inputmode="url" spellcheck="false" data-lpignore="true">
+                <button type="button" id="url-analyze-btn" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2">
+                  Analyze URL <span class="text-xl">🧬</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <h2 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
+                Or use Code Analysis 📄
+              </h2>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
+                Paste the full HTML of the page.
+              </p>
+              <textarea id="code-input" name="htmlcode" rows="2" placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Elon Musk and Neuralink&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your full page HTML here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;" class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[120px] shadow-sm" aria-label="Paste HTML code for Entity Extractor and Audit" autocomplete="off" spellcheck="false" data-vscode-ignore="true"></textarea>
+              <div class="mt-4 flex justify-center">
+                <button type="button" id="code-analyze-btn" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+                  Analyze Code <span class="text-xl">🧬</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="hidden text-center mt-12">
+          <div class="inline-flex flex-col items-center gap-6">
+            <div class="relative w-20 h-20">
+              <svg class="animate-spin w-full h-full" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10" stroke-opacity="0.25"/>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#fb923c" stroke-width="10"
+                        stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
+              </svg>
+            </div>
+            <p id="progress-text" class="text-2xl md:text-3xl font-bold text-orange-600 dark:text-orange-400 text-center max-w-md">
+              Analyzing Entities...
+            </p>
+            <p class="text-lg text-gray-700 dark:text-gray-300 text-center max-w-md">
+              Large pages can take up to 2 mins.
+            </p>
+          </div>
+        </div>
+
+        <!-- Upgrade Modal -->
+        <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
+          <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
+            <h2 class="text-xl font-bold mb-4">Daily Limit Reached</h2>
+            <p class="mb-6">You've used all your audits today. Upgrade to Pro USD $48 per year for 25 daily SEO, UX & GEO analysis runs. Secure Stripe Checkout</p>
+            <a href="/pro/" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-600 transition">
+              Upgrade to Pro
+            </a>
+            <button onclick="document.getElementById('upgradeModal').classList.add('hidden')" class="mt-6 block mx-auto text-gray-600 dark:text-gray-400 underline hover:text-gray-800 dark:hover:text-gray-200">
+              Close
+            </button>
+          </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results" class="hidden space-y-16"></div>
+
+        <!-- Copy Link Button -->
+        <div class="center-btn-container mt-12">
+          <button class="copy-link-btn" onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);" data-text="https://traffictorch.net/seo-entity-extractor-tool/">
+            Copy Link? 🔗
+          </button>
+        </div>
+
+        <!-- Accordion: How Tool Works -->
+        <div class="max-w-4xl mx-auto my-16">
+          <details class="group">
+            <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <span>How SEO Semantic Entity Extractor & Audit Tool Works?</span>
+              <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+            </summary>
+            <div class="mt-8 px-2 py-10 bg-gray dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-10 text-gray-700 dark:text-gray-300 leading-relaxed">
+              <section class="space-y-5">
+                <h2 class="text-3xl font-bold text-orange-600 dark:text-orange-400">Instant Semantic Entity Analysis</h2>
+                <p class="text-lg">This advanced semantic entity extractor performs a deep, real-time analysis of your webpage to identify named entities and evaluate key semantic signals: coverage, salience, relationships, and on-page practices.</p>
+                <p class="text-lg">It detects entities (people, organizations, products, locations, concepts, etc.), measures their prominence, topical connections, type diversity, and markup readiness are the core factors modern search and AI systems use to understand page relevance and topical strength.</p>
+                <p class="text-lg">The tool produces module scores (Coverage, Salience, Relationships, Practices) and combines them into an overall Semantic Readiness score out of 100.</p>
+                <p class="text-base italic bg-gray-100 dark:bg-gray-800 p-4 rounded-xl">All processing is 100% client-side and via a secure AI Worker proxy. Your URL and content are never stored or shared. Complete privacy guaranteed.</p>
+              </section>
+              <section class="space-y-6">
+                <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400">Core Semantic Dimensions Evaluated</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div class="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border-l-4 border-blue-500">
+                    <h4 class="font-bold text-blue-600 dark:text-blue-400">Entity Coverage & Diversity</h4>
+                    <p class="mt-2 text-sm">Counts total entities, type variety (person/org/product/location/concept) and density. Builds topical breadth and authority signals.</p>
+                  </div>
+                  <div class="p-6 bg-green-50 dark:bg-green-900/20 rounded-xl border-l-4 border-green-500">
+                    <h4 class="font-bold text-green-600 dark:text-green-400">Entity Salience & Prominence</h4>
+                    <p class="mt-2 text-sm">Measures how prominently entities appear (position, repetition, formatting). Strong salience clarifies main topics for search and AI.</p>
+                  </div>
+                  <div class="p-6 bg-purple-50 dark:bg-purple-900/20 rounded-xl border-l-4 border-purple-500">
+                    <h4 class="font-bold text-purple-600 dark:text-purple-400">Entity Relationships & Clusters</h4>
+                    <p class="mt-2 text-sm">Analyzes co-occurrence, type synergy and topical connections. Creates semantic depth and better matches complex queries.</p>
+                  </div>
+                  <div class="p-6 bg-orange-50 dark:bg-orange-900/20 rounded-xl border-l-4 border-orange-500">
+                    <h4 class="font-bold text-orange-600 dark:text-orange-400">On-Page Semantic Practices</h4>
+                    <p class="mt-2 text-sm">Evaluates heading usage of entities, name consistency and schema readiness. Improves machine readability and rich result potential.</p>
+                  </div>
+                </div>
+              </section>
+              <section class="space-y-5">
+                <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400">How Search & AI Systems Evaluate Semantic Strength</h3>
+                <p class="text-lg">Modern ranking and generative systems look beyond keywords. They assess entity signals to determine topical relevance, depth and trustworthiness.</p>
+                <ul class="space-y-3 text-base list-disc list-inside ml-4">
+                  <li>Are sufficient relevant entities detected with good type diversity?</li>
+                  <li>Do the most important entities appear prominently in visible areas?</li>
+                  <li>Are related entities connected logically through co-occurrence and context?</li>
+                  <li>Are key entities used in headings and consistent in naming?</li>
+                  <li>Is there schema markup potential for detected entity types (Org, Product, LocalBusiness, etc.)?</li>
+                  <li>Does the page structure support clear topical clustering?</li>
+                </ul>
+                <p class="text-lg font-medium">This tool replicates that evaluation by scoring each dimension and delivering an overall Semantic Readiness index + actionable fixes.</p>
+              </section>
+              <section class="bg-gradient-to-r from-orange-100 to-pink-100 dark:from-orange-900/30 dark:to-pink-900/30 p-8 rounded-2xl border border-orange-300 dark:border-orange-700">
+                <h3 class="text-2xl font-bold mb-4 text-orange-700 dark:text-orange-300">Key Insight: Strong Entities = Strong Visibility</h3>
+                <p class="text-base leading-relaxed">Pages with clear, prominent, well-connected entities and good on-page practices perform better in entity-aware search, answer engines and generative AI responses. Weak entity signals (low coverage, poor salience, missing relationships) are a primary reason for underperformance, even with good technical SEO.</p>
+              </section>
+            </div>
+          </details>
+        </div>
+
+        <!-- Learn more link -->
+        <div id="how-it-works" class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/30 dark:to-blue-900/30 p-8 rounded-2xl mt-12 border border-green-200 dark:border-green-800 text-center shadow-md hover:shadow-xl transition-shadow duration-300">
+          <p class="text-xl md:text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-200">
+            Learn more about building stronger semantic entities.
+          </p>
+          <a href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/" class="inline-flex items-center gap-3 px-10 py-6 bg-gradient-to-r from-purple-600 to-cyan-600 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:brightness-110 transition-all duration-300 transform hover:-translate-y-1">
+            Read the Semantic Entity Help Guide →
+          </a>
+          <p class="mt-8 text-lg text-gray-600 dark:text-gray-400">Get step-by-step insights on the six semantic layers (Entities, Coverage, Salience, Relationships, Practices & Readiness), entity extraction, knowledge graph signals, schema optimization, AI visibility, and how to close gaps for stronger rankings, local/geo results, and answer engine performance.</p>
+        </div>
+
+        <!-- FAQ -->
+        <section id="entity-faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+          <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+            Semantic Entities & Topics: Most Common Questions Answered
+          </h2>
+          <p class="text-center text-lg mb-8 max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
+            <a href="/"><strong>Traffic Torch</strong></a> instantly extracts semantic entities, topics, relationships & salience Google sees on your page. Then delivers AI-powered fixes, analysis and education to strengthen topical relevance and entity optimization for 2026 rankings.
+          </p>
+          <div class="space-y-6 max-w-6xl mx-auto">
+            <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+              <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+                Why are semantic entities so critical for SEO?
+                <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+                Google relies heavily on named entities (people, places, things, concepts) and their relationships to understand topic depth and relevance. Pages with clear, salient entities connected logically outrank vague or entity-poor content, especially in AI Overviews and zero-click searches. Traffic Torch scans your page in seconds, extracts visible entities + implied ones, scores salience, and suggests high-impact fixes like entity additions, disambiguation, or relationship markup to recover visibility in entity-driven queries.
+              </div>
+            </details>
+            <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+              <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+                How do I identify and fill topical coverage gaps?
+                <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+                Topical coverage requires comprehensive sub-topic handling with strong entity interconnectivity. Traffic Torch compares your page/cluster against top-ranking competitors, highlights missing sub-entities/topics, and generates fix outlines (new sections, internal links, entity mentions) to build stronger topical authority fast and capture long-tail entity-based traffic.
+              </div>
+            </details>
+            <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+              <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+                What makes an entity salient and well-connected in Google's eyes?
+                <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+                Salience comes from frequency, context prominence, relationships to main topic, and supporting signals (headings, bolding, images with alt text). Traffic Torch analyzes entity salience scores, relationship strength (co-occurrence, proximity), and suggests optimizations like better placement, schema (Entity markup if advanced), or content expansion to make key entities more prominent and trusted.
+              </div>
+            </details>
+            <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+              <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+                How does entity optimization beat competitors?
+                <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+                Competitors often miss secondary entities or weak relationships. Traffic Torch runs side-by-side entity extraction vs. top results, reveals gaps (missing brands, concepts, LSI-like terms), and provides exact insertion points + wording suggestions to leapfrog rankings in semantic search and featured snippets.
+              </div>
+            </details>
+            <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+              <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+                How fast can entity fixes impact rankings?
+                <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+                Many entity optimizations (better mentions, salience boosts, relationship clarity) show movement in days to weeks, especially for mid-competitive queries. Traffic Torch provides quickest wins and educates on monitoring entity evolution in Search Console + rankings.
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <!-- Share Buttons -->
+        <div id="share-buttons" class="py-8 text-center">
+          <div class="flex flex-col items-center gap-4">
+            <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">Share?</strong>
+            <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+              <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+              <a class="a2a_button_email"></a>
+              <a class="a2a_button_x"></a>
+              <a class="a2a_button_reddit"></a>
+              <a class="a2a_button_linkedin"></a>
+              <a class="a2a_button_copy_link"></a>
+            </div>
+          </div>
+        </div>
+        <script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+        <!-- Deep Dive into SEO Entity Modules -->
+        <section id="deep-dive" class="py-4 bg-gray dark:bg-gray-900">
+          <div class="max-w-7xl mx-auto px-2">
+            <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+              Deep Dive into SEO Entity Modules
+            </h2>
+            <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+              <!-- cards injected by module-explanations.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- What is Modern Semantic Entity Optimization -->
+        <section id="what-is" class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            What is Modern Semantic Entity Optimization?
+          </h2>
+          <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-500 dark:text-gray-200">
+            <strong>Modern semantic entity optimization means creating content rich in clear, prominent, well-connected named entities that search engines and AI systems can confidently understand and trust. Which can lead to better rankings, more frequent citations in AI answers, and stronger visibility across SERPs, answer engines, and generative outputs.</strong>
+          </p>
+          <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+            <p>Most sites still focus narrowly on keywords: repeating exact phrases, chasing search volume, producing generic long-form pages. That keyword-centric approach is increasingly deprioritized by entity-aware ranking algorithms that value topical depth, semantic clarity, and machine-readable signals over raw keyword density.</p>
+            <p class="font-semibold text-purple-700 dark:text-purple-300">Today’s highest-performing pages excel across these four core semantic dimensions:</p>
+            <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
+              <li>→ Entity Coverage & Diversity: broad, relevant set of named entities with varied types (people, organizations, products, locations, concepts).</li>
+              <li>→ Entity Salience & Prominence: main entities clearly emphasized through position, repetition, headings, and formatting.</li>
+              <li>→ Entity Relationships & Clusters: logical co-occurrences and topical connections that form meaningful semantic groups.</li>
+              <li>→ On-Page Semantic Practices: consistent entity naming, strategic heading usage, and strong schema readiness (Organization, Product, LocalBusiness, etc.).</li>
+            </ul>
+            <p class="pt-4">Traffic Torch Semantic Entity Extractor & Audit Tool instantly detects entities on your page, scores each of the four dimensions above, calculates an overall Semantic Readiness score (0–100), and provides actionable fixes to strengthen your entity foundation.</p>
+          </div>
+        </section>
+
+        <!-- 5 High-Impact Moves -->
+        <div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            5 High-Impact Moves to Win on Semantic Entities
+          </h2>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+            <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+              <span class="text-4xl flex-shrink-0 text-gray-500">1</span>
+              <div>
+                <strong class="text-gray-500">Build strong entity coverage & diversity</strong><br>
+                <span class="text-gray-600 dark:text-gray-400">Include a broad, relevant set of named entities (brands, people, products, locations, concepts) with good type variety. This creates topical breadth and authority signals search & AI systems reward.</span>
+              </div>
+            </div>
+            <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
+              <span class="text-4xl flex-shrink-0 text-gray-500">2</span>
+              <div>
+                <strong class="text-gray-500">Maximize salience for key entities</strong><br>
+                <span class="text-gray-600 dark:text-gray-400">Place your primary entities in title, H1, first 150–250 words, headings, bold text, and prominent images/alt. High salience clearly communicates main topics and boosts extractability.</span>
+              </div>
+            </div>
+            <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
+              <span class="text-4xl flex-shrink-0 text-gray-500">3</span>
+              <div>
+                <strong class="text-gray-500">Strengthen entity relationships & clusters</strong><br>
+                <span class="text-gray-600 dark:text-gray-400">Group related entities in the same sections, paragraphs, lists, or internal links. Logical co-occurrence and type synergy build topical depth and help search engines form semantic clusters.</span>
+              </div>
+            </div>
+            <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
+              <span class="text-4xl flex-shrink-0 text-gray-500">4</span>
+              <div>
+                <strong class="text-gray-500">Implement on-page semantic best practices</strong><br>
+                <span class="text-gray-600 dark:text-gray-400">Use top entities consistently in headings (H1–H3), standardize naming, and add JSON-LD schema (Organization, Product, LocalBusiness, etc.) Which makes entities machine-readable and increases rich result / AI citation chances.</span>
+              </div>
+            </div>
+            <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+              <span class="text-4xl flex-shrink-0 text-gray-500">5</span>
+              <div>
+                <strong class="text-gray-500">Monitor & improve overall semantic readiness</strong><br>
+                <span class="text-gray-600 dark:text-gray-400">Run Traffic Torch and track Coverage, Salience, Relationships, Practices scores and the combined Readiness index (0–100) to prioritize fixes that deliver the biggest visibility lift in entity-aware search.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Old vs Modern -->
+        <section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            Old Keyword SEO vs Modern Semantic Entity Optimization
+          </h2>
+          <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+            <table class="w-full text-left min-w-[640px]">
+              <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+                <tr>
+                  <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+                  <th class="px-6 py-5 text-lg font-semibold">Old-School Keyword SEO Focus</th>
+                  <th class="px-6 py-5 text-lg font-semibold">Modern Semantic Entity Mastery Focus</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tr>
+                  <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Primary Goal:</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank for high-volume exact keywords.</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Build strong, machine-readable entity signals → better topical relevance & AI/SERP visibility.</td>
+                </tr>
+                <tr class="bg-gray-50 dark:bg-gray-900/50">
+                  <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Content Strategy:</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High keyword density + long generic articles.</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rich entity coverage + diversity + logical topical clusters.</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Optimization Focus:</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Exact-match phrases repeated throughout.</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High salience for key entities + strong relationships & schema readiness.</td>
+                </tr>
+                <tr class="bg-gray-50 dark:bg-gray-900/50">
+                  <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Trust & Quality Signals:</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mostly backlinks & domain age.</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Clear entity prominence + consistent naming + structured data (Organization, Product, LocalBusiness).</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">SERP & AI Alignment:</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Ignored.</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Entity salience + topical clusters mirror top results & support direct extraction.</td>
+                </tr>
+                <tr class="bg-gray-50 dark:bg-gray-900/50">
+                  <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Future-Proofing:</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Vulnerable to algorithm updates.</td>
+                  <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High Semantic Readiness score → resilient in entity-aware search, AEO & generative AI.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">Pages with strong, clear, connected entities and solid on-page semantic practices are rewarded by modern ranking systems and more frequently cited in AI-generated answers.</p>
+        </section>
+
+        <!-- Checklist -->
+        <section id="seo-ux-checklist" class="py-2 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900">
+          <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+            Semantic Entity Optimization Checklist
+          </h2>
+          <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-400 dark:text-gray-300">
+            Master these proven on-page semantic best practices to strengthen entity signals, improve topical relevance and boost visibility in modern search and AI systems.
+          </p>
+          <details class="mb-12 max-w-5xl mx-auto">
+            <summary class="px-6 py-5 text-2xl text-center font-black bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+              Semantic Entity Checklist 🗝️
+            </summary>
+            <div class="mt-8 p-2 bg-gray dark:bg-gray-800/90 rounded-2xl shadow-inner">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-6 shadow-lg">
+                  <h3 class="text-xl font-bold mb-6 text-green-400 flex items-center gap-3"><span class="text-3xl">✅</span> Best Practices to Do</h3>
+                  <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
+                    <li><strong>✅ Build broad entity coverage</strong>: Include a diverse set of relevant named entities (people, organizations, products, locations, concepts).</li>
+                    <li><strong>✅ Maximize key entity salience</strong>: Place primary entities in title, H1, opening paragraphs, headings and prominent formatting.</li>
+                    <li><strong>✅ Strengthen entity relationships</strong>: Group related entities logically in sections, lists and internal links to form topical clusters.</li>
+                    <li><strong>✅ Use consistent entity naming</strong>: Standardize spelling, capitalization and formatting of brands and key terms across the page.</li>
+                    <li><strong>✅ Place entities in headings</strong>: Incorporate top entities naturally into H1, H2 and H3 tags for stronger crawlable signals.</li>
+                    <li><strong>✅ Add schema markup</strong>: Implement JSON-LD for detected entity types (Organization, Product, LocalBusiness, etc.) to improve machine readability.</li>
+                    <li><strong>✅ Support topical depth</strong>: Reference supporting concepts and secondary entities to reinforce semantic clusters.</li>
+                    <li><strong>✅ Optimize alt text with entities</strong>: Use descriptive, entity-rich alt attributes on images for better topical context.</li>
+                    <li><strong>✅ Maintain high semantic readiness</strong>: Regularly audit with Traffic Torch to keep coverage, salience, relationships and practices scores strong.</li>
+                  </ul>
+                </div>
+                <div class="bg-gradient-to-br from-red-900/20 to-orange-900/20 dark:from-red-900/30 dark:to-orange-900/30 rounded-2xl p-6 shadow-lg">
+                  <h4 class="text-xl font-bold mb-6 text-red-400 flex items-center gap-3"><span class="text-3xl">⚠️</span> Common Mistakes to Avoid</h4>
+                  <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
+                    <li><strong>❌ Low entity coverage</strong>: Relying on too few or repetitive entities weakens topical breadth.</li>
+                    <li><strong>❌ Weak entity salience</strong>: Burying main entities deep in content reduces prominence signals.</li>
+                    <li><strong>❌ Missing entity relationships</strong>: Isolated entities fail to form meaningful topical clusters.</li>
+                    <li><strong>❌ Inconsistent naming</strong>: Varying brand or key term spelling harms entity recognition.</li>
+                    <li><strong>❌ No entities in headings</strong>: Missing H1–H3 usage limits crawlable topical signals.</li>
+                    <li><strong>❌ No schema markup</strong>: Forfeits rich results and machine-readable entity context.</li>
+                    <li><strong>❌ Shallow topical depth</strong>: Omitting supporting concepts limits semantic strength.</li>
+                    <li><strong>❌ Poor image alt text</strong>: Generic or missing alt attributes miss entity reinforcement opportunities.</li>
+                    <li><strong>❌ Ignoring semantic gaps</strong>: Not addressing low module scores from the tool delays visibility gains.</li>
+                    <li><strong>❌ Over-relying on keywords</strong>: Keyword stuffing without entity support harms modern rankings.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-8">
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">🗝️</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Optimized Title Tag</p>
+                      <p class="text-gray-700 dark:text-gray-300">Primary entity near front, under 60 characters, clear and compelling for clicks.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">📜</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Compelling Meta Description</p>
+                      <p class="text-gray-700 dark:text-gray-300">150–160 characters featuring key entities and strong call-to-action for better CTR.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">🏗️</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Proper Heading Hierarchy (H1–H6)</p>
+                      <p class="text-gray-700 dark:text-gray-300">One unique H1 with main entity, logical structure using supporting entities for crawlability.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">⚠️</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Avoid Entity Stuffing</p>
+                      <p class="text-gray-700 dark:text-gray-300">Natural placement only. Forced repetition risks reduced salience and trust signals.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-8">
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">🖼️</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Image Optimization & Alt Text</p>
+                      <p class="text-gray-700 dark:text-gray-300">Descriptive alt text containing relevant entities plus compressed files for speed.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">🔗</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Strategic Internal & External Linking</p>
+                      <p class="text-gray-700 dark:text-gray-300">Use entity-rich anchor text for internal links to reinforce topical clusters.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">⚡</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Mobile-Friendly & Lightning Fast</p>
+                      <p class="text-gray-700 dark:text-gray-300">Core Web Vitals optimized (LCP under 2.5s), fully responsive for entity-rich mobile views.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">✅</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Implement Schema Markup</p>
+                      <p class="text-gray-700 dark:text-gray-300">Add JSON-LD for prominent entity types to enable rich results and better AI extraction.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="text-center mt-12 text-xl font-semibold text-gray-800 dark:text-gray-200 max-w-4xl mx-auto">
+                These on-page semantic best practices form the foundation of high-performing pages in entity-aware search. Run the <strong>Semantic Entity Extractor & Audit Tool</strong> for an instant audit with fixes tailored to your content.
+              </p>
+            </div>
+          </details>
+        </section>
+
+        <!-- Why Semantic Entity Optimization Matters Accordion -->
+        <div class="max-w-4xl mx-auto my-16">
+          <details class="group">
+            <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <span>Why Semantic Entity Optimization Matters?</span>
+              <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+            </summary>
+            <div class="mt-8 px-2 py-10 bg-gray dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-10 text-gray-700 dark:text-gray-300 leading-relaxed">
+              <section class="space-y-5">
+                <h2 class="text-3xl font-bold text-purple-600 dark:text-purple-400">Strong Semantic Entities Are the Foundation of Modern Rankings</h2>
+                <p class="text-lg">Modern search and AI systems go far beyond keyword density. They evaluate how clearly, prominently and meaningfully named entities appear on the page while forming logical topical connections and machine-readable signals.</p>
+                <p class="text-lg">A page with perfect keyword placement but weak entity coverage, low salience, poor relationships or missing on-page practices will consistently underperform against competitors with stronger semantic structure.</p>
+                <p class="text-lg font-medium">Low semantic readiness, weak coverage, salience, relationships or practices is one of the leading causes of limited visibility in entity-aware search, answer engines and generative AI responses.</p>
+              </section>
+              <section class="space-y-6">
+                <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Proven Benefits of Strong Semantic Entity Optimization</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div class="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-xl border-l-4 border-blue-500">
+                    <div class="text-4xl mb-3">🎯</div>
+                    <h4 class="font-bold text-blue-600 dark:text-blue-400">Higher & More Stable Rankings</h4>
+                    <p class="mt-2 text-sm">Pages rich in prominent, well-connected entities gain sustained top positions in entity-driven search results.</p>
+                  </div>
+                  <div class="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl border-l-4 border-green-500">
+                    <div class="text-4xl mb-3">📈</div>
+                    <h4 class="font-bold text-green-600 dark:text-green-400">Better AI & Answer Engine Visibility</h4>
+                    <p class="mt-2 text-sm">Clear entity salience and strong topical clusters increase chances of direct inclusion in AI overviews and generative summaries.</p>
+                  </div>
+                  <div class="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl border-l-4 border-purple-500">
+                    <div class="text-4xl mb-3">🛡️</div>
+                    <h4 class="font-bold text-purple-600 dark:text-purple-400">Future-Proof Against Algorithm Shifts</h4>
+                    <p class="mt-2 text-sm">Content built on high semantic readiness consistently performs well during entity-focused ranking updates.</p>
+                  </div>
+                  <div class="p-6 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/30 dark:to-red-900/30 rounded-xl border-l-4 border-orange-500">
+                    <div class="text-4xl mb-3">🔍</div>
+                    <h4 class="font-bold text-orange-600 dark:text-orange-400">Improved Topical Authority Signals</h4>
+                    <p class="mt-2 text-sm">Robust entity coverage, relationships and practices strengthen how search systems perceive depth and relevance on the topic.</p>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </details>
+        </div>
+
+        <!-- SEO Tools Grid -->
+        <div class="my-16"></div>
+        <div class="tools-grid max-w-7xl mx-auto px-2">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">SEO Tools</h2>
+          <div class="grid md:grid-cols-3 gap-8">
+            <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
+                <h3 class="text-green-400 text-2xl font-bold mb-3">Topical Authority Tool</h3>
+                <p class="text-gray-800 dark:text-gray-100">Detect main topics & subtopics</p>
+              </div>
+            </a>
+            <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+                <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+                <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+              </div>
+            </a>
+            <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+                <h3 class="text-green-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+                <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+              </div>
+            </a>
+            <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
+                <h3 class="text-green-400 text-2xl font-bold mb-3">Schema Generator Tool</h3>
+                <p class="text-gray-800 dark:text-gray-100">Detect & Generate Schema Markups</p>
+              </div>
+            </a>
+            <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+                <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO</h3>
+                <p class="text-gray-800 dark:text-gray-100">On-page Local SEO Audit</p>
+              </div>
+            </a>
+            <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+                <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+                <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Extensions, Tools & Integrations -->
+        <section id="extensions-tools-integrations" class="py-8">
+          <div class="max-w-7xl mx-auto px-2">
+            <div class="text-center mb-16">
+              <h2 class="text-3xl md:text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-500">
+                Traffic Torch Extensions, Tools & Integrations
+              </h2>
+              <p class="text-xl text-gray-800 dark:text-gray-200 max-w-3xl mx-auto leading-relaxed">
+                Supercharge your workflow with Traffic Torch SEO audit tools. Install browser extensions for instant audits,
+                add developer tools to your VS Code and Github, and bring powerful analysis directly into WordPress, Figma, Framer
+                and more. One-click 360° health scoring, reports, fixes, and insights wherever you work.
+              </p>
+            </div>
+            <div class="grid md:grid-cols-4 xl:grid-cols-4 gap-8">
+              <!-- Chrome -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-red-500/50 group-hover:border-red-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🌐</div>
+                    <h3 class="text-red-400 text-2xl text-center font-bold mb-3">Chrome Extension</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Full AI SEO & UX audit toolkit directly in Chrome. Instant 360° health score, reports, and fixes.</p>
+                  </div>
+                  <a href="https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- Firefox -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-orange-500/50 group-hover:border-orange-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🦊</div>
+                    <h3 class="text-orange-400 text-2xl text-center font-bold mb-3">Firefox Extension</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">360° AI SEO & UX health score, reports, and priority fixes inside Firefox.</p>
+                  </div>
+                  <a href="https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- Edge -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-blue-500 group-hover:border-blue-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🔷</div>
+                    <h3 class="text-blue-400 text-2xl text-center font-bold mb-3">Edge Extension</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Traffic Torch SEO, GEO & UX toolkit with help guides for Microsoft Edge.</p>
+                  </div>
+                  <a href="https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- VS Code -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-purple-500 group-hover:border-purple-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🛠️</div>
+                    <h3 class="text-purple-400 text-2xl text-center font-bold mb-3">VS Code Extension</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Real-time SEO, GEO & UX health scoring and implementation analysis for HTML in Visual Studio Code.</p>
+                  </div>
+                  <a href="https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- WordPress -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-red-500/50 group-hover:border-red-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">📘</div>
+                    <h3 class="text-red-400 text-2xl text-center font-bold mb-3">WordPress Plugin</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">One-click AI SEO & UX analysis in your WordPress dashboard. Auto-scans posts, pages & products.</p>
+                  </div>
+                  <a href="https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- Figma -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-blue-500 group-hover:border-cyan-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🎨</div>
+                    <h3 class="text-cyan-400 text-2xl text-center font-bold mb-3">Figma Plugin</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Real-time AI SEO & UX scoring inside Figma. Check headings, contrast, mobile layouts before hand-off.</p>
+                  </div>
+                  <a href="https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- Framer -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300 border border-green-500/50">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-green-500/50 group-hover:border-green-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🔥</div>
+                    <h3 class="text-emerald-400 text-2xl text-center font-bold mb-3">Framer Plugin</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Official plugin for Framer. Auto-detects site URL and launches any Traffic Torch tool with one click.</p>
+                  </div>
+                  <a href="https://www.framer.com/marketplace/plugins/traffic-torch/" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-green-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- GitHub Action -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-orange-500 group-hover:border-orange-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🚀</div>
+                    <h3 class="text-orange-400 text-2xl text-center font-bold mb-3">GitHub Action</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">One-click SEO + GEO + UX Health Analysis. Instantly opens the full Traffic Torch experience with your URL pre-filled.</p>
+                  </div>
+                  <a href="https://github.com/marketplace/actions/traffic-torch-audit" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Add →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Author Bio -->
+        <section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box">
+          <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+              <div class="flex flex-col items-center gap-6 mb-6">
+                <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+              </div>
+              <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+              <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">Semantic Entity Extractor & Audit Tool.</p>
+            </div>
+            <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+              <div class="space-y-6">
+                <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+                  The Semantic Entity Extractor & Audit Tool detects named entities on your page and scores key dimensions (Coverage, Salience, Relationships, Practices) to reveal semantic strength. It provides clear, fixe suggestions to improve topical relevance, machine readability and performance in entity-aware search systems.
+                </p>
+              </div>
+              <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+                  <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+                    <img src="/images/ylia-callan-320w.webp" srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w" sizes="(max-width: 768px) 96px, 128px" alt="Ylia Callan – Founder" class="w-full h-full object-cover object-center" loading="lazy">
+                  </div>
+                  <div class="space-y-4 text-center md:text-left">
+                    <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+                    <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">Musician • Author • Researcher • Web Designer • TAFE NSW Australia • Creator of open-source SEO entity tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+                      <a href="https://g.dev/traffictorch" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Google</a>
+                      <a href="https://github.com/traffictorch" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">GitHub</a>
+                      <a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">LinkedIn</a>
+                      <a href="https://x.com/Guitaralize" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">X</a>
+                      <a href="https://yliacallan.github.io/music/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Ylia</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Server Stacks</h3>
+                <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+                  Hosted via <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub</a> for blazing-fast static delivery and updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations.
+                </p>
+                <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+                  Refined using live SERP data, user behavior signals, and correlation studies from high-ranking pages across competitive niches.
+                </p>
+                <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+                  <p>Published: 2026-03-14</p>
+                  <p>Last updated: 2026-06-01</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Share Buttons (again) -->
+        <div id="share-buttons" class="py-8 text-center">
+          <div class="flex flex-col items-center gap-4">
+            <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">Share?</strong>
+            <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+              <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+              <a class="a2a_button_email"></a>
+              <a class="a2a_button_x"></a>
+              <a class="a2a_button_reddit"></a>
+              <a class="a2a_button_linkedin"></a>
+              <a class="a2a_button_copy_link"></a>
+            </div>
+          </div>
+        </div>
+        <script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+          <div class="inline-block">
+            <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+              <a href="/">Traffic Torch</a>
+            </p>
+            <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+              <span id="page-name"></span>
+            </p>
+          </div>
+        </nav>
+
+        <script>
+          document.getElementById('page-name').textContent = document.title
+            .replace('Traffic Torch – ', '')
+            .replace(' | Traffic Torch', '')
+            .replace(' Tool', '')
+            .trim();
+        </script>
+
+        <section class="bottom-banner" aria-label="Traffic Torch semantic entity optimization summary">
+          <picture>
+            <source media="(max-width: 640px)" srcset="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-480x154.webp">
+            <source media="(min-width: 641px)" srcset="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp">
+            <img src="https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp" alt="Semantic Entity Extractor & Optimization Tool" width="800" height="257" loading="lazy" decoding="async">
+          </picture>
+        </section>
+
+      </main>
+
+      <!-- Footer Placeholder -->
+      <div id="footer-placeholder"></div>
+    </div>
+  </div>
+
+  <!-- ========== EXTERNAL SHARED SCRIPT (correct path) ========== -->
+  <script type="module" src="/main-v1.1.js"></script>
+
+  <!-- ========== INLINED TOOL SCRIPT (all modules + main logic) ========== -->
+  <script type="module">
+    // ------------------------------------------------------------------
+    // 1. Module: coverage.js
+    // ------------------------------------------------------------------
+    export function analyzeCoverage(extracted, cleanedText = '') {
+      if (!Array.isArray(extracted)) {
+        extracted = [];
+      }
+      const entityCount = extracted.length;
+      let wordCount = 0;
+      if (cleanedText && typeof cleanedText === 'string') {
+        wordCount = cleanedText.split(/\s+/).filter(Boolean).length;
+      } else {
+        wordCount = Math.round(entityCount * 18 + 120);
+      }
+      const isShortPage = wordCount < 400;
+      const density = wordCount > 0 ? (entityCount / wordCount) * 100 : 0;
+      let densityGrade = 'bad';
+      if (density >= 0.4 && density <= 5.5) {
+        densityGrade = 'good';
+      } else if (density > 5.5 && density <= 9) {
+        densityGrade = 'warning';
+      } else if (isShortPage && density > 0.35) {
+        densityGrade = 'good';
+      } else if (density > 0) {
+        densityGrade = 'warning';
+      }
+      const typeCounts = extracted.reduce((acc, e) => {
+        const t = (e?.type || 'OTHER').toUpperCase();
+        acc[t] = (acc[t] || 0) + 1;
+        return acc;
+      }, {});
+      const diversity = Object.keys(typeCounts).length;
+      const weightedDiversity =
+        (typeCounts.CONCEPT      || 0) * 1.6 +
+        (typeCounts.ORGANIZATION  || 0) * 1.3 +
+        (typeCounts.PERSON        || 0) * 1.25 +
+        (typeCounts.PRODUCT       || 0) * 1.15 +
+        (typeCounts.LOCATION      || 0) * 0.9  +
+        (typeCounts.TECHNOLOGY    || 0) * 0.85 +
+        (typeCounts.OTHER         || 0) * 0.5;
+      let score = 0;
+      if (entityCount === 0) {
+        score = 5;
+      } else if (entityCount < (isShortPage ? 5 : 10)) {
+        score = Math.min(45, entityCount * (isShortPage ? 9 : 4.8));
+      } else {
+        if (entityCount >= (isShortPage ? 14 : 35)) score += 48;
+        else if (entityCount >= (isShortPage ? 10 : 24)) score += 38;
+        else if (entityCount >= (isShortPage ? 6 : 15)) score += 28;
+        else score += 16;
+        const densityBonus = entityCount >= (isShortPage ? 4 : 7)
+          ? Math.min(28, Math.log1p(density * 15) * 10)
+          : Math.min(12, density * 8);
+        score += densityBonus;
+        let diversityBonus = Math.min(32, weightedDiversity * 4.2);
+        if (typeCounts.LOCATION >= 3 && typeCounts.ORGANIZATION >= 1) {
+          diversityBonus += 12;
+        }
+        if (typeCounts.CONCEPT >= 4 && diversity >= 5) {
+          diversityBonus += 8;
+        }
+        score += diversityBonus;
+        if (diversity <= (isShortPage ? 2 : 4) && entityCount >= (isShortPage ? 7 : 12)) {
+          score -= 14;
+        }
+      }
+      score = Math.max(5, Math.min(100, Math.round(score)));
+      const metrics = [
+        { text: `Total entities: ${entityCount}`, grade: entityCount >= (isShortPage ? 12 : 25) ? 'good' : entityCount >= (isShortPage ? 6 : 12) ? 'warning' : 'bad' },
+        { text: `Approx. word count: ${wordCount.toLocaleString()}`, grade: wordCount >= 900 ? 'good' : wordCount >= 450 ? 'warning' : 'bad' },
+        { text: `Entity density: ${density.toFixed(2)}%`, grade: densityGrade },
+        { text: `Type diversity: ${diversity} types`, grade: diversity >= (isShortPage ? 5 : 7) ? 'good' : diversity >= (isShortPage ? 3 : 5) ? 'warning' : 'bad' },
+        { text: `Weighted diversity score: ${weightedDiversity.toFixed(1)}`, grade: weightedDiversity >= 18 ? 'good' : weightedDiversity >= 10 ? 'warning' : 'bad' }
+      ];
+      const failed = [];
+      if (entityCount < (isShortPage ? 6 : 11)) {
+        failed.push({ text: "Entity count is quite low. Add more relevant named entities (brands, people, products, locations, concepts) naturally — especially in headings, first paragraphs and image alt text.", grade: 'bad' });
+      }
+      if (density < 0.45 && !isShortPage && entityCount > 0) {
+        failed.push({ text: "Entity density is rather low for a normal-length page. Weave 4–8 more related entities into the body copy, subheadings and lists without forcing it.", grade: 'bad' });
+      }
+      if (density > 7.5 && !isShortPage) {
+        failed.push({ text: "Entity density is unusually high — possible keyword stuffing signal. Reduce repetition of the same few entities and spread supporting entities more naturally.", grade: 'warning' });
+      }
+      if (diversity < (isShortPage ? 3 : 5)) {
+        failed.push({ text: `Low type diversity (${diversity} different types). Try to include at least one more type — for example add CONCEPTS if mostly ORGANIZATION/PERSON, or LOCATION/PRODUCT if missing.`, grade: 'bad' });
+      }
+      if (weightedDiversity < 8 && entityCount >= 8) {
+        failed.push({ text: "Weighted topical diversity is weak. Strengthen with more semantically rich entities (CONCEPT, ORGANIZATION, PRODUCT usually give highest weight).", grade: 'bad' });
+      }
+      if (typeCounts.LOCATION >= 1 && typeCounts.ORGANIZATION === 0 && entityCount >= 6) {
+        failed.push({ text: "You mention location(s) but no clear ORGANIZATION/brand. Adding your business name consistently (and preferably schema) would significantly improve local signals.", grade: 'warning' });
+      }
+      return { score, metrics, failed };
+    }
+
+    // ------------------------------------------------------------------
+    // 2. Module: salience.js
+    // ------------------------------------------------------------------
+    export function analyzeSalience(extracted) {
+      if (!Array.isArray(extracted) || extracted.length === 0) {
+        return {
+          score: 15,
+          metrics: [ { text: "No entities detected – salience cannot be evaluated", grade: 'bad' } ],
+          failed: [ { text: "No named entities were found on the page. Add your main topic/brand, key people, products or concepts — especially in the title, H1, opening paragraph and prominent images.", grade: 'bad' } ]
+        };
+      }
+      const entities = extracted.map(e => ({
+        ...e,
+        salience: Math.max(0, Math.min(1, e.salience ?? 0.4)),
+        text: (e.text || '').trim()
+      })).filter(e => e.text.length > 0);
+      const entityCount = entities.length;
+      if (entityCount === 0) return analyzeSalience([]);
+      const sorted = [...entities].sort((a, b) => b.salience - a.salience);
+      const avgSalience   = entities.reduce((sum, e) => sum + e.salience, 0) / entityCount;
+      const topSalience   = sorted[0]?.salience ?? 0;
+      const strongCount   = sorted.filter(e => e.salience > 0.62).length;
+      const veryStrongCount = sorted.filter(e => e.salience > 0.82).length;
+      const dropIndex = Math.min(4, entityCount - 1);
+      const salienceDrop = topSalience - (sorted[dropIndex]?.salience ?? 0);
+      const isFlat = salienceDrop < 0.28 && strongCount > Math.max(4, Math.floor(entityCount * 0.45));
+      let score = Math.round(avgSalience * 68);
+      const isVeryShort = entityCount <= 4;
+      const isShortFocus = entityCount <= 9;
+      if (isVeryShort) {
+        score = Math.round(avgSalience * 92 + entityCount * 6);
+        if (topSalience >= 0.93) score += 12;
+        if (entityCount <= 2) score -= 18;
+        score = Math.min(78, score);
+      } else if (isShortFocus) {
+        score = Math.round(avgSalience * 105);
+        if (topSalience >= 0.91) score += 20;
+        if (strongCount >= 0.6 * entityCount) score += 14;
+        if (veryStrongCount >= 1) score += 9;
+        if (isFlat && entityCount >= 6) score -= 12;
+        score = Math.min(93, score);
+      } else {
+        if (topSalience >= 0.93) score += 24;
+        else if (topSalience >= 0.84) score += 16;
+        else if (topSalience >= 0.70) score += 9;
+        if (strongCount >= Math.max(7, entityCount * 0.45)) score += 19;
+        else if (strongCount >= Math.max(4, entityCount * 0.32)) score += 11;
+        if (veryStrongCount >= 3) score += 12;
+        else if (veryStrongCount >= 1) score += 6;
+        if (isFlat && entityCount >= 14) score -= 20;
+        else if (isFlat && entityCount >= 9) score -= 11;
+      }
+      score = Math.max(10, Math.min(100, Math.round(score)));
+      const top3Display = sorted.slice(0, 3)
+        .map(e => `${e.text} (${(e.salience * 100).toFixed(0)}%)`)
+        .join(' • ') || 'None prominent';
+      const metrics = [
+        { text: `Average salience: ${avgSalience.toFixed(2)}`, grade: avgSalience >= 0.75 ? 'good' : avgSalience >= 0.60 ? 'warning' : 'bad' },
+        { text: `Top entity salience: ${(topSalience * 100).toFixed(0)}%`, grade: topSalience >= 0.85 ? 'good' : topSalience >= 0.70 ? 'warning' : 'bad' },
+        { text: `Strong entities (>62%): ${strongCount} / ${entityCount}`, grade: strongCount >= entityCount * 0.70 ? 'good' : strongCount >= entityCount * 0.50 ? 'warning' : 'bad' },
+        { text: `Top 3 entities: ${top3Display}`, grade: topSalience >= 0.82 ? 'good' : topSalience >= 0.65 ? 'warning' : 'bad' },
+        { text: `Distribution: ${isFlat ? 'Flat / unclear focus' : 'Good hierarchy'}`, grade: !isFlat && entityCount >= 3 ? 'good' : entityCount >= 2 ? 'warning' : 'bad' }
+      ];
+      const failed = [];
+      if (entityCount < 4) {
+        failed.push({ text: "Very few entities detected. Salience/prominence cannot be meaningfully evaluated with fewer than 4 entities. Add your main topic/brand and supporting entities in prominent positions.", grade: 'bad' });
+      }
+      if (topSalience < 0.75 && entityCount >= 2) {
+        failed.push({ text: "Main topic / brand has weak prominence. Move your primary entity into title tag, H1, first 100 words, and repeat naturally in visible areas.", grade: 'bad' });
+      }
+      if (strongCount < Math.max(1, Math.floor(entityCount * 0.6)) && entityCount >= 3) {
+        failed.push({ text: "Too few strongly emphasized entities. Place key terms in headings, bold tags, or early sections to build clearer authority signals.", grade: 'bad' });
+      }
+      if (isFlat && entityCount >= 4) {
+        failed.push({ text: "Salience distribution is too flat. Create clearer hierarchy: make one primary entity dominant in title, H1, intro, and headings.", grade: 'bad' });
+      }
+      if (avgSalience < 0.55 && entityCount >= 3) {
+        failed.push({ text: "Overall entity prominence is low. Bring key topics closer to the top of the page and use them in high-attention areas (headings, first paragraphs).", grade: 'bad' });
+      }
+      return { score, metrics, failed };
+    }
+
+    // ------------------------------------------------------------------
+    // 3. Module: relationships.js
+    // ------------------------------------------------------------------
+    export function analyzeRelationships(extracted) {
+      if (!Array.isArray(extracted) || extracted.length < 2) {
+        return {
+          score: 12,
+          metrics: [ { text: "Too few entities to evaluate relationships", grade: 'bad' } ],
+          failed: [ { text: "Fewer than 2 named entities detected. Add related people, organizations, products, concepts or locations to create topical connections and improve semantic depth.", grade: 'bad' } ]
+        };
+      }
+      const topEntities = [...extracted]
+        .filter(e => (e.text || '').trim().length > 1)
+        .sort((a, b) => (b.salience ?? 0.4) - (a.salience ?? 0.4))
+        .slice(0, 18)
+        .map(e => ({
+          text: (e.text || '').trim().toLowerCase(),
+          type: (e.type || 'OTHER').toUpperCase(),
+          salience: Math.max(0, Math.min(1, e.salience ?? 0.4))
+        }));
+      const entityCount = topEntities.length;
+      let coMentionPairs = 0;
+      const strongPairExamples = [];
+      for (let i = 0; i < entityCount - 1; i++) {
+        for (let j = i + 1; j < entityCount; j++) {
+          coMentionPairs++;
+          if (strongPairExamples.length < 4 &&
+              topEntities[i].salience > 0.58 &&
+              topEntities[j].salience > 0.48) {
+            strongPairExamples.push(`${topEntities[i].text} ↔ ${topEntities[j].text}`);
+          }
+        }
+      }
+      const typeSet = new Set(topEntities.map(e => e.type));
+      let synergyScore = 0;
+      if (typeSet.has('CONCEPT') && (typeSet.has('ORGANIZATION') || typeSet.has('PERSON'))) {
+        synergyScore += 18;
+      }
+      if (typeSet.has('PRODUCT') && (typeSet.has('PERSON') || typeSet.has('ORGANIZATION'))) {
+        synergyScore += 15;
+      }
+      if (typeSet.has('TECHNOLOGY') && typeSet.has('CONCEPT')) {
+        synergyScore += 12;
+      }
+      if (typeSet.has('LOCATION') && typeSet.size >= 4) {
+        synergyScore += 10;
+      }
+      const locationCount = topEntities.filter(e => e.type === 'LOCATION').length;
+      if (typeSet.has('ORGANIZATION') && locationCount >= 2) {
+        synergyScore += 16;
+      }
+      if (typeSet.has('ORGANIZATION') && locationCount >= 4) {
+        synergyScore += 8;
+      }
+      const coMentionScore = Math.min(58, Math.round(Math.log1p(coMentionPairs) * 11.5));
+      const diversityBonus = Math.min(28, typeSet.size * 7.2);
+      let score = 0;
+      if (entityCount < 6) {
+        score = Math.min(38, coMentionPairs * 7 + synergyScore * 0.6);
+      } else {
+        score = coMentionScore + synergyScore + diversityBonus;
+        if (coMentionPairs < 18 && entityCount >= 10) {
+          score -= 14;
+        }
+      }
+      score = Math.max(8, Math.min(100, Math.round(score)));
+      const metrics = [
+        { text: `Entities considered: ${entityCount}`, grade: entityCount >= 12 ? 'good' : entityCount >= 7 ? 'warning' : 'bad' },
+        { text: `Possible co-mention pairs: ${coMentionPairs}`, grade: coMentionPairs >= 45 ? 'good' : coMentionPairs >= 20 ? 'warning' : 'bad' },
+        { text: `Type synergy bonus: +${synergyScore}`, grade: synergyScore >= 25 ? 'good' : synergyScore >= 12 ? 'warning' : 'bad' },
+        { text: `Example related pairs: ${strongPairExamples.length ? strongPairExamples.join(' • ') : 'None prominent'}`, grade: strongPairExamples.length >= 3 ? 'good' : strongPairExamples.length >= 1 ? 'warning' : 'bad' },
+        { text: `Relationship strength: ${coMentionScore > 42 ? 'Strong' : coMentionScore > 24 ? 'Moderate' : 'Weak'}`, grade: coMentionScore > 42 ? 'good' : coMentionScore > 24 ? 'warning' : 'bad' }
+      ];
+      const failed = [];
+      if (entityCount < 6) {
+        failed.push({ text: "Too few entities detected (only " + entityCount + "). Relationships/clustering can't be meaningfully evaluated with fewer than 5–6 entities. Add more related named entities (people, products, concepts, locations, brands) to enable topical connections.", grade: 'bad' });
+      }
+      if (coMentionPairs < 22 && entityCount >= 5) {
+        failed.push({ text: "Limited entity co-occurrences detected (" + coMentionPairs + " pairs). Group related entities in the same sections, paragraphs or lists — this helps search engines see meaningful topical connections and build clusters.", grade: 'bad' });
+      }
+      if (typeSet.size < (entityCount > 12 ? 5 : 4) && score < 100) {
+        failed.push({ text: `Narrow range of entity types (${typeSet.size} unique types). Broaden topical coverage by naturally including complementary types (e.g. add CONCEPTS, PEOPLE or PRODUCTS if missing).`, grade: 'bad' });
+      }
+      if (synergyScore < 15 && entityCount >= 6) {
+        failed.push({ text: "Weak type synergy (" + synergyScore + " bonus). Try connecting your main entities with supporting ones — for example: brand + product, person + concept, organization + location. This builds stronger entity clusters.", grade: 'bad' });
+      }
+      if (typeSet.has('LOCATION') && !typeSet.has('ORGANIZATION') && locationCount >= 3) {
+        failed.push({ text: "Locations are mentioned but no clear organization/brand entity. Adding your business name consistently (and ideally LocalBusiness schema) would greatly strengthen geographic + brand signals.", grade: 'warning' });
+      }
+      if (coMentionScore < 28 && entityCount >= 8) {
+        failed.push({ text: "Topical clustering appears weak. Consider using internal links with descriptive anchors, grouping related topics in dedicated sections, and/or implementing Entity / Mention schema markup.", grade: 'bad' });
+      }
+      return { score, metrics, failed };
+    }
+
+    // ------------------------------------------------------------------
+    // 4. Module: practices.js
+    // ------------------------------------------------------------------
+    export function analyzePractices(extracted) {
+      if (!Array.isArray(extracted) || extracted.length === 0) {
+        return {
+          score: 8,
+          metrics: [ { text: "No entities detected – practices cannot be evaluated", grade: 'bad' } ],
+          failed: [ { text: "No named entities found on the page. Add relevant brands, people, products, organizations, concepts or locations to unlock schema opportunities and better on-page signals.", grade: 'bad' } ]
+        };
+      }
+      const sortedBySalience = [...extracted].sort((a, b) => (b.salience ?? 0.4) - (a.salience ?? 0.4));
+      const typeCounts = extracted.reduce((acc, e) => {
+        const t = (e?.type || 'OTHER').toUpperCase();
+        acc[t] = (acc[t] || 0) + 1;
+        return acc;
+      }, {});
+      const hasPerson     = !!typeCounts.PERSON;
+      const hasOrg        = !!typeCounts.ORGANIZATION;
+      const hasProduct    = !!typeCounts.PRODUCT;
+      const hasConcept    = !!typeCounts.CONCEPT;
+      const hasLocation   = !!typeCounts.LOCATION;
+      const topThirdCount = Math.ceil(extracted.length * 0.32);
+      const likelyHeadingEntities = Math.min(topThirdCount, sortedBySalience.length);
+      const normalizedNames = new Set(
+        extracted.map(e =>
+          (e.text || '')
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, ' ')
+            .replace(/[^a-z0-9 ]/g, '')
+        ).filter(Boolean)
+      );
+      const consistencyPercent = extracted.length > 0
+        ? (normalizedNames.size / extracted.length) * 100
+        : 0;
+      let schemaPotential = 0;
+      if (hasPerson)     schemaPotential += 22;
+      if (hasOrg)        schemaPotential += 22;
+      if (hasProduct)    schemaPotential += 18;
+      if (hasConcept && extracted.length >= 12) schemaPotential += 16;
+      if (hasLocation)   schemaPotential += 10;
+      const locationCount = typeCounts.LOCATION || 0;
+      if (hasOrg && locationCount >= 2) {
+        schemaPotential += 14;
+      }
+      if (hasOrg && locationCount >= 4) {
+        schemaPotential += 8;
+      }
+      if (hasConcept && hasOrg && extracted.length >= 15) {
+        schemaPotential += 10;
+      }
+      schemaPotential = Math.min(100, schemaPotential);
+      const headingScore = Math.min(32, likelyHeadingEntities * 4.2);
+      let score = 0;
+      if (extracted.length < 7) {
+        score = Math.round(schemaPotential * 0.55 + headingScore * 0.45);
+        score = Math.min(38, score);
+      } else {
+        score += Math.min(55, schemaPotential * 0.65);
+        score += headingScore;
+        if (extracted.length >= 10 && consistencyPercent >= 92) {
+          score += 12;
+        } else if (extracted.length >= 8 && consistencyPercent >= 84) {
+          score += 6;
+        }
+      }
+      score = Math.max(5, Math.min(100, Math.round(score)));
+      const metrics = [
+        { text: `Schema potential: ${Math.round(schemaPotential)}/100`, grade: schemaPotential >= 65 ? 'good' : schemaPotential >= 40 ? 'warning' : 'bad' },
+        { text: `Likely in headings: ~${likelyHeadingEntities} entities (top ~${Math.round(100 * 0.32)}%)`, grade: likelyHeadingEntities >= 6 ? 'good' : likelyHeadingEntities >= 3 ? 'warning' : 'bad' },
+        { text: `Name consistency: ${consistencyPercent.toFixed(0)}% (${normalizedNames.size} unique normalized forms)`, grade: consistencyPercent >= 90 ? 'good' : consistencyPercent >= 80 ? 'warning' : 'bad' }
+      ];
+      const failed = [];
+      if (schemaPotential < 38) {
+        const suggestions = [];
+        if (hasPerson) suggestions.push("Person");
+        if (hasOrg) suggestions.push("Organization");
+        if (hasProduct) suggestions.push("Product");
+        if (hasConcept) suggestions.push("Article / WebPage");
+        if (hasLocation && hasOrg) suggestions.push("LocalBusiness");
+        failed.push({ text: `Low schema readiness (${Math.round(schemaPotential)}/100). Add JSON-LD structured data for: ${suggestions.length ? suggestions.join(', ') : 'the most prominent entity types detected'}. Start with Organization or LocalBusiness if applicable.`, grade: 'bad' });
+      }
+      if (likelyHeadingEntities < 4) {
+        failed.push({ text: `Very few high-salience entities appear to be used in headings (~${likelyHeadingEntities}). Place your top entities (${sortedBySalience[0]?.text || 'main topic'}, ${sortedBySalience[1]?.text || ''}, etc.) into H1, H2 and some H3 tags to create stronger topical signals and improve crawlability.`, grade: 'bad' });
+      }
+      if (consistencyPercent < 84 && extracted.length >= 8) {
+        failed.push({ text: `Inconsistent entity naming detected (${consistencyPercent.toFixed(0)}%). Standardize spelling, capitalization and formatting of key names (especially brand/business name) across the entire page — including title, headings, body and alt text.`, grade: 'bad' });
+      }
+      if (!hasOrg && hasLocation && locationCount >= 3) {
+        failed.push({ text: "You mention multiple locations but no clear organization/brand. Adding a consistent Organization entity (business name) + LocalBusiness schema would dramatically improve local SEO strength.", grade: 'warning' });
+      }
+      if (extracted.length >= 12 && schemaPotential < 50 && !hasOrg && !hasProduct) {
+        failed.push({ text: "Page has decent entity volume but lacks strong schema candidates (no Organization or Product detected). Consider explicitly marking your brand/business or main offering as Organization/Product in content and schema.", grade: 'warning' });
+      }
+      return { score, metrics, failed };
+    }
+
+    // ------------------------------------------------------------------
+    // 5. Module: readiness.js
+    // ------------------------------------------------------------------
+    export function analyzeReadiness(coverageScore, salienceScore, relationshipsScore, practicesScore) {
+      const safe = (val) => {
+        if (typeof val !== 'number' || isNaN(val)) return 0;
+        return Math.max(0, Math.min(100, val));
+      };
+      const c = safe(coverageScore);
+      const s = safe(salienceScore);
+      const r = safe(relationshipsScore);
+      const p = safe(practicesScore);
+      const weights = {
+        coverage: 0.35,
+        salience: 0.35,
+        relationships: 0.15,
+        practices: 0.15
+      };
+      const total = c * weights.coverage +
+                    s * weights.salience +
+                    r * weights.relationships +
+                    p * weights.practices;
+      const score = Math.round(total);
+      let level = 'Needs Work';
+      let levelDesc = 'Major foundational gaps exist. Focus first on increasing entity coverage and salience before investing in schema or advanced clustering.';
+      if (score >= 80) {
+        level = 'Excellent';
+        levelDesc = 'Very strong semantic foundation — well positioned for entity-first ranking, AI overviews, and competitive SERPs.';
+      } else if (score >= 40) {
+        level = 'Average';
+        levelDesc = 'Decent base with room for improvement. Targeted fixes in the weakest 1–2 modules will likely yield noticeable ranking/visibility gains.';
+      } else {
+        level = 'Needs Work';
+        levelDesc = 'Below-average readiness. Core entity signals (coverage + salience) need urgent attention to avoid being deprioritized by modern ranking systems.';
+      }
+      const sum = c + s + r + p || 1;
+      const metrics = [
+        { text: `Overall Readiness: ${level} (${score}/100)`, grade: score >= 80 ? 'good' : score >= 40 ? 'warning' : 'bad' },
+        { text: `Coverage contribution: ${Math.round((c / sum) * 100)}% (${c})`, grade: c >= 78 ? 'good' : c >= 52 ? 'warning' : 'bad' },
+        { text: `Salience contribution: ${Math.round((s / sum) * 100)}% (${s})`, grade: s >= 78 ? 'good' : s >= 52 ? 'warning' : 'bad' },
+        { text: `Relationships contribution: ${Math.round((r / sum) * 100)}% (${r})`, grade: r >= 65 ? 'good' : r >= 35 ? 'warning' : 'bad' },
+        { text: `Practices contribution: ${Math.round((p / sum) * 100)}% (${p})`, grade: p >= 65 ? 'good' : p >= 35 ? 'warning' : 'bad' }
+      ];
+      const failed = [];
+      if (c < 52 || s < 52) {
+        failed.push({ text: "Core entity signals are weak (Coverage and/or Salience below 52). This is usually the #1 reason pages underperform in entity-aware and AI-driven search. Prioritize: more relevant entities + stronger topical focus in prominent positions.", grade: 'bad' });
+      }
+      if (r < 38) {
+        failed.push({ text: "Weak topical clustering / relationships. Improve by grouping related entities in the same sections, using descriptive internal links, and (when appropriate) adding entity/mention schema.", grade: 'bad' });
+      }
+      if (p < 40) {
+        failed.push({ text: "On-page semantic practices need work. Highest ROI fixes usually are: 1) Add JSON-LD schema for the most prominent entity type(s), 2) Place top entities in H1/H2 headings, 3) Standardize brand/business name usage.", grade: 'bad' });
+      }
+      if (score < 58) {
+        failed.push({ text: "Overall semantic readiness is low. Recommended improvement order:\n1. Boost Coverage + Salience first (more & better-promoted entities)\n2. Strengthen Relationships (clusters & connections)\n3. Implement Practices (schema + headings)\nStart with the lowest-scoring module from the radar chart.", grade: 'bad' });
+      }
+      if (score >= 70 && Math.min(c, s, r, p) <= 65) {
+        failed.push({ text: "Already good foundation — now focus on the weakest module (look at the radar chart). Lifting the lowest score by 10–20 points often creates outsized ranking/visibility improvements.", grade: 'warning' });
+      }
+      return { score, metrics, failed };
+    }
+
+    // ------------------------------------------------------------------
+    // 6. Share report module (share-report-v1.s)
+    // ------------------------------------------------------------------
+    export function initShareReport(resultsContainer) {
+      const shareBtn = resultsContainer.querySelector('#share-report-btn');
+      if (!shareBtn) return;
+      shareBtn.addEventListener('click', async () => {
+        const urlInput = document.getElementById('url-input')?.value.trim();
+        const codeInput = document.getElementById('code-input')?.value.trim();
+        if (!urlInput && codeInput) {
+          const messageDiv = document.getElementById('share-message');
+          if (messageDiv) {
+            messageDiv.innerHTML = `⚠️ Share Report only works for URL audits.<br>For pasted HTML code use "Save Report" button.`;
+            messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-200`;
+            messageDiv.classList.remove('hidden');
+            setTimeout(() => messageDiv.classList.add('hidden'), 6000);
+          }
+          return;
+        }
+        if (!urlInput) return;
+        const baseUrl = window.location.origin + window.location.pathname;
+        const shareUrl = `${baseUrl}?url=${encodeURIComponent(urlInput)}`;
+        let pageTitle = 'this page';
+        const scoreCardTitle = document.querySelector(
+          '.bg-white.dark\\:bg-gray-900.rounded-3xl.shadow-2xl.p-8.md\\:p-12.w-full.max-w-lg.border-4 p.mt-6.text-center.text-base.md\\:text-lg.text-gray-700.dark\\:text-gray-300.px-4.leading-relaxed.break-words'
+        );
+        if (scoreCardTitle) {
+          pageTitle = scoreCardTitle.textContent.trim();
+        }
+        if (pageTitle === 'this page' || pageTitle.length < 5) {
+          pageTitle = document.querySelector('#results p.mt-6.text-center.text-base.md\\:text-lg')?.textContent.trim() || 'this page';
+        }
+        if (pageTitle === 'this page' || pageTitle.includes('Traffic Torch') || pageTitle.length < 8) {
+          const inputUrl = document.getElementById('url-input')?.value.trim() || '';
+          if (inputUrl) {
+            pageTitle = inputUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+          }
+        }
+        pageTitle = pageTitle
+          .replace(/Semantic Entity Extractor and Audit Tool \| Traffic Torch/gi, '')
+          .replace(/Traffic Torch/gi, '')
+          .replace(/[\|\-–_]+/g, ' ')
+          .trim() || 'this page';
+        const shareText = `Check out ${pageTitle} on Traffic Torch SEO Entity Tool ${shareUrl}`;
+        try {
+          if (navigator.share) {
+            await navigator.share({ text: shareText });
+            showMessage('Shared successfully!', 'success');
+          } else {
+            await navigator.clipboard.writeText(shareText);
+            showMessage('Report link copied!<br>Paste anywhere to share.', 'success');
+          }
+        } catch (err) { /* silent fail */ }
+      });
+      function showMessage(text, type) {
+        const messageDiv = document.getElementById('share-message');
+        if (!messageDiv) return;
+        messageDiv.innerHTML = type === 'success' ? `✅ ${text}` : `❌ ${text}`;
+        messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium ${
+          type === 'success' ? 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-200' : 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-200'
+        }`;
+        messageDiv.classList.remove('hidden');
+        setTimeout(() => messageDiv.classList.add('hidden'), 8000);
+      }
+    }
+
+    // ------------------------------------------------------------------
+    // 7. Submit feedback module (submit-feedback-v1.js)
+    // ------------------------------------------------------------------
+    export function initSubmitFeedback(resultsContainer) {
+      const feedbackBtn = resultsContainer.querySelector('#feedback-btn');
+      const formContainer = resultsContainer.querySelector('#feedback-form-container');
+      const feedbackForm = resultsContainer.querySelector('#feedback-form');
+      const messageDiv = resultsContainer.querySelector('#feedback-message');
+      const ratingButtons = resultsContainer.querySelectorAll('[data-rating]');
+      const replyCheckbox = resultsContainer.querySelector('#reply-requested');
+      const emailGroup = resultsContainer.querySelector('#email-group');
+      const charCount = resultsContainer.querySelector('#char-count');
+      const textarea = resultsContainer.querySelector('#feedback-text');
+      if (!feedbackBtn || !formContainer) return;
+      feedbackBtn.addEventListener('click', () => {
+        const isHidden = formContainer.classList.contains('hidden');
+        formContainer.classList.toggle('hidden');
+        feedbackBtn.textContent = isHidden ? 'Cancel Feedback ✕' : 'Submit Feedback 💬';
+        feedbackBtn.classList.toggle('bg-gray-500', isHidden);
+        feedbackBtn.classList.toggle('hover:bg-gray-600', isHidden);
+        feedbackBtn.classList.toggle('from-blue-500', !isHidden);
+        feedbackBtn.classList.toggle('to-indigo-600', !isHidden);
+        feedbackBtn.classList.toggle('hover:from-blue-600', !isHidden);
+        feedbackBtn.classList.toggle('hover:to-indigo-700', !isHidden);
+      });
+      ratingButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          ratingButtons.forEach(b => {
+            b.classList.remove(
+              'scale-150',
+              'ring-4',
+              'ring-blue-500',
+              'ring-opacity-80',
+              'bg-blue-100',
+              'dark:bg-blue-900/30',
+              'selected-rating'
+            );
+            b.classList.add('hover:scale-125', 'transition-all', 'duration-200');
+          });
+          btn.classList.remove('hover:scale-125');
+          btn.classList.add(
+            'scale-150',
+            'ring-4',
+            'ring-blue-500',
+            'ring-opacity-80',
+            'bg-blue-100',
+            'dark:bg-blue-900/30',
+            'selected-rating'
+          );
+          document.getElementById('feedback-rating').value = btn.dataset.rating;
+        });
+      });
+      replyCheckbox.addEventListener('change', () => {
+        emailGroup.classList.toggle('hidden', !replyCheckbox.checked);
+      });
+      if (textarea && charCount) {
+        textarea.addEventListener('input', () => {
+          charCount.textContent = textarea.value.length;
+        });
+      }
+      feedbackForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = feedbackForm.querySelector('button');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        messageDiv.classList.add('hidden');
+        const rating = document.getElementById('feedback-rating').value;
+        const replyRequested = replyCheckbox.checked;
+        const email = replyRequested ? document.getElementById('feedback-email').value.trim() : '';
+        const feedbackText = textarea.value.trim();
+        if (!feedbackText) {
+          showMessage('Please enter your feedback', 'error');
+          resetButton();
+          return;
+        }
+        try {
+          const formData = new FormData();
+          formData.append('name', name || 'Anonymous');
+          formData.append('email', email || 'no-reply@traffictorch.net');
+          formData.append('message', `Feedback for SEO Entity Tool on ${document.body.getAttribute('data-url') || 'unknown'}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
+          const res = await fetch('/api/contact', {
+            method: 'POST',
+            body: formData
+          });
+          if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`Server error ${res.status}: ${errText}`);
+          }
+          const data = await res.json();
+          if (data.success) {
+            showMessage('Thank you! Feedback sent. We\'ll review it soon.', 'success');
+            feedbackForm.reset();
+            submitBtn.textContent = 'Send More Feedback →';
+            setTimeout(() => {
+              submitBtn.textContent = 'Send Feedback';
+            }, 10000);
+          } else {
+            throw new Error(data.error || 'Failed');
+          }
+        } catch (err) {
+          showMessage(`Failed to send feedback: ${err.message}. Try again.`, 'error');
+        } finally {
+          resetButton();
+        }
+        function showMessage(text, type) {
+          messageDiv.innerHTML = type === 'success' ? `✅ ${text}` : `❌ ${text}`;
+          messageDiv.classList.remove('hidden', 'text-green-400', 'bg-green-900/20', 'text-red-400', 'bg-red-900/20');
+          messageDiv.classList.add(
+            type === 'success' ? 'text-green-400' : 'text-red-400',
+            type === 'success' ? 'bg-green-900/20' : 'bg-red-900/20'
+          );
+          messageDiv.classList.add('dark:text-gray-200');
+        }
+        function resetButton() {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      });
+    }
+
+    // ------------------------------------------------------------------
+    // 8. Main tool script (script-v1.0.js) adapted
+    // ------------------------------------------------------------------
+    import { canRunTool } from '/main-v1.1.js';
+
+    const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+    const TOKEN_KEY = 'traffic_torch_jwt';
+    const ANALYZE_ENDPOINT = 'https://entity-ai-proxy.traffictorch.workers.dev/entity-analyze';
+
+    function isShortContent(wordCount) {
+      return wordCount < 400;
+    }
+
+    function getGrade(score) {
+      if (score >= 80) return { text: 'Excellent', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
+      if (score >= 40) return { text: 'Average', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
+      return { text: 'Needs Work', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
+    }
+
+    function getModuleExplanation(moduleName) {
+      const explanations = {
+        'Coverage': {
+          what: 'Counts total recognized entities and evaluates their type diversity and density relative to content length.',
+          why: 'Strong coverage builds topical breadth and authority, helping search engines understand the page’s full subject scope and improving relevance in entity-driven rankings.'
+        },
+        'Salience': {
+          what: 'Measures how prominently and importantly each entity appears (based on position, repetition, and context weighting).',
+          why: 'High salience signals the main topics clearly, boosting the page’s ability to rank for core queries and appear in featured snippets or AI overviews.'
+        },
+        'Relationships': {
+          what: 'Analyzes co-occurrence, type synergy, and clustering among entities to detect meaningful topical connections.',
+          why: 'Strong relationships create semantic clusters, improving topical depth and helping search engines associate the page with related concepts, entities, and user intent.'
+        },
+        'Practices': {
+          what: 'Evaluates on-page semantic optimizations: schema readiness, heading usage of entities, and name consistency.',
+          why: 'Good practices make entities machine-readable, enhance crawlability, and increase chances of rich results, Knowledge Graph inclusion, and better UX signals.'
+        },
+        'Readiness': {
+          what: 'Combines weighted scores from all modules into an overall semantic health and ranking preparedness index.',
+          why: 'High readiness indicates the page is well-optimized for modern entity-based and semantic search, predicting stronger performance in competitive SERPs and AI features.'
+        }
+      };
+      return explanations[moduleName] || { what: 'No explanation available.', why: '' };
+    }
+
+    async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
+      const results = document.getElementById('results');
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.classList.remove('hidden');
+        loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      results.innerHTML = '';
+      results.classList.add('hidden');
+      const progressText = document.getElementById('progress-text');
+      let current = 0;
+      const messages = [
+        "Analyzing Entities...",
+        "Extracting named entities...",
+        "Analyzing coverage & density...",
+        "Evaluating salience & prominence...",
+        "Checking relationships & clusters...",
+        "Reviewing on-page practices...",
+        "Calculating overall readiness...",
+        "Finalizing semantic health report..."
+      ];
+      const interval = setInterval(() => {
+        if (current < messages.length) {
+          if (progressText) progressText.textContent = messages[current];
+          current++;
+        } else {
+          if (progressText) {
+            progressText.textContent = "Finalizing your report...";
+            progressText.classList.add('text-green-600', 'dark:text-green-400');
+          }
+        }
+      }, 4500);
+      const heavyTimeout = setTimeout(() => {
+        if (progressText) {
+          progressText.textContent = "Still working — heavy page or slow server detected...";
+          progressText.classList.remove('text-green-600', 'dark:text-green-400');
+          progressText.classList.add('text-yellow-600', 'dark:text-yellow-400');
+        }
+      }, 120000);
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 180000);
+        let res;
+        try {
+          res = await fetch(ANALYZE_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputType === 'code' ? { code: rawCode } : { url }),
+            signal: controller.signal
+          });
+        } catch (fetchErr) {
+          clearTimeout(timeoutId);
+          if (fetchErr.name === 'AbortError') throw new Error('Request timed out after 90 seconds. Page may be too large or server slow.');
+          throw new Error(`Network/fetch error: ${fetchErr.message}`);
+        }
+        clearTimeout(timeoutId);
+        clearTimeout(heavyTimeout);
+        clearInterval(interval);
+        progressText.textContent = "Processing response...";
+        if (!res.ok) {
+          let errData = {};
+          try { errData = await res.json(); } catch {}
+          throw new Error(errData.error || errData.message || `Server error ${res.status} ${res.statusText}`);
+        }
+        let data;
+        try {
+          data = await res.json();
+        } catch (parseErr) {
+          throw new Error('Invalid response format from server (not valid JSON)');
+        }
+        const loading = document.getElementById('loading');
+        if (loading) loading.classList.add('hidden');
+        results.classList.remove('hidden');
+        setTimeout(() => {
+          results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const offset = 100;
+          setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
+        }, 100);
+        const extracted = data.extracted || [];
+        const coverage = analyzeCoverage(extracted);
+        const salience = analyzeSalience(extracted);
+        const relationships = analyzeRelationships(extracted);
+        const practices = analyzePractices(extracted);
+        const readiness = analyzeReadiness(coverage.score, salience.score, relationships.score, practices.score);
+        const modules = [
+          { name: 'Coverage', result: coverage, color: '#10b981', desc: 'How many & diverse entities are recognized (topical breadth)' },
+          { name: 'Salience', result: salience, color: '#f59e0b', desc: 'How prominent/important the entities are (authority strength)' },
+          { name: 'Relationships', result: relationships, color: '#8b5cf6', desc: 'How well entities connect & form clusters' },
+          { name: 'Practices', result: practices, color: '#ec4899', desc: 'On-page SEO & semantic best practices compliance' },
+          { name: 'Readiness', result: readiness, color: '#3b82f6', desc: 'Overall preparedness for semantic search & ranking' }
+        ];
+        const typeCounts = extracted.reduce((acc, e) => {
+          const t = e.type || 'OTHER';
+          acc[t] = (acc[t] || 0) + 1;
+          return acc;
+        }, {});
+        const diversitySummary = `${extracted.length} entities detected (${Object.entries(typeCounts).map(([t,c]) => `${c} ${t}`).join(', ')})`;
+        const entitiesHTML = extracted.length > 0
+          ? extracted.map(entity => `
+              <div class="p-4 bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                <p class="font-bold text-gray-800 dark:text-gray-200">${entity.text || 'Unknown'}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">${entity.type || 'Unknown'}</p>
+                <div class="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div class="bg-blue-600 h-2 rounded-full" style="width: ${Math.round((entity.salience || 0) * 100)}%"></div>
+                </div>
+                <p class="text-xs mt-1 text-gray-500 dark:text-gray-400">Salience: ${(entity.salience || 0).toFixed(2)}</p>
+              </div>
+            `).join('')
+          : '<p class="text-gray-600 dark:text-gray-400 text-center py-6">No entities detected.</p>';
+
+        results.innerHTML = `
+    <div class="max-w-5xl mx-auto px-4 py-8">
+      <div class="flex justify-center my-10 px-4">
+        <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-lg border-4 ${readiness.score >= 80 ? 'border-green-600' : readiness.score >= 40 ? 'border-orange-500' : 'border-red-500'}">
+          <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Semantic Readiness</p>
+          <div class="relative aspect-square w-full max-w-[280px] mx-auto">
+            <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+              <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none" class="dark:stroke-gray-700"/>
+              <circle cx="100" cy="100" r="90"
+                      stroke="${readiness.score >= 80 ? '#22c55e' : readiness.score >= 40 ? '#f59e0b' : '#ef4444'}"
+                      stroke-width="16" fill="none"
+                      stroke-dasharray="${(readiness.score / 100) * 565} 565"
+                      stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-6xl md:text-7xl font-black drop-shadow-lg"
+                     style="color: ${readiness.score >= 80 ? '#22c55e' : readiness.score >= 40 ? '#f59e0b' : '#ef4444'};">
+                  ${readiness.score}
+                </div>
+                <div class="text-xl md:text-2xl opacity-90 -mt-2"
+                     style="color: ${readiness.score >= 80 ? '#22c55e' : readiness.score >= 40 ? '#f59e0b' : '#ef4444'};">
+                  /100
+                </div>
+              </div>
+            </div>
+          </div>
+          ${(() => {
+            const g = getGrade(readiness.score);
+            return `<p class="mt-8 text-4xl md:text-5xl font-bold text-center ${g.color} drop-shadow-lg">${g.emoji} ${g.text}</p>`;
+          })()}
+          ${(() => {
+            let pageTitle = 'Analyzed Page';
+            if (data && data.title && typeof data.title === 'string' && data.title.trim() !== '') {
+              pageTitle = data.title.trim();
+            } else if (url && url.trim() !== '') {
+              pageTitle = url.trim();
+            }
+            const displayTitle = pageTitle.length > 80 ? pageTitle.substring(0, 77) + '...' : pageTitle;
+            document.body.setAttribute('data-page-title', displayTitle);
+            return `
+              <p class="mt-6 text-center text-base md:text-lg text-gray-700 dark:text-gray-300 px-4 leading-relaxed break-words">
+                ${displayTitle}
+              </p>
+            `;
+          })()}
+          <p class="mt-6 text-center text-lg text-gray-600 dark:text-gray-300 px-4 leading-relaxed">
+            ${readiness.metrics && readiness.metrics[0] ? readiness.metrics[0].text.split(' – ')[1] || 'Semantic foundation analysis complete' : 'Semantic foundation analysis complete'}
+          </p>
+        </div>
+      </div>
+      <div class="mb-16">
+        <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Extracted Entities</h3>
+        <div class="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-6 text-center md:text-left">
+          <p class="text-lg font-medium text-gray-700 dark:text-gray-300">${diversitySummary}</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[600px] overflow-y-auto pr-2">
+          ${entitiesHTML}
+        </div>
+      </div>
+      <div class="mb-16">
+        <h3 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-6">Semantic Health Radar</h3>
+        <div class="w-full max-w-2xl mx-auto aspect-square">
+          <canvas id="health-radar"></canvas>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
+        ${modules.slice(0, 2).map(mod => {
+          const { score, metrics = [], failed = [] } = mod.result;
+          const borderColorClass = score >= 80 ? 'border-green-600 dark:border-green-400' : score >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-600 dark:border-red-500';
+          const arcColor = score >= 80 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
+          return `
+          <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[520px] md:min-h-[580px]">
+            <div class="flex justify-center mb-6">
+              <div class="relative w-32 h-32 mx-auto">
+                <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+                  <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+                  <circle cx="64" cy="64" r="56" stroke="${arcColor}" stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 352} 352" stroke-linecap="round"/>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
+                </div>
+              </div>
+            </div>
+            <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
+            ${(() => {
+              const g = getGrade(score);
+              return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
+            })()}
+            <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
+            <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
+              <span>More Details</span>
+              <span class="details-arrow transition-transform duration-200">▼</span>
+            </button>
+            <div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+              <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
+              <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
+              <p class="text-center mt-6">
+                <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">How ${mod.name} is tested? →</a>
+              </p>
+            </div>
+            <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
+              ${metrics.map(m => {
+                let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+                if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+                else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
+                return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
+              }).join('')}
+            </ul>
+            <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
+              <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
+              <span class="arrow transition-transform duration-200">▼</span>
+            </button>
+            <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+              ${failed.length > 0 ? `
+                <ul class="space-y-4 text-sm">
+                  ${failed.map(f => {
+                    let emoji = f.grade === 'bad' ? '❌' : '⚠️';
+                    let color = f.grade === 'bad' ? 'text-red-700 dark:text-red-300' : 'text-orange-600 dark:text-orange-400';
+                    return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
+                  }).join('')}
+                </ul>
+              ` : `
+                <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
+              `}
+              <p class="text-center mt-6">
+                <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more about ${mod.name}? →</a>
+              </p>
+            </div>
+          </div>
+          `;
+        }).join('')}
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        ${modules.slice(2).map(mod => {
+          const { score, metrics = [], failed = [] } = mod.result;
+          const borderColorClass = score >= 80 ? 'border-green-600 dark:border-green-400' : score >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-600 dark:border-red-500';
+          const arcColor = score >= 80 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
+          return `
+          <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[540px]">
+            <div class="flex justify-center mb-6">
+              <div class="relative w-32 h-32 mx-auto">
+                <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+                  <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+                  <circle cx="64" cy="64" r="56" stroke="${arcColor}" stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 352} 352" stroke-linecap="round"/>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
+                </div>
+              </div>
+            </div>
+            <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
+            ${(() => {
+              const g = getGrade(score);
+              return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
+            })()}
+            <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
+            <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
+              <span>More Details</span>
+              <span class="details-arrow transition-transform duration-200">▼</span>
+            </button>
+            <div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+              <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
+              <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
+              <p class="text-center mt-6">
+                <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">How ${mod.name} is tested? →</a>
+              </p>
+            </div>
+            <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
+              ${metrics.map(m => {
+                let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+                if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+                else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
+                return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
+              }).join('')}
+            </ul>
+            <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
+              <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
+              <span class="arrow transition-transform duration-200">▼</span>
+            </button>
+            <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+              ${failed.length > 0 ? `
+                <ul class="space-y-4 text-sm">
+                  ${failed.map(f => {
+                    let emoji = f.grade === 'bad' ? '❌' : '⚠️';
+                    let color = f.grade === 'bad' ? 'text-red-700 dark:text-red-300' : 'text-orange-600 dark:text-orange-400';
+                    return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
+                  }).join('')}
+                </ul>
+              ` : `
+                <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
+              `}
+              <p class="text-center mt-6">
+                <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more about ${mod.name}? →</a>
+              </p>
+            </div>
+          </div>
+          `;
+        }).join('')}
+      </div>
+      <div class="text-center my-16 px-4">
+        <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
+          <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+            Share Report ↗️
+          </button>
+          <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+            Save Report 📥
+          </button>
+          <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+           Submit Feedback 💬
+          </button>
+        </div>
+        <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
+        <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
+          <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
+            <div>
+              <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
+              <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+            </div>
+            <div>
+              <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
+              <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+            </div>
+            <div>
+              <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
+              <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+            </div>
+            <div>
+              <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
+              <input id="share-title" type="text" required placeholder="Traffic Torch SEO Intent Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+            </div>
+            <div>
+              <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
+              <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
+          </form>
+        </div>
+        <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
+          <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
+            <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
+              Feedback for SEO Entity Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
+            </p>
+            <form id="feedback-form" class="space-y-6">
+              <div>
+                <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
+                <div class="flex gap-3 text-3xl justify-center sm:justify-start">
+                  <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
+                  <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
+                  <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
+                  <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
+                  <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
+                </div>
+                <input type="hidden" id="feedback-rating" name="rating">
+              </div>
+              <div>
+                <label class="flex items-center gap-2 justify-center sm:justify-start">
+                  <input type="checkbox" id="reply-requested" class="w-5 h-5">
+                  <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
+                </label>
+              </div>
+              <div id="email-group" class="hidden">
+                <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
+                <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
+              </div>
+              <div>
+                <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
+                <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
+                  <span id="char-count">0</span>/1000 characters
+                </p>
+              </div>
+              <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
+            </form>
+            <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+        `;
+        // Radar chart
+        setTimeout(() => {
+          const canvas = document.getElementById('health-radar');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return;
+          if (window.myRadarChart) window.myRadarChart.destroy();
+          const getModuleColor = (score) => {
+            if (score >= 80) return '#22c55e';
+            if (score >= 40) return '#f59e0b';
+            return '#ef4444';
+          };
+          const radarColors = modules.map(m => getModuleColor(m.result.score));
+          window.myRadarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+              labels: modules.map(m => m.name),
+              datasets: [{
+                label: 'Semantic Health',
+                data: modules.map(m => m.result.score),
+                backgroundColor: 'rgba(251, 146, 60, 0.18)',
+                borderColor: '#fb923c',
+                borderWidth: 3,
+                pointBackgroundColor: radarColors,
+                pointBorderColor: '#ffffff',
+                pointRadius: 6,
+                pointHoverRadius: 9
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              scales: {
+                r: {
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    stepSize: 20,
+                    color: '#9ca3af',
+                    backdropColor: 'transparent',
+                    callback: function(value) {
+                      if (value >= 80) return value + ' Excellent';
+                      if (value >= 40) return value + ' Average';
+                      return value + ' Needs Work';
+                    }
+                  },
+                  grid: { color: 'rgba(156,163,175,0.4)' },
+                  angleLines: { color: 'rgba(156,163,175,0.4)' },
+                  pointLabels: { color: '#9ca3af', font: { size: 14, weight: '600' } }
+                }
+              },
+              plugins: { legend: { display: false } }
+            }
+          });
+        }, 400);
+        initShareReport(results);
+        initSubmitFeedback(results);
+        if (!document.body.dataset.toggleListenersAttached) {
+          document.body.addEventListener('click', function(e) {
+            const button = e.target.closest('.fixes-toggle, .details-toggle');
+            if (!button) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const panel = button.nextElementSibling;
+            const arrow = button.querySelector('.arrow, .details-arrow');
+            if (!panel || !arrow) return;
+            const isExpanded = panel.classList.contains('expanded');
+            if (isExpanded) {
+              panel.style.height = `${panel.scrollHeight}px`;
+              panel.offsetHeight;
+              panel.classList.remove('expanded');
+              panel.style.height = '0px';
+              panel.style.opacity = '0';
+              arrow.classList.remove('rotate-180');
+              arrow.textContent = '▼';
+              setTimeout(() => {
+                if (!panel.classList.contains('expanded')) panel.style.height = '0px';
+              }, 350);
+            } else {
+              panel.classList.add('expanded');
+              panel.style.height = `${panel.scrollHeight + 32}px`;
+              panel.style.opacity = '1';
+              arrow.classList.add('rotate-180');
+              arrow.textContent = '▲';
+              setTimeout(() => {
+                if (panel.classList.contains('expanded')) panel.style.height = 'auto';
+              }, 350);
+            }
+          });
+          document.body.dataset.toggleListenersAttached = 'true';
+        }
+      } catch (err) {
+        clearInterval(interval);
+        clearTimeout(heavyTimeout);
+        results.innerHTML = `
+          <div class="text-center py-12 px-6">
+            <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis could not complete</p>
+            <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
+              ${err.message.includes('timeout') || err.message.includes('fetch')
+                ? 'The page is very large or took too long to load. Try a smaller page or check your internet connection.'
+                : err.message || 'Error - Failed to analyze - Whitelist: entity-ai-proxy.traffictorch.workers.dev/entity-analyze or use Code Analysis.'}
+            </p>
+            <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl">
+              Try Again
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // ── Button event listeners ──────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      const results = document.getElementById('results');
+      if (!results) return;
+
+      const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
+      const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
+      const urlInput = document.getElementById('url-input');
+      const codeInput = document.getElementById('code-input');
+
+      let hasCheckedLimit = false;
+
+      // Simple prefill + auto-submit
+      function simplePrefillAndRun() {
+        const params = new URLSearchParams(window.location.search);
+        const urlParam = params.get('url');
+        if (urlParam) {
+          const cleanUrl = decodeURIComponent(urlParam).trim();
+          if (urlInput) {
+            urlInput.value = cleanUrl;
+          }
+          if (urlAnalyzeBtn) {
+            setTimeout(() => { urlAnalyzeBtn.click(); }, 300);
+          }
+        }
+        const inputData = params.get('input');
+        if (inputData) {
+          if (codeInput) {
+            codeInput.value = decodeURIComponent(inputData);
+          }
+          const analyzeBtn = document.getElementById('code-analyze-btn') || document.getElementById('analyze-code-btn');
+          if (analyzeBtn) {
+            setTimeout(() => { analyzeBtn.click(); }, 300);
+          }
+        }
+      }
+      simplePrefillAndRun();
+
+      if (urlAnalyzeBtn) {
+        urlAnalyzeBtn.addEventListener('click', async () => {
+          if (hasCheckedLimit) return;
+          hasCheckedLimit = true;
+          const canProceed = await canRunTool('limit-audit-id');
+          if (!canProceed) {
+            hasCheckedLimit = false;
+            return;
+          }
+          if (codeInput) codeInput.value = '';
+          let inputValue = urlInput?.value.trim();
+          if (!inputValue) {
+            alert('Please enter a URL');
+            hasCheckedLimit = false;
+            return;
+          }
+          const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
+          const loading = document.getElementById('loading');
+          if (loading) {
+            loading.classList.remove('hidden');
+            loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          runAnalysis({ url, inputType: 'url', rawCode: null });
+          hasCheckedLimit = false;
+        });
+      }
+
+      if (codeAnalyzeBtn) {
+        codeAnalyzeBtn.addEventListener('click', async () => {
+          if (hasCheckedLimit) return;
+          hasCheckedLimit = true;
+          const canProceed = await canRunTool('limit-audit-id');
+          if (!canProceed) {
+            hasCheckedLimit = false;
+            return;
+          }
+          if (urlInput) urlInput.value = '';
+          const rawCode = codeInput?.value.trim();
+          if (!rawCode) {
+            alert('Please paste HTML code');
+            hasCheckedLimit = false;
+            return;
+          }
+          const loading = document.getElementById('loading');
+          if (loading) {
+            loading.classList.remove('hidden');
+            loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          runAnalysis({ url: null, inputType: 'code', rawCode });
+          hasCheckedLimit = false;
+        });
+      }
+    });
+  </script>
+
+  <!-- Chart.js from CDN (needed for radar chart) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+  <!-- Inlined module-explanations.js (non-module, populates cards) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const moduleExplanations = [
+        {
+          id: "seo-entities",
+          emoji: "🧬",
+          name: "SEO Entities",
+          what: "Named, identifiable real-world things (people, brands, products, concepts, locations) that search engines recognize on your page. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#seo-entities-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          how: "Backend NLP extracts entities with type, salience score, and text. We sort by salience, filter noise, count diversity, and display in a clean grid. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#seo-entities-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          why: "Entity-first search relies on clear named entities for topical understanding, rich results, and AI citations. Strong signals build authority faster than keywords alone. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#seo-entities-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
+        },
+        {
+          id: "coverage",
+          emoji: "🌐",
+          name: "Coverage",
+          what: "Breadth, density, and type diversity of recognized entities are the foundation of topical authority. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#coverage-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          how: "Counts total entities, calculates density vs word count, weights type diversity (CONCEPT / ORGANIZATION highest), adapts for page length, and applies bonuses/penalties. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#coverage-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          why: "Comprehensive coverage shows depth and expertise. It improves relevance across related queries and helps compete in entity-aware rankings. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#coverage-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
+        },
+        {
+          id: "salience",
+          emoji: "🔥",
+          name: "Salience",
+          what: "How prominently and centrally each entity appears. Measured by position, repetition, and context weighting (0.0–1.0 score). <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#salience-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          how: "Normalizes salience scores, sorts descending, calculates average / top / strong counts, detects flat vs hierarchical distribution, and adapts scoring by entity count tiers. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#salience-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          why: "Clear salience hierarchy signals strong topical focus. It boosts authority, featured snippets, and selection for direct answers over diluted content. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#salience-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
+        },
+        {
+          id: "relationships",
+          emoji: "🔗",
+          name: "Relationships",
+          what: "How entities connect and form topical clusters. Measured via co-occurrence proxy and type synergies. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#relationships-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          how: "Limits to top 18 salient entities, counts combinatorial pairs, awards bonuses for strong type combos (CONCEPT + ORGANIZATION, ORGANIZATION + LOCATION, etc.), scales diversity. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#relationships-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          why: "Meaningful entity connections create semantic depth. They improve contextual relevance, AI understanding, and performance in complex or related-topic queries. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#relationships-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
+        },
+        {
+          id: "practices",
+          emoji: "⚙️",
+          name: "Practices",
+          what: "On-page optimizations that make entities machine-readable: schema readiness, heading placement, and name consistency. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#practices-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          how: "Scores schema potential by type/synergy, estimates heading usage from top salient entities, normalizes names and calculates consistency percentage. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#practices-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          why: "Machine-readable entities unlock rich results, knowledge graph inclusion, and better crawlability. Consistent practices strengthen identity and trust signals. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#practices-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
+        },
+        {
+          id: "readiness",
+          emoji: "📊",
+          name: "Readiness",
+          what: "Overall weighted semantic health index combining the four core modules. Your page's preparedness score for entity-first search. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#readiness-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          how: "Weights Coverage/Salience at 35% each, Relationships/Practices at 15% each, adds descriptive levels, contribution breakdown, and prioritized failed items. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#readiness-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+          why: "Readiness predicts real-world performance in rankings, snippets, and answer engines. It guides precise fixes and shows how balanced optimization drives visibility. <a href='https://traffictorch.net/blog/posts/semantic-entity-help-guide/#readiness-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
+        }
+      ];
+
+      const container = document.getElementById('module-cards-container');
+      if (!container) return;
+      container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 justify-items-center max-w-7xl mx-auto px-4 sm:px-6';
+      container.innerHTML = moduleExplanations.map(m => `
+        <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border-l-4 border-orange-500 w-full max-w-md">
+          <div class="text-7xl mb-6 text-center">${m.emoji}</div>
+          <h3 class="text-3xl font-black text-orange-600 dark:text-orange-400 mb-6 text-center">${m.name}</h3>
+          <details class="group">
+            <summary class="cursor-pointer text-xl font-bold text-orange-700 dark:text-orange-300 hover:underline flex items-center justify-between">
+              <span>What is ${m.name}?</span>
+              <span class="text-2xl px-2 group-open:rotate-180 transition-transform">↓</span>
+            </summary>
+            <div class="mt-6 text-left text-gray-700 dark:text-gray-300 leading-relaxed">${m.what}</div>
+          </details>
+          <details class="group mt-4">
+            <summary class="cursor-pointer text-xl font-bold text-orange-700 dark:text-orange-300 hover:underline flex items-center justify-between">
+              <span>How is ${m.name} tested?</span>
+              <span class="text-2xl px-2 group-open:rotate-180 transition-transform">↓</span>
+            </summary>
+            <div class="mt-6 text-left text-gray-700 dark:text-gray-300 leading-relaxed">${m.how}</div>
+          </details>
+          <details class="group mt-4">
+            <summary class="cursor-pointer text-xl font-bold text-orange-700 dark:text-orange-300 hover:underline flex items-center justify-between">
+              <span>Why does ${m.name} matter?</span>
+              <span class="text-2xl px-2 group-open:rotate-180 transition-transform">↓</span>
+            </summary>
+            <div class="mt-6 text-left text-gray-700 dark:text-gray-300 leading-relaxed">${m.why}</div>
+          </details>
+        </div>
+      `).join('');
+    });
+  </script>
+
+  <!-- Noscript fallback (unchanged) -->
+  <noscript>
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <h2>Traffic Torch SEO Entity Extractor &amp; Semantic Audit Tool</h2>
+      <p>This free tool analyzes any webpage (by URL or pasted HTML) and extracts named entities while delivering a deep semantic SEO audit across five key modules.</p>
+      <h2>What This Tool Audits</h2>
+      <p>The SEO Entity Extractor identifies all important named entities (people, organizations, locations, concepts, products, etc.) and evaluates how well the page is optimized for modern entity-based and semantic search engines (Google, Bing, AI Overviews, etc.).</p>
+      <h3>Core Modules Explained</h3>
+      <h4>Coverage</h4>
+      <p><strong>What it measures:</strong> Total number of recognized entities and their type diversity relative to content length.</p>
+      <p><strong>Why it matters:</strong> Strong coverage builds topical breadth and authority, helping search engines understand the full subject scope of the page.</p>
+      <h4>Salience</h4>
+      <p><strong>What it measures:</strong> How prominently and importantly each entity appears based on position, repetition, and context.</p>
+      <p><strong>Why it matters:</strong> High salience clearly signals main topics, improving ranking for core queries and visibility in featured snippets and AI answers.</p>
+      <h4>Relationships</h4>
+      <p><strong>What it measures:</strong> Co-occurrence patterns, type synergy, and clustering between entities.</p>
+      <p><strong>Why it matters:</strong> Strong relationships create semantic clusters that demonstrate topical depth and help associate the page with related concepts and user intent.</p>
+      <h4>Practices</h4>
+      <p><strong>What it measures:</strong> On-page semantic optimizations including schema readiness, entity usage in headings, and name consistency.</p>
+      <p><strong>Why it matters:</strong> Good practices make entities machine-readable, improve crawlability, and increase chances of rich results and Knowledge Graph inclusion.</p>
+      <h4>Readiness</h4>
+      <p><strong>What it measures:</strong> Overall weighted semantic health and ranking preparedness index.</p>
+      <p><strong>Why it matters:</strong> High readiness indicates the page is well-prepared for entity-driven and semantic search, predicting stronger performance in competitive SERPs and AI features.</p>
+      <h2>How the Tool Works</h2>
+      <ol>
+        <li>Submit a live URL or raw HTML code</li>
+        <li>AI-powered entity extraction processes the content</li>
+        <li>Five specialized modules analyze Coverage, Salience, Relationships, Practices, and overall Readiness</li>
+        <li>You receive scores (0-100), detailed metrics, fix recommendations, and a visual radar chart</li>
+      </ol>
+      <h2>Benefits of Strong Semantic Optimization</h2>
+      <p>Pages with excellent entity coverage, salience, and relationships perform significantly better in modern search, especially in AI-generated answers and topic clusters.</p>
+      <p><strong>Try the tool at:</strong> <a href="https://traffictorch.net/seo-entity-extractor-tool/">SEO Entity Extractor Tool</a></p>
+      <p><strong>Tool Documentation:</strong> <a href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/">Semantic Entity SEO Help Guide</a></p>
+      <p>This page is part of <a href="https://traffictorch.net/">Traffic Torch</a> — Instant 360° SEO &amp; UX Health Analysis platform.</p>
+      <hr>
+      <p><small>Traffic Torch helps website owners understand and improve their semantic SEO foundation with transparent, educational reporting.</small></p>
+    </div>
+  </noscript>
+</body>
+</html>

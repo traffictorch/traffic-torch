@@ -1,4 +1,4 @@
-// ShareReport
+// share-report-v1.s
 
 export function initShareReport(resultsContainer) {
   const shareBtn = resultsContainer.querySelector('#share-report-btn');
@@ -12,7 +12,7 @@ export function initShareReport(resultsContainer) {
     if (!urlInput && codeInput) {
       const messageDiv = document.getElementById('share-message');
       if (messageDiv) {
-        messageDiv.innerHTML = `⚠️ Share Report only works for URL audits.<br>For HTML code audit use "Save Report" button.`;
+        messageDiv.innerHTML = `⚠️ Share Report only works for URL audits.<br>For pasted HTML code use "Save Report" button.`;
         messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-200`;
         messageDiv.classList.remove('hidden');
         setTimeout(() => messageDiv.classList.add('hidden'), 6000);
@@ -22,26 +22,43 @@ export function initShareReport(resultsContainer) {
 
     if (!urlInput) return; // fallback safety
 
-    // Build clean deep link
+    // Build clean deep link - use the correctly defined urlInput variable
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?url=${encodeURIComponent(urlInput)}`;
 
-    // Get the tested page title directly from the visible element in the score card
+    // Get the tested page title — prioritised from the big readiness score card
     let pageTitle = 'this page';
-    const titleElement = document.getElementById('analyzed-page-title');
-    if (titleElement) {
-      pageTitle = titleElement.textContent.trim();
-    } else {
-      // Fallback if ID not found (e.g. old deploy)
-      pageTitle = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl.shadow-2xl.p-6.sm\\:p-8.md\\:p-10 p.mt-6.text-base.sm\\:text-lg')?.textContent.trim() ||
-                  document.title.trim() ||
-                  'this page';
+
+    // Primary source: the exact title paragraph we just fixed in script-v1.0.js
+    const scoreCardTitle = document.querySelector(
+      '.bg-white.dark\\:bg-gray-900.rounded-3xl.shadow-2xl.p-8.md\\:p-12.w-full.max-w-lg.border-4 p.mt-6.text-center.text-base.md\\:text-lg.text-gray-700.dark\\:text-gray-300.px-4.leading-relaxed.break-words'
+    );
+    if (scoreCardTitle) {
+      pageTitle = scoreCardTitle.textContent.trim();
     }
 
-    // Remove any leftover tool name if needed
-    pageTitle = pageTitle.replace(/SEO Intent Tool & Search Intent Audit | Traffic Torch/gi, '').trim() || 'this page';
+    // Fallback 1: Any title paragraph inside results (safer than before)
+    if (pageTitle === 'this page' || pageTitle.length < 5) {
+      pageTitle = document.querySelector('#results p.mt-6.text-center.text-base.md\\:text-lg')?.textContent.trim() || 'this page';
+    }
 
-    const shareText = `Check out ${pageTitle} on Traffic Torch SEO Intent Tool ${shareUrl}`;
+    // Fallback 2: Use the URL the user actually tested (cleaned)
+    if (pageTitle === 'this page' || pageTitle.includes('Traffic Torch') || pageTitle.length < 8) {
+      const inputUrl = document.getElementById('url-input')?.value.trim() || '';
+      if (inputUrl) {
+        // Extract domain or keep full URL if short
+        pageTitle = inputUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
+      }
+    }
+
+    // Final cleanup — remove any possible tool branding
+    pageTitle = pageTitle
+      .replace(/Semantic Entity Extractor and Audit Tool \| Traffic Torch/gi, '')
+      .replace(/Traffic Torch/gi, '')
+      .replace(/[\|\-–_]+/g, ' ')
+      .trim() || 'this page';
+
+    const shareText = `Check out ${pageTitle} on Traffic Torch SEO Entity Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {

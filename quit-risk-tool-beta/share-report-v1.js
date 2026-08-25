@@ -39,9 +39,9 @@ export function initShareReport(resultsContainer) {
     }
 
     // Remove any leftover tool name if needed
-    pageTitle = pageTitle.replace(/SEO Intent Tool & Search Intent Audit | Traffic Torch/gi, '').trim() || 'this page';
+    pageTitle = pageTitle.replace(/Quit Risk Tool: Bounce Rate & UX Audit | Traffic Torch/gi, '').trim() || 'this page';
 
-    const shareText = `Check out ${pageTitle} on Traffic Torch SEO Intent Tool ${shareUrl}`;
+    const shareText = `Check out ${pageTitle} on Traffic Torch Quit Risk Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {

@@ -1,6 +1,7 @@
-// ShareReport
+export function initShareReport() {
+  const resultsContainer = document.getElementById('results');
+  if (!resultsContainer) return;
 
-export function initShareReport(resultsContainer) {
   const shareBtn = resultsContainer.querySelector('#share-report-btn');
   if (!shareBtn) return;
 
@@ -22,26 +23,39 @@ export function initShareReport(resultsContainer) {
 
     if (!urlInput) return; // fallback safety
 
-    // Build clean deep link
+    // Build clean deep link - FIXED: use urlInput instead of undefined inputUrl
     const baseUrl = window.location.origin + window.location.pathname;
     const shareUrl = `${baseUrl}?url=${encodeURIComponent(urlInput)}`;
 
-    // Get the tested page title directly from the visible element in the score card
+    // Get the tested page title
     let pageTitle = 'this page';
-    const titleElement = document.getElementById('analyzed-page-title');
-    if (titleElement) {
-      pageTitle = titleElement.textContent.trim();
-    } else {
-      // Fallback if ID not found (e.g. old deploy)
-      pageTitle = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl.shadow-2xl.p-6.sm\\:p-8.md\\:p-10 p.mt-6.text-base.sm\\:text-lg')?.textContent.trim() ||
-                  document.title.trim() ||
-                  'this page';
+
+    // Primary: Target the score card title paragraph
+    const scoreCardTitle = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center');
+    if (scoreCardTitle) {
+      pageTitle = scoreCardTitle.textContent.trim();
     }
 
-    // Remove any leftover tool name if needed
-    pageTitle = pageTitle.replace(/SEO Intent Tool & Search Intent Audit | Traffic Torch/gi, '').trim() || 'this page';
+    // Fallback 1: Same selector inside #results
+    if (pageTitle === 'this page') {
+      pageTitle = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center')?.textContent.trim() || 'this page';
+    }
 
-    const shareText = `Check out ${pageTitle} on Traffic Torch SEO Intent Tool ${shareUrl}`;
+    // Fallback 2: Clean document.title
+    if (pageTitle === 'this page' || pageTitle.includes('Traffic Torch')) {
+      pageTitle = document.title
+        .replace(/Topical Authority Audit Tool.*Traffic Torch/gi, '')
+        .trim() || 'this page';
+    }
+
+    // Final cleanup
+    pageTitle = pageTitle
+      .replace(/Topical Authority Audit Tool \| Traffic Torch/gi, '')
+      .replace(/Traffic Torch/gi, '')
+      .replace(/[\|\-–_]+/g, '')
+      .trim() || 'this page';
+
+    const shareText = `Check out ${pageTitle} on Traffic Torch Topical Authority Audit Tool ${shareUrl}`;
 
     try {
       if (navigator.share) {
@@ -54,7 +68,7 @@ export function initShareReport(resultsContainer) {
         showMessage('Report link copied!<br>Paste anywhere to share.', 'success');
       }
     } catch (err) {
-      // Silent fail on error – no error message shown to user
+      // silent fail - already handled by browser
     }
   });
 

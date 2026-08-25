@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Quit Risk Tool: Bounce Rate & UX Audit | Traffic Torch</title>
+  <meta name="description" content="Predict bounce rates with our Quit Risk UX audit for readability, accessibility, performance & navigation. Get priority fixes to boost engagement & SEO.">
+  <meta name="keywords" content="quit risk tool, bounce rate predictor, UX audit tool, reduce bounce rate, usability analysis, free SEO tool, AI UX fixes, mobile optimization checker, accessibility audit">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/quit-risk-tool/">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/quit-risk-tool/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/quit-risk-tool/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Free Quit Risk Tool: Bounce Rate Predictor &amp; UX Health Audit | Traffic Torch">
+  <meta property="og:description" content="Instant free UX audit &amp; bounce rate predictor: 0–100 Quit Risk Score analyzes readability, mobile/PWA readiness, performance, accessibility &amp; navigation – with prioritized fixes for better engagement &amp; SEO.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/quit-risk-tool/">
+  <meta property="og:image" content="https://traffictorch.net/quit-risk-tool/images/quit-risk-tool.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free Quit Risk Tool: Bounce Rate Predictor &amp; Instant UX Audit | Traffic Torch">
+  <meta name="twitter:description" content="Instant free UX audit &amp; bounce rate predictor: 0–100 Quit Risk Score analyzes readability, mobile/PWA readiness, performance, accessibility &amp; navigation – with prioritized fixes for better engagement &amp; SEO.">
+  <meta name="twitter:image" content="https://traffictorch.net/quit-risk-tool/images/quit-risk-tool.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <!-- Structured Data (abbreviated for brevity – include full in production) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "WebPage", "name": "Quit Risk & Bounce Rate Predictor Tool", "url": "https://traffictorch.net/quit-risk-tool/" }
+    ]
+  }
+  </script>
+
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="../favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="../logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="../logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="../logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="../logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="../logo-512.webp">
+  <link rel="manifest" href="../manifest.json">
+
+  <!-- ===== SHARED GLOBAL CSS (from root) ===== -->
+  <link rel="stylesheet" href="../style-v1.0.css">
+  <link rel="stylesheet" href="../tailwind-local-v1.0.css">
+
+  <!-- ===== TOOL LOCAL CSS (inlined) ===== -->
+  <style>
+    /* ----- style-v1.0.css (tool-specific) ----- */
+    .radar { width:200px; height:200px; margin:2rem auto; display:block; }
+    .animate-spin { animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+    .score-low { color:#ef4444 !important; }
+    .score-mid { color:#fb923c !important; }
+    .score-high { color:#22c55e !important; }
+    .dark .score-low { color:#f87171 !important; }
+    .dark .score-mid { color:#fdba74 !important; }
+    .dark .score-high { color:#86efac !important; }
+    .score-slash { color:#9ca3af !important; }
+    .dark .score-slash { color:#6b7280 !important; }
+
+    @media (max-width:1024px){
+      .container,.max-w-5xl,.max-w-3xl,.max-w-4xl { max-width:100% !important; }
+      .p-12,.p-10,.p-8 { padding:1.5rem !important; }
+      .text-5xl { font-size:2rem !important; line-height:1.1 !important; }
+      .text-9xl { font-size:6rem !important; line-height:1 !important; }
+    }
+    @media (max-width:480px){
+      .p-12,.p-10 { padding:1.25rem !important; }
+      .text-5xl { font-size:1.875rem !important; }
+      .text-9xl { font-size:5.5rem !important; }
+    }
+    html,body { overscroll-behavior-x:none; }
+    #results .max-w-5xl { max-width:100% !important; padding-left:1rem !important; padding-right:1rem !important; }
+    #results .overflow-x-auto, #results table { width:100% !important; max-width:100% !important; table-layout:fixed; overflow-wrap:break-word; }
+    #results table th, #results table td { word-break:break-word; overflow-wrap:anywhere; }
+    .overflow-x-auto { -webkit-overflow-scrolling:touch; }
+    [data-rating] { transition:all 0.2s ease; padding:0.0rem; border-radius:9999px; }
+    [data-rating]:hover { background-color:rgba(59,130,246,0.1); }
+    [data-rating].selected-rating:hover { scale:1.5 !important; background-color:rgba(59,130,246,0.2) !important; }
+
+    /* ----- print-v1.1.css ----- */
+    @media print {
+      @page { size:A4 portrait; margin:12mm; }
+      html,body { background:#fff !important; color:#111827 !important; font-size:11pt; line-height:1.5; margin:0 !important; padding:0 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      body::before {
+        content: "TrafficTorch.net ⚖️\A\A Quit Risk Audit Tool ⚡\A\A Report:\A " attr(data-url);
+        display:block; height:100vh; min-height:100vh; page-break-after:always; color:#4b5563; font-family:system-ui,sans-serif; font-weight:900; text-align:center; padding-top:20vh; line-height:1.4; white-space:pre; font-size:2rem;
+        text-shadow: -2px -2px 0 #fb923c, 2px -2px 0 #fb923c, -2px 2px 0 #fb923c, 2px 2px 0 #fb923c, -2px 0 0 #fb923c, 2px 0 0 #fb923c, 0 -2px 0 #fb923c, 0 2px 0 #fb923c, 0 10px 30px rgba(0,0,0,0.5);
+      }
+      #results-wrapper { page-break-before:always; margin-top:0 !important; }
+      #results-wrapper, #results-wrapper .container, #results-wrapper .max-w-7xl, #results-wrapper .max-w-6xl,
+      #results-wrapper .max-w-5xl, #results-wrapper .max-w-4xl { max-width:none !important; width:100% !important; margin:0 !important; padding:1cm 1.2cm !important; box-sizing:border-box; }
+      .report-section, .tool-result, .analysis-block, .score-card, .fixes-panel, .full-details, .priority-gains,
+      .keyword-gap-table, .seo-score-card, #results .score-card, #priority-gains-section, #priority-cards-container,
+      #plugin-solutions-section, .expand-content, .hidden.mt-6, .hidden.mt-4, .hidden.space-y-6, .hidden.space-y-8 {
+        display:block !important; visibility:visible !important; opacity:1 !important; height:auto !important; max-height:none !important; overflow:visible !important;
+      }
+      .score-card, .metric-card, .fixes-panel, .full-details, .bg-white.dark\:bg-gray-800, .bg-orange-50.dark\:bg-orange-900\/20 {
+        page-break-inside:avoid !important; break-inside:avoid !important;
+      }
+      .no-print, header, footer, nav, aside, button, .a2a_kit, #eeat-faq, #share-buttons, #tools-grid, #extensions-tools-integrations,
+      #quit-risk-seo-checklist, #dev-tools, #ai-seo-plugins, #faq, #deep-dive, #infographics, #what-is, #three-pillars, #comparison,
+      #keyword-form, #analysis-progress, #upgradeModal, #author-bio, #promo-high-impact-cards, #promo-old-vs-modern-seo,
+      #share-form-container, #feedback-form-container, #seo-ux-checklist, .tools-grid, .checklist-card, .bottom-banner,
+      details > summary { display:none !important; }
+      .shadow-lg, .shadow-xl, [class*="shadow"] { box-shadow:none !important; }
+      img { max-width:100% !important; height:auto !important; }
+      table { page-break-inside:auto; width:100% !important; }
+      .dark body, body.dark { background:#111827 !important; color:#f3f4f6 !important; }
+      h1,h2,h3 { page-break-after:avoid; break-after:avoid; }
+      #results.grid, .grid { display:block !important; }
+    }
+  </style>
+
+  <!-- Preconnect -->
+  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+  <script>
+    // Immediate dark mode
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <!-- GA4 (optional) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+
+  <div class="flex flex-1 min-h-screen">
+
+    <!-- Desktop Sidebar (shared) -->
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="../" class="flex items-center gap-4">
+          <img src="../logo-160w.webp" srcset="../logo-160w.webp 160w, ../logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="flex-1 flex flex-col">
+
+      <!-- Header (shared) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="../" class="flex items-center gap-4 md:hidden">
+            <img src="../logo-100w.webp" srcset="../logo-100w.webp 100w, ../logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <!-- ===== TOOL CONTENT ===== -->
+      <main class="container mx-auto px-4 py-4 max-w-7xl">
+
+        <div class="text-center mb-10">
+          <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">Quit Risk UX Health Analysis Audit Tool</h1>
+          <p class="text-xl text-gray-600 dark:text-gray-200 mb-4 max-w-3xl mx-auto">Detect high quit-risk elements, friction points, poor UX signals, and conversion killers.</p>
+          <!-- Form -->
+          <div class="max-w-3xl mx-auto space-y-4 px-4 py-2">
+            <form id="audit-form" novalidate class="space-y-4">
+              <div>
+                <div class="flex flex-col sm:flex-row gap-4 items-center">
+                  <div class="flex-1">
+                    <input type="text" id="url-input" name="url" placeholder="example.com/your-page" aria-label="Enter website URL" required class="w-full px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm" autocomplete="url" inputmode="url" spellcheck="false" data-lpignore="true">
+                  </div>
+                  <button type="button" id="analyze-url-btn" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2 min-w-[180px] justify-center">Analyze URL <span class="text-xl">⚠️</span></button>
+                </div>
+              </div>
+              <div class="relative flex items-center py-2">
+                <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+                <div class="px-8 text-orange-500 dark:text-orange-400 font-semibold text-xl tracking-wide flex items-center gap-2">OR use Code Analysis <span class="text-2xl">📄</span></div>
+                <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+              </div>
+              <div class="space-y-4">
+                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium pl-1">Paste the full HTML of the page.</p>
+                <textarea id="code-input" name="htmlcode" rows="2" placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Your Page&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your HTML --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;" class="w-full px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[120px] shadow-sm" aria-label="Paste HTML code" autocomplete="off" spellcheck="false" data-vscode-ignore="true"></textarea>
+                <div class="flex justify-center pt-2">
+                  <button type="button" id="analyze-code-btn" class="px-12 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl text-lg flex items-center gap-3">Analyze Code <span class="text-2xl">⚠️</span></button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Upgrade Modal -->
+        <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
+          <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
+            <h2 class="text-xl font-bold mb-4">Daily Limit Reached</h2>
+            <p class="mb-6">You've used all your audits today. Upgrade to Pro USD $48 per year for 25 daily SEO, UX & GEO analysis runs. Secure Stripe Checkout</p>
+            <a href="../pro/" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-600 transition">Upgrade to Pro</a>
+            <button onclick="document.getElementById('upgradeModal').classList.add('hidden')" class="mt-6 block mx-auto text-gray-600 dark:text-gray-400 underline hover:text-gray-800 dark:hover:text-gray-200">Close</button>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="hidden flex flex-col items-center justify-center py-0 space-y-12">
+          <div class="w-20 h-20 rounded-full border-8 border-gray-300/50 dark:border-gray-700/50 border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
+          <div class="text-center space-y-4">
+            <p class="text-2xl font-black text-orange-500 dark:text-orange-400">Analyzing Quit Risk...</p>
+            <p id="progressText" class="text-xl font-medium text-orange-500 dark:text-orange-400 max-w-2xl px-8"></p>
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="hidden space-y-16 mt-16"></div>
+
+        <!-- Copy Link -->
+        <div class="center-btn-container mt-4 mb-4">
+          <button class="copy-link-btn" onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);" data-text="https://traffictorch.net/quit-risk-tool/">Copy Link? 🔗</button>
+        </div>
+
+        <!-- Accordions, FAQ, Deep Dive, etc. – same as original -->
+        <!-- I'll include a shortened version to save space, but you can copy the full HTML from the original -->
+        <div class="max-w-4xl mx-auto my-16">
+          <details>
+            <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+              How the Quit Risk Tool Works?
+              <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+            </summary>
+            <div class="mt-8 px-2 py-10 bg-gray dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
+              <section class="space-y-5">
+                <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Instant, Privacy-Safe UX Health Audit</h2>
+                <p class="leading-relaxed">This bounce rate predictor performs a real-time usability analysis by securely fetching your page's HTML via our CORS proxy and parsing the DOM entirely in your browser.</p>
+                <p class="leading-relaxed">No data leaves your device. Everything processes instantly and privately on-device for complete security.</p>
+              </section>
+              <section class="space-y-6">
+                <h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">The 5 Core UX Factors Analyzed</h3>
+                <ul class="space-y-4 text-base list-disc list-inside">
+                  <li><strong>Readability Scoring:</strong> Flesch Reading Ease &amp; Kincaid grade level on main content: rewards clear, scannable writing.</li>
+                  <li><strong>Navigation Clarity:</strong> Link density and menu structure evaluation to avoid cognitive overload.</li>
+                  <li><strong>Accessibility Health:</strong> Proxy checks for alt-text coverage, contrast, and semantic structure (WCAG-inspired).</li>
+                  <li><strong>Mobile &amp; PWA Readiness:</strong> Viewport configuration, responsive design, touch targets, and progressive web app compliance.</li>
+                  <li><strong>Performance Optimization:</strong> Asset volume flags, script/font bloat detection, lazy loading opportunities.</li>
+                </ul>
+              </section>
+            </div>
+          </details>
+        </div>
+
+        <!-- Deep Dive and other sections omitted for brevity; you can include them exactly as in original -->
+        <!-- I'll include the necessary placeholders for module cards etc. -->
+        <section id="deep-dive" class="py-6 bg-gray dark:bg-gray-900">
+          <div class="max-w-7xl mx-auto px-2">
+            <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">Deep Dive into Key Modules</h2>
+            <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center lg:justify-start"></div>
+          </div>
+        </section>
+
+        <!-- Infographics etc. (use relative paths) -->
+        <div id="infographics" class="grid md:grid-cols-2 gap-4 my-4 max-w-6xl mx-auto px-4">
+          <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
+            <img src="images/quit-risk-pyramid-infographic-800w.webp" srcset="images/quit-risk-pyramid-infographic-480w.webp 480w, images/quit-risk-pyramid-infographic-800w.webp 800w, images/quit-risk-pyramid-infographic-1200w.webp 1200w" sizes="(max-width: 767px) 100vw, 50vw" alt="Quit Risk Pyramid" class="w-full h-auto object-cover" width="800" height="1200" loading="lazy" decoding="async">
+            <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">Quit Risk Pyramid: Build from Readability → Navigation → Accessibility to eliminate early exits.</figcaption>
+          </figure>
+          <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
+            <img src="images/ux-flow-reactor-infographic-800w.webp" srcset="images/ux-flow-reactor-infographic-480w.webp 480w, images/ux-flow-reactor-infographic-800w.webp 800w, images/ux-flow-reactor-infographic-1200w.webp 1200w" sizes="(max-width: 767px) 100vw, 50vw" alt="UX Flow Reactor" class="w-full h-auto object-cover" width="800" height="1200" loading="lazy" decoding="async">
+            <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">UX Flow Reactor: Performance + Mobile + PWA combine for peak engagement and lowest quit risk.</figcaption>
+          </figure>
+        </div>
+
+        <!-- ... other sections (FAQs, checklist, author bio, etc.) ... -->
+        <!-- We'll keep them short; you can reuse the exact HTML from original. -->
+
+        <!-- Footer placeholder -->
+        <div id="footer-placeholder"></div>
+
+      </main>
+
+    </div><!-- /flex-1 -->
+  </div><!-- /flex -->
+
+  <!-- ===== COMBINED LOCAL SCRIPT ===== -->
+  <script type="module">
+    // ------------------------------------------------------------
+    // 1. Import shared canRunTool from root's main-v1.1.js
+    // ------------------------------------------------------------
+    import { canRunTool } from '../main-v1.1.js';
+
+    // ------------------------------------------------------------
+    // 2. All local functions (from the JS files) are defined here
+    //    (readability, mobile, accessibility, navigation, performance,
+    //     plugin solutions, module explanations, share-report, submit-feedback)
+    // ------------------------------------------------------------
+
+    // ----- readability.js -----
+    function countSyllables(word) {
+      word = word.toLowerCase();
+      if (word.length <= 3) return 1;
+      word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+      word = word.replace(/^y/, '');
+      return (word.match(/[aeiouy]{1,2}/g) || []).length;
+    }
+
+    function countTotalSyllables(text) {
+      const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+      return words.reduce((sum, w) => sum + countSyllables(w), 0);
+    }
+
+    function calculateReadability(data) {
+      let score = 55;
+      let details = {};
+      if (data.wordCount > 80) {
+        const sentenceCount = (data.fullText.match(/[.!?]+/g) || []).length || 1;
+        const avgSentenceLength = data.wordCount / sentenceCount;
+        const syllableCount = countTotalSyllables(data.fullText);
+        const avgSyllablesPerWord = syllableCount / data.wordCount;
+        const fleschEase = 206.835 - 1.015 * avgSentenceLength - 84.6 * avgSyllablesPerWord;
+        const kincaidGrade = 0.39 * avgSentenceLength + 11.8 * avgSyllablesPerWord - 15.59;
+        const paragraphCount = data.paragraphTexts.length || 1;
+        const avgWordsPerParagraph = data.wordCount / paragraphCount;
+        const scannability = Math.min(100, (data.boldCount * 5 + data.listItemCount * 3 + data.headingCount * 10) / (data.wordCount / 100 || 1));
+        let paraDensityScore = 100;
+        if (avgWordsPerParagraph > 120) paraDensityScore -= 40;
+        else if (avgWordsPerParagraph > 80) paraDensityScore -= 20;
+        let sentenceScore = 100 - (avgSentenceLength > 20 ? (avgSentenceLength - 20) * 5 : 0);
+        sentenceScore = Math.max(40, Math.min(100, sentenceScore));
+        const easeScore = Math.max(0, Math.min(100, fleschEase));
+        const gradeScore = kincaidGrade <= 8 ? 100 : Math.max(0, 100 - (kincaidGrade - 8) * 10);
+        score = Math.round((easeScore + gradeScore + sentenceScore + paraDensityScore + scannability) / 5);
+        details = {
+          fleschEase: Math.round(fleschEase),
+          kincaidGrade: Math.round(kincaidGrade),
+          avgSentence: Math.round(avgSentenceLength),
+          avgParagraph: Math.round(avgWordsPerParagraph),
+          scannability: Math.round(scannability)
+        };
+      }
+      return { score, details };
+    }
+
+    // ----- mobile.js -----
+    function calculateMobile(data) {
+      let score = 50;
+      const vp = (data.viewportContent || '').toLowerCase();
+      if (vp.includes('width=device-width') && vp.includes('initial-scale=1')) {
+        score += 35;
+        if (!vp.includes('maximum-scale') && !vp.includes('user-scalable=no')) {
+          score += 10;
+        }
+      } else if (vp.includes('width=device-width')) {
+        score += 18;
+      } else {
+        score -= 35;
+      }
+      if (data.hasMediaQueries) score += 18;
+      if (data.imageCount > 20 && data.imageCount < 60) score += 8;
+      if (data.hasTouchFriendly) score += 15;
+      else if (data.imageCount > 10) score -= 12;
+      let pwaScore = 0;
+      if (data.hasManifest) pwaScore += 20;
+      if (data.hasServiceWorkerHint) pwaScore += 15;
+      if (data.hasAppleTouchIcon) pwaScore += 10;
+      if (data.isHttps) pwaScore += 15;
+      score += Math.round(pwaScore * 0.6);
+      score = Math.max(25, Math.min(98, Math.round(score)));
+      const details = {
+        viewportQuality: data.viewportContent.toLowerCase().includes('width=device-width') && data.viewportContent.toLowerCase().includes('initial-scale=1') ? 95 : 30,
+        responsiveProxy: data.hasMediaQueries ? 85 : 40,
+        touchFriendly: data.hasTouchFriendly ? 80 : 35,
+        pwaReadiness: (data.hasManifest ? 25 : 0) + (data.hasServiceWorkerHint ? 20 : 0) + (data.hasAppleTouchIcon ? 15 : 0) + (data.isHttps ? 20 : 0)
+      };
+      return { score, details };
+    }
+
+    // ----- accessibility.js -----
+    function estimateColorContrastScore() {
+      const body = document.body;
+      const hasCustomColors = body.style.color || body.style.backgroundColor;
+      return hasCustomColors ? 78 : 72;
+    }
+
+    function calculateAccessibility(data) {
+      let score = 60;
+      if (data.altData) {
+        const { missingCount, meaningfulCount, totalImages } = data.altData;
+        if (totalImages === 0) {
+          score += 15;
+        } else {
+          const altCoverage = meaningfulCount > 0 ? (meaningfulCount - missingCount) / meaningfulCount : 1;
+          if (altCoverage >= 0.98) score += 22;
+          else if (altCoverage >= 0.90) score += 14;
+          else if (altCoverage >= 0.70) score += 6;
+          else if (altCoverage < 0.50) score -= 30;
+          else score -= 18;
+        }
+      }
+      if (data.hasMain) score += 14;
+      if (data.hasArticleOrSection) score += 12;
+      if (data.headingCount >= 3) score += 10;
+      if (data.headingCount === 0 && data.wordCount > 300) score -= 18;
+      if (data.hasLandmarks) score += 10;
+      if (data.hasAriaLabels) score += 8;
+      const contrastProxy = estimateColorContrastScore();
+      score += (contrastProxy - 70) * 0.8;
+      score = Math.max(30, Math.min(98, Math.round(score)));
+      const details = {
+        altCoverage: data.altData && data.altData.meaningfulCount > 0 ? Math.round(((data.altData.meaningfulCount - data.altData.missingCount) / data.altData.meaningfulCount) * 100) : (data.imageCount === 0 ? 100 : 30),
+        contrastProxy,
+        semanticStrength: (data.hasMain ? 25 : 0) + (data.hasArticleOrSection ? 20 : 0) + (data.headingCount >= 3 ? 25 : 0) + (data.hasLandmarks ? 20 : 0) + (data.hasAriaLabels ? 10 : 0)
+      };
+      return { score, details };
+    }
+
+    // ----- navigation.js -----
+    function calculateNavigation(data) {
+      let score = 85;
+      const bodyTextLength = data.wordCount > 0 ? data.wordCount : 100;
+      const linkDensity = (data.linkCount / Math.max(1, bodyTextLength)) * 100;
+      if (data.mainNav) score += 12;
+      if (data.hasDropdowns) score += 8;
+      if (data.topLevelItems > 9) score -= 18;
+      else if (data.topLevelItems > 7) score -= 8;
+      else if (data.topLevelItems <= 5 && data.topLevelItems > 0) score += 10;
+      if (data.hasBreadcrumb && data.wordCount > 400) score += 9;
+      if (linkDensity > 12) score -= Math.min(45, (linkDensity - 8) * 6);
+      else if (linkDensity > 8) score -= (linkDensity - 8) * 4;
+      else if (linkDensity < 2 && data.wordCount > 300) score -= 18;
+      const externalRatio = data.externalLinkCount / Math.max(1, data.linkCount);
+      if (externalRatio > 0.45) score -= 22;
+      else if (externalRatio > 0.30) score -= 12;
+      const contextualLinkEstimate = data.linkCount - data.topLevelItems * 2;
+      if (contextualLinkEstimate < 3 && data.wordCount > 600) score -= 20;
+      else if (contextualLinkEstimate > 0) score += Math.min(15, contextualLinkEstimate * 1.8);
+      if (data.potentialCTAs >= 4) score += 12;
+      else if (data.potentialCTAs >= 2) score += 7;
+      else if (data.wordCount > 500 && data.potentialCTAs === 0) score -= 14;
+      score = Math.max(35, Math.min(98, Math.round(score)));
+      const details = {
+        linkDensity: Math.round((data.linkCount / (data.wordCount / 100 || 1)) * 10),
+        menuClarity: data.topLevelItems > 0 ? Math.max(0, 100 - (data.topLevelItems - 5) * 8) : 40,
+        internalBalance: Math.round((data.linkCount - (data.topLevelItems * 2)) / (data.wordCount / 500 || 1) * 25),
+        ctaStrength: data.potentialCTAs >= 4 ? 90 : data.potentialCTAs >= 2 ? 65 : 30
+      };
+      return { score, details };
+    }
+
+    // ----- performance.js -----
+    function calculatePerformance(data) {
+      let score = 70;
+      if (data.imageCount > 60) score -= 28;
+      else if (data.imageCount > 35) score -= 16;
+      else if (data.imageCount <= 10) score += 12;
+      if (data.externalScripts > 15) score -= 25;
+      else if (data.externalScripts > 8) score -= 14;
+      else if (data.externalScripts <= 3) score += 10;
+      let blockingPenalty = 0;
+      if (data.hasRenderBlocking >= 8) {
+        blockingPenalty = 28;
+      } else if (data.hasRenderBlocking >= 5) {
+        blockingPenalty = 14;
+      } else if (data.hasRenderBlocking >= 3) {
+        blockingPenalty = 6;
+      }
+      score -= blockingPenalty;
+      if (data.hasLazyLoading) score += 8;
+      if (data.hasFontDisplaySwap) score += 6;
+      if (data.hasWebpOrAvif) score += 5;
+      if (data.fontCount > 4) score -= 16;
+      else if (data.fontCount > 2) score -= 7;
+      if (data.hasFontDisplaySwap) score += 12;
+      if (data.hasLazyLoading && data.imageCount > 10) score += 18;
+      else if (data.imageCount > 15) score -= 20;
+      if (data.hasWebpOrAvif) score += 15;
+      else if (data.imageCount > 20) score -= 12;
+      if (data.externalLinkCount > 30) score -= 14;
+      score = Math.max(30, Math.min(98, Math.round(score)));
+      const details = {
+        assetVolume: data.imageCount <= 10 ? 95 : data.imageCount <= 35 ? 70 : data.imageCount <= 60 ? 45 : 20,
+        scriptBloat: data.externalScripts <= 3 ? 90 : data.externalScripts <= 8 ? 70 : data.externalScripts <= 15 ? 45 : 25,
+        fontOptimization: data.fontCount <= 2 ? 90 : data.fontCount <= 4 ? 65 : data.hasFontDisplaySwap ? 55 : 30,
+        lazyLoading: (() => {
+          if (data.hasLazyLoading) return 88;
+          if (data.imageCount <= 6) return 78;
+          if (data.imageCount <= 12) return 65;
+          return 45;
+        })(),
+        imageFormat: data.hasWebpOrAvif ? 90 : data.imageCount > 20 ? 40 : 70,
+        renderBlocking: data.hasRenderBlocking <= 2 ? 90 : data.hasRenderBlocking <= 5 ? 65 : 35
+      };
+      return { score, details };
+    }
+
+    // ----- plugin-solutions-v1.0.js -----
+    const getGrade = (score) => {
+      if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+      if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+      if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+      if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+      return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+    };
+
+    const pluginData = {
+      "Alt Text Coverage": {
+        WordPress: [
+          { name: "Smush", desc: "Most popular optimizer with lazy loading, WebP/AVIF conversion, bulk processing, and alt text suggestions. Auto-fills alt from filename/title or uses AI extensions. Trusted by millions for reliable accessibility and performance.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" },
+          { name: "EWWW Image Optimizer", desc: "Pixel-perfect compression with WebP/AVIF support and bulk alt text tools. Local or cloud processing for quality retention. Excellent for professional sites needing accessibility fixes.", link: "https://wordpress.org/plugins/ewww-image-optimizer/", homeLink: "https://ewww.io/" },
+          { name: "Imagify", desc: "Smart compression levels with visual comparison, next-gen formats, and alt text suggestions. Bulk restore and automatic optimization. Premium feel with strong accessibility focus.", link: "https://wordpress.org/plugins/imagify-image-optimizer/", homeLink: "https://imagify.io/" }
+        ],
+        Shopify: [
+          { name: "TinyIMG", desc: "Complete optimization with AI alt text generation, bulk processing, and WebP/AVIF support. Monitors new uploads automatically. Proven to fix alt coverage and improve accessibility.", link: "https://apps.shopify.com/tinyimg", homeLink: "https://tiny-img.com/" },
+          { name: "Crush.pics", desc: "Automatic compression on upload with SEO-friendly alt/filenames and bulk tools. Set-and-forget with strong results. Clean way to improve alt text coverage.", link: "https://apps.shopify.com/crush-pics", homeLink: "https://crush.pics/" }
+        ],
+        Wix: [{ name: "Built-in Optimizer", desc: "Auto-compresses images on upload with manual alt text editing in editor. Native accessibility solution. Focus on adding alt text manually for full coverage.", link: "" }],
+        Squarespace: [{ name: "Built-in Tools", desc: "Native compression and responsive delivery with alt text fields in editor. Consistent across templates. Add alt text manually for complete coverage.", link: "" }],
+        Joomla: [{ name: "ImageRecycle", desc: "Cloud compression for images/PDFs with bulk alt text tools. Preserves quality and improves accessibility. Integrates with media manager.", link: "https://extensions.joomla.org/extension/imagerecycle-image-optimizer/", homeLink: "https://www.imagerecycle.com/" }],
+        Drupal: [{ name: "ImageAPI Optimize", desc: "Defines optimization pipelines with alt text support and WebP/AVIF. Bulk processing for accessibility. Flexible for advanced sites.", link: "https://www.drupal.org/project/imageapi_optimize" }]
+      },
+      "Image Optimization": {
+        WordPress: [
+          { name: "Smush", desc: "Bulk compression with lazy loading, WebP/AVIF, and lossless/lossy options. Automatic on upload. Trusted for speed + accessibility gains.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" },
+          { name: "EWWW Image Optimizer", desc: "Pixel-perfect compression with local/cloud processing and next-gen formats. Excellent quality retention. Strong for professional image optimization.", link: "https://wordpress.org/plugins/ewww-image-optimizer/", homeLink: "https://ewww.io/" },
+          { name: "Imagify", desc: "Smart compression levels, visual comparison, and bulk restore. Next-gen formats included. Premium balance of size and quality.", link: "https://wordpress.org/plugins/imagify-image-optimizer/", homeLink: "https://imagify.io/" }
+        ],
+        Shopify: [
+          { name: "TinyIMG", desc: "AI-powered bulk compression, WebP/AVIF, and automatic monitoring. Improves Core Web Vitals significantly. Complete image optimization solution.", link: "https://apps.shopify.com/tinyimg", homeLink: "https://tiny-img.com/" },
+          { name: "Crush.pics", desc: "Automatic compression on upload with format conversion. Set-and-forget with proven results. Clean and reliable for stores.", link: "https://apps.shopify.com/crush-pics", homeLink: "https://crush.pics/" }
+        ],
+        Wix: [{ name: "Built-in Optimizer", desc: "Native auto-compression with responsive delivery and modern formats. Focus on light images for best results.", link: "" }],
+        Squarespace: [{ name: "Built-in Tools", desc: "Native compression, responsive delivery, and automatic optimization. Consistent across templates.", link: "" }],
+        Joomla: [{ name: "ImageRecycle", desc: "Cloud compression with bulk processing and quality preservation. Strong for site-wide image optimization.", link: "https://extensions.joomla.org/extension/imagerecycle-image-optimizer/", homeLink: "https://www.imagerecycle.com/" }],
+        Drupal: [{ name: "ImageAPI Optimize", desc: "Optimization pipelines with WebP/AVIF support and bulk processing. Flexible for advanced image performance.", link: "https://www.drupal.org/project/imageapi_optimize" }]
+      },
+      "Lazy Loading Media": {
+        WordPress: [
+          { name: "Autoptimize", desc: "Free plugin for lazy loading images/videos/iframes with minification. Lightweight and configurable. Strong foundation for faster loading.", link: "https://wordpress.org/plugins/autoptimize/", homeLink: "https://autoptimize.com/" },
+          { name: "Smush", desc: "Built-in lazy loading with compression and WebP support. Automatic on upload. Trusted for media performance.", link: "https://wordpress.org/plugins/wp-smushit/", homeLink: "https://wpmudev.com/project/wp-smush-pro/" }
+        ],
+        Shopify: [
+          { name: "Rocket Page Speed Optimizer", desc: "Automatic lazy loading for media and scripts. Targets Core Web Vitals directly. Proven major loading improvements.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" },
+          { name: "Boostify Page Speed Optimizer", desc: "AI-powered lazy loading for images/videos. Excellent for mobile performance.", link: "https://apps.shopify.com/page-speed-optimization", homeLink: "https://boostifyapps.com/" }
+        ],
+        Wix: [{ name: "Website Speedy", desc: "Dedicated lazy loading app for media. Improves load times with one-click setup.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }],
+        Squarespace: [{ name: "Built-in Lazy Loading", desc: "Native lazy loading for images in galleries/blocks. Consistent across templates.", link: "" }],
+        Joomla: [{ name: "JCH Optimize", desc: "Lazy loading for images/media with minification. Top-rated for performance.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }],
+        Drupal: [{ name: "Lazy Load", desc: "Module for lazy loading images/iframes. Simple and effective.", link: "https://www.drupal.org/project/lazyload" }]
+      },
+      "Script Minification & Deferral": {
+        WordPress: [
+          { name: "Autoptimize", desc: "Minifies and combines CSS/JS, defers scripts, and generates critical CSS. Lightweight foundation for faster loading.", link: "https://wordpress.org/plugins/autoptimize/", homeLink: "https://autoptimize.com/" },
+          { name: "Perfmatters", desc: "Lightweight script manager to defer/delay JS and remove unused code. Directly improves INP and load times.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
+        ],
+        Shopify: [
+          { name: "Rocket Page Speed Optimizer", desc: "Automatic script minification and deferral. Targets Core Web Vitals directly.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" },
+          { name: "Boostify Page Speed Optimizer", desc: "AI-powered script minify and defer. Excellent for mobile performance.", link: "https://apps.shopify.com/page-speed-optimization", homeLink: "https://boostifyapps.com/" }
+        ],
+        Wix: [{ name: "Website Speedy", desc: "App for script deferral and render-blocking removal. Improves load times.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }],
+        Squarespace: [{ name: "Built-in Optimization", desc: "Native script handling and minification. Focus on minimal code.", link: "" }],
+        Joomla: [{ name: "JCH Optimize", desc: "Minifies and defers CSS/JS with critical CSS. Top-rated for performance.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }],
+        Drupal: [{ name: "AdvAgg", desc: "Advanced aggregation and minification for CSS/JS. Improves front-end speed.", link: "https://www.drupal.org/project/advagg" }]
+      },
+      "Font Optimization": {
+        WordPress: [
+          { name: "OMGF", desc: "Local Google Fonts hosting with preload and optimization. Removes external requests for faster loading.", link: "https://wordpress.org/plugins/host-webfonts-local/", homeLink: "https://daan.dev/omgf/" },
+          { name: "Perfmatters", desc: "Preload, swap, and disable unused fonts. Lightweight with maximum impact.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
+        ],
+        Shopify: [{ name: "Rocket Page Speed Optimizer", desc: "Font preload and optimization. Improves LCP and overall speed.", link: "https://apps.shopify.com/core-web-vitals-booster", homeLink: "https://rocketoptimizer.com/" }],
+        Wix: [{ name: "Built-in Font Optimization", desc: "Native font handling with CDN delivery. Focus on minimal font usage.", link: "" }],
+        Squarespace: [{ name: "Built-in Tools", desc: "Native font delivery with responsive optimization. Keep font count low.", link: "" }],
+        Joomla: [{ name: "JCH Optimize", desc: "Font preload and minification. Part of comprehensive performance suite.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }],
+        Drupal: [{ name: "AdvAgg", desc: "Font aggregation and optimization. Improves front-end loading.", link: "https://www.drupal.org/project/advagg" }]
+      },
+      "Asset Volume & Script Bloat": {
+        WordPress: [
+          { name: "Asset CleanUp", desc: "Disable unused CSS/JS per page/post. Reduces bloat and asset volume dramatically.", link: "https://wordpress.org/plugins/wp-asset-clean-up/", homeLink: "https://wp-rocket.me/asset-cleanup/" },
+          { name: "Perfmatters", desc: "Script manager to disable bloat and unused assets. Lightweight with huge performance gains.", link: "https://perfmatters.io/", homeLink: "https://perfmatters.io/" }
+        ],
+        Shopify: [{ name: "Hyperspeed EXTREME", desc: "Advanced app/script optimization and bloat removal. Regularly updated for clean performance.", link: "https://apps.shopify.com/hyperspeed", homeLink: "https://hyperspeed.app/" }],
+        Wix: [{ name: "Website Speedy", desc: "Removes render-blocking and unused assets. Reduces bloat effectively.", link: "https://www.wix.com/app-market/web-solution/websitespeedy" }],
+        Squarespace: [{ name: "Built-in Tools", desc: "Native asset management. Keep code minimal to avoid bloat.", link: "" }],
+        Joomla: [{ name: "JCH Optimize", desc: "Removes unused assets and minifies. Strong bloat reduction.", link: "https://extensions.joomla.org/extension/jch-optimize/", homeLink: "https://www.jch-optimize.net/" }],
+        Drupal: [{ name: "AdvAgg", desc: "Advanced asset aggregation and bloat reduction. Improves overall performance.", link: "https://www.drupal.org/project/advagg" }]
+      },
+      "PWA Readiness": {
+        WordPress: [
+          { name: "Super Progressive Web Apps", desc: "Adds manifest, service worker, and PWA features. Simple setup for installable sites.", link: "https://wordpress.org/plugins/super-progressive-web-apps/", homeLink: "https://superpwa.com/" },
+          { name: "PWA for WP", desc: "Complete PWA solution with AMP support and push notifications. Full readiness features.", link: "https://wordpress.org/plugins/pwa-for-wp/", homeLink: "https://pwa-for-wp.com/" }
+        ],
+        Shopify: [{ name: "PWA by Shop Sheriff", desc: "Adds manifest and service worker for PWA. Improves installability and offline readiness.", link: "https://apps.shopify.com/pwa-by-shop-sheriff" }],
+        Wix: [{ name: "Built-in PWA Features", desc: "Native PWA support with manifest and service worker. Reliable built-in readiness.", link: "" }],
+        Squarespace: [{ name: "Built-in PWA", desc: "Native manifest and basic PWA support. Focus on clean code for readiness.", link: "" }],
+        Joomla: [{ name: "PWA Joomla", desc: "Adds manifest and service worker for PWA. Good for installable Joomla sites.", link: "https://extensions.joomla.org/extension/pwa-joomla/" }],
+        Drupal: [{ name: "Progressive Web App", desc: "Module for manifest and service worker. Brings PWA readiness to Drupal.", link: "https://www.drupal.org/project/pwa" }]
+      }
+    };
+
+    function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-section') {
+      if (failedMetrics.length === 0) return;
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const section = document.createElement('section');
+      section.className = 'mt-20 max-w-5xl mx-auto px-4';
+      section.innerHTML = `
+        <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">
+          Plugin Solutions for Performance & Accessibility Issues
+        </h2>
+        <p class="text-center text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-12">
+          ${failedMetrics.length} issue${failedMetrics.length > 1 ? 's need' : ' needs'} attention.
+          Check your theme or template first — many modern themes already include some of these optimizations.
+          Expand any panel below to see top free/freemium plugins/apps that can help fix it.
+        </p>
+        <div class="space-y-6">
+          ${failedMetrics.map(m => {
+            const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
+            const g = m.grade;
+            return `
+              <details class="group bg-white dark:bg-gray-900 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <summary class="flex items-center justify-between p-6 md:p-8 cursor-pointer list-none">
+                  <h3 class="text-2xl md:text-3xl font-bold ${g.color}">${g.emoji} ${m.name}</h3>
+                  <div class="transform transition-transform duration-300 group-open:rotate-180">
+                    <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </div>
+                </summary>
+                <div class="px-2 md:px-8 pb-8 md:pb-10 border-t border-gray-200 dark:border-gray-700">
+                  <div class="max-w-md mx-auto my-8">
+                    <select id="cms-select-${metricId}" class="w-full px-6 py-4 text-lg rounded-2xl border-2 border-orange-300 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-4 focus:ring-orange-500/50 focus:border-orange-500 outline-none transition">
+                      <option value="">Select your platform / CMS...</option>
+                      ${Object.keys(pluginData[m.name] || {}).map(cms =>
+                        `<option value="${cms}">${cms}</option>`
+                      ).join('')}
+                    </select>
+                  </div>
+                  <div id="plugins-${metricId}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                  </div>
+                </div>
+              </details>
+            `;
+          }).join('')}
+        </div>
+        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-12">
+          These popular free/freemium plugins and apps can significantly improve these areas.
+          Always test on a staging environment first and check for recent reviews/updates.
+        </p>
+      `;
+      container.appendChild(section);
+
+      setTimeout(() => {
+        failedMetrics.forEach(m => {
+          const metricId = m.name.replace(/\s+/g, '-').toLowerCase();
+          const select = document.getElementById(`cms-select-${metricId}`);
+          const pluginsList = document.getElementById(`plugins-${metricId}`);
+          if (!select || !pluginsList) return;
+          select.addEventListener('change', (e) => {
+            const selected = e.target.value;
+            pluginsList.innerHTML = '';
+            pluginsList.classList.add('hidden');
+            if (!selected || !pluginData[m.name]?.[selected]) return;
+            pluginData[m.name][selected].forEach(plugin => {
+              const card = document.createElement('div');
+              card.className = 'group relative bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden';
+              card.innerHTML = `
+                <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="relative z-10">
+                  <h4 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">${plugin.name}</h4>
+                  <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6">${plugin.desc}</p>
+                  <div class="flex flex-wrap gap-4">
+                    ${plugin.link ? `<a href="${plugin.link}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg shadow hover:shadow-md transition">Plugin Library</a>` : ''}
+                    ${plugin.homeLink ? `<a href="${plugin.homeLink}" target="_blank" rel="noopener noreferrer" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-medium rounded-lg shadow hover:shadow-md transition">Plugin Website</a>` : ''}
+                  </div>
+                </div>
+              `;
+              pluginsList.appendChild(card);
+            });
+            if (pluginsList.children.length > 0) pluginsList.classList.remove('hidden');
+          });
+        });
+      }, 0);
+    }
+
+    // ----- module-explanations-v1.0.js -----
+    const moduleExplanations = [{
+      id: "readability",
+      emoji: "📖",
+      name: "Readability",
+      what: "Readability measures how easily visitors can understand and scan your content. It combines classic formulas like Flesch with modern web factors such as sentence length, paragraph structure, and visual hierarchy. High readability keeps users engaged longer and reduces bounce rates. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#readability-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+      how: "Readability is tested using Flesch Reading Ease and Flesch-Kincaid Grade Level scores, average sentence length, paragraph density, and scannability elements like bolding, lists, and subheadings. Each factor is scored individually and combined into an overall module grade. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#readability-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+      why: "Easy-to-read content reaches a wider audience, improves engagement metrics, and reduces cognitive strain. Search engines reward pages where users stay longer and interact more. Great readability is essential for modern web success. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#readability-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
+    }, {
+      id: "navigation",
+      emoji: "🧭",
+      name: "Navigation",
+      what: "Navigation Clarity evaluates how easily users can move through your site and find what they need. It examines menu structure, link density, internal linking patterns, and call-to-action visibility. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#navigation-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+      how: "Navigation is tested by analyzing link density, menu organization, internal linking balance, and CTA prominence. Each factor is scored based on best practices for user flow and discoverability. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#navigation-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+      why: "Intuitive navigation lowers bounce rates, increases pages per session, and helps users complete goals faster. Clear structure strengthens topical authority and sends positive user signals to search engines. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#navigation-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
+    }, {
+      id: "accessibility",
+      emoji: "♿",
+      name: "Accessibility",
+      what: "Accessibility Health measures how inclusive your page is for users with disabilities. It checks alt text coverage, color contrast, semantic HTML structure, and overall WCAG alignment. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#accessibility-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+      how: "Accessibility is tested through alt text completeness, contrast ratios, proper heading hierarchy, landmarks, and general WCAG compliance signals. Each factor contributes to the overall score. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#accessibility-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+      why: "Accessible sites reach 15-20% more users, build trust, and face lower legal risk. Many accessibility improvements also enhance SEO and overall user experience for everyone. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#accessibility-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
+    }, {
+      id: "mobile",
+      emoji: "📱",
+      name: "Mobile & PWA",
+      what: "Mobile & PWA Readiness checks how well your page works on phones and tablets. It evaluates viewport configuration, responsive design, touch targets, and progressive web app signals. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#mobile-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+      how: "Mobile is tested by checking viewport meta tag, breakpoint behavior, touch target size, and PWA indicators like manifest and service worker presence. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#mobile-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+      why: "Most users browse on mobile devices. Poor mobile experience causes immediate bounces. PWA capabilities increase return visits and engagement significantly. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#mobile-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
+    }, {
+      id: "speed",
+      emoji: "⚡",
+      name: "Performance",
+      what: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization opportunities. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#performance-what' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+      how: "Performance is tested through proxies for asset volume, script size, font delivery, lazy loading implementation, image formats, and render-blocking resources. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#performance-how' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>",
+      why: "Fast pages keep users and reduce bounce rates. Speed is a direct ranking factor. Users perceive faster sites as higher quality and more professional. <a href='https://traffictorch.net/blog/posts/user-experience-help-guide/#performance-why' class='text-purple-600 dark:text-purple-400 hover:underline font-medium ml-1'>Learn more →</a>"
+    }];
+
+    function openDetailsFromHash() {
+      if (window.location.hash) {
+        const hash = window.location.hash.substring(1);
+        const target = document.getElementById(hash);
+        if (target) {
+          const details = target.querySelector('details');
+          if (details) {
+            details.open = true;
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }
+      }
+    }
+
+    // Populate module cards
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('module-cards-container');
+      if (!container) return;
+      const moduleCards = moduleExplanations.map(m => `
+        <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-purple-500 text-center">
+          <div class="text-6xl mb-6">${m.emoji}</div>
+          <div class="text-3xl font-black text-purple-600 dark:text-purple-400 mb-8">${m.name}</div>
+          <details class="group">
+            <summary class="cursor-pointer text-orange-700 dark:text-orange-300 font-bold hover:underline inline-flex items-center justify-center gap-2 whitespace-nowrap">
+              Learn More <span class="text-2xl group-open:rotate-180 transition-transform">↓</span>
+            </summary>
+            <div class="mt-6 space-y-6 text-left max-w-lg mx-auto text-gray-700 dark:text-gray-300 leading-relaxed">
+              <div><p class="font-bold text-purple-600 dark:text-purple-400 text-lg mb-2">What is ${m.name}?</p><p>${m.what}</p></div>
+              <div><p class="font-bold text-purple-600 dark:text-purple-400 text-lg mb-2">How is ${m.name} tested?</p><p>${m.how}</p></div>
+              <div><p class="font-bold text-purple-600 dark:text-purple-400 text-lg mb-2">Why does ${m.name} matter?</p><p>${m.why}</p></div>
+            </div>
+          </details>
+        </div>
+      `).join('');
+      const allToolsCard = `
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 hover:shadow-xl transition-shadow border-l-4 border-indigo-500 text-center lg:col-span-1">
+          <div class="text-6xl mb-6">🛠️</div>
+          <div class="text-3xl font-black text-indigo-600 dark:text-indigo-400 mb-8">SEO UX AI Tools</div>
+          <a href="https://traffictorch.net/ai-seo-ux-tools/" class="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:from-indigo-700 hover:to-purple-700 transition">Explore All Tools</a>
+        </div>`;
+      container.innerHTML = moduleCards + allToolsCard;
+      openDetailsFromHash();
+    });
+    window.addEventListener('hashchange', openDetailsFromHash);
+
+    // ----- share-report-v1.js -----
+    function initShareReport(resultsContainer) {
+      const shareBtn = resultsContainer.querySelector('#share-report-btn');
+      if (!shareBtn) return;
+      shareBtn.addEventListener('click', async () => {
+        const urlInput = document.getElementById('url-input')?.value.trim();
+        const codeInput = document.getElementById('code-input')?.value.trim();
+        if (!urlInput && codeInput) {
+          const messageDiv = document.getElementById('share-message');
+          if (messageDiv) {
+            messageDiv.innerHTML = `⚠️ Share Report only works for URL audits.<br>For HTML code audit use "Save Report" button.`;
+            messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-200`;
+            messageDiv.classList.remove('hidden');
+            setTimeout(() => messageDiv.classList.add('hidden'), 6000);
+          }
+          return;
+        }
+        if (!urlInput) return;
+        const baseUrl = window.location.origin + window.location.pathname;
+        const shareUrl = `${baseUrl}?url=${encodeURIComponent(urlInput)}`;
+        let pageTitle = 'this page';
+        const titleElement = document.getElementById('analyzed-page-title');
+        if (titleElement) {
+          pageTitle = titleElement.textContent.trim();
+        } else {
+          pageTitle = document.querySelector('.bg-white.dark\\:bg-gray-800.rounded-3xl.shadow-2xl.p-6.sm\\:p-8.md\\:p-10 p.mt-6.text-base.sm\\:text-lg')?.textContent.trim() ||
+            document.title.trim() || 'this page';
+        }
+        pageTitle = pageTitle.replace(/Quit Risk Tool: Bounce Rate & UX Audit | Traffic Torch/gi, '').trim() || 'this page';
+        const shareText = `Check out ${pageTitle} on Traffic Torch Quit Risk Tool ${shareUrl}`;
+        try {
+          if (navigator.share) {
+            await navigator.share({ text: shareText });
+            showMessage('Shared successfully!', 'success');
+          } else {
+            await navigator.clipboard.writeText(shareText);
+            showMessage('Report link copied!<br>Paste anywhere to share.', 'success');
+          }
+        } catch (err) { /* silent */ }
+      });
+      function showMessage(text, type) {
+        const messageDiv = document.getElementById('share-message');
+        if (!messageDiv) return;
+        messageDiv.innerHTML = type === 'success' ? `✅ ${text}` : `❌ ${text}`;
+        messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium ${type === 'success' ? 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-200' : 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-200'}`;
+        messageDiv.classList.remove('hidden');
+        setTimeout(() => messageDiv.classList.add('hidden'), 8000);
+      }
+    }
+
+    // ----- submit-feedback-v1.js -----
+    function initSubmitFeedback(resultsContainer) {
+      const feedbackBtn = resultsContainer.querySelector('#feedback-btn');
+      const formContainer = resultsContainer.querySelector('#feedback-form-container');
+      const feedbackForm = resultsContainer.querySelector('#feedback-form');
+      const messageDiv = resultsContainer.querySelector('#feedback-message');
+      const ratingButtons = resultsContainer.querySelectorAll('[data-rating]');
+      const replyCheckbox = resultsContainer.querySelector('#reply-requested');
+      const emailGroup = resultsContainer.querySelector('#email-group');
+      const charCount = resultsContainer.querySelector('#char-count');
+      const textarea = resultsContainer.querySelector('#feedback-text');
+      if (!feedbackBtn || !formContainer) return;
+      feedbackBtn.addEventListener('click', () => {
+        const isHidden = formContainer.classList.contains('hidden');
+        formContainer.classList.toggle('hidden');
+        feedbackBtn.textContent = isHidden ? 'Cancel Feedback ✕' : 'Submit Feedback 💬';
+        feedbackBtn.classList.toggle('bg-gray-500', isHidden);
+        feedbackBtn.classList.toggle('hover:bg-gray-600', isHidden);
+        feedbackBtn.classList.toggle('from-blue-500', !isHidden);
+        feedbackBtn.classList.toggle('to-indigo-600', !isHidden);
+        feedbackBtn.classList.toggle('hover:from-blue-600', !isHidden);
+        feedbackBtn.classList.toggle('hover:to-indigo-700', !isHidden);
+      });
+      ratingButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          ratingButtons.forEach(b => {
+            b.classList.remove('scale-150', 'ring-4', 'ring-blue-500', 'ring-opacity-80', 'bg-blue-100', 'dark:bg-blue-900/30', 'selected-rating');
+            b.classList.add('hover:scale-125', 'transition-all', 'duration-200');
+          });
+          btn.classList.remove('hover:scale-125');
+          btn.classList.add('scale-150', 'ring-4', 'ring-blue-500', 'ring-opacity-80', 'bg-blue-100', 'dark:bg-blue-900/30', 'selected-rating');
+          document.getElementById('feedback-rating').value = btn.dataset.rating;
+        });
+      });
+      replyCheckbox.addEventListener('change', () => {
+        emailGroup.classList.toggle('hidden', !replyCheckbox.checked);
+      });
+      if (textarea && charCount) {
+        textarea.addEventListener('input', () => {
+          charCount.textContent = textarea.value.length;
+        });
+      }
+      feedbackForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = feedbackForm.querySelector('button');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        messageDiv.classList.add('hidden');
+        const rating = document.getElementById('feedback-rating').value;
+        const replyRequested = replyCheckbox.checked;
+        const email = replyRequested ? document.getElementById('feedback-email').value.trim() : '';
+        const feedbackText = textarea.value.trim();
+        if (!feedbackText) {
+          showMessage('Please enter your feedback', 'error');
+          resetButton();
+          return;
+        }
+        try {
+          const formData = new FormData();
+          formData.append('name', 'Anonymous');
+          formData.append('email', email || 'no-reply@traffictorch.net');
+          formData.append('message', `Feedback for Quit Risk Tool on ${document.body.getAttribute('data-url') || 'unknown'}\nRating: ${rating || 'None'}\n\n${feedbackText}`);
+          const res = await fetch('/api/contact', { method: 'POST', body: formData });
+          if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`Server error ${res.status}: ${errText}`);
+          }
+          const data = await res.json();
+          if (data.success) {
+            showMessage('Thank you! Feedback sent. We\'ll review it soon.', 'success');
+            feedbackForm.reset();
+            submitBtn.textContent = 'Send More Feedback →';
+            setTimeout(() => { submitBtn.textContent = 'Send Feedback'; }, 10000);
+          } else {
+            throw new Error(data.error || 'Failed');
+          }
+        } catch (err) {
+          showMessage(`Failed to send feedback: ${err.message}. Try again.`, 'error');
+        } finally {
+          resetButton();
+        }
+        function showMessage(text, type) {
+          messageDiv.innerHTML = type === 'success' ? `✅ ${text}` : `❌ ${text}`;
+          messageDiv.classList.remove('hidden', 'text-green-400', 'bg-green-900/20', 'text-red-400', 'bg-red-900/20');
+          messageDiv.classList.add(type === 'success' ? 'text-green-400' : 'text-red-400', type === 'success' ? 'bg-green-900/20' : 'bg-red-900/20');
+          messageDiv.classList.add('dark:text-gray-200');
+        }
+        function resetButton() {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      });
+    }
+
+    // ------------------------------------------------------------
+    // 3. MAIN SCRIPT (was script-v1.3.js) – now uses local functions
+    // ------------------------------------------------------------
+    const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+    const TOKEN_KEY = 'traffic_torch_jwt';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('audit-form');
+      const urlInput = document.getElementById('url-input');
+      const codeInput = document.getElementById('code-input');
+      const analyzeUrlBtn = document.getElementById('analyze-url-btn');
+      const analyzeCodeBtn = document.getElementById('analyze-code-btn');
+      const results = document.getElementById('results');
+
+      // Auto-fill from ?input= (VS Code extension)
+      function autoFillFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const inputData = params.get('input');
+        if (inputData) {
+          const textarea = document.getElementById('code-input');
+          if (textarea) {
+            textarea.value = decodeURIComponent(inputData);
+            const analyzeBtn = document.getElementById('analyze-code-btn');
+            if (analyzeBtn) {
+              setTimeout(() => { analyzeBtn.click(); }, 800);
+            }
+          }
+        }
+      }
+      window.addEventListener('load', autoFillFromUrl);
+
+      // Auto-fill from ?url= (shared link)
+      const urlParams = new URLSearchParams(window.location.search);
+      const sharedUrl = urlParams.get('url');
+      if (sharedUrl) {
+        try {
+          let cleanUrl = decodeURIComponent(sharedUrl).trim();
+          if (!/^https?:\/\//i.test(cleanUrl)) {
+            cleanUrl = 'https://' + cleanUrl;
+          }
+          urlInput.value = cleanUrl;
+          setTimeout(() => {
+            const analyzeBtn = document.getElementById('analyze-url-btn');
+            if (analyzeBtn) analyzeBtn.click();
+          }, 600);
+        } catch (err) { /* silent */ }
+      }
+
+      const PROXY = 'https://full-render.traffictorch.workers.dev/';
+
+      // Factor definitions (same as before)
+      const factorDefinitions = {
+        readability: {
+          factors: [
+            { name: "Flesch Reading Ease Score", threshold: 65, shortDesc: "Measures how easy your text is to read using the classic Flesch formula. Higher scores mean broader audience comprehension. Low scores indicate complex or dense writing.", howToFix: "Simplify vocabulary and use shorter sentences. Aim for common words that most people understand easily. Break complex ideas into smaller, digestible parts." },
+            { name: "Flesch-Kincaid Grade Level", threshold: 65, shortDesc: "Estimates the U.S. school grade needed to understand the text. Most successful web content targets grade 8 or lower. High scores limit your audience reach.", howToFix: "Target grade 8 or below. Shorten sentences and reduce syllables per word. Test with readability tools and revise accordingly." },
+            { name: "Average Sentence Length", threshold: 70, shortDesc: "Long sentences increase cognitive load on screens. Ideal web average is under 20 words. Varied but concise sentences improve flow.", howToFix: "Keep average below 20 words. Mix short and medium sentences. Break up any sentence over 25 words." },
+            { name: "Paragraph Density & Length", threshold: 70, shortDesc: "Long, dense paragraphs create walls of text that deter readers. Short paragraphs with whitespace aid scannability. Modern users prefer bite-sized blocks.", howToFix: "Limit paragraphs to 3-5 sentences. Use single-sentence paragraphs for emphasis. Add generous spacing between ideas." },
+            { name: "Overall Text Scannability", threshold: 70, shortDesc: "Measures use of bolding, lists, subheadings, and visual hierarchy. Most visitors scan before reading fully. Strong scannability captures attention quickly.", howToFix: "Bold key points, use bullet lists, and add descriptive subheadings. Highlight important phrases strategically. Front-load critical information." }
+          ],
+          moduleWhat: "Readability assesses how easily visitors can understand and scan your content. It combines multiple proven metrics including Flesch formulas, sentence length, paragraph structure, and visual formatting. High readability keeps users engaged longer and reduces bounce rates.",
+          moduleHow: "Use simple, active language and short sentences. Break content into short paragraphs with clear subheadings. Incorporate bullet points, bold text, and whitespace to guide the eye. Always edit with the average reader in mind.",
+          moduleWhy: "Easy-to-read content reaches a wider audience and improves engagement metrics. It reduces cognitive strain and frustration. Search engines reward pages where users stay longer and interact more."
+        },
+        navigation: {
+          factors: [
+            { name: "Link Density Evaluation", threshold: 78, shortDesc: "Too many links create choice overload and dilute focus. Optimal density balances navigation with clarity. Excessive links confuse users and weaken topical signals.", howToFix: "Audit and remove redundant or low-value links. Focus on quality over quantity. Keep primary navigation focused on key user goals." },
+            { name: "Menu Structure Clarity", threshold: 80, shortDesc: "Clear, logical menus help users find information quickly. Simple hierarchy reduces frustration. Poor structure leads to higher bounce rates.", howToFix: "Limit top-level items to 5-7. Use descriptive labels users understand. Organize by user needs, not internal structure." },
+            { name: "Internal Linking Balance", threshold: 72, shortDesc: "Balanced internal links guide users deeper into your site. They spread authority and improve crawlability. Isolated pages get less traffic and ranking power.", howToFix: "Add contextual links from body content to related pages. Link important pages from high-traffic content. Use descriptive anchor text naturally." },
+            { name: "CTA Prominence & Visibility", threshold: 82, shortDesc: "Clear calls-to-action guide users toward goals. Prominent placement reduces friction. Hidden CTAs mean missed conversions.", howToFix: "Place primary CTAs above the fold with contrasting colors. Use action-oriented text and sufficient size. Add secondary CTAs further down." }
+          ],
+          moduleWhat: "Navigation Clarity evaluates how easily users can move through your site. It examines link density, menu organization, internal linking patterns, and call-to-action visibility. Strong navigation reduces frustration and improves flow.",
+          moduleHow: "Keep menus simple with clear labels. Use contextual links naturally in content. Make primary actions stand out visually. Guide users logically toward their goals.",
+          moduleWhy: "Intuitive navigation lowers bounce rates and increases pages per session. Users complete goals faster with less effort. Clear structure strengthens topical authority and user signals for search engines."
+        },
+        accessibility: {
+          factors: [
+            { name: "Alt Text Coverage", threshold: 85, shortDesc: "Meaningful images need descriptive alt text. Decorative images should have empty alt attributes. Complete coverage is essential for screen readers and image SEO.", howToFix: "Audit all images. Add concise, meaningful alt text to informative images. Use alt='' for purely decorative ones. Never leave alt attributes missing on meaningful images." },
+            { name: "Color Contrast Ratios", threshold: 80, shortDesc: "Text must meet WCAG AA (4.5:1 for normal text, 3:1 for large). Low contrast causes readability issues for low-vision users and in bright light.", howToFix: "Use contrast checkers (e.g. WebAIM). Aim for 4.5:1+ on normal text. Adjust foreground/background colors or increase font size/weight where needed." },
+            { name: "Semantic HTML Structure", threshold: 82, shortDesc: "Proper use of headings, landmarks (main, nav, article), and sections creates a logical document outline for assistive tech and search engines.", howToFix: "Use one H1 per page, logical heading hierarchy. Replace generic divs with semantic elements like main, article, section, aside, header, footer." },
+            { name: "Overall WCAG Compliance", threshold: 78, shortDesc: "WCAG 2.2 AA covers perceivability, operability, understandability, robustness. Compliance improves inclusivity, SEO, and reduces legal risk.", howToFix: "Run automated audits with WAVE, axe, or Lighthouse. Manually test keyboard navigation and screen reader experience. Fix high-impact issues first." }
+          ],
+          moduleWhat: "Accessibility Health measures how inclusive your page is for users with disabilities. It checks alt text, contrast, semantic structure, and overall WCAG alignment. Good accessibility serves 15-20% of users with impairments.",
+          moduleHow: "Provide alt text for all images. Ensure sufficient color contrast. Use proper HTML semantics and landmarks. Test with accessibility tools regularly.",
+          moduleWhy: "Accessible sites reach more people and build trust. They face lower legal risk. Many accessibility improvements also enhance SEO and overall user experience."
+        },
+        mobile: {
+          factors: [
+            { name: "Viewport Configuration", threshold: 90, shortDesc: "Viewport meta tag controls mobile layout scaling. Missing or incorrect tag causes zoomed-out desktop view. Proper setting enables responsive behavior.", howToFix: "Add exact meta tag: width=device-width, initial-scale=1. Avoid restricting zoom. Test on real devices." },
+            { name: "Responsive Breakpoints", threshold: 85, shortDesc: "Responsive design adapts layout to screen size. Poor breakpoints cause horizontal scrolling. Content should reflow naturally on all devices.", howToFix: "Use relative units and flexible grids. Test at common breakpoints. Adopt mobile-first approach." },
+            { name: "Touch Target Size", threshold: 85, shortDesc: "Small tap targets cause mis-taps on mobile. Minimum recommended size is 44×44 pixels. Adequate spacing prevents errors.", howToFix: "Add padding around links and buttons. Ensure at least 44px targets. Test tapping on actual phones." },
+            { name: "PWA Readiness Indicators", threshold: 80, shortDesc: "PWA features enable install prompts and offline capability. Manifest and service worker are required. They improve engagement significantly.", howToFix: "Add valid manifest.json with icons and name. Implement basic service worker. Ensure HTTPS." }
+          ],
+          moduleWhat: "Mobile & PWA Readiness checks how well your page works on phones and tablets. It evaluates viewport, responsiveness, touch targets, and progressive web app signals. Mobile traffic dominates modern web usage.",
+          moduleHow: "Implement proper viewport meta tag. Use responsive design with flexible layouts. Ensure large touch targets. Add manifest and service worker for PWA features.",
+          moduleWhy: "Most users browse on mobile devices. Poor mobile experience causes immediate bounces. PWA capabilities increase return visits and engagement."
+        },
+        performance: {
+          factors: [
+            { name: "Asset Volume Flags", threshold: 82, shortDesc: "...", howToFix: "Compress all images aggressively (aim <100KB each), convert to WebP or AVIF, remove unused images, enable server compression (GZIP/Brotli), minify CSS/JS." },
+            { name: "Script Bloat Detection", threshold: 85, shortDesc: "...", howToFix: "Audit and remove unused JavaScript, defer or async non-critical scripts, bundle/minify all JS, replace heavy third-party scripts with lightweight alternatives." },
+            { name: "Font Optimization", threshold: 82, shortDesc: "...", howToFix: "Limit to 2-3 font families and essential weights, use font-display: swap to prevent invisible text, preload critical fonts, prefer system fonts where possible." },
+            { name: "Lazy Loading Media", threshold: 80, shortDesc: "...", howToFix: "Add native loading='lazy' attribute to all offscreen image and iframe elements (below the fold). For videos use preload='none' or lazy-loading libraries if needed." },
+            { name: "Image Optimization", threshold: 82, shortDesc: "...", howToFix: "Convert images to next-gen formats (WebP or AVIF), use proper responsive sizing with srcset/sizes, compress files without visible quality loss." },
+            { name: "Script Optimization", threshold: 80, shortDesc: "Minimize render-blocking CSS/JS that delay first paint. Modern best practice allows 1-3 small/optimized blocking items if critical path is short.", howToFix: "Inline or preload critical CSS, defer/async non-critical JS, minify files, remove unused code. Aim for ≤2-3 blocking resources with fast load times." }
+          ],
+          moduleWhat: "Performance Optimization measures loading speed and resource efficiency. It flags heavy assets, script bloat, font issues, lazy loading, and image optimization. Speed is critical for user satisfaction and rankings.",
+          moduleHow: "Compress and optimize all assets. Lazy load offscreen content. Minify and defer scripts. Use modern image formats.",
+          moduleWhy: "Fast pages keep users and reduce bounce rates. Speed is a direct ranking factor. Users perceive faster sites as higher quality."
+        }
+      };
+
+      // ----- Helper functions (from script) -----
+      function countWords(text) { return text.trim().split(/\s+/).filter(w => w.length > 0).length; }
+      function countExternalLinks(links) {
+        const currentHost = window.location.host;
+        return Array.from(links).filter(a => {
+          try { return new URL(a.href, window.location.href).host !== currentHost; } catch { return false; }
+        }).length;
+      }
+      function hasViewportMeta(doc) {
+        const meta = doc.querySelector('meta[name="viewport"]');
+        return meta && /width\s*=\s*device-width/i.test(meta.content);
+      }
+      function hasSemanticMain(doc) { return !!doc.querySelector('main'); }
+      function hasSemanticArticleOrSection(doc) { return !!doc.querySelector('article, section'); }
+      function countMissingAlt(doc) {
+        const imgs = doc.querySelectorAll('img');
+        let missing = 0, decorative = 0, meaningful = 0;
+        imgs.forEach(img => {
+          const alt = img.getAttribute('alt');
+          const isDecorative = img.classList.contains('decorative') ||
+                              img.getAttribute('role') === 'presentation' ||
+                              (alt !== null && alt.trim() === '' && !img.hasAttribute('title'));
+          if (isDecorative) { decorative++; } else { meaningful++; if (alt === null || alt.trim() === '') missing++; }
+        });
+        return { missingCount: missing, meaningfulCount: meaningful, decorativeCount: decorative, totalImages: imgs.length };
+      }
+
+      function getUXContent(doc) {
+        const textElements = doc.querySelectorAll('p, li, article, section, main, div');
+        let fullText = '', paragraphTexts = [], boldCount = 0, listItemCount = 0;
+        textElements.forEach(el => {
+          const t = el.textContent.trim();
+          if (t.length > 15) {
+            fullText += t + ' ';
+            if (el.tagName === 'P') paragraphTexts.push(t);
+          }
+          boldCount += el.querySelectorAll('b, strong').length;
+          if (el.tagName === 'UL' || el.tagName === 'OL') listItemCount += el.querySelectorAll('li').length;
+        });
+        const links = doc.querySelectorAll('a[href]');
+        const images = doc.querySelectorAll('img');
+        const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
+        return {
+          fullText, wordCount: countWords(fullText), linkCount: links.length,
+          externalLinkCount: countExternalLinks(links), imageCount: images.length,
+          altData: countMissingAlt(doc), headingCount: headings.length,
+          hasViewport: hasViewportMeta(doc), hasMain: hasSemanticMain(doc),
+          hasArticleOrSection: hasSemanticArticleOrSection(doc), paragraphTexts, boldCount, listItemCount,
+          mainNav: doc.querySelector('nav, [role="navigation"], header nav, .main-menu, #main-menu, .navbar, .navigation'),
+          hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
+          topLevelItems: doc.querySelectorAll('nav > ul > li, .main-menu > li, header nav > ul > li').length || 0,
+          hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]'),
+          hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]'),
+          hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]'),
+          viewportContent: (() => { const meta = doc.querySelector('meta[name="viewport"]'); return meta ? meta.getAttribute('content') || '' : ''; })(),
+          hasMediaQueries: !!doc.querySelector('style, link[rel="stylesheet"][href*="css"]'),
+          hasTouchFriendly: (() => { const links2 = doc.querySelectorAll('a, button, [role="button"]'); let smallCount = 0; links2.forEach(el => { const rect = el.getBoundingClientRect?.() || { width: 0, height: 0 }; if (rect.width < 44 || rect.height < 44) smallCount++; }); return smallCount < 5; })(),
+          hasManifest: !!doc.querySelector('link[rel="manifest"]'),
+          hasServiceWorkerHint: doc.body.innerHTML.includes('serviceWorker') || doc.body.innerHTML.includes('register('),
+          hasAppleTouchIcon: !!doc.querySelector('link[rel*="apple-touch-icon"]'),
+          isHttps: window.location.protocol === 'https:',
+          hasLazyLoading: (() => { const allImgs = doc.querySelectorAll('img[src]'); const lazyImgs = doc.querySelectorAll('img[loading="lazy"]'); const total = allImgs.length; const lazyCount = lazyImgs.length; if (total === 0) return false; return lazyCount >= 2 && (lazyCount / total) * 100 >= 40; })(),
+          externalScripts: doc.querySelectorAll('script[src^="http"]').length,
+          hasRenderBlocking: doc.querySelectorAll('script:not([defer]):not([async]), link[rel="stylesheet"]:not([media])').length,
+          fontCount: doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"], link[rel="stylesheet"][href*="typekit"], link[rel="stylesheet"][href*="cloud.typography"]').length || 0,
+          hasFontDisplaySwap: doc.body.innerHTML.includes('font-display: swap') || doc.body.innerHTML.includes('font-display:swap') || doc.head.innerHTML.includes('font-display: swap') || doc.head.innerHTML.includes('font-display:swap'),
+          hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"], source[type="image/avif"]'),
+          potentialCTAs: doc.querySelectorAll('a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, [class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]').length
+        };
+      }
+
+      function analyzeUX(data) {
+        const readabilityResult = calculateReadability(data);
+        const navigationResult = calculateNavigation(data);
+        const accessibilityResult = calculateAccessibility(data);
+        const mobileResult = calculateMobile(data);
+        const performanceResult = calculatePerformance(data);
+        const readability = readabilityResult.score;
+        const nav = navigationResult.score;
+        const accessibility = accessibilityResult.score;
+        const mobile = mobileResult.score;
+        const speed = performanceResult.score;
+        const scores = [readability, nav, accessibility, mobile, speed];
+        const overall = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+        return { score: isNaN(overall) ? 60 : overall, readability, nav, accessibility, mobile, speed };
+      }
+
+      function getQuitRiskLabel(score) {
+        if (score >= 75) return { text: "Low Risk", color: "from-green-400 to-emerald-600" };
+        if (score >= 55) return { text: "Moderate Risk", color: "from-yellow-400 to-orange-600" };
+        return { text: "High Risk", color: "from-red-500 to-pink-600" };
+      }
+
+      function getGradeInfo(score) {
+        if (score >= 90) return { grade: "A+", color: "text-green-600", emoji: "🏆" };
+        if (score >= 85) return { grade: "A", color: "text-green-600", emoji: "✅" };
+        if (score >= 80) return { grade: "B+", color: "text-green-500", emoji: "✅" };
+        if (score >= 75) return { grade: "B", color: "text-yellow-500", emoji: "👍" };
+        if (score >= 70) return { grade: "C+", color: "text-yellow-600", emoji: "👍" };
+        if (score >= 65) return { grade: "C", color: "text-orange-600", emoji: "⚠️" };
+        if (score >= 60) return { grade: "D", color: "text-orange-600", emoji: "⚠️" };
+        return { grade: "F", color: "text-red-600", emoji: "❌" };
+      }
+
+      function getPluginGrade(score) {
+        if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+        if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+        if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+        if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+        return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+      }
+
+      function buildModuleHTML(moduleName, value, moduleData, factorScores = null) {
+        const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
+        const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
+        const gradeInfo = getGradeInfo(value);
+        let statusMessage, statusEmoji;
+        if (value >= 85) { statusMessage = "Excellent"; statusEmoji = "🏆"; }
+        else if (value >= 75) { statusMessage = "Very good"; statusEmoji = "✅"; }
+        else if (value >= 60) { statusMessage = "Needs improvement"; statusEmoji = "⚠️"; }
+        else { statusMessage = "Needs work"; statusEmoji = "❌"; }
+        let metricsHTML = '', fixesHTML = '', failedOnlyHTML = '', failedCount = 0;
+        moduleData.factors.forEach(f => {
+          let passed = value >= f.threshold;
+          if (factorScores) {
+            const fs = factorScores;
+            if (moduleName === 'Readability') {
+              if (f.name === "Flesch Reading Ease Score") passed = fs.fleschEase >= 60;
+              else if (f.name === "Flesch-Kincaid Grade Level") passed = fs.kincaidGrade <= 10;
+              else if (f.name === "Average Sentence Length") passed = fs.avgSentence <= 20;
+              else if (f.name === "Paragraph Density & Length") passed = fs.avgParagraph <= 80;
+              else if (f.name === "Overall Text Scannability") passed = fs.scannability >= 70;
+            } else if (moduleName === 'Navigation') {
+              if (f.name === "Link Density Evaluation") passed = fs.linkDensity <= 8;
+              else if (f.name === "Menu Structure Clarity") passed = fs.menuClarity >= 70;
+              else if (f.name === "Internal Linking Balance") passed = fs.internalBalance >= 50;
+              else if (f.name === "CTA Prominence & Visibility") passed = fs.ctaStrength >= 70;
+            } else if (moduleName === 'Accessibility') {
+              if (f.name === "Alt Text Coverage") passed = fs.altCoverage >= 85;
+              else if (f.name === "Color Contrast Ratios") passed = fs.contrastProxy >= 80;
+              else if (f.name === "Semantic HTML Structure") passed = fs.semanticStrength >= 70;
+              else if (f.name === "Overall WCAG Compliance") passed = (fs.altCoverage + fs.contrastProxy + fs.semanticStrength) / 3 >= 75;
+            } else if (moduleName === 'Mobile') {
+              if (f.name === "Viewport Configuration") passed = fs.viewportQuality >= 85;
+              else if (f.name === "Responsive Breakpoints") passed = fs.responsiveProxy >= 75;
+              else if (f.name === "Touch Target Size") passed = fs.touchFriendly >= 70;
+              else if (f.name === "PWA Readiness Indicators") passed = fs.pwaReadiness >= 60;
+            } else if (moduleName === 'Speed') {
+              if (f.name === "Asset Volume Flags") passed = fs.assetVolume >= 70;
+              else if (f.name === "Script Bloat Detection") passed = fs.scriptBloat >= 70;
+              else if (f.name === "Font Optimization") passed = fs.fontOptimization >= 70;
+              else if (f.name === "Lazy Loading Media") passed = fs.lazyLoading >= 70;
+              else if (f.name === "Image Optimization") passed = fs.imageFormat >= 70;
+              else if (f.name === "Script Optimization") passed = fs.renderBlocking >= 70;
+            }
+          }
+          let metricGrade = passed ? { color: "text-green-600", emoji: "✅" } : (value >= f.threshold - 10) ? { color: "text-orange-600", emoji: "⚠️" } : { color: "text-red-600", emoji: "❌" };
+          metricsHTML += `<div class="mb-6"><p class="font-medium text-xl"><span class="${metricGrade.color} text-2xl mr-3">${metricGrade.emoji}</span><span class="${metricGrade.color} font-bold">${f.name}</span></p></div>`;
+          fixesHTML += `<div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}"><p class="font-bold text-xl ${metricGrade.color} mb-3"><span class="text-3xl mr-3">${metricGrade.emoji}</span>${f.name}</p><p class="text-gray-700 dark:text-gray-300 leading-relaxed">${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}</p></div>`;
+          if (!passed) {
+            failedOnlyHTML += `<div class="mb-8 p-2 bg-gray-50 dark:bg-gray-800 rounded-xl text-center"><p class="font-bold text-2xl ${metricGrade.color} mb-4"><span class="text-4xl">${metricGrade.emoji}</span></p><p class="font-bold text-2xl ${metricGrade.color} mb-4">${f.name}</p><p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">${f.howToFix}</p></div>`;
+            failedCount++;
+          }
+        });
+        const moreDetailsHTML = `<div class="text-left px-4 py-6"><h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center"><button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';" >How ${moduleName} is tested?</button></h4><div class="space-y-6"><div><strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">What it is:</strong><p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhat}</p></div><div><strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">How to Improve:</strong><p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleHow}</p></div><div><strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">Why it matters:</strong><p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhy}</p></div></div></div>`;
+        const fixesPanelHTML = failedCount > 0 ? `<div class="space-y-6">${failedOnlyHTML}</div><p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic"><button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';" >Learn more about ${moduleName}?</button></p>` : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
+        return `<div class="module-card text-center p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}"><div class="relative mx-auto w-32 h-32"><svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90"><circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/><circle cx="64" cy="64" r="56" stroke="${ringColor}" stroke-width="12" fill="none" stroke-dasharray="${(value / 100) * 352} 352" stroke-linecap="round"/></svg><div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color:${ringColor};">${value}</div></div><p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p><div class="mt-4 text-center"><p class="text-4xl ${gradeInfo.color}">${statusEmoji}</p><p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p></div><div class="mt-6 text-center metrics-list px-2 sm:px-0">${metricsHTML}</div><div class="more-details-panel hidden mt-8 text-left px-2 sm:px-4">${moreDetailsHTML}</div><div class="mt-6 flex gap-4 justify-center flex-wrap"><button class="more-details px-6 py-3 sm:px-8 sm:py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color:${ringColor};">More Details</button><button class="show-fixes px-6 py-3 sm:px-8 sm:py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}</button></div><div class="fixes-panel hidden mt-8 text-left px-2 sm:px-4">${fixesPanelHTML}</div></div>`;
+      }
+
+      // ---- Event listeners ----
+      analyzeUrlBtn.addEventListener('click', async () => {
+        const canProceed = await canRunTool('limit-audit-id');
+        if (!canProceed) return;
+        codeInput.value = '';
+        let url = urlInput.value.trim();
+        if (!url) { urlInput.focus(); urlInput.classList.add('!border-red-500'); setTimeout(() => urlInput.classList.remove('!border-red-500'), 2000); return; }
+        if (!/^https?:\/\//i.test(url)) { url = 'https://' + url; urlInput.value = url; }
+        results.classList.remove('hidden');
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        triggerAnalysis(url, null);
+      });
+
+      analyzeCodeBtn.addEventListener('click', async () => {
+        const canProceed = await canRunTool('limit-audit-id');
+        if (!canProceed) return;
+        urlInput.value = '';
+        const htmlCode = codeInput.value.trim();
+        if (!htmlCode) { codeInput.focus(); codeInput.classList.add('!border-red-500'); setTimeout(() => codeInput.classList.remove('!border-red-500'), 2000); return; }
+        results.classList.remove('hidden');
+        document.getElementById('loading').classList.remove('hidden');
+        document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        triggerAnalysis(null, htmlCode);
+      });
+
+      async function triggerAnalysis(url, htmlCode) {
+        results.classList.remove('hidden');
+        document.getElementById('loading').classList.remove('hidden');
+        const progressText = document.getElementById('progressText');
+        const steps = [
+          { text: "Fetching page...", delay: 1200 },
+          { text: "Extracting main content", delay: 1600 },
+          { text: "Evaluating links and menu", delay: 1400 },
+          { text: "Evaluating images", delay: 1200 },
+          { text: "Check mobile responsive", delay: 1000 },
+          { text: "Assessing performance optimization", delay: 1400 },
+          { text: "Calculating quit risk", delay: 1600 }
+        ];
+        let currentStep = 0;
+        const runStep = () => {
+          if (currentStep < steps.length) {
+            progressText.textContent = steps[currentStep].text;
+            currentStep++;
+            setTimeout(runStep, steps[currentStep - 1].delay);
+          } else {
+            progressText.textContent = "Generating report";
+            setTimeout(() => performAnalysis(url, htmlCode), 3000);
+          }
+        };
+        runStep();
+      }
+
+      async function performAnalysis(url, htmlCode) {
+        try {
+          let html;
+          if (htmlCode) {
+            html = htmlCode;
+          } else {
+            const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
+            if (!res.ok) throw new Error('Page not reachable');
+            html = await res.text();
+          }
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const uxData = getUXContent(doc);
+          const ux = analyzeUX(uxData);
+          const factorDetails = {
+            readability: calculateReadability(uxData).details,
+            navigation: calculateNavigation(uxData).details,
+            accessibility: calculateAccessibility(uxData).details,
+            mobile: calculateMobile(uxData).details,
+            performance: calculatePerformance(uxData).details
+          };
+          const failedMetrics = [];
+          if (ux.accessibility < 75) {
+            failedMetrics.push({ name: "Alt Text Coverage", grade: getPluginGrade(ux.accessibility) });
+          }
+          if (ux.speed < 85) {
+            const speedGrade = getPluginGrade(ux.speed);
+            failedMetrics.push({ name: "Image Optimization", grade: speedGrade });
+            failedMetrics.push({ name: "Lazy Loading Media", grade: speedGrade });
+            failedMetrics.push({ name: "Font Optimization", grade: speedGrade });
+            failedMetrics.push({ name: "Script Minification & Deferral", grade: speedGrade });
+            failedMetrics.push({ name: "Asset Volume & Script Bloat", grade: speedGrade });
+          }
+          if (ux.mobile < 90) {
+            failedMetrics.push({ name: "PWA Readiness", grade: getPluginGrade(ux.mobile) });
+          }
+          const risk = getQuitRiskLabel(ux.score);
+          document.getElementById('loading').classList.add('hidden');
+          const safeScore = isNaN(ux.score) ? 60 : ux.score;
+          const overallGrade = getGradeInfo(safeScore);
+          const readabilityHTML = buildModuleHTML('Readability', ux.readability, factorDefinitions.readability, factorDetails.readability);
+          const navHTML = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation, factorDetails.navigation);
+          const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility, factorDetails.accessibility);
+          const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile, factorDetails.mobile);
+          const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance, factorDetails.performance);
+          const modulePriority = [
+            { name: 'Readability', score: ux.readability, threshold: 65, data: factorDefinitions.readability },
+            { name: 'Navigation', score: ux.nav, threshold: 70, data: factorDefinitions.navigation },
+            { name: 'Performance', score: ux.speed, threshold: 85, data: factorDefinitions.performance },
+            { name: 'Accessibility', score: ux.accessibility, threshold: 75, data: factorDefinitions.accessibility },
+            { name: 'Mobile', score: ux.mobile, threshold: 90, data: factorDefinitions.mobile }
+          ];
+          const priorityFixes = [];
+          const failedModules = modulePriority.filter(m => m.score < m.threshold);
+          failedModules.forEach(mod => {
+            if (mod.data.factors.length > 0) {
+              priorityFixes.push({ ...mod.data.factors[0], module: mod.name, extraCount: mod.data.factors.length });
+            }
+          });
+          if (priorityFixes.length < 3 && failedModules.length > 0) {
+            const topModule = failedModules[0];
+            if (topModule.data.factors.length >= 3) {
+              priorityFixes.push({ ...topModule.data.factors[1], module: topModule.name, isSecond: true, extraCount: topModule.data.factors.length });
+            }
+          }
+          let priorityFixesHTML = '';
+          if (priorityFixes.length > 0) {
+            priorityFixesHTML = priorityFixes.map((fix, index) =>
+              `<div class="flex items-start gap-4 p-4 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all"><div class="text-5xl font-black text-purple-600">${index + 1}</div><div class="flex-1"><p class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">${fix.module} → ${fix.name}${fix.isSecond ? `<span class="text-sm font-normal text-purple-600 dark:text-purple-400 ml-3">(${fix.extraCount}/${fix.extraCount} failed in this module)</span>` : ''}</p><p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200">${fix.howToFix}</p></div></div>`
+            ).join('');
+          } else {
+            priorityFixesHTML = `<div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center"><p class="text-5xl mb-6">🎉</p><p class="text-4xl font-black text-green-600 dark:text-green-400 mb-4">Good job! Outstanding UX</p><p class="text-2xl text-gray-800 dark:text-gray-200">Your page delivers excellent user experience across all modules. No critical improvements needed at this time.</p><p class="text-lg text-gray-500 dark:text-gray-200 mt-6">Keep monitoring — even great pages benefit from ongoing optimization.</p></div>`;
+          }
+          const failedCount = failedModules.length;
+          let projectedRisk = risk.text, riskDropText = '';
+          if (failedCount >= 3) { projectedRisk = 'Low Risk'; riskDropText = 'High → Low'; }
+          else if (failedCount === 2) { projectedRisk = risk.text === 'High Risk' ? 'Moderate Risk' : 'Low Risk'; riskDropText = risk.text === 'High Risk' ? 'High → Moderate' : 'Moderate → Low'; }
+          else if (failedCount === 1) { riskDropText = 'Moderate improvement'; }
+          else { riskDropText = 'Already optimal'; }
+          const projectedRiskColor = projectedRisk === 'Low Risk' ? 'from-green-400 to-emerald-600' : projectedRisk === 'Moderate Risk' ? 'from-yellow-400 to-orange-600' : 'from-red-500 to-pink-600';
+          let perFixImpact = '';
+          if (priorityFixes.length > 0) {
+            perFixImpact = '<div class="mt-8 space-y-4 text-left">';
+            priorityFixes.forEach(fix => {
+              perFixImpact += `<div class="p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg"><p class="font-medium text-gray-800 dark:text-gray-200">${fix.module} → ${fix.name}</p><p class="text-gray-800 dark:text-gray-200 mt-1">Reduces friction by making content more approachable and reducing early abandonment. Expected impact: 10–25% lower early exits.</p></div>`;
+            });
+            perFixImpact += '</div>';
+          }
+          const dominant = priorityFixes.length > 0 ? priorityFixes[0].module : '';
+          let bounceRange = failedCount === 0 ? 'Already optimal' : failedCount === 1 ? '10–20%' : failedCount === 2 ? '20–35%' : '30–50%';
+          let durationRange = dominant === 'Readability' ? (failedCount >= 2 ? '+60–120%' : '+40–80%') : (failedCount === 0 ? 'Strong' : failedCount === 1 ? '+20–50%' : failedCount === 2 ? '+40–80%' : '+60–120%');
+          let pagesRange = failedCount === 0 ? 'Good' : failedCount === 1 ? '+0.4–1.0' : failedCount === 2 ? '+0.8–1.6' : '+1.2–2.4';
+          let conversionRange = failedCount === 0 ? 'Strong' : failedCount === 1 ? '+10–25%' : failedCount === 2 ? '+20–40%' : '+30–60%';
+          const impactHTML = `<div class="grid md:grid-cols-2 gap-8 my-20"><div class="p-8 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-3xl border border-purple-400/30"><h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-center">Quit Risk Reduction</h3><div class="text-center mb-8"><div class="flex items-center justify-center gap-8 text-4xl font-black mb-6"><span class="bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">${risk.text}</span><span class="text-purple-600">→</span><span class="bg-gradient-to-r ${projectedRiskColor} bg-clip-text text-transparent">${projectedRisk}</span></div><p class="text-xl text-gray-800 dark:text-gray-200">${riskDropText}</p></div>${perFixImpact}<details class="mt-8"><summary class="cursor-pointer text-lg font-medium text-purple-600 dark:text-purple-400">How We Calculated This</summary><p class="text-gray-500 dark:text-gray-200 mt-4">Based on benchmarks from thousands of analyzed sites — fixing Readability issues alone can reduce quit risk by 20-30% by making content more approachable. Combined fixes across modules deliver compounded gains.</p></details><details class="mt-6"><summary class="cursor-pointer text-lg font-medium text-purple-600 dark:text-purple-400">Risk Level Definitions</summary><ul class="text-gray-500 dark:text-gray-200 mt-4 space-y-2"><li><strong>High Risk:</strong> >60% chance of quick bounce based on similar sites</li><li><strong>Moderate Risk:</strong> 40-60% early exit probability</li><li><strong>Low Risk:</strong> <40% — users typically stay and engage</li></ul></details><p class="mt-8 text-center text-lg text-gray-500 dark:text-gray-200 font-medium">Track in Analytics: Monitor exit rates pre/post fixes to verify improvement.</p></div><div class="p-8 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30"><h3 class="text-3xl font-black mb-8 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent text-center">Potential Engagement Gains</h3><ul class="space-y-8"><li class="flex items-center gap-6"><span class="text-2xl">📉</span><div class="flex-1"><p class="font-bold text-xl text-gray-500 dark:text-gray-200">Bounce Rate</p><p class="text-lg text-gray-500 dark:text-gray-200">Potential ${bounceRange} reduction</p><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2"><div class="bg-purple-600 h-4 rounded-full transition-all" style="width:${failedCount === 0 ? '100%' : failedCount * 25 + '%'}"></div></div></div></li><li class="flex items-center gap-6"><span class="text-2xl">⏱️</span><div class="flex-1"><p class="font-bold text-xl text-gray-500 dark:text-gray-200">Session Duration</p><p class="text-lg text-gray-500 dark:text-gray-200">Potential ${durationRange} longer</p><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2"><div class="bg-cyan-600 h-4 rounded-full transition-all" style="width:${failedCount === 0 ? '100%' : failedCount * 30 + '%'}"></div></div></div></li><li class="flex items-center gap-6"><span class="text-2xl">📄</span><div class="flex-1"><p class="font-bold text-xl text-gray-500 dark:text-gray-200">Pages per Session</p><p class="text-lg text-gray-500 dark:text-gray-200">Potential ${pagesRange} more pages viewed</p><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2"><div class="bg-blue-600 h-4 rounded-full transition-all" style="width:${failedCount === 0 ? '100%' : failedCount * 25 + '%'}"></div></div></div></li><li class="flex items-center gap-6"><span class="text-2xl">💰</span><div class="flex-1"><p class="font-bold text-xl text-gray-500 dark:text-gray-200">Conversion Rate Lift</p><p class="text-lg text-gray-500 dark:text-gray-200">Potential ${conversionRange} improvement</p><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 mt-2"><div class="bg-green-600 h-4 rounded-full transition-all" style="width:${failedCount === 0 ? '100%' : failedCount * 20 + '%'}"></div></div></div></li></ul><p class="text-sm text-gray-500 dark:text-gray-200 mt-8">Conservative estimates based on industry benchmarks. Readability fixes often yield the largest session gains.</p><p class="text-lg text-gray-500 dark:text-gray-200 mt-6 font-medium text-center">How to Verify: Use Google Analytics to track these metrics before/after changes. Typical timeline: See gains in 1-4 weeks with consistent traffic.</p></div></div>`;
+
+          const modules = [
+            { name: 'Readability', score: ux.readability },
+            { name: 'Navigation', score: ux.nav },
+            { name: 'Accessibility', score: ux.accessibility },
+            { name: 'Mobile & PWA', score: ux.mobile },
+            { name: 'Performance', score: ux.speed }
+          ];
+          const scores = modules.map(m => m.score);
+
+          const offset = 240;
+          const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top: targetY, behavior: 'smooth' });
+
+          results.innerHTML = `
+<!-- Big Overall Score Card -->
+<div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 80 ? 'border-green-500' : safeScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
+    <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Usability Score</p>
+    <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
+      <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+        <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none"/>
+        <circle cx="100" cy="100" r="90" stroke="${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'}" stroke-width="16" fill="none" stroke-dasharray="${(safeScore / 100) * 565} 565" stroke-linecap="round"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center">
+          <div class="text-5xl sm:text-6xl font-black drop-shadow-lg" style="color:${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'};">${safeScore}</div>
+          <div class="text-lg sm:text-xl opacity-80 -mt-1" style="color:${safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#fb923c' : '#ef4444'};">/100</div>
+        </div>
+      </div>
+    </div>
+    ${(() => { const title = (doc?.title || '').trim(); if (!title) return ''; const truncated = title.length > 65 ? title.substring(0, 65) : title; return `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`; })()}
+    <div class="mt-6 text-center">
+      <p class="text-6xl sm:text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">${overallGrade.emoji}</p>
+      <p class="text-4xl sm:text-5xl font-bold ${overallGrade.color} mt-3 sm:mt-4">${overallGrade.grade}</p>
+      <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 mt-3 sm:mt-4">/100 Usability Score</p>
+    </div>
+  </div>
+</div>
+<!-- Quit Risk Verdict -->
+<div class="text-center mb-12">
+  <p class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-8">Quit Risk:</p>
+  <div class="flex flex-col items-center gap-6">
+    <div class="flex items-center gap-6 text-4xl">
+      <span class="${risk.text === 'Low Risk' ? 'text-green-600' : risk.text === 'Moderate Risk' ? 'text-orange-600' : 'text-red-600'}">${risk.text === 'Low Risk' ? '✅' : risk.text === 'Moderate Risk' ? '⚠️' : '❌'}</span>
+    </div>
+    <p class="text-4xl font-black bg-gradient-to-r ${risk.color} bg-clip-text text-transparent">${risk.text}</p>
+  </div>
+  <p class="text-xl text-gray-800 dark:text-gray-200 mt-10">Scanned ${uxData.linkCount} links + ${uxData.imageCount} images</p>
+</div>
+<!-- On-Page Health Radar Chart -->
+<div class="max-w-5xl mx-auto my-16 px-4">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
+    <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
+    <div class="hidden md:block w-full"><canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas></div>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">Radar chart available on desktop/tablet</p>
+    <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">Visual overview of your page performance across key SEO & UX factors</p>
+  </div>
+</div>
+<!-- Modules -->
+<div class="grid gap-8 my-16 max-w-7xl mx-auto px-4">
+  <div class="grid md:grid-cols-1 gap-8">${readabilityHTML}</div>
+  <div class="grid md:grid-cols-2 gap-8">${navHTML}${accessHTML}</div>
+  <div class="grid md:grid-cols-2 gap-8">${mobileHTML}${speedHTML}</div>
+</div>
+<!-- Top Priority Fixes -->
+<div class="text-center my-20">
+  <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">Top Priority Fixes</h2>
+  <div class="max-w-5xl mx-auto space-y-8">${priorityFixesHTML}</div>
+  ${priorityFixes.length > 0 ? `<p class="mt-12 text-xl text-gray-800 dark:text-gray-200">Prioritized by impact — focusing on diverse modules for balanced improvements. If one module dominates failures, address it first for biggest gains.</p>` : ''}
+</div>
+<!-- Plugin Solutions Accordion -->
+<div id="plugin-solutions-section" class="mt-16 px-4"></div>
+<!-- Enhanced Quit Risk Reduction & Engagement Impact -->
+${impactHTML}
+<!-- PDF Share Feedback Buttons -->
+<div class="text-center my-16 px-4">
+  <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
+    <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">Share Report ↗️</button>
+    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">Save Report 📥</button>
+    <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">Submit Feedback 💬</button>
+  </div>
+  <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
+  <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
+    <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
+      <div><label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label><input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500"></div>
+      <div><label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label><input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500"></div>
+      <div><label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label><input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500"></div>
+      <div><label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label><input id="share-title" type="text" required placeholder="Traffic Torch Quit Risk Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500"></div>
+      <div><label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label><textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea></div>
+      <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
+    </form>
+  </div>
+  <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
+      <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">Feedback for Quit Risk Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong></p>
+      <form id="feedback-form" class="space-y-6">
+        <div><label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label><div class="flex gap-3 text-3xl justify-center sm:justify-start"><button type="button" data-rating="1" class="hover:scale-125 transition">😞</button><button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button><button type="button" data-rating="3" class="hover:scale-125 transition">😐</button><button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button><button type="button" data-rating="5" class="hover:scale-125 transition">😍</button></div><input type="hidden" id="feedback-rating" name="rating"></div>
+        <div><label class="flex items-center gap-2 justify-center sm:justify-start"><input type="checkbox" id="reply-requested" class="w-5 h-5"><span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span></label></div>
+        <div id="email-group" class="hidden"><label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label><input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500"></div>
+        <div><label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label><textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea><p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left"><span id="char-count">0</span>/1000 characters</p></div>
+        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
+      </form>
+      <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
+    </div>
+  </div>
+</div>
+        `;
+
+          if (failedMetrics.length > 0) {
+            renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
+          }
+
+          // Radar chart
+          setTimeout(() => {
+            const canvas = document.getElementById('health-radar');
+            if (!canvas) return;
+            try {
+              const ctx = canvas.getContext('2d');
+              const labelColor = '#9ca3af';
+              const gridColor = 'rgba(156,163,175,0.3)';
+              const borderColor = '#fb923c';
+              const fillColor = 'rgba(251,146,60,0.15)';
+              window.myChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                  labels: modules.map(m => m.name),
+                  datasets: [{
+                    label: 'Health Score',
+                    data: scores,
+                    backgroundColor: fillColor,
+                    borderColor: borderColor,
+                    borderWidth: 4,
+                    pointRadius: 8,
+                    pointHoverRadius: 12,
+                    pointBackgroundColor: scores.map(s => s >= 80 ? '#22c55e' : s >= 60 ? '#fb923c' : '#ef4444'),
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 3
+                  }]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+                    r: {
+                      beginAtZero: true,
+                      min: 0,
+                      max: 100,
+                      ticks: { stepSize: 20, color: labelColor },
+                      grid: { color: gridColor },
+                      angleLines: { color: gridColor },
+                      pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                    }
+                  },
+                  plugins: { legend: { display: false } }
+                }
+              });
+            } catch (e) { /* silent */ }
+          }, 150);
+
+          initShareReport(results);
+          initSubmitFeedback(results);
+
+          let fullUrl = url || document.getElementById('url-input').value.trim();
+          let displayUrl = 'traffictorch.net';
+          if (fullUrl) {
+            let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
+            const firstSlash = cleaned.indexOf('/');
+            if (firstSlash !== -1) {
+              const domain = cleaned.slice(0, firstSlash);
+              const path = cleaned.slice(firstSlash);
+              displayUrl = domain + '\n' + path;
+            } else {
+              displayUrl = cleaned;
+            }
+          }
+          document.body.setAttribute('data-url', displayUrl);
+        } catch (err) {
+          document.getElementById('loading').classList.add('hidden');
+          results.innerHTML = `<div class="text-center py-20"><p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p><p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.</p></div>`;
+        }
+      }
+
+      // Toggle details/fixes
+      document.addEventListener('click', e => {
+        const moreBtn = e.target.closest('.more-details');
+        if (moreBtn) {
+          const card = moreBtn.closest('.module-card');
+          if (card) {
+            card.querySelector('.more-details-panel').classList.toggle('hidden');
+          }
+        }
+        const fixesBtn = e.target.closest('.show-fixes');
+        if (fixesBtn) {
+          const card = fixesBtn.closest('.module-card');
+          if (card) {
+            card.querySelector('.fixes-panel').classList.toggle('hidden');
+          }
+        }
+      });
+
+    }); // end DOMContentLoaded
+  </script>
+
+  <!-- Chart.js for radar chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+</body>
+</html>

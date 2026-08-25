@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO Title -->
+  <title>Topical Authority Audit Tool – Topical Depth & Gap Analysis</title>
+
+  <!-- Meta Description -->
+  <meta name="description" content="Instant topical authority audit tool. Detect main topics, subtopics, coverage gaps & authority clusters & subtopic suggestions on any webpage.">
+
+  <!-- Robots Meta -->
+  <meta name="robots" content="index, follow">
+
+  <!-- Canonical Link -->
+  <link rel="canonical" href="https://traffictorch.net/topical-authority-audit-tool/">
+
+  <!-- Color Scheme Support -->
+  <meta name="color-scheme" content="dark light">
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/topical-authority-audit-tool/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/topical-authority-audit-tool/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="Topical Authority Audit Tool – Instant Topical Depth & Gap Analysis | Traffic Torch">
+  <meta property="og:description" content="Instant topical authority audit tool. Detect main topics, subtopics, coverage gaps, E-E-A-T signals & authority clusters on any page. Get actionable fixes, subtopic suggestions & score to build stronger topical relevance across Google, Bing & AI search in 2026.">
+  <meta property="og:image" content="https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-1200w.webp">
+  <meta property="og:url" content="https://traffictorch.net/topical-authority-audit-tool/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Topical Authority Audit Tool – Instant Topical Depth & Gap Analysis | Traffic Torch">
+  <meta name="twitter:description" content="Instant topical authority audit tool. Detect main topics, subtopics, coverage gaps, E-E-A-T signals & authority clusters on any page. Get actionable fixes, subtopic suggestions & score to build stronger topical relevance across Google, Bing & AI search in 2026.">
+  <meta name="twitter:image" content="https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-1200w.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  <!-- ========================================================== -->
+  <!--  FIXED: external CSS (global + Tailwind) – exactly as original -->
+  <!-- ========================================================== -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  </noscript>
+
+  <!-- Prevent FOUC until Tailwind loads -->
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+  </noscript>
+
+  <!-- Inlined local CSS (tool‑specific overrides) -->
+  <style>
+    /* Local CSS Topical Authority */
+    body { transition: background-color 0.3s ease; }
+    .health-score polygon { fill: rgba(16, 185, 129, 0.3); }
+    .radar { width: 180px; height: 180px; margin: 1.5rem auto; display: block; }
+    .health-score h2 { margin-bottom: 0.5rem; }
+
+    @media (max-width: 1024px) {
+      .container, .max-w-5xl, .max-w-3xl, .max-w-4xl { max-width: 100% !important; }
+      .p-12, .p-10, .p-8 { padding: 1.5rem !important; }
+      .text-5xl { font-size: 2rem !important; line-height: 1.1 !important; }
+      .text-9xl { font-size: 6rem !important; line-height: 1 !important; }
+    }
+    @media (max-width: 480px) {
+      .p-12, .p-10 { padding: 1.25rem !important; }
+      .text-5xl { font-size: 1.875rem !important; }
+      .text-9xl { font-size: 5.5rem !important; }
+    }
+    @media (max-width: 768px) {
+      .max-w-5xl { max-width: 100% !important; padding-left: 4px !important; padding-right: 4px !important; }
+      .p-8, .p-6, .p-12 { padding: 1.5rem !important; }
+      .text-7xl, .text-8xl { font-size: 4rem !important; }
+      .text-5xl { font-size: 2.5rem !important; }
+      .text-4xl { font-size: 2rem !important; }
+      .grid { grid-template-columns: 1fr !important; }
+      .md\:grid-cols-3, .md\:grid-cols-4 { grid-template-columns: 1fr !important; }
+      table { font-size: 0.875rem !important; }
+      table th, table td { padding: 0.75rem !important; }
+    }
+    @media (max-width: 480px) {
+      .p-8, .p-6, .p-12 { padding: 1rem !important; }
+      .text-7xl, .text-8xl { font-size: 3.5rem !important; }
+      .text-5xl { font-size: 2.25rem !important; }
+    }
+    html, body { overscroll-behavior-x: none; }
+    #results .max-w-5xl { max-width: 100% !important; padding-left: 1rem !important; padding-right: 1rem !important; }
+    #results .overflow-x-auto, #results table { width: 100% !important; max-width: 100% !important; table-layout: fixed; overflow-wrap: break-word; }
+    #results table th, #results table td { word-break: break-word; overflow-wrap: anywhere; }
+    .overflow-x-auto { -webkit-overflow-scrolling: touch; }
+    [data-rating] { transition: all 0.2s ease; padding: 0.0rem; border-radius: 9999px; }
+    [data-rating]:hover { background-color: rgba(59, 130, 246, 0.1); }
+    [data-rating].selected-rating:hover { scale: 1.5 !important; background-color: rgba(59, 130, 246, 0.2) !important; }
+    .fixes-toggle, .details-toggle { cursor: pointer; user-select: none; }
+    .fixes-panel, .details-panel { transition: max-height 0.4s ease-out, padding 0.4s ease-out; overflow: hidden; max-height: 0; padding-top: 0; padding-bottom: 0; }
+    .fixes-panel.expanded, .details-panel.expanded { max-height: 4000px; padding: 1.25rem 1rem; }
+    .fixes-panel, .details-panel { padding-left: 1rem; padding-right: 1rem; }
+    .arrow, .details-arrow { transition: transform 0.25s ease; display: inline-block; }
+    .rotate-180 { transform: rotate(180deg); }
+  </style>
+
+  <!-- Inlined print CSS -->
+  <style media="print">
+    @media print {
+      @page { size: A4 portrait; margin: 12mm; }
+      html, body { background: #ffffff !important; color: #111827 !important; font-size: 11pt; line-height: 1.5; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body::before { content: "TrafficTorch.net ⚖️\A\A Topical Authority Audit Tool 🎯\A\A Report for:\A " attr(data-print-title); display: block; height: 100vh; min-height: 100vh; page-break-after: always; color: #4b5563; font-family: system-ui, -apple-system, sans-serif; font-weight: 900; text-align: center; padding-top: 20vh; line-height: 1.4; white-space: pre; font-size: 2rem; text-shadow: -2px -2px 0 #fb923c, 2px -2px 0 #fb923c, -2px 2px 0 #fb923c, 2px 2px 0 #fb923c, -2px 0 0 #fb923c, 2px 0 0 #fb923c, 0 -2px 0 #fb923c, 0 2px 0 #fb923c, 0 10px 30px rgba(0,0,0,0.5); }
+      #results-wrapper { page-break-before: always; margin-top: 0 !important; }
+      #results-wrapper, #results-wrapper .container, #results-wrapper .max-w-7xl, #results-wrapper .max-w-6xl, #results-wrapper .max-w-5xl, #results-wrapper .max-w-4xl { max-width: none !important; width: 100% !important; margin: 0 !important; padding: 1cm 1.2cm !important; box-sizing: border-box; }
+      .report-section, .tool-result, .analysis-block, .score-card, .fixes-panel, .full-details, .priority-gains, .keyword-gap-table, .seo-score-card, #results .score-card, #priority-gains-section, #priority-cards-container, #plugin-solutions-section, .expand-content, .hidden.mt-6, .hidden.mt-4, .hidden.space-y-6, .hidden.space-y-8 { display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; max-height: none !important; overflow: visible !important; }
+      .score-card, .metric-card, .fixes-panel, .full-details, .bg-white.dark\:bg-gray-800, .bg-orange-50.dark\:bg-orange-900\/20 { page-break-inside: avoid !important; break-inside: avoid !important; }
+      .no-print, header, footer, nav, aside, button, .a2a_kit, #entity-faq, #share-buttons, #tools-grid, #extensions-tools-integrations, #dev-tools, #ai-seo-plugins, #faq, #deep-dive, #infographics, #what-is, #three-pillars, #comparison, #keyword-form, #analysis-progress, #upgradeModal, #author-bio, #promo-high-impact-cards, #promo-old-vs-modern-seo, #share-form-container, #feedback-form-container, #plugin-solutions-section, #seo-ux-checklist, .tools-grid, .checklist-card, .bottom-banner, details > summary { display: none !important; }
+      .shadow-lg, .shadow-xl, [class*="shadow"] { box-shadow: none !important; }
+      img { max-width: 100% !important; height: auto !important; }
+      table { page-break-inside: auto; width: 100% !important; }
+      .dark body, body.dark { background: #111827 !important; color: #f3f4f6 !important; }
+      h1, h2, h3 { page-break-after: avoid; break-after: avoid; }
+      #results.grid, .grid { display: block !important; }
+    }
+  </style>
+
+  <!-- Structured Data (unchanged) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "name": "Topical Authority Audit Tool | Traffic Torch",
+          "description": "Instant topical authority audit tool. Detect main topics, subtopics, coverage gaps, E-E-A-T signals & authority clusters on any page. Get actionable fixes, subtopic suggestions & score to build stronger topical relevance across Google, Bing & AI search in 2026.",
+          "url": "https://traffictorch.net/topical-authority-audit-tool/",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              "#entity-faq",
+              "p.text-xl.text-gray-500.dark\\:text-gray-300.mt-6",
+              ".max-w-4xl.mx-auto.my-16 details div.mt-8",
+              "section.max-w-4xl.mx-auto.mt-12.mb-12 p.text-2xl.md\\:text-3xl.font-bold.text-center.mb-10.leading-tight"
+            ]
+          },
+          "publisher": { "@type": "Organization", "name": "Traffic Torch" }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Traffic Torch Topical Authority Audit Tool",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" },
+          "description": "Free instant topical authority audit tool. Detects main topics and subtopics, measures coverage depth & gaps, evaluates E-E-A-T signals, builds content clusters, and delivers actionable fixes + suggestions to strengthen topical authority across Google, Bing, Perplexity & AI search.",
+          "url": "https://traffictorch.net/topical-authority-audit-tool/",
+          "image": [
+            "https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-1200w.webp",
+            "https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-banner-800x222.webp"
+          ],
+          "author": { "@type": "Person", "name": "Ylia Callan", "url": "https://yliacallan.github.io/" },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Traffic Torch",
+            "logo": { "@type": "ImageObject", "url": "https://traffictorch.net/logo-512.webp", "width": 512, "height": 512 }
+          },
+          "datePublished": "2026-03-23T12:45:00+11:00",
+          "dateModified": "2026-06-02T09:18:00+11:00"
+        },
+        {
+          "@type": "Article",
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://traffictorch.net/topical-authority-audit-tool/" },
+          "headline": "Topical Authority Audit Tool – Instant Topical Depth & Gap Analysis",
+          "description": "Instant tool to detect main topics, subtopics, coverage gaps, E-E-A-T signals & authority clusters. Get actionable fixes, subtopic suggestions & score to build stronger topical relevance across Google, Bing & AI search in 2026.",
+          "url": "https://traffictorch.net/topical-authority-audit-tool/",
+          "image": [
+            {
+              "@type": "ImageObject",
+              "url": "https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-1200w.webp",
+              "contentUrl": "https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-1200w.webp",
+              "width": 1200,
+              "height": 630,
+              "caption": "Traffic Torch Topical Authority Audit Tool – Instant 360° analysis"
+            },
+            {
+              "@type": "ImageObject",
+              "url": "https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-banner-800x222.webp",
+              "contentUrl": "https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-banner-800x222.webp",
+              "width": 800,
+              "height": 222,
+              "caption": "Traffic Torch Topical Authority Audit Tool overview banner"
+            }
+          ],
+          "author": { "@type": "Person", "name": "Traffic Torch Team", "url": "https://traffictorch.net" },
+          "publisher": { "@type": "Organization", "name": "Traffic Torch", "logo": { "@type": "ImageObject", "url": "https://traffictorch.net/logo-512.webp" } }
+        },
+        {
+          "@type": "Person",
+          "name": "Ylia Callan",
+          "url": "https://yliacallan.github.io/",
+          "sameAs": [
+            "https://g.dev/traffictorch",
+            "https://github.com/traffictorch/",
+            "https://orcid.org/0009-0006-4084-0241",
+            "https://www.wikidata.org/wiki/Q139815165",
+            "https://zenodo.org/records/20149616",
+            "https://github.com/traffictorch/traffic-torch",
+            "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+            "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+            "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+            "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+            "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+            "https://www.framer.com/marketplace/plugins/traffic-torch/",
+            "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+            "https://github.com/marketplace/actions/traffic-torch-audit",
+            "https://www.linkedin.com/in/ylia-callan-8b889976/",
+            "https://x.com/Guitaralize"
+          ],
+          "image": "/images/ylia-callan-320w.webp",
+          "jobTitle": "Founder & Builder",
+          "description": "Musician, Author, Researcher & Creator of Privacy-First Topical Authority Tools",
+          "worksFor": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" },
+            { "@type": "ListItem", "position": 2, "name": "Topical Authority Audit Tool", "item": "https://traffictorch.net/topical-authority-audit-tool/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is topical authority and why do all search engines prioritize it?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Topical authority is the degree to which a page (and website) demonstrates comprehensive, trustworthy expertise on a specific subject. Google, Bing, Perplexity, and AI-powered search engines evaluate it through subtopic coverage, entity salience, content depth, internal linking structure, and E-E-A-T signals."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I discover and close topical coverage gaps?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Gaps appear when a page misses important subtopics or related concepts. Traffic Torch scans your page, maps detected topics and subtopics, compares against top results, and highlights missing areas."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why do subtopics and content depth matter more than exact-match keywords today?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Modern search engines understand queries semantically. They reward pages that comprehensively cover a topic ecosystem. Including related subtopics, user questions, comparisons, and practical examples."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does stronger topical authority help outperform competitors across search engines?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Top-ranking pages cover more subtopics, feature stronger entity relationships, higher E-E-A-T signals, and better-organized content clusters."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How quickly can topical authority improvements show results across search engines?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Deeper subtopic sections, better entity salience, stronger internal linking - can appear in 1–6 weeks across Google, Bing, and Perplexity."
+              }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <!-- Shared GA4 -->
+  <script src="/shared/google-analytics.js" defer></script>
+  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop Sticky Sidebar (hidden on mobile) -->
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <!-- Main Content – Tool-Specific HTML -->
+      <main class="container mx-auto px-4 py-4 max-w-7xl">
+        <div class="text-center mb-4">
+          <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
+            Topical Authority Detector & Audit Tool
+          </h1>
+          <p class="text-xl text-gray-500 dark:text-gray-300 mt-6">
+            Detect main topics, subtopics, coverage gaps and explore subtopic suggestions.<br class="hidden md:block">
+          </p>
+        </div>
+
+        <!-- Form -->
+        <div class="max-w-3xl mx-auto mb-10 space-y-4 px-4 py-4">
+          <form id="authority-form" novalidate class="space-y-4">
+            <div>
+              <div class="flex flex-col md:flex-row gap-4">
+                <input type="text" id="url-input" name="url" placeholder="example.com/your-page" aria-label="Enter website URL to analyze for topical authority" required class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm" autocomplete="url" inputmode="url" spellcheck="false" data-lpignore="true">
+                <button type="button" id="url-analyze-btn" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2">
+                  Analyze URL <span class="text-xl">⚜️</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <h2 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
+                Or use Code Analysis 📄
+              </h2>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
+                Paste the full HTML of the page.
+              </p>
+              <textarea id="code-input" name="htmlcode" rows="2" placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Best Wireless Noise Cancelling Headphones 2026&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your full page HTML here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;" class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[120px] shadow-sm" aria-label="Paste HTML code for Topical Authority Extractor and Audit" autocomplete="off" spellcheck="false" data-vscode-ignore="true"></textarea>
+              <div class="mt-8 flex justify-center">
+                <button type="button" id="code-analyze-btn" class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2">
+                  Analyze Code <span class="text-xl">⚜️</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="hidden mt-12 flex flex-col items-center justify-center py-12 bg-gray dark:bg-gray-900 rounded-3xl shadow-inner border border-orange-200 dark:border-gray-700">
+          <div class="relative">
+            <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+            <div class="absolute inset-0 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-transparent border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
+          </div>
+          <p class="text-xl font-medium text-gray-700 dark:text-gray-300 mt-8">Analyzing Topics...</p>
+        </div>
+
+        <!-- Upgrade Modal -->
+        <div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
+          <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
+            <h2 class="text-xl font-bold mb-4">Daily Limit Reached</h2>
+            <p class="mb-6">You've used all your audits today. Upgrade to Pro USD $48 per year for 25 daily SEO, UX & GEO analysis runs. Secure Stripe Checkout</p>
+            <a href="/pro/" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-600 transition">
+              Upgrade to Pro
+            </a>
+            <button onclick="document.getElementById('upgradeModal').classList.add('hidden')" class="mt-6 block mx-auto text-gray-600 dark:text-gray-400 underline hover:text-gray-800 dark:hover:text-gray-200">
+              Close
+            </button>
+          </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results" class="hidden space-y-16"></div>
+
+        <!-- Copy Link Button -->
+        <div class="center-btn-container mt-4 mb-4">
+          <button class="copy-link-btn" onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);" data-text="https://traffictorch.net/topical-authority-audit-tool/">
+            Copy Link? 🔗
+          </button>
+        </div>
+
+        <!-- Accordion: How Tool Works -->
+        <div class="max-w-4xl mx-auto my-16">
+          <details class="group">
+            <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <span>How Traffic Torch Topical Authority Audit Tool Works?</span>
+              <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+            </summary>
+            <div class="mt-8 px-2 py-10 bg-gray dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-10 text-gray-700 dark:text-gray-300 leading-relaxed">
+              <section class="space-y-5">
+                <h2 class="text-3xl font-bold text-orange-600 dark:text-orange-400">Instant Topical Authority Analysis</h2>
+                <p class="text-lg">Traffic Torch Topical Authority Audit Tool performs a deep, real-time analysis of your webpage to evaluate how comprehensively it covers its main topic and related subtopics - the core signal modern search engines (Google, Bing, Perplexity, AI-driven platforms) use to determine authority and relevance in 2026.</p>
+                <p class="text-lg">It detects main topics, extracts subtopics, measures coverage depth, identifies gaps, and assesses E-E-A-T alignment (Experience, Expertise, Authoritativeness, Trustworthiness) - all factors that decide whether your page ranks, appears in AI Overviews, or gets featured in zero-click results.</p>
+                <p class="text-lg">The tool produces a Topical Authority Score (0–100), coverage percentage, detected topic clusters with subtopics, and targeted suggestions to close gaps and strengthen authority fast.</p>
+                <p class="text-base italic bg-gray-100 dark:bg-gray-800 p-4 rounded-xl">All analysis runs securely via a Cloudflare Worker proxy. Your URL and content are never stored or shared. Complete privacy guaranteed.</p>
+              </section>
+              <section class="space-y-6">
+                <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400">Core Topical Authority Dimensions Evaluated</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div class="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border-l-4 border-blue-500">
+                    <h4 class="font-bold text-blue-600 dark:text-blue-400">Topic & Subtopic Coverage</h4>
+                    <p class="mt-2 text-sm">Identifies main topic(s) and depth of subtopic handling. High coverage across related subtopics signals expertise and satisfies broad user intent.</p>
+                  </div>
+                  <div class="p-6 bg-green-50 dark:bg-green-900/20 rounded-xl border-l-4 border-green-500">
+                    <h4 class="font-bold text-green-600 dark:text-green-400">Subtopic Depth & Completeness</h4>
+                    <p class="mt-2 text-sm">Measures how thoroughly each subtopic is addressed (examples, explanations, comparisons). Deep subtopics boost authority in semantic and AI-driven search.</p>
+                  </div>
+                  <div class="p-6 bg-purple-50 dark:bg-purple-900/20 rounded-xl border-l-4 border-purple-500">
+                    <h4 class="font-bold text-purple-600 dark:text-purple-400">E-E-A-T Alignment</h4>
+                    <p class="mt-2 text-sm">Evaluates signals of experience, expertise, authoritativeness, and trustworthiness (author info, sources, freshness, helpfulness). Critical for YMYL and competitive topics.</p>
+                  </div>
+                  <div class="p-6 bg-orange-50 dark:bg-orange-900/20 rounded-xl border-l-4 border-orange-500">
+                    <h4 class="font-bold text-orange-600 dark:text-orange-400">Content Gap & Cluster Potential</h4>
+                    <p class="mt-2 text-sm">Highlights missing subtopics vs. top results and suggests cluster pages/internal links to build topical ecosystems that dominate long-tail and AI answers.</p>
+                  </div>
+                </div>
+              </section>
+              <section class="space-y-5">
+                <h3 class="text-2xl font-bold text-orange-600 dark:text-orange-400">How Search Engines Evaluate Topical Authority</h3>
+                <p class="text-lg">Google, Bing, Perplexity, and emerging AI search engines no longer rank solely on keywords. They assess how well a page satisfies the full topic ecosystem:</p>
+                <ul class="space-y-3 text-base list-disc list-inside ml-4">
+                  <li>Does it cover the main topic + important subtopics comprehensively?</li>
+                  <li>Are subtopics explored with depth (examples, data, comparisons, FAQs)?</li>
+                  <li>Does it demonstrate real expertise and trustworthiness (E-E-A-T)?</li>
+                  <li>Are related concepts connected logically via internal links and content clusters?</li>
+                  <li>Is the content fresh, helpful, and structured for users + AI understanding?</li>
+                </ul>
+                <p class="text-lg font-medium">Traffic Torch replicates this evaluation by scoring coverage, depth, and authority signals, then delivers precise, actionable suggestions to close gaps and strengthen your position across all major search platforms.</p>
+              </section>
+              <section class="bg-gradient-to-r from-orange-100 to-pink-100 dark:from-orange-900/30 dark:to-pink-900/30 p-8 rounded-2xl border border-orange-300 dark:border-orange-700">
+                <h3 class="text-2xl font-bold mb-4 text-orange-700 dark:text-orange-300">Key Insight: Depth Wins in 2026</h3>
+                <p class="text-base leading-relaxed">Pages with shallow or narrow topical coverage lose visibility. Even with perfect technical SEO, GEO, & UX. Deep, well-structured topical authority (broad subtopic coverage + strong E-E-A-T) dominates organic results, AI-generated answers, and multi-engine search. Weak depth is the #1 reason pages underperform today.</p>
+              </section>
+            </div>
+          </details>
+        </div>
+
+        <!-- Deep Dive -->
+        <div id="deep-dive" class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/30 dark:to-blue-900/30 p-8 rounded-2xl mt-12 border border-green-200 dark:border-green-800 text-center shadow-md hover:shadow-xl transition-shadow duration-300">
+          <p class="text-xl md:text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-200">
+            Dive deeper into building stronger topical authority.
+          </p>
+          <a href="https://traffictorch.net/blog/posts/topical-authority-help-guide/" class="inline-flex items-center gap-3 px-10 py-6 bg-gradient-to-r from-purple-600 to-cyan-600 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:brightness-110 transition-all duration-300 transform hover:-translate-y-1">
+            Read the Topical Authority Help Guide →
+          </a>
+          <p class="mt-8 text-lg text-gray-600 dark:text-gray-400">Get step-by-step insights on subtopic coverage, content clusters, E-E-A-T signals, multi-engine optimization, and how to close gaps for lasting rankings & search visibility.</p>
+        </div>
+
+        <!-- FAQ -->
+        <section id="entity-faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+          <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+            Topical Authority: Essential Questions Answered
+          </h2>
+          <p class="text-center text-lg mb-10 max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
+            Every major search engine in Google, Bing, Perplexity, ChatGPT Search, and emerging AI-driven platforms reward pages with strong topical authority: deep, comprehensive coverage of a subject, logical subtopic structure, clear entity relationships, and genuine E-E-A-T signals (Experience, Expertise, Authoritativeness, Trustworthiness). Traffic Torch analyzes your page for topical depth, detected subtopics, coverage gaps, and authority signals, then provides actionable fixes and education to improve visibility across multiple search engines.
+          </p>
+          <div class="space-y-6 max-w-6xl mx-auto">
+            <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-md">
+              <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+                What is topical authority and why do all search engines prioritize it?
+                <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+                <p>Topical authority is the degree to which a page (and website) demonstrates comprehensive, trustworthy expertise on a specific subject. Google, Bing, Perplexity, and AI-powered search engines evaluate it through subtopic coverage, entity salience, content depth, internal linking structure, and E-E-A-T signals.</p>
+                <p class="mt-3">Pages that thoroughly cover main topics + related subtopics (with natural entities, examples, comparisons, FAQs) appear higher across engines. Including in AI summaries, featured snippets, and zero-click answers. Thin or narrow coverage limits visibility no matter the engine.</p>
+              </div>
+            </details>
+            <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-md">
+              <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+                How do I discover and close topical coverage gaps?
+                <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+                <p>Gaps appear when a page misses important subtopics, related concepts, user intent layers, or supporting entities that top-ranking pages across Google, Bing, and Perplexity include. Signs include shallow depth, repetitive content, few internal links to related pages, or absence of educational/explanatory sub-sections.</p>
+                <p class="mt-3">Traffic Torch scans your page, maps detected topics and subtopics, compares against semantic expectations and top results, and highlights missing areas. Fixes include adding subtopic sections, building content clusters, strengthening internal links, and incorporating relevant entities naturally to improve multi-engine visibility.</p>
+              </div>
+            </details>
+            <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-md">
+              <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+                Why do subtopics and content depth matter more than exact-match keywords today?
+                <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+                <p>Modern search engines (Google, Bing, Perplexity, etc.) understand queries semantically. They reward pages that comprehensively cover a topic ecosystem. Including related subtopics, user questions, comparisons, and practical examples, over pages that only target single keywords.</p>
+                <p class="mt-3">Strong subtopic coverage signals helpful, expert content that satisfies multiple intents. Traffic Torch identifies your current subtopics, flags gaps vs. top results across engines, and suggests high-value additions (guides, FAQs, comparisons) to boost relevance and rankings everywhere.</p>
+              </div>
+            </details>
+            <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-md">
+              <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+                How does stronger topical authority help outperform competitors across search engines?
+                <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+                <p>Top-ranking pages (on Google, Bing, Perplexity, etc.) typically cover more subtopics, feature stronger entity relationships, higher E-E-A-T signals, and better-organized content clusters. If your page skips key subtopics or related concepts, search engines see incomplete expertise, even if you match the main keyword.</p>
+                <p class="mt-3">By mapping your current coverage, identifying missing subtopics, and adding depth with targeted content and internal links, you demonstrate superior mastery often outranking competitors in organic results, AI answers, and multi-engine visibility.</p>
+              </div>
+            </details>
+            <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-md">
+              <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+                How quickly can topical authority improvements show results across search engines?
+                <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300">
+                <p>Deeper subtopic sections, better entity salience, stronger internal linking, clearer E-E-A-T signals can appear in 1–6 weeks across Google, Bing, and Perplexity, especially for mid-competitive queries and long-tail searches. Larger changes (new cluster pages, major content expansion) often take 2–4 months to fully mature.</p>
+                <p class="mt-3">Track progress with multi-engine rank tracking, Search Console data (impressions, positions), AI Overview appearances, and Bing Webmaster Tools. Quick wins usually come from enhancing existing pages before creating extensive new supporting content.</p>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <!-- Share Buttons -->
+        <div id="share-buttons" class="py-8 text-center">
+          <div class="flex flex-col items-center gap-4">
+            <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">Share?</strong>
+            <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+              <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+              <a class="a2a_button_email"></a>
+              <a class="a2a_button_x"></a>
+              <a class="a2a_button_reddit"></a>
+              <a class="a2a_button_linkedin"></a>
+              <a class="a2a_button_copy_link"></a>
+            </div>
+          </div>
+        </div>
+        <script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+        <!-- What is Modern Topical Authority -->
+        <section id="what-is" class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            What is Modern Topical Authority?
+          </h2>
+          <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-500 dark:text-gray-200">
+            <strong>Modern topical authority is the ability of a page (and website) to demonstrate deep, comprehensive, trustworthy expertise on a specific subject and across subtopics, related concepts, and user intents. So that all major search engines and AI systems confidently recognize it as the best answer.</strong>
+          </p>
+          <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+            <p>Traditional SEO focused heavily on keywords: exact-match phrases, density, and volume chasing. That approach is increasingly ineffective in 2026. Google, Bing, Perplexity, ChatGPT Search, and other AI-driven engines now evaluate pages based on how well they cover the full topic ecosystem, not just surface keywords.</p>
+            <p class="font-semibold text-purple-700 dark:text-purple-300">High-ranking pages excel across these four core topical authority dimensions:</p>
+            <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
+              <li>→ Subtopic Coverage & Depth: comprehensive handling of main topic + related subtopics with examples, explanations, comparisons, and FAQs.</li>
+              <li>→ Content Cluster Structure: logical internal linking and supporting pages that reinforce the main topic ecosystem.</li>
+              <li>→ E-E-A-T Signals: demonstrated Experience, Expertise, Authoritativeness, and Trustworthiness through author info, sources, freshness, and helpfulness.</li>
+              <li>→ Semantic Relevance & Intent Satisfaction: natural inclusion of related entities, questions, and practical depth that fully answers user needs across engines.</li>
+            </ul>
+            <p class="pt-4"><a href="/"><strong>Traffic Torch</strong></a> Topical Authority Audit Tool instantly analyzes your page for detected topics, subtopic depth, coverage gaps, E-E-A-T alignment, and authority signals.</p>
+          </div>
+        </section>
+
+        <!-- 3 High-Impact Moves -->
+        <div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            3 High-Impact Moves to Master Topical Authority
+          </h2>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+            <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+              <span class="text-4xl flex-shrink-0 text-gray-500">1</span>
+              <div>
+                <strong class="text-gray-500">Build wide & deep subtopic coverage</strong><br>
+                <span class="text-gray-600 dark:text-gray-400">Cover the main topic comprehensively plus all major related subtopics with practical depth (examples, how-tos, comparisons, FAQs). This creates the topical ecosystem search engines reward with higher rankings and AI visibility across Google, Bing, Perplexity.</span>
+              </div>
+            </div>
+            <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
+              <span class="text-4xl flex-shrink-0 text-gray-500">2</span>
+              <div>
+                <strong class="text-gray-500">Strengthen topical clusters & internal linking</strong><br>
+                <span class="text-gray-600 dark:text-gray-400">Group related subtopics into logical clusters with strong internal links from pillar to supporting pages. This builds topical depth and helps search engines understand your site as an authoritative hub on the subject.</span>
+              </div>
+            </div>
+            <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
+              <span class="text-4xl flex-shrink-0 text-gray-500">3</span>
+              <div>
+                <strong class="text-gray-500">Optimize for semantic relevance & intent</strong><br>
+                <span class="text-gray-600 dark:text-gray-400">Naturally include related concepts, questions, and practical depth that fully satisfy user intent across engines. Structure content with clear headings, lists, tables, and examples to make the topic ecosystem easy for both users and AI to understand.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Old vs Modern -->
+        <section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            Old Keyword SEO vs Modern SEO, GEO & AEO Topical Authority
+          </h2>
+          <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+            <table class="w-full text-left min-w-[640px]">
+              <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+                <tr><th class="px-6 py-5 text-lg font-semibold">Factor</th><th class="px-6 py-5 text-lg font-semibold">Old Keyword SEO Focus</th><th class="px-6 py-5 text-lg font-semibold">Modern Topical Authority Focus</th></tr>
+              </thead>
+              <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tr><td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Primary Goal:</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank for high-volume exact-match keywords.</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">Demonstrate deep expertise across a full topic ecosystem for better rankings & AI visibility across Google, Bing, Perplexity.</td></tr>
+                <tr class="bg-gray-50 dark:bg-gray-900/50"><td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Content Strategy:</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">High keyword density + long generic articles.</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">Comprehensive subtopic coverage + content clusters + helpful depth that satisfies multiple user intents.</td></tr>
+                <tr><td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Optimization Focus:</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">Exact-match phrases repeated throughout.</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">Strong subtopic depth + E-E-A-T signals + natural entity relationships + internal linking to supporting pages.</td></tr>
+                <tr class="bg-gray-50 dark:bg-gray-900/50"><td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Trust & Quality Signals:</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mostly backlinks & domain age.</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">Clear E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness) + freshness + sources + helpful, user-first content.</td></tr>
+                <tr><td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">SERP & AI Alignment:</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">Ignored or secondary.</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">Deep topical mastery supports direct extraction into AI Overviews, featured snippets, and zero-click answers across engines.</td></tr>
+                <tr class="bg-gray-50 dark:bg-gray-900/50"><td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Future-Proofing:</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">Vulnerable to algorithm updates.</td><td class="px-6 py-5 text-gray-700 dark:text-gray-300">High Topical Authority Score → resilient in entity-aware, intent-driven, and multi-engine search (Google, Bing, Perplexity, AI platforms).</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">Pages with deep subtopic coverage, strong E-E-A-T signals, and logical content clusters dominate modern search.</p>
+        </section>
+
+        <!-- Checklist -->
+        <section id="seo-ux-checklist" class="py-8 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900">
+          <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+            Topical Authority Optimization Checklist
+          </h2>
+          <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-700 dark:text-gray-300">
+            Master these proven on-page best practices to build strong topical authority, deepen subtopic coverage, and improve rankings + AI visibility across Google, Bing, Perplexity and other search platforms.
+          </p>
+          <details class="mb-12 max-w-5xl mx-auto">
+            <summary class="px-6 py-5 text-2xl text-center font-black bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+              Topical Authority Checklist 🗝️
+            </summary>
+            <div class="mt-8 p-2 bg-gray dark:bg-gray-800/90 rounded-2xl shadow-inner">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-6 shadow-lg">
+                  <h3 class="text-xl font-bold mb-6 text-green-400 flex items-center gap-3"><span class="text-3xl">✅</span> Best Practices to Do</h3>
+                  <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
+                    <li><strong>✅ Build wide subtopic coverage</strong>: Cover main topic + all key related subtopics with depth (examples, how-tos, comparisons, FAQs).</li>
+                    <li><strong>✅ Create logical content clusters</strong>: Link pillar pages to supporting subtopic pages with entity-rich anchor text.</li>
+                    <li><strong>✅ Demonstrate strong E-E-A-T</strong>: Show Experience, Expertise, Authoritativeness, Trustworthiness via author info, sources, freshness, helpfulness.</li>
+                    <li><strong>✅ Use natural entity relationships</strong>: Place related concepts/entities in same sections/lists to form semantic clusters.</li>
+                    <li><strong>✅ Structure with clear headings</strong>: Use H1–H3 with main topic/subtopics for crawlable topical signals.</li>
+                    <li><strong>✅ Add helpful content elements</strong>: Include practical examples, tables, lists, and user-first answers to satisfy intent.</li>
+                    <li><strong>✅ Keep content fresh & updated</strong>: Add update dates, recent insights, or new subtopics to signal ongoing expertise.</li>
+                    <li><strong>✅ Optimize internal linking</strong>: Use descriptive, entity-rich anchors to reinforce topical hierarchy.</li>
+                    <li><strong>✅ Monitor topical strength regularly</strong>: Run Traffic Torch to track coverage, gaps, and authority signals.</li>
+                  </ul>
+                </div>
+                <div class="bg-gradient-to-br from-red-900/20 to-orange-900/20 dark:from-red-900/30 dark:to-orange-900/30 rounded-2xl p-6 shadow-lg">
+                  <h3 class="text-xl font-bold mb-6 text-red-400 flex items-center gap-3"><span class="text-3xl">⚠️</span> Common Mistakes to Avoid</h3>
+                  <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
+                    <li><strong>❌ Shallow subtopic coverage</strong>: Missing key related subtopics weakens topical depth.</li>
+                    <li><strong>❌ No content clusters</strong>: Isolated pages fail to build topical ecosystems.</li>
+                    <li><strong>❌ Weak E-E-A-T signals</strong>: No author info, sources, or freshness harms trust.</li>
+                    <li><strong>❌ Poor entity connections</strong>: Isolated entities reduce semantic strength.</li>
+                    <li><strong>❌ Bad heading structure</strong>: Missing or misused headings limits topical signals.</li>
+                    <li><strong>❌ Unhelpful content</strong>: Generic or repetitive text fails intent satisfaction.</li>
+                    <li><strong>❌ Outdated content</strong>: Stale pages lose authority in fresh-topic queries.</li>
+                    <li><strong>❌ Weak internal linking</strong>: No or poor anchors miss topical reinforcement.</li>
+                    <li><strong>❌ Ignoring coverage gaps</strong>: Not addressing low scores delays visibility gains.</li>
+                    <li><strong>❌ Keyword stuffing</strong>: Over-relying on exact phrases without depth harms modern rankings.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-8">
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">🗝️</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Strong Pillar Page</p>
+                      <p class="text-gray-700 dark:text-gray-300">Comprehensive main topic coverage with deep subtopic links and clusters.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">📜</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Clear Subtopic Sections</p>
+                      <p class="text-gray-700 dark:text-gray-300">Dedicated H2/H3 sections for each major subtopic with examples and depth.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">🏗️</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">E-E-A-T Signals</p>
+                      <p class="text-gray-700 dark:text-gray-300">Author bios, sources, update dates, original insights for trust and expertise.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">⚠️</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Avoid Thin or Repetitive Content</p>
+                      <p class="text-gray-700 dark:text-gray-300">Shallow or duplicated subtopics weaken authority signals.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-8">
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">🖼️</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Image Optimization</p>
+                      <p class="text-gray-700 dark:text-gray-300">Descriptive alt text with topic entities + fast-loading visuals.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">🔗</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Strategic Internal Linking</p>
+                      <p class="text-gray-700 dark:text-gray-300">Entity-rich anchors linking to subtopic/supporting pages.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">⚡</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Mobile & Speed Optimization</p>
+                      <p class="text-gray-700 dark:text-gray-300">Core Web Vitals + responsive design for user-first topical experience.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-7 p-2 bg-white/70 dark:bg-gray-800/70 backdrop-blur rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <span class="text-4xl">✅</span>
+                    <div>
+                      <p class="font-bold text-lg text-gray-900 dark:text-gray-100">Regular Topical Audits</p>
+                      <p class="text-gray-700 dark:text-gray-300">Run Traffic Torch to track coverage, gaps, and authority improvements.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p class="text-center mt-12 text-xl font-semibold text-gray-800 dark:text-gray-200 max-w-4xl mx-auto">
+                These on-page topical best practices form the foundation of high-performing pages in 2026 search. Run the <strong>Traffic Torch Topical Authority Audit Tool</strong> for an instant audit with tailored fixes to strengthen your topical ecosystem.
+              </p>
+            </div>
+          </details>
+        </section>
+
+        <!-- Why Topical Authority Matters Accordion -->
+        <div class="max-w-4xl mx-auto my-16">
+          <details class="group">
+            <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <span>Why Topical Authority Matters?</span>
+              <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+            </summary>
+            <div class="mt-8 px-2 py-10 bg-gray dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 space-y-10 text-gray-700 dark:text-gray-300 leading-relaxed">
+              <section class="space-y-5">
+                <h2 class="text-3xl font-bold text-purple-600 dark:text-purple-400">Strong Topical Authority Is the Foundation of Modern Rankings</h2>
+                <p class="text-lg">Modern search engines like Google, Bing, Perplexity, ChatGPT Search, and AI-driven platforms, no longer rank pages primarily on keywords. They evaluate how deeply and comprehensively a page covers its main topic + related subtopics, demonstrates real expertise, and satisfies user intent across the full topic ecosystem.</p>
+                <p class="text-lg">A page with perfect keyword placement but shallow subtopic coverage, weak E-E-A-T signals, poor internal linking, or missing supporting content will consistently underperform against competitors with stronger topical mastery, even in low-competition niches.</p>
+                <p class="text-lg font-medium">Low topical authority (narrow coverage, thin depth, weak clusters) is one of the leading causes of limited visibility in organic results, AI Overviews, featured snippets, and generative answers across engines.</p>
+              </section>
+              <section class="space-y-6">
+                <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Proven Benefits of Strong Topical Authority</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                  <div class="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-xl border-l-4 border-blue-500">
+                    <div class="text-4xl mb-3">🎯</div>
+                    <h4 class="font-bold text-blue-600 dark:text-blue-400">Higher & More Stable Rankings</h4>
+                    <p class="mt-2 text-sm">Pages with deep subtopic coverage and strong authority signals maintain top positions across multiple engines, even during algorithm shifts.</p>
+                  </div>
+                  <div class="p-6 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl border-l-4 border-green-500">
+                    <div class="text-4xl mb-3">📈</div>
+                    <h4 class="font-bold text-green-600 dark:text-green-400">Better AI & Answer Engine Visibility</h4>
+                    <p class="mt-2 text-sm">Comprehensive topical depth increases chances of direct inclusion in AI Overviews, featured snippets, and generative summaries across platforms.</p>
+                  </div>
+                  <div class="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 rounded-xl border-l-4 border-purple-500">
+                    <div class="text-4xl mb-3">🛡️</div>
+                    <h4 class="font-bold text-purple-600 dark:text-purple-400">Future-Proof Against Algorithm Shifts</h4>
+                    <p class="mt-2 text-sm">Content built on strong topical authority (deep clusters + E-E-A-T) remains resilient during entity-aware, intent-driven, and multi-engine updates.</p>
+                  </div>
+                  <div class="p-6 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/30 dark:to-red-900/30 rounded-xl border-l-4 border-orange-500">
+                    <div class="text-4xl mb-3">🔍</div>
+                    <h4 class="font-bold text-orange-600 dark:text-orange-400">Improved Topical & Semantic Relevance</h4>
+                    <p class="mt-2 text-sm">Strong subtopic coverage and entity connections signal expertise, satisfying broad user intent and boosting visibility in long-tail queries.</p>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </details>
+        </div>
+
+        <!-- SEO Tools Grid -->
+        <div class="my-16"></div>
+        <div class="tools-grid max-w-7xl mx-auto px-2">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">SEO Tools</h2>
+          <div class="grid md:grid-cols-3 gap-8">
+            <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+                <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+                <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+              </div>
+            </a>
+            <a href="/seo-entity-extractor-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🧬</div>
+                <h3 class="text-green-400 text-2xl font-bold mb-3">Entity Extractor Tool</h3>
+                <p class="text-gray-800 dark:text-gray-100">Semantic entity extractor + audit</p>
+              </div>
+            </a>
+            <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+                <h3 class="text-green-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+                <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+              </div>
+            </a>
+            <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
+                <h3 class="text-green-400 text-2xl font-bold mb-3">Schema Generator Tool</h3>
+                <p class="text-gray-800 dark:text-gray-100">Detect & Generate Schema Markups</p>
+              </div>
+            </a>
+            <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+                <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO</h3>
+                <p class="text-gray-800 dark:text-gray-100">On-page Local SEO Audit</p>
+              </div>
+            </a>
+            <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+                <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+                <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+                <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Extensions, Tools & Integrations -->
+        <section id="extensions-tools-integrations" class="py-8">
+          <div class="max-w-7xl mx-auto px-2">
+            <div class="text-center mb-16">
+              <h2 class="text-3xl md:text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-500">
+                Traffic Torch Extensions, Tools & Integrations
+              </h2>
+              <p class="text-xl text-gray-800 dark:text-gray-200 max-w-3xl mx-auto leading-relaxed">
+                Supercharge your workflow with Traffic Torch SEO analysis tools. Install browser extensions for instant audits,
+                add developer tools to your VS Code and Github, and bring powerful analysis directly into WordPress, Figma, Framer
+                and more. One-click 360° health scoring, reports, fixes, and insights wherever you work.
+              </p>
+            </div>
+            <div class="grid md:grid-cols-4 xl:grid-cols-4 gap-8">
+              <!-- Chrome -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-red-500/50 group-hover:border-red-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🌐</div>
+                    <h3 class="text-red-400 text-2xl text-center font-bold mb-3">Chrome Extension</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Full AI SEO & UX audit toolkit directly in Chrome. Instant 360° health score, reports, and fixes.</p>
+                  </div>
+                  <a href="https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- Firefox -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-orange-500/50 group-hover:border-orange-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🦊</div>
+                    <h3 class="text-orange-400 text-2xl text-center font-bold mb-3">Firefox Extension</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">360° AI SEO & UX health score, reports, and priority fixes inside Firefox.</p>
+                  </div>
+                  <a href="https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- Edge -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-blue-500 group-hover:border-blue-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🔷</div>
+                    <h3 class="text-blue-400 text-2xl text-center font-bold mb-3">Edge Extension</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Traffic Torch SEO, GEO & UX toolkit with help guides for Microsoft Edge.</p>
+                  </div>
+                  <a href="https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- VS Code -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-purple-500 group-hover:border-purple-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🛠️</div>
+                    <h3 class="text-purple-400 text-2xl text-center font-bold mb-3">VS Code Extension</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Real-time SEO, GEO & UX health scoring and implementation analysis for HTML in Visual Studio Code.</p>
+                  </div>
+                  <a href="https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- WordPress -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-red-500/50 group-hover:border-red-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">📘</div>
+                    <h3 class="text-red-400 text-2xl text-center font-bold mb-3">WordPress Plugin</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">One-click AI SEO & UX analysis in your WordPress dashboard. Auto-scans posts, pages & products.</p>
+                  </div>
+                  <a href="https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- Figma -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-blue-500 group-hover:border-cyan-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🎨</div>
+                    <h3 class="text-cyan-400 text-2xl text-center font-bold mb-3">Figma Plugin</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Real-time AI SEO & UX scoring inside Figma. Check headings, contrast, mobile layouts before hand-off.</p>
+                  </div>
+                  <a href="https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- Framer -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300 border border-green-500/50">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-green-500/50 group-hover:border-green-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🔥</div>
+                    <h3 class="text-emerald-400 text-2xl text-center font-bold mb-3">Framer Plugin</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Official plugin for Framer. Auto-detects site URL and launches any Traffic Torch tool with one click.</p>
+                  </div>
+                  <a href="https://www.framer.com/marketplace/plugins/traffic-torch/" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-green-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Install →</a>
+                </div>
+              </div>
+              <!-- GitHub Action -->
+              <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+                <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-orange-500 group-hover:border-orange-400 transition-all flex flex-col justify-between min-h-[420px]">
+                  <div>
+                    <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🚀</div>
+                    <h3 class="text-orange-400 text-2xl text-center font-bold mb-3">GitHub Action</h3>
+                    <p class="text-gray-800 dark:text-gray-200 leading-relaxed">One-click SEO + GEO + UX Health Analysis. Instantly opens the full Traffic Torch experience with your URL pre-filled.</p>
+                  </div>
+                  <a href="https://github.com/marketplace/actions/traffic-torch-audit" target="_blank" rel="noopener noreferrer" class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">Add →</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Author Bio -->
+        <section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box">
+          <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+              <div class="flex flex-col items-center gap-6 mb-6">
+                <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+              </div>
+              <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+              <p class="text-lg md:text-2xl text-white max-w-4xl mx-auto font-medium">Topical Authority Audit Tool</p>
+            </div>
+            <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+              <div class="space-y-6">
+                <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+                  Traffic Torch Topical Authority Audit Tool instantly analyzes your page for detected topics, subtopic depth, coverage gaps, E-E-A-T signals, and content cluster potential. It delivers a Topical Authority Score (0–100), detailed subtopic breakdown, and targeted suggestions to build stronger topical mastery across Google, Bing, Perplexity, and AI search platforms.
+                </p>
+              </div>
+              <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+                  <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+                    <img src="/images/ylia-callan-320w.webp" srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w" sizes="(max-width: 768px) 96px, 128px" alt="Ylia Callan – Founder" class="w-full h-full object-cover object-center" loading="lazy">
+                  </div>
+                  <div class="space-y-4 text-center md:text-left">
+                    <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+                    <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">Musician • Author • Researcher • Web Designer • TAFE NSW Australia • Creator of open-source topical authority tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+                      <a href="https://g.dev/traffictorch" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Google</a>
+                      <a href="https://github.com/traffictorch" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">GitHub</a>
+                      <a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">LinkedIn</a>
+                      <a href="https://x.com/Guitaralize" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">X</a>
+                      <a href="https://yliacallan.github.io/music/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Ylia</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Tech Stack</h3>
+                <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+                  Hosted via <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub</a> for lightning-fast delivery and easy updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations.
+                </p>
+                <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+                  Refined using live SERP data, user behavior signals, and correlation studies from high-ranking pages across competitive niches.
+                </p>
+                <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+                  <p>Published: 2026-03-23</p>
+                  <p>Last updated: 2026-06-02</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Share Buttons (again) -->
+        <div id="share-buttons" class="py-8 text-center">
+          <div class="flex flex-col items-center gap-4">
+            <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">Share?</strong>
+            <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+              <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+              <a class="a2a_button_email"></a>
+              <a class="a2a_button_x"></a>
+              <a class="a2a_button_reddit"></a>
+              <a class="a2a_button_linkedin"></a>
+              <a class="a2a_button_copy_link"></a>
+            </div>
+          </div>
+        </div>
+        <script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+          <div class="inline-block">
+            <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+              <a href="/">Traffic Torch</a>
+            </p>
+            <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+              <span id="page-name"></span>
+            </p>
+          </div>
+        </nav>
+
+        <script>
+          document.getElementById('page-name').textContent = document.title
+            .replace('Traffic Torch – ', '')
+            .replace(' | Traffic Torch', '')
+            .replace(' Tool', '')
+            .trim();
+        </script>
+
+        <section class="bottom-banner" aria-label="Traffic Torch Topical Authority Audit Tool">
+          <picture>
+            <source media="(max-width: 640px)" srcset="https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-banner-480x133.webp">
+            <source media="(min-width: 641px)" srcset="https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-banner-800x222.webp">
+            <img src="https://traffictorch.net/topical-authority-audit-tool/images/topical-authority-audit-tool-banner-800x222.webp" alt="Topical Authority Audit Tool" width="800" height="222" loading="lazy" decoding="async">
+          </picture>
+        </section>
+
+      </main>
+
+      <!-- Footer Placeholder -->
+      <div id="footer-placeholder"></div>
+    </div>
+  </div>
+
+  <!-- Shared main-v1.1.js (external) – must be loaded before our module script -->
+  <script type="module" src="/main-v1.1.js"></script>
+
+  <!-- Inlined tool JS (module) -->
+  <script type="module">
+    // --- Inlined share-report-v1.js ---
+    function initShareReport() {
+      const resultsContainer = document.getElementById('results');
+      if (!resultsContainer) return;
+      const shareBtn = resultsContainer.querySelector('#share-report-btn');
+      if (!shareBtn) return;
+      shareBtn.addEventListener('click', async () => {
+        const urlInput = document.getElementById('url-input')?.value.trim();
+        const codeInput = document.getElementById('code-input')?.value.trim();
+        if (!urlInput && codeInput) {
+          const messageDiv = document.getElementById('share-message');
+          if (messageDiv) {
+            messageDiv.innerHTML = `⚠️ Share Report only works for URL audits.<br>For HTML code audit use "Save Report" button.`;
+            messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-200`;
+            messageDiv.classList.remove('hidden');
+            setTimeout(() => messageDiv.classList.add('hidden'), 6000);
+          }
+          return;
+        }
+        if (!urlInput) return;
+        const baseUrl = window.location.origin + window.location.pathname;
+        const shareUrl = `${baseUrl}?url=${encodeURIComponent(urlInput)}`;
+        let pageTitle = 'this page';
+        const scoreCardTitle = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center');
+        if (scoreCardTitle) pageTitle = scoreCardTitle.textContent.trim();
+        if (pageTitle === 'this page') {
+          pageTitle = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center')?.textContent.trim() || 'this page';
+        }
+        if (pageTitle === 'this page' || pageTitle.includes('Traffic Torch')) {
+          pageTitle = document.title.replace(/Topical Authority Audit Tool.*Traffic Torch/gi, '').trim() || 'this page';
+        }
+        pageTitle = pageTitle.replace(/Topical Authority Audit Tool \| Traffic Torch/gi, '').replace(/Traffic Torch/gi, '').replace(/[\|\-–_]+/g, '').trim() || 'this page';
+        const shareText = `Check out ${pageTitle} on Traffic Torch Topical Authority Audit Tool ${shareUrl}`;
+        try {
+          if (navigator.share) {
+            await navigator.share({ text: shareText });
+            showMessage('Shared successfully!', 'success');
+          } else {
+            await navigator.clipboard.writeText(shareText);
+            showMessage('Report link copied!<br>Paste anywhere to share.', 'success');
+          }
+        } catch (err) { /* silent fail */ }
+      });
+      function showMessage(text, type) {
+        const messageDiv = document.getElementById('share-message');
+        if (!messageDiv) return;
+        messageDiv.innerHTML = type === 'success' ? `✅ ${text}` : `❌ ${text}`;
+        messageDiv.className = `mt-4 p-4 rounded-2xl text-center font-medium ${
+          type === 'success' ? 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-200' : 'text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-200'
+        }`;
+        messageDiv.classList.remove('hidden');
+        setTimeout(() => messageDiv.classList.add('hidden'), 8000);
+      }
+    }
+
+    // --- Placeholder for submit-feedback-v1.js ---
+    function initSubmitFeedback() {
+      console.log('initSubmitFeedback placeholder – replace with actual implementation.');
+    }
+
+    // --- Main script-v1.1.js (adjusted imports) ---
+    import { canRunTool } from '/main-v1.1.js';
+
+    const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+    const TOKEN_KEY = 'traffic_torch_jwt';
+    const ANALYZE_ENDPOINT = 'https://topical-authority-ai.traffictorch.workers.dev/';
+
+    function getGrade(score) {
+      if (score >= 70) return { text: 'Good', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
+      if (score >= 40) return { text: 'Average', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
+      return { text: 'Bad', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('authority-form');
+      const loading = document.getElementById('loading');
+      const results = document.getElementById('results');
+
+      const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
+      const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
+      const urlInput = document.getElementById('url-input');
+      const codeInput = document.getElementById('code-input');
+
+      if (!form || !loading || !results || !urlAnalyzeBtn || !codeAnalyzeBtn) {
+        return;
+      }
+
+      // Auto-fill from ?input= query param (VS Code extension)
+      function autoFillAndRunFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const inputData = params.get('input');
+        if (!inputData) return;
+        const textarea = document.getElementById('code-input');
+        if (!textarea) return;
+        textarea.value = decodeURIComponent(inputData);
+        const urlInputEl = document.getElementById('url-input');
+        if (urlInputEl) urlInputEl.value = '';
+        const analyzeBtn = document.getElementById('code-analyze-btn') || document.getElementById('analyze-code-btn');
+        if (analyzeBtn) {
+          setTimeout(() => { analyzeBtn.click(); }, 300);
+        }
+      }
+      setTimeout(autoFillAndRunFromUrl, 150);
+
+      // Auto-fill from ?url=
+      const urlParams = new URLSearchParams(window.location.search);
+      const sharedUrl = urlParams.get('url');
+      let sharedDecodedUrl = '';
+      if (sharedUrl) {
+        sharedDecodedUrl = decodeURIComponent(sharedUrl);
+      }
+
+      let hasCheckedLimit = false;
+
+      if (urlAnalyzeBtn) {
+        urlAnalyzeBtn.addEventListener('click', async () => {
+          if (hasCheckedLimit) return;
+          hasCheckedLimit = true;
+          const canProceed = await canRunTool('limit-audit-id');
+          if (!canProceed) {
+            hasCheckedLimit = false;
+            return;
+          }
+          if (codeInput) codeInput.value = '';
+          let inputValue = urlInput?.value.trim();
+          if (!inputValue && sharedDecodedUrl) {
+            inputValue = sharedDecodedUrl;
+            if (urlInput) urlInput.value = sharedDecodedUrl;
+          }
+          if (!inputValue) {
+            alert('Please enter a URL');
+            hasCheckedLimit = false;
+            return;
+          }
+          const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
+          runAnalysis({ url, inputType: 'url', rawCode: null });
+          hasCheckedLimit = false;
+        });
+      }
+
+      if (codeAnalyzeBtn) {
+        codeAnalyzeBtn.addEventListener('click', async () => {
+          if (hasCheckedLimit) return;
+          hasCheckedLimit = true;
+          const canProceed = await canRunTool('limit-audit-id');
+          if (!canProceed) {
+            hasCheckedLimit = false;
+            return;
+          }
+          if (urlInput) urlInput.value = '';
+          const rawCode = codeInput?.value.trim();
+          if (!rawCode) {
+            alert('Please paste HTML code');
+            hasCheckedLimit = false;
+            return;
+          }
+          runAnalysis({ url: null, inputType: 'code', rawCode });
+          hasCheckedLimit = false;
+        });
+      }
+
+      async function runAnalysis(params) {
+        const { url, inputType, rawCode } = params;
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        if (!loading || !results) return;
+
+        loading.classList.remove('hidden');
+        loading.style.display = 'flex';
+        loading.style.visibility = 'visible';
+        loading.style.opacity = '1';
+        results.classList.add('hidden');
+
+        setTimeout(() => {
+          loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+
+        const progressText = loading.querySelector('p');
+        if (progressText) progressText.textContent = inputType === 'code'
+          ? 'Analyzing pasted HTML code...'
+          : 'Analyzing Topics...';
+
+        const heavyTimeout = setTimeout(() => {
+          if (progressText) progressText.textContent = 'Still processing - may take longer for large sites...';
+        }, 45000);
+
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 120000);
+
+          const res = await fetch(ANALYZE_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url, code: rawCode, deep: true, inputType }),
+            signal: controller.signal
+          });
+
+          clearTimeout(timeoutId);
+          clearTimeout(heavyTimeout);
+
+          if (!res.ok) {
+            let errData = {};
+            try { errData = await res.json(); } catch {}
+            throw new Error(errData.error || `Server returned ${res.status}`);
+          }
+          let data;
+          try {
+            data = await res.json();
+          } catch (parseErr) {
+            throw new Error(`Invalid response from server (not JSON): ${parseErr.message}`);
+          }
+
+          if (!data || typeof data !== 'object') {
+            throw new Error('Empty or invalid response from analysis server');
+          }
+
+          loading.classList.add('hidden');
+          loading.style.display = 'none';
+          results.classList.remove('hidden');
+
+          setTimeout(() => {
+            results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => {
+              window.scrollBy({ top: -100, behavior: 'smooth' });
+            }, 300);
+          }, 150);
+
+          const {
+            overallScore = 20,
+            pageTitle = '',
+            coveragePercent = 25,
+            clusters = [],
+            suggestions = [],
+            predictedRankLift = ''
+          } = data;
+
+          const displayTitle = pageTitle?.trim()
+            ? pageTitle.trim()
+            : (url
+                ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
+                : 'Analyzed from Code');
+
+          const displayTitleShort = displayTitle.length > 60
+            ? displayTitle.substring(0, 57) + '...'
+            : displayTitle;
+
+          const grade = getGrade(overallScore);
+
+          results.innerHTML = `
+            <div class="max-w-5xl mx-auto px-4 py-2 text-gray-900 dark:text-gray-100">
+              <!-- Overall Score Card -->
+              <div class="flex justify-center my-12">
+                <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-2 w-full max-w-lg border-4 border-transparent ${overallScore >= 70 ? 'border-green-500 dark:border-green-400' : overallScore >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-500 dark:border-red-400'} shadow-lg dark:shadow-gray-800/50">
+                  <p class="text-center text-2xl font-medium mb-6 text-gray-800 dark:text-gray-200">Topical Authority Score</p>
+                  <div class="relative aspect-square w-full max-w-[300px] mx-auto">
+                    <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+                      <circle cx="100" cy="100" r="90" stroke="#e5e7eb" stroke-width="16" fill="none" class="dark:stroke-gray-700"/>
+                      <circle cx="100" cy="100" r="90"
+                              stroke="${overallScore >= 70 ? '#22c55e' : overallScore >= 40 ? '#f59e0b' : '#ef4444'}"
+                              stroke-width="16" fill="none"
+                              stroke-dasharray="${(overallScore / 100) * 565} 565" stroke-linecap="round"/>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center text-center">
+                      <div>
+                        <div class="text-7xl font-black ${overallScore >= 70 ? 'text-green-600 dark:text-green-400' : overallScore >= 40 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}">${overallScore}</div>
+                        <div class="text-2xl opacity-90 text-gray-600 dark:text-gray-400">/100</div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="mt-6 text-xl md:text-2xl font-semibold text-center text-gray-700 dark:text-gray-300 break-words line-clamp-2 score-card-title">
+                    ${displayTitleShort || 'Analyzed Page'}
+                  </p>
+                  <p class="mt-4 text-5xl font-bold text-center ${grade.color}">${grade.emoji} ${grade.text}</p>
+                  ${predictedRankLift ? `<p class="mt-4 text-center text-xl text-gray-700 dark:text-gray-300">Predicted lift: ${predictedRankLift}</p>` : ''}
+                </div>
+              </div>
+              <!-- Detected Topics & Subtopics -->
+              <div class="space-y-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-900 dark:text-gray-100">Detected Topics & Subtopics</h2>
+                <p class="text-center text-lg mb-12 text-gray-800 dark:text-gray-200">
+                  Overall Topical Coverage: <strong class="text-orange-600 dark:text-orange-400">${coveragePercent || 'N/A'}%</strong><br>
+                  ${clusters.length > 0 ? `Found ${clusters.length} main topics with detailed subtopics extracted` : 'Analysis limited – site content may be thin'}
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                  ${clusters.length > 0
+                    ? clusters
+                        .slice()
+                        .sort((a, b) => (b.coverage || 0) - (a.coverage || 0))
+                        .map((cluster, idx) => {
+                          const grade = getGrade(cluster.coverage || 0);
+                          const color = grade.color.includes('green') ? 'green'
+                                      : grade.color.includes('orange') ? 'orange'
+                                      : 'red';
+                          return `
+                            <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-2 border-4 border-${color}-500 dark:border-${color}-400 hover:border-${color}-600 dark:hover:border-${color}-300 hover:shadow-3xl transition-all duration-300">
+                              <div class="flex items-center gap-4 mb-6">
+                                <div class="flex-shrink-0 w-10 h-10 bg-${color}-100 dark:bg-${color}-900 rounded-2xl flex items-center justify-center text-4xl shadow-md">
+                                  ${idx === 0 ? '🌌' : idx === 1 ? '🧠' : idx === 2 ? '❤️' : idx === 3 ? '📜' : '🔍'}
+                                </div>
+                                <div class="flex-grow">
+                                  <h3 class="text-2xl md:text-3xl font-bold text-${color}-700 dark:text-${color}-200 mb-2">${cluster.pillar || 'Topic ' + (idx+1)}</h3>
+                                  <p class="text-xl font-semibold ${grade.color}">${Math.round(cluster.coverage || 0)}% coverage ${grade.emoji}</p>
+                                </div>
+                              </div>
+                              <div class="text-sm uppercase tracking-wider font-medium text-gray-600 dark:text-gray-300 mb-4">Detected Subtopics</div>
+                              <div class="flex flex-wrap gap-3">
+                                ${cluster.subtopics && cluster.subtopics.length > 0
+                                  ? cluster.subtopics.slice(0, 40).map(sub =>
+                                      `<span class="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-xl text-sm font-medium border border-gray-300 dark:border-gray-600 shadow-sm whitespace-normal break-words max-w-full inline-block mb-2 mr-2 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">${sub.trim()}</span>`
+                                    ).join('')
+                                  : '<span class="text-gray-600 dark:text-gray-300 italic text-base">Limited distinct subtopics – site content is focused or repetitive</span>'
+                                }
+                              </div>
+                            </div>
+                          `;
+                        }).join('')
+                    : '<p class="text-center col-span-full text-xl text-gray-700 dark:text-gray-300 italic py-12">Limited topics detected – site may be product-heavy or thin. Consider adding educational supporting pages.</p>'
+                  }
+                </div>
+                <!-- Suggested Subtopics -->
+                <div class="mt-12">
+                  <h3 class="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">Suggested Subtopics to Strengthen Authority</h3>
+                  <p class="text-center text-lg mb-10 text-gray-800 dark:text-gray-200">
+                    These subtopics could be added to existing pages or new content to deepen coverage and boost topical authority.
+                  </p>
+                  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 border border-orange-300 dark:border-orange-600">
+                    <ul class="space-y-4 text-base text-gray-900 dark:text-gray-100">
+                      ${suggestions && suggestions.length > 0
+                        ? suggestions.map(s => `
+                            <li class="flex items-start gap-4 p-4 bg-orange dark:bg-orange-950 rounded-2xl border border-orange-200 dark:border-orange-700">
+                              <span class="flex-shrink-0 text-2xl">➕</span>
+                              <div>
+                                <p class="font-semibold text-lg text-gray-900 dark:text-white">${s.topic || 'Suggested subtopic'}</p>
+                                ${s.why ? `<p class="text-sm text-gray-700 dark:text-gray-300 mt-1">${s.why}</p>` : ''}
+                                ${s.estimatedImpact ? `<p class="text-sm font-medium text-orange-600 dark:text-orange-400 mt-2">Potential impact: ${s.estimatedImpact}</p>` : ''}
+                              </div>
+                            </li>
+                          `).join('')
+                        : '<li class="text-center text-gray-700 dark:text-gray-200 italic py-6">No suggestions available yet – site may need more supporting content</li>'
+                      }
+                    </ul>
+                  </div>
+                </div>
+                <!-- Educational summary -->
+                <div class="text-center mt-12 p-6 bg-orange dark:bg-orange-950 rounded-3xl border border-orange-200 dark:border-orange-800">
+                  <p class="text-lg text-gray-800 dark:text-gray-200">
+                    These modules show how well your content covers key topics and subtopics.<br>
+                    Higher coverage and more detailed subtopics = stronger topical authority in search.
+                  </p>
+                </div>
+              </div>
+              <!-- PDF Share Feedback Buttons -->
+              <div class="text-center my-16 px-4">
+                <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
+                  <button id="share-report-btn"
+                          class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+                    Share Report ↗️
+                  </button>
+                  <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
+                          class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+                    Save Report 📥
+                  </button>
+                  <button id="feedback-btn"
+                          class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
+                   Submit Feedback 💬
+                  </button>
+                </div>
+                <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
+                <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
+                  <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
+                    <div>
+                      <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
+                      <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+                    </div>
+                    <div>
+                      <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
+                      <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+                    </div>
+                    <div>
+                      <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
+                      <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+                    </div>
+                    <div>
+                      <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
+                      <input id="share-title" type="text" required placeholder="Traffic Torch SEO Intent Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+                    </div>
+                    <div>
+                      <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
+                      <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
+                  </form>
+                </div>
+                <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
+                  <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
+                    <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
+                      Feedback for Topical Authority Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
+                    </p>
+                    <form id="feedback-form" class="space-y-6">
+                      <div>
+                        <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
+                        <div class="flex gap-3 text-3xl justify-center sm:justify-start">
+                          <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
+                          <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
+                          <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
+                          <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
+                          <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
+                        </div>
+                        <input type="hidden" id="feedback-rating" name="rating">
+                      </div>
+                      <div>
+                        <label class="flex items-center gap-2 justify-center sm:justify-start">
+                          <input type="checkbox" id="reply-requested" class="w-5 h-5">
+                          <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
+                        </label>
+                      </div>
+                      <div id="email-group" class="hidden">
+                        <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
+                        <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
+                      </div>
+                      <div>
+                        <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
+                        <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
+                          <span id="char-count">0</span>/1000 characters
+                        </p>
+                      </div>
+                      <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
+                    </form>
+                    <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          // Set print-friendly title and data-url
+          const printTitleEl = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center');
+          let printTitle = printTitleEl
+            ? printTitleEl.textContent.trim()
+            : (displayTitleShort || 'Analyzed Page');
+          printTitle = printTitle
+            .replace(/Topical Authority Audit Tool.*Traffic Torch/gi, '')
+            .replace(/Traffic Torch/gi, '')
+            .replace(/[\|\-–_]+/g, ' ')
+            .trim() || 'Analyzed Page';
+          document.body.setAttribute('data-print-title', printTitle);
+          document.body.setAttribute('data-url', url || 'Code Analysis');
+
+          // Initialize share & feedback
+          initShareReport();
+          initSubmitFeedback();
+
+        } catch (err) {
+          clearTimeout(heavyTimeout);
+          loading.classList.add('hidden');
+          loading.style.display = 'none';
+          results.classList.remove('hidden');
+          results.innerHTML = `
+            <div class="text-center py-12 px-6">
+              <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Audit could not complete</p>
+              <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 break-words">
+                ${err.message || 'Failed to analyze - Whitelist: topical-authority-ai.traffictorch.workers.dev or use Code Analysis.'}
+              </p>
+              <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl">
+                Try Again
+              </button>
+            </div>
+          `;
+        }
+      }
+
+      // Initial auto-submit if shared URL
+      if (sharedDecodedUrl) {
+        const urlInputEl = document.getElementById('url-input');
+        if (urlInputEl) {
+          urlInputEl.value = sharedDecodedUrl;
+          setTimeout(() => {
+            if (urlAnalyzeBtn) urlAnalyzeBtn.click();
+          }, 300);
+        }
+      }
+    });
+  </script>
+
+  <!-- Noscript fallback -->
+  <noscript>
+    <div class="noscript-content">
+      <h2>Topical Authority Audit Tool</h2>
+      <p><strong>Traffic Torch</strong> – Instant Topical Depth &amp; Gap Analysis</p>
+      <p>This tool analyzes any webpage or provided HTML for topical authority signals. It detects main topics, subtopics, content and coverage depth indicators to help strengthen your content for modern search engines and AI systems.</p>
+      <h2>What the Tool Audits</h2>
+      <ul>
+        <li><strong>Main Topic Detection</strong>: Identifies the primary subject and semantic focus of the page.</li>
+        <li><strong>Subtopic Coverage</strong>: Maps supporting subtopics, entities, questions, and related concepts present in the content.</li>
+        <li><strong>Topical Gaps</strong>: Highlights missing subtopics, entities, user intents, and competitive weaknesses.</li>
+      </ul>
+      <h2>Why Topical Authority Matters</h2>
+      <p>Search engines and AI platforms (Google, Bing, Perplexity, ChatGPT Search, etc.) prioritize pages that demonstrate deep, trustworthy expertise on a subject. Strong topical authority improves rankings, AI citations, user trust, and resilience against algorithm updates.</p>
+      <h2>Module Explanations</h2>
+      <h3>1. Topical Authority Score</h3>
+      <p>A 0–100 score based on depth, breadth, entity coverage and structure.</p>
+      <h3>2. Detected Topics &amp; Entities</h3>
+      <p>List of primary topic + semantically related subtopics and named entities extracted from the content.</p>
+      <h3>3. Actionable Recommendations</h3>
+      <p>Including: new subtopic ideas, internal linking ideas, content expansion opportunities.</p>
+      <h2>How to Use This Tool</h2>
+      <p>1. Enter a target URL or paste HTML content.<br>2. Run the audit.<br>3. Review the instant report with gaps, scores, and fixes.<br>4. Apply recommendations to build stronger topical authority.</p>
+      <h2>Key Benefits</h2>
+      <ul>
+        <li>Instant 360° topical health analysis</li>
+        <li>Competitive gap identification</li>
+        <li>Improvement suggestions</li>
+        <li>Mobile-friendly educational reports</li>
+        <li>Supports modern SEO, AEO (Answer Engine Optimization), and user experience best practices</li>
+      </ul>
+      <ul>
+        <li><a href="https://traffictorch.net/topical-authority-audit-tool/">Topical Authority Audit Tool</a></li>
+        <li><a href="https://traffictorch.net/blog/posts/topical-authority-help-guide/">Topical Authority Guide</a></li>
+      </ul>
+      <footer>
+        <p>Instant SEO and UX Tools.</p>
+        <p><a href="https://traffictorch.net/">Traffic Torch</a></p>
+      </footer>
+    </div>
+  </noscript>
+</body>
+</html>
