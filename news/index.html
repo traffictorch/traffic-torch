@@ -228,8 +228,27 @@
 </div>
     
 <div class="grid gap-12">
+      
+<!-- ====== DYNAMIC NEWS FEED (text‑only) ====== -->
+<section class="container section-spacing" style="padding-top:1rem;">
+  <div class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl p-6 md:p-10 border border-white/10 dark:border-white/5">
+    <h2 style="font-size:1.75rem; font-weight:700; margin-bottom:0.25rem; background: linear-gradient(to right, #f97316, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">
+      Latest Updates
+    </h2>
+    <p style="color:var(--text-secondary, #6b7280); margin-bottom:1.5rem;">Fresh posts from the research team.</p>
 
-      <!-- Latest Post -->
+    <div id="news-list">
+      <p style="color:var(--text-muted, #9ca3af);">Loading posts…</p>
+    </div>
+  </div>
+</section>
+
+<!-- then your existing grid of old articles -->
+<div class="grid gap-12">
+  <!-- your existing <article> tags stay here -->
+</div>
+
+     <!-- OS Post -->
       
       <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
   <a href="/blog/posts/ubi-is-coming/" class="block">
@@ -881,6 +900,50 @@
     
 <script src="/main-v1.1.js" type="module"></script>
 <script type="module" src="/shared/google-analytics.js"></script>
+
+<script>
+  (function() {
+    const container = document.getElementById('news-list');
+    if (!container) return;
+
+    fetch('/blog/posts/posts.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Network error');
+        return res.json();
+      })
+      .then(posts => {
+        if (!posts || posts.length === 0) {
+          container.innerHTML = '<p style="color:var(--text-muted, #9ca3af);">No posts yet.</p>';
+          return;
+        }
+
+        // Sort by date descending (newest first)
+        posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        let html = '<div style="display:flex; flex-direction:column; gap:1.25rem;">';
+        posts.forEach(post => {
+          html += `
+            <div style="padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+              <a href="/blog/posts/${post.slug}/" style="text-decoration:none; display:block;">
+                <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary, #111827); margin-bottom:0.25rem; transition:color 0.2s;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color=''">
+                  ${post.title}
+                </h3>
+                <p style="color:var(--text-secondary, #6b7280); font-size:0.95rem; margin:0 0 0.25rem 0;">${post.excerpt}</p>
+                <time style="font-size:0.8rem; color:var(--text-muted, #9ca3af);">${post.date}</time>
+              </a>
+            </div>
+          `;
+        });
+        html += '</div>';
+
+        container.innerHTML = html;
+      })
+      .catch(err => {
+        container.innerHTML = '<p style="color:var(--text-muted, #9ca3af);">Could not load updates. Please try again later.</p>';
+        console.warn('Feed fetch error:', err);
+      });
+  })();
+</script>
   
 </body>
 </html>

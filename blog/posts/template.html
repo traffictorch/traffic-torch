@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)" />
+
+  <title>{{title}} | Traffic Torch</title>
+  <meta name="description" content="{{excerpt}}" />
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/blog/posts/{{slug}}/" />
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/blog/posts/{{slug}}/" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://traffictorch.net/blog/posts/{{slug}}/" />
+
+  <!-- Open Graph – using the fallback toolkit image -->
+  <meta property="og:title" content="{{title}} | Traffic Torch" />
+  <meta property="og:description" content="{{excerpt}}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://traffictorch.net/blog/posts/{{slug}}/" />
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:site_name" content="Traffic Torch" />
+  <meta property="article:published_time" content="{{date}}T00:00:00+11:00" />
+  <meta property="article:modified_time" content="{{date}}T00:00:00+11:00" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{title}} | Traffic Torch" />
+  <meta name="twitter:description" content="{{excerpt}}" />
+  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp" />
+
+  <!-- ==== COPY ALL YOUR EXISTING STYLES / LINKS / SCRIPTS FROM YOUR TOPICAL-AUTHORITY PAGE HERE ==== -->
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp" />
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp" />
+  <link rel="preconnect" href="https://static.cloudflareinsights.com" />
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="/style-v1.0.css" /></noscript>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'" />
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local-v1.0.css" />
+  </noscript>
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+    })();
+  </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop Sidebar (exact same as your existing page) -->
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager" />
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager" />
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <!-- Blog Post Content -->
+      <main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+        <article class="max-w-7xl mx-auto px-2">
+          <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-2 md:p-4 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+            <!-- NO featured image for these new text-only posts -->
+            <h1 class="text-4xl md:text-5xl font-black text-center mb-4 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+              {{title}}
+            </h1>
+            <p class="text-center text-gray-500 dark:text-gray-400 text-sm mb-10">{{date}}</p>
+            <div class="max-w-4xl mx-auto">
+              {{content}}
+            </div>
+          </div>
+        </article>
+      </main>
+
+      <!-- Footer -->
+      <div id="footer-placeholder"></div>
+    </div>
+  </div>
+
+  <script src="/main-v1.1.js" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js"></script>
+</body>
+</html>
