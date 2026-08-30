@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Traffic Torch – Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
@@ -11,39 +11,16 @@
     [x-cloak] { display: none !important; }
     body { background: #f8fafc; }
     .dark body { background: #0f172a; }
-    .glass {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.15);
-    }
-    .dark .glass {
-      background: rgba(0,0,0,0.3);
-      border-color: rgba(255,255,255,0.05);
-    }
-    .tab-active {
-      border-bottom: 3px solid #f97316;
-      color: #f97316;
-    }
-    .dark .tab-active {
-      border-bottom-color: #f97316;
-      color: #f97316;
-    }
-    input, select {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.15);
-    }
-    .dark input, .dark select {
-      background: rgba(0,0,0,0.2);
-      border-color: rgba(255,255,255,0.1);
-      color: #e2e8f0;
-    }
+    .glass { background: rgba(255,255,255,0.1); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); }
+    .dark .glass { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05); }
+    .tab-active { border-bottom: 3px solid #f97316; color: #f97316; }
+    .dark .tab-active { border-bottom-color: #f97316; color: #f97316; }
+    input, select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); }
+    .dark input, .dark select { background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: #e2e8f0; }
   </style>
 </head>
 <body class="min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-300">
-
 <div x-data="app()" x-init="init()" class="max-w-7xl mx-auto px-4 py-8">
-  
-  <!-- Header -->
   <header class="flex flex-wrap items-center justify-between gap-4 mb-10">
     <div class="flex items-center gap-3">
       <span class="text-3xl">🚀</span>
@@ -58,9 +35,7 @@
     </div>
   </header>
 
-  <!-- ========================================================== -->
-  <!-- LOGIN (shown when no token) -->
-  <!-- ========================================================== -->
+  <!-- LOGIN -->
   <div x-show="!token" class="max-w-md mx-auto">
     <div class="glass rounded-3xl p-8 shadow-2xl">
       <h2 class="text-2xl font-bold mb-6 text-center">Welcome Back</h2>
@@ -69,9 +44,7 @@
         <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition" :disabled="loading">
           <span x-text="loading ? 'Sending...' : 'Send Magic Link'"></span>
         </button>
-        <p class="text-sm text-center text-gray-500 mt-2">
-          New user? Enter your email and we'll create your account.
-        </p>
+        <p class="text-sm text-center text-gray-500 mt-2">New user? Enter your email and we'll create your account.</p>
       </form>
       <div class="my-6 text-center text-gray-400">or</div>
       <a href="https://traffic-torch-api.traffictorch.workers.dev/api/auth/google" class="block w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-center transition">Sign in with Google</a>
@@ -79,23 +52,17 @@
     </div>
   </div>
 
-  <!-- ========================================================== -->
-  <!-- DASHBOARD (shown when token exists) -->
-  <!-- ========================================================== -->
+  <!-- DASHBOARD -->
   <div x-show="token" x-cloak>
-    <!-- Tabs -->
     <nav class="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
       <template x-for="tab in tabs" :key="tab.id">
-        <button @click="activeTab = tab.id" 
-                class="px-5 py-2.5 text-sm font-medium transition-all duration-200"
-                :class="activeTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                x-show="tab.show">
+        <button @click="activeTab = tab.id" class="px-5 py-2.5 text-sm font-medium transition-all duration-200" :class="activeTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'" x-show="tab.show">
           <span x-text="tab.label"></span>
         </button>
       </template>
     </nav>
 
-    <!-- ===== DASHBOARD TAB ===== -->
+    <!-- Dashboard tab content (same as before) -->
     <div x-show="activeTab === 'dashboard'">
       <div class="grid md:grid-cols-3 gap-6 mb-8">
         <div class="glass rounded-2xl p-6">
@@ -129,7 +96,7 @@
       </div>
     </div>
 
-    <!-- ===== ANALYTICS TAB ===== -->
+    <!-- Analytics, Integrations, API Keys, Settings tabs (shortened for brevity – same as before) -->
     <div x-show="activeTab === 'analytics'" x-cloak>
       <div x-show="!features.analytics" class="text-center py-20">
         <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for Analytics</p>
@@ -153,7 +120,6 @@
       </div>
     </div>
 
-    <!-- ===== INTEGRATIONS TAB ===== -->
     <div x-show="activeTab === 'integrations'" x-cloak>
       <div x-show="!features.analytics" class="text-center py-20">
         <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for Integrations</p>
@@ -178,7 +144,6 @@
       </div>
     </div>
 
-    <!-- ===== API KEYS TAB ===== -->
     <div x-show="activeTab === 'api-keys'" x-cloak>
       <div x-show="!features.api" class="text-center py-20">
         <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for API Access</p>
@@ -208,7 +173,6 @@
       </div>
     </div>
 
-    <!-- ===== SETTINGS TAB ===== -->
     <div x-show="activeTab === 'settings'" x-cloak>
       <div class="glass rounded-2xl p-6 max-w-2xl">
         <h3 class="text-xl font-bold mb-4">Account Settings</h3>
@@ -226,7 +190,6 @@
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="text-center text-sm text-gray-500 mt-16">Traffic Torch v3.0 – Powered by Supabase</footer>
 </div>
 
@@ -245,7 +208,7 @@ function app() {
     apiUsed: 0,
     activeTab: 'dashboard',
     quickUrl: '',
-    quickResult: null,
+    quickResult: { ux: 0, seo: 0, ai: 0 },
     analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
     analyticsStatus: '',
     googleConnected: false,
@@ -277,11 +240,8 @@ function app() {
     },
 
     applyTheme() {
-      if (this.theme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      if (this.theme === 'dark') document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
     },
     toggleTheme() {
       this.theme = this.theme === 'dark' ? 'light' : 'dark';
@@ -319,11 +279,8 @@ function app() {
           body: JSON.stringify({ email: this.email })
         });
         const data = await res.json();
-        if (res.ok) {
-          alert(data.message || 'Check your email for the link.');
-        } else {
-          alert(data.error || 'Failed to send link.');
-        }
+        if (res.ok) alert(data.message || 'Check your email for the link.');
+        else alert(data.error || 'Failed to send link.');
       } catch (e) {
         alert('Error sending link. Try again.');
       } finally {
@@ -342,9 +299,7 @@ function app() {
         const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/audit-history?limit=10', {
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
-        if (res.ok) {
-          this.recentAudits = await res.json();
-        }
+        if (res.ok) this.recentAudits = await res.json();
       } catch (e) {}
     },
 
@@ -413,12 +368,8 @@ function app() {
           this.generatedKey = data.key;
           this.newKeyName = '';
           await this.loadApiKeys();
-        } else {
-          alert('Failed to generate key.');
-        }
-      } catch (e) {
-        alert('Network error.');
-      }
+        } else alert('Failed to generate key.');
+      } catch (e) { alert('Network error.'); }
     },
 
     async revokeApiKey(id) {
