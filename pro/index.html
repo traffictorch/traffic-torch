@@ -50,13 +50,10 @@
       <h1 class="text-2xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</h1>
     </div>
     <div class="flex items-center gap-4">
-      <!-- Theme toggle -->
       <button @click="toggleTheme()" class="text-2xl" x-text="theme === 'dark' ? '☀️' : '🌙'"></button>
-      <!-- Tier badge -->
       <span x-show="token" class="px-3 py-1 rounded-full text-xs font-semibold" :class="tier === 'free' ? 'bg-gray-200 dark:bg-gray-700' : 'bg-green-500/20 text-green-600 dark:text-green-400'">
         <span x-text="tier.toUpperCase()"></span>
       </span>
-      <!-- Logout -->
       <button @click="logout()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition" x-show="token">Logout</button>
     </div>
   </header>
@@ -72,9 +69,12 @@
         <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition" :disabled="loading">
           <span x-text="loading ? 'Sending...' : 'Send Magic Link'"></span>
         </button>
+        <p class="text-sm text-center text-gray-500 mt-2">
+          New user? Enter your email and we'll create your account.
+        </p>
       </form>
       <div class="my-6 text-center text-gray-400">or</div>
-      <a href="/api/auth/google" class="block w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-center transition">Sign in with Google</a>
+      <a href="https://traffic-torch-api.traffictorch.workers.dev/api/auth/google" class="block w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-center transition">Sign in with Google</a>
       <p class="mt-4 text-sm text-center text-gray-500">We'll email you a magic link to log in instantly.</p>
     </div>
   </div>
@@ -98,7 +98,6 @@
     <!-- ===== DASHBOARD TAB ===== -->
     <div x-show="activeTab === 'dashboard'">
       <div class="grid md:grid-cols-3 gap-6 mb-8">
-        <!-- Usage -->
         <div class="glass rounded-2xl p-6">
           <h3 class="text-sm text-gray-500 dark:text-gray-400">Daily Audits</h3>
           <p class="text-3xl font-bold mt-2" x-text="`${dailyUsed} / ${uiDailyLimit}`"></p>
@@ -107,7 +106,6 @@
           </div>
           <p class="text-sm mt-2" x-text="`${dailyRemaining} remaining today`"></p>
         </div>
-        <!-- API -->
         <div class="glass rounded-2xl p-6" x-show="features.api">
           <h3 class="text-sm text-gray-500 dark:text-gray-400">API Calls Today</h3>
           <p class="text-3xl font-bold mt-2" x-text="`${apiUsed || 0} / ${apiDailyLimit || 0}`"></p>
@@ -115,7 +113,6 @@
             <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2.5 rounded-full transition-all" :style="`width: ${apiDailyLimit ? (apiUsed/apiDailyLimit)*100 : 0}%`"></div>
           </div>
         </div>
-        <!-- Quick Audit -->
         <div class="glass rounded-2xl p-6">
           <h3 class="text-sm text-gray-500 dark:text-gray-400">Quick Audit</h3>
           <input type="url" x-model="quickUrl" placeholder="https://example.com" class="w-full mt-2 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
@@ -127,7 +124,6 @@
           </div>
         </div>
       </div>
-      <!-- Upgrade call to action -->
       <div x-show="tier === 'free'" class="text-center py-8">
         <button @click="upgrade()" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition">🚀 Upgrade to Pro</button>
       </div>
@@ -169,7 +165,7 @@
           <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
             <span>🔗 Google</span>
             <span :class="googleConnected ? 'text-green-500' : 'text-red-500'" x-text="googleConnected ? 'Connected' : 'Not connected'"></span>
-            <a :href="googleConnected ? '#' : '/api/auth/google'" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm" x-text="googleConnected ? 'Refresh' : 'Connect'"></a>
+            <a :href="googleConnected ? '#' : 'https://traffic-torch-api.traffictorch.workers.dev/api/auth/google'" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm" x-text="googleConnected ? 'Refresh' : 'Connect'"></a>
           </div>
           <div class="mt-6">
             <label class="block text-sm text-gray-500">Select property</label>
@@ -295,7 +291,7 @@ function app() {
 
     async loadAccountInfo() {
       try {
-        const res = await fetch('/api/account-info', {
+        const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/account-info', {
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
         if (!res.ok) throw new Error('Failed to load account');
@@ -323,7 +319,11 @@ function app() {
           body: JSON.stringify({ email: this.email })
         });
         const data = await res.json();
-        alert(data.message || 'Check your email for the link.');
+        if (res.ok) {
+          alert(data.message || 'Check your email for the link.');
+        } else {
+          alert(data.error || 'Failed to send link.');
+        }
       } catch (e) {
         alert('Error sending link. Try again.');
       } finally {
@@ -339,7 +339,7 @@ function app() {
 
     async loadAudits() {
       try {
-        const res = await fetch('/api/audit-history?limit=10', {
+        const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/audit-history?limit=10', {
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
         if (res.ok) {
@@ -350,7 +350,6 @@ function app() {
 
     async runQuickAudit() {
       if (!this.quickUrl) return;
-      // Mock – replace with real audit call later
       this.quickResult = { ux: Math.round(60 + Math.random()*30), seo: Math.round(60 + Math.random()*30), ai: Math.round(60 + Math.random()*30) };
     },
 
@@ -358,7 +357,7 @@ function app() {
       if (!this.features.analytics) return;
       this.analyticsStatus = 'Loading...';
       try {
-        const res = await fetch(`/api/analytics?site=${encodeURIComponent(this.selectedProperty)}&days=${range === '7d' ? 7 : 28}`, {
+        const res = await fetch(`https://traffic-torch-api.traffictorch.workers.dev/api/analytics?site=${encodeURIComponent(this.selectedProperty)}&days=${range === '7d' ? 7 : 28}`, {
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
         if (res.ok) {
@@ -394,7 +393,7 @@ function app() {
     async loadApiKeys() {
       if (!this.features.api) return;
       try {
-        const res = await fetch('/api/keys', {
+        const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/keys', {
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
         if (res.ok) this.apiKeys = await res.json();
@@ -404,7 +403,7 @@ function app() {
     async generateApiKey() {
       if (!this.newKeyName) return alert('Enter a key name');
       try {
-        const res = await fetch('/api/keys', {
+        const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/keys', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${this.token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: this.newKeyName })
@@ -425,7 +424,7 @@ function app() {
     async revokeApiKey(id) {
       if (!confirm('Revoke this key?')) return;
       try {
-        await fetch(`/api/keys/${id}`, {
+        await fetch(`https://traffic-torch-api.traffictorch.workers.dev/api/keys/${id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
@@ -434,13 +433,12 @@ function app() {
     },
 
     upgrade() {
-      // Redirect to upgrade page or show modal
       alert('Upgrade flow coming soon. For now, you can go to /pro/upgrade manually.');
     },
 
     deleteAccount() {
       if (confirm('Permanently delete your account? This cannot be undone.')) {
-        fetch('/api/delete-account', {
+        fetch('https://traffic-torch-api.traffictorch.workers.dev/api/delete-account', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${this.token}` }
         }).then(() => {
