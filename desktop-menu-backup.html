@@ -1,45 +1,15 @@
-<!-- desktop-menu.html – with Pro Portal dropdown + all existing tools -->
+<!-- desktop-menu.html – with dual tooltips: title (native) + data-tooltip (CSS popup) -->
 <nav class="p-2 space-y-4 flex-1">
 
-  <!-- Pro Portal – now a dropdown with the new tabs -->
-  <div>
-    <button
-      type="button"
-      class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-      aria-expanded="false"
-      data-category="proportal"
-      title="Pro Portal – Dashboard & Settings"
-      data-tooltip="Pro Portal – Dashboard, Analytics, Integrations, API Keys & Settings"
-    >
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🚥</span>
-      <span class="sidebar-text font-semibold flex-1">Pro Portal</span>
-      <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
-    </button>
-    <div class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="proportal">
-      <a href="#" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="dashboard">
-        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📊</span>
-        <span class="sidebar-text hidden md:block">Dashboard</span>
-      </a>
-      <a href="#" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="audits">
-        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📋</span>
-        <span class="sidebar-text hidden md:block">Audits</span>
-      </a>
-      <a href="#" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="analytics">
-        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📈</span>
-        <span class="sidebar-text hidden md:block">Analytics</span>
-      </a>
-      <a href="#" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="integrations">
-        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔗</span>
-        <span class="sidebar-text hidden md:block">Integrations</span>
-      </a>
-      <a href="#" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="settings">
-        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
-        <span class="sidebar-text hidden md:block">Settings</span>
-      </a>
-    </div>
-  </div>
+<!-- Pro Traffic  -->
+  <a href="/pro/" 
+     class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition pro-menu-link"
+     title="Pro Traffic – Advanced 360° SEO + UX + GEO Competitive Intelligence Toolkit"
+     data-tooltip="Pro Traffic – Advanced 360° SEO, GEO, AEO Audit Toolkit">
+    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🚥</span>
+    <span class="sidebar-text font-semibold flex-1">Pro Portal</span>
+  </a>
 
-  <!-- Everything below remains exactly as it was in the original menu -->
   <!-- Group 1: SEO Tools -->
   <button
     type="button"
@@ -197,18 +167,19 @@
   </a>
   
   <!-- Extensions -->
-  <a href="/#extensions" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-     title="Traffic Torch Browser Extensions – Chrome, Firefox & Edge"
-     data-tooltip="Traffic Torch Browser Extensions – Chrome, Firefox & Edge">
-    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🦊</span>
-    <span class="sidebar-text hidden md:block">Extensions</span>
-  </a>
-  
+<a href="/#extensions" 
+   class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+   title="Traffic Torch Browser Extensions – Chrome, Firefox & Edge"
+   data-tooltip="Traffic Torch Browser Extensions – Chrome, Firefox & Edge">
+  <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🦊</span>
+  <span class="sidebar-text hidden md:block">Extensions</span>
+</a>
   <!-- Plugins -->
-  <a href="/#ai-seo-plugins" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-     title="Traffic Torch AI SEO Plugins – WordPress, Figma & Framer"
-     data-tooltip="Traffic Torch AI SEO Plugins – WordPress, Figma & Framer">
-    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">💠</span>
-    <span class="sidebar-text hidden md:block">Plugins</span>
-  </a>
+<a href="/#ai-seo-plugins" 
+   class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+   title="Traffic Torch AI SEO Plugins – WordPress, Figma & Framer"
+   data-tooltip="Traffic Torch AI SEO Plugins – WordPress, Figma & Framer">
+  <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">💠</span>
+  <span class="sidebar-text hidden md:block">Plugins</span>
+</a>
 </nav>
