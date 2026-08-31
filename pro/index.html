@@ -1,265 +1,127 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traffic Torch – Pro Dashboard</title>
+  <title>Traffic Torch – Sign in</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
     [x-cloak] { display: none !important; }
-    .tab-active { border-bottom: 3px solid #f97316; color: #f97316; }
-    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-    .dark .glass { background: rgba(0,0,0,0.3); }
+    .tab-active { border-bottom: 2px solid #f97316; color: #f97316; }
   </style>
 </head>
-<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+<body class="bg-gray-50 dark:bg-gray-950 min-h-screen flex items-center justify-center p-4">
+<div x-data="authApp()" x-init="init()" class="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8">
 
-<div x-data="app()" x-init="init()" class="max-w-7xl mx-auto px-4 py-8">
-
-  <!-- LOGIN SECTION -->
-  <div x-show="!token" class="max-w-md mx-auto">
-    <div class="glass rounded-3xl p-8 shadow-2xl">
-      <h2 class="text-2xl font-bold mb-6 text-center">Welcome Back</h2>
-
-      <!-- MAGIC LINK -->
-      <div x-show="!showPasswordLogin">
-        <form @submit.prevent="sendMagicLink()" class="space-y-4">
-          <input type="email" x-model="email" placeholder="Your email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-          <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90" :disabled="loading">
-            <span x-text="loading ? 'Sending...' : 'Send Magic Link'"></span>
-          </button>
-          <p class="text-sm text-center text-gray-400">
-            <a href="#" @click.prevent="showPasswordLogin = true" class="underline hover:text-orange-500">Login with password instead</a>
-          </p>
-        </form>
-      </div>
-
-      <!-- PASSWORD LOGIN / REGISTER -->
-      <div x-show="showPasswordLogin" x-cloak>
-        <div class="space-y-4">
-          <input type="email" x-model="email" placeholder="Email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-          <input type="password" x-model="password" placeholder="Password (min 8 chars)" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-          <button @click="login()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">Login</button>
-          <button @click="register()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl">Register</button>
-          <p class="text-sm text-center text-gray-400">
-            <a href="#" @click.prevent="showPasswordLogin = false" class="underline hover:text-orange-500">← Back to magic link</a>
-          </p>
-        </div>
-      </div>
-    </div>
+  <!-- Tabs: Magic Link, Login, Register -->
+  <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6 text-sm font-medium text-center">
+    <button @click="activeTab='magic'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='magic'?'tab-active':'text-gray-500 hover:text-gray-700'">Magic Link</button>
+    <button @click="activeTab='login'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='login'?'tab-active':'text-gray-500 hover:text-gray-700'">Login</button>
+    <button @click="activeTab='register'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='register'?'tab-active':'text-gray-500 hover:text-gray-700'">Register</button>
   </div>
 
-  <!-- DASHBOARD -->
-  <div x-show="token" x-cloak>
-    <!-- Header -->
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
-      <h1 class="text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">🚀 Traffic Torch Dashboard</h1>
-      <div class="flex items-center gap-4">
-        <span class="px-4 py-2 rounded-full text-sm font-semibold" :class="tier === 'free' ? 'bg-gray-200 dark:bg-gray-700' : 'bg-green-500/20 text-green-600 dark:text-green-400'">
-          <span x-text="tier.toUpperCase()"></span>
-        </span>
-        <button @click="logout()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm">Logout</button>
-      </div>
-    </div>
+  <!-- Global Message -->
+  <div x-show="message" x-transition.duration.300ms class="mb-4 p-3 rounded-lg text-sm" :class="messageType==='success'?'bg-green-100 dark:bg-green-900/30 text-green-700':'bg-red-100 dark:bg-red-900/30 text-red-700'" x-text="message"></div>
 
-    <!-- Error banner -->
-    <div x-show="errorMessage" class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg border border-red-300 dark:border-red-700">
-      <p x-text="errorMessage"></p>
-      <button @click="errorMessage = ''" class="text-sm underline">Dismiss</button>
-    </div>
+  <!-- ======= MAGIC LINK ======= -->
+  <div x-show="activeTab==='magic'" x-cloak>
+    <form @submit.prevent="sendMagicLink()" class="space-y-4">
+      <p class="text-sm text-gray-600 dark:text-gray-400">Enter your email – we'll send a secure login link.</p>
+      <input type="email" x-model="magicEmail" placeholder="Your email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
+      <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90" :disabled="loading">
+        <span x-text="loading ? 'Sending...' : 'Send Magic Link'"></span>
+      </button>
+    </form>
+  </div>
 
-    <!-- Tabs -->
-    <div class="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
-      <template x-for="tab in tabs" :key="tab.id">
-        <button @click="activeTab = tab.id" 
-                class="px-6 py-3 text-sm font-medium transition-all duration-200"
-                :class="activeTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                x-show="tab.show">
-          <span x-text="tab.label"></span>
+  <!-- ======= LOGIN ======= -->
+  <div x-show="activeTab==='login'" x-cloak>
+    <form @submit.prevent="login()" class="space-y-4">
+      <input type="email" x-model="loginEmail" placeholder="Email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
+      <div class="relative">
+        <input :type="loginPasswordVisible ? 'text' : 'password'" x-model="loginPassword" placeholder="Password" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+        <button type="button" @click="loginPasswordVisible = !loginPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+          <i :class="loginPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
         </button>
-      </template>
-    </div>
-
-    <!-- Dashboard tab -->
-    <div x-show="activeTab === 'dashboard'" x-cloak>
-      <div class="grid md:grid-cols-3 gap-6 mb-8">
-        <div class="glass rounded-2xl p-6">
-          <h3 class="text-sm text-gray-500 dark:text-gray-400">Daily Audits</h3>
-          <p class="text-3xl font-bold mt-2" x-text="`${dailyUsed} / ${uiDailyLimit}`"></p>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-4">
-            <div class="bg-gradient-to-r from-orange-500 to-pink-600 h-2.5 rounded-full transition-all" :style="`width: ${(dailyUsed/uiDailyLimit)*100}%`"></div>
-          </div>
-          <p class="text-sm mt-2" x-text="`${dailyRemaining} remaining today`"></p>
-        </div>
-        <div class="glass rounded-2xl p-6" x-show="features.api">
-          <h3 class="text-sm text-gray-500 dark:text-gray-400">API Calls Today</h3>
-          <p class="text-3xl font-bold mt-2" x-text="`${apiUsed || 0} / ${apiDailyLimit || 0}`"></p>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-4">
-            <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2.5 rounded-full transition-all" :style="`width: ${apiDailyLimit ? (apiUsed/apiDailyLimit)*100 : 0}%`"></div>
-          </div>
-        </div>
-        <div class="glass rounded-2xl p-6">
-          <h3 class="text-sm text-gray-500 dark:text-gray-400">Quick Audit</h3>
-          <input type="url" x-model="quickUrl" placeholder="https://example.com" class="w-full mt-2 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-          <button @click="runQuickAudit()" class="mt-3 w-full py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90">Analyze</button>
-          <div x-show="quickResult" class="mt-4 text-sm">
-            <p>UX: <span x-text="quickResult.ux"></span></p>
-            <p>SEO: <span x-text="quickResult.seo"></span></p>
-            <p>AI: <span x-text="quickResult.ai"></span></p>
-          </div>
+      </div>
+      <div class="text-right">
+        <a href="#" @click.prevent="showForgot = !showForgot" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
+      </div>
+      <!-- Forgot password toggle -->
+      <div x-show="showForgot" x-cloak class="mt-2 p-3 border border-gray-200 rounded-lg">
+        <p class="text-sm text-gray-600">Enter your email to receive a reset link.</p>
+        <div class="flex gap-2 mt-2">
+          <input type="email" x-model="resetEmail" placeholder="Your email" class="flex-1 p-2 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500">
+          <button @click="sendResetLink()" class="px-4 py-2 bg-purple-600 text-white rounded-lg" :disabled="loading">Send</button>
         </div>
       </div>
-      <h3 class="text-lg font-bold mb-4">Recent Audits</h3>
-      <div class="glass rounded-2xl overflow-hidden">
-        <table class="w-full text-left">
-          <thead class="bg-gray-100 dark:bg-gray-800">
-            <tr><th class="p-3">URL</th><th class="p-3">UX</th><th class="p-3">SEO</th><th class="p-3">AI</th><th class="p-3">Date</th></tr>
-          </thead>
-          <tbody>
-            <template x-for="audit in recentAudits" :key="audit.id">
-              <tr class="border-t border-gray-200 dark:border-gray-700">
-                <td class="p-3 text-sm truncate max-w-[200px]" x-text="audit.url"></td>
-                <td class="p-3" x-text="audit.ux_score"></td>
-                <td class="p-3" x-text="audit.seo_score"></td>
-                <td class="p-3" x-text="audit.ai_score"></td>
-                <td class="p-3 text-sm" x-text="new Date(audit.timestamp).toLocaleDateString()"></td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Analytics tab -->
-    <div x-show="activeTab === 'analytics'" x-cloak>
-      <div x-show="!features.analytics" class="text-center py-20">
-        <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for Analytics</p>
-        <a href="/pro/" class="mt-6 inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl">Upgrade Now</a>
-      </div>
-      <div x-show="features.analytics">
-        <p>Analytics data will appear here once you connect your Google account.</p>
-      </div>
-    </div>
-
-    <!-- Integrations tab -->
-    <div x-show="activeTab === 'integrations'" x-cloak>
-      <div x-show="!features.analytics" class="text-center py-20">
-        <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for Integrations</p>
-        <a href="/pro/" class="mt-6 inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl">Upgrade Now</a>
-      </div>
-      <div x-show="features.analytics">
-        <div class="glass rounded-2xl p-6 max-w-2xl">
-          <h3 class="text-xl font-bold mb-4">Google Search Console</h3>
-          <button class="px-4 py-2 bg-blue-600 text-white rounded-lg">Connect Google</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- API Keys tab -->
-    <div x-show="activeTab === 'api-keys'" x-cloak>
-      <div x-show="!features.api" class="text-center py-20">
-        <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for API Access</p>
-        <a href="/pro/" class="mt-6 inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl">Upgrade Now</a>
-      </div>
-      <div x-show="features.api">
-        <div class="glass rounded-2xl p-6 max-w-2xl">
-          <h3 class="text-xl font-bold mb-4">Your API Keys</h3>
-          <div class="flex gap-4 mb-6">
-            <input type="text" x-model="newKeyName" placeholder="Key name" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-            <button @click="generateApiKey()" class="px-6 py-2 bg-blue-600 text-white rounded-lg">Generate</button>
-          </div>
-          <div x-show="generatedKey" class="p-4 bg-green-100 dark:bg-green-900/30 rounded-lg mb-4">
-            <p class="font-mono text-sm break-all" x-text="generatedKey"></p>
-            <p class="text-xs text-gray-500">Copy this key – it won't be shown again.</p>
-          </div>
-          <div class="space-y-2">
-            <template x-for="key in apiKeys" :key="key.id">
-              <div class="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
-                <span x-text="key.name"></span>
-                <span class="text-sm text-gray-500" x-text="key.last_used || 'Never used'"></span>
-                <button @click="revokeApiKey(key.id)" class="text-red-500 text-sm">Revoke</button>
-              </div>
-            </template>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Settings tab -->
-    <div x-show="activeTab === 'settings'" x-cloak>
-      <div class="glass rounded-2xl p-6 max-w-2xl">
-        <h3 class="text-xl font-bold mb-4">Account Settings</h3>
-        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <span>Email</span>
-          <span x-text="email"></span>
-        </div>
-        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <span>Plan</span>
-          <span x-text="tier.toUpperCase()"></span>
-        </div>
-        <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
-        <button @click="deleteAccount()" class="mt-3 w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10">Delete Account</button>
-      </div>
-    </div>
-
-    <p class="text-center text-sm text-gray-500 mt-12">Traffic Torch v2.0 – Privacy-first</p>
+      <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">Login</button>
+    </form>
   </div>
+
+  <!-- ======= REGISTER ======= -->
+  <div x-show="activeTab==='register'" x-cloak>
+    <form @submit.prevent="register()" class="space-y-4">
+      <input type="email" x-model="registerEmail" placeholder="Email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
+      <div class="relative">
+        <input :type="registerPasswordVisible ? 'text' : 'password'" x-model="registerPassword" placeholder="Password (min 8 chars)" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+        <button type="button" @click="registerPasswordVisible = !registerPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+          <i :class="registerPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+        </button>
+      </div>
+      <div class="relative">
+        <input :type="registerConfirmVisible ? 'text' : 'password'" x-model="registerConfirm" placeholder="Confirm Password" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+        <button type="button" @click="registerConfirmVisible = !registerConfirmVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+          <i :class="registerConfirmVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+        </button>
+      </div>
+      <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl">Register</button>
+    </form>
+  </div>
+
+  <p class="text-center text-xs text-gray-500 mt-6">Traffic Torch Auth</p>
 </div>
 
 <script>
-// ============================================================
-// Set this to your Worker URL (or leave empty for relative)
-// For local testing: use the workers.dev URL
-// For production: leave as '' (empty) to use same domain
-// ============================================================
-const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev'; // ← change if needed
 
-function app() {
+function authApp() {
   return {
-    token: localStorage.getItem('authToken'),
-    email: '',
-    password: '',
+    activeTab: 'magic',
     loading: false,
-    showPasswordLogin: false,
-    tier: 'free',
-    features: { analytics: false, export: false, api: false },
-    uiDailyLimit: 3,
-    apiDailyLimit: 0,
-    dailyUsed: 0,
-    dailyRemaining: 3,
-    apiUsed: 0,
-    activeTab: 'dashboard',
-    quickUrl: '',
-    quickResult: { ux: 0, seo: 0, ai: 0 },
-    recentAudits: [],
-    analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
-    analyticsStatus: '',
-    googleConnected: false,
-    selectedProperty: 'https://traffictorch.net',
-    apiKeys: [],
-    newKeyName: '',
-    generatedKey: null,
-    errorMessage: '',
-    _chart: null,
+    message: '',
+    messageType: 'error',
+    showForgot: false,
+    magicEmail: '',
+    loginEmail: '',
+    loginPassword: '',
+    loginPasswordVisible: false,
+    registerEmail: '',
+    registerPassword: '',
+    registerPasswordVisible: false,
+    registerConfirm: '',
+    registerConfirmVisible: false,
+    resetEmail: '',
+    resetToken: new URLSearchParams(window.location.search).get('token') || '',
+    resetNewPassword: '',
+    resetPasswordVisible: false,
+    resetConfirmPassword: '',
+    resetConfirmVisible: false,
 
-    tabs() {
-      return [
-        { id: 'dashboard', label: '📊 Dashboard', show: true },
-        { id: 'analytics', label: '📈 Analytics', show: true },
-        { id: 'integrations', label: '🔗 Integrations', show: true },
-        { id: 'api-keys', label: '🔑 API Keys', show: this.features.api },
-        { id: 'settings', label: '⚙️ Settings', show: true }
-      ];
+    init() {
+      if (this.resetToken) {
+        this.showForgot = true;
+        this.activeTab = 'login';
+      }
     },
 
-    async init() {
-      if (this.token) {
-        await this.loadAccountInfo();
-        await this.loadRecentAudits();
-        if (this.features.api) await this.loadApiKeys();
-      }
+    setMessage(msg, type='error') {
+      this.message = msg;
+      this.messageType = type;
+      clearTimeout(this.msgTimeout);
+      this.msgTimeout = setTimeout(() => this.message = '', 5000);
     },
 
     async sendMagicLink() {
@@ -268,139 +130,128 @@ function app() {
         const res = await fetch(API_BASE + '/api/auth/magic-link', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.email })
+          body: JSON.stringify({ email: this.magicEmail })
         });
         const data = await res.json();
-        alert(res.ok ? data.message : data.error);
-      } catch (e) {
-        alert('Error sending link.');
-      } finally {
-        this.loading = false;
+        if (res.ok) {
+          this.setMessage('Magic link sent! Check your email.', 'success');
+        } else {
+          this.setMessage(data.error || 'Failed to send link');
+        }
+      } catch {
+        this.setMessage('Network error');
       }
+      this.loading = false;
     },
 
     async login() {
-      const res = await fetch(API_BASE + '/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: this.email, password: this.password })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem('authToken', data.token);
-        this.token = data.token;
-        await this.loadAccountInfo();
-        this.errorMessage = '';
-      } else {
-        this.errorMessage = data.error || 'Login failed';
+      this.loading = true;
+      try {
+        const res = await fetch(API_BASE + '/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.loginEmail, password: this.loginPassword })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem('authToken', data.token);
+          window.location.href = 'https://traffic-torch-dashboard.traffictorch.workers.dev/';
+        } else {
+          this.setMessage(data.error || 'Login failed');
+        }
+      } catch {
+        this.setMessage('Network error');
       }
+      this.loading = false;
     },
 
     async register() {
-      const res = await fetch(API_BASE + '/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: this.email, password: this.password })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        localStorage.setItem('authToken', data.token);
-        this.token = data.token;
-        await this.loadAccountInfo();
-        this.errorMessage = '';
-      } else {
-        this.errorMessage = data.error || 'Registration failed';
+      if (this.registerPassword !== this.registerConfirm) {
+        this.setMessage('Passwords do not match');
+        return;
       }
-    },
-
-    async loadAccountInfo() {
-      const token = localStorage.getItem('authToken');
-      try {
-        const res = await fetch(API_BASE + '/api/account-info', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!res.ok) throw new Error('Failed to load account');
-        const data = await res.json();
-        this.tier = data.tier || 'free';
-        this.email = data.email || '';
-        this.features = data.features || { analytics: false, export: false, api: false };
-        this.uiDailyLimit = data.uiDailyLimit || 3;
-        this.apiDailyLimit = data.apiDailyLimit || 0;
-        this.dailyUsed = data.dailyUsed || 0;
-        this.dailyRemaining = data.dailyRemaining || 0;
-      } catch (err) {
-        this.errorMessage = err.message;
+      if (this.registerPassword.length < 8) {
+        this.setMessage('Password must be at least 8 characters');
+        return;
       }
-    },
-
-    async loadRecentAudits() {
-      const token = localStorage.getItem('authToken');
+      this.loading = true;
       try {
-        const res = await fetch(API_BASE + '/api/audit-history?limit=10', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (res.ok) this.recentAudits = await res.json();
-      } catch (e) { /* ignore */ }
-    },
-
-    async runQuickAudit() {
-      if (!this.quickUrl) return;
-      // For now, mock; later you can call /api/audit
-      this.quickResult = { ux: 78, seo: 65, ai: 92 };
-    },
-
-    async loadApiKeys() {
-      const token = localStorage.getItem('authToken');
-      try {
-        const res = await fetch(API_BASE + '/api/keys', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (res.ok) this.apiKeys = await res.json();
-      } catch (e) { /* ignore */ }
-    },
-
-    async generateApiKey() {
-      if (!this.newKeyName) return alert('Enter a key name');
-      const token = localStorage.getItem('authToken');
-      try {
-        const res = await fetch(API_BASE + '/api/keys', {
+        const res = await fetch(API_BASE + '/api/auth/register', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: this.newKeyName })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.registerEmail, password: this.registerPassword })
         });
+        const data = await res.json();
         if (res.ok) {
-          const data = await res.json();
-          this.generatedKey = data.key;
-          this.newKeyName = '';
-          await this.loadApiKeys();
+          localStorage.setItem('authToken', data.token);
+          window.location.href = 'https://traffic-torch-dashboard.traffictorch.workers.dev/';
         } else {
-          alert('Failed to generate key');
+          this.setMessage(data.error || 'Registration failed');
         }
-      } catch (e) { alert('Network error'); }
-    },
-
-    async revokeApiKey(id) {
-      if (!confirm('Revoke this key?')) return;
-      const token = localStorage.getItem('authToken');
-      try {
-        await fetch(API_BASE + `/api/keys/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        await this.loadApiKeys();
-      } catch (e) { alert('Failed to revoke'); }
-    },
-
-    logout() {
-      localStorage.removeItem('authToken');
-      this.token = null;
-      window.location.reload();
-    },
-
-    deleteAccount() {
-      if (confirm('Permanently delete your account?')) {
-        alert('Account deletion not yet implemented in frontend.');
+      } catch {
+        this.setMessage('Network error');
       }
+      this.loading = false;
+    },
+
+    async sendResetLink() {
+      if (!this.resetEmail) {
+        this.setMessage('Please enter your email.');
+        return;
+      }
+      this.loading = true;
+      try {
+        const res = await fetch(API_BASE + '/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.resetEmail })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.setMessage('Reset link sent! Check your email.', 'success');
+          this.showForgot = false;
+          this.resetEmail = '';
+        } else {
+          this.setMessage(data.error || 'Failed to send reset link');
+        }
+      } catch {
+        this.setMessage('Network error');
+      }
+      this.loading = false;
+    },
+
+    async resetPassword() {
+      if (this.resetNewPassword !== this.resetConfirmPassword) {
+        this.setMessage('Passwords do not match');
+        return;
+      }
+      if (this.resetNewPassword.length < 8) {
+        this.setMessage('Password must be at least 8 characters');
+        return;
+      }
+      this.loading = true;
+      try {
+        const res = await fetch(API_BASE + '/api/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            token: this.resetToken,
+            password: this.resetNewPassword
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.setMessage('Password reset successfully! Please login.', 'success');
+          this.resetToken = '';
+          this.activeTab = 'login';
+          window.history.pushState({}, '', '/');
+        } else {
+          this.setMessage(data.error || 'Reset failed');
+        }
+      } catch {
+        this.setMessage('Network error');
+      }
+      this.loading = false;
     }
   };
 }
