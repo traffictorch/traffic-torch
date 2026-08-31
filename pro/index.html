@@ -47,7 +47,7 @@
         <p class="text-sm text-center text-gray-500 mt-2">New user? Enter your email and we'll create your account.</p>
       </form>
       <div class="my-6 text-center text-gray-400">or</div>
-      <a href="https://traffic-torch-pro.workers.dev/api/auth/google" class="block w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-center transition">Sign in with Google</a>
+      <a href="https://traffic-torch-auth.traffictorch.workers.dev/api/auth/google" class="block w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-center transition">Sign in with Google</a>
       <p class="mt-4 text-sm text-center text-gray-500">We'll email you a magic link to log in instantly.</p>
     </div>
   </div>
@@ -132,7 +132,7 @@
           <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
             <span>🔗 Google</span>
             <span :class="googleConnected ? 'text-green-500' : 'text-red-500'" x-text="googleConnected ? 'Connected' : 'Not connected'"></span>
-            <a :href="googleConnected ? '#' : 'https://traffic-torch-pro.workers.dev/api/auth/google'" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm" x-text="googleConnected ? 'Refresh' : 'Connect'"></a>
+            <a :href="googleConnected ? '#' : 'https://traffic-torch-auth.traffictorch.workers.dev/api/auth/google'" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm" x-text="googleConnected ? 'Refresh' : 'Connect'"></a>
           </div>
           <div class="mt-6">
             <label class="block text-sm text-gray-500">Select property</label>
@@ -197,7 +197,7 @@
 </div>
 
 <script>
-const API_BASE = 'https://traffic-torch-pro.workers.dev';
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
 function app() {
   return {
