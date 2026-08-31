@@ -271,7 +271,7 @@ function dashboard() {
     async loadAccountInfo() {
       const token = localStorage.getItem('authToken');
       try {
-        const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/account-info', {
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/account-info', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) {
@@ -297,7 +297,7 @@ function dashboard() {
     async loadRecentAudits() {
       const token = localStorage.getItem('authToken');
       try {
-        const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/audit-history?limit=10', {
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/audit-history?limit=10', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -318,7 +318,7 @@ function dashboard() {
       this.analyticsStatus = 'Loading...';
       const token = localStorage.getItem('authToken');
       try {
-        const res = await fetch(`https://traffic-torch-api.traffictorch.workers.dev/api/analytics?site=${encodeURIComponent(this.selectedProperty)}&range=${range}`, {
+        const res = await fetch(`https://traffic-torch-auth.traffictorch.workers.dev/api/analytics?site=${encodeURIComponent(this.selectedProperty)}&range=${range}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -356,7 +356,7 @@ function dashboard() {
       if (!this.newKeyName) return alert('Enter a key name');
       const token = localStorage.getItem('authToken');
       try {
-        const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/keys', {
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/keys', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: this.newKeyName })
@@ -378,7 +378,7 @@ function dashboard() {
     async loadApiKeys() {
       const token = localStorage.getItem('authToken');
       try {
-        const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/keys', {
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/keys', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) this.apiKeys = await res.json();
@@ -389,7 +389,7 @@ function dashboard() {
       if (!confirm('Revoke this key?')) return;
       const token = localStorage.getItem('authToken');
       try {
-        await fetch(`https://traffic-torch-api.traffictorch.workers.dev/api/keys/${id}`, {
+        await fetch(`https://traffic-torch-auth.traffictorch.workers.dev/api/keys/${id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });

@@ -235,7 +235,7 @@
       }
 
       try {
-        const res = await fetch('https://traffic-torch-api.traffictorch.workers.dev/api/session-status?session_id=' + sessionId, {
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/session-status?session_id=' + sessionId, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
