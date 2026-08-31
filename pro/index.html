@@ -47,7 +47,7 @@
         <p class="text-sm text-center text-gray-500 mt-2">New user? Enter your email and we'll create your account.</p>
       </form>
       <div class="my-6 text-center text-gray-400">or</div>
-      <a href="https://traffic-torch-auth.traffictorch.workers.dev/api/auth/google" class="block w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-center transition">Sign in with Google</a>
+      <a href="https://traffic-torch-pro.workers.dev/api/auth/google" class="block w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-center transition">Sign in with Google</a>
       <p class="mt-4 text-sm text-center text-gray-500">We'll email you a magic link to log in instantly.</p>
     </div>
   </div>
@@ -62,7 +62,7 @@
       </template>
     </nav>
 
-    <!-- Dashboard tab content (same as before) -->
+    <!-- Dashboard tab -->
     <div x-show="activeTab === 'dashboard'">
       <div class="grid md:grid-cols-3 gap-6 mb-8">
         <div class="glass rounded-2xl p-6">
@@ -96,7 +96,7 @@
       </div>
     </div>
 
-    <!-- Analytics, Integrations, API Keys, Settings tabs (shortened for brevity – same as before) -->
+    <!-- Analytics tab -->
     <div x-show="activeTab === 'analytics'" x-cloak>
       <div x-show="!features.analytics" class="text-center py-20">
         <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for Analytics</p>
@@ -120,6 +120,7 @@
       </div>
     </div>
 
+    <!-- Integrations tab -->
     <div x-show="activeTab === 'integrations'" x-cloak>
       <div x-show="!features.analytics" class="text-center py-20">
         <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for Integrations</p>
@@ -131,7 +132,7 @@
           <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
             <span>🔗 Google</span>
             <span :class="googleConnected ? 'text-green-500' : 'text-red-500'" x-text="googleConnected ? 'Connected' : 'Not connected'"></span>
-            <a :href="googleConnected ? '#' : 'https://traffic-torch-auth.traffictorch.workers.dev/api/auth/google'" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm" x-text="googleConnected ? 'Refresh' : 'Connect'"></a>
+            <a :href="googleConnected ? '#' : 'https://traffic-torch-pro.workers.dev/api/auth/google'" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm" x-text="googleConnected ? 'Refresh' : 'Connect'"></a>
           </div>
           <div class="mt-6">
             <label class="block text-sm text-gray-500">Select property</label>
@@ -144,6 +145,7 @@
       </div>
     </div>
 
+    <!-- API Keys tab -->
     <div x-show="activeTab === 'api-keys'" x-cloak>
       <div x-show="!features.api" class="text-center py-20">
         <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for API Access</p>
@@ -173,6 +175,7 @@
       </div>
     </div>
 
+    <!-- Settings tab -->
     <div x-show="activeTab === 'settings'" x-cloak>
       <div class="glass rounded-2xl p-6 max-w-2xl">
         <h3 class="text-xl font-bold mb-4">Account Settings</h3>
@@ -194,6 +197,8 @@
 </div>
 
 <script>
+const API_BASE = 'https://traffic-torch-pro.workers.dev';
+
 function app() {
   return {
     token: localStorage.getItem('authToken'),
@@ -251,7 +256,7 @@ function app() {
 
     async loadAccountInfo() {
       try {
-        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/account-info', {
+        const res = await fetch(`${API_BASE}/api/account-info`, {
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
         if (!res.ok) throw new Error('Failed to load account');
@@ -273,7 +278,7 @@ function app() {
     async sendMagicLink() {
       this.loading = true;
       try {
-        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/auth/magic-link', {
+        const res = await fetch(`${API_BASE}/api/auth/magic-link`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.email })
@@ -296,7 +301,7 @@ function app() {
 
     async loadAudits() {
       try {
-        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/audit-history?limit=10', {
+        const res = await fetch(`${API_BASE}/api/audit-history?limit=10`, {
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
         if (res.ok) this.recentAudits = await res.json();
@@ -312,7 +317,7 @@ function app() {
       if (!this.features.analytics) return;
       this.analyticsStatus = 'Loading...';
       try {
-        const res = await fetch(`https://traffic-torch-auth.traffictorch.workers.dev/api/analytics?site=${encodeURIComponent(this.selectedProperty)}&days=${range === '7d' ? 7 : 28}`, {
+        const res = await fetch(`${API_BASE}/api/analytics?site=${encodeURIComponent(this.selectedProperty)}&days=${range === '7d' ? 7 : 28}`, {
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
         if (res.ok) {
@@ -348,7 +353,7 @@ function app() {
     async loadApiKeys() {
       if (!this.features.api) return;
       try {
-        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/keys', {
+        const res = await fetch(`${API_BASE}/api/keys`, {
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
         if (res.ok) this.apiKeys = await res.json();
@@ -358,7 +363,7 @@ function app() {
     async generateApiKey() {
       if (!this.newKeyName) return alert('Enter a key name');
       try {
-        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/keys', {
+        const res = await fetch(`${API_BASE}/api/keys`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${this.token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: this.newKeyName })
@@ -375,7 +380,7 @@ function app() {
     async revokeApiKey(id) {
       if (!confirm('Revoke this key?')) return;
       try {
-        await fetch(`https://traffic-torch-auth.traffictorch.workers.dev/api/keys/${id}`, {
+        await fetch(`${API_BASE}/api/keys/${id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
@@ -389,7 +394,7 @@ function app() {
 
     deleteAccount() {
       if (confirm('Permanently delete your account? This cannot be undone.')) {
-        fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/delete-account', {
+        fetch(`${API_BASE}/api/delete-account`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${this.token}` }
         }).then(() => {
