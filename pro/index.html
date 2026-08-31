@@ -6,32 +6,23 @@
   <title>Traffic Torch – Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     [x-cloak] { display: none !important; }
     body { background: #f8fafc; }
     .dark body { background: #0f172a; }
     .glass { background: rgba(255,255,255,0.1); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); }
-    .dark .glass { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.05); }
     .tab-active { border-bottom: 3px solid #f97316; color: #f97316; }
-    .dark .tab-active { border-bottom-color: #f97316; color: #f97316; }
-    input, select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); }
-    .dark input, .dark select { background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.1); color: #e2e8f0; }
+    input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); }
   </style>
 </head>
-<body class="min-h-screen text-gray-900 dark:text-gray-100 transition-colors duration-300">
+<body class="min-h-screen text-gray-900 dark:text-gray-100">
 <div x-data="app()" x-init="init()" class="max-w-7xl mx-auto px-4 py-8">
   <header class="flex flex-wrap items-center justify-between gap-4 mb-10">
-    <div class="flex items-center gap-3">
-      <span class="text-3xl">🚀</span>
-      <h1 class="text-2xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</h1>
-    </div>
-    <div class="flex items-center gap-4">
+    <div><span class="text-3xl">🚀</span><h1 class="inline text-2xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</h1></div>
+    <div>
       <button @click="toggleTheme()" class="text-2xl" x-text="theme === 'dark' ? '☀️' : '🌙'"></button>
-      <span x-show="token" class="px-3 py-1 rounded-full text-xs font-semibold" :class="tier === 'free' ? 'bg-gray-200 dark:bg-gray-700' : 'bg-green-500/20 text-green-600 dark:text-green-400'">
-        <span x-text="tier.toUpperCase()"></span>
-      </span>
-      <button @click="logout()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm transition" x-show="token">Logout</button>
+      <span x-show="token" class="px-3 py-1 rounded-full text-xs font-semibold" :class="tier === 'free' ? 'bg-gray-200' : 'bg-green-500/20 text-green-600'"><span x-text="tier.toUpperCase()"></span></span>
+      <button @click="logout()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm" x-show="token">Logout</button>
     </div>
   </header>
 
@@ -41,14 +32,11 @@
       <h2 class="text-2xl font-bold mb-6 text-center">Welcome Back</h2>
       <form @submit.prevent="sendMagicLink()" class="space-y-4">
         <input type="email" x-model="email" placeholder="Your email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-        <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition" :disabled="loading">
+        <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl" :disabled="loading">
           <span x-text="loading ? 'Sending...' : 'Send Magic Link'"></span>
         </button>
-        <p class="text-sm text-center text-gray-500 mt-2">New user? Enter your email and we'll create your account.</p>
+        <p class="text-sm text-center text-gray-500">We'll email you a link to log in instantly.</p>
       </form>
-      <div class="my-6 text-center text-gray-400">or</div>
-      <a href="https://traffic-torch-auth.traffictorch.workers.dev/api/auth/google" class="block w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-center transition">Sign in with Google</a>
-      <p class="mt-4 text-sm text-center text-gray-500">We'll email you a magic link to log in instantly.</p>
     </div>
   </div>
 
@@ -56,34 +44,24 @@
   <div x-show="token" x-cloak>
     <nav class="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
       <template x-for="tab in tabs" :key="tab.id">
-        <button @click="activeTab = tab.id" class="px-5 py-2.5 text-sm font-medium transition-all duration-200" :class="activeTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'" x-show="tab.show">
-          <span x-text="tab.label"></span>
-        </button>
+        <button @click="activeTab = tab.id" class="px-5 py-2.5 text-sm font-medium" :class="activeTab === tab.id ? 'tab-active' : 'text-gray-500'"><span x-text="tab.label"></span></button>
       </template>
     </nav>
 
-    <!-- Dashboard tab -->
     <div x-show="activeTab === 'dashboard'">
-      <div class="grid md:grid-cols-3 gap-6 mb-8">
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
         <div class="glass rounded-2xl p-6">
-          <h3 class="text-sm text-gray-500 dark:text-gray-400">Daily Audits</h3>
+          <h3 class="text-sm text-gray-500">Daily Audits</h3>
           <p class="text-3xl font-bold mt-2" x-text="`${dailyUsed} / ${uiDailyLimit}`"></p>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-4">
-            <div class="bg-gradient-to-r from-orange-500 to-pink-600 h-2.5 rounded-full transition-all" :style="`width: ${uiDailyLimit ? (dailyUsed/uiDailyLimit)*100 : 0}%`"></div>
+          <div class="w-full bg-gray-200 rounded-full h-2.5 mt-4">
+            <div class="bg-gradient-to-r from-orange-500 to-pink-600 h-2.5 rounded-full" :style="`width: ${uiDailyLimit ? (dailyUsed/uiDailyLimit)*100 : 0}%`"></div>
           </div>
           <p class="text-sm mt-2" x-text="`${dailyRemaining} remaining today`"></p>
         </div>
-        <div class="glass rounded-2xl p-6" x-show="features.api">
-          <h3 class="text-sm text-gray-500 dark:text-gray-400">API Calls Today</h3>
-          <p class="text-3xl font-bold mt-2" x-text="`${apiUsed || 0} / ${apiDailyLimit || 0}`"></p>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-4">
-            <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2.5 rounded-full transition-all" :style="`width: ${apiDailyLimit ? (apiUsed/apiDailyLimit)*100 : 0}%`"></div>
-          </div>
-        </div>
         <div class="glass rounded-2xl p-6">
-          <h3 class="text-sm text-gray-500 dark:text-gray-400">Quick Audit</h3>
-          <input type="url" x-model="quickUrl" placeholder="https://example.com" class="w-full mt-2 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-          <button @click="runQuickAudit()" class="mt-3 w-full py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">Analyze</button>
+          <h3 class="text-sm text-gray-500">Quick Audit</h3>
+          <input type="url" x-model="quickUrl" placeholder="https://example.com" class="w-full mt-2 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50">
+          <button @click="runQuickAudit()" class="mt-3 w-full py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg">Analyze</button>
           <div x-show="quickResult" class="mt-4 text-sm grid grid-cols-3 gap-2">
             <div><span class="text-gray-500">UX</span> <span x-text="quickResult.ux"></span></div>
             <div><span class="text-gray-500">SEO</span> <span x-text="quickResult.seo"></span></div>
@@ -92,112 +70,24 @@
         </div>
       </div>
       <div x-show="tier === 'free'" class="text-center py-8">
-        <button @click="upgrade()" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition">🚀 Upgrade to Pro</button>
+        <button @click="upgrade()" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-2xl shadow-lg">🚀 Upgrade to Pro</button>
       </div>
     </div>
 
-    <!-- Analytics tab -->
-    <div x-show="activeTab === 'analytics'" x-cloak>
-      <div x-show="!features.analytics" class="text-center py-20">
-        <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for Analytics</p>
-        <button @click="upgrade()" class="mt-6 px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl">Upgrade Now</button>
-      </div>
-      <div x-show="features.analytics">
-        <div class="flex flex-wrap gap-4 mb-6">
-          <button @click="fetchAnalytics('28d')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition">Last 28 days</button>
-          <button @click="fetchAnalytics('7d')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition">Last 7 days</button>
-          <span class="text-sm text-gray-500 self-center" x-text="analyticsStatus"></span>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div class="glass rounded-xl p-4 text-center"><p class="text-sm text-gray-500">Clicks</p><p class="text-2xl font-bold" x-text="analytics.clicks || 0"></p></div>
-          <div class="glass rounded-xl p-4 text-center"><p class="text-sm text-gray-500">Impressions</p><p class="text-2xl font-bold" x-text="analytics.impressions || 0"></p></div>
-          <div class="glass rounded-xl p-4 text-center"><p class="text-sm text-gray-500">CTR</p><p class="text-2xl font-bold" x-text="analytics.ctr ? (analytics.ctr*100).toFixed(1)+'%' : '-'"></p></div>
-          <div class="glass rounded-xl p-4 text-center"><p class="text-sm text-gray-500">Avg Position</p><p class="text-2xl font-bold" x-text="analytics.position ? analytics.position.toFixed(1) : '-'"></p></div>
-        </div>
-        <div class="glass rounded-2xl p-6">
-          <canvas id="analyticsChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Integrations tab -->
-    <div x-show="activeTab === 'integrations'" x-cloak>
-      <div x-show="!features.analytics" class="text-center py-20">
-        <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for Integrations</p>
-        <button @click="upgrade()" class="mt-6 px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl">Upgrade Now</button>
-      </div>
-      <div x-show="features.analytics">
-        <div class="glass rounded-2xl p-6 max-w-2xl">
-          <h3 class="text-xl font-bold mb-4">Google Search Console & Analytics</h3>
-          <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-            <span>🔗 Google</span>
-            <span :class="googleConnected ? 'text-green-500' : 'text-red-500'" x-text="googleConnected ? 'Connected' : 'Not connected'"></span>
-            <a :href="googleConnected ? '#' : 'https://traffic-torch-auth.traffictorch.workers.dev/api/auth/google'" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm" x-text="googleConnected ? 'Refresh' : 'Connect'"></a>
-          </div>
-          <div class="mt-6">
-            <label class="block text-sm text-gray-500">Select property</label>
-            <select x-model="selectedProperty" class="w-full mt-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-              <option value="https://traffictorch.net">traffictorch.net</option>
-            </select>
-          </div>
-          <button @click="fetchAnalytics('28d')" class="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Sync Data</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- API Keys tab -->
-    <div x-show="activeTab === 'api-keys'" x-cloak>
-      <div x-show="!features.api" class="text-center py-20">
-        <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for API Access</p>
-        <button @click="upgrade()" class="mt-6 px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl">Upgrade Now</button>
-      </div>
-      <div x-show="features.api">
-        <div class="glass rounded-2xl p-6 max-w-2xl">
-          <h3 class="text-xl font-bold mb-4">Your API Keys</h3>
-          <div class="flex gap-4 mb-6">
-            <input type="text" x-model="newKeyName" placeholder="Key name (e.g., CI Server)" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-            <button @click="generateApiKey()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">Generate</button>
-          </div>
-          <div x-show="generatedKey" class="p-4 bg-green-100 dark:bg-green-900/30 rounded-lg mb-4">
-            <p class="font-mono text-sm break-all" x-text="generatedKey"></p>
-            <p class="text-xs text-gray-500 mt-1">Copy this key – it won't be shown again.</p>
-          </div>
-          <div class="space-y-2">
-            <template x-for="key in apiKeys" :key="key.id">
-              <div class="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
-                <span x-text="key.name"></span>
-                <span class="text-sm text-gray-500" x-text="key.last_used || 'Never used'"></span>
-                <button @click="revokeApiKey(key.id)" class="text-red-500 text-sm hover:underline">Revoke</button>
-              </div>
-            </template>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Settings tab -->
     <div x-show="activeTab === 'settings'" x-cloak>
       <div class="glass rounded-2xl p-6 max-w-2xl">
         <h3 class="text-xl font-bold mb-4">Account Settings</h3>
-        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <span>Email</span>
-          <span x-text="email"></span>
-        </div>
-        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <span>Plan</span>
-          <span x-text="tier.toUpperCase()"></span>
-        </div>
-        <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition">Logout</button>
-        <button @click="deleteAccount()" class="mt-3 w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition">Delete Account</button>
+        <div class="flex justify-between p-4 border-b"><span>Email</span><span x-text="email"></span></div>
+        <div class="flex justify-between p-4 border-b"><span>Plan</span><span x-text="tier.toUpperCase()"></span></div>
+        <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 text-white rounded-lg">Logout</button>
       </div>
     </div>
   </div>
-
-  <footer class="text-center text-sm text-gray-500 mt-16">Traffic Torch v3.0 – Powered by Supabase</footer>
+  <footer class="text-center text-sm text-gray-500 mt-16">Traffic Torch v3.0</footer>
 </div>
 
 <script>
-const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+const API_BASE = 'https://traffic-torch-auth.workers.dev';
 
 function app() {
   return {
@@ -205,74 +95,34 @@ function app() {
     email: '',
     loading: false,
     tier: 'free',
-    features: { analytics: false, export: false, api: false },
     uiDailyLimit: 3,
-    apiDailyLimit: 0,
     dailyUsed: 0,
     dailyRemaining: 3,
-    apiUsed: 0,
     activeTab: 'dashboard',
     quickUrl: '',
     quickResult: { ux: 0, seo: 0, ai: 0 },
-    analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
-    analyticsStatus: '',
-    googleConnected: false,
-    selectedProperty: 'https://traffictorch.net',
-    apiKeys: [],
-    newKeyName: '',
-    generatedKey: null,
-    recentAudits: [],
     theme: localStorage.getItem('theme') || 'light',
-    _chart: null,
 
-    get tabs() {
-      return [
-        { id: 'dashboard', label: '📊 Dashboard', show: true },
-        { id: 'analytics', label: '📈 Analytics', show: true },
-        { id: 'integrations', label: '🔗 Integrations', show: true },
-        { id: 'api-keys', label: '🔑 API Keys', show: this.features.api },
-        { id: 'settings', label: '⚙️ Settings', show: true }
-      ];
-    },
+    get tabs() { return [{ id: 'dashboard', label: '📊 Dashboard' }, { id: 'settings', label: '⚙️ Settings' }]; },
 
-    init() {
-      this.applyTheme();
-      if (this.token) {
-        this.loadAccountInfo();
-        this.loadAudits();
-        this.loadApiKeys();
-      }
-    },
+    init() { this.applyTheme(); if (this.token) this.loadAccountInfo(); },
 
-    applyTheme() {
-      if (this.theme === 'dark') document.documentElement.classList.add('dark');
-      else document.documentElement.classList.remove('dark');
-    },
-    toggleTheme() {
-      this.theme = this.theme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('theme', this.theme);
-      this.applyTheme();
-    },
+    applyTheme() { document.documentElement.classList.toggle('dark', this.theme === 'dark'); },
+    toggleTheme() { this.theme = this.theme === 'dark' ? 'light' : 'dark'; localStorage.setItem('theme', this.theme); this.applyTheme(); },
 
     async loadAccountInfo() {
       try {
         const res = await fetch(`${API_BASE}/api/account-info`, {
           headers: { 'Authorization': `Bearer ${this.token}` }
         });
-        if (!res.ok) throw new Error('Failed to load account');
+        if (!res.ok) throw new Error();
         const data = await res.json();
-        this.tier = data.tier || 'free';
-        this.email = data.email || '';
-        this.features = data.features || { analytics: false, export: false, api: false };
-        this.uiDailyLimit = data.uiDailyLimit || 3;
-        this.apiDailyLimit = data.apiDailyLimit || 0;
-        this.dailyUsed = data.dailyUsed || 0;
-        this.dailyRemaining = data.dailyRemaining || 0;
-      } catch (e) {
-        console.error(e);
-        this.token = null;
-        localStorage.removeItem('authToken');
-      }
+        this.tier = data.tier;
+        this.email = data.email;
+        this.uiDailyLimit = data.uiDailyLimit;
+        this.dailyUsed = data.dailyUsed;
+        this.dailyRemaining = data.dailyRemaining;
+      } catch { this.token = null; localStorage.removeItem('authToken'); }
     },
 
     async sendMagicLink() {
@@ -284,125 +134,19 @@ function app() {
           body: JSON.stringify({ email: this.email })
         });
         const data = await res.json();
-        if (res.ok) alert(data.message || 'Check your email for the link.');
-        else alert(data.error || 'Failed to send link.');
-      } catch (e) {
-        alert('Error sending link. Try again.');
-      } finally {
-        this.loading = false;
-      }
+        alert(res.ok ? data.message : data.error);
+      } catch { alert('Error sending link.'); }
+      this.loading = false;
     },
 
-    async logout() {
-      localStorage.removeItem('authToken');
-      this.token = null;
-      window.location.reload();
-    },
+    logout() { localStorage.removeItem('authToken'); this.token = null; window.location.reload(); },
 
-    async loadAudits() {
-      try {
-        const res = await fetch(`${API_BASE}/api/audit-history?limit=10`, {
-          headers: { 'Authorization': `Bearer ${this.token}` }
-        });
-        if (res.ok) this.recentAudits = await res.json();
-      } catch (e) {}
-    },
-
-    async runQuickAudit() {
+    runQuickAudit() {
       if (!this.quickUrl) return;
-      this.quickResult = { ux: Math.round(60 + Math.random()*30), seo: Math.round(60 + Math.random()*30), ai: Math.round(60 + Math.random()*30) };
+      this.quickResult = { ux: Math.round(60+Math.random()*30), seo: Math.round(60+Math.random()*30), ai: Math.round(60+Math.random()*30) };
     },
 
-    async fetchAnalytics(range) {
-      if (!this.features.analytics) return;
-      this.analyticsStatus = 'Loading...';
-      try {
-        const res = await fetch(`${API_BASE}/api/analytics?site=${encodeURIComponent(this.selectedProperty)}&days=${range === '7d' ? 7 : 28}`, {
-          headers: { 'Authorization': `Bearer ${this.token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          this.analytics = data;
-          this.analyticsStatus = 'Updated';
-          this.renderChart(data);
-        } else {
-          this.analyticsStatus = 'Error fetching data.';
-        }
-      } catch (e) {
-        this.analyticsStatus = 'Network error.';
-      }
-    },
-
-    renderChart(data) {
-      const ctx = document.getElementById('analyticsChart')?.getContext('2d');
-      if (!ctx) return;
-      if (this._chart) this._chart.destroy();
-      this._chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: data.daily?.map(d => d.date) || [],
-          datasets: [
-            { label: 'Clicks', data: data.daily?.map(d => d.clicks) || [], borderColor: '#f97316', tension: 0.2 },
-            { label: 'Impressions', data: data.daily?.map(d => d.impressions) || [], borderColor: '#8b5cf6', tension: 0.2 }
-          ]
-        },
-        options: { responsive: true, plugins: { legend: { position: 'top' } } }
-      });
-    },
-
-    async loadApiKeys() {
-      if (!this.features.api) return;
-      try {
-        const res = await fetch(`${API_BASE}/api/keys`, {
-          headers: { 'Authorization': `Bearer ${this.token}` }
-        });
-        if (res.ok) this.apiKeys = await res.json();
-      } catch (e) {}
-    },
-
-    async generateApiKey() {
-      if (!this.newKeyName) return alert('Enter a key name');
-      try {
-        const res = await fetch(`${API_BASE}/api/keys`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${this.token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: this.newKeyName })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          this.generatedKey = data.key;
-          this.newKeyName = '';
-          await this.loadApiKeys();
-        } else alert('Failed to generate key.');
-      } catch (e) { alert('Network error.'); }
-    },
-
-    async revokeApiKey(id) {
-      if (!confirm('Revoke this key?')) return;
-      try {
-        await fetch(`${API_BASE}/api/keys/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${this.token}` }
-        });
-        await this.loadApiKeys();
-      } catch (e) {}
-    },
-
-    upgrade() {
-      alert('Upgrade flow coming soon. For now, you can go to /pro/upgrade manually.');
-    },
-
-    deleteAccount() {
-      if (confirm('Permanently delete your account? This cannot be undone.')) {
-        fetch(`${API_BASE}/api/delete-account`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${this.token}` }
-        }).then(() => {
-          localStorage.removeItem('authToken');
-          window.location.reload();
-        });
-      }
-    }
+    upgrade() { alert('Coming soon.'); }
   };
 }
 </script>
