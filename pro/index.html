@@ -18,21 +18,18 @@
 
 <div x-data="app()" x-init="init()" class="max-w-7xl mx-auto px-4 py-8">
 
-  <!-- ========================================================== -->
-  <!-- LOGIN SECTION (shown when no token) -->
-  <!-- ========================================================== -->
+  <!-- LOGIN SECTION -->
   <div x-show="!token" class="max-w-md mx-auto">
     <div class="glass rounded-3xl p-8 shadow-2xl">
       <h2 class="text-2xl font-bold mb-6 text-center">Welcome Back</h2>
 
-      <!-- MAGIC LINK FORM (default) -->
+      <!-- MAGIC LINK -->
       <div x-show="!showPasswordLogin">
         <form @submit.prevent="sendMagicLink()" class="space-y-4">
           <input type="email" x-model="email" placeholder="Your email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-          <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition" :disabled="loading">
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90" :disabled="loading">
             <span x-text="loading ? 'Sending...' : 'Send Magic Link'"></span>
           </button>
-          <p class="text-sm text-center text-gray-500">We'll email you a link to log in instantly.</p>
           <p class="text-sm text-center text-gray-400">
             <a href="#" @click.prevent="showPasswordLogin = true" class="underline hover:text-orange-500">Login with password instead</a>
           </p>
@@ -44,8 +41,8 @@
         <div class="space-y-4">
           <input type="email" x-model="email" placeholder="Email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
           <input type="password" x-model="password" placeholder="Password (min 8 chars)" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-          <button @click="login()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">Login</button>
-          <button @click="register()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition">Register</button>
+          <button @click="login()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">Login</button>
+          <button @click="register()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl">Register</button>
           <p class="text-sm text-center text-gray-400">
             <a href="#" @click.prevent="showPasswordLogin = false" class="underline hover:text-orange-500">← Back to magic link</a>
           </p>
@@ -54,16 +51,11 @@
     </div>
   </div>
 
-  <!-- ========================================================== -->
-  <!-- DASHBOARD SECTION (shown when token exists) -->
-  <!-- ========================================================== -->
+  <!-- DASHBOARD -->
   <div x-show="token" x-cloak>
-
     <!-- Header -->
     <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
-      <h1 class="text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        🚀 Traffic Torch Dashboard
-      </h1>
+      <h1 class="text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">🚀 Traffic Torch Dashboard</h1>
       <div class="flex items-center gap-4">
         <span class="px-4 py-2 rounded-full text-sm font-semibold" :class="tier === 'free' ? 'bg-gray-200 dark:bg-gray-700' : 'bg-green-500/20 text-green-600 dark:text-green-400'">
           <span x-text="tier.toUpperCase()"></span>
@@ -90,19 +82,17 @@
       </template>
     </div>
 
-    <!-- Dashboard tab content -->
+    <!-- Dashboard tab -->
     <div x-show="activeTab === 'dashboard'" x-cloak>
       <div class="grid md:grid-cols-3 gap-6 mb-8">
-        <!-- Usage Card -->
         <div class="glass rounded-2xl p-6">
-          <h3 class="text-sm text-gray-500 dark:text-gray-400">Daily Audits Used</h3>
+          <h3 class="text-sm text-gray-500 dark:text-gray-400">Daily Audits</h3>
           <p class="text-3xl font-bold mt-2" x-text="`${dailyUsed} / ${uiDailyLimit}`"></p>
           <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-4">
             <div class="bg-gradient-to-r from-orange-500 to-pink-600 h-2.5 rounded-full transition-all" :style="`width: ${(dailyUsed/uiDailyLimit)*100}%`"></div>
           </div>
           <p class="text-sm mt-2" x-text="`${dailyRemaining} remaining today`"></p>
         </div>
-        <!-- API Usage -->
         <div class="glass rounded-2xl p-6" x-show="features.api">
           <h3 class="text-sm text-gray-500 dark:text-gray-400">API Calls Today</h3>
           <p class="text-3xl font-bold mt-2" x-text="`${apiUsed || 0} / ${apiDailyLimit || 0}`"></p>
@@ -110,7 +100,6 @@
             <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-2.5 rounded-full transition-all" :style="`width: ${apiDailyLimit ? (apiUsed/apiDailyLimit)*100 : 0}%`"></div>
           </div>
         </div>
-        <!-- Quick Audit -->
         <div class="glass rounded-2xl p-6">
           <h3 class="text-sm text-gray-500 dark:text-gray-400">Quick Audit</h3>
           <input type="url" x-model="quickUrl" placeholder="https://example.com" class="w-full mt-2 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
@@ -122,7 +111,6 @@
           </div>
         </div>
       </div>
-      <!-- Recent audits -->
       <h3 class="text-lg font-bold mb-4">Recent Audits</h3>
       <div class="glass rounded-2xl overflow-hidden">
         <table class="w-full text-left">
@@ -144,18 +132,90 @@
       </div>
     </div>
 
-    <!-- Other tabs (analytics, integrations, api-keys, settings) – keep as before -->
-    <!-- I've truncated for brevity, but include them in the final file -->
-    <div x-show="activeTab === 'analytics'" x-cloak>...</div>
-    <div x-show="activeTab === 'integrations'" x-cloak>...</div>
-    <div x-show="activeTab === 'api-keys'" x-cloak>...</div>
-    <div x-show="activeTab === 'settings'" x-cloak>...</div>
+    <!-- Analytics tab -->
+    <div x-show="activeTab === 'analytics'" x-cloak>
+      <div x-show="!features.analytics" class="text-center py-20">
+        <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for Analytics</p>
+        <a href="/pro/" class="mt-6 inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl">Upgrade Now</a>
+      </div>
+      <div x-show="features.analytics">
+        <p>Analytics data will appear here once you connect your Google account.</p>
+      </div>
+    </div>
+
+    <!-- Integrations tab -->
+    <div x-show="activeTab === 'integrations'" x-cloak>
+      <div x-show="!features.analytics" class="text-center py-20">
+        <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for Integrations</p>
+        <a href="/pro/" class="mt-6 inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl">Upgrade Now</a>
+      </div>
+      <div x-show="features.analytics">
+        <div class="glass rounded-2xl p-6 max-w-2xl">
+          <h3 class="text-xl font-bold mb-4">Google Search Console</h3>
+          <button class="px-4 py-2 bg-blue-600 text-white rounded-lg">Connect Google</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- API Keys tab -->
+    <div x-show="activeTab === 'api-keys'" x-cloak>
+      <div x-show="!features.api" class="text-center py-20">
+        <p class="text-3xl font-bold text-gray-400">🔒 Upgrade to Pro for API Access</p>
+        <a href="/pro/" class="mt-6 inline-block px-8 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl">Upgrade Now</a>
+      </div>
+      <div x-show="features.api">
+        <div class="glass rounded-2xl p-6 max-w-2xl">
+          <h3 class="text-xl font-bold mb-4">Your API Keys</h3>
+          <div class="flex gap-4 mb-6">
+            <input type="text" x-model="newKeyName" placeholder="Key name" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+            <button @click="generateApiKey()" class="px-6 py-2 bg-blue-600 text-white rounded-lg">Generate</button>
+          </div>
+          <div x-show="generatedKey" class="p-4 bg-green-100 dark:bg-green-900/30 rounded-lg mb-4">
+            <p class="font-mono text-sm break-all" x-text="generatedKey"></p>
+            <p class="text-xs text-gray-500">Copy this key – it won't be shown again.</p>
+          </div>
+          <div class="space-y-2">
+            <template x-for="key in apiKeys" :key="key.id">
+              <div class="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
+                <span x-text="key.name"></span>
+                <span class="text-sm text-gray-500" x-text="key.last_used || 'Never used'"></span>
+                <button @click="revokeApiKey(key.id)" class="text-red-500 text-sm">Revoke</button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings tab -->
+    <div x-show="activeTab === 'settings'" x-cloak>
+      <div class="glass rounded-2xl p-6 max-w-2xl">
+        <h3 class="text-xl font-bold mb-4">Account Settings</h3>
+        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <span>Email</span>
+          <span x-text="email"></span>
+        </div>
+        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <span>Plan</span>
+          <span x-text="tier.toUpperCase()"></span>
+        </div>
+        <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
+        <button @click="deleteAccount()" class="mt-3 w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10">Delete Account</button>
+      </div>
+    </div>
 
     <p class="text-center text-sm text-gray-500 mt-12">Traffic Torch v2.0 – Privacy-first</p>
   </div>
 </div>
 
 <script>
+// ============================================================
+// Set this to your Worker URL (or leave empty for relative)
+// For local testing: use the workers.dev URL
+// For production: leave as '' (empty) to use same domain
+// ============================================================
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
 function app() {
   return {
     token: localStorage.getItem('authToken'),
@@ -164,7 +224,6 @@ function app() {
     loading: false,
     showPasswordLogin: false,
     tier: 'free',
-    email: '',
     features: { analytics: false, export: false, api: false },
     uiDailyLimit: 3,
     apiDailyLimit: 0,
@@ -173,7 +232,7 @@ function app() {
     apiUsed: 0,
     activeTab: 'dashboard',
     quickUrl: '',
-    quickResult: null,
+    quickResult: { ux: 0, seo: 0, ai: 0 },
     recentAudits: [],
     analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
     analyticsStatus: '',
@@ -196,20 +255,17 @@ function app() {
     },
 
     async init() {
-      // If token exists, load dashboard data
       if (this.token) {
         await this.loadAccountInfo();
         await this.loadRecentAudits();
         if (this.features.api) await this.loadApiKeys();
       }
-      // If no token, show login form (default)
     },
 
-    // ---------- MAGIC LINK ----------
     async sendMagicLink() {
       this.loading = true;
       try {
-        const res = await fetch('https://traffictorch.net/api/auth/magic-link', {
+        const res = await fetch(API_BASE + '/api/auth/magic-link', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.email })
@@ -217,30 +273,50 @@ function app() {
         const data = await res.json();
         alert(res.ok ? data.message : data.error);
       } catch (e) {
-        alert('Error sending link. Try again.');
+        alert('Error sending link.');
       } finally {
         this.loading = false;
       }
     },
 
-    // ---------- PASSWORD LOGIN ----------
     async login() {
-      // Call your /api/login endpoint (you'll need to add it to Worker)
-      // For now, placeholder alert
-      alert('Login endpoint not yet implemented. Use magic link for now.');
+      const res = await fetch(API_BASE + '/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: this.email, password: this.password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem('authToken', data.token);
+        this.token = data.token;
+        await this.loadAccountInfo();
+        this.errorMessage = '';
+      } else {
+        this.errorMessage = data.error || 'Login failed';
+      }
     },
 
-    // ---------- PASSWORD REGISTER ----------
     async register() {
-      // Call your /api/register endpoint
-      alert('Register endpoint not yet implemented. Use magic link for now.');
+      const res = await fetch(API_BASE + '/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: this.email, password: this.password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem('authToken', data.token);
+        this.token = data.token;
+        await this.loadAccountInfo();
+        this.errorMessage = '';
+      } else {
+        this.errorMessage = data.error || 'Registration failed';
+      }
     },
 
-    // ---------- DASHBOARD METHODS ----------
     async loadAccountInfo() {
       const token = localStorage.getItem('authToken');
       try {
-        const res = await fetch('https://traffictorch.net/api/account-info', {
+        const res = await fetch(API_BASE + '/api/account-info', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (!res.ok) throw new Error('Failed to load account');
@@ -253,15 +329,14 @@ function app() {
         this.dailyUsed = data.dailyUsed || 0;
         this.dailyRemaining = data.dailyRemaining || 0;
       } catch (err) {
-        console.error(err);
-        this.errorMessage = err.message || 'Unable to load account.';
+        this.errorMessage = err.message;
       }
     },
 
     async loadRecentAudits() {
       const token = localStorage.getItem('authToken');
       try {
-        const res = await fetch('https://traffictorch.net/api/audit-history?limit=10', {
+        const res = await fetch(API_BASE + '/api/audit-history?limit=10', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) this.recentAudits = await res.json();
@@ -270,15 +345,51 @@ function app() {
 
     async runQuickAudit() {
       if (!this.quickUrl) return;
-      // Mock or call real endpoint
+      // For now, mock; later you can call /api/audit
       this.quickResult = { ux: 78, seo: 65, ai: 92 };
     },
 
-    async fetchAnalytics(range) { /* ... */ },
-    renderChart(data) { /* ... */ },
-    async loadApiKeys() { /* ... */ },
-    async generateApiKey() { /* ... */ },
-    async revokeApiKey(id) { /* ... */ },
+    async loadApiKeys() {
+      const token = localStorage.getItem('authToken');
+      try {
+        const res = await fetch(API_BASE + '/api/keys', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) this.apiKeys = await res.json();
+      } catch (e) { /* ignore */ }
+    },
+
+    async generateApiKey() {
+      if (!this.newKeyName) return alert('Enter a key name');
+      const token = localStorage.getItem('authToken');
+      try {
+        const res = await fetch(API_BASE + '/api/keys', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: this.newKeyName })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.generatedKey = data.key;
+          this.newKeyName = '';
+          await this.loadApiKeys();
+        } else {
+          alert('Failed to generate key');
+        }
+      } catch (e) { alert('Network error'); }
+    },
+
+    async revokeApiKey(id) {
+      if (!confirm('Revoke this key?')) return;
+      const token = localStorage.getItem('authToken');
+      try {
+        await fetch(API_BASE + `/api/keys/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        await this.loadApiKeys();
+      } catch (e) { alert('Failed to revoke'); }
+    },
 
     logout() {
       localStorage.removeItem('authToken');
@@ -288,7 +399,7 @@ function app() {
 
     deleteAccount() {
       if (confirm('Permanently delete your account?')) {
-        alert('Account deletion not yet implemented.');
+        alert('Account deletion not yet implemented in frontend.');
       }
     }
   };
