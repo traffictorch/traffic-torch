@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Traffic Torch – Sign in</title>
+  <title>Traffic Torch – Auth</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -13,95 +13,116 @@
   </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 min-h-screen flex items-center justify-center p-4">
+
 <div x-data="authApp()" x-init="init()" class="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8">
 
-  <!-- Tabs: Magic Link, Login, Register -->
-  <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6 text-sm font-medium text-center">
-    <button @click="activeTab='magic'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='magic'?'tab-active':'text-gray-500 hover:text-gray-700'">Magic Link</button>
-    <button @click="activeTab='login'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='login'?'tab-active':'text-gray-500 hover:text-gray-700'">Login</button>
-    <button @click="activeTab='register'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='register'?'tab-active':'text-gray-500 hover:text-gray-700'">Register</button>
-  </div>
+  <!-- ✅ AUTH FORMS – hidden when authenticated -->
+  <div x-show="!isAuthenticated">
 
-  <!-- Global Message -->
-  <div x-show="message" x-transition.duration.300ms class="mb-4 p-3 rounded-lg text-sm" :class="messageType==='success'?'bg-green-100 dark:bg-green-900/30 text-green-700':'bg-red-100 dark:bg-red-900/30 text-red-700'" x-text="message"></div>
+    <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6 text-sm font-medium text-center">
+      <button @click="activeTab='magic'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='magic'?'tab-active':'text-gray-500 hover:text-gray-700'">Magic Link</button>
+      <button @click="activeTab='login'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='login'?'tab-active':'text-gray-500 hover:text-gray-700'">Login</button>
+      <button @click="activeTab='register'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='register'?'tab-active':'text-gray-500 hover:text-gray-700'">Register</button>
+    </div>
 
-  <!-- ======= MAGIC LINK ======= -->
-  <div x-show="activeTab==='magic'" x-cloak>
-    <form @submit.prevent="sendMagicLink()" class="space-y-4">
-      <p class="text-sm text-gray-600 dark:text-gray-400">Enter your email – we'll send a secure login link.</p>
-      <input type="email" x-model="magicEmail" placeholder="Your email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
-      <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90" :disabled="loading">
-        <span x-text="loading ? 'Sending...' : 'Send Magic Link'"></span>
-      </button>
-    </form>
-  </div>
+    <div x-show="message" x-transition.duration.300ms class="mb-4 p-3 rounded-lg text-sm" :class="messageType==='success'?'bg-green-100 dark:bg-green-900/30 text-green-700':'bg-red-100 dark:bg-red-900/30 text-red-700'" x-text="message"></div>
 
-  <!-- ======= LOGIN ======= -->
-  <div x-show="activeTab==='login'" x-cloak>
-    <form @submit.prevent="login()" class="space-y-4">
-      <input type="email" x-model="loginEmail" placeholder="Email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
-      <div class="relative">
-        <input :type="loginPasswordVisible ? 'text' : 'password'" x-model="loginPassword" placeholder="Password" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
-        <button type="button" @click="loginPasswordVisible = !loginPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
-          <i :class="loginPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+    <!-- Magic Link -->
+    <div x-show="activeTab==='magic'" x-cloak>
+      <form @submit.prevent="sendMagicLink()" class="space-y-4">
+        <p class="text-sm text-gray-600 dark:text-gray-400">Enter your email – we'll send a secure login link.</p>
+        <input type="email" x-model="magicEmail" placeholder="Your email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
+        <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90" :disabled="loading">
+          <span x-text="loading ? 'Sending...' : 'Send Magic Link'"></span>
         </button>
-      </div>
-      <div class="text-right">
-        <a href="#" @click.prevent="showForgot = !showForgot" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
-      </div>
-      <!-- Forgot password toggle -->
-      <div x-show="showForgot" x-cloak class="mt-2 p-3 border border-gray-200 rounded-lg">
-        <p class="text-sm text-gray-600">Enter your email to receive a reset link.</p>
-        <div class="flex gap-2 mt-2">
-          <input type="email" x-model="resetEmail" placeholder="Your email" class="flex-1 p-2 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500">
-          <button @click="sendResetLink()" class="px-4 py-2 bg-purple-600 text-white rounded-lg" :disabled="loading">Send</button>
+      </form>
+    </div>
+
+    <!-- Login -->
+    <div x-show="activeTab==='login'" x-cloak>
+      <form @submit.prevent="login()" class="space-y-4">
+        <input type="email" x-model="loginEmail" placeholder="Email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
+        <div class="relative">
+          <input :type="loginPasswordVisible ? 'text' : 'password'" x-model="loginPassword" placeholder="Password" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+          <button type="button" @click="loginPasswordVisible = !loginPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+            <i :class="loginPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
         </div>
-      </div>
-      <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">Login</button>
-    </form>
+        <div class="text-right">
+          <a href="#" @click.prevent="showForgot = !showForgot" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
+        </div>
+        <div x-show="showForgot" x-cloak class="mt-2 p-3 border border-gray-200 rounded-lg">
+          <p class="text-sm text-gray-600">Enter your email to receive a reset link.</p>
+          <div class="flex gap-2 mt-2">
+            <input type="email" x-model="resetEmail" placeholder="Your email" class="flex-1 p-2 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500">
+            <button @click="sendResetLink()" class="px-4 py-2 bg-purple-600 text-white rounded-lg" :disabled="loading">Send</button>
+          </div>
+        </div>
+        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">Login</button>
+      </form>
+    </div>
+
+    <!-- Register -->
+    <div x-show="activeTab==='register'" x-cloak>
+      <form @submit.prevent="register()" class="space-y-4">
+        <input type="email" x-model="registerEmail" placeholder="Email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
+        <div class="relative">
+          <input :type="registerPasswordVisible ? 'text' : 'password'" x-model="registerPassword" placeholder="Password (min 8 chars)" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+          <button type="button" @click="registerPasswordVisible = !registerPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+            <i :class="registerPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+        <div class="relative">
+          <input :type="registerConfirmVisible ? 'text' : 'password'" x-model="registerConfirm" placeholder="Confirm Password" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+          <button type="button" @click="registerConfirmVisible = !registerConfirmVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+            <i :class="registerConfirmVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+        <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl">Register</button>
+      </form>
+    </div>
+
+    <!-- Reset form (shows when ?reset_token=xxx) -->
+    <div x-show="resetToken" x-cloak class="mt-4 p-4 border border-blue-300 rounded-lg">
+      <h3 class="font-bold text-lg">Set new password</h3>
+      <form @submit.prevent="resetPassword()" class="space-y-3 mt-3">
+        <div class="relative">
+          <input :type="resetPasswordVisible ? 'text' : 'password'" x-model="resetNewPassword" placeholder="New password (min 8 chars)" required class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+          <button type="button" @click="resetPasswordVisible = !resetPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+            <i :class="resetPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+        <div class="relative">
+          <input :type="resetConfirmVisible ? 'text' : 'password'" x-model="resetConfirmPassword" placeholder="Confirm new password" required class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+          <button type="button" @click="resetConfirmVisible = !resetConfirmVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+            <i :class="resetConfirmVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+        </div>
+        <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg">Reset Password</button>
+      </form>
+    </div>
+
+    <p class="text-center text-xs text-gray-500 mt-6">Traffic Torch Auth</p>
   </div>
 
-  <!-- ======= REGISTER ======= -->
-  <div x-show="activeTab==='register'" x-cloak>
-    <form @submit.prevent="register()" class="space-y-4">
-      <input type="email" x-model="registerEmail" placeholder="Email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
-      <div class="relative">
-        <input :type="registerPasswordVisible ? 'text' : 'password'" x-model="registerPassword" placeholder="Password (min 8 chars)" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
-        <button type="button" @click="registerPasswordVisible = !registerPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
-          <i :class="registerPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-        </button>
+  <!-- ✅ DASHBOARD – shown when authenticated -->
+  <div x-show="isAuthenticated" x-cloak>
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold">Dashboard</h2>
+      <button @click="logout()" class="text-sm text-red-500 hover:underline">Logout</button>
+    </div>
+    <div class="space-y-2 text-sm">
+      <p><strong>Email:</strong> <span x-text="user.email"></span></p>
+      <p><strong>Plan:</strong> <span x-text="user.isPro ? 'Pro' : 'Free'"></span></p>
+      <p><strong>Daily usage:</strong> <span x-text="user.dailyUsed + '/' + user.dailyLimit"></span></p>
+      <p><strong>Remaining today:</strong> <span x-text="user.dailyRemaining"></span></p>
+      <div class="mt-4 flex gap-2">
+        <button @click="upgrade()" class="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm">Upgrade</button>
+        <button @click="manageSubscription()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Manage</button>
       </div>
-      <div class="relative">
-        <input :type="registerConfirmVisible ? 'text' : 'password'" x-model="registerConfirm" placeholder="Confirm Password" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
-        <button type="button" @click="registerConfirmVisible = !registerConfirmVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
-          <i :class="registerConfirmVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-        </button>
-      </div>
-      <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl">Register</button>
-    </form>
+    </div>
   </div>
 
-  <!-- Reset token form (when URL has ?reset_token=xxx) -->
-  <div x-show="resetToken" x-cloak class="mt-4 p-4 border border-blue-300 rounded-lg">
-    <h3 class="font-bold text-lg">Set new password</h3>
-    <form @submit.prevent="resetPassword()" class="space-y-3 mt-3">
-      <div class="relative">
-        <input :type="resetPasswordVisible ? 'text' : 'password'" x-model="resetNewPassword" placeholder="New password (min 8 chars)" required class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
-        <button type="button" @click="resetPasswordVisible = !resetPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
-          <i :class="resetPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-        </button>
-      </div>
-      <div class="relative">
-        <input :type="resetConfirmVisible ? 'text' : 'password'" x-model="resetConfirmPassword" placeholder="Confirm new password" required class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
-        <button type="button" @click="resetConfirmVisible = !resetConfirmVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
-          <i :class="resetConfirmVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-        </button>
-      </div>
-      <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg">Reset Password</button>
-    </form>
-  </div>
-
-  <p class="text-center text-xs text-gray-500 mt-6">Traffic Torch Auth</p>
 </div>
 
 <script>
@@ -109,6 +130,11 @@ const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
 function authApp() {
   return {
+    // ---- Auth state ----
+    isAuthenticated: false,
+    user: { email: '', isPro: false, dailyUsed: 0, dailyLimit: 3, dailyRemaining: 3 },
+
+    // ---- Form fields ----
     activeTab: 'magic',
     loading: false,
     message: '',
@@ -130,19 +156,57 @@ function authApp() {
     resetConfirmPassword: '',
     resetConfirmVisible: false,
 
+    // ---- Init ----
     init() {
+      // Handle reset token in URL
       if (this.resetToken) {
         this.activeTab = 'login';
         this.showForgot = false;
       }
-      // Handle magic token from URL (after magic link verification)
+
+      // Handle magic token in URL
       const magicToken = new URLSearchParams(window.location.search).get('magic_token');
       if (magicToken) {
         localStorage.setItem('authToken', magicToken);
-        window.location.href = '/dashboard'; // or your dashboard page
+        // Remove token from URL and reload cleanly
+        window.history.replaceState({}, '', '/pro');
+        // Now try to authenticate with this token
+        this.fetchAccountInfo();
+        return;
+      }
+
+      // Check if we already have a token in localStorage
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        this.fetchAccountInfo();
       }
     },
 
+    // ---- Fetch account info using stored token ----
+    async fetchAccountInfo() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.user = data;
+          this.isAuthenticated = true;
+        } else {
+          // Token invalid – clear it
+          localStorage.removeItem('authToken');
+          this.isAuthenticated = false;
+        }
+      } catch {
+        localStorage.removeItem('authToken');
+        this.isAuthenticated = false;
+      }
+    },
+
+    // ---- Helper: set message ----
     setMessage(msg, type = 'error') {
       this.message = msg;
       this.messageType = type;
@@ -150,6 +214,7 @@ function authApp() {
       this.msgTimeout = setTimeout(() => (this.message = ''), 5000);
     },
 
+    // ---- Magic Link ----
     async sendMagicLink() {
       this.loading = true;
       try {
@@ -170,6 +235,7 @@ function authApp() {
       this.loading = false;
     },
 
+    // ---- Login ----
     async login() {
       this.loading = true;
       try {
@@ -181,7 +247,11 @@ function authApp() {
         const data = await res.json();
         if (res.ok) {
           localStorage.setItem('authToken', data.token);
-          window.location.href = '/dashboard';
+          // Fetch account info and show dashboard without reload
+          await this.fetchAccountInfo();
+          if (!this.isAuthenticated) {
+            this.setMessage('Login succeeded but failed to load account', 'error');
+          }
         } else {
           this.setMessage(data.error || 'Login failed');
         }
@@ -191,6 +261,7 @@ function authApp() {
       this.loading = false;
     },
 
+    // ---- Register ----
     async register() {
       if (this.registerPassword !== this.registerConfirm) {
         this.setMessage('Passwords do not match');
@@ -214,7 +285,10 @@ function authApp() {
         const data = await res.json();
         if (res.ok) {
           localStorage.setItem('authToken', data.token);
-          window.location.href = '/dashboard';
+          await this.fetchAccountInfo();
+          if (!this.isAuthenticated) {
+            this.setMessage('Registration succeeded but failed to load account', 'error');
+          }
         } else {
           this.setMessage(data.error || 'Registration failed');
         }
@@ -224,6 +298,7 @@ function authApp() {
       this.loading = false;
     },
 
+    // ---- Forgot Password ----
     async sendResetLink() {
       if (!this.resetEmail) {
         this.setMessage('Please enter your email.');
@@ -250,6 +325,7 @@ function authApp() {
       this.loading = false;
     },
 
+    // ---- Reset Password ----
     async resetPassword() {
       if (this.resetNewPassword !== this.resetConfirmPassword) {
         this.setMessage('Passwords do not match');
@@ -276,7 +352,7 @@ function authApp() {
           this.resetNewPassword = '';
           this.resetConfirmPassword = '';
           this.activeTab = 'login';
-          window.history.pushState({}, '', '/');
+          window.history.replaceState({}, '', '/pro');
         } else {
           this.setMessage(data.error || 'Reset failed');
         }
@@ -284,9 +360,60 @@ function authApp() {
         this.setMessage('Network error');
       }
       this.loading = false;
+    },
+
+    // ---- Upgrade (calls /api/upgrade) ----
+    async upgrade() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+      try {
+        const res = await fetch(API_BASE + '/api/upgrade', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (res.ok && data.clientSecret) {
+          // For embedded checkout, you'd handle the clientSecret here.
+          // For simplicity, we show a message.
+          this.setMessage('Upgrade initiated. Check your email for payment link.', 'success');
+        } else {
+          this.setMessage(data.error || 'Upgrade failed');
+        }
+      } catch {
+        this.setMessage('Network error');
+      }
+    },
+
+    // ---- Manage Subscription (calls /api/portal) ----
+    async manageSubscription() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+      try {
+        const res = await fetch(API_BASE + '/api/portal', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          window.location.href = data.url;
+        } else {
+          this.setMessage(data.error || 'No active subscription');
+        }
+      } catch {
+        this.setMessage('Network error');
+      }
+    },
+
+    // ---- Logout ----
+    logout() {
+      localStorage.removeItem('authToken');
+      this.isAuthenticated = false;
+      this.user = { email: '', isPro: false, dailyUsed: 0, dailyLimit: 3, dailyRemaining: 3 };
+      // Optionally reload to reset form state
+      window.location.href = '/pro';
     }
   };
 }
 </script>
+
 </body>
 </html>
