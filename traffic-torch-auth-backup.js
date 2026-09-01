@@ -5,8 +5,6 @@
 //      STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_ID
 // D1 binding: MY_BINDING
 
-import bcrypt from 'bcryptjs';
-
 function corsResponse(body, status = 200, headers = {}) {
   const h = new Headers(headers);
   h.set('Access-Control-Allow-Origin', '*');
@@ -58,9 +56,6 @@ async function hashPassword(password) {
 }
 
 async function comparePassword(password, storedHash) {
-  if (storedHash.startsWith('$2b$')) {
-    return bcrypt.compareSync(password, storedHash);
-  }
   try {
     const parts = storedHash.split('$');
     if (parts.length < 4) return false;
@@ -323,7 +318,7 @@ export default {
         ).bind(decoded.id).first();
         if (!user) return corsResponse(JSON.stringify({ error: 'User not found' }), 404);
         const isPro = user.subscription_status === 'pro';
-        const limit = isPro ? 25 : 3;
+        const limit = isPro ? 25 : 50;
         const today = new Date().toISOString().split('T')[0];
         const log = await env.MY_BINDING.prepare(
           'SELECT MAX(run_count) as run_count FROM usage_logs WHERE identifier = ? AND tool_run_date = ?'
@@ -467,6 +462,34 @@ export default {
         });
         return corsResponse(JSON.stringify({ url: session.url }));
       }
+
+      // ---- Refresh Token ----
+if (url.pathname === '/api/refresh-token' && method === 'POST') {
+  const auth = request.headers.get('Authorization');
+  if (!auth || !auth.startsWith('Bearer ')) {
+    return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+  }
+  const token = auth.split(' ')[1];
+  let decoded;
+  try {
+    decoded = await verifyJWT(token, env.JWT_SECRET);
+  } catch {
+    return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
+  }
+  // Issue a new token with the same user data
+  const user = await env.MY_BINDING.prepare(
+    'SELECT id, subscription_status FROM users WHERE id = ?'
+  ).bind(decoded.id).first();
+  if (!user) {
+    return corsResponse(JSON.stringify({ error: 'User not found' }), 404);
+  }
+  const newToken = await signJWT(
+    { id: user.id, status: user.subscription_status || 'free' },
+    env.JWT_SECRET,
+    '7d'
+  );
+  return corsResponse(JSON.stringify({ token: newToken }));
+}
 
       // ---- 404 ----
       return corsResponse('Not found', 404);
