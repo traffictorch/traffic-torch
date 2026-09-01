@@ -39,8 +39,201 @@
     })();
   </script>
 
-  <script src="https://js.stripe.com/v3/"></script>
+  <!-- ========================================= -->
+  <!-- AUTH STORE – Defined BEFORE Alpine loads  -->
+  <!-- ========================================= -->
+  <script>
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function getToken() { return localStorage.getItem('authToken'); }
+    function setToken(token) { if (token) localStorage.setItem('authToken', token); else localStorage.removeItem('authToken'); }
+
+    async function fetchAccountInfo(token) {
+      if (!token) return null;
+      try {
+        const res = await fetch(`${API_BASE}/api/account-info`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Invalid token');
+        return await res.json();
+      } catch { return null; }
+    }
+
+    async function sendMagicLink(email) {
+      const res = await fetch(`${API_BASE}/auth/magic-link`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return await res.json();
+    }
+
+    async function login(email, password) {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return await res.json();
+    }
+
+    async function register(email, password) {
+      const res = await fetch(`${API_BASE}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return await res.json();
+    }
+
+    async function sendResetLink(email) {
+      const res = await fetch(`${API_BASE}/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return await res.json();
+    }
+
+    async function resetPassword(token, password) {
+      const res = await fetch(`${API_BASE}/auth/reset-password/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, password })
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return await res.json();
+    }
+
+    // Create the store object
+    const authStore = {
+      token: getToken(),
+      user: null,
+      isAuthenticated: false,
+      loading: false,
+      error: null,
+
+      async init() {
+        if (this.token) {
+          const userData = await fetchAccountInfo(this.token);
+          if (userData) {
+            this.user = userData;
+            this.isAuthenticated = true;
+          } else {
+            this.token = null;
+            setToken(null);
+          }
+        }
+      },
+
+      async magicLink(email) {
+        this.loading = true;
+        this.error = null;
+        try {
+          const result = await sendMagicLink(email);
+          return result;
+        } catch (e) {
+          this.error = e.message;
+          throw e;
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      async login(email, password) {
+        this.loading = true;
+        this.error = null;
+        try {
+          const data = await login(email, password);
+          this.token = data.token;
+          setToken(data.token);
+          this.user = await fetchAccountInfo(data.token);
+          this.isAuthenticated = true;
+          return data;
+        } catch (e) {
+          this.error = e.message;
+          throw e;
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      async register(email, password) {
+        this.loading = true;
+        this.error = null;
+        try {
+          const data = await register(email, password);
+          this.token = data.token;
+          setToken(data.token);
+          this.user = await fetchAccountInfo(data.token);
+          this.isAuthenticated = true;
+          return data;
+        } catch (e) {
+          this.error = e.message;
+          throw e;
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      async sendResetLink(email) {
+        this.loading = true;
+        this.error = null;
+        try {
+          const result = await sendResetLink(email);
+          return result;
+        } catch (e) {
+          this.error = e.message;
+          throw e;
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      async resetPassword(token, password) {
+        this.loading = true;
+        this.error = null;
+        try {
+          const result = await resetPassword(token, password);
+          return result;
+        } catch (e) {
+          this.error = e.message;
+          throw e;
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      logout() {
+        this.token = null;
+        this.user = null;
+        this.isAuthenticated = false;
+        setToken(null);
+        window.location.href = '/pro';
+      },
+
+      deleteAccount() {
+        if (confirm('Permanently delete your account? This cannot be undone.')) {
+          alert('Account deletion requested – contact support for full removal.');
+        }
+      }
+    };
+
+    // Register the store as soon as Alpine is ready
+    document.addEventListener('alpine:init', function() {
+      Alpine.store('auth', authStore);
+      authStore.init();
+      console.log('Auth store registered.');
+    });
+  </script>
+
+  <!-- Load Alpine -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -55,10 +248,6 @@
 
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
-
-<!-- ======== AUTH MODULE ======== -->
-<!-- Load auth.js first; it registers an Alpine store 'auth' -->
-<script src="/pro/auth.js" defer></script>
 
 <!-- ======== ALPINE APP ======== -->
 <div x-data="dashboardApp()" x-init="initApp()" class="flex flex-1 min-h-screen">
@@ -357,14 +546,14 @@
 </div>
 
 <!-- ========================================================== -->
-<!-- SCRIPTS -->
+<!-- MAIN SCRIPT -->
 <!-- ========================================================== -->
 <script src="/main-v1.2.js" type="module"></script>
 
 <script>
 function dashboardApp() {
   return {
-    // ---- Auth form state (bound to auth store) ----
+    // ---- Auth form state ----
     activeTab: 'magic',
     showForgot: false,
     magicEmail: '',
@@ -398,16 +587,13 @@ function dashboardApp() {
 
     // ---- Init ----
     initApp() {
-      // If reset token is present, show forgot form
       if (this.resetToken) {
         this.activeTab = 'forgot';
         this.showForgot = true;
       }
-
-      // Load audit history
       this.loadAuditHistory();
 
-      // Sync daily limit from auth store after login
+      // Sync daily stats when auth state changes
       this.$watch('$store.auth.isAuthenticated', (val) => {
         if (val && this.$store.auth.user) {
           this.dailyUsed = this.$store.auth.user.dailyUsed || 0;
@@ -416,7 +602,6 @@ function dashboardApp() {
         }
       });
 
-      // Listen for sidebar tab switch events
       document.addEventListener('switchTab', (e) => {
         if (e.detail && e.detail.tab) {
           this.activeDashboardTab = e.detail.tab;
@@ -424,7 +609,7 @@ function dashboardApp() {
       });
     },
 
-    // ---- Auth wrapper methods (call auth store) ----
+    // ---- Auth wrappers ----
     async sendMagicLink() {
       try {
         await this.$store.auth.magicLink(this.magicEmail);
@@ -432,7 +617,7 @@ function dashboardApp() {
         this.messageType = 'success';
         this.magicEmail = '';
       } catch (e) {
-        this.message = e.message || 'Failed to send magic link';
+        this.message = e.message || 'Failed';
         this.messageType = 'error';
       }
     },
@@ -444,7 +629,6 @@ function dashboardApp() {
         this.messageType = 'success';
         this.loginEmail = '';
         this.loginPassword = '';
-        // Update daily stats from the user data
         if (this.$store.auth.user) {
           this.dailyUsed = this.$store.auth.user.dailyUsed || 0;
           this.dailyLimit = this.$store.auth.user.dailyLimit || 3;
@@ -483,32 +667,11 @@ function dashboardApp() {
     async sendResetLink() {
       try {
         await this.$store.auth.sendResetLink(this.resetEmail);
-        this.message = 'Reset link sent! Check your email.';
+        this.message = 'Reset link sent!';
         this.messageType = 'success';
         this.resetEmail = '';
       } catch (e) {
-        this.message = e.message || 'Failed to send reset link';
-        this.messageType = 'error';
-      }
-    },
-
-    async resetPassword() {
-      if (this.resetNewPassword !== this.resetConfirmPassword) {
-        this.message = 'Passwords do not match';
-        this.messageType = 'error';
-        return;
-      }
-      try {
-        await this.$store.auth.resetPassword(this.resetToken, this.resetNewPassword);
-        this.message = 'Password reset successfully!';
-        this.messageType = 'success';
-        this.resetToken = '';
-        this.resetNewPassword = '';
-        this.resetConfirmPassword = '';
-        this.showForgot = false;
-        this.activeTab = 'login';
-      } catch (e) {
-        this.message = e.message || 'Reset failed';
+        this.message = e.message || 'Failed';
         this.messageType = 'error';
       }
     },
@@ -572,7 +735,6 @@ function dashboardApp() {
       `;
 
       this.loadToolScript(scriptPath, () => {
-        // The tool script's DOMContentLoaded listener must fire
         document.dispatchEvent(new Event('DOMContentLoaded'));
         const analyzeBtn = document.getElementById('analyze-url-btn');
         if (analyzeBtn) {
@@ -585,7 +747,6 @@ function dashboardApp() {
     },
 
     loadToolScript(src, callback) {
-      // Remove any existing script with same src to avoid conflicts
       const existing = document.querySelector(`script[src="${src}"]`);
       if (existing) existing.remove();
       const script = document.createElement('script');
@@ -606,9 +767,7 @@ function dashboardApp() {
         this.runTool();
         this.activeDashboardTab = 'dashboard';
       });
-    },
-
-    // Logout and delete account are now handled by $store.auth methods
+    }
   };
 }
 </script>
