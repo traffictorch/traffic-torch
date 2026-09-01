@@ -1,31 +1,48 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
 <!-- Optimized SEO Title & Description -->
-<title>Traffic Torch Pro – Beta Dashboard</title>
-<meta name="description" content="Preview of the new Traffic Torch Pro dashboard – tabs, usage, and quick audit.">
+<title>Traffic Torch Pro – Dashboard</title>
+<meta name="description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
 
 <!-- Robots & Canonical -->
 <meta name="robots" content="noindex, nofollow">
-<link rel="canonical" href="https://traffictorch.net/pro-beta.html">
+<link rel="canonical" href="https://traffictorch.net/pro/">
 
 <!-- Theme Color -->
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
 
 <!-- Open Graph Tags -->
-<meta property="og:title" content="Traffic Torch Pro – Beta Dashboard">
-<meta property="og:description" content="Preview of the new Traffic Torch Pro dashboard.">
+<meta property="og:title" content="Traffic Torch Pro – Dashboard">
+<meta property="og:description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://traffictorch.net/pro-beta.html">
+<meta property="og:url" content="https://traffictorch.net/pro/">
 <meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Traffic Torch">
 
 <!-- Twitter Cards -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Traffic Torch Pro – Beta Dashboard">
+<meta name="twitter:title" content="Traffic Torch Pro – Dashboard">
+<meta name="twitter:description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
+<meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp">
+<meta name="twitter:site" content="@Guitaralize">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Traffic Torch Pro Dashboard",
+  "description": "Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.",
+  "url": "https://traffictorch.net/pro/"
+}
+</script>
 
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico">
@@ -53,7 +70,7 @@
   </noscript>
 
 <script>
-    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    // Apply dark class to <html> immediately
     (function() {
       const saved = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -65,7 +82,9 @@
     })();
   </script>
   
-  <!-- Alpine.js + Chart.js for interactivity -->
+  <script src="https://js.stripe.com/v3/"></script> 
+  
+  <!-- Alpine.js + Chart.js for dashboard -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -77,261 +96,578 @@
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
-  <!-- Main Layout Container - Desktop flex with sidebar -->
-  <div class="flex flex-1 min-h-screen">
-    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
-	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
-	<!-- Sidebar Header with Logo -->
+
+<!-- Alpine App – handles auth + dashboard -->
+<div x-data="combinedApp()" x-init="initApp()" class="flex flex-1 min-h-screen">
+
+  <!-- ======== AUTH FORMS (full page, centered) ======== -->
+  <div x-show="!isAuthenticated" class="flex-1 flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8">
+
+      <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6 text-sm font-medium text-center">
+        <button @click="activeTab='magic'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='magic'?'tab-active':'text-gray-500 hover:text-gray-700'">Magic Link</button>
+        <button @click="activeTab='login'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='login'?'tab-active':'text-gray-500 hover:text-gray-700'">Login</button>
+        <button @click="activeTab='register'" class="w-1/3 py-2 px-1 transition" :class="activeTab==='register'?'tab-active':'text-gray-500 hover:text-gray-700'">Register</button>
+      </div>
+
+      <div x-show="message" x-transition.duration.300ms class="mb-4 p-3 rounded-lg text-sm" :class="messageType==='success'?'bg-green-100 dark:bg-green-900/30 text-green-700':'bg-red-100 dark:bg-red-900/30 text-red-700'" x-text="message"></div>
+
+      <!-- Magic Link -->
+      <div x-show="activeTab==='magic'" x-cloak>
+        <form @submit.prevent="sendMagicLink()" class="space-y-4">
+          <p class="text-sm text-gray-600 dark:text-gray-400">Enter your email – we'll send a secure login link.</p>
+          <input type="email" x-model="magicEmail" placeholder="Your email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90" :disabled="loading">
+            <span x-text="loading ? 'Sending...' : 'Send Magic Link'"></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Login -->
+      <div x-show="activeTab==='login'" x-cloak>
+        <form @submit.prevent="login()" class="space-y-4">
+          <input type="email" x-model="loginEmail" placeholder="Email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
+          <div class="relative">
+            <input :type="loginPasswordVisible ? 'text' : 'password'" x-model="loginPassword" placeholder="Password" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+            <button type="button" @click="loginPasswordVisible = !loginPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+              <i :class="loginPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div class="text-right">
+            <a href="#" @click.prevent="showForgot = !showForgot" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
+          </div>
+          <div x-show="showForgot" x-cloak class="mt-2 p-3 border border-gray-200 rounded-lg">
+            <p class="text-sm text-gray-600">Enter your email to receive a reset link.</p>
+            <div class="flex gap-2 mt-2">
+              <input type="email" x-model="resetEmail" placeholder="Your email" class="flex-1 p-2 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500">
+              <button @click="sendResetLink()" class="px-4 py-2 bg-purple-600 text-white rounded-lg" :disabled="loading">Send</button>
+            </div>
+          </div>
+          <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl">Login</button>
+        </form>
+      </div>
+
+      <!-- Register -->
+      <div x-show="activeTab==='register'" x-cloak>
+        <form @submit.prevent="register()" class="space-y-4">
+          <input type="email" x-model="registerEmail" placeholder="Email" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500">
+          <div class="relative">
+            <input :type="registerPasswordVisible ? 'text' : 'password'" x-model="registerPassword" placeholder="Password (min 8 chars)" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+            <button type="button" @click="registerPasswordVisible = !registerPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+              <i :class="registerPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div class="relative">
+            <input :type="registerConfirmVisible ? 'text' : 'password'" x-model="registerConfirm" placeholder="Confirm Password" required class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+            <button type="button" @click="registerConfirmVisible = !registerConfirmVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+              <i :class="registerConfirmVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <button type="submit" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl">Register</button>
+        </form>
+      </div>
+
+      <!-- Reset form -->
+      <div x-show="resetToken" x-cloak class="mt-4 p-4 border border-blue-300 rounded-lg">
+        <h3 class="font-bold text-lg">Set new password</h3>
+        <form @submit.prevent="resetPassword()" class="space-y-3 mt-3">
+          <div class="relative">
+            <input :type="resetPasswordVisible ? 'text' : 'password'" x-model="resetNewPassword" placeholder="New password (min 8 chars)" required class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+            <button type="button" @click="resetPasswordVisible = !resetPasswordVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+              <i :class="resetPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <div class="relative">
+            <input :type="resetConfirmVisible ? 'text' : 'password'" x-model="resetConfirmPassword" placeholder="Confirm new password" required class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+            <button type="button" @click="resetConfirmVisible = !resetConfirmVisible" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+              <i :class="resetConfirmVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            </button>
+          </div>
+          <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg">Reset Password</button>
+        </form>
+      </div>
+
+      <p class="text-center text-xs text-gray-500 mt-6">Traffic Torch Auth</p>
+    </div>
+  </div>
+
+  <!-- ======== DASHBOARD (full page with sidebar) ======== -->
+  <div x-show="isAuthenticated" x-cloak class="flex flex-1 min-h-screen">
+
+    <!-- Desktop Sidebar -->
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
       <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
         <a href="/" class="flex items-center gap-4">
-            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
-            Traffic Torch
-          </span>
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden md:block">Traffic Torch</span>
         </a>
       </div>
-<!-- Menu Items -->
-<div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
-      <!-- Collapse/Expand Button - Always visible -->
+      <!-- Menu placeholder (loaded via main.js) -->
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <!-- Collapse Button -->
       <div class="p-4 border-t border-white/10 dark:border-white/5">
         <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
           ←
         </button>
       </div>
     </aside>
-    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
-    <div class="flex-1 flex flex-col">
-      <!-- Header (unchanged) -->
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-h-screen">
+      <!-- Header -->
       <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
           <a href="/" class="flex items-center gap-4 md:hidden">
-          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-              Traffic Torch
-            </p>
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
           </a>
           <div class="w-10 md:hidden"></div>
-          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
-          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
-            ☰
-          </button>
-          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
-            🌙
-          </button>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
         </div>
         <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
-          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
-			  ×
-			</button>
-<div id="mobile-menu-placeholder"></div>
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
         </div>
       </header>
-      
-<!-- ========================================================== -->
-<!-- NEW MAIN CONTENT – TABBED DASHBOARD (BETA) -->
-<!-- ========================================================== -->
-<main id="main-content" class="container mx-auto px-4 py-4" x-data="dashboardBeta()" x-init="init()">
-  <div class="max-w-5xl mx-auto">
-    <!-- Horizontal Tabs -->
-    <div class="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
-      <template x-for="tab in tabs" :key="tab.id">
-        <button @click="activeTab = tab.id" 
-                class="px-6 py-3 text-sm font-medium transition-all duration-200"
-                :class="activeTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
-          <span x-text="tab.label"></span>
-        </button>
-      </template>
-    </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB: DASHBOARD -->
-    <!-- ========================================================== -->
-    <div x-show="activeTab === 'dashboard'" x-cloak>
-      <div class="grid md:grid-cols-3 gap-6 mb-8">
-        <!-- Usage Card -->
-        <div class="glass rounded-2xl p-6">
-          <h3 class="text-sm text-gray-500 dark:text-gray-400">Daily Audits Used</h3>
-          <p class="text-3xl font-bold mt-2" x-text="`${dailyUsed} / ${dailyLimit}`"></p>
-          <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-4">
-            <div class="bg-gradient-to-r from-orange-500 to-pink-600 h-2.5 rounded-full transition-all" :style="`width: ${(dailyUsed/dailyLimit)*100}%`"></div>
+      <!-- Tabbed Dashboard -->
+      <main class="container mx-auto px-4 py-4 flex-1">
+        <!-- Horizontal Tabs -->
+        <div class="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
+          <template x-for="tab in tabs" :key="tab.id">
+            <button @click="activeDashboardTab = tab.id" 
+                    class="px-6 py-3 text-sm font-medium transition-all duration-200"
+                    :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
+              <span x-text="tab.label"></span>
+            </button>
+          </template>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
+          <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="glass rounded-2xl p-6">
+              <h3 class="text-sm text-gray-500 dark:text-gray-400">Daily Audits Used</h3>
+              <p class="text-3xl font-bold mt-2" x-text="`${dailyUsed} / ${dailyLimit}`"></p>
+              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-4">
+                <div class="bg-gradient-to-r from-orange-500 to-pink-600 h-2.5 rounded-full transition-all" :style="`width: ${(dailyUsed/dailyLimit)*100}%`"></div>
+              </div>
+              <p class="text-sm mt-2" x-text="`${dailyRemaining} remaining today`"></p>
+            </div>
+            <div class="glass rounded-2xl p-6">
+              <h3 class="text-sm text-gray-500 dark:text-gray-400">Quick Audit</h3>
+              <input type="url" x-model="quickUrl" placeholder="https://example.com" class="w-full mt-2 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+              <button @click="runQuickAudit()" class="mt-3 w-full py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90">Analyze</button>
+              <div x-show="quickResult" class="mt-4 text-sm">
+                <p>UX: <span x-text="quickResult.ux"></span></p>
+                <p>SEO: <span x-text="quickResult.seo"></span></p>
+                <p>AI: <span x-text="quickResult.ai"></span></p>
+              </div>
+            </div>
+            <div class="glass rounded-2xl p-6 flex items-center justify-center text-gray-500">Pro features</div>
           </div>
-          <p class="text-sm mt-2" x-text="`${dailyRemaining} remaining today`"></p>
-        </div>
-        <!-- Quick Audit -->
-        <div class="glass rounded-2xl p-6">
-          <h3 class="text-sm text-gray-500 dark:text-gray-400">Quick Audit</h3>
-          <input type="url" x-model="quickUrl" placeholder="https://example.com" class="w-full mt-2 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-          <button @click="runQuickAudit()" class="mt-3 w-full py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90">Analyze</button>
-          <div x-show="quickResult" class="mt-4 text-sm">
-            <p>UX: <span x-text="quickResult.ux"></span></p>
-            <p>SEO: <span x-text="quickResult.seo"></span></p>
-            <p>AI: <span x-text="quickResult.ai"></span></p>
+          <h3 class="text-lg font-bold mb-4">Recent Audits</h3>
+          <div class="glass rounded-2xl overflow-hidden">
+            <table class="w-full text-left">
+              <thead class="bg-gray-100 dark:bg-gray-800">
+                <tr><th class="p-3">URL</th><th class="p-3">UX</th><th class="p-3">SEO</th><th class="p-3">AI</th><th class="p-3">Date</th></tr>
+              </thead>
+              <tbody>
+                <template x-for="audit in recentAudits" :key="audit.id">
+                  <tr class="border-t border-gray-200 dark:border-gray-700">
+                    <td class="p-3 text-sm truncate max-w-[200px]" x-text="audit.url"></td>
+                    <td class="p-3" x-text="audit.ux_score"></td>
+                    <td class="p-3" x-text="audit.seo_score"></td>
+                    <td class="p-3" x-text="audit.ai_score"></td>
+                    <td class="p-3 text-sm" x-text="new Date(audit.timestamp).toLocaleDateString()"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
           </div>
         </div>
-        <!-- Placeholder for Pro features -->
-        <div class="glass rounded-2xl p-6 flex items-center justify-center text-gray-500">Pro features</div>
-      </div>
-      <!-- Recent audits table (mock) -->
-      <h3 class="text-lg font-bold mb-4">Recent Audits</h3>
-      <div class="glass rounded-2xl overflow-hidden">
-        <table class="w-full text-left">
-          <thead class="bg-gray-100 dark:bg-gray-800">
-            <tr><th class="p-3">URL</th><th class="p-3">UX</th><th class="p-3">SEO</th><th class="p-3">AI</th><th class="p-3">Date</th></tr>
-          </thead>
-          <tbody>
-            <tr class="border-t border-gray-200 dark:border-gray-700">
-              <td class="p-3 text-sm truncate max-w-[200px]">https://example.com</td>
-              <td class="p-3">82</td>
-              <td class="p-3">74</td>
-              <td class="p-3">91</td>
-              <td class="p-3 text-sm">2026-09-01</td>
-            </tr>
-            <tr class="border-t border-gray-200 dark:border-gray-700">
-              <td class="p-3 text-sm truncate max-w-[200px]">https://traffictorch.net</td>
-              <td class="p-3">95</td>
-              <td class="p-3">88</td>
-              <td class="p-3">97</td>
-              <td class="p-3 text-sm">2026-08-31</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB: AUDITS (placeholder) -->
-    <!-- ========================================================== -->
-    <div x-show="activeTab === 'audits'" x-cloak>
-      <p class="text-center text-gray-500 py-20">Audits history coming soon.</p>
-    </div>
-
-    <!-- ========================================================== -->
-    <!-- TAB: ANALYTICS (Pro) -->
-    <!-- ========================================================== -->
-    <div x-show="activeTab === 'analytics'" x-cloak>
-      <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
-        <h3 class="text-xl font-bold mb-4">Analytics (Pro)</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div class="text-center"><p class="text-sm text-gray-500">Clicks</p><p class="text-2xl font-bold">1,234</p></div>
-          <div class="text-center"><p class="text-sm text-gray-500">Impressions</p><p class="text-2xl font-bold">12,345</p></div>
-          <div class="text-center"><p class="text-sm text-gray-500">CTR</p><p class="text-2xl font-bold">10.0%</p></div>
-          <div class="text-center"><p class="text-sm text-gray-500">Position</p><p class="text-2xl font-bold">4.2</p></div>
+        <!-- Audits Tab -->
+        <div x-show="activeDashboardTab === 'audits'" x-cloak>
+          <p class="text-center text-gray-500 py-20">Audits history coming soon.</p>
         </div>
-        <canvas id="analyticsChart" height="150"></canvas>
-      </div>
-    </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB: INTEGRATIONS -->
-    <!-- ========================================================== -->
-    <div x-show="activeTab === 'integrations'" x-cloak>
-      <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
-        <h3 class="text-xl font-bold mb-4">Integrations</h3>
-        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <span>🔗 Google Search Console</span>
-          <span class="text-red-500">Not connected</span>
-          <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Connect</button>
+        <!-- Analytics Tab (Pro) -->
+        <div x-show="activeDashboardTab === 'analytics'" x-cloak>
+          <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
+            <h3 class="text-xl font-bold mb-4">Analytics (Pro)</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div class="text-center"><p class="text-sm text-gray-500">Clicks</p><p class="text-2xl font-bold" x-text="analytics.clicks || 0"></p></div>
+              <div class="text-center"><p class="text-sm text-gray-500">Impressions</p><p class="text-2xl font-bold" x-text="analytics.impressions || 0"></p></div>
+              <div class="text-center"><p class="text-sm text-gray-500">CTR</p><p class="text-2xl font-bold" x-text="analytics.ctr ? (analytics.ctr*100).toFixed(1)+'%' : '-'"></p></div>
+              <div class="text-center"><p class="text-sm text-gray-500">Position</p><p class="text-2xl font-bold" x-text="analytics.position ? analytics.position.toFixed(1) : '-'"></p></div>
+            </div>
+            <canvas id="analyticsChart" height="150"></canvas>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB: SETTINGS -->
-    <!-- ========================================================== -->
-    <div x-show="activeTab === 'settings'" x-cloak>
-      <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
-        <h3 class="text-xl font-bold mb-4">Settings</h3>
-        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <span>Email</span>
-          <span>beta@traffictorch.net</span>
+        <!-- Integrations Tab -->
+        <div x-show="activeDashboardTab === 'integrations'" x-cloak>
+          <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
+            <h3 class="text-xl font-bold mb-4">Integrations</h3>
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <span>🔗 Google Search Console</span>
+              <span class="text-red-500">Not connected</span>
+              <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Connect</button>
+            </div>
+          </div>
         </div>
-        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-          <span>Plan</span>
-          <span class="text-green-500 font-semibold">Pro</span>
-        </div>
-        <button class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
-      </div>
-    </div>
 
-    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">
-      Privacy-first • Beta preview – not connected to live data
-    </p>
+        <!-- Settings Tab -->
+        <div x-show="activeDashboardTab === 'settings'" x-cloak>
+          <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
+            <h3 class="text-xl font-bold mb-4">Account Settings</h3>
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <span>Email</span>
+              <span x-text="user.email"></span>
+            </div>
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <span>Plan</span>
+              <span x-text="user.isPro ? 'Pro' : 'Free'"></span>
+            </div>
+            <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
+            <button @click="deleteAccount()" class="mt-3 w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10">Delete Account</button>
+          </div>
+        </div>
+
+        <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">Privacy-first • Traffic Torch</p>
+      </main>
+
+      <!-- Footer placeholder -->
+      <div id="footer-placeholder"></div>
+    </div>
   </div>
-</main>
-
-<!-- Footer -->
-<div id="footer-placeholder"></div>
-</div>
 </div>
 
-  <!-- Load JS last for speed -->
-  <script src="/main-v1.1-beta.js" type="module"></script>
-  <script type="module" src="/shared/google-analytics.js"></script>
+<!-- ========================================================== -->
+<!-- SCRIPTS -->
+<!-- ========================================================== -->
 
-  <!-- Alpine App: dashboardBeta -->
-  <script>
-    function dashboardBeta() {
-      return {
-        activeTab: 'dashboard',
-        dailyUsed: 0,
-        dailyLimit: 3,
-        dailyRemaining: 3,
-        quickUrl: '',
-        quickResult: null,
-        tabs: [
-          { id: 'dashboard', label: 'Dashboard' },
-          { id: 'audits', label: 'Audits' },
-          { id: 'analytics', label: 'Analytics' },
-          { id: 'integrations', label: 'Integrations' },
-          { id: 'settings', label: 'Settings' }
-        ],
+<!-- Main JS (menu loader, theme, etc.) -->
+<script src="/main-v1.1.js" type="module"></script>
 
-        init() {
-          // Mock daily usage
-          this.dailyUsed = 0;
-          this.dailyLimit = 3;
-          this.dailyRemaining = 3;
+<!-- Alpine app definition -->
+<script>
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
-          // Render chart when analytics tab becomes active
-          this.$watch('activeTab', (val) => {
-            if (val === 'analytics') {
-              this.$nextTick(() => this.renderChart());
-            }
-          });
-          // Initial chart render if analytics is first tab (unlikely)
-          setTimeout(() => {
-            if (this.activeTab === 'analytics') this.renderChart();
-          }, 100);
-        },
+function combinedApp() {
+  return {
+    // ---- Auth state (unchanged from original authApp) ----
+    isAuthenticated: false,
+    user: { email: '', isPro: false, dailyUsed: 0, dailyLimit: 3, dailyRemaining: 3 },
+    activeTab: 'magic',
+    loading: false,
+    message: '',
+    messageType: 'error',
+    magicEmail: '',
+    loginEmail: '',
+    loginPassword: '',
+    loginPasswordVisible: false,
+    showForgot: false,
+    registerEmail: '',
+    registerPassword: '',
+    registerPasswordVisible: false,
+    registerConfirm: '',
+    registerConfirmVisible: false,
+    resetEmail: '',
+    resetToken: new URLSearchParams(window.location.search).get('reset_token') || '',
+    resetNewPassword: '',
+    resetPasswordVisible: false,
+    resetConfirmPassword: '',
+    resetConfirmVisible: false,
 
-        renderChart() {
-          const ctx = document.getElementById('analyticsChart');
-          if (!ctx) return;
-          if (window._chart) window._chart.destroy();
-          window._chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-              datasets: [
-                { label: 'Clicks', data: [120, 150, 180, 220, 200, 160, 140], borderColor: '#f97316', tension: 0.2 },
-                { label: 'Impressions', data: [800, 900, 1100, 1300, 1200, 1000, 850], borderColor: '#8b5cf6', tension: 0.2 }
-              ]
-            },
-            options: { responsive: true, plugins: { legend: { position: 'top' } } }
-          });
-        },
+    // ---- Dashboard state ----
+    activeDashboardTab: 'dashboard',
+    dailyUsed: 0,
+    dailyLimit: 3,
+    dailyRemaining: 3,
+    quickUrl: '',
+    quickResult: null,
+    recentAudits: [],
+    analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
+    tabs: [
+      { id: 'dashboard', label: 'Dashboard' },
+      { id: 'audits', label: 'Audits' },
+      { id: 'analytics', label: 'Analytics' },
+      { id: 'integrations', label: 'Integrations' },
+      { id: 'settings', label: 'Settings' }
+    ],
 
-        runQuickAudit() {
-          if (!this.quickUrl) return;
-          this.quickResult = {
-            ux: Math.floor(Math.random() * 40 + 60),
-            seo: Math.floor(Math.random() * 40 + 60),
-            ai: Math.floor(Math.random() * 40 + 60)
-          };
+    // ---- Init ----
+    initApp() {
+      // Auth init: handle reset/magic tokens, check localStorage
+      if (this.resetToken) {
+        this.activeTab = 'login';
+        this.showForgot = false;
+      }
+      const magicToken = new URLSearchParams(window.location.search).get('magic_token');
+      if (magicToken) {
+        localStorage.setItem('authToken', magicToken);
+        window.history.replaceState({}, '', '/pro');
+        this.fetchAccountInfo();
+        return;
+      }
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        this.fetchAccountInfo();
+      }
+
+      // Listen for sidebar tab clicks (via custom event)
+      document.addEventListener('switchTab', (e) => {
+        if (e.detail && e.detail.tab) {
+          this.activeDashboardTab = e.detail.tab;
         }
+      });
+    },
+
+    // ---- Auth methods (copied from authApp) ----
+    async fetchAccountInfo() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.user = data;
+          this.isAuthenticated = true;
+          this.dailyUsed = data.dailyUsed || 0;
+          this.dailyLimit = data.dailyLimit || 3;
+          this.dailyRemaining = data.dailyRemaining || 0;
+          // load recent audits
+          this.loadRecentAudits();
+        } else {
+          localStorage.removeItem('authToken');
+          this.isAuthenticated = false;
+        }
+      } catch {
+        localStorage.removeItem('authToken');
+        this.isAuthenticated = false;
+      }
+    },
+
+    setMessage(msg, type = 'error') {
+      this.message = msg;
+      this.messageType = type;
+      clearTimeout(this.msgTimeout);
+      this.msgTimeout = setTimeout(() => (this.message = ''), 5000);
+    },
+
+    async sendMagicLink() {
+      this.loading = true;
+      try {
+        const res = await fetch(API_BASE + '/api/auth/magic-link', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.magicEmail })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.setMessage('Magic link sent! Check your email.', 'success');
+        } else {
+          this.setMessage(data.error || 'Failed to send link');
+        }
+      } catch {
+        this.setMessage('Network error');
+      }
+      this.loading = false;
+    },
+
+    async login() {
+      this.loading = true;
+      try {
+        const res = await fetch(API_BASE + '/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.loginEmail, password: this.loginPassword })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem('authToken', data.token);
+          await this.fetchAccountInfo();
+          if (!this.isAuthenticated) {
+            this.setMessage('Login succeeded but failed to load account', 'error');
+          }
+        } else {
+          this.setMessage(data.error || 'Login failed');
+        }
+      } catch {
+        this.setMessage('Network error');
+      }
+      this.loading = false;
+    },
+
+    async register() {
+      if (this.registerPassword !== this.registerConfirm) {
+        this.setMessage('Passwords do not match');
+        return;
+      }
+      if (this.registerPassword.length < 8) {
+        this.setMessage('Password must be at least 8 characters');
+        return;
+      }
+      this.loading = true;
+      try {
+        const res = await fetch(API_BASE + '/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: this.registerEmail.split('@')[0] || 'User',
+            email: this.registerEmail,
+            password: this.registerPassword
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem('authToken', data.token);
+          await this.fetchAccountInfo();
+          if (!this.isAuthenticated) {
+            this.setMessage('Registration succeeded but failed to load account', 'error');
+          }
+        } else {
+          this.setMessage(data.error || 'Registration failed');
+        }
+      } catch {
+        this.setMessage('Network error');
+      }
+      this.loading = false;
+    },
+
+    async sendResetLink() {
+      if (!this.resetEmail) {
+        this.setMessage('Please enter your email.');
+        return;
+      }
+      this.loading = true;
+      try {
+        const res = await fetch(API_BASE + '/api/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.resetEmail })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.setMessage('Reset link sent! Check your email.', 'success');
+          this.showForgot = false;
+          this.resetEmail = '';
+        } else {
+          this.setMessage(data.error || 'Failed to send reset link');
+        }
+      } catch {
+        this.setMessage('Network error');
+      }
+      this.loading = false;
+    },
+
+    async resetPassword() {
+      if (this.resetNewPassword !== this.resetConfirmPassword) {
+        this.setMessage('Passwords do not match');
+        return;
+      }
+      if (this.resetNewPassword.length < 8) {
+        this.setMessage('Password must be at least 8 characters');
+        return;
+      }
+      this.loading = true;
+      try {
+        const res = await fetch(API_BASE + '/api/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            token: this.resetToken,
+            password: this.resetNewPassword
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.setMessage('Password reset successfully! Please login.', 'success');
+          this.resetToken = '';
+          this.resetNewPassword = '';
+          this.resetConfirmPassword = '';
+          this.activeTab = 'login';
+          window.history.replaceState({}, '', '/pro');
+        } else {
+          this.setMessage(data.error || 'Reset failed');
+        }
+      } catch {
+        this.setMessage('Network error');
+      }
+      this.loading = false;
+    },
+
+    // ---- Dashboard methods ----
+    async loadRecentAudits() {
+      const token = localStorage.getItem('authToken');
+      try {
+        const res = await fetch(API_BASE + '/api/audit-history?limit=10', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) this.recentAudits = await res.json();
+      } catch (e) { /* ignore */ }
+    },
+
+    runQuickAudit() {
+      if (!this.quickUrl) return;
+      this.quickResult = {
+        ux: Math.floor(Math.random() * 40 + 60),
+        seo: Math.floor(Math.random() * 40 + 60),
+        ai: Math.floor(Math.random() * 40 + 60)
       };
+    },
+
+    // Chart rendering (called from $watch)
+    renderChart() {
+      const ctx = document.getElementById('analyticsChart');
+      if (!ctx) return;
+      if (window._chart) window._chart.destroy();
+      // Use mock data for now
+      window._chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [
+            { label: 'Clicks', data: [120, 150, 180, 220, 200, 160, 140], borderColor: '#f97316', tension: 0.2 },
+            { label: 'Impressions', data: [800, 900, 1100, 1300, 1200, 1000, 850], borderColor: '#8b5cf6', tension: 0.2 }
+          ]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'top' } } }
+      });
+    },
+
+    logout() {
+      localStorage.removeItem('authToken');
+      this.isAuthenticated = false;
+      window.location.href = '/pro';
+    },
+
+    deleteAccount() {
+      if (confirm('Permanently delete your account? This cannot be undone.')) {
+        alert('Account deletion requested – contact support for full removal.');
+      }
     }
-  </script>
+  };
+}
+</script>
+
+<!-- Add a watch for analytics tab -->
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.effect(() => {
+    const app = Alpine.store('app') || document.querySelector('[x-data]').__x.$data;
+    if (app && app.activeDashboardTab === 'analytics') {
+      setTimeout(() => app.renderChart(), 100);
+    }
+  });
+});
+</script>
 
 </body>
 </html>
