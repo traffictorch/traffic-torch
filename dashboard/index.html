@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard – Traffic Torch Pro</title>
-    <meta name="description" content="Your Traffic Torch Pro dashboard – run audits, track usage, and manage your account." />
+    <title>Dashboard – Traffic Torch</title>
     <meta name="robots" content="noindex, nofollow" />
     <link rel="canonical" href="https://traffictorch.net/dashboard/" />
 
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)" />
 
-    <!-- Preload CSS -->
+    <!-- Preload CSS (adjust paths to your own) -->
     <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="/style-v1.0.css" /></noscript>
     <style>
@@ -32,7 +31,6 @@
         <link rel="stylesheet" href="/tailwind-local-v1.0.css" />
     </noscript>
 
-    <!-- Theme script -->
     <script>
         (function() {
             const saved = localStorage.getItem('theme');
@@ -45,14 +43,14 @@
         })();
     </script>
 
-    <!-- Stripe for upgrade -->
-    <script src="https://js.stripe.com/v3/">
-    </script>
-
     <style>
-        /* ── Base overrides ── */
+        /* ── Core styles (same as original combined app) ── */
         [x-cloak] {
             display: none !important;
+        }
+        .tab-active {
+            border-bottom: 3px solid #f97316;
+            color: #f97316;
         }
         .glass {
             background: rgba(255, 255, 255, 0.05);
@@ -68,18 +66,8 @@
         .stat-card:hover {
             transform: translateY(-4px);
         }
-        .tab-active {
-            border-bottom: 3px solid #f97316;
-            color: #f97316;
-        }
-        .sidebar-link {
-            transition: color 0.2s;
-        }
-        .sidebar-link:hover {
-            color: #fb923c !important;
-        }
-        .dark .sidebar-link:hover {
-            color: #fb923c !important;
+        .result-detail {
+            border-left: 3px solid #f97316;
         }
 
         /* Sidebar collapse */
@@ -116,6 +104,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        .sidebar-link {
+            transition: color 0.2s;
+        }
+        .sidebar-link:hover {
+            color: #fb923c !important;
+        }
+        .dark .sidebar-link:hover {
+            color: #fb923c !important;
         }
 
         /* Mobile menu (right drawer) */
@@ -179,32 +176,7 @@
             width: 100%;
         }
 
-        /* Upgrade modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            padding: 1rem;
-        }
-        .modal-box {
-            max-width: 500px;
-            width: 100%;
-            background: white;
-            border-radius: 1.5rem;
-            padding: 2rem;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-        }
-        .dark .modal-box {
-            background: #1f2937;
-            color: #f3f4f6;
-        }
-
-        /* Misc */
+        /* Buttons */
         .btn-primary {
             background: linear-gradient(135deg, #f97316, #ec4899);
             color: white;
@@ -221,19 +193,6 @@
         .btn-primary:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-        }
-        .btn-secondary {
-            background: #3b82f6;
-            color: white;
-            font-weight: 600;
-            padding: 0.6rem 1.2rem;
-            border-radius: 0.75rem;
-            border: none;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-secondary:hover {
-            background: #2563eb;
         }
         .btn-danger {
             background: #ef4444;
@@ -264,22 +223,6 @@
                 transform: rotate(360deg);
             }
         }
-        .result-detail {
-            border-left: 3px solid #f97316;
-        }
-        .pro-badge {
-            display: inline-block;
-            width: 0.625rem;
-            height: 0.625rem;
-            background-color: #22c55e;
-            border-radius: 9999px;
-            margin-left: 0.5rem;
-            vertical-align: middle;
-            flex-shrink: 0;
-        }
-        .dark .pro-badge {
-            background-color: #34d399;
-        }
 
         /* Responsive */
         @media (max-width: 640px) {
@@ -303,7 +246,7 @@
         </div>
     </div>
 
-    <!-- ─── DASHBOARD (hidden until authenticated) ─── -->
+    <!-- ─── DASHBOARD APP ─── -->
     <div id="dashboardApp" class="flex flex-1 min-h-screen hidden">
 
         <!-- Desktop Sidebar -->
@@ -314,8 +257,6 @@
                     <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
                 </a>
             </div>
-
-            <!-- Sidebar Menu -->
             <nav class="flex-1 p-4 space-y-1">
                 <a href="#" data-tab="dashboard" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-white/5 transition">
                     <span class="text-2xl">📊</span>
@@ -337,13 +278,7 @@
                     <span class="text-2xl">⚙️</span>
                     <span class="sidebar-text">Settings</span>
                 </a>
-                <!-- Pro Portal link with green dot if pro -->
-                <a href="#" id="proPortalLink" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-white/5 transition">
-                    <span class="text-2xl">💎</span>
-                    <span class="sidebar-text">Pro Portal</span>
-                </a>
             </nav>
-
             <div class="p-4 border-t border-white/10 dark:border-white/5">
                 <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
             </div>
@@ -364,7 +299,7 @@
                         <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
                     </div>
                 </div>
-                <!-- Mobile Menu (right drawer) -->
+                <!-- Mobile Menu -->
                 <div id="mobileMenu" class="hidden md:hidden">
                     <button id="close-mobile-menu" aria-label="Close menu">×</button>
                     <nav class="flex flex-col p-6 space-y-3">
@@ -383,17 +318,14 @@
                         <a href="#" data-tab="settings" class="sidebar-link flex items-center gap-3 text-lg px-4 py-3 rounded-lg hover:bg-white/10 dark:hover:bg-white/5">
                             <span class="text-2xl">⚙️</span> Settings
                         </a>
-                        <a href="#" id="mobileProPortalLink" class="sidebar-link flex items-center gap-3 text-lg px-4 py-3 rounded-lg hover:bg-white/10 dark:hover:bg-white/5">
-                            <span class="text-2xl">💎</span> Pro Portal
-                        </a>
                     </nav>
                 </div>
             </header>
 
-            <!-- Main Content Area -->
+            <!-- Main Content -->
             <main class="container mx-auto px-4 py-4 flex-1">
 
-                <!-- Tabs (horizontal) -->
+                <!-- Horizontal Tabs -->
                 <div class="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
                     <button class="tab-btn px-6 py-3 text-sm font-medium transition-all duration-200" data-tab="dashboard">Dashboard</button>
                     <button class="tab-btn px-6 py-3 text-sm font-medium transition-all duration-200" data-tab="audits">Audits</button>
@@ -437,7 +369,7 @@
                                 <span class="text-2xl">⭐</span>
                             </div>
                             <p class="text-2xl font-bold mt-2" id="planStatus">Free</p>
-                            <a href="#" id="upgradeBtn" class="mt-2 inline-block text-sm text-orange-500 hover:underline">Upgrade →</a>
+                            <a href="/pro/upgrade" id="upgradeLink" class="mt-2 inline-block text-sm text-orange-500 hover:underline">Upgrade →</a>
                         </div>
                     </div>
 
@@ -470,7 +402,7 @@
                         </div>
                     </div>
 
-                    <!-- Results Container -->
+                    <!-- Results -->
                     <div id="resultsContainer" class="mt-8 space-y-16"></div>
 
                     <!-- Recent Audits -->
@@ -544,20 +476,6 @@
         </div>
     </div>
 
-    <!-- ─── UPGRADE MODAL ─── -->
-    <div id="upgradeModal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-2xl font-bold">Upgrade to Pro</h3>
-                <button id="closeUpgradeModal" class="text-3xl text-gray-500 hover:text-gray-700">&times;</button>
-            </div>
-            <p id="upgradeMessage" class="text-gray-600 dark:text-gray-300 mb-6">You've reached your daily limit. Upgrade to Pro for more runs.</p>
-            <div id="checkout-container" class="mb-4"></div>
-            <button id="upgradeProBtn" class="btn-primary w-full py-3">Upgrade Now ($29/mo)</button>
-            <p class="text-xs text-gray-400 mt-2 text-center">Cancel anytime • 14-day free trial</p>
-        </div>
-    </div>
-
     <!-- ─── SCRIPTS ─── -->
     <script>
         (function() {
@@ -582,7 +500,7 @@
             const totalAuditsEl = $('#totalAudits');
             const averageScoreEl = $('#averageScore');
             const planStatusEl = $('#planStatus');
-            const upgradeBtn = $('#upgradeBtn');
+            const upgradeLink = $('#upgradeLink');
 
             // Tool
             const toolSelector = $('#toolSelector');
@@ -592,20 +510,12 @@
 
             // Recent audits
             const recentBody = $('#recentAuditsBody');
-            const noAuditsRow = $('#noAuditsRow');
 
             // Settings
             const settingsEmail = $('#settingsEmail');
             const settingsPlan = $('#settingsPlan');
             const logoutBtn = $('#logoutBtn');
             const deleteAccountBtn = $('#deleteAccountBtn');
-
-            // Modals
-            const upgradeModal = $('#upgradeModal');
-            const closeUpgradeModal = $('#closeUpgradeModal');
-            const upgradeMessage = $('#upgradeMessage');
-            const upgradeProBtn = $('#upgradeProBtn');
-            const checkoutContainer = $('#checkout-container');
 
             // Sidebar / mobile
             const sidebar = $('#desktopSidebar');
@@ -615,8 +525,6 @@
             const mobileMenu = $('#mobileMenu');
             const closeMobileMenu = $('#close-mobile-menu');
             const themeToggle = $('#themeToggle');
-            const proPortalLink = $('#proPortalLink');
-            const mobileProPortalLink = $('#mobileProPortalLink');
 
             // ─── State ───
             let state = {
@@ -649,11 +557,6 @@
                 window.location.href = LOGIN_URL;
             }
 
-            function showMessage(msg, type = 'info') {
-                // Simple alert for now; could be improved
-                alert(msg);
-            }
-
             // ─── API calls ───
             async function apiCall(endpoint, method = 'GET', body = null) {
                 const token = getToken();
@@ -674,7 +577,6 @@
             async function fetchAccountInfo() {
                 const { ok, data } = await apiCall('/api/account-info');
                 if (!ok) {
-                    // token invalid or expired
                     localStorage.removeItem('authToken');
                     localStorage.removeItem('traffic_torch_jwt');
                     redirectToLogin();
@@ -695,36 +597,15 @@
                 dailyRemainingEl.textContent = state.dailyRemaining;
                 const pct = state.dailyLimit > 0 ? (state.dailyUsed / state.dailyLimit) * 100 : 0;
                 dailyProgress.style.width = Math.min(pct, 100) + '%';
-                planStatusEl.textContent = state.isPro ? 'Pro' : 'Free';
-                settingsPlan.textContent = state.isPro ? 'Pro' : 'Free';
+                const planText = state.isPro ? 'Pro' : 'Free';
+                planStatusEl.textContent = planText;
+                settingsPlan.textContent = planText;
                 settingsEmail.textContent = state.user.email || '—';
-                // Pro portal link: show green dot if pro
-                const proLinks = [proPortalLink, mobileProPortalLink];
-                proLinks.forEach(link => {
-                    if (!link) return;
-                    const existing = link.querySelector('.pro-badge');
-                    if (existing) existing.remove();
-                    if (state.isPro) {
-                        const badge = document.createElement('span');
-                        badge.className = 'pro-badge';
-                        link.appendChild(badge);
-                    }
-                });
-                // Upgrade button visibility
+                // Show upgrade link only if not pro
                 if (state.isPro) {
-                    upgradeBtn.textContent = 'Manage Subscription';
-                    upgradeBtn.href = '#';
-                    upgradeBtn.onclick = (e) => {
-                        e.preventDefault();
-                        openPortal();
-                    };
+                    upgradeLink.style.display = 'none';
                 } else {
-                    upgradeBtn.textContent = 'Upgrade →';
-                    upgradeBtn.href = '#';
-                    upgradeBtn.onclick = (e) => {
-                        e.preventDefault();
-                        showUpgradeModal('Upgrade to Pro for unlimited audits and advanced features.');
-                    };
+                    upgradeLink.style.display = 'inline-block';
                 }
             }
 
@@ -755,13 +636,15 @@
 
             function renderRecentAudits() {
                 if (state.recentAudits.length === 0) {
-                    recentBody.innerHTML = `<tr id="noAuditsRow"><td colspan="5" class="p-6 text-center text-gray-500">No audits yet.</td></tr>`;
+                    recentBody.innerHTML =
+                        `<tr id="noAuditsRow"><td colspan="5" class="p-6 text-center text-gray-500">No audits yet.</td></tr>`;
                     return;
                 }
                 let html = '';
                 state.recentAudits.forEach(audit => {
                     const date = new Date(audit.timestamp).toLocaleDateString();
-                    const scoreColor = audit.score >= 80 ? 'text-green-500' : (audit.score >= 50 ? 'text-yellow-500' : 'text-red-500');
+                    const scoreColor = audit.score >= 80 ? 'text-green-500' : (audit.score >= 50 ? 'text-yellow-500' :
+                        'text-red-500');
                     html += `
                         <tr class="border-t border-gray-200 dark:border-gray-700">
                             <td class="p-3 text-sm">${date}</td>
@@ -778,7 +661,6 @@
                     btn.addEventListener('click', function() {
                         const url = this.dataset.url;
                         const tool = this.dataset.tool;
-                        // Set URL and tool, then run
                         urlInput.value = url;
                         toolSelector.value = tool;
                         runAudit();
@@ -830,11 +712,11 @@
                 // Check rate limit first
                 const { ok, data } = await apiCall('/api/check-rate', 'POST', { toolName: tool });
                 if (!ok || !data.allowed) {
-                    showUpgradeModal(data.message || 'You have reached your daily limit. Upgrade to Pro.');
+                    alert(data.message || 'You have reached your daily limit.');
                     return;
                 }
 
-                // Show loading in results
+                // Show loading
                 resultsContainer.innerHTML = `
                     <div class="flex flex-col items-center justify-center py-12">
                         <div class="spinner" style="width:2.5rem;height:2.5rem;border-width:4px;"></div>
@@ -842,8 +724,7 @@
                     </div>
                 `;
 
-                // Load tool script dynamically
-                // Remove existing script if any
+                // Load script
                 const existing = document.querySelector(`script[src="${scriptPath}"]`);
                 if (existing) existing.remove();
 
@@ -851,19 +732,13 @@
                 script.src = scriptPath;
                 script.type = 'module';
                 script.onload = function() {
-                    // After script loads, trigger the tool by dispatching DOMContentLoaded and clicking the analyze button
                     document.dispatchEvent(new Event('DOMContentLoaded'));
-                    // Some tools expect a button click – we'll simulate by finding the analyze button
                     const analyzeBtn = document.getElementById('analyze-url-btn');
                     if (analyzeBtn) {
                         analyzeBtn.click();
                     } else {
-                        // If no button, we can try to call a global function if exists
-                        if (typeof window.runTool === 'function') {
-                            window.runTool(url, tool);
-                        } else {
-                            resultsContainer.innerHTML = `<p class="text-red-500">Tool loaded but no entry point found.</p>`;
-                        }
+                        resultsContainer.innerHTML =
+                            `<p class="text-red-500">Tool loaded but no entry point found.</p>`;
                     }
                 };
                 script.onerror = function() {
@@ -871,13 +746,11 @@
                 };
                 document.head.appendChild(script);
 
-                // Also, we need to capture the result from the tool. The original used a global event or DOM updates.
-                // We'll listen for a custom event 'auditComplete' that the tool script should dispatch.
+                // Listen for audit completion
                 document.addEventListener('auditComplete', function handler(e) {
                     document.removeEventListener('auditComplete', handler);
                     const result = e.detail;
                     if (result) {
-                        // Save audit
                         const audit = {
                             url: url,
                             tool: tool,
@@ -885,7 +758,6 @@
                             timestamp: Date.now()
                         };
                         saveAudit(audit);
-                        // Display result
                         resultsContainer.innerHTML = `
                             <div class="glass rounded-2xl p-6 result-detail">
                                 <h4 class="text-xl font-bold mb-2">${tool.replace(/-/g,' ')} Report</h4>
@@ -898,119 +770,17 @@
                 });
             }
 
-            // ─── Upgrade Modal ───
-            function showUpgradeModal(message) {
-                upgradeMessage.textContent = message || 'Upgrade to Pro for unlimited audits and advanced features.';
-                upgradeModal.classList.remove('hidden');
-            }
-
-            function hideUpgradeModal() {
-                upgradeModal.classList.add('hidden');
-                checkoutContainer.innerHTML = '';
-            }
-
-            closeUpgradeModal.addEventListener('click', hideUpgradeModal);
-            upgradeModal.addEventListener('click', function(e) {
-                if (e.target === this) hideUpgradeModal();
-            });
-
-            // Upgrade button inside modal
-            upgradeProBtn.addEventListener('click', async function() {
-                const token = getToken();
-                if (!token) {
-                    alert('Please login first.');
-                    return;
-                }
-                this.disabled = true;
-                this.textContent = 'Loading…';
-                try {
-                    const stripe = Stripe('pk_live_51SyjNi35Al6CUgc4jAcWAszElUF4iMpBZOj5UGM9gk7KZKxBSlDGP06S9S0kv7mlkUfZa7yTgFtP6PBEl39b5dKt00hzl1NEgr');
-                    const { ok, data } = await apiCall('/api/upgrade', 'POST');
-                    if (!ok || !data.clientSecret) {
-                        alert('Failed to start checkout. Please try again.');
-                        return;
-                    }
-                    // Mount embedded checkout
-                    checkoutContainer.innerHTML = ''; // clear
-                    const checkout = await stripe.initEmbeddedCheckout({
-                        fetchClientSecret: () => Promise.resolve(data.clientSecret),
-                    });
-                    checkout.mount('#checkout-container');
-                    // Hide the upgrade button, show checkout
-                    this.classList.add('hidden');
-                    // Set flag for activation polling
-                    localStorage.setItem('just_upgraded', 'true');
-                    // Start polling for session status? The original had a polling function.
-                    // We'll implement a simple poll to refresh token after webhook.
-                    pollForProActivation();
-                } catch (err) {
-                    alert('Upgrade error: ' + err.message);
-                    this.disabled = false;
-                    this.textContent = 'Upgrade Now ($29/mo)';
-                }
-            });
-
-            async function pollForProActivation() {
-                let attempts = 0;
-                const maxAttempts = 20; // ~60 seconds
-                const interval = setInterval(async () => {
-                    attempts++;
-                    const token = getToken();
-                    if (!token) {
-                        clearInterval(interval);
-                        return;
-                    }
-                    try {
-                        const { ok, data } = await apiCall('/api/account-info');
-                        if (ok && data.isPro) {
-                            // Pro activated
-                            localStorage.removeItem('just_upgraded');
-                            state.isPro = true;
-                            state.user.isPro = true;
-                            updateStatsUI();
-                            hideUpgradeModal();
-                            alert('Pro activated! You now have 25 daily runs.');
-                            clearInterval(interval);
-                            // Refresh token to get updated status
-                            const refreshRes = await apiCall('/api/refresh-token', 'POST');
-                            if (refreshRes.ok && refreshRes.data.token) {
-                                setToken(refreshRes.data.token);
-                            }
-                        }
-                    } catch (e) {}
-                    if (attempts >= maxAttempts) {
-                        clearInterval(interval);
-                        localStorage.removeItem('just_upgraded');
-                    }
-                }, 3000);
-            }
-
-            // ─── Pro Portal (manage subscription) ───
-            async function openPortal() {
-                const token = getToken();
-                if (!token) return;
-                const { ok, data } = await apiCall('/api/portal', 'GET');
-                if (ok && data.url) {
-                    window.location.href = data.url;
-                } else {
-                    alert('Could not open billing portal. Please contact support.');
-                }
-            }
-
             // ─── Logout ───
             function logout() {
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('traffic_torch_jwt');
                 redirectToLogin();
             }
-
             logoutBtn.addEventListener('click', logout);
 
             // ─── Delete Account ───
             deleteAccountBtn.addEventListener('click', function() {
                 if (confirm('Permanently delete your account? This cannot be undone.')) {
-                    // We don't have a delete endpoint, but we can simulate by logging out and showing message.
-                    // In production, you'd call /api/delete-account
                     alert('Account deletion request – please contact support for full removal.');
                 }
             });
@@ -1018,25 +788,20 @@
             // ─── Tab switching ───
             function switchTab(tabId) {
                 state.activeTab = tabId;
-                // Update horizontal tab buttons
                 $$('.tab-btn').forEach(btn => {
                     const id = btn.dataset.tab;
                     btn.classList.toggle('tab-active', id === tabId);
                 });
-                // Show/hide tab content
                 $$('.tab-content').forEach(el => {
                     el.classList.toggle('hidden', el.id !== 'tab-' + tabId);
                 });
-                // Also update sidebar active state? Not necessary.
             }
 
-            // Tab click listeners
             document.querySelectorAll('[data-tab]').forEach(el => {
                 el.addEventListener('click', function(e) {
                     e.preventDefault();
                     const tab = this.dataset.tab;
                     if (tab) switchTab(tab);
-                    // Close mobile menu if open
                     if (!mobileMenu.classList.contains('hidden')) {
                         mobileMenu.classList.add('hidden');
                         document.body.classList.remove('overflow-hidden');
@@ -1063,7 +828,6 @@
                 mobileMenu.classList.add('hidden');
                 document.body.classList.remove('overflow-hidden');
             });
-            // Close when clicking outside
             document.addEventListener('click', function(e) {
                 if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(e.target) && e.target !== menuToggle) {
                     mobileMenu.classList.add('hidden');
@@ -1087,8 +851,6 @@
 
             // ─── Run audit button ───
             runBtn.addEventListener('click', runAudit);
-
-            // Also allow Enter key in URL input
             urlInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -1103,31 +865,12 @@
                     redirectToLogin();
                     return;
                 }
-                // Verify token by fetching account info
                 const success = await fetchAccountInfo();
-                if (!success) {
-                    // fetchAccountInfo already redirects on failure
-                    return;
-                }
-                // Load audit history
+                if (!success) return;
                 loadAuditHistory();
-                // Show dashboard, hide auth guard
                 authGuard.classList.add('hidden');
                 dashboardApp.classList.remove('hidden');
-
-                // Check for "just_upgraded" flag and poll
-                if (localStorage.getItem('just_upgraded') === 'true') {
-                    // Show upgrade modal with activating message
-                    showUpgradeModal('Processing your upgrade – this may take a few seconds…');
-                    upgradeProBtn.classList.add('hidden');
-                    checkoutContainer.innerHTML = '<div class="text-center py-4"><div class="spinner" style="width:2rem;height:2rem;border-width:3px;"></div><p class="mt-2">Activating Pro access…</p></div>';
-                    pollForProActivation();
-                }
-
-                // Set default tab
                 switchTab('dashboard');
-
-                // Handle Stripe return? Not needed for embedded.
             }
 
             init();
