@@ -534,3 +534,11 @@ div.prose p {
 @keyframes tooltip-in {
   to { opacity: 1; }
 }
+
+/* Center the auth form container but left‑align inputs */
+#auth-forms form {
+  text-align: left;
+}
+#auth-forms .flex.border-b {
+  justify-content: center;
+}
