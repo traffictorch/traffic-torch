@@ -4,54 +4,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
-<title>Traffic Torch Pro – Dashboard</title>
-<meta name="description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
-<meta name="robots" content="noindex, nofollow">
-<link rel="canonical" href="https://traffictorch.net/pro/">
+  <title>Traffic Torch Pro – Dashboard</title>
+  <meta name="description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://traffictorch.net/pro/">
 
-<!-- Theme Color, Open Graph, etc. -->
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
-<meta property="og:title" content="Traffic Torch Pro – Dashboard">
-<meta property="og:description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://traffictorch.net/pro/">
-<meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Traffic Torch Pro – Dashboard">
+  <!-- Theme Color, Open Graph, etc. -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Traffic Torch Pro – Dashboard">
+  <meta property="og:description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/pro/">
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Traffic Torch Pro – Dashboard">
 
-<!-- Preload CSS -->
-<link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="/style-v1.0.css"></noscript>
-<style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
-<link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
-<noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
+  <!-- Preload CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style-v1.0.css"></noscript>
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
 
-<script>
-  (function() {
-    const saved = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (saved === 'dark' || (!saved && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  })();
-</script>
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
 
-<script src="https://js.stripe.com/v3/"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
-  [x-cloak] { display: none !important; }
-  .tab-active { border-bottom: 3px solid #f97316; color: #f97316; }
-  .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-  .dark .glass { background: rgba(0,0,0,0.3); }
-  .stat-card { transition: transform 0.2s; }
-  .stat-card:hover { transform: translateY(-4px); }
-  .result-detail { border-left: 3px solid #f97316; }
-</style>
+  <style>
+    [x-cloak] { display: none !important; }
+    .tab-active { border-bottom: 3px solid #f97316; color: #f97316; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+    .dark .glass { background: rgba(0,0,0,0.3); }
+    .stat-card { transition: transform 0.2s; }
+    .stat-card:hover { transform: translateY(-4px); }
+    .result-detail { border-left: 3px solid #f97316; }
+  </style>
 
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -62,7 +62,7 @@
   <!-- ======== AUTH FORMS ======== -->
   <div x-show="!isAuthenticated" class="flex-1 flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8">
-      <!-- Auth tabs (same as before) – omitted for brevity, keep your existing code -->
+      <!-- Auth tabs – keep your existing implementation -->
       <p class="text-center text-xs text-gray-500 mt-6">Traffic Torch Auth</p>
     </div>
   </div>
@@ -119,12 +119,12 @@
         </div>
 
         <!-- ========================================================== -->
-        <!-- TAB: DASHBOARD -->
+        <!-- TAB: DASHBOARD – UPDATED LAYOUT -->
         <!-- ========================================================== -->
         <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
 
-          <!-- 1. Top Stats Row (4 cards) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <!-- 1. Top Stats Row (only Audits Today + Plan) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <!-- Audits Today -->
             <div class="glass rounded-2xl p-5 stat-card">
               <div class="flex items-center justify-between">
@@ -137,123 +137,68 @@
               </div>
               <p class="text-xs text-gray-500 mt-2" x-text="`${dailyRemaining} remaining`"></p>
             </div>
-            <!-- Total Audits -->
-            <div class="glass rounded-2xl p-5 stat-card">
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm text-gray-500 dark:text-gray-400">Total Audits</h3>
-                <span class="text-2xl">📈</span>
-              </div>
-              <p class="text-3xl font-bold mt-2" x-text="totalAudits || 0"></p>
-            </div>
-            <!-- Average Score -->
-            <div class="glass rounded-2xl p-5 stat-card">
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm text-gray-500 dark:text-gray-400">Average Score</h3>
-                <span class="text-2xl">🏆</span>
-              </div>
-              <p class="text-3xl font-bold mt-2" x-text="averageScore ? averageScore + '%' : '—'"></p>
-            </div>
-            <!-- Pro Status -->
+            <!-- Plan -->
             <div class="glass rounded-2xl p-5 stat-card">
               <div class="flex items-center justify-between">
                 <h3 class="text-sm text-gray-500 dark:text-gray-400">Plan</h3>
                 <span class="text-2xl">⭐</span>
               </div>
-              <p class="text-2xl font-bold mt-2" x-text="user.isPro ? 'Pro' : 'Free'"></p>
+              <p class="text-3xl font-bold mt-2" x-text="user.isPro ? 'Pro' : 'Free'"></p>
               <template x-if="!user.isPro">
                 <a href="/pro/upgrade" class="mt-2 inline-block text-sm text-orange-500 hover:underline">Upgrade →</a>
               </template>
             </div>
           </div>
 
-          <!-- 2. Quick Audit (tool selector + URL + Run + full results) -->
+          <!-- 2. Quick Audit (tool selector above URL) -->
           <div class="glass rounded-2xl p-6 mb-8">
             <h3 class="text-xl font-bold mb-4">🚀 Quick Audit</h3>
-            <div class="flex flex-wrap gap-4 items-end">
-              <div class="flex-1 min-w-[180px]">
+            <div class="space-y-4">
+              <!-- Tool selector (full width, above input) -->
+              <div>
                 <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1">Select Tool</label>
-                <select x-model="selectedTool" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                  <option value="full">Full SEO + UX</option>
-                  <option value="ux">UX Audit</option>
-                  <option value="geo">GEO Audit</option>
-                  <option value="local">Local SEO</option>
-                  <option value="product">Product SEO</option>
+                <select x-model="selectedTool" id="tool-selector" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                  <option value="seo-intent-tool">SEO Intent</option>
+                  <option value="seo-ux-tool">Full SEO + UX</option>
+                  <option value="local-seo-tool">Local SEO</option>
+                  <option value="product-seo-tool">Product SEO</option>
                   <option value="entity">Entity Extractor</option>
                   <option value="topical">Topical Authority</option>
-                  <option value="intent">SEO Intent</option>
-                  <option value="voice">Voice Search</option>
-                  <option value="schema">Schema Generator</option>
+                  <option value="schema-generator">Schema Generator</option>
+                  <option value="ai-search-optimization-tool">GEO / AI Search</option>
+                  <option value="ai-voice-search-tool">Voice Search</option>
+                  <option value="ai-audit-tool">AI Content Audit</option>
+                  <option value="quit-risk-tool">Quit Risk</option>
+                  <option value="keyword-research-tool">Keyword Research</option>
+                  <option value="keyword-tool">Keyword Placement</option>
                 </select>
               </div>
-              <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1">Enter URL</label>
-                <input type="url" x-model="quickUrl" placeholder="https://example.com" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-              </div>
-              <button @click="runQuickAudit()" class="px-6 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">
-                Run Audit
-              </button>
-            </div>
-
-            <!-- Result panel (shown when result exists) -->
-            <div x-show="quickResult" x-cloak class="mt-6 p-4 bg-gray-100 dark:bg-gray-800/50 rounded-lg result-detail">
-              <div class="flex items-start gap-4">
-                <div class="flex-1">
-                  <div class="flex items-center justify-between">
-                    <h4 class="text-lg font-bold" x-text="quickResult.title || 'Audit Results'"></h4>
-                    <span class="text-2xl font-bold" :class="{'text-green-500': quickResult.score >= 80, 'text-yellow-500': quickResult.score >= 50 && quickResult.score < 80, 'text-red-500': quickResult.score < 50}" x-text="quickResult.score + '%'"></span>
-                  </div>
-                  <div class="mt-2 space-y-2">
-                    <template x-for="(cat, idx) in quickResult.categories" :key="idx">
-                      <div>
-                        <div class="flex justify-between text-sm">
-                          <span x-text="cat.name"></span>
-                          <span x-text="cat.score + '%'"></span>
-                        </div>
-                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-                          <div class="h-1.5 rounded-full" :style="`width: ${cat.score}%; background: ${cat.score >= 80 ? '#22c55e' : cat.score >= 50 ? '#eab308' : '#ef4444'}`"></div>
-                        </div>
-                        <ul class="text-xs text-gray-600 dark:text-gray-400 list-disc pl-4 mt-1" x-show="cat.issues && cat.issues.length">
-                          <template x-for="issue in cat.issues" :key="issue">
-                            <li x-text="issue"></li>
-                          </template>
-                        </ul>
-                      </div>
-                    </template>
-                  </div>
-                  <div class="mt-3 text-sm text-gray-600 dark:text-gray-400" x-show="quickResult.recommendations && quickResult.recommendations.length">
-                    <p class="font-semibold">Recommendations:</p>
-                    <ul class="list-disc pl-4">
-                      <template x-for="rec in quickResult.recommendations" :key="rec">
-                        <li x-text="rec"></li>
-                      </template>
-                    </ul>
-                  </div>
-                </div>
-                <button @click="quickResult = null" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">✕</button>
+              <!-- URL input + Run button (side by side) -->
+              <div class="flex flex-col sm:flex-row gap-4">
+                <input type="url" id="url-input" x-model="quickUrl" placeholder="https://example.com" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                <button id="analyze-url-btn" @click="runTool()" class="px-6 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition whitespace-nowrap">
+                  Run Audit
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- 3. Quick Actions -->
-          <div class="flex flex-wrap gap-3 mb-8">
-            <button @click="activeDashboardTab = 'audits'" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">📄 New Audit</button>
-            <button class="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm hover:bg-purple-700">📅 Schedule</button>
-            <button class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700" x-show="user.isPro">📥 Export Data</button>
+          <!-- 3. Results Container -->
+          <div id="results" class="mt-8 space-y-16">
+            <!-- Tool results will be rendered here -->
           </div>
 
-          <!-- 4. Recent Audits (with details) -->
-          <h3 class="text-lg font-bold mb-4">📋 Recent Audits</h3>
-          <div class="glass rounded-2xl overflow-hidden mb-8">
+          <!-- 4. Recent Audits (from localStorage) -->
+          <h3 class="text-lg font-bold mt-12 mb-4">📋 Recent Audits</h3>
+          <div class="glass rounded-2xl overflow-hidden">
             <div class="overflow-x-auto">
               <table class="w-full text-left">
                 <thead class="bg-gray-100 dark:bg-gray-800">
                   <tr>
                     <th class="p-3">Date</th>
                     <th class="p-3">URL</th>
-                    <th class="p-3">Overall</th>
-                    <th class="p-3">UX</th>
-                    <th class="p-3">SEO</th>
-                    <th class="p-3">AI/GEO</th>
+                    <th class="p-3">Score</th>
+                    <th class="p-3">Tool</th>
                     <th class="p-3">Actions</th>
                   </tr>
                 </thead>
@@ -262,39 +207,19 @@
                     <tr class="border-t border-gray-200 dark:border-gray-700">
                       <td class="p-3 text-sm" x-text="new Date(audit.timestamp).toLocaleDateString()"></td>
                       <td class="p-3 text-sm truncate max-w-[150px]" x-text="audit.url"></td>
-                      <td class="p-3 font-bold" :class="{'text-green-500': audit.overall >= 80, 'text-yellow-500': audit.overall >= 50 && audit.overall < 80, 'text-red-500': audit.overall < 50}" x-text="audit.overall + '%'"></td>
-                      <td class="p-3" x-text="audit.ux_score + '%'"></td>
-                      <td class="p-3" x-text="audit.seo_score + '%'"></td>
-                      <td class="p-3" x-text="audit.ai_score + '%'"></td>
+                      <td class="p-3 font-bold" :class="{'text-green-500': audit.score >= 80, 'text-yellow-500': audit.score >= 50 && audit.score < 80, 'text-red-500': audit.score < 50}" x-text="audit.score + '%'"></td>
+                      <td class="p-3 text-sm" x-text="audit.tool"></td>
                       <td class="p-3">
                         <button @click="viewReport(audit)" class="text-blue-500 hover:underline text-sm">View Report</button>
                       </td>
                     </tr>
                   </template>
                   <tr x-show="recentAudits.length === 0">
-                    <td colspan="7" class="p-6 text-center text-gray-500">No audits yet. Run your first Quick Audit!</td>
+                    <td colspan="5" class="p-6 text-center text-gray-500">No audits yet. Run your first Quick Audit!</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div class="p-3 text-center border-t border-gray-200 dark:border-gray-700">
-              <a href="#" @click.prevent="activeDashboardTab = 'audits'" class="text-sm text-orange-500 hover:underline">View All Audits →</a>
-            </div>
-          </div>
-
-          <!-- 5. Recent Activity Feed (generated from audits) -->
-          <div class="glass rounded-2xl p-5">
-            <h3 class="text-md font-bold mb-3">🕒 Recent Activity</h3>
-            <ul class="space-y-2 text-sm">
-              <template x-for="activity in recentActivity" :key="activity.id">
-                <li class="flex items-center gap-3 border-b border-gray-200 dark:border-gray-700 pb-2">
-                  <span class="text-lg" x-text="activity.icon"></span>
-                  <span x-text="activity.text"></span>
-                  <span class="ml-auto text-gray-500 text-xs" x-text="activity.time"></span>
-                </li>
-              </template>
-              <li x-show="recentActivity.length === 0" class="text-center text-gray-500 py-4">No activity yet.</li>
-            </ul>
           </div>
 
         </div><!-- end dashboard tab -->
@@ -388,12 +313,8 @@ function combinedApp() {
     dailyUsed: 0,
     dailyLimit: 3,
     dailyRemaining: 0,
-    totalAudits: 0,
-    averageScore: null,
-    selectedTool: 'full',
+    selectedTool: 'seo-intent-tool', // default
     quickUrl: '',
-    quickResult: null,
-    recentActivity: [],
     recentAudits: [],
     analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
 
@@ -407,7 +328,7 @@ function combinedApp() {
 
     // ---- Init ----
     initApp() {
-      // Auth init (keep as before)
+      // Auth init (keep your existing)
       if (this.resetToken) {
         this.activeTab = 'login';
         this.showForgot = false;
@@ -424,7 +345,7 @@ function combinedApp() {
         this.fetchAccountInfo();
       }
 
-      // Load audit history from localStorage
+      // Load recent audits from localStorage
       this.loadAuditHistory();
 
       // Listen for sidebar tab clicks
@@ -435,7 +356,7 @@ function combinedApp() {
       });
     },
 
-    // ---- Auth methods (keep existing) ----
+    // ---- Auth methods (keep your existing) ----
     async fetchAccountInfo() {
       const token = localStorage.getItem('authToken');
       if (!token) return;
@@ -468,141 +389,116 @@ function combinedApp() {
     },
 
     // (Auth methods: sendMagicLink, login, register, sendResetLink, resetPassword – keep your existing implementations)
-    // I'll leave them out for brevity – you already have them.
 
     // ---- Dashboard methods ----
     loadAuditHistory() {
-      const stored = localStorage.getItem('auditHistory');
+      const stored = localStorage.getItem('proAuditHistory');
       if (stored) {
         try {
-          const data = JSON.parse(stored);
-          this.recentAudits = data.slice(0, 10);
-          this.totalAudits = data.length;
-          const scores = data.map(a => a.overall);
-          this.averageScore = scores.length ? Math.round(scores.reduce((a,b) => a+b, 0) / scores.length) : null;
-          // Build activity feed from the last 5 audits
-          this.recentActivity = data.slice(0, 5).map((a, idx) => ({
-            id: idx,
-            icon: '📄',
-            text: `Audited ${a.url}`,
-            time: new Date(a.timestamp).toLocaleDateString()
-          }));
-        } catch(e) { console.warn('Invalid audit history'); }
+          this.recentAudits = JSON.parse(stored).slice(0, 10);
+        } catch(e) { this.recentAudits = []; }
       } else {
         this.recentAudits = [];
-        this.totalAudits = 0;
-        this.averageScore = null;
-        this.recentActivity = [];
       }
     },
 
     saveAudit(audit) {
       let history = [];
-      const stored = localStorage.getItem('auditHistory');
+      const stored = localStorage.getItem('proAuditHistory');
       if (stored) {
         try { history = JSON.parse(stored); } catch(e) {}
       }
       history.unshift(audit);
-      // Keep last 50 audits
       if (history.length > 50) history = history.slice(0, 50);
-      localStorage.setItem('auditHistory', JSON.stringify(history));
+      localStorage.setItem('proAuditHistory', JSON.stringify(history));
       this.loadAuditHistory(); // refresh display
     },
 
-    async runQuickAudit() {
-      if (!this.quickUrl) {
-        this.setMessage('Please enter a URL', 'error');
+    runTool() {
+      const url = this.quickUrl.trim();
+      if (!url) {
+        this.setMessage('Please enter a valid URL', 'error');
         return;
       }
-      // Show loading state (optional)
-      this.quickResult = null;
 
-      // Determine which analysis function to call based on selectedTool
-      // You'll need to import the actual analysis modules from your main tool.
-      // For demonstration, I'll simulate a real analysis by calling a local function.
-      // In production, you should import the modules from '/seo-ux-tool/script-v1.3.js' or similar.
-      // Since we can't import directly here, we'll use a fetch to your tool's API endpoint.
-      // For now, I'll use a mock that simulates a real audit.
-      // Replace with actual call to your analysis engine.
+      // Set the input value (the tool script will read it)
+      const urlInput = document.getElementById('url-input');
+      if (urlInput) urlInput.value = url;
 
-      // --- REAL IMPLEMENTATION ---
-      // Option 1: Use the existing analysis functions (if you can import them)
-      // import { analyzeSEO, analyzeMobile, ... } from '/seo-ux-tool/modules/*.js';
-      // But that's not straightforward in a standalone script.
-
-      // Option 2: Call your own API endpoint that performs the audit.
-      // For now, I'll simulate with a realistic result based on the URL.
-      // You can replace this with a fetch to your internal API.
-
-      try {
-        // Simulate network delay
-        await new Promise(r => setTimeout(r, 800));
-
-        // ----- SIMULATED AUDIT (replace with real logic) -----
-        const score = Math.floor(Math.random() * 41) + 60; // random 60-100
-        const categories = [
-          { name: 'UX', score: Math.floor(Math.random() * 41) + 60, issues: [] },
-          { name: 'SEO', score: Math.floor(Math.random() * 41) + 60, issues: [] },
-          { name: 'AI/GEO', score: Math.floor(Math.random() * 41) + 60, issues: [] }
-        ];
-        // Add some issues based on low scores
-        categories.forEach(cat => {
-          if (cat.score < 80) {
-            cat.issues.push('Some improvement needed');
-          }
-          if (cat.score < 70) {
-            cat.issues.push('Critical issue found');
-          }
-        });
-        const recommendations = ['Optimize images', 'Improve mobile layout'];
-        const result = {
-          title: this.quickUrl,
-          score: Math.round(categories.reduce((a,b) => a + b.score, 0) / categories.length),
-          categories: categories,
-          recommendations: recommendations
-        };
-        // ----- END SIMULATION -----
-
-        this.quickResult = result;
-
-        // Save this audit to history (with real scores)
-        const auditEntry = {
-          id: Date.now(),
-          url: this.quickUrl,
-          overall: result.score,
-          ux_score: categories.find(c => c.name === 'UX')?.score || 0,
-          seo_score: categories.find(c => c.name === 'SEO')?.score || 0,
-          ai_score: categories.find(c => c.name === 'AI/GEO')?.score || 0,
-          timestamp: Date.now()
-        };
-        this.saveAudit(auditEntry);
-
-        // Update daily used count (if from server, we'd increment)
-        this.dailyUsed = this.dailyUsed + 1;
-        this.dailyRemaining = this.dailyLimit - this.dailyUsed;
-
-      } catch(err) {
-        this.setMessage('Error running audit: ' + err.message, 'error');
+      // Determine the tool folder and script path
+      const tool = this.selectedTool;
+      let scriptPath = '';
+      // Map tool IDs to folder names
+      const toolMap = {
+        'seo-intent-tool': '/seo-intent-tool/script-v1.4.js',
+        'seo-ux-tool': '/seo-ux-tool/script-v1.3.js',
+        'local-seo-tool': '/local-seo-tool/script-v1.0.js',
+        'product-seo-tool': '/product-seo-tool/script-v1.0.js',
+        'entity': '/seo-entity-extractor-tool/script-v1.0.js',
+        'topical': '/topical-authority-audit-tool/script-v1.0.js',
+        'schema-generator': '/schema-generator/script-v1.0.js',
+        'ai-search-optimization-tool': '/ai-search-optimization-tool/script-v1.0.js',
+        'ai-voice-search-tool': '/ai-voice-search-tool/script-v1.0.js',
+        'ai-audit-tool': '/ai-audit-tool/script-v1.0.js',
+        'quit-risk-tool': '/quit-risk-tool/script-v1.0.js',
+        'keyword-research-tool': '/keyword-research-tool/script-v1.0.js',
+        'keyword-tool': '/keyword-tool/script-v1.0.js'
+      };
+      scriptPath = toolMap[tool];
+      if (!scriptPath) {
+        this.setMessage('Tool script not found', 'error');
+        return;
       }
+
+      // Clear previous results
+      const resultsContainer = document.getElementById('results');
+      resultsContainer.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-12">
+          <div class="spinner border-4 border-orange-500 border-t-transparent rounded-full w-16 h-16 animate-spin"></div>
+          <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Loading ${tool.replace(/-/g,' ')}...</p>
+        </div>
+      `;
+
+      // Load the script dynamically
+      this.loadToolScript(scriptPath, () => {
+        // After script loads, trigger the tool's analyze button
+        const analyzeBtn = document.getElementById('analyze-url-btn');
+        if (analyzeBtn) {
+          analyzeBtn.click();
+          // The tool's script will handle the rest and render results into #results
+        } else {
+          this.setMessage('Tool button not found', 'error');
+        }
+      });
+    },
+
+    loadToolScript(src, callback) {
+      // Check if already loaded (by script src)
+      const existing = document.querySelector(`script[src="${src}"]`);
+      if (existing) {
+        callback();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.type = 'module';
+      script.onload = callback;
+      script.onerror = () => {
+        this.setMessage('Failed to load tool script', 'error');
+      };
+      document.head.appendChild(script);
     },
 
     viewReport(audit) {
-      // Open a modal or expand details – for now, we can show a simple alert
-      // But better: navigate to the full report page or open a modal.
-      // For now, we'll just show the details.
-      this.quickResult = {
-        title: audit.url,
-        score: audit.overall,
-        categories: [
-          { name: 'UX', score: audit.ux_score, issues: [] },
-          { name: 'SEO', score: audit.seo_score, issues: [] },
-          { name: 'AI/GEO', score: audit.ai_score, issues: [] }
-        ],
-        recommendations: ['Review full report for details']
-      };
-      // Scroll to the result panel
-      const resultEl = document.querySelector('.result-detail');
-      if (resultEl) resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Re-run the same tool on the same URL
+      this.selectedTool = audit.tool;
+      this.quickUrl = audit.url;
+      // Wait for DOM update then run
+      this.$nextTick(() => {
+        this.runTool();
+        // Switch to dashboard tab
+        this.activeDashboardTab = 'dashboard';
+      });
     },
 
     logout() {
