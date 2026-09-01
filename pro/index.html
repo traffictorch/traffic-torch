@@ -9,7 +9,6 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://traffictorch.net/pro/">
 
-<!-- Theme Color, Open Graph, etc. -->
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
 <meta property="og:title" content="Traffic Torch Pro – Dashboard">
@@ -163,7 +162,7 @@
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col min-h-screen">
-      <!-- Header (unchanged) -->
+      <!-- Header -->
       <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
           <a href="/" class="flex items-center gap-4 md:hidden">
@@ -195,9 +194,7 @@
           </template>
         </div>
 
-        <!-- ========================================================== -->
-        <!-- TAB: DASHBOARD – REAL TOOL LOADING -->
-        <!-- ========================================================== -->
+        <!-- DASHBOARD TAB -->
         <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
 
           <!-- Stats Row -->
@@ -303,7 +300,7 @@
 
         </div><!-- end dashboard tab -->
 
-        <!-- Other tabs (placeholders) -->
+        <!-- Other tabs -->
         <div x-show="activeDashboardTab === 'audits'" x-cloak><p class="text-center text-gray-500 py-20">Audits history – coming soon.</p></div>
         <div x-show="activeDashboardTab === 'analytics'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
@@ -464,10 +461,11 @@ function combinedApp() {
       }
     },
 
+    // --- FIXED ENDPOINTS: /auth/ → /api/ ---
     async sendMagicLink() {
       this.loading = true;
       try {
-        const res = await fetch(API_BASE + '/auth/magic-link', {
+        const res = await fetch(API_BASE + '/api/magic-link', {  // fixed
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.magicEmail })
@@ -486,7 +484,7 @@ function combinedApp() {
     async login() {
       this.loading = true;
       try {
-        const res = await fetch(API_BASE + '/auth/login', {
+        const res = await fetch(API_BASE + '/api/login', {  // fixed
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.loginEmail, password: this.loginPassword })
@@ -518,7 +516,7 @@ function combinedApp() {
       }
       this.loading = true;
       try {
-        const res = await fetch(API_BASE + '/auth/register', {
+        const res = await fetch(API_BASE + '/api/register', {  // fixed
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.registerEmail, password: this.registerPassword })
@@ -543,7 +541,7 @@ function combinedApp() {
     async sendResetLink() {
       this.loading = true;
       try {
-        const res = await fetch(API_BASE + '/auth/reset-password', {
+        const res = await fetch(API_BASE + '/api/reset-password', {  // fixed
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.resetEmail })
@@ -571,7 +569,7 @@ function combinedApp() {
       }
       this.loading = true;
       try {
-        const res = await fetch(API_BASE + '/auth/reset-password/confirm', {
+        const res = await fetch(API_BASE + '/api/reset-password/confirm', {  // fixed
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token: this.resetToken, password: this.resetNewPassword })
