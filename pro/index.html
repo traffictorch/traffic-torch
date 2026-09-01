@@ -516,5 +516,28 @@ function combinedApp() {
 }
 </script>
 
+<script>
+  // Manually expose the runTool function to the global scope
+  document.addEventListener('alpine:init', function() {
+    // Wait for Alpine to be ready
+    setTimeout(function() {
+      const app = document.querySelector('[x-data]');
+      if (app && app.__x) {
+        window.runTool = app.__x.$data.runTool.bind(app.__x.$data);
+        // Re-bind the button click
+        const btn = document.getElementById('analyze-url-btn');
+        if (btn) {
+          btn.onclick = function(e) {
+            e.preventDefault();
+            if (typeof window.runTool === 'function') {
+              window.runTool();
+            }
+          };
+        }
+      }
+    }, 500);
+  });
+</script>
+
 </body>
 </html>
