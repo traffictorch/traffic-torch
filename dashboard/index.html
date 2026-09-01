@@ -13,23 +13,9 @@
     <!-- Preload CSS (adjust paths to your own) -->
     <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="/style-v1.0.css" /></noscript>
-    <style>
-        html {
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-    </style>
+    <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
     <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'" />
-    <noscript>
-        <style>
-            html {
-                visibility: visible;
-                opacity: 1
-            }
-        </style>
-        <link rel="stylesheet" href="/tailwind-local-v1.0.css" />
-    </noscript>
+    <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css" /></noscript>
 
     <script>
         (function() {
@@ -44,21 +30,19 @@
     </script>
 
     <style>
-        /* ── Core styles (same as original combined app) ── */
-        [x-cloak] {
-            display: none !important;
-        }
+        /* ── Core styles ── */
+        [x-cloak] { display: none !important; }
         .tab-active {
             border-bottom: 3px solid #f97316;
             color: #f97316;
         }
         .glass {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         .dark .glass {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0,0,0,0.3);
         }
         .stat-card {
             transition: transform 0.2s;
@@ -68,6 +52,13 @@
         }
         .result-detail {
             border-left: 3px solid #f97316;
+        }
+        .lock-overlay {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .lock-overlay .upgrade-trigger {
+            pointer-events: auto;
         }
 
         /* Sidebar collapse */
@@ -128,7 +119,7 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             transform: translateX(100%);
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
             padding: 2rem 0.25rem 2rem;
         }
         .dark #mobileMenu {
@@ -157,7 +148,7 @@
             color: #f3f4f6;
         }
         #close-mobile-menu:hover {
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(0,0,0,0.1);
         }
         #mobileMenu a {
             color: #1f2937 !important;
@@ -176,7 +167,6 @@
             width: 100%;
         }
 
-        /* Buttons */
         .btn-primary {
             background: linear-gradient(135deg, #f97316, #ec4899);
             color: white;
@@ -194,6 +184,19 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
+        .btn-secondary {
+            background: #3b82f6;
+            color: white;
+            font-weight: 600;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.75rem;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-secondary:hover {
+            background: #2563eb;
+        }
         .btn-danger {
             background: #ef4444;
             color: white;
@@ -207,11 +210,25 @@
         .btn-danger:hover {
             background: #dc2626;
         }
+        .btn-success {
+            background: #22c55e;
+            color: white;
+            font-weight: 600;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.75rem;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+        }
+
         .spinner {
             display: inline-block;
             width: 1.25rem;
             height: 1.25rem;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255,255,255,0.3);
             border-top-color: #fff;
             border-radius: 50%;
             animation: spin 0.6s linear infinite;
@@ -219,66 +236,130 @@
             margin-right: 0.5rem;
         }
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
-        /* Responsive */
+        .menu-fade-in {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+        .menu-fade-in.loaded {
+            opacity: 1;
+        }
+
+        .pro-badge {
+            display: inline-block;
+            width: 0.625rem;
+            height: 0.625rem;
+            background-color: #22c55e;
+            border-radius: 9999px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+        .dark .pro-badge {
+            background-color: #34d399;
+        }
+
+        /* Upgrade modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 1rem;
+        }
+        .modal-box {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .dark .modal-box {
+            background: #1f2937;
+            color: #f3f4f6;
+        }
+        .modal-box h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .modal-box .close-btn {
+            float: right;
+            font-size: 2rem;
+            line-height: 1;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        .modal-box .close-btn:hover {
+            color: #6b7280;
+        }
+        .tier-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .tier-card:hover {
+            border-color: #f97316;
+            background: rgba(249,115,22,0.05);
+        }
+        .dark .tier-card {
+            border-color: #374151;
+        }
+        .dark .tier-card:hover {
+            background: rgba(249,115,22,0.1);
+        }
+        .tier-card.selected {
+            border-color: #f97316;
+            background: rgba(249,115,22,0.1);
+        }
+        .tier-card .price {
+            font-weight: 700;
+            color: #f97316;
+        }
+        .tier-card .feature-list {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        .dark .tier-card .feature-list {
+            color: #9ca3af;
+        }
+
         @media (max-width: 640px) {
-            .text-5xl {
-                font-size: 2.25rem;
-            }
-            .text-6xl {
-                font-size: 2.5rem;
-            }
+            .text-5xl { font-size: 2.25rem; }
+            .text-6xl { font-size: 2.5rem; }
         }
     </style>
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
-    <!-- ─── AUTH GUARD ─── -->
-    <div id="authGuard" class="flex-1 flex items-center justify-center">
-        <div class="text-center">
-            <div class="spinner" style="width:2.5rem;height:2.5rem;border-width:4px;"></div>
-            <p class="mt-4 text-gray-500 dark:text-gray-400">Loading your dashboard…</p>
-        </div>
-    </div>
-
     <!-- ─── DASHBOARD APP ─── -->
-    <div id="dashboardApp" class="flex flex-1 min-h-screen hidden">
+    <div id="dashboardApp" class="flex flex-1 min-h-screen">
 
-        <!-- Desktop Sidebar -->
-        <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 overflow-y-auto sticky top-0 h-screen flex-col self-start">
+        <!-- Desktop Sidebar (placeholder) -->
+        <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
             <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
                 <a href="/" class="flex items-center gap-4">
                     <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-                    <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
+                    <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
                 </a>
             </div>
-            <nav class="flex-1 p-4 space-y-1">
-                <a href="#" data-tab="dashboard" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-white/5 transition">
-                    <span class="text-2xl">📊</span>
-                    <span class="sidebar-text">Dashboard</span>
-                </a>
-                <a href="#" data-tab="audits" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-white/5 transition">
-                    <span class="text-2xl">📋</span>
-                    <span class="sidebar-text">Audits</span>
-                </a>
-                <a href="#" data-tab="analytics" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-white/5 transition">
-                    <span class="text-2xl">📈</span>
-                    <span class="sidebar-text">Analytics</span>
-                </a>
-                <a href="#" data-tab="integrations" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-white/5 transition">
-                    <span class="text-2xl">🔗</span>
-                    <span class="sidebar-text">Integrations</span>
-                </a>
-                <a href="#" data-tab="settings" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-white/5 transition">
-                    <span class="text-2xl">⚙️</span>
-                    <span class="sidebar-text">Settings</span>
-                </a>
-            </nav>
+            <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
             <div class="p-4 border-t border-white/10 dark:border-white/5">
                 <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
             </div>
@@ -293,36 +374,19 @@
                         <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
                         <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
                     </a>
-                    <div class="flex items-center gap-4">
-                        <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition">☰</button>
-                        <button id="menuToggle" class="md:hidden text-3xl text-gray-500">☰</button>
-                        <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
-                    </div>
+                    <div class="w-10 md:hidden"></div>
+                    <button id="menuToggle" class="md:hidden text-3xl text-gray-500">☰</button>
+                    <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+                    <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
                 </div>
-                <!-- Mobile Menu -->
+                <!-- Mobile Menu (drawer) -->
                 <div id="mobileMenu" class="hidden md:hidden">
                     <button id="close-mobile-menu" aria-label="Close menu">×</button>
-                    <nav class="flex flex-col p-6 space-y-3">
-                        <a href="#" data-tab="dashboard" class="sidebar-link flex items-center gap-3 text-lg px-4 py-3 rounded-lg hover:bg-white/10 dark:hover:bg-white/5">
-                            <span class="text-2xl">📊</span> Dashboard
-                        </a>
-                        <a href="#" data-tab="audits" class="sidebar-link flex items-center gap-3 text-lg px-4 py-3 rounded-lg hover:bg-white/10 dark:hover:bg-white/5">
-                            <span class="text-2xl">📋</span> Audits
-                        </a>
-                        <a href="#" data-tab="analytics" class="sidebar-link flex items-center gap-3 text-lg px-4 py-3 rounded-lg hover:bg-white/10 dark:hover:bg-white/5">
-                            <span class="text-2xl">📈</span> Analytics
-                        </a>
-                        <a href="#" data-tab="integrations" class="sidebar-link flex items-center gap-3 text-lg px-4 py-3 rounded-lg hover:bg-white/10 dark:hover:bg-white/5">
-                            <span class="text-2xl">🔗</span> Integrations
-                        </a>
-                        <a href="#" data-tab="settings" class="sidebar-link flex items-center gap-3 text-lg px-4 py-3 rounded-lg hover:bg-white/10 dark:hover:bg-white/5">
-                            <span class="text-2xl">⚙️</span> Settings
-                        </a>
-                    </nav>
+                    <div id="mobile-menu-placeholder"></div>
                 </div>
             </header>
 
-            <!-- Main Content -->
+            <!-- Main Content Area -->
             <main class="container mx-auto px-4 py-4 flex-1">
 
                 <!-- Horizontal Tabs -->
@@ -331,6 +395,7 @@
                     <button class="tab-btn px-6 py-3 text-sm font-medium transition-all duration-200" data-tab="audits">Audits</button>
                     <button class="tab-btn px-6 py-3 text-sm font-medium transition-all duration-200" data-tab="analytics">Analytics</button>
                     <button class="tab-btn px-6 py-3 text-sm font-medium transition-all duration-200" data-tab="integrations">Integrations</button>
+                    <button class="tab-btn px-6 py-3 text-sm font-medium transition-all duration-200" data-tab="api-keys">API Keys</button>
                     <button class="tab-btn px-6 py-3 text-sm font-medium transition-all duration-200" data-tab="settings">Settings</button>
                 </div>
 
@@ -369,7 +434,7 @@
                                 <span class="text-2xl">⭐</span>
                             </div>
                             <p class="text-2xl font-bold mt-2" id="planStatus">Free</p>
-                            <a href="/pro/upgrade" id="upgradeLink" class="mt-2 inline-block text-sm text-orange-500 hover:underline">Upgrade →</a>
+                            <a href="#" id="upgradeLink" class="mt-2 inline-block text-sm text-orange-500 hover:underline upgrade-trigger">Upgrade →</a>
                         </div>
                     </div>
 
@@ -411,68 +476,163 @@
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
                                 <thead class="bg-gray-100 dark:bg-gray-800">
-                                    <tr>
-                                        <th class="p-3">Date</th>
-                                        <th class="p-3">URL</th>
-                                        <th class="p-3">Score</th>
-                                        <th class="p-3">Tool</th>
-                                        <th class="p-3">Actions</th>
-                                    </tr>
+                                    <tr><th class="p-3">Date</th><th class="p-3">URL</th><th class="p-3">Score</th><th class="p-3">Tool</th><th class="p-3">Actions</th></tr>
                                 </thead>
                                 <tbody id="recentAuditsBody">
-                                    <tr id="noAuditsRow">
-                                        <td colspan="5" class="p-6 text-center text-gray-500">No audits yet.</td>
-                                    </tr>
+                                    <tr id="noAuditsRow"><td colspan="5" class="p-6 text-center text-gray-500">No audits yet.</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- ─── OTHER TABS (placeholders) ─── -->
+                <!-- ─── AUDITS TAB ─── -->
                 <div id="tab-audits" class="tab-content hidden">
-                    <p class="text-center text-gray-500 py-20">Audits history – coming soon.</p>
+                    <p class="text-center text-gray-500 py-20">Full audit history – coming soon.</p>
                 </div>
+
+                <!-- ─── ANALYTICS TAB ─── -->
                 <div id="tab-analytics" class="tab-content hidden">
                     <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
-                        <h3 class="text-xl font-bold mb-4">Analytics (Pro)</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                            <div class="text-center"><p class="text-sm text-gray-500">Clicks</p><p class="text-2xl font-bold" id="analyticsClicks">0</p></div>
-                            <div class="text-center"><p class="text-sm text-gray-500">Impressions</p><p class="text-2xl font-bold" id="analyticsImpressions">0</p></div>
-                            <div class="text-center"><p class="text-sm text-gray-500">CTR</p><p class="text-2xl font-bold" id="analyticsCtr">-</p></div>
-                            <div class="text-center"><p class="text-sm text-gray-500">Position</p><p class="text-2xl font-bold" id="analyticsPosition">-</p></div>
+                        <h3 class="text-xl font-bold mb-4">📈 Analytics</h3>
+                        <div id="analyticsLocked" class="text-center py-8">
+                            <p class="text-3xl text-gray-400 mb-4">🔒 Pro Feature</p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">Connect Google Search Console to see clicks, impressions, CTR, and rankings.</p>
+                            <button class="btn-primary upgrade-trigger">Upgrade to Pro</button>
                         </div>
-                        <canvas id="analyticsChart" height="150"></canvas>
-                    </div>
-                </div>
-                <div id="tab-integrations" class="tab-content hidden">
-                    <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
-                        <h3 class="text-xl font-bold mb-4">Integrations</h3>
-                        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-                            <span>🔗 Google Search Console</span>
-                            <span class="text-red-500">Not connected</span>
-                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Connect</button>
+                        <div id="analyticsContent" class="hidden">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                                <div class="text-center"><p class="text-sm text-gray-500">Clicks</p><p class="text-2xl font-bold" id="analyticsClicks">—</p></div>
+                                <div class="text-center"><p class="text-sm text-gray-500">Impressions</p><p class="text-2xl font-bold" id="analyticsImpressions">—</p></div>
+                                <div class="text-center"><p class="text-sm text-gray-500">CTR</p><p class="text-2xl font-bold" id="analyticsCtr">—</p></div>
+                                <div class="text-center"><p class="text-sm text-gray-500">Avg Position</p><p class="text-2xl font-bold" id="analyticsPosition">—</p></div>
+                            </div>
+                            <canvas id="analyticsChart" height="150"></canvas>
+                            <div class="mt-6 flex justify-between">
+                                <button class="btn-secondary text-sm px-4 py-2" data-range="28d">Last 28 days</button>
+                                <button class="btn-secondary text-sm px-4 py-2" data-range="7d">Last 7 days</button>
+                            </div>
+                            <p id="analyticsStatus" class="text-sm text-gray-500 mt-4"></p>
                         </div>
-                    </div>
-                </div>
-                <div id="tab-settings" class="tab-content hidden">
-                    <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
-                        <h3 class="text-xl font-bold mb-4">Account Settings</h3>
-                        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-                            <span>Email</span>
-                            <span id="settingsEmail">—</span>
-                        </div>
-                        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-                            <span>Plan</span>
-                            <span id="settingsPlan">Free</span>
-                        </div>
-                        <button id="logoutBtn" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
-                        <button id="deleteAccountBtn" class="mt-3 w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10">Delete Account</button>
                     </div>
                 </div>
 
+                <!-- ─── INTEGRATIONS TAB ─── -->
+                <div id="tab-integrations" class="tab-content hidden">
+                    <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
+                        <h3 class="text-xl font-bold mb-4">🔗 Integrations</h3>
+                        <div id="integrationsLocked" class="text-center py-8">
+                            <p class="text-3xl text-gray-400 mb-4">🔒 Pro Feature</p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">Connect Google Search Console, Analytics, and other tools.</p>
+                            <button class="btn-primary upgrade-trigger">Upgrade to Pro</button>
+                        </div>
+                        <div id="integrationsContent" class="hidden">
+                            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                                <span>🔗 Google Search Console</span>
+                                <span id="gscStatus" class="text-red-500">Not connected</span>
+                                <button id="gscConnectBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Connect</button>
+                            </div>
+                            <div class="mt-4">
+                                <label class="block text-sm text-gray-500">Select property</label>
+                                <select id="gscProperty" class="w-full mt-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                                    <option value="https://traffictorch.net">traffictorch.net</option>
+                                </select>
+                            </div>
+                            <button id="gscSyncBtn" class="mt-4 px-6 py-2 bg-green-600 text-white rounded-lg">Sync Data</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── API KEYS TAB ─── -->
+                <div id="tab-api-keys" class="tab-content hidden">
+                    <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
+                        <h3 class="text-xl font-bold mb-4">🔑 API Keys</h3>
+                        <div id="apiKeysLocked" class="text-center py-8">
+                            <p class="text-3xl text-gray-400 mb-4">🔒 Pro Feature</p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">Generate API keys to integrate Traffic Torch into your own tools.</p>
+                            <button class="btn-primary upgrade-trigger">Upgrade to Pro</button>
+                        </div>
+                        <div id="apiKeysContent" class="hidden">
+                            <div class="flex gap-4 mb-6">
+                                <input type="text" id="newKeyName" placeholder="Key name (e.g., CI Server)" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                                <button id="generateKeyBtn" class="px-6 py-2 bg-blue-600 text-white rounded-lg">Generate</button>
+                            </div>
+                            <div id="generatedKeyDisplay" class="p-4 bg-green-100 dark:bg-green-900/30 rounded-lg mb-4 hidden">
+                                <p id="generatedKeyText" class="font-mono text-sm break-all"></p>
+                                <p class="text-xs text-gray-500 mt-1">Copy this key – it won't be shown again.</p>
+                            </div>
+                            <div id="apiKeysList" class="space-y-2">
+                                <!-- populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── SETTINGS TAB ─── -->
+                <div id="tab-settings" class="tab-content hidden">
+                    <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
+                        <h3 class="text-xl font-bold mb-4">⚙️ Account Settings</h3>
+                        <div id="settingsLoggedOut" class="text-center py-8">
+                            <p class="text-3xl text-gray-400 mb-4">👤 Not Logged In</p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">Log in to manage your account, view your plan, and access your data.</p>
+                            <a href="/login/" class="btn-primary inline-block">Log In</a>
+                        </div>
+                        <div id="settingsLoggedIn" class="hidden">
+                            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                                <span>Email</span>
+                                <span id="settingsEmail">—</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                                <span>Plan</span>
+                                <span id="settingsPlan">Free</span>
+                            </div>
+                            <button id="logoutBtn" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
+                            <button id="deleteAccountBtn" class="mt-3 w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div id="footer-placeholder"></div>
+
                 <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">Privacy-first • Traffic Torch</p>
             </main>
+        </div>
+    </div>
+
+    <!-- ─── UPGRADE MODAL ─── -->
+    <div id="upgradeModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <button id="closeUpgradeModal" class="close-btn">&times;</button>
+            <h3>🚀 Upgrade Your Plan</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">Choose the tier that fits your needs.</p>
+
+            <div id="tierSelector">
+                <div class="tier-card selected" data-tier="free">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold">Free</span>
+                        <span class="price">$0</span>
+                    </div>
+                    <div class="feature-list">3 audits/day · Basic tools · Community support</div>
+                </div>
+                <div class="tier-card" data-tier="pro">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold">Pro</span>
+                        <span class="price">$29/mo</span>
+                    </div>
+                    <div class="feature-list">25 audits/day · Analytics · Integrations · API keys · Priority support</div>
+                </div>
+                <div class="tier-card" data-tier="enterprise">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold">Enterprise</span>
+                        <span class="price">Contact Sales</span>
+                    </div>
+                    <div class="feature-list">Unlimited audits · All Pro features · White‑label · Dedicated support · SLA</div>
+                </div>
+            </div>
+
+            <button id="upgradeActionBtn" class="btn-primary w-full mt-4 py-3">Upgrade to Pro</button>
+            <p id="upgradeTierNote" class="text-xs text-gray-500 mt-2 text-center">You are currently on the Free plan.</p>
         </div>
     </div>
 
@@ -488,9 +648,6 @@
             // ─── DOM refs ───
             const $ = (sel, ctx = document) => ctx.querySelector(sel);
             const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
-
-            const authGuard = $('#authGuard');
-            const dashboardApp = $('#dashboardApp');
 
             // Stats
             const dailyUsedEl = $('#dailyUsed');
@@ -516,6 +673,40 @@
             const settingsPlan = $('#settingsPlan');
             const logoutBtn = $('#logoutBtn');
             const deleteAccountBtn = $('#deleteAccountBtn');
+            const settingsLoggedOut = $('#settingsLoggedOut');
+            const settingsLoggedIn = $('#settingsLoggedIn');
+
+            // Upgrade modal
+            const upgradeModal = $('#upgradeModal');
+            const closeUpgradeModal = $('#closeUpgradeModal');
+            const upgradeActionBtn = $('#upgradeActionBtn');
+            const tierCards = $$('.tier-card');
+            const upgradeTierNote = $('#upgradeTierNote');
+
+            // Analytics
+            const analyticsLocked = $('#analyticsLocked');
+            const analyticsContent = $('#analyticsContent');
+            const analyticsClicks = $('#analyticsClicks');
+            const analyticsImpressions = $('#analyticsImpressions');
+            const analyticsCtr = $('#analyticsCtr');
+            const analyticsPosition = $('#analyticsPosition');
+            const analyticsStatus = $('#analyticsStatus');
+
+            // Integrations
+            const integrationsLocked = $('#integrationsLocked');
+            const integrationsContent = $('#integrationsContent');
+            const gscStatus = $('#gscStatus');
+            const gscConnectBtn = $('#gscConnectBtn');
+            const gscSyncBtn = $('#gscSyncBtn');
+
+            // API Keys
+            const apiKeysLocked = $('#apiKeysLocked');
+            const apiKeysContent = $('#apiKeysContent');
+            const newKeyName = $('#newKeyName');
+            const generateKeyBtn = $('#generateKeyBtn');
+            const generatedKeyDisplay = $('#generatedKeyDisplay');
+            const generatedKeyText = $('#generatedKeyText');
+            const apiKeysList = $('#apiKeysList');
 
             // Sidebar / mobile
             const sidebar = $('#desktopSidebar');
@@ -528,16 +719,20 @@
 
             // ─── State ───
             let state = {
-                user: { email: '', isPro: false },
+                tier: 'free', // 'free', 'pro', 'enterprise'
+                email: '',
+                isLoggedIn: false,
+                features: { analytics: false, integrations: false, api: false },
                 dailyUsed: 0,
                 dailyLimit: 3,
                 dailyRemaining: 3,
                 totalAudits: 0,
                 averageScore: null,
                 recentAudits: [],
-                analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0 },
-                activeTab: 'dashboard',
-                isPro: false,
+                analyticsData: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
+                apiKeys: [],
+                generatedKey: null,
+                selectedTier: 'free',
                 token: null
             };
 
@@ -573,40 +768,178 @@
                 return { ok: res.ok, status: res.status, data };
             }
 
-            // ─── Load account info ───
+            // ─── Fingerprint for anonymous rate limiting ───
+            let currentFingerprint = null;
+
+            async function getOrCreateFingerprint() {
+                if (currentFingerprint) return currentFingerprint;
+                // Try IndexedDB
+                try {
+                    const fpFromDB = await new Promise((resolve) => {
+                        const req = indexedDB.open('TrafficTorchDB', 1);
+                        req.onupgradeneeded = e => e.target.result.createObjectStore('fingerprints');
+                        req.onsuccess = e => {
+                            const db = e.target.result;
+                            const tx = db.transaction('fingerprints', 'readonly');
+                            const store = tx.objectStore('fingerprints');
+                            const getReq = store.get('tt_fingerprint');
+                            getReq.onsuccess = () => resolve(getReq.result);
+                            getReq.onerror = () => resolve(null);
+                        };
+                        req.onerror = () => resolve(null);
+                    });
+                    if (fpFromDB) {
+                        currentFingerprint = fpFromDB;
+                        return currentFingerprint;
+                    }
+                } catch (e) {}
+
+                // Generate new fingerprint
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                canvas.width = 240;
+                canvas.height = 60;
+                ctx.textBaseline = 'top';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillStyle = '#4f46e5';
+                ctx.fillText('Traffic Torch 2026', 12, 12);
+                ctx.fillStyle = '#ec4899';
+                ctx.fillRect(15, 35, 200, 15);
+                ctx.strokeStyle = '#f97316';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(30, 50);
+                ctx.quadraticCurveTo(100, 45, 210, 50);
+                ctx.stroke();
+                const dataURL = canvas.toDataURL('image/png');
+                const extra = navigator.platform + navigator.hardwareConcurrency + screen.width + screen.height;
+                const encoder = new TextEncoder();
+                const data = encoder.encode(dataURL + extra);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                currentFingerprint = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+
+                // Save to IndexedDB
+                try {
+                    await new Promise((resolve) => {
+                        const req = indexedDB.open('TrafficTorchDB', 1);
+                        req.onsuccess = e => {
+                            const db = e.target.result;
+                            const tx = db.transaction('fingerprints', 'readwrite');
+                            const store = tx.objectStore('fingerprints');
+                            store.put(currentFingerprint, 'tt_fingerprint');
+                            tx.oncomplete = () => resolve();
+                        };
+                    });
+                } catch (e) {}
+                return currentFingerprint;
+            }
+
+            // ─── Load account info (if logged in) ───
             async function fetchAccountInfo() {
+                const token = getToken();
+                if (!token) {
+                    state.isLoggedIn = false;
+                    state.tier = 'free';
+                    state.features = { analytics: false, integrations: false, api: false };
+                    state.email = '';
+                    return true;
+                }
                 const { ok, data } = await apiCall('/api/account-info');
                 if (!ok) {
+                    // Token invalid – clear it and treat as anonymous
                     localStorage.removeItem('authToken');
                     localStorage.removeItem('traffic_torch_jwt');
-                    redirectToLogin();
-                    return false;
+                    state.isLoggedIn = false;
+                    state.tier = 'free';
+                    state.features = { analytics: false, integrations: false, api: false };
+                    state.email = '';
+                    return true;
                 }
-                state.user = data;
-                state.isPro = data.isPro || false;
+                state.isLoggedIn = true;
+                state.email = data.email || '';
+                state.tier = data.tier || 'free';
+                // features: based on tier
+                state.features = {
+                    analytics: state.tier === 'pro' || state.tier === 'enterprise',
+                    integrations: state.tier === 'pro' || state.tier === 'enterprise',
+                    api: state.tier === 'pro' || state.tier === 'enterprise'
+                };
                 state.dailyUsed = data.dailyUsed || 0;
                 state.dailyLimit = data.dailyLimit || 3;
                 state.dailyRemaining = data.dailyRemaining || 0;
-                updateStatsUI();
                 return true;
             }
 
-            function updateStatsUI() {
+            // ─── Update UI based on state ───
+            function updateUI() {
+                // Stats
                 dailyUsedEl.textContent = state.dailyUsed;
                 dailyLimitEl.textContent = state.dailyLimit;
                 dailyRemainingEl.textContent = state.dailyRemaining;
                 const pct = state.dailyLimit > 0 ? (state.dailyUsed / state.dailyLimit) * 100 : 0;
                 dailyProgress.style.width = Math.min(pct, 100) + '%';
-                const planText = state.isPro ? 'Pro' : 'Free';
-                planStatusEl.textContent = planText;
-                settingsPlan.textContent = planText;
-                settingsEmail.textContent = state.user.email || '—';
-                // Show upgrade link only if not pro
-                if (state.isPro) {
+                const planLabel = state.tier === 'enterprise' ? 'Enterprise' : (state.tier === 'pro' ? 'Pro' : 'Free');
+                planStatusEl.textContent = planLabel;
+                settingsPlan.textContent = planLabel;
+                settingsEmail.textContent = state.email || '—';
+
+                // Settings visibility
+                if (state.isLoggedIn) {
+                    settingsLoggedOut.classList.add('hidden');
+                    settingsLoggedIn.classList.remove('hidden');
+                } else {
+                    settingsLoggedOut.classList.remove('hidden');
+                    settingsLoggedIn.classList.add('hidden');
+                }
+
+                // Upgrade link
+                if (state.tier === 'pro' || state.tier === 'enterprise') {
                     upgradeLink.style.display = 'none';
                 } else {
                     upgradeLink.style.display = 'inline-block';
                 }
+
+                // Pro features locked/unlocked
+                const isPro = state.tier === 'pro' || state.tier === 'enterprise';
+                if (isPro) {
+                    analyticsLocked.classList.add('hidden');
+                    analyticsContent.classList.remove('hidden');
+                    integrationsLocked.classList.add('hidden');
+                    integrationsContent.classList.remove('hidden');
+                    apiKeysLocked.classList.add('hidden');
+                    apiKeysContent.classList.remove('hidden');
+                    // Load real data if not yet loaded
+                    if (state.tier === 'pro' || state.tier === 'enterprise') {
+                        fetchAnalytics('28d');
+                        loadApiKeys();
+                    }
+                } else {
+                    analyticsLocked.classList.remove('hidden');
+                    analyticsContent.classList.add('hidden');
+                    integrationsLocked.classList.remove('hidden');
+                    integrationsContent.classList.add('hidden');
+                    apiKeysLocked.classList.remove('hidden');
+                    apiKeysContent.classList.add('hidden');
+                }
+
+                // Pro Portal green dot
+                updateProBadge();
+            }
+
+            // ─── Pro Portal green dot ───
+            function updateProBadge() {
+                const isPro = state.tier === 'pro' || state.tier === 'enterprise';
+                const proLinks = document.querySelectorAll('.pro-menu-link');
+                proLinks.forEach(link => {
+                    const existing = link.querySelector('.pro-badge');
+                    if (existing) existing.remove();
+                    if (isPro) {
+                        const badge = document.createElement('span');
+                        badge.className = 'pro-badge';
+                        link.appendChild(badge);
+                    }
+                });
             }
 
             // ─── Load audit history from localStorage ───
@@ -656,7 +989,6 @@
                     `;
                 });
                 recentBody.innerHTML = html;
-                // Attach view report events
                 recentBody.querySelectorAll('.view-report-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const url = this.dataset.url;
@@ -668,7 +1000,7 @@
                 });
             }
 
-            // ─── Save audit to history ───
+            // ─── Save audit ───
             function saveAudit(audit) {
                 let history = [];
                 const stored = localStorage.getItem('proAuditHistory');
@@ -709,10 +1041,34 @@
                     return;
                 }
 
-                // Check rate limit first
-                const { ok, data } = await apiCall('/api/check-rate', 'POST', { toolName: tool });
-                if (!ok || !data.allowed) {
-                    alert(data.message || 'You have reached your daily limit.');
+                // Check rate limit (with fingerprint for anonymous)
+                const fingerprint = await getOrCreateFingerprint();
+                const token = getToken();
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'x-fingerprint': fingerprint
+                };
+                if (token) headers['Authorization'] = 'Bearer ' + token;
+
+                let res;
+                try {
+                    res = await fetch(API_BASE + '/api/check-rate', {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({ toolName: tool })
+                    });
+                    const data = await res.json();
+                    if (!res.ok || !data.allowed) {
+                        alert(data.message || 'You have reached your daily limit.');
+                        return;
+                    }
+                    // Update remaining
+                    if (data.remaining !== undefined) {
+                        state.dailyRemaining = data.remaining;
+                        dailyRemainingEl.textContent = data.remaining;
+                    }
+                } catch (e) {
+                    alert('Error checking rate limit. Please try again.');
                     return;
                 }
 
@@ -770,11 +1126,244 @@
                 });
             }
 
+            // ─── Analytics (Pro) ───
+            let analyticsChart = null;
+
+            async function fetchAnalytics(range) {
+                if (state.tier !== 'pro' && state.tier !== 'enterprise') return;
+                analyticsStatus.textContent = 'Loading...';
+                const token = getToken();
+                if (!token) {
+                    analyticsStatus.textContent = 'Please log in to view analytics.';
+                    return;
+                }
+                const { ok, data } = await apiCall(`/api/analytics?range=${range}`);
+                if (ok) {
+                    state.analyticsData = data;
+                    analyticsClicks.textContent = data.clicks || 0;
+                    analyticsImpressions.textContent = data.impressions || 0;
+                    analyticsCtr.textContent = data.ctr ? (data.ctr * 100).toFixed(1) + '%' : '-';
+                    analyticsPosition.textContent = data.position ? data.position.toFixed(1) : '-';
+                    analyticsStatus.textContent = 'Updated';
+                    renderChart(data);
+                } else {
+                    analyticsStatus.textContent = 'Error: ' + (data.error || 'Unable to fetch data');
+                }
+            }
+
+            function renderChart(data) {
+                const ctx = document.getElementById('analyticsChart')?.getContext('2d');
+                if (!ctx) return;
+                if (analyticsChart) analyticsChart.destroy();
+                analyticsChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.daily?.map(d => d.date) || [],
+                        datasets: [
+                            { label: 'Clicks', data: data.daily?.map(d => d.clicks) || [], borderColor: '#f97316',
+                                tension: 0.2 },
+                            { label: 'Impressions', data: data.daily?.map(d => d.impressions) || [],
+                                borderColor: '#8b5cf6', tension: 0.2 }
+                        ]
+                    },
+                    options: { responsive: true, plugins: { legend: { position: 'top' } } }
+                });
+            }
+
+            // ─── API Keys ───
+            async function loadApiKeys() {
+                if (state.tier !== 'pro' && state.tier !== 'enterprise') return;
+                const { ok, data } = await apiCall('/api/keys');
+                if (ok) {
+                    state.apiKeys = data;
+                    renderApiKeys();
+                }
+            }
+
+            function renderApiKeys() {
+                if (state.apiKeys.length === 0) {
+                    apiKeysList.innerHTML = '<p class="text-sm text-gray-500">No API keys yet.</p>';
+                    return;
+                }
+                let html = '';
+                state.apiKeys.forEach(key => {
+                    html += `
+                        <div class="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
+                            <span>${key.name}</span>
+                            <span class="text-sm text-gray-500">${key.last_used || 'Never used'}</span>
+                            <button class="revoke-key-btn text-red-500 text-sm" data-id="${key.id}">Revoke</button>
+                        </div>
+                    `;
+                });
+                apiKeysList.innerHTML = html;
+                apiKeysList.querySelectorAll('.revoke-key-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        revokeApiKey(id);
+                    });
+                });
+            }
+
+            async function revokeApiKey(id) {
+                if (!confirm('Revoke this key?')) return;
+                const { ok } = await apiCall(`/api/keys/${id}`, 'DELETE');
+                if (ok) {
+                    await loadApiKeys();
+                } else {
+                    alert('Failed to revoke key.');
+                }
+            }
+
+            // ─── Upgrade Modal ───
+            function showUpgradeModal(selected = 'free') {
+                state.selectedTier = selected;
+                // Highlight the selected tier
+                tierCards.forEach(card => {
+                    const tier = card.dataset.tier;
+                    card.classList.toggle('selected', tier === selected);
+                });
+                upgradeTierNote.textContent = `You are currently on the ${state.tier.charAt(0).toUpperCase() + state.tier.slice(1)} plan.`;
+                // Update button text
+                if (selected === 'enterprise') {
+                    upgradeActionBtn.textContent = 'Contact Sales';
+                } else if (selected === 'pro') {
+                    upgradeActionBtn.textContent = 'Upgrade to Pro ($29/mo)';
+                } else {
+                    upgradeActionBtn.textContent = 'Stay on Free';
+                }
+                upgradeModal.classList.remove('hidden');
+            }
+
+            function hideUpgradeModal() {
+                upgradeModal.classList.add('hidden');
+            }
+
+            // Tier selection
+            tierCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const tier = this.dataset.tier;
+                    state.selectedTier = tier;
+                    tierCards.forEach(c => c.classList.toggle('selected', c.dataset.tier === tier));
+                    if (tier === 'enterprise') {
+                        upgradeActionBtn.textContent = 'Contact Sales';
+                    } else if (tier === 'pro') {
+                        upgradeActionBtn.textContent = 'Upgrade to Pro ($29/mo)';
+                    } else {
+                        upgradeActionBtn.textContent = 'Stay on Free';
+                    }
+                });
+            });
+
+            // Upgrade action
+            upgradeActionBtn.addEventListener('click', function() {
+                const tier = state.selectedTier;
+                if (tier === 'pro') {
+                    // Trigger Stripe upgrade (reuse the original upgrade flow)
+                    upgradeToPro();
+                } else if (tier === 'enterprise') {
+                    alert('Please contact sales@traffictorch.net for Enterprise pricing.');
+                    hideUpgradeModal();
+                } else {
+                    // Free – just close
+                    hideUpgradeModal();
+                }
+            });
+
+            // Close modal
+            closeUpgradeModal.addEventListener('click', hideUpgradeModal);
+            upgradeModal.addEventListener('click', function(e) {
+                if (e.target === this) hideUpgradeModal();
+            });
+
+            // Upgrade to Pro function (re‑implemented from original combined app)
+            async function upgradeToPro() {
+                const token = getToken();
+                if (!token) {
+                    alert('Please log in first to upgrade.');
+                    hideUpgradeModal();
+                    redirectToLogin();
+                    return;
+                }
+                upgradeActionBtn.disabled = true;
+                upgradeActionBtn.textContent = 'Loading…';
+                try {
+                    const stripe = Stripe('pk_live_51SyjNi35Al6CUgc4jAcWAszElUF4iMpBZOj5UGM9gk7KZKxBSlDGP06S9S0kv7mlkUfZa7yTgFtP6PBEl39b5dKt00hzl1NEgr');
+                    const { ok, data } = await apiCall('/api/upgrade', 'POST');
+                    if (!ok || !data.clientSecret) {
+                        alert('Failed to start checkout. Please try again.');
+                        upgradeActionBtn.disabled = false;
+                        upgradeActionBtn.textContent = 'Upgrade to Pro ($29/mo)';
+                        return;
+                    }
+                    // Create a container inside the modal for checkout
+                    const checkoutContainer = document.createElement('div');
+                    checkoutContainer.id = 'checkout-container';
+                    checkoutContainer.style.minHeight = '200px';
+                    upgradeActionBtn.parentNode.insertBefore(checkoutContainer, upgradeActionBtn);
+                    upgradeActionBtn.style.display = 'none';
+
+                    const checkout = await stripe.initEmbeddedCheckout({
+                        fetchClientSecret: () => Promise.resolve(data.clientSecret),
+                    });
+                    checkout.mount('#checkout-container');
+                    // Poll for activation
+                    localStorage.setItem('just_upgraded', 'true');
+                    pollForProActivation();
+                } catch (err) {
+                    alert('Upgrade error: ' + err.message);
+                    upgradeActionBtn.disabled = false;
+                    upgradeActionBtn.textContent = 'Upgrade to Pro ($29/mo)';
+                }
+            }
+
+            async function pollForProActivation() {
+                let attempts = 0;
+                const maxAttempts = 20;
+                const interval = setInterval(async () => {
+                    attempts++;
+                    const token = getToken();
+                    if (!token) {
+                        clearInterval(interval);
+                        return;
+                    }
+                    try {
+                        const { ok, data } = await apiCall('/api/account-info');
+                        if (ok && (data.tier === 'pro' || data.tier === 'enterprise')) {
+                            // Activated
+                            localStorage.removeItem('just_upgraded');
+                            state.tier = data.tier;
+                            state.features = {
+                                analytics: true,
+                                integrations: true,
+                                api: true
+                            };
+                            state.dailyLimit = data.dailyLimit || 25;
+                            updateUI();
+                            hideUpgradeModal();
+                            alert('Upgrade successful! You now have Pro access.');
+                            clearInterval(interval);
+                            // Refresh token
+                            const refreshRes = await apiCall('/api/refresh-token', 'POST');
+                            if (refreshRes.ok && refreshRes.data.token) {
+                                setToken(refreshRes.data.token);
+                            }
+                            break;
+                        }
+                    } catch (e) {}
+                    if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        localStorage.removeItem('just_upgraded');
+                        alert('Upgrade still processing. Please check your email or contact support.');
+                    }
+                }, 3000);
+            }
+
             // ─── Logout ───
             function logout() {
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('traffic_torch_jwt');
-                redirectToLogin();
+                // Reload to show anonymous state
+                window.location.reload();
             }
             logoutBtn.addEventListener('click', logout);
 
@@ -787,7 +1376,6 @@
 
             // ─── Tab switching ───
             function switchTab(tabId) {
-                state.activeTab = tabId;
                 $$('.tab-btn').forEach(btn => {
                     const id = btn.dataset.tab;
                     btn.classList.toggle('tab-active', id === tabId);
@@ -795,18 +1383,21 @@
                 $$('.tab-content').forEach(el => {
                     el.classList.toggle('hidden', el.id !== 'tab-' + tabId);
                 });
+                // Close mobile menu if open
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+                }
             }
 
-            document.querySelectorAll('[data-tab]').forEach(el => {
-                el.addEventListener('click', function(e) {
+            // Delegated tab click
+            document.addEventListener('click', function(e) {
+                const tabLink = e.target.closest('[data-tab]');
+                if (tabLink) {
                     e.preventDefault();
-                    const tab = this.dataset.tab;
+                    const tab = tabLink.dataset.tab;
                     if (tab) switchTab(tab);
-                    if (!mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
-                        document.body.classList.remove('overflow-hidden');
-                    }
-                });
+                }
             });
 
             // ─── Sidebar collapse ───
@@ -858,21 +1449,98 @@
                 }
             });
 
-            // ─── Init ───
-            async function init() {
-                const token = getToken();
-                if (!token) {
-                    redirectToLogin();
-                    return;
+            // ─── Upgrade triggers ───
+            document.addEventListener('click', function(e) {
+                const trigger = e.target.closest('.upgrade-trigger');
+                if (trigger) {
+                    e.preventDefault();
+                    showUpgradeModal(state.tier === 'free' ? 'pro' : 'enterprise');
                 }
-                const success = await fetchAccountInfo();
-                if (!success) return;
-                loadAuditHistory();
-                authGuard.classList.add('hidden');
-                dashboardApp.classList.remove('hidden');
-                switchTab('dashboard');
+            });
+
+            // ─── Load shared menus and footer ───
+            function loadSharedMenus() {
+                // Desktop menu
+                fetch('/desktop-menu.html')
+                    .then(res => res.text())
+                    .then(html => {
+                        const placeholder = document.getElementById('desktop-menu-placeholder');
+                        placeholder.innerHTML = html;
+                        setTimeout(() => placeholder.classList.add('loaded'), 50);
+                        attachMenuToggles('desktopSidebar');
+                        // Update pro badge after menu loads
+                        updateProBadge();
+                    })
+                    .catch(err => console.error('Desktop menu load error:', err));
+
+                // Mobile menu
+                fetch('/mobile-menu.html')
+                    .then(res => res.text())
+                    .then(html => {
+                        document.getElementById('mobile-menu-placeholder').innerHTML = html;
+                        attachMenuToggles('mobileMenu');
+                        // Update pro badge after menu loads
+                        updateProBadge();
+                    })
+                    .catch(err => console.error('Mobile menu load error:', err));
+
+                // Footer
+                fetch('/footer.html')
+                    .then(res => res.text())
+                    .then(html => {
+                        document.getElementById('footer-placeholder').innerHTML = html;
+                    })
+                    .catch(err => console.error('Footer load error:', err));
             }
 
+            // ─── Attach toggle for category buttons ───
+            function attachMenuToggles(containerId) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                container.querySelectorAll('button[data-category]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const cat = this.dataset.category;
+                        const content = container.querySelector(`[data-category-content="${cat}"]`);
+                        if (!content) return;
+                        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                        const newExpanded = !isExpanded;
+                        this.setAttribute('aria-expanded', newExpanded);
+                        content.classList.toggle('hidden', !newExpanded);
+                        const arrow = this.querySelector('span.transition-transform');
+                        if (arrow) {
+                            arrow.style.transform = newExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
+                        }
+                    });
+                });
+            }
+
+            // ─── Init ───
+            async function init() {
+                // Load account info (if token exists)
+                await fetchAccountInfo();
+                // Load audit history from localStorage
+                loadAuditHistory();
+                // Update UI with current state
+                updateUI();
+                // Load shared menus and footer
+                loadSharedMenus();
+                // Switch to dashboard tab by default
+                switchTab('dashboard');
+
+                // Check for "just_upgraded" flag (from Stripe redirect)
+                if (localStorage.getItem('just_upgraded') === 'true') {
+                    // Show upgrade modal with activating message
+                    showUpgradeModal('pro');
+                    upgradeActionBtn.style.display = 'none';
+                    const container = document.createElement('div');
+                    container.id = 'checkout-container';
+                    container.innerHTML = '<div class="text-center py-4"><div class="spinner" style="width:2rem;height:2rem;border-width:3px;"></div><p class="mt-2">Activating Pro access…</p></div>';
+                    upgradeActionBtn.parentNode.insertBefore(container, upgradeActionBtn);
+                    pollForProActivation();
+                }
+            }
+
+            // ─── Start ───
             init();
 
         })();
