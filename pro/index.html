@@ -56,222 +56,304 @@
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
-<!-- Alpine App -->
-<div x-data="combinedApp()" x-init="initApp()" class="flex flex-1 min-h-screen">
+<!-- ======== AUTH MODULE ======== -->
+<!-- Load auth.js first; it registers an Alpine store 'auth' -->
+<script src="/pro/auth.js" defer></script>
 
-  <!-- ======== AUTH FORMS ======== -->
-  <div x-show="!isAuthenticated" class="flex-1 flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8">
-      <!-- Auth tabs – keep your existing implementation -->
-      <p class="text-center text-xs text-gray-500 mt-6">Traffic Torch Auth</p>
+<!-- ======== ALPINE APP ======== -->
+<div x-data="dashboardApp()" x-init="initApp()" class="flex flex-1 min-h-screen">
+
+  <!-- ======== AUTH FORMS (uses auth store) ======== -->
+  <template x-if="!$store.auth.isAuthenticated">
+    <div class="flex-1 flex items-center justify-center p-4">
+      <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8">
+        <div class="flex justify-center mb-6">
+          <img src="/logo-160w.webp" class="w-16 rounded-xl" alt="Traffic Torch">
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+          <button @click="activeTab='magic'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='magic' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Magic Link</button>
+          <button @click="activeTab='login'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='login' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Login</button>
+          <button @click="activeTab='register'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='register' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Register</button>
+        </div>
+
+        <!-- Magic Link -->
+        <div x-show="activeTab==='magic'">
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" x-model="magicEmail" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+          </div>
+          <button @click="sendMagicLink()" class="w-full py-2 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition" :disabled="$store.auth.loading">
+            <span x-text="$store.auth.loading ? 'Sending...' : 'Send Magic Link'"></span>
+          </button>
+        </div>
+
+        <!-- Login -->
+        <div x-show="activeTab==='login'">
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" x-model="loginEmail" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Password</label>
+            <input type="password" x-model="loginPassword" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+          </div>
+          <button @click="login()" class="w-full py-2 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition" :disabled="$store.auth.loading">
+            <span x-text="$store.auth.loading ? 'Logging in...' : 'Login'"></span>
+          </button>
+          <div class="mt-2 text-right">
+            <button @click="showForgot=true; activeTab='forgot'" class="text-sm text-gray-500 hover:underline">Forgot password?</button>
+          </div>
+        </div>
+
+        <!-- Register -->
+        <div x-show="activeTab==='register'">
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" x-model="registerEmail" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Password</label>
+            <input type="password" x-model="registerPassword" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Confirm Password</label>
+            <input type="password" x-model="registerConfirm" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+          </div>
+          <button @click="register()" class="w-full py-2 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition" :disabled="$store.auth.loading">
+            <span x-text="$store.auth.loading ? 'Registering...' : 'Register'"></span>
+          </button>
+        </div>
+
+        <!-- Forgot / Reset -->
+        <div x-show="activeTab==='forgot' || resetToken">
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" x-model="resetEmail" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+          </div>
+          <button @click="sendResetLink()" class="w-full py-2 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition" :disabled="$store.auth.loading">
+            <span x-text="$store.auth.loading ? 'Sending...' : 'Send Reset Link'"></span>
+          </button>
+          <div class="mt-2 text-center">
+            <button @click="showForgot=false; activeTab='login'" class="text-sm text-gray-500 hover:underline">Back to Login</button>
+          </div>
+        </div>
+
+        <!-- Message display -->
+        <div x-show="$store.auth.error" class="mt-4 p-2 text-sm rounded-lg bg-red-100 text-red-700" x-text="$store.auth.error"></div>
+        <div x-show="message" class="mt-4 p-2 text-sm rounded-lg" :class="messageType==='success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" x-text="message"></div>
+      </div>
     </div>
-  </div>
+  </template>
 
-  <!-- ======== DASHBOARD ======== -->
-  <div x-show="isAuthenticated" x-cloak class="flex flex-1 min-h-screen">
+  <!-- ======== DASHBOARD (visible when authenticated) ======== -->
+  <template x-if="$store.auth.isAuthenticated">
+    <div class="flex flex-1 min-h-screen">
 
-    <!-- Desktop Sidebar (unchanged) -->
-    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
-      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
-        <a href="/" class="flex items-center gap-4">
-          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden md:block">Traffic Torch</span>
-        </a>
-      </div>
-      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
-      <div class="p-4 border-t border-white/10 dark:border-white/5">
-        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col min-h-screen">
-      <!-- Header (unchanged) -->
-      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-          <a href="/" class="flex items-center gap-4 md:hidden">
-            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-            <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
+      <!-- Desktop Sidebar (unchanged) -->
+      <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
+        <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+          <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden md:block">Traffic Torch</span>
           </a>
-          <div class="w-10 md:hidden"></div>
-          <button id="menuToggle" class="md:hidden text-3xl text-gray-500">☰</button>
-          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
-          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
         </div>
-        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
-          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
-          <div id="mobile-menu-placeholder"></div>
+        <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+        <div class="p-4 border-t border-white/10 dark:border-white/5">
+          <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
         </div>
-      </header>
+      </aside>
 
       <!-- Main Content -->
-      <main class="container mx-auto px-4 py-4 flex-1">
+      <div class="flex-1 flex flex-col min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+          <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="flex items-center gap-4 md:hidden">
+              <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+              <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
+            </a>
+            <div class="w-10 md:hidden"></div>
+            <button id="menuToggle" class="md:hidden text-3xl text-gray-500">☰</button>
+            <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+            <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+          </div>
+          <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+            <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+            <div id="mobile-menu-placeholder"></div>
+          </div>
+        </header>
 
-        <!-- Horizontal Tabs -->
-        <div class="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
-          <template x-for="tab in tabs" :key="tab.id">
-            <button @click="activeDashboardTab = tab.id" 
-                    class="px-6 py-3 text-sm font-medium transition-all duration-200"
-                    :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
-              <span x-text="tab.label"></span>
-            </button>
-          </template>
-        </div>
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-4 flex-1">
 
-        <!-- ========================================================== -->
-        <!-- TAB: DASHBOARD – UPDATED LAYOUT -->
-        <!-- ========================================================== -->
-        <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
-
-          <!-- 1. Top Stats Row (only Audits Today + Plan) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            <!-- Audits Today -->
-            <div class="glass rounded-2xl p-5 stat-card">
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm text-gray-500 dark:text-gray-400">Audits Today</h3>
-                <span class="text-2xl">📊</span>
-              </div>
-              <p class="text-3xl font-bold mt-2" x-text="`${dailyUsed} / ${dailyLimit}`"></p>
-              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-3">
-                <div class="bg-gradient-to-r from-orange-500 to-pink-600 h-2 rounded-full transition-all" :style="`width: ${(dailyUsed/dailyLimit)*100}%`"></div>
-              </div>
-              <p class="text-xs text-gray-500 mt-2" x-text="`${dailyRemaining} remaining`"></p>
-            </div>
-            <!-- Plan -->
-            <div class="glass rounded-2xl p-5 stat-card">
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm text-gray-500 dark:text-gray-400">Plan</h3>
-                <span class="text-2xl">⭐</span>
-              </div>
-              <p class="text-3xl font-bold mt-2" x-text="user.isPro ? 'Pro' : 'Free'"></p>
-              <template x-if="!user.isPro">
-                <a href="/pro/upgrade" class="mt-2 inline-block text-sm text-orange-500 hover:underline">Upgrade →</a>
-              </template>
-            </div>
+          <!-- Horizontal Tabs -->
+          <div class="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
+            <template x-for="tab in tabs" :key="tab.id">
+              <button @click="activeDashboardTab = tab.id" 
+                      class="px-6 py-3 text-sm font-medium transition-all duration-200"
+                      :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
+                <span x-text="tab.label"></span>
+              </button>
+            </template>
           </div>
 
-          <!-- 2. Quick Audit (tool selector above URL) -->
-          <div class="glass rounded-2xl p-6 mb-8">
-            <h3 class="text-xl font-bold mb-4">🚀 Quick Audit</h3>
-            <div class="space-y-4">
-              <!-- Tool selector (full width, above input) -->
-              <div>
-                <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1">Select Tool</label>
-                <select x-model="selectedTool" id="tool-selector" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                  <option value="seo-intent-tool">SEO Intent</option>
-                  <option value="seo-ux-tool">Full SEO + UX</option>
-                  <option value="local-seo-tool">Local SEO</option>
-                  <option value="product-seo-tool">Product SEO</option>
-                  <option value="entity">Entity Extractor</option>
-                  <option value="topical">Topical Authority</option>
-                  <option value="schema-generator">Schema Generator</option>
-                  <option value="ai-search-optimization-tool">GEO / AI Search</option>
-                  <option value="ai-voice-search-tool">Voice Search</option>
-                  <option value="ai-audit-tool">AI Content Audit</option>
-                  <option value="quit-risk-tool">Quit Risk</option>
-                  <option value="keyword-research-tool">Keyword Research</option>
-                  <option value="keyword-tool">Keyword Placement</option>
-                </select>
+          <!-- ========================================================== -->
+          <!-- TAB: DASHBOARD – UPDATED LAYOUT -->
+          <!-- ========================================================== -->
+          <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
+
+            <!-- 1. Top Stats Row (only Audits Today + Plan) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <!-- Audits Today -->
+              <div class="glass rounded-2xl p-5 stat-card">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm text-gray-500 dark:text-gray-400">Audits Today</h3>
+                  <span class="text-2xl">📊</span>
+                </div>
+                <p class="text-3xl font-bold mt-2" x-text="`${dailyUsed} / ${dailyLimit}`"></p>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-3">
+                  <div class="bg-gradient-to-r from-orange-500 to-pink-600 h-2 rounded-full transition-all" :style="`width: ${(dailyUsed/dailyLimit)*100}%`"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2" x-text="`${dailyRemaining} remaining`"></p>
               </div>
-              <!-- URL input + Run button (side by side) -->
-              <div class="flex flex-col sm:flex-row gap-4">
-                <input type="url" id="url-input" x-model="quickUrl" placeholder="https://example.com" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                <button id="analyze-url-btn" @click="runTool()" class="px-6 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition whitespace-nowrap">
-                  Run Audit
-                </button>
+              <!-- Plan -->
+              <div class="glass rounded-2xl p-5 stat-card">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-sm text-gray-500 dark:text-gray-400">Plan</h3>
+                  <span class="text-2xl">⭐</span>
+                </div>
+                <p class="text-3xl font-bold mt-2" x-text="$store.auth.user ? ($store.auth.user.isPro ? 'Pro' : 'Free') : 'Free'"></p>
+                <template x-if="$store.auth.user && !$store.auth.user.isPro">
+                  <a href="/pro/upgrade" class="mt-2 inline-block text-sm text-orange-500 hover:underline">Upgrade →</a>
+                </template>
               </div>
             </div>
-          </div>
 
-          <!-- 3. Results Container -->
-          <div id="results" class="mt-8 space-y-16">
-            <!-- Tool results will be rendered here -->
-          </div>
+            <!-- 2. Quick Audit (tool selector above URL) -->
+            <div class="glass rounded-2xl p-6 mb-8">
+              <h3 class="text-xl font-bold mb-4">🚀 Quick Audit</h3>
+              <div class="space-y-4">
+                <!-- Tool selector (full width, above input) -->
+                <div>
+                  <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1">Select Tool</label>
+                  <select x-model="selectedTool" id="tool-selector" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                    <option value="seo-intent-tool">SEO Intent</option>
+                    <option value="seo-ux-tool">Full SEO + UX</option>
+                    <option value="local-seo-tool">Local SEO</option>
+                    <option value="product-seo-tool">Product SEO</option>
+                    <option value="entity">Entity Extractor</option>
+                    <option value="topical">Topical Authority</option>
+                    <option value="schema-generator">Schema Generator</option>
+                    <option value="ai-search-optimization-tool">GEO / AI Search</option>
+                    <option value="ai-voice-search-tool">Voice Search</option>
+                    <option value="ai-audit-tool">AI Content Audit</option>
+                    <option value="quit-risk-tool">Quit Risk</option>
+                    <option value="keyword-research-tool">Keyword Research</option>
+                    <option value="keyword-tool">Keyword Placement</option>
+                  </select>
+                </div>
+                <!-- URL input + Run button (side by side) -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                  <input type="url" id="url-input" x-model="quickUrl" placeholder="https://example.com" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                  <button id="analyze-url-btn" @click="runTool()" class="px-6 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition whitespace-nowrap">
+                    Run Audit
+                  </button>
+                </div>
+              </div>
+            </div>
 
-          <!-- 4. Recent Audits (from localStorage) -->
-          <h3 class="text-lg font-bold mt-12 mb-4">📋 Recent Audits</h3>
-          <div class="glass rounded-2xl overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left">
-                <thead class="bg-gray-100 dark:bg-gray-800">
-                  <tr>
-                    <th class="p-3">Date</th>
-                    <th class="p-3">URL</th>
-                    <th class="p-3">Score</th>
-                    <th class="p-3">Tool</th>
-                    <th class="p-3">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <template x-for="audit in recentAudits" :key="audit.id">
-                    <tr class="border-t border-gray-200 dark:border-gray-700">
-                      <td class="p-3 text-sm" x-text="new Date(audit.timestamp).toLocaleDateString()"></td>
-                      <td class="p-3 text-sm truncate max-w-[150px]" x-text="audit.url"></td>
-                      <td class="p-3 font-bold" :class="{'text-green-500': audit.score >= 80, 'text-yellow-500': audit.score >= 50 && audit.score < 80, 'text-red-500': audit.score < 50}" x-text="audit.score + '%'"></td>
-                      <td class="p-3 text-sm" x-text="audit.tool"></td>
-                      <td class="p-3">
-                        <button @click="viewReport(audit)" class="text-blue-500 hover:underline text-sm">View Report</button>
-                      </td>
+            <!-- 3. Results Container -->
+            <div id="results" class="mt-8 space-y-16">
+              <!-- Tool results will be rendered here -->
+            </div>
+
+            <!-- 4. Recent Audits (from localStorage) -->
+            <h3 class="text-lg font-bold mt-12 mb-4">📋 Recent Audits</h3>
+            <div class="glass rounded-2xl overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead class="bg-gray-100 dark:bg-gray-800">
+                    <tr>
+                      <th class="p-3">Date</th>
+                      <th class="p-3">URL</th>
+                      <th class="p-3">Score</th>
+                      <th class="p-3">Tool</th>
+                      <th class="p-3">Actions</th>
                     </tr>
-                  </template>
-                  <tr x-show="recentAudits.length === 0">
-                    <td colspan="5" class="p-6 text-center text-gray-500">No audits yet. Run your first Quick Audit!</td>
-                  </tr>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    <template x-for="audit in recentAudits" :key="audit.id">
+                      <tr class="border-t border-gray-200 dark:border-gray-700">
+                        <td class="p-3 text-sm" x-text="new Date(audit.timestamp).toLocaleDateString()"></td>
+                        <td class="p-3 text-sm truncate max-w-[150px]" x-text="audit.url"></td>
+                        <td class="p-3 font-bold" :class="{'text-green-500': audit.score >= 80, 'text-yellow-500': audit.score >= 50 && audit.score < 80, 'text-red-500': audit.score < 50}" x-text="audit.score + '%'"></td>
+                        <td class="p-3 text-sm" x-text="audit.tool"></td>
+                        <td class="p-3">
+                          <button @click="viewReport(audit)" class="text-blue-500 hover:underline text-sm">View Report</button>
+                        </td>
+                      </tr>
+                    </template>
+                    <tr x-show="recentAudits.length === 0">
+                      <td colspan="5" class="p-6 text-center text-gray-500">No audits yet. Run your first Quick Audit!</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div><!-- end dashboard tab -->
+
+          <!-- Other tabs (Audits, Analytics, Integrations, Settings) – placeholders -->
+          <div x-show="activeDashboardTab === 'audits'" x-cloak>
+            <p class="text-center text-gray-500 py-20">Audits history – coming soon.</p>
+          </div>
+          <div x-show="activeDashboardTab === 'analytics'" x-cloak>
+            <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
+              <h3 class="text-xl font-bold mb-4">Analytics (Pro)</h3>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="text-center"><p class="text-sm text-gray-500">Clicks</p><p class="text-2xl font-bold" x-text="analytics.clicks || 0"></p></div>
+                <div class="text-center"><p class="text-sm text-gray-500">Impressions</p><p class="text-2xl font-bold" x-text="analytics.impressions || 0"></p></div>
+                <div class="text-center"><p class="text-sm text-gray-500">CTR</p><p class="text-2xl font-bold" x-text="analytics.ctr ? (analytics.ctr*100).toFixed(1)+'%' : '-'"></p></div>
+                <div class="text-center"><p class="text-sm text-gray-500">Position</p><p class="text-2xl font-bold" x-text="analytics.position ? analytics.position.toFixed(1) : '-'"></p></div>
+              </div>
+              <canvas id="analyticsChart" height="150"></canvas>
+            </div>
+          </div>
+          <div x-show="activeDashboardTab === 'integrations'" x-cloak>
+            <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
+              <h3 class="text-xl font-bold mb-4">Integrations</h3>
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <span>🔗 Google Search Console</span>
+                <span class="text-red-500">Not connected</span>
+                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Connect</button>
+              </div>
+            </div>
+          </div>
+          <div x-show="activeDashboardTab === 'settings'" x-cloak>
+            <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
+              <h3 class="text-xl font-bold mb-4">Account Settings</h3>
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <span>Email</span>
+                <span x-text="$store.auth.user ? $store.auth.user.email : ''"></span>
+              </div>
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <span>Plan</span>
+                <span x-text="$store.auth.user ? ($store.auth.user.isPro ? 'Pro' : 'Free') : 'Free'"></span>
+              </div>
+              <button @click="$store.auth.logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
+              <button @click="$store.auth.deleteAccount()" class="mt-3 w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10">Delete Account</button>
             </div>
           </div>
 
-        </div><!-- end dashboard tab -->
+          <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">Privacy-first • Traffic Torch</p>
+        </main>
 
-        <!-- Other tabs (Audits, Analytics, Integrations, Settings) – placeholders -->
-        <div x-show="activeDashboardTab === 'audits'" x-cloak>
-          <p class="text-center text-gray-500 py-20">Audits history – coming soon.</p>
-        </div>
-        <div x-show="activeDashboardTab === 'analytics'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
-            <h3 class="text-xl font-bold mb-4">Analytics (Pro)</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div class="text-center"><p class="text-sm text-gray-500">Clicks</p><p class="text-2xl font-bold" x-text="analytics.clicks || 0"></p></div>
-              <div class="text-center"><p class="text-sm text-gray-500">Impressions</p><p class="text-2xl font-bold" x-text="analytics.impressions || 0"></p></div>
-              <div class="text-center"><p class="text-sm text-gray-500">CTR</p><p class="text-2xl font-bold" x-text="analytics.ctr ? (analytics.ctr*100).toFixed(1)+'%' : '-'"></p></div>
-              <div class="text-center"><p class="text-sm text-gray-500">Position</p><p class="text-2xl font-bold" x-text="analytics.position ? analytics.position.toFixed(1) : '-'"></p></div>
-            </div>
-            <canvas id="analyticsChart" height="150"></canvas>
-          </div>
-        </div>
-        <div x-show="activeDashboardTab === 'integrations'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
-            <h3 class="text-xl font-bold mb-4">Integrations</h3>
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <span>🔗 Google Search Console</span>
-              <span class="text-red-500">Not connected</span>
-              <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Connect</button>
-            </div>
-          </div>
-        </div>
-        <div x-show="activeDashboardTab === 'settings'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
-            <h3 class="text-xl font-bold mb-4">Account Settings</h3>
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <span>Email</span>
-              <span x-text="user.email"></span>
-            </div>
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <span>Plan</span>
-              <span x-text="user.isPro ? 'Pro' : 'Free'"></span>
-            </div>
-            <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
-            <button @click="deleteAccount()" class="mt-3 w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10">Delete Account</button>
-          </div>
-        </div>
-
-        <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">Privacy-first • Traffic Torch</p>
-      </main>
-
-      <div id="footer-placeholder"></div>
+        <div id="footer-placeholder"></div>
+      </div>
     </div>
-  </div>
+  </template>
 </div>
 
 <!-- ========================================================== -->
@@ -280,40 +362,28 @@
 <script src="/main-v1.2.js" type="module"></script>
 
 <script>
-const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
-
-function combinedApp() {
+function dashboardApp() {
   return {
-    // ---- Auth state ----
-    isAuthenticated: false,
-    user: { email: '', isPro: false },
+    // ---- Auth form state (bound to auth store) ----
     activeTab: 'magic',
-    loading: false,
-    message: '',
-    messageType: 'error',
+    showForgot: false,
     magicEmail: '',
     loginEmail: '',
     loginPassword: '',
-    loginPasswordVisible: false,
-    showForgot: false,
     registerEmail: '',
     registerPassword: '',
-    registerPasswordVisible: false,
     registerConfirm: '',
-    registerConfirmVisible: false,
     resetEmail: '',
     resetToken: new URLSearchParams(window.location.search).get('reset_token') || '',
-    resetNewPassword: '',
-    resetPasswordVisible: false,
-    resetConfirmPassword: '',
-    resetConfirmVisible: false,
+    message: '',
+    messageType: 'error',
 
     // ---- Dashboard state ----
     activeDashboardTab: 'dashboard',
     dailyUsed: 0,
     dailyLimit: 3,
     dailyRemaining: 0,
-    selectedTool: 'seo-intent-tool', // default
+    selectedTool: 'seo-intent-tool',
     quickUrl: '',
     recentAudits: [],
     analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
@@ -328,27 +398,25 @@ function combinedApp() {
 
     // ---- Init ----
     initApp() {
-      // Auth init (keep your existing)
+      // If reset token is present, show forgot form
       if (this.resetToken) {
-        this.activeTab = 'login';
-        this.showForgot = false;
-      }
-      const magicToken = new URLSearchParams(window.location.search).get('magic_token');
-      if (magicToken) {
-        localStorage.setItem('authToken', magicToken);
-        window.history.replaceState({}, '', '/pro');
-        this.fetchAccountInfo();
-        return;
-      }
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        this.fetchAccountInfo();
+        this.activeTab = 'forgot';
+        this.showForgot = true;
       }
 
-      // Load recent audits from localStorage
+      // Load audit history
       this.loadAuditHistory();
 
-      // Listen for sidebar tab clicks
+      // Sync daily limit from auth store after login
+      this.$watch('$store.auth.isAuthenticated', (val) => {
+        if (val && this.$store.auth.user) {
+          this.dailyUsed = this.$store.auth.user.dailyUsed || 0;
+          this.dailyLimit = this.$store.auth.user.dailyLimit || 3;
+          this.dailyRemaining = this.dailyLimit - this.dailyUsed;
+        }
+      });
+
+      // Listen for sidebar tab switch events
       document.addEventListener('switchTab', (e) => {
         if (e.detail && e.detail.tab) {
           this.activeDashboardTab = e.detail.tab;
@@ -356,79 +424,123 @@ function combinedApp() {
       });
     },
 
-    // ---- Auth methods (keep your existing) ----
-    async fetchAccountInfo() {
-      const token = localStorage.getItem('authToken');
-      if (!token) return;
+    // ---- Auth wrapper methods (call auth store) ----
+    async sendMagicLink() {
       try {
-        const res = await fetch(API_BASE + '/api/account-info', {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          this.user = data;
-          this.isAuthenticated = true;
-          this.dailyUsed = data.dailyUsed || 0;
-          this.dailyLimit = data.dailyLimit || 3;
-          this.dailyRemaining = data.dailyRemaining || 0;
-        } else {
-          localStorage.removeItem('authToken');
-          this.isAuthenticated = false;
-        }
-      } catch {
-        localStorage.removeItem('authToken');
-        this.isAuthenticated = false;
+        await this.$store.auth.magicLink(this.magicEmail);
+        this.message = 'Magic link sent! Check your email.';
+        this.messageType = 'success';
+        this.magicEmail = '';
+      } catch (e) {
+        this.message = e.message || 'Failed to send magic link';
+        this.messageType = 'error';
       }
     },
 
-    setMessage(msg, type = 'error') {
-      this.message = msg;
-      this.messageType = type;
-      clearTimeout(this.msgTimeout);
-      this.msgTimeout = setTimeout(() => (this.message = ''), 5000);
+    async login() {
+      try {
+        await this.$store.auth.login(this.loginEmail, this.loginPassword);
+        this.message = 'Login successful!';
+        this.messageType = 'success';
+        this.loginEmail = '';
+        this.loginPassword = '';
+        // Update daily stats from the user data
+        if (this.$store.auth.user) {
+          this.dailyUsed = this.$store.auth.user.dailyUsed || 0;
+          this.dailyLimit = this.$store.auth.user.dailyLimit || 3;
+          this.dailyRemaining = this.dailyLimit - this.dailyUsed;
+        }
+      } catch (e) {
+        this.message = e.message || 'Login failed';
+        this.messageType = 'error';
+      }
     },
 
-    // (Auth methods: sendMagicLink, login, register, sendResetLink, resetPassword – keep your existing implementations)
+    async register() {
+      if (this.registerPassword !== this.registerConfirm) {
+        this.message = 'Passwords do not match';
+        this.messageType = 'error';
+        return;
+      }
+      try {
+        await this.$store.auth.register(this.registerEmail, this.registerPassword);
+        this.message = 'Registration successful!';
+        this.messageType = 'success';
+        this.registerEmail = '';
+        this.registerPassword = '';
+        this.registerConfirm = '';
+        if (this.$store.auth.user) {
+          this.dailyUsed = this.$store.auth.user.dailyUsed || 0;
+          this.dailyLimit = this.$store.auth.user.dailyLimit || 3;
+          this.dailyRemaining = this.dailyLimit - this.dailyUsed;
+        }
+      } catch (e) {
+        this.message = e.message || 'Registration failed';
+        this.messageType = 'error';
+      }
+    },
+
+    async sendResetLink() {
+      try {
+        await this.$store.auth.sendResetLink(this.resetEmail);
+        this.message = 'Reset link sent! Check your email.';
+        this.messageType = 'success';
+        this.resetEmail = '';
+      } catch (e) {
+        this.message = e.message || 'Failed to send reset link';
+        this.messageType = 'error';
+      }
+    },
+
+    async resetPassword() {
+      if (this.resetNewPassword !== this.resetConfirmPassword) {
+        this.message = 'Passwords do not match';
+        this.messageType = 'error';
+        return;
+      }
+      try {
+        await this.$store.auth.resetPassword(this.resetToken, this.resetNewPassword);
+        this.message = 'Password reset successfully!';
+        this.messageType = 'success';
+        this.resetToken = '';
+        this.resetNewPassword = '';
+        this.resetConfirmPassword = '';
+        this.showForgot = false;
+        this.activeTab = 'login';
+      } catch (e) {
+        this.message = e.message || 'Reset failed';
+        this.messageType = 'error';
+      }
+    },
 
     // ---- Dashboard methods ----
     loadAuditHistory() {
       const stored = localStorage.getItem('proAuditHistory');
-      if (stored) {
-        try {
-          this.recentAudits = JSON.parse(stored).slice(0, 10);
-        } catch(e) { this.recentAudits = []; }
-      } else {
-        this.recentAudits = [];
-      }
+      this.recentAudits = stored ? JSON.parse(stored).slice(0, 10) : [];
     },
 
     saveAudit(audit) {
       let history = [];
       const stored = localStorage.getItem('proAuditHistory');
-      if (stored) {
-        try { history = JSON.parse(stored); } catch(e) {}
-      }
+      if (stored) try { history = JSON.parse(stored); } catch(e) {}
       history.unshift(audit);
       if (history.length > 50) history = history.slice(0, 50);
       localStorage.setItem('proAuditHistory', JSON.stringify(history));
-      this.loadAuditHistory(); // refresh display
+      this.loadAuditHistory();
     },
 
     runTool() {
       const url = this.quickUrl.trim();
       if (!url) {
-        this.setMessage('Please enter a valid URL', 'error');
+        this.message = 'Please enter a valid URL';
+        this.messageType = 'error';
         return;
       }
 
-      // Set the input value (the tool script will read it)
       const urlInput = document.getElementById('url-input');
       if (urlInput) urlInput.value = url;
 
-      // Determine the tool folder and script path
       const tool = this.selectedTool;
-      let scriptPath = '';
-      // Map tool IDs to folder names
       const toolMap = {
         'seo-intent-tool': '/seo-intent-tool/script-v1.4.js',
         'seo-ux-tool': '/seo-ux-tool/script-v1.3.js',
@@ -444,13 +556,13 @@ function combinedApp() {
         'keyword-research-tool': '/keyword-research-tool/script-v1.0.js',
         'keyword-tool': '/keyword-tool/script-v1.0.js'
       };
-      scriptPath = toolMap[tool];
+      const scriptPath = toolMap[tool];
       if (!scriptPath) {
-        this.setMessage('Tool script not found', 'error');
+        this.message = 'Tool script not found';
+        this.messageType = 'error';
         return;
       }
 
-      // Clear previous results
       const resultsContainer = document.getElementById('results');
       resultsContainer.innerHTML = `
         <div class="flex flex-col items-center justify-center py-12">
@@ -459,84 +571,46 @@ function combinedApp() {
         </div>
       `;
 
-      // Load the script dynamically
       this.loadToolScript(scriptPath, () => {
-        // After script loads, trigger the tool's analyze button
+        // The tool script's DOMContentLoaded listener must fire
+        document.dispatchEvent(new Event('DOMContentLoaded'));
         const analyzeBtn = document.getElementById('analyze-url-btn');
         if (analyzeBtn) {
           analyzeBtn.click();
-          // The tool's script will handle the rest and render results into #results
         } else {
-          this.setMessage('Tool button not found', 'error');
+          this.message = 'Tool button not found';
+          this.messageType = 'error';
         }
       });
     },
 
     loadToolScript(src, callback) {
-      // Check if already loaded (by script src)
+      // Remove any existing script with same src to avoid conflicts
       const existing = document.querySelector(`script[src="${src}"]`);
-      if (existing) {
-        callback();
-        return;
-      }
+      if (existing) existing.remove();
       const script = document.createElement('script');
       script.src = src;
       script.type = 'module';
       script.onload = callback;
       script.onerror = () => {
-        this.setMessage('Failed to load tool script', 'error');
+        this.message = 'Failed to load tool script';
+        this.messageType = 'error';
       };
       document.head.appendChild(script);
     },
 
     viewReport(audit) {
-      // Re-run the same tool on the same URL
       this.selectedTool = audit.tool;
       this.quickUrl = audit.url;
-      // Wait for DOM update then run
       this.$nextTick(() => {
         this.runTool();
-        // Switch to dashboard tab
         this.activeDashboardTab = 'dashboard';
       });
     },
 
-    logout() {
-      localStorage.removeItem('authToken');
-      this.isAuthenticated = false;
-      window.location.href = '/pro';
-    },
-
-    deleteAccount() {
-      if (confirm('Permanently delete your account? This cannot be undone.')) {
-        alert('Account deletion requested – contact support for full removal.');
-      }
-    }
+    // Logout and delete account are now handled by $store.auth methods
   };
 }
-</script>
-
-<script>
-  // Manually expose the runTool function to the global scope
-  document.addEventListener('alpine:init', function() {
-    // Wait for Alpine to be ready
-    setTimeout(function() {
-      const app = document.querySelector('[x-data]');
-      if (app && app.__x) {
-        window.runTool = app.__x.$data.runTool.bind(app.__x.$data);
-        // Re-bind the button click
-        const btn = document.getElementById('analyze-url-btn');
-        if (btn) {
-          btn.onclick = function(e) {
-            e.preventDefault();
-            if (typeof window.runTool === 'function') {
-              window.runTool();
-            }
-          };
-        }
-      }
-    }, 500);
-  });
 </script>
 
 </body>
