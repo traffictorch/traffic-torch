@@ -1347,7 +1347,7 @@
                             if (refreshRes.ok && refreshRes.data.token) {
                                 setToken(refreshRes.data.token);
                             }
-                            break;
+                            return; // <-- FIXED: changed from 'break' to 'return'
                         }
                     } catch (e) {}
                     if (attempts >= maxAttempts) {
@@ -1527,17 +1527,7 @@
                 // Switch to dashboard tab by default
                 switchTab('dashboard');
 
-                // Check for "just_upgraded" flag (from Stripe redirect)
-                if (localStorage.getItem('just_upgraded') === 'true') {
-                    // Show upgrade modal with activating message
-                    showUpgradeModal('pro');
-                    upgradeActionBtn.style.display = 'none';
-                    const container = document.createElement('div');
-                    container.id = 'checkout-container';
-                    container.innerHTML = '<div class="text-center py-4"><div class="spinner" style="width:2rem;height:2rem;border-width:3px;"></div><p class="mt-2">Activating Pro access…</p></div>';
-                    upgradeActionBtn.parentNode.insertBefore(container, upgradeActionBtn);
-                    pollForProActivation();
-                }
+                // REMOVED: auto-open upgrade modal on just_upgraded flag – we only show modal on explicit trigger.
             }
 
             // ─── Start ───
