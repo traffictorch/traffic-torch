@@ -9,7 +9,6 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="canonical" href="https://traffictorch.net/pro/">
 
-  <!-- Theme Color, Open Graph, etc. -->
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
   <meta property="og:title" content="Traffic Torch Pro – Dashboard">
@@ -20,7 +19,6 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Traffic Torch Pro – Dashboard">
 
-  <!-- Preload CSS -->
   <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/style-v1.0.css"></noscript>
   <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
@@ -91,9 +89,12 @@
           <label class="block text-sm font-medium mb-1">Email</label>
           <input type="email" x-model="loginEmail" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
         </div>
-        <div class="mb-4">
+        <div class="mb-4 relative">
           <label class="block text-sm font-medium mb-1">Password</label>
-          <input type="password" x-model="loginPassword" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
+          <input :type="loginPasswordVisible ? 'text' : 'password'" x-model="loginPassword" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none pr-10">
+          <button type="button" @click="loginPasswordVisible = !loginPasswordVisible" class="absolute right-3 bottom-3 text-gray-500">
+            <i :class="loginPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
         </div>
         <button @click="login()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition" :disabled="loading">Login</button>
         <div class="mt-2 text-right">
@@ -114,35 +115,47 @@
           <label class="block text-sm font-medium mb-1">Email</label>
           <input type="email" x-model="registerEmail" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
         </div>
-        <div class="mb-4">
+        <div class="mb-4 relative">
           <label class="block text-sm font-medium mb-1">Password</label>
-          <input type="password" x-model="registerPassword" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
+          <input :type="registerPasswordVisible ? 'text' : 'password'" x-model="registerPassword" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none pr-10">
+          <button type="button" @click="registerPasswordVisible = !registerPasswordVisible" class="absolute right-3 bottom-3 text-gray-500">
+            <i :class="registerPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
         </div>
-        <div class="mb-4">
+        <div class="mb-4 relative">
           <label class="block text-sm font-medium mb-1">Confirm Password</label>
-          <input type="password" x-model="registerConfirm" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
+          <input :type="registerConfirmVisible ? 'text' : 'password'" x-model="registerConfirm" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none pr-10">
+          <button type="button" @click="registerConfirmVisible = !registerConfirmVisible" class="absolute right-3 bottom-3 text-gray-500">
+            <i :class="registerConfirmVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
         </div>
         <button @click="register()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition" :disabled="loading">Register</button>
       </div>
 
-      <!-- Reset form (shows when ?reset_token=xxx) -->
+      <!-- Reset (show when reset_token in URL) -->
       <div x-show="resetToken" x-cloak class="mt-4 p-4 border border-blue-300 rounded-lg">
         <h3 class="font-bold text-lg">Set new password</h3>
-        <div class="mt-3">
-          <input type="password" x-model="resetNewPassword" placeholder="New password" class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500">
+        <div class="relative mt-3">
+          <input :type="resetPasswordVisible ? 'text' : 'password'" x-model="resetNewPassword" placeholder="New password" class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+          <button type="button" @click="resetPasswordVisible = !resetPasswordVisible" class="absolute right-3 bottom-3 text-gray-500">
+            <i :class="resetPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
         </div>
-        <div class="mt-2">
-          <input type="password" x-model="resetConfirmPassword" placeholder="Confirm password" class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500">
+        <div class="relative mt-2">
+          <input :type="resetConfirmVisible ? 'text' : 'password'" x-model="resetConfirmPassword" placeholder="Confirm password" class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
+          <button type="button" @click="resetConfirmVisible = !resetConfirmVisible" class="absolute right-3 bottom-3 text-gray-500">
+            <i :class="resetConfirmVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
         </div>
         <button @click="resetPassword()" class="mt-3 w-full py-3 bg-blue-600 text-white font-bold rounded-lg" :disabled="loading">Reset Password</button>
       </div>
     </div>
   </div>
 
-  <!-- ======== DASHBOARD ======== -->
+  <!-- ======== DASHBOARD (visible when authenticated) ======== -->
   <div x-show="isAuthenticated" x-cloak class="flex flex-1 min-h-screen">
 
-    <!-- Desktop Sidebar -->
+    <!-- Desktop Sidebar (unchanged) -->
     <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
       <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
         <a href="/" class="flex items-center gap-4">
@@ -158,7 +171,7 @@
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col min-h-screen">
-      <!-- Header -->
+      <!-- Header (unchanged) -->
       <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
           <a href="/" class="flex items-center gap-4 md:hidden">
@@ -190,11 +203,14 @@
           </template>
         </div>
 
-        <!-- DASHBOARD TAB -->
+        <!-- ========================================================== -->
+        <!-- TAB: DASHBOARD – TOOL SELECTOR ABOVE URL -->
+        <!-- ========================================================== -->
         <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
 
-          <!-- Stats Row -->
+          <!-- Stats Row (Audits Today + Plan only) -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <!-- Audits Today -->
             <div class="glass rounded-2xl p-5 stat-card">
               <div class="flex items-center justify-between">
                 <h3 class="text-sm text-gray-500 dark:text-gray-400">Audits Today</h3>
@@ -206,6 +222,7 @@
               </div>
               <p class="text-xs text-gray-500 mt-2" x-text="`${dailyRemaining} remaining`"></p>
             </div>
+            <!-- Plan -->
             <div class="glass rounded-2xl p-5 stat-card">
               <div class="flex items-center justify-between">
                 <h3 class="text-sm text-gray-500 dark:text-gray-400">Plan</h3>
@@ -218,10 +235,11 @@
             </div>
           </div>
 
-          <!-- Quick Audit -->
+          <!-- Quick Audit (tool selector above URL) -->
           <div class="glass rounded-2xl p-6 mb-8">
             <h3 class="text-xl font-bold mb-4">🚀 Quick Audit</h3>
             <div class="space-y-4">
+              <!-- Tool selector -->
               <div>
                 <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1">Select Tool</label>
                 <select x-model="selectedTool" id="tool-selector" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
@@ -240,6 +258,7 @@
                   <option value="keyword-tool">Keyword Placement</option>
                 </select>
               </div>
+              <!-- URL + Run -->
               <div class="flex flex-col sm:flex-row gap-4">
                 <input type="url" id="url-input" x-model="quickUrl" placeholder="https://example.com" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
                 <button id="analyze-url-btn" @click="runTool()" class="px-6 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition whitespace-nowrap">Run Audit</button>
@@ -247,7 +266,7 @@
             </div>
           </div>
 
-          <!-- Results -->
+          <!-- Results Container -->
           <div id="results" class="mt-8 space-y-16"></div>
 
           <!-- Recent Audits -->
@@ -275,9 +294,10 @@
               </table>
             </div>
           </div>
-        </div>
 
-        <!-- Other tabs -->
+        </div><!-- end dashboard tab -->
+
+        <!-- Other tabs (placeholders) -->
         <div x-show="activeDashboardTab === 'audits'" x-cloak><p class="text-center text-gray-500 py-20">Audits history – coming soon.</p></div>
         <div x-show="activeDashboardTab === 'analytics'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
@@ -328,6 +348,8 @@
 <!-- ========================================================== -->
 <!-- SCRIPTS -->
 <!-- ========================================================== -->
+<script src="/main-v1.2.js" type="module"></script>
+
 <script>
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
@@ -336,8 +358,6 @@ function combinedApp() {
     // ---- Auth state ----
     isAuthenticated: false,
     user: { email: '', isPro: false, dailyUsed: 0, dailyLimit: 3, dailyRemaining: 3 },
-
-    // ---- Form fields ----
     activeTab: 'magic',
     loading: false,
     message: '',
@@ -345,14 +365,19 @@ function combinedApp() {
     magicEmail: '',
     loginEmail: '',
     loginPassword: '',
+    loginPasswordVisible: false,
     showForgot: false,
     registerEmail: '',
     registerPassword: '',
+    registerPasswordVisible: false,
     registerConfirm: '',
+    registerConfirmVisible: false,
     resetEmail: '',
     resetToken: new URLSearchParams(window.location.search).get('reset_token') || '',
     resetNewPassword: '',
+    resetPasswordVisible: false,
     resetConfirmPassword: '',
+    resetConfirmVisible: false,
 
     // ---- Dashboard state ----
     activeDashboardTab: 'dashboard',
@@ -574,7 +599,6 @@ function combinedApp() {
         this.setMessage('Please enter a valid URL', 'error');
         return;
       }
-
       const urlInput = document.getElementById('url-input');
       if (urlInput) urlInput.value = url;
 
