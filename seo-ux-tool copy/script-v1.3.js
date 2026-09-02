@@ -1,6 +1,3 @@
-// seo-ux-tool/script js
-
-
 import { renderPriorityAndGains } from './priority-gains-v1.0.js';
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { analyzeSEO } from './modules/analyze-seo-v1.0.js';
@@ -362,32 +359,15 @@ document.addEventListener('DOMContentLoaded', () => {
         allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
       });
 
-      // No artificial delay – proceed immediately to next module
+      await new Promise(r => setTimeout(r, 600));
     }
 
-    // No "Generating report..." delay – compute results instantly
+    // Final report generation
+    progressText.textContent = 'Generating report...';
+    await new Promise(r => setTimeout(r, 1400));
+
     const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
     updateScore('overall-score', overallScore);
-    
-    // --- Send score back to dashboard ---
-const auditId = new URLSearchParams(window.location.search).get('audit_id');
-if (auditId) {
-  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
-  if (token) {
-    try {
-      await fetch(`${API_BASE}/api/audit-history/${auditId}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ score: overallScore })
-      });
-    } catch (e) {
-      // silently ignore
-    }
-  }
-}
 
     allIssues.sort((a, b) => b.impact - a.impact);
     const top3 = allIssues.slice(0, 3);
@@ -402,11 +382,12 @@ if (auditId) {
     }));
 
     const yourScore = Math.round(overallScore * 0.92);
-    // Render priority fixes immediately – no setTimeout delay
-    const priorityContainer = document.getElementById('priority-cards-container');
-    if (priorityContainer) {
-      renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
-    }
+    setTimeout(() => {
+      const priorityContainer = document.getElementById('priority-cards-container');
+      if (priorityContainer) {
+        renderPriorityAndGains(prioritisedFixes, yourScore, overallScore);
+      }
+    }, 500);
 
     // Display truncated analyzed page title
     const titleElement = doc.querySelector('title');
@@ -788,7 +769,7 @@ if (auditId) {
     initShareReport(resultsContainer);
     initSubmitFeedback(resultsContainer);
 
-    // Hide progress container now that everything is rendered
+    // === FINAL FIX: Hide spinner only after ALL results are fully loaded and displayed ===
     if (progressContainer) {
       progressContainer.classList.add('hidden');
     }

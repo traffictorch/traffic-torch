@@ -159,10 +159,9 @@
             </div>
           </div>
 
-          <!-- Tool Cards Grid (14 tools) -->
+          <!-- Tool Cards Grid -->
           <h3 class="text-lg font-bold mt-12 mb-4">🔧 All Tools</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
-            <!-- Each card links to the tool page (opens in same tab) -->
             <a href="/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
               <span class="text-3xl mb-2">🏠</span>
               <span class="text-sm font-medium">Homepage Tool</span>
@@ -225,70 +224,76 @@
             </a>
           </div>
 
-          <!-- Recent Audits (unchanged) -->
+          <!-- Recent Audits -->
           <h3 class="text-lg font-bold mt-12 mb-4">📋 Recent Audits</h3>
           <div class="glass rounded-2xl overflow-hidden">
             <div class="overflow-x-auto">
               <table class="w-full text-left">
-                <thead class="bg-gray-100 dark:bg-gray-800">
-                  <tr><th class="p-3">Date</th><th class="p-3">URL</th><th class="p-3">Score</th><th class="p-3">Tool</th><th class="p-3">Actions</th></tr>
-                </thead>
-                <tbody>
-                  <template x-for="audit in recentAudits" :key="audit.id">
-                    <tr class="border-t border-gray-200 dark:border-gray-700">
-                      <td class="p-3 text-sm" x-text="new Date(audit.timestamp).toLocaleDateString()"></td>
-                      <td class="p-3 text-sm truncate max-w-[150px]" x-text="audit.url"></td>
-                      <td class="p-3 font-bold" :class="{'text-green-500': audit.score >= 80, 'text-yellow-500': audit.score >= 50 && audit.score < 80, 'text-red-500': audit.score < 50}" x-text="audit.score + '%'"></td>
-                      <td class="p-3 text-sm" x-text="audit.tool"></td>
-                      <td class="p-3"><button @click="viewReport(audit)" class="text-blue-500 hover:underline text-sm">View Report</button></td>
-                    </tr>
-                  </template>
-                  <tr x-show="recentAudits.length === 0">
-                    <td colspan="5" class="p-6 text-center text-gray-500">No audits yet.</td>
-                  </tr>
-                </tbody>
+<tbody>
+  <template x-for="audit in displayedAudits" :key="audit.id || audit._localId">
+    <tr class="border-t border-gray-200 dark:border-gray-700">
+      <td colspan="5" class="p-4">
+        <div class="flex flex-col gap-2 w-full">
+          <!-- Row 1: Date, Tool, Score -->
+          <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+            <span x-text="new Date(audit.timestamp * (audit.timestamp < 10000000000 ? 1000 : 1)).toLocaleDateString()"></span>
+            <span class="font-medium text-gray-900 dark:text-white" x-text="audit.tool"></span>
+            <span x-else class="text-gray-400">—</span>
+          </div>
+          <!-- Row 2: URL (full width, wraps) -->
+          <div class="text-sm break-all text-blue-600 dark:text-blue-400" x-text="audit.url"></div>
+          <!-- Row 3: Actions -->
+          <div class="flex gap-3 mt-1">
+            <button @click="copyLink(audit)" class="text-blue-500 hover:underline text-sm">📋 Copy</button>
+            <button @click="scanAgain(audit)" class="text-green-500 hover:underline text-sm">🔄 Scan</button>
+            <button @click="deleteAudit(audit)" class="text-red-500 hover:underline text-sm">🗑️</button>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </template>
+  <tr x-show="recentAudits.length === 0">
+    <td colspan="5" class="p-6 text-center text-gray-500">No audits saved yet.</td>
+  </tr>
+</tbody>
               </table>
             </div>
           </div>
         </div><!-- end dashboard tab -->
 
-        <!-- Other tabs -->
         <!-- AUDITS TAB (NEW) -->
         <div x-show="activeDashboardTab === 'audits'" x-cloak>
           <div class="glass rounded-2xl p-6">
             <h3 class="text-xl font-bold mb-4">📋 Audit History</h3>
             <div class="overflow-x-auto">
               <table class="w-full text-left">
-                <thead class="bg-gray-100 dark:bg-gray-800">
-                  <tr>
-                    <th class="p-3">Date</th>
-                    <th class="p-3">URL</th>
-                    <th class="p-3">Tool</th>
-                    <th class="p-3">Score</th>
-                    <th class="p-3">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <template x-for="audit in displayedAudits" :key="audit.id || audit._localId">
-                    <tr class="border-t border-gray-200 dark:border-gray-700">
-                      <td class="p-3 text-sm" x-text="new Date(audit.timestamp).toLocaleDateString()"></td>
-                      <td class="p-3 text-sm truncate max-w-[200px]" x-text="audit.url"></td>
-                      <td class="p-3 text-sm" x-text="audit.tool"></td>
-                      <td class="p-3 text-sm">
-                        <span x-if="audit.score !== null && audit.score !== undefined" x-text="audit.score + '%'"></span>
-                        <span x-else class="text-gray-400">—</span>
-                      </td>
-                      <td class="p-3">
-                        <button @click="copyLink(audit)" class="text-blue-500 hover:underline text-sm mr-2">📋 Copy</button>
-                        <button @click="scanAgain(audit)" class="text-green-500 hover:underline text-sm mr-2">🔄 Scan</button>
-                        <button @click="deleteAudit(audit)" class="text-red-500 hover:underline text-sm">🗑️</button>
-                      </td>
-                    </tr>
-                  </template>
-                  <tr x-show="recentAudits.length === 0">
-                    <td colspan="5" class="p-6 text-center text-gray-500">No audits saved yet.</td>
-                  </tr>
-                </tbody>
+<tbody>
+  <template x-for="audit in displayedAudits" :key="audit.id || audit._localId">
+    <tr class="border-t border-gray-200 dark:border-gray-700">
+      <td colspan="5" class="p-4">
+        <div class="flex flex-col gap-2 w-full">
+          <!-- Row 1: Date, Tool, Score -->
+          <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+            <span x-text="new Date(audit.timestamp * (audit.timestamp < 10000000000 ? 1000 : 1)).toLocaleDateString()"></span>
+            <span class="font-medium text-gray-900 dark:text-white" x-text="audit.tool"></span>
+            <span x-else class="text-gray-400">—</span>
+          </div>
+          <!-- Row 2: URL (full width, wraps) -->
+          <div class="text-sm break-all text-blue-600 dark:text-blue-400" x-text="audit.url"></div>
+          <!-- Row 3: Actions -->
+          <div class="flex gap-3 mt-1">
+            <button @click="copyLink(audit)" class="text-blue-500 hover:underline text-sm">📋 Copy</button>
+            <button @click="scanAgain(audit)" class="text-green-500 hover:underline text-sm">🔄 Scan</button>
+            <button @click="deleteAudit(audit)" class="text-red-500 hover:underline text-sm">🗑️</button>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </template>
+  <tr x-show="recentAudits.length === 0">
+    <td colspan="5" class="p-6 text-center text-gray-500">No audits saved yet.</td>
+  </tr>
+</tbody>
               </table>
             </div>
             <!-- Load More / Show More -->
@@ -302,23 +307,50 @@
             </div>
           </div>
         </div>
-        
-        <div x-show="activeDashboardTab === 'analytics'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
-            <h3 class="text-xl font-bold mb-4">Analytics <span class="text-sm font-normal text-gray-500">(Pro)</span></h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div class="text-center"><p class="text-sm text-gray-500">Clicks</p><p class="text-2xl font-bold" x-text="isAuthenticated ? (analytics.clicks || 0) : '—'"></p></div>
-              <div class="text-center"><p class="text-sm text-gray-500">Impressions</p><p class="text-2xl font-bold" x-text="isAuthenticated ? (analytics.impressions || 0) : '—'"></p></div>
-              <div class="text-center"><p class="text-sm text-gray-500">CTR</p><p class="text-2xl font-bold" x-text="isAuthenticated ? (analytics.ctr ? (analytics.ctr*100).toFixed(1)+'%' : '-') : '—'"></p></div>
-              <div class="text-center"><p class="text-sm text-gray-500">Position</p><p class="text-2xl font-bold" x-text="isAuthenticated ? (analytics.position ? analytics.position.toFixed(1) : '-') : '—'"></p></div>
-            </div>
-            <canvas id="analyticsChart" height="150"></canvas>
-            <template x-if="!isAuthenticated">
-              <div class="mt-6 text-center"><button @click="showUpgradeModal()" class="text-orange-500 hover:underline">Login to unlock analytics</button></div>
-            </template>
-          </div>
-        </div>
-        
+
+<div x-show="activeDashboardTab === 'analytics'" x-cloak>
+  <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold">📊 Google Analytics 4</h3>
+      <div class="flex items-center gap-3">
+        <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
+        <span x-show="!ga4.connected" class="text-sm text-red-500">● Not connected</span>
+        <button x-show="!ga4.connected" @click="connectGA4()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">Connect GA4</button>
+        <button x-show="ga4.connected" @click="disconnectGA4()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition">Disconnect</button>
+        <button x-show="ga4.connected" @click="fetchGA4Report()" class="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600 transition">↻ Refresh</button>
+      </div>
+    </div>
+
+    <!-- Connection Status / Error -->
+    <div x-show="ga4.error" class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 rounded-lg text-red-800 dark:text-red-200 text-sm" x-text="ga4.error"></div>
+
+    <!-- Stats Cards -->
+    <div x-show="ga4.connected && ga4.data.length > 0" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="text-center"><p class="text-sm text-gray-500">Sessions</p><p class="text-2xl font-bold" x-text="ga4.totalSessions || '—'"></p></div>
+      <div class="text-center"><p class="text-sm text-gray-500">Users</p><p class="text-2xl font-bold" x-text="ga4.totalUsers || '—'"></p></div>
+      <div class="text-center"><p class="text-sm text-gray-500">Page Views</p><p class="text-2xl font-bold" x-text="ga4.totalViews || '—'"></p></div>
+      <div class="text-center"><p class="text-sm text-gray-500">Avg / Day</p><p class="text-2xl font-bold" x-text="ga4.avgDaily || '—'"></p></div>
+    </div>
+
+    <!-- Chart -->
+    <div x-show="ga4.connected && ga4.data.length > 0">
+      <canvas id="analyticsChart" height="150"></canvas>
+    </div>
+
+    <div x-show="ga4.connected && ga4.data.length === 0 && !ga4.loading" class="text-center text-gray-500 py-8">
+      No data available for the selected period.
+    </div>
+
+    <div x-show="ga4.loading" class="text-center text-gray-500 py-8">
+      ⏳ Loading GA4 data...
+    </div>
+
+    <div x-show="!ga4.connected" class="text-center text-gray-500 py-8">
+      <p class="mb-4">Connect your Google Analytics 4 property to see traffic data.</p>
+      <button @click="connectGA4()" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Connect GA4</button>
+    </div>
+  </div>
+</div>
         
         <div x-show="activeDashboardTab === 'integrations'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
@@ -330,6 +362,7 @@
             </div>
           </div>
         </div>
+        
         <div x-show="activeDashboardTab === 'settings'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-4">Account Settings</h3>
@@ -357,14 +390,12 @@
       <div id="footer-placeholder"></div>
     </div>
   </div>
-</div>
-
-<!-- ========================================================== -->
-<!-- Upgrade Modal -->
-<div id="upgradeModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[10000] hidden" @click.self="closeUpgradeModal()">
-  <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl text-center max-w-sm mx-4 shadow-2xl relative">
-    <button @click="closeUpgradeModal()" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">&times;</button>
-    <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Unlock Pro Features</h3>
+  
+  <!-- Upgrade Modal -->
+<div id="upgradeModal" 
+     class="fixed inset-0 z-[10000] flex items-center justify-center bg-black bg-opacity-70 hidden">
+  <div class="bg-white dark:bg-gray-900 p-8 pt-12 rounded-2xl text-center max-w-sm mx-4 shadow-2xl relative">
+     <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Unlock Pro Features</h3>
     <p class="text-gray-600 dark:text-gray-300 mb-6">Log in or upgrade to Traffic Torch Pro for unlimited audits, analytics, and more.</p>
     <div class="flex flex-col gap-3">
       <a href="/login/" class="px-6 py-3 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition">Login / Register</a>
@@ -373,6 +404,10 @@
     </div>
   </div>
 </div>
+
+</div>
+
+<!-- ========================================================== -->
 
 <!-- Checkout container -->
 <div id="checkout-container" class="fixed inset-0 z-[10001] bg-black bg-opacity-80 flex items-center justify-center hidden">
@@ -438,7 +473,7 @@ function dashboardApp() {
   return {
     // ---- Auth state ----
     isAuthenticated: false,
-    user: { email: '', isPro: false },
+    user: { email: '', isPro: false, tier: 'free' },
     // ---- Dashboard state ----
     activeDashboardTab: 'dashboard',
     dailyLimit: 50,
@@ -446,6 +481,8 @@ function dashboardApp() {
     quickUrl: '',
     recentAudits: [],
     analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
+    // ---- Audits tab state ----
+    displayCount: 10, // will be set based on tier
 
     tabs: [
       { id: 'dashboard', label: 'Dashboard' },
@@ -455,7 +492,12 @@ function dashboardApp() {
       { id: 'settings', label: 'Settings' }
     ],
 
-    // ---- Computed daily usage from localStorage ----
+    // ---- Computed ----
+    get displayedAudits() {
+      return this.recentAudits.slice(0, this.displayCount);
+    },
+
+    // ---- Daily usage ----
     get dailyUsed() {
       const today = new Date().toISOString().split('T')[0];
       const stored = localStorage.getItem('tt_daily_usage');
@@ -473,15 +515,190 @@ function dashboardApp() {
       const today = new Date().toISOString().split('T')[0];
       localStorage.setItem('tt_daily_usage', JSON.stringify({ date: today, count: val }));
     },
+    
+    // Add to data object
+ga4: {
+  connected: false,
+  loading: false,
+  error: null,
+  data: [],
+  totalSessions: 0,
+  totalUsers: 0,
+  totalViews: 0,
+  avgDaily: 0,
+  propertyId: ''
+},
+
+// Add these methods
+async checkGA4Connection() {
+  try {
+    const res = await fetch('/api/account-info', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      this.ga4.connected = data.ga4Connected || false;
+      if (this.ga4.connected) {
+        this.fetchGA4Report();
+      }
+    }
+  } catch (e) {
+    console.error('Failed to check GA4 connection:', e);
+  }
+},
+
+connectGA4() {
+  if (!this.isAuthenticated) {
+    this.showUpgradeModal();
+    return;
+  }
+  // Step 1: Get auth URL from backend
+  fetch('/api/ga4/auth-url', {
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.authUrl) {
+      // Open Google OAuth popup or redirect
+      // We'll use a popup for better UX
+      const width = 500, height = 600;
+      const left = (screen.width - width) / 2;
+      const top = (screen.height - height) / 2;
+      const popup = window.open(
+        data.authUrl,
+        'Connect GA4',
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+      // Listen for the callback
+      window.addEventListener('message', this.handleGA4Callback.bind(this));
+    }
+  })
+  .catch(err => {
+    this.ga4.error = 'Failed to start GA4 connection: ' + err.message;
+  });
+},
+
+handleGA4Callback(event) {
+  // This will be called when the popup sends a message with the code
+  if (event.data && event.data.type === 'ga4_code') {
+    const code = event.data.code;
+    // Now we need to get the property ID from the user
+    // Show a prompt or a modal to enter property ID
+    const propertyId = prompt('Enter your GA4 Property ID (e.g., 123456789):');
+    if (!propertyId) {
+      this.ga4.error = 'Property ID is required to connect.';
+      return;
+    }
+    // Send the code and property ID to the backend
+    this.finishGA4Connection(code, propertyId);
+  }
+},
+
+async finishGA4Connection(code, propertyId) {
+  this.ga4.loading = true;
+  this.ga4.error = null;
+  try {
+    const res = await fetch('/api/ga4/connect', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ code, propertyId })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      this.ga4.connected = true;
+      this.ga4.propertyId = propertyId;
+      this.fetchGA4Report();
+    } else {
+      this.ga4.error = data.error || 'Failed to connect GA4';
+    }
+  } catch (err) {
+    this.ga4.error = 'Connection failed: ' + err.message;
+  } finally {
+    this.ga4.loading = false;
+  }
+},
+
+async disconnectGA4() {
+  if (!confirm('Disconnect GA4? This will remove your data connection.')) return;
+  try {
+    const res = await fetch('/api/ga4/disconnect', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+    });
+    if (res.ok) {
+      this.ga4.connected = false;
+      this.ga4.data = [];
+      this.ga4.totalSessions = 0;
+      this.ga4.totalUsers = 0;
+      this.ga4.totalViews = 0;
+      this.ga4.avgDaily = 0;
+      if (window.analyticsChartInstance) {
+        window.analyticsChartInstance.data.labels = [];
+        window.analyticsChartInstance.data.datasets[0].data = [];
+        window.analyticsChartInstance.data.datasets[1].data = [];
+        window.analyticsChartInstance.update();
+      }
+    }
+  } catch (err) {
+    this.ga4.error = 'Disconnect failed: ' + err.message;
+  }
+},
+
+async fetchGA4Report() {
+  if (!this.ga4.connected) return;
+  this.ga4.loading = true;
+  this.ga4.error = null;
+  try {
+    const res = await fetch('/api/ga4/report?type=overview&days=7', {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      if (data.needsReconnect) {
+        this.ga4.connected = false;
+        this.ga4.error = 'Connection expired. Please reconnect.';
+        return;
+      }
+      throw new Error(data.error || 'Failed to fetch GA4 data');
+    }
+
+    const raw = data.data || [];
+    this.ga4.data = raw;
+    this.ga4.totalSessions = raw.reduce((sum, row) => sum + (row.metrics[0] || 0), 0);
+    this.ga4.totalUsers = raw.reduce((sum, row) => sum + (row.metrics[1] || 0), 0);
+    this.ga4.totalViews = raw.reduce((sum, row) => sum + (row.metrics[2] || 0), 0);
+    this.ga4.avgDaily = raw.length ? Math.round(this.ga4.totalSessions / raw.length) : 0;
+
+    // Update Chart.js
+    if (window.analyticsChartInstance) {
+      const labels = raw.map(row => row.dimensions[0] || '');
+      const sessions = raw.map(row => row.metrics[0] || 0);
+      const users = raw.map(row => row.metrics[1] || 0);
+      window.analyticsChartInstance.data.labels = labels;
+      window.analyticsChartInstance.data.datasets[0].data = sessions;
+      window.analyticsChartInstance.data.datasets[1].data = users;
+      window.analyticsChartInstance.update();
+    }
+  } catch (err) {
+    this.ga4.error = err.message;
+  } finally {
+    this.ga4.loading = false;
+  }
+},
 
     // ---- Init ----
     initDashboard() {
       const token = localStorage.getItem('authToken');
       if (token) {
         this.fetchAccountInfo();
+      } else {
+        // Guest = free tier, limit 5
+        this.displayCount = 5;
       }
       this.loadAuditHistory();
-
       document.addEventListener('switchTab', (e) => {
         if (e.detail && e.detail.tab) {
           this.activeDashboardTab = e.detail.tab;
@@ -501,14 +718,27 @@ function dashboardApp() {
           const data = await res.json();
           this.user = data;
           this.isAuthenticated = true;
+          this.user.tier = data.tier || (data.isPro ? 'pro' : 'free');
+          this.updateDisplayLimit();
         } else {
           localStorage.removeItem('authToken');
           this.isAuthenticated = false;
+          // fallback to guest limit
+          this.displayCount = 5;
         }
       } catch {
         localStorage.removeItem('authToken');
         this.isAuthenticated = false;
+        this.displayCount = 5;
       }
+    },
+
+    updateDisplayLimit() {
+      const tier = this.user.tier || 'free';
+      if (tier === 'free') this.displayCount = 5;
+      else if (tier === 'pro') this.displayCount = 10;
+      else if (tier === 'enterprise') this.displayCount = 10; // initial, will show more on demand
+      else this.displayCount = 5;
     },
 
     requireAuth() {
@@ -527,50 +757,170 @@ function dashboardApp() {
       document.getElementById('upgradeModal').classList.add('hidden');
     },
 
-    // ---- Dashboard methods ----
-    loadAuditHistory() {
-      const stored = localStorage.getItem('proAuditHistory');
-      if (stored) {
-        try {
-          this.recentAudits = JSON.parse(stored).slice(0, 10);
-        } catch(e) { this.recentAudits = []; }
-      } else {
+    // ---- Audit History methods ----
+async loadAuditHistory() {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    try {
+      const res = await fetch(`${API_BASE}/api/audit-history`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        // Map tool_name to tool
+        this.recentAudits = (data.audits || []).map(a => ({ ...a, tool: a.tool_name }));
+        return;
+      }
+    } catch (e) {}
+  }
+  // Guest mode: load from localStorage
+  const stored = localStorage.getItem('audit_guest');
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      const now = Date.now();
+      if (parsed.savedAt && (now - parsed.savedAt) > 24 * 60 * 60 * 1000) {
+        localStorage.removeItem('audit_guest');
         this.recentAudits = [];
+      } else {
+        this.recentAudits = parsed.entries || [];
+        if (this.recentAudits.length > 5) {
+          this.recentAudits = this.recentAudits.slice(0, 5);
+          this.saveGuestAudits();
+        }
+      }
+    } catch (e) {
+      this.recentAudits = [];
+    }
+  }
+},
+
+    saveGuestAudits() {
+      if (this.recentAudits.length > 5) {
+        this.recentAudits = this.recentAudits.slice(0, 5);
+      }
+      localStorage.setItem('audit_guest', JSON.stringify({
+        savedAt: Date.now(),
+        entries: this.recentAudits
+      }));
+    },
+
+    async saveAudit(audit) {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        try {
+          const res = await fetch(`${API_BASE}/api/audit-history`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              url: audit.url,
+              tool_name: audit.tool,
+              score: audit.score !== undefined ? audit.score : null
+            })
+          });
+          if (res.ok) {
+            await this.loadAuditHistory();
+            return;
+          }
+        } catch (e) {}
+      }
+      // Guest fallback
+      const entry = {
+        _localId: Date.now() + '_' + Math.random(),
+        url: audit.url,
+        tool: audit.tool,
+        score: audit.score !== undefined ? audit.score : null,
+        timestamp: Date.now()
+      };
+      this.recentAudits.unshift(entry);
+      if (this.recentAudits.length > 5) {
+        this.recentAudits = this.recentAudits.slice(0, 5);
+      }
+      this.saveGuestAudits();
+    },
+
+    async deleteAudit(audit) {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        try {
+          const res = await fetch(`${API_BASE}/api/audit-history/${audit.id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (res.ok) {
+            await this.loadAuditHistory();
+            return;
+          }
+        } catch (e) {}
+      }
+      const index = this.recentAudits.indexOf(audit);
+      if (index > -1) {
+        this.recentAudits.splice(index, 1);
+        this.saveGuestAudits();
       }
     },
 
-    saveAudit(audit) {
-      let history = [];
-      const stored = localStorage.getItem('proAuditHistory');
-      if (stored) try { history = JSON.parse(stored); } catch(e) {}
-      history.unshift(audit);
-      if (history.length > 50) history = history.slice(0, 50);
-      localStorage.setItem('proAuditHistory', JSON.stringify(history));
-      this.loadAuditHistory();
+    copyLink(audit) {
+      navigator.clipboard.writeText(audit.url).then(() => {
+        alert('URL copied to clipboard!');
+      }).catch(() => {
+        const input = document.createElement('input');
+        input.value = audit.url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('URL copied!');
+      });
     },
 
-    incrementDailyUsage() {
-      let used = this.dailyUsed;
-      used++;
-      this.dailyUsed = used;
+    // ---- Fixed scanAgain ----
+    scanAgain(audit) {
+      const toolMap = {
+        'SEO Intent': '/seo-intent-tool/',
+        'Full SEO + UX': '/seo-ux-tool/',
+        'Local SEO': '/local-seo-tool/',
+        'Product SEO': '/product-seo-tool/',
+        'Entity Extractor': '/seo-entity-extractor-tool/',
+        'Topical Authority': '/topical-authority-audit-tool/',
+        'Schema Generator': '/schema-generator/',
+        'GEO / AI Search': '/ai-search-optimization-tool/',
+        'Voice Search': '/ai-voice-search-tool/',
+        'AI Content Audit': '/ai-audit-tool/',
+        'Quit Risk': '/quit-risk-tool/',
+        'Keyword Research': '/keyword-research-tool/',
+        'Keyword Placement': '/keyword-tool/'
+      };
+      const toolName = audit.tool.trim();
+      const path = toolMap[toolName] || '/';
+      window.location.href = path + '?url=' + encodeURIComponent(audit.url);
     },
 
-    // ---- Run Audit (redirect to tool page) ----
-    runTool() {
+    loadMoreAudits() {
+      const tier = this.user.tier || 'free';
+      if (tier === 'enterprise') {
+        this.displayCount = this.recentAudits.length;
+      } else {
+        this.showUpgradeModal();
+      }
+    },
+
+    // ---- Run Audit ----
+    async runTool() {
       if (!this.requireAuth()) return;
-
       const url = this.quickUrl.trim();
       if (!url) {
         alert('Please enter a valid URL');
         return;
       }
-
       if (this.dailyUsed >= this.dailyLimit) {
         alert('Daily audit limit reached. Upgrade to Pro for unlimited audits.');
         this.showUpgradeModal();
         return;
       }
-
       const tool = this.selectedTool;
       const toolMap = {
         'seo-intent-tool': '/seo-intent-tool/',
@@ -587,25 +937,41 @@ function dashboardApp() {
         'keyword-research-tool': '/keyword-research-tool/',
         'keyword-tool': '/keyword-tool/'
       };
-
       const toolPath = toolMap[tool];
       if (!toolPath) {
         alert('Tool not found');
         return;
       }
-
-      // Increment daily usage
+      const toolNames = {
+        'seo-intent-tool': 'SEO Intent',
+        'seo-ux-tool': 'Full SEO + UX',
+        'local-seo-tool': 'Local SEO',
+        'product-seo-tool': 'Product SEO',
+        'entity': 'Entity Extractor',
+        'topical': 'Topical Authority',
+        'schema-generator': 'Schema Generator',
+        'ai-search-optimization-tool': 'GEO / AI Search',
+        'ai-voice-search-tool': 'Voice Search',
+        'ai-audit-tool': 'AI Content Audit',
+        'quit-risk-tool': 'Quit Risk',
+        'keyword-research-tool': 'Keyword Research',
+        'keyword-tool': 'Keyword Placement'
+      };
+      const toolName = toolNames[tool] || tool;
+      await this.saveAudit({ url, tool: toolName, score: null });
       this.incrementDailyUsage();
-
-      // Redirect to tool page in same tab with URL parameter
       window.location.href = toolPath + '?url=' + encodeURIComponent(url);
     },
 
-    // ---- View Report (redirect to tool with stored URL) ----
+    incrementDailyUsage() {
+      let used = this.dailyUsed;
+      used++;
+      this.dailyUsed = used;
+    },
+
+    // ---- View Report (legacy) ----
     viewReport(audit) {
       if (!this.requireAuth()) return;
-      // We could map audit.tool to the tool path, but we'll redirect to the tool page with the stored URL.
-      // For simplicity, just use the audit's URL and tool name.
       const toolMap = {
         'SEO Intent': '/seo-intent-tool/',
         'Full SEO + UX': '/seo-ux-tool/',
@@ -628,7 +994,7 @@ function dashboardApp() {
     logout() {
       localStorage.removeItem('authToken');
       this.isAuthenticated = false;
-      this.user = { email: '', isPro: false };
+      this.user = { email: '', isPro: false, tier: 'free' };
       window.location.href = '/login/';
     },
 
