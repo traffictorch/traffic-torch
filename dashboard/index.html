@@ -402,7 +402,7 @@
                       <tr><th class="py-2 pr-4">Page</th><th class="py-2 pr-4">Views</th><th class="py-2">Avg Duration</th></tr>
                     </thead>
                     <tbody>
-                      <template x-for="item in ga4.topContent" :key="item.dimensions[0]">
+<template x-for="(item, index) in ga4.topContent" :key="index">
                         <tr class="border-t border-gray-100 dark:border-gray-800">
                           <td class="py-2 pr-4 break-all" x-text="item.dimensions[1] || item.dimensions[0]"></td>
                           <td class="py-2 pr-4" x-text="item.metrics[0]"></td>
