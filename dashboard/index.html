@@ -68,6 +68,36 @@
       animation: spin 1s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    .pagination-btn {
+      padding: 4px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      background: white;
+      color: #374151;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .dark .pagination-btn {
+      border-color: #4b5563;
+      background: #1f2937;
+      color: #d1d5db;
+    }
+    .pagination-btn:hover:not(:disabled) {
+      background: #f3f4f6;
+      border-color: #f97316;
+      color: #f97316;
+    }
+    .dark .pagination-btn:hover:not(:disabled) {
+      background: #374151;
+      border-color: #f97316;
+      color: #f97316;
+    }
+    .pagination-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -94,9 +124,7 @@
     <!-- Main Content -->
     <div class="flex-1 flex flex-col min-h-screen">
 
-      <!-- ========================================================== -->
-      <!-- UNDER CONSTRUCTION BANNER -->
-      <!-- ========================================================== -->
+      <!-- Under Construction Banner -->
       <div class="container mx-auto px-4 pt-4">
         <div class="mb-4 p-4 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-400 dark:border-yellow-700 rounded-lg text-yellow-800 dark:text-yellow-200 flex items-center gap-3">
           <span class="text-2xl">🚧⚠️</span>
@@ -264,7 +292,7 @@
               </table>
             </div>
           </div>
-        </div><!-- end dashboard tab -->
+        </div>
 
         <!-- AUDITS TAB -->
         <div x-show="activeDashboardTab === 'audits'" x-cloak>
@@ -310,19 +338,18 @@
         </div>
 
         <!-- ========================================================== -->
-        <!-- ANALYTICS TAB (FULLY UPDATED) -->
+        <!-- ANALYTICS TAB – FIXED -->
         <!-- ========================================================== -->
         <div x-show="activeDashboardTab === 'analytics'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-6xl mx-auto">
 
-            <!-- Header with connection status and refresh -->
+            <!-- Header -->
             <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
               <h3 class="text-xl font-bold">📊 Google Analytics 4</h3>
               <div class="flex flex-wrap items-center gap-3">
                 <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
                 <span x-show="!ga4.connected" class="text-sm text-red-500">● Not connected</span>
 
-                <!-- Date range selector – tier‑restricted -->
                 <select x-model="ga4.days" @change="changeDateRange()"
                         class="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm">
                   <option value="7" x-bind:disabled="user.tier === 'free' ? true : false">Last 7 days</option>
@@ -342,105 +369,104 @@
               </div>
             </div>
 
-            <!-- Last updated -->
             <div x-show="ga4.lastUpdated" class="text-xs text-gray-500 mb-4">Last updated: <span x-text="ga4.lastUpdated"></span></div>
-
-            <!-- Error display -->
             <div x-show="ga4.error" class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 rounded-lg text-red-800 dark:text-red-200 text-sm" x-text="ga4.error"></div>
 
-            <!-- Loading spinner -->
             <div x-show="ga4.loading" class="text-center py-8">
               <div class="spinner mx-auto"></div>
               <p class="mt-3 text-gray-500">Loading data...</p>
             </div>
 
-            <!-- ======== OVERVIEW SECTION ======== -->
             <div x-show="!ga4.loading">
-              <!-- Stats cards (show demo data for guests) -->
+              <!-- Stats -->
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">Sessions</p>
-                  <p class="text-2xl font-bold" x-text="ga4.totalSessions !== undefined ? ga4.totalSessions : '—'"></p>
-                </div>
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">Users</p>
-                  <p class="text-2xl font-bold" x-text="ga4.totalUsers !== undefined ? ga4.totalUsers : '—'"></p>
-                </div>
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">Page Views</p>
-                  <p class="text-2xl font-bold" x-text="ga4.totalViews !== undefined ? ga4.totalViews : '—'"></p>
-                </div>
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">Avg / Day</p>
-                  <p class="text-2xl font-bold" x-text="ga4.avgDaily !== undefined ? ga4.avgDaily : '—'"></p>
-                </div>
+                <div class="text-center"><p class="text-sm text-gray-500">Sessions</p><p class="text-2xl font-bold" x-text="ga4.totalSessions !== undefined ? ga4.totalSessions : '—'"></p></div>
+                <div class="text-center"><p class="text-sm text-gray-500">Users</p><p class="text-2xl font-bold" x-text="ga4.totalUsers !== undefined ? ga4.totalUsers : '—'"></p></div>
+                <div class="text-center"><p class="text-sm text-gray-500">Page Views</p><p class="text-2xl font-bold" x-text="ga4.totalViews !== undefined ? ga4.totalViews : '—'"></p></div>
+                <div class="text-center"><p class="text-sm text-gray-500">Avg / Day</p><p class="text-2xl font-bold" x-text="ga4.avgDaily !== undefined ? ga4.avgDaily : '—'"></p></div>
               </div>
 
               <!-- Chart -->
-              <div>
-                <canvas id="analyticsChart" height="150"></canvas>
-              </div>
+              <div><canvas id="analyticsChart" height="150"></canvas></div>
 
-              <!-- Call to action for logged‑out users -->
+              <!-- CTA for guests -->
               <div x-show="!isAuthenticated" class="mt-6 text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <p class="text-sm text-gray-700 dark:text-gray-300">Sign up to connect your own GA4 property and see real data.</p>
                 <a href="/login/" class="mt-2 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Create Account</a>
               </div>
-
               <div x-show="isAuthenticated && !ga4.connected" class="mt-6 text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
                 <p class="text-sm text-gray-700 dark:text-gray-300">Connect your Google Analytics 4 property to see your data.</p>
                 <button @click="connectGA4()" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Connect GA4</button>
               </div>
 
-              <!-- ======== TOP CONTENT (Pro/Enterprise only) ======== -->
+              <!-- ======== TOP CONTENT WITH PAGINATION ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">📄 Top Content</h4>
                 <div x-show="ga4.topContent.length > 0" class="overflow-x-auto">
                   <table class="w-full text-left text-sm">
                     <thead class="border-b border-gray-200 dark:border-gray-700">
-                      <tr><th class="py-2 pr-4">Page</th><th class="py-2 pr-4">Views</th><th class="py-2">Avg Duration</th></tr>
+                      <tr><th class="py-2 pr-4">#</th><th class="py-2 pr-4">Page</th><th class="py-2 pr-4">Views</th><th class="py-2">Avg Duration</th></tr>
                     </thead>
                     <tbody>
-<template x-for="(item, index) in ga4.topContent" :key="index">
+                      <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
                         <tr class="border-t border-gray-100 dark:border-gray-800">
-                          <td class="py-2 pr-4 break-all" x-text="item.dimensions[1] || item.dimensions[0]"></td>
+                          <td class="py-2 pr-4 text-gray-500" x-text="ga4.topOffset + index + 1"></td>
+                          <td class="py-2 pr-4 break-all" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></td>
                           <td class="py-2 pr-4" x-text="item.metrics[0]"></td>
                           <td class="py-2" x-text="Math.round(item.metrics[1]) + 's'"></td>
                         </tr>
                       </template>
                     </tbody>
                   </table>
+
+                  <!-- Pagination Controls -->
+                  <div x-show="ga4.topContent.length > ga4.topPageSize" class="mt-3 flex items-center justify-center gap-2">
+                    <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)"
+                            :disabled="ga4.topOffset === 0">
+                      ← Previous
+                    </button>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                      <span x-text="Math.floor(ga4.topOffset / ga4.topPageSize) + 1"></span> /
+                      <span x-text="Math.ceil(ga4.topContent.length / ga4.topPageSize)"></span>
+                    </span>
+                    <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.topContent.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)"
+                            :disabled="ga4.topOffset + ga4.topPageSize >= ga4.topContent.length">
+                      Next →
+                    </button>
+                  </div>
                 </div>
-                <div x-show="ga4.topContent.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">
-                  No content data available.
-                </div>
-                <div x-show="!ga4.connected && isAuthenticated" class="text-center text-gray-500 py-4">
-                  Connect GA4 to see your top content.
-                </div>
+                <div x-show="ga4.topContent.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No content data available.</div>
+                <div x-show="!ga4.connected && isAuthenticated" class="text-center text-gray-500 py-4">Connect GA4 to see your top content.</div>
               </div>
 
-              <!-- ======== TRAFFIC SOURCES (Pro/Enterprise only) ======== -->
+              <!-- ======== TRAFFIC SOURCES (FIXED) ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">📊 Traffic Sources</h4>
-                <div x-show="ga4.sources.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <canvas id="sourcesPieChart" height="150"></canvas>
+                <div x-show="ga4.sources.length > 0">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p class="text-sm text-gray-500 text-center mb-1">Sessions by Source</p>
+                      <canvas id="sourcesPieChart" height="150"></canvas>
+                    </div>
+                    <div>
+                      <p class="text-sm text-gray-500 text-center mb-1">Key Events by Source</p>
+                      <!-- Bar chart container -->
+                      <div x-show="ga4.hasKeyEvents !== false">
+                        <canvas id="sourcesBarChart" height="150"></canvas>
+                      </div>
+                      <div x-show="ga4.hasKeyEvents === false" class="text-center text-gray-500 py-4">
+                        No key events in this period.
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <canvas id="sourcesBarChart" height="150"></canvas>
-                  </div>
                 </div>
-                <div x-show="ga4.sources.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">
-                  No traffic source data available.
-                </div>
-                <div x-show="!ga4.connected && isAuthenticated" class="text-center text-gray-500 py-4">
-                  Connect GA4 to see traffic sources.
-                </div>
+                <div x-show="ga4.sources.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No traffic source data available.</div>
+                <div x-show="!ga4.connected && isAuthenticated" class="text-center text-gray-500 py-4">Connect GA4 to see traffic sources.</div>
               </div>
 
-              <!-- ======== REAL‑TIME (Enterprise only) ======== -->
+              <!-- ======== REAL‑TIME ======== -->
               <div x-show="user.tier === 'enterprise' && ga4.connected"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">🔴 Real‑time (last 30 min)</h4>
@@ -448,16 +474,14 @@
                   <div><span class="text-sm text-gray-500">Sessions:</span> <span class="font-bold" x-text="ga4.realtime.sessions || 0"></span></div>
                   <div><span class="text-sm text-gray-500">Events:</span> <span class="font-bold" x-text="ga4.realtime.events || 0"></span></div>
                 </div>
-                <div x-show="ga4.realtime.sessions === undefined" class="text-center text-gray-500 py-4">
-                  Loading real‑time data...
-                </div>
+                <div x-show="ga4.realtime.sessions === undefined" class="text-center text-gray-500 py-4">Loading real‑time data...</div>
               </div>
             </div><!-- end !loading -->
 
           </div>
         </div>
 
-        <!-- INTEGRATIONS TAB (unchanged) -->
+        <!-- INTEGRATIONS TAB -->
         <div x-show="activeDashboardTab === 'integrations'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-4">Integrations</h3>
@@ -469,7 +493,7 @@
           </div>
         </div>
 
-        <!-- SETTINGS TAB (unchanged) -->
+        <!-- SETTINGS TAB -->
         <div x-show="activeDashboardTab === 'settings'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-4">Account Settings</h3>
@@ -513,9 +537,7 @@
 
 </div>
 
-<!-- ========================================================== -->
 <!-- Checkout container -->
-<!-- ========================================================== -->
 <div id="checkout-container" class="fixed inset-0 z-[10001] bg-black bg-opacity-80 flex items-center justify-center hidden">
   <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl max-w-lg w-full relative">
     <button onclick="document.getElementById('checkout-container').classList.add('hidden')" class="absolute top-2 right-4 text-3xl text-gray-500">&times;</button>
@@ -577,11 +599,8 @@ window.upgradeToPro = async function upgradeToPro() {
 // ----- Alpine Component -----
 function dashboardApp() {
   return {
-    // Auth
     isAuthenticated: false,
     user: { email: '', isPro: false, tier: 'free' },
-
-    // Dashboard
     activeDashboardTab: 'dashboard',
     dailyLimit: 50,
     selectedTool: 'seo-intent-tool',
@@ -602,7 +621,6 @@ function dashboardApp() {
       return this.recentAudits.slice(0, this.displayCount);
     },
 
-    // Daily usage (for tools)
     get dailyUsed() {
       const today = new Date().toISOString().split('T')[0];
       const stored = localStorage.getItem('tt_daily_usage');
@@ -626,29 +644,27 @@ function dashboardApp() {
       error: null,
       days: 7,
       lastUpdated: null,
-      // Overview
       data: [],
       totalSessions: undefined,
       totalUsers: undefined,
       totalViews: undefined,
       avgDaily: undefined,
-      // Top Content
       topContent: [],
-      // Traffic Sources
+      topOffset: 0,
+      topPageSize: 10,
       sources: [],
-      // Realtime
+      hasKeyEvents: true, // will be set after data fetch
       realtime: {}
     },
 
     // ---- Init ----
-    initDashboard() {
+    async initDashboard() {
       const token = localStorage.getItem('authToken');
       if (token) {
-        this.fetchAccountInfo();
+        await this.fetchAccountInfo();
         this.checkGA4Connection();
       } else {
         this.displayCount = 5;
-        // Populate with demo data for logged-out users
         this.loadDemoData();
       }
       this.loadAuditHistory();
@@ -697,7 +713,7 @@ function dashboardApp() {
         { dimensions: ['bing', 'organic'], metrics: [15, 3] },
         { dimensions: ['twitter', 'social'], metrics: [8, 2] }
       ];
-      // Schedule chart draw after DOM ready
+      this.ga4.hasKeyEvents = true;
       setTimeout(() => this.updateCharts(), 500);
     },
 
@@ -714,6 +730,7 @@ function dashboardApp() {
           this.user = data;
           this.isAuthenticated = true;
           this.user.tier = data.tier || (data.isPro ? 'pro' : 'free');
+          this.ga4.connected = data.ga4Connected || false;
           this.updateDisplayLimit();
         } else {
           localStorage.removeItem('authToken');
@@ -745,24 +762,11 @@ function dashboardApp() {
     },
 
     // ---- GA4 methods ----
-    async checkGA4Connection() {
-      if (!this.isAuthenticated) return;
-      try {
-        const res = await fetch(`${API_BASE}/api/account-info`, {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          this.ga4.connected = data.ga4Connected || false;
-          if (this.ga4.connected) {
-            this.fetchCachedReport();
-          } else {
-            // Show empty state with placeholders
-            this.clearGa4Data();
-          }
-        }
-      } catch (e) {
-        console.error('Failed to check GA4 connection:', e);
+    checkGA4Connection() {
+      if (this.ga4.connected) {
+        this.fetchCachedReport();
+      } else {
+        this.clearGa4Data();
       }
     },
 
@@ -773,9 +777,12 @@ function dashboardApp() {
       this.ga4.totalViews = undefined;
       this.ga4.avgDaily = undefined;
       this.ga4.topContent = [];
+      this.ga4.topOffset = 0;
       this.ga4.sources = [];
       this.ga4.realtime = {};
       if (window.overviewChart) window.overviewChart.destroy();
+      if (window.sourcesPie) window.sourcesPie.destroy();
+      if (window.sourcesBar) window.sourcesBar.destroy();
     },
 
     connectGA4() {
@@ -846,7 +853,6 @@ function dashboardApp() {
 
     refreshGA4() {
       if (!this.ga4.connected && this.isAuthenticated) return;
-      // Clear cache and force fetch
       this.fetchCachedReport(true);
     },
 
@@ -859,17 +865,14 @@ function dashboardApp() {
       const days = this.ga4.days || 7;
 
       try {
-        // 1. Check localStorage first (frontend cache)
         const cacheKey = `ga4_${days}_${this.user.email || 'guest'}`;
         if (!force) {
           const cached = localStorage.getItem(cacheKey);
           if (cached) {
             const parsed = JSON.parse(cached);
-            const now = Date.now();
-            const cacheAge = now - parsed.timestamp;
+            const cacheAge = Date.now() - parsed.timestamp;
             const ttl = this.user.tier === 'free' ? 3600000 : (this.user.tier === 'pro' ? 900000 : 300000);
             if (cacheAge < ttl) {
-              // Use cached data
               this.applyGa4Data(parsed.data);
               this.ga4.loading = false;
               this.ga4.lastUpdated = new Date(parsed.timestamp).toLocaleString();
@@ -879,7 +882,6 @@ function dashboardApp() {
           }
         }
 
-        // 2. Fetch from backend (which uses D1 cache)
         const res = await fetch(`${API_BASE}/api/ga4/cached-report?type=overview&days=${days}`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
         });
@@ -896,7 +898,6 @@ function dashboardApp() {
         const result = await res.json();
         const data = result.data || [];
 
-        // Also fetch top content and sources in parallel
         const [topRes, sourcesRes] = await Promise.all([
           fetch(`${API_BASE}/api/ga4/cached-report?type=top-content&days=${days}`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
@@ -910,30 +911,17 @@ function dashboardApp() {
         if (topRes.ok) { const t = await topRes.json(); topData = t.data || []; }
         if (sourcesRes.ok) { const s = await sourcesRes.json(); sourcesData = s.data || []; }
 
-        // Build combined object
-        const combined = {
-          overview: data,
-          topContent: topData,
-          sources: sourcesData,
-          timestamp: Date.now()
-        };
+        const combined = { overview: data, topContent: topData, sources: sourcesData, timestamp: Date.now() };
 
-        // Store in localStorage
-        localStorage.setItem(cacheKey, JSON.stringify({
-          data: combined,
-          timestamp: Date.now()
-        }));
+        localStorage.setItem(cacheKey, JSON.stringify({ data: combined, timestamp: Date.now() }));
 
-        // Apply
         this.applyGa4Data(combined);
         this.ga4.lastUpdated = new Date().toLocaleString();
         this.updateCharts();
 
-        // For enterprise, fetch realtime
         if (this.user.tier === 'enterprise') {
           this.fetchRealtime();
         }
-
       } catch (err) {
         this.ga4.error = err.message;
       } finally {
@@ -948,9 +936,11 @@ function dashboardApp() {
       this.ga4.totalUsers = overview.reduce((s, r) => s + (r.metrics[1] || 0), 0);
       this.ga4.totalViews = overview.reduce((s, r) => s + (r.metrics[2] || 0), 0);
       this.ga4.avgDaily = overview.length ? Math.round(this.ga4.totalSessions / overview.length) : 0;
-
       this.ga4.topContent = combined.topContent || [];
+      this.ga4.topOffset = 0;
       this.ga4.sources = combined.sources || [];
+      // Check if any key events exist
+      this.ga4.hasKeyEvents = this.ga4.sources.some(r => (r.metrics[1] || 0) > 0);
     },
 
     async fetchRealtime() {
@@ -966,16 +956,29 @@ function dashboardApp() {
       } catch (e) {}
     },
 
-    // ---- Chart Updates ----
+    // ---- Chart Updates (FIXED) ----
     updateCharts() {
       this.$nextTick(() => {
+        // 1. Sort overview data by date (YYYYMMDD)
+        const sortedData = [...this.ga4.data].sort((a, b) => {
+          const dateA = a.dimensions[0] || '';
+          const dateB = b.dimensions[0] || '';
+          return dateA.localeCompare(dateB);
+        });
+
         // Overview chart
         const ctx = document.getElementById('analyticsChart');
         if (ctx) {
           if (window.overviewChart) window.overviewChart.destroy();
-          const labels = this.ga4.data.map(r => r.dimensions[0] || '');
-          const sessions = this.ga4.data.map(r => r.metrics[0] || 0);
-          const users = this.ga4.data.map(r => r.metrics[1] || 0);
+          const labels = sortedData.map(r => {
+            const d = r.dimensions[0] || '';
+            if (d.length === 8 && !isNaN(d)) {
+              return d.slice(4, 6) + '/' + d.slice(6, 8);
+            }
+            return d;
+          });
+          const sessions = sortedData.map(r => r.metrics[0] || 0);
+          const users = sortedData.map(r => r.metrics[1] || 0);
           window.overviewChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -1004,26 +1007,32 @@ function dashboardApp() {
             type: 'pie',
             data: {
               labels,
-              datasets: [{ data: values, backgroundColor: ['#f97316','#3b82f6','#10b981','#8b5cf6','#f43f5e'] }]
+              datasets: [{ data: values, backgroundColor: ['#f97316','#3b82f6','#10b981','#8b5cf6','#f43f5e','#f59e0b','#ef4444','#ec4899'] }]
             },
             options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
           });
         }
 
-        // Sources bar chart
-        const barCtx = document.getElementById('sourcesBarChart');
-        if (barCtx && this.ga4.sources.length) {
-          if (window.sourcesBar) window.sourcesBar.destroy();
-          const labels = this.ga4.sources.map(r => r.dimensions.join(' / '));
-          const values = this.ga4.sources.map(r => r.metrics[1] || 0); // keyEvents
-          window.sourcesBar = new Chart(barCtx, {
-            type: 'bar',
-            data: {
-              labels,
-              datasets: [{ label: 'Key Events', data: values, backgroundColor: '#f97316' }]
-            },
-            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-          });
+        // Sources bar chart – only if there are any key events
+        if (this.ga4.hasKeyEvents) {
+          const barCtx = document.getElementById('sourcesBarChart');
+          if (barCtx && this.ga4.sources.length) {
+            if (window.sourcesBar) window.sourcesBar.destroy();
+            const labels = this.ga4.sources.map(r => r.dimensions.join(' / '));
+            const values = this.ga4.sources.map(r => r.metrics[1] || 0);
+            window.sourcesBar = new Chart(barCtx, {
+              type: 'bar',
+              data: {
+                labels,
+                datasets: [{ label: 'Key Events', data: values, backgroundColor: '#f97316' }]
+              },
+              options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, title: { display: true, text: 'Key Events' } } }
+              }
+            });
+          }
         }
       });
     },
