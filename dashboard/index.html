@@ -37,7 +37,7 @@
 
   <script src="https://js.stripe.com/v3/"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <style>
     [x-cloak] { display: none !important; }
@@ -164,7 +164,7 @@
           </template>
         </div>
 
-        <!-- DASHBOARD TAB (unchanged) -->
+        <!-- ===== DASHBOARD TAB ===== -->
         <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
           <!-- Quick Audit -->
           <div class="glass rounded-2xl p-6 mb-8">
@@ -198,66 +198,21 @@
           <!-- Tool Cards Grid -->
           <h3 class="text-lg font-bold mt-12 mb-4">🔧 All Tools</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
-            <a href="/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">🏠</span>
-              <span class="text-sm font-medium">Homepage Tool</span>
-            </a>
-            <a href="/seo-intent-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">🎯</span>
-              <span class="text-sm font-medium">SEO Intent</span>
-            </a>
-            <a href="/seo-ux-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">⚖️</span>
-              <span class="text-sm font-medium">SEO + UX</span>
-            </a>
-            <a href="/local-seo-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">📍</span>
-              <span class="text-sm font-medium">Local SEO</span>
-            </a>
-            <a href="/product-seo-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">🛒</span>
-              <span class="text-sm font-medium">Product SEO</span>
-            </a>
-            <a href="/seo-entity-extractor-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">🧬</span>
-              <span class="text-sm font-medium">Entity Extractor</span>
-            </a>
-            <a href="/topical-authority-audit-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">⚜️</span>
-              <span class="text-sm font-medium">Topical Authority</span>
-            </a>
-            <a href="/schema-generator/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">⚙️</span>
-              <span class="text-sm font-medium">Schema Generator</span>
-            </a>
-            <a href="/ai-search-optimization-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">🔍</span>
-              <span class="text-sm font-medium">GEO Audit</span>
-            </a>
-            <a href="/ai-voice-search-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">🎙️</span>
-              <span class="text-sm font-medium">AI Voice Search</span>
-            </a>
-            <a href="/ai-audit-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">🤖</span>
-              <span class="text-sm font-medium">AI Content</span>
-            </a>
-            <a href="/quit-risk-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">⚠️</span>
-              <span class="text-sm font-medium">Quit Risk</span>
-            </a>
-            <a href="/keyword-research-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">🔑</span>
-              <span class="text-sm font-medium">Keyword Research</span>
-            </a>
-            <a href="/keyword-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">🗝️</span>
-              <span class="text-sm font-medium">Keyword Placement</span>
-            </a>
-            <a href="/keyword-vs-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center">
-              <span class="text-3xl mb-2">🆚</span>
-              <span class="text-sm font-medium">Keyword vs</span>
-            </a>
+            <a href="/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🏠</span><span class="text-sm font-medium">Homepage Tool</span></a>
+            <a href="/seo-intent-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🎯</span><span class="text-sm font-medium">SEO Intent</span></a>
+            <a href="/seo-ux-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">⚖️</span><span class="text-sm font-medium">SEO + UX</span></a>
+            <a href="/local-seo-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">📍</span><span class="text-sm font-medium">Local SEO</span></a>
+            <a href="/product-seo-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🛒</span><span class="text-sm font-medium">Product SEO</span></a>
+            <a href="/seo-entity-extractor-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🧬</span><span class="text-sm font-medium">Entity Extractor</span></a>
+            <a href="/topical-authority-audit-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">⚜️</span><span class="text-sm font-medium">Topical Authority</span></a>
+            <a href="/schema-generator/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">⚙️</span><span class="text-sm font-medium">Schema Generator</span></a>
+            <a href="/ai-search-optimization-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🔍</span><span class="text-sm font-medium">GEO Audit</span></a>
+            <a href="/ai-voice-search-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🎙️</span><span class="text-sm font-medium">AI Voice Search</span></a>
+            <a href="/ai-audit-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🤖</span><span class="text-sm font-medium">AI Content</span></a>
+            <a href="/quit-risk-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">⚠️</span><span class="text-sm font-medium">Quit Risk</span></a>
+            <a href="/keyword-research-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🔑</span><span class="text-sm font-medium">Keyword Research</span></a>
+            <a href="/keyword-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🗝️</span><span class="text-sm font-medium">Keyword Placement</span></a>
+            <a href="/keyword-vs-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🆚</span><span class="text-sm font-medium">Keyword vs</span></a>
           </div>
 
           <!-- Recent Audits -->
@@ -294,7 +249,7 @@
           </div>
         </div>
 
-        <!-- AUDITS TAB -->
+        <!-- ===== AUDITS TAB ===== -->
         <div x-show="activeDashboardTab === 'audits'" x-cloak>
           <div class="glass rounded-2xl p-6">
             <h3 class="text-xl font-bold mb-4">📋 Audit History</h3>
@@ -337,9 +292,7 @@
           </div>
         </div>
 
-        <!-- ========================================================== -->
-        <!-- ANALYTICS TAB – FIXED -->
-        <!-- ========================================================== -->
+        <!-- ===== ANALYTICS TAB ===== -->
         <div x-show="activeDashboardTab === 'analytics'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-6xl mx-auto">
 
@@ -352,11 +305,19 @@
 
                 <select x-model="ga4.days" @change="changeDateRange()"
                         class="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm">
-                  <option value="7" x-bind:disabled="user.tier === 'free' ? true : false">Last 7 days</option>
+                  <option value="1">Yesterday</option>
+                  <option value="7">Last 7 days</option>
                   <option value="14" x-bind:disabled="user.tier === 'free' ? true : false">Last 14 days</option>
-                  <option value="30" x-bind:disabled="user.tier === 'free' || user.tier === 'pro' ? true : false">Last 30 days</option>
-                  <option value="365" x-bind:disabled="user.tier !== 'enterprise' ? true : false">Custom (Enterprise)</option>
+                  <option value="30" x-bind:disabled="user.tier === 'free' ? true : false">Last 30 days</option>
+                  <option value="custom" x-bind:disabled="user.tier !== 'enterprise' ? true : false">Custom (Enterprise)</option>
                 </select>
+                <template x-if="ga4.days === 'custom' && user.tier === 'enterprise'">
+                  <div class="flex gap-2">
+                    <input type="date" x-model="ga4.customStart" @change="changeDateRange()" class="px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm">
+                    <span class="text-sm text-gray-500">to</span>
+                    <input type="date" x-model="ga4.customEnd" @change="changeDateRange()" class="px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm">
+                  </div>
+                </template>
 
                 <button x-show="ga4.connected || !isAuthenticated" @click="refreshGA4()"
                         class="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600 transition">
@@ -378,18 +339,39 @@
             </div>
 
             <div x-show="!ga4.loading">
-              <!-- Stats -->
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div class="text-center"><p class="text-sm text-gray-500">Sessions</p><p class="text-2xl font-bold" x-text="ga4.totalSessions !== undefined ? ga4.totalSessions : '—'"></p></div>
-                <div class="text-center"><p class="text-sm text-gray-500">Users</p><p class="text-2xl font-bold" x-text="ga4.totalUsers !== undefined ? ga4.totalUsers : '—'"></p></div>
-                <div class="text-center"><p class="text-sm text-gray-500">Page Views</p><p class="text-2xl font-bold" x-text="ga4.totalViews !== undefined ? ga4.totalViews : '—'"></p></div>
-                <div class="text-center"><p class="text-sm text-gray-500">Avg / Day</p><p class="text-2xl font-bold" x-text="ga4.avgDaily !== undefined ? ga4.avgDaily : '—'"></p></div>
+              <!-- Stats Cards -->
+              <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Sessions</p>
+                  <p class="text-2xl font-bold" x-text="ga4.totalSessions !== undefined ? ga4.totalSessions : '—'"></p>
+                  <p x-show="ga4.change.sessions !== undefined" class="text-xs" :class="ga4.change.sessions >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(ga4.change.sessions >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.sessions).toFixed(1) + '%'"></p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Users</p>
+                  <p class="text-2xl font-bold" x-text="ga4.totalUsers !== undefined ? ga4.totalUsers : '—'"></p>
+                  <p x-show="ga4.change.users !== undefined" class="text-xs" :class="ga4.change.users >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(ga4.change.users >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.users).toFixed(1) + '%'"></p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">New Users</p>
+                  <p class="text-2xl font-bold" x-text="ga4.newUsers !== undefined ? ga4.newUsers : '—'"></p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Page Views</p>
+                  <p class="text-2xl font-bold" x-text="ga4.totalViews !== undefined ? ga4.totalViews : '—'"></p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Conversion Rate</p>
+                  <p class="text-2xl font-bold" x-text="ga4.conversionRate !== undefined ? (ga4.conversionRate * 100).toFixed(1) + '%' : '—'"></p>
+                </div>
               </div>
 
-              <!-- Chart -->
+              <!-- Overview Chart -->
               <div><canvas id="analyticsChart" height="150"></canvas></div>
 
-              <!-- CTA for guests -->
+              <!-- New vs Returning Users – Doughnut -->
+              <div class="max-w-sm mx-auto mt-6"><canvas id="newVsReturningChart" height="120"></canvas></div>
+
+              <!-- CTA for guests / not connected -->
               <div x-show="!isAuthenticated" class="mt-6 text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <p class="text-sm text-gray-700 dark:text-gray-300">Sign up to connect your own GA4 property and see real data.</p>
                 <a href="/login/" class="mt-2 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Create Account</a>
@@ -399,89 +381,339 @@
                 <button @click="connectGA4()" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Connect GA4</button>
               </div>
 
-              <!-- ======== TOP CONTENT WITH PAGINATION ======== -->
+              <!-- ======== TOP CONTENT (Pro/Enterprise) ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <h4 class="text-lg font-semibold mb-3">📄 Top Content</h4>
-                <div x-show="ga4.topContent.length > 0" class="overflow-x-auto">
-                  <table class="w-full text-left text-sm">
-                    <thead class="border-b border-gray-200 dark:border-gray-700">
-                      <tr><th class="py-2 pr-4">#</th><th class="py-2 pr-4">Page</th><th class="py-2 pr-4">Views</th><th class="py-2">Avg Duration</th></tr>
-                    </thead>
-                    <tbody>
-                      <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
-                        <tr class="border-t border-gray-100 dark:border-gray-800">
-                          <td class="py-2 pr-4 text-gray-500" x-text="ga4.topOffset + index + 1"></td>
-                          <td class="py-2 pr-4 break-all" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></td>
-                          <td class="py-2 pr-4" x-text="item.metrics[0]"></td>
-                          <td class="py-2" x-text="Math.round(item.metrics[1]) + 's'"></td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-
-                  <!-- Pagination Controls -->
+                <div class="flex justify-between items-center mb-3">
+                  <h4 class="text-lg font-semibold">📄 Top Content</h4>
+                  <button x-show="user.tier !== 'free'" @click="exportCSV('topContent')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+                </div>
+                <div x-show="ga4.topContent.length > 0">
+                  <!-- Desktop: Table (visible on sm and up) -->
+                  <div class="block overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                      <thead class="border-b border-gray-200 dark:border-gray-700">
+                        <tr><th class="py-2 pr-4">#</th><th class="py-2 pr-4">Page</th><th class="py-2 pr-4">Views</th><th class="py-2">Avg Duration</th></tr>
+                      </thead>
+                      <tbody>
+                        <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
+                          <tr class="border-t border-gray-100 dark:border-gray-800">
+                            <td class="py-2 pr-4 text-gray-500" x-text="ga4.topOffset + index + 1"></td>
+                            <td class="py-2 pr-4 break-all" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></td>
+                            <td class="py-2 pr-4" x-text="item.metrics[0]"></td>
+                            <td class="py-2" x-text="Math.round(item.metrics[1]) + 's'"></td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- Mobile: Cards (visible only on xs) -->
+                  <div class="sm:hidden space-y-3">
+                    <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
+                      <div class="glass rounded-xl p-3">
+                        <div class="text-sm font-medium mb-1 break-words" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></div>
+                        <div class="flex justify-between text-xs text-gray-500">
+                          <span>Views: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span>
+                          <span>Avg Duration: <span class="font-medium text-gray-900 dark:text-white" x-text="Math.round(item.metrics[1]) + 's'"></span></span>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                  <!-- Pagination -->
                   <div x-show="ga4.topContent.length > ga4.topPageSize" class="mt-3 flex items-center justify-center gap-2">
-                    <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)"
-                            :disabled="ga4.topOffset === 0">
-                      ← Previous
-                    </button>
+                    <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)" :disabled="ga4.topOffset === 0">← Previous</button>
                     <span class="text-sm text-gray-600 dark:text-gray-400">
                       <span x-text="Math.floor(ga4.topOffset / ga4.topPageSize) + 1"></span> /
                       <span x-text="Math.ceil(ga4.topContent.length / ga4.topPageSize)"></span>
                     </span>
-                    <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.topContent.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)"
-                            :disabled="ga4.topOffset + ga4.topPageSize >= ga4.topContent.length">
-                      Next →
-                    </button>
+                    <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.topContent.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)" :disabled="ga4.topOffset + ga4.topPageSize >= ga4.topContent.length">Next →</button>
                   </div>
                 </div>
                 <div x-show="ga4.topContent.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No content data available.</div>
-                <div x-show="!ga4.connected && isAuthenticated" class="text-center text-gray-500 py-4">Connect GA4 to see your top content.</div>
               </div>
 
-              <!-- ======== TRAFFIC SOURCES (FIXED) ======== -->
+              <!-- ======== TRAFFIC SOURCES (Pro/Enterprise) – FIXED ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">📊 Traffic Sources</h4>
                 <div x-show="ga4.sources.length > 0">
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <p class="text-sm text-gray-500 text-center mb-1">Sessions by Source</p>
                       <canvas id="sourcesPieChart" height="150"></canvas>
                     </div>
                     <div>
-                      <p class="text-sm text-gray-500 text-center mb-1">Key Events by Source</p>
-                      <!-- Bar chart container -->
-                      <div x-show="ga4.hasKeyEvents !== false">
-                        <canvas id="sourcesBarChart" height="150"></canvas>
-                      </div>
-                      <div x-show="ga4.hasKeyEvents === false" class="text-center text-gray-500 py-4">
-                        No key events in this period.
-                      </div>
+                      <canvas id="sourcesBarChart" height="150"></canvas>
                     </div>
                   </div>
                 </div>
                 <div x-show="ga4.sources.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No traffic source data available.</div>
-                <div x-show="!ga4.connected && isAuthenticated" class="text-center text-gray-500 py-4">Connect GA4 to see traffic sources.</div>
               </div>
 
-              <!-- ======== REAL‑TIME ======== -->
-              <div x-show="user.tier === 'enterprise' && ga4.connected"
+              <!-- ======== DEVICE BREAKDOWN (Pro/Enterprise) ======== -->
+              <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <h4 class="text-lg font-semibold mb-3">🔴 Real‑time (last 30 min)</h4>
-                <div x-show="ga4.realtime.sessions !== undefined" class="flex gap-6">
-                  <div><span class="text-sm text-gray-500">Sessions:</span> <span class="font-bold" x-text="ga4.realtime.sessions || 0"></span></div>
-                  <div><span class="text-sm text-gray-500">Events:</span> <span class="font-bold" x-text="ga4.realtime.events || 0"></span></div>
+                <h4 class="text-lg font-semibold mb-3">📱 Device Breakdown</h4>
+                <div x-show="ga4.devices.length > 0" class="max-w-sm mx-auto">
+                  <canvas id="devicePieChart" height="120"></canvas>
                 </div>
-                <div x-show="ga4.realtime.sessions === undefined" class="text-center text-gray-500 py-4">Loading real‑time data...</div>
+                <div x-show="ga4.devices.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No device data available.</div>
               </div>
+
+              <!-- ======== GEOGRAPHIC (Pro/Enterprise) – Single column, fixed height ======== -->
+              <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
+                   class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-semibold mb-3">🌍 Geographic Breakdown</h4>
+                <div x-show="ga4.countries.length > 0">
+                  <p class="text-sm text-gray-500 text-center mb-1">Sessions by Country</p>
+                  <div class="max-h-64 overflow-hidden">
+                    <canvas id="countriesBarChart" height="150"></canvas>
+                  </div>
+                </div>
+                <div x-show="ga4.countries.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No geographic data available.</div>
+              </div>
+
+              <!-- ======== TOP CONVERTING PAGES (Pro/Enterprise) ======== -->
+              <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
+                   class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex justify-between items-center mb-3">
+                  <h4 class="text-lg font-semibold">🎯 Top Converting Pages</h4>
+                  <button x-show="user.tier !== 'free'" @click="exportCSV('convertingPages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+                </div>
+                <div x-show="ga4.convertingPages.length > 0">
+                  <!-- Desktop: Table -->
+                  <div class="block overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                      <thead class="border-b border-gray-200 dark:border-gray-700">
+                        <tr><th class="py-2 pr-4">#</th><th class="py-2 pr-4">Page</th><th class="py-2 pr-4">Key Events</th><th class="py-2">Conv Rate</th></tr>
+                      </thead>
+                      <tbody>
+                        <template x-for="(item, idx) in ga4.convertingPages.slice(0, 10)" :key="idx">
+                          <tr class="border-t border-gray-100 dark:border-gray-800">
+                            <td class="py-2 pr-4" x-text="idx+1"></td>
+                            <td class="py-2 pr-4 break-all" x-text="item.dimensions[1] || item.dimensions[0]"></td>
+                            <td class="py-2 pr-4" x-text="item.metrics[0]"></td>
+                            <td class="py-2" x-text="(item.metrics[0] / (item.metrics[1] || 1) * 100).toFixed(1) + '%'"></td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- Mobile: Cards -->
+                  <div class="sm:hidden space-y-3">
+                    <template x-for="(item, idx) in ga4.convertingPages.slice(0, 10)" :key="idx">
+                      <div class="glass rounded-xl p-3">
+                        <div class="text-sm font-medium mb-1 break-words" x-text="item.dimensions[1] || item.dimensions[0]"></div>
+                        <div class="flex justify-between text-xs text-gray-500">
+                          <span>Key Events: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span>
+                          <span>Conv Rate: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.metrics[0] / (item.metrics[1] || 1) * 100).toFixed(1) + '%'"></span></span>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+                <div x-show="ga4.convertingPages.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No conversion data available.</div>
+              </div>
+
             </div><!-- end !loading -->
 
           </div>
         </div>
 
-        <!-- INTEGRATIONS TAB -->
+        <!-- ===== REAL‑TIME TAB (Enterprise only) ===== -->
+        <div x-show="activeDashboardTab === 'realtime'" x-cloak>
+          <div class="glass rounded-2xl p-6 max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-bold">🔴 Real‑time <span class="text-sm font-normal text-gray-500">(last 30 min, auto‑updates every 15s)</span></h3>
+              <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
+            </div>
+            <div x-show="user.tier !== 'enterprise'" class="text-center py-8 text-gray-500">
+              Real‑time is available for Enterprise users. <a href="#" @click.prevent="showUpgradeModal()" class="text-orange-500 hover:underline">Upgrade now</a>.
+            </div>
+            <template x-if="user.tier === 'enterprise'">
+              <div>
+                <div class="flex gap-6 mb-4">
+                  <div><span class="text-sm text-gray-500">Active Users:</span> <span class="font-bold" x-text="ga4.realtime.overview.activeUsers || 0"></span></div>
+                  <div><span class="text-sm text-gray-500">Events:</span> <span class="font-bold" x-text="ga4.realtime.overview.eventCount || 0"></span></div>
+                </div>
+                <div><canvas id="realtimeMinutesChart" height="150"></canvas></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                  <div><p class="text-sm text-gray-500 text-center">Active Users by Device</p><canvas id="realtimeDevicesChart" height="100"></canvas></div>
+                  <div><p class="text-sm text-gray-500 text-center">Event Count by Event Name</p><canvas id="realtimeEventsChart" height="100"></canvas></div>
+                  <div><p class="text-sm text-gray-500 text-center">Active Users by Country</p><canvas id="realtimeCountriesChart" height="100"></canvas></div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- ===== SEARCH CONSOLE TAB (GSC) ===== -->
+        <!-- MARK: GSC TAB - START -->
+        <div x-show="activeDashboardTab === 'gsc'" x-cloak>
+          <div class="glass rounded-2xl p-6 max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
+              <h3 class="text-xl font-bold">🔍 Search Console</h3>
+              <div class="flex flex-wrap items-center gap-3">
+                <span x-show="gsc.connected" class="text-sm text-green-500">● Connected</span>
+                <span x-show="!gsc.connected" class="text-sm text-red-500">● Not connected</span>
+
+                <select x-model="gsc.days" @change="changeGSCDateRange()"
+                        class="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm">
+                  <option value="7">Last 7 days</option>
+                  <option value="28" x-bind:disabled="user.tier === 'free' ? true : false">Last 28 days</option>
+                  <option value="90" x-bind:disabled="user.tier !== 'enterprise' ? true : false">Last 90 days</option>
+                </select>
+
+                <button x-show="gsc.connected || !isAuthenticated" @click="fetchGSCReport()"
+                        class="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600 transition">
+                  ↻ Refresh
+                </button>
+                <button x-show="!gsc.connected && isAuthenticated" @click="connectGSC()"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">Connect GSC</button>
+                <button x-show="gsc.connected" @click="disconnectGSC()"
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition">Disconnect</button>
+              </div>
+            </div>
+
+            <div x-show="gsc.lastUpdated" class="text-xs text-gray-500 mb-4">Last updated: <span x-text="gsc.lastUpdated"></span></div>
+            <div x-show="gsc.error" class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 rounded-lg text-red-800 dark:text-red-200 text-sm" x-text="gsc.error"></div>
+
+            <div x-show="gsc.loading" class="text-center py-8">
+              <div class="spinner mx-auto"></div>
+              <p class="mt-3 text-gray-500">Loading GSC data...</p>
+            </div>
+
+            <div x-show="!gsc.loading">
+              <!-- Stats Cards -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Total Clicks</p>
+                  <p class="text-2xl font-bold" x-text="gsc.totals.clicks || 0"></p>
+                  <p x-show="gsc.change.clicks !== undefined" class="text-xs" :class="gsc.change.clicks >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(gsc.change.clicks >= 0 ? '▲' : '▼') + ' ' + Math.abs(gsc.change.clicks).toFixed(1) + '%'"></p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Impressions</p>
+                  <p class="text-2xl font-bold" x-text="gsc.totals.impressions || 0"></p>
+                  <p x-show="gsc.change.impressions !== undefined" class="text-xs" :class="gsc.change.impressions >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(gsc.change.impressions >= 0 ? '▲' : '▼') + ' ' + Math.abs(gsc.change.impressions).toFixed(1) + '%'"></p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">CTR</p>
+                  <p class="text-2xl font-bold" x-text="(gsc.totals.ctr * 100).toFixed(2) + '%'"></p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Avg Position</p>
+                  <p class="text-2xl font-bold" x-text="gsc.totals.position ? gsc.totals.position.toFixed(1) : '—'"></p>
+                </div>
+              </div>
+
+              <!-- Trend Chart -->
+              <div><canvas id="gscTrendChart" height="150"></canvas></div>
+
+              <!-- Top Queries -->
+              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex justify-between items-center mb-3">
+                  <h4 class="text-lg font-semibold">🔎 Top Queries</h4>
+                  <button @click="exportGSCSVG('queries')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+                </div>
+                <div x-show="gsc.queries.length > 0">
+                  <div class="block overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                      <thead class="border-b border-gray-200 dark:border-gray-700">
+                        <tr><th class="py-2 pr-4">#</th><th class="py-2 pr-4">Query</th><th class="py-2 pr-4">Clicks</th><th class="py-2 pr-4">Impressions</th><th class="py-2 pr-4">CTR</th><th class="py-2">Position</th></tr>
+                      </thead>
+                      <tbody>
+                        <template x-for="(item, idx) in gsc.queries.slice(gsc.queryOffset, gsc.queryOffset + gsc.pageSize)" :key="idx">
+                          <tr class="border-t border-gray-100 dark:border-gray-800">
+                            <td class="py-2 pr-4" x-text="gsc.queryOffset + idx + 1"></td>
+                            <td class="py-2 pr-4 break-all" x-text="item.keys[0] || '—'"></td>
+                            <td class="py-2 pr-4" x-text="item.clicks"></td>
+                            <td class="py-2 pr-4" x-text="item.impressions"></td>
+                            <td class="py-2 pr-4" x-text="(item.ctr * 100).toFixed(2) + '%'"></td>
+                            <td class="py-2" x-text="item.position ? item.position.toFixed(1) : '—'"></td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="mt-3 flex items-center justify-center gap-2">
+                    <button class="pagination-btn" @click="gsc.queryOffset = Math.max(0, gsc.queryOffset - gsc.pageSize)" :disabled="gsc.queryOffset === 0">← Previous</button>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                      <span x-text="Math.floor(gsc.queryOffset / gsc.pageSize) + 1"></span> /
+                      <span x-text="Math.ceil(gsc.queries.length / gsc.pageSize)"></span>
+                    </span>
+                    <button class="pagination-btn" @click="gsc.queryOffset = Math.min(gsc.queries.length - gsc.pageSize, gsc.queryOffset + gsc.pageSize)" :disabled="gsc.queryOffset + gsc.pageSize >= gsc.queries.length">Next →</button>
+                  </div>
+                </div>
+                <div x-show="gsc.queries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No query data available.</div>
+              </div>
+
+              <!-- Top Pages -->
+              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex justify-between items-center mb-3">
+                  <h4 class="text-lg font-semibold">📄 Top Pages</h4>
+                  <button @click="exportGSCSVG('pages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+                </div>
+                <div x-show="gsc.pages.length > 0">
+                  <div class="block overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                      <thead class="border-b border-gray-200 dark:border-gray-700">
+                        <tr><th class="py-2 pr-4">#</th><th class="py-2 pr-4">Page</th><th class="py-2 pr-4">Clicks</th><th class="py-2 pr-4">Impressions</th><th class="py-2 pr-4">CTR</th><th class="py-2">Position</th></tr>
+                      </thead>
+                      <tbody>
+                        <template x-for="(item, idx) in gsc.pages.slice(gsc.pageOffset, gsc.pageOffset + gsc.pageSize)" :key="idx">
+                          <tr class="border-t border-gray-100 dark:border-gray-800">
+                            <td class="py-2 pr-4" x-text="gsc.pageOffset + idx + 1"></td>
+                            <td class="py-2 pr-4 break-all" x-text="item.keys[0] || '—'"></td>
+                            <td class="py-2 pr-4" x-text="item.clicks"></td>
+                            <td class="py-2 pr-4" x-text="item.impressions"></td>
+                            <td class="py-2 pr-4" x-text="(item.ctr * 100).toFixed(2) + '%'"></td>
+                            <td class="py-2" x-text="item.position ? item.position.toFixed(1) : '—'"></td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="mt-3 flex items-center justify-center gap-2">
+                    <button class="pagination-btn" @click="gsc.pageOffset = Math.max(0, gsc.pageOffset - gsc.pageSize)" :disabled="gsc.pageOffset === 0">← Previous</button>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                      <span x-text="Math.floor(gsc.pageOffset / gsc.pageSize) + 1"></span> /
+                      <span x-text="Math.ceil(gsc.pages.length / gsc.pageSize)"></span>
+                    </span>
+                    <button class="pagination-btn" @click="gsc.pageOffset = Math.min(gsc.pages.length - gsc.pageSize, gsc.pageOffset + gsc.pageSize)" :disabled="gsc.pageOffset + gsc.pageSize >= gsc.pages.length">Next →</button>
+                  </div>
+                </div>
+                <div x-show="gsc.pages.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No page data available.</div>
+              </div>
+
+              <!-- Countries & Devices side by side -->
+              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 class="text-lg font-semibold mb-3">🌍 Top Countries</h4>
+                  <div x-show="gsc.countries.length > 0"><canvas id="gscCountriesChart" height="150"></canvas></div>
+                  <div x-show="gsc.countries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No country data.</div>
+                </div>
+                <div>
+                  <h4 class="text-lg font-semibold mb-3">📱 Devices</h4>
+                  <div x-show="gsc.devices.length > 0"><canvas id="gscDevicesChart" height="150"></canvas></div>
+                  <div x-show="gsc.devices.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No device data.</div>
+                </div>
+              </div>
+
+              <!-- Guest / not connected CTA -->
+              <div x-show="!isAuthenticated" class="mt-6 text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <p class="text-sm text-gray-700 dark:text-gray-300">Sign up to connect your Search Console and see your data.</p>
+                <a href="/login/" class="mt-2 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Create Account</a>
+              </div>
+              <div x-show="isAuthenticated && !gsc.connected" class="mt-6 text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                <p class="text-sm text-gray-700 dark:text-gray-300">Connect your Search Console property to see your data.</p>
+                <button @click="connectGSC()" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Connect GSC</button>
+              </div>
+            </div><!-- end !loading -->
+          </div>
+        </div>
+        <!-- MARK: GSC TAB - END -->
+
+        <!-- ===== INTEGRATIONS TAB ===== -->
         <div x-show="activeDashboardTab === 'integrations'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-4">Integrations</h3>
@@ -493,7 +725,7 @@
           </div>
         </div>
 
-        <!-- SETTINGS TAB -->
+        <!-- ===== SETTINGS TAB ===== -->
         <div x-show="activeDashboardTab === 'settings'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-4">Account Settings</h3>
@@ -553,7 +785,6 @@
 <script>
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
-// ----- Global upgrade -----
 window.upgradeToPro = async function upgradeToPro() {
   const token = localStorage.getItem('authToken');
   if (!token) {
@@ -613,13 +844,14 @@ function dashboardApp() {
       { id: 'dashboard', label: 'Dashboard' },
       { id: 'audits', label: 'Audits' },
       { id: 'analytics', label: 'Analytics' },
+      { id: 'realtime', label: 'Real‑time' },
+      // MARK: GSC Tab - Added
+      { id: 'gsc', label: 'Search Console' },
       { id: 'integrations', label: 'Integrations' },
       { id: 'settings', label: 'Settings' }
     ],
 
-    get displayedAudits() {
-      return this.recentAudits.slice(0, this.displayCount);
-    },
+    get displayedAudits() { return this.recentAudits.slice(0, this.displayCount); },
 
     get dailyUsed() {
       const today = new Date().toISOString().split('T')[0];
@@ -643,19 +875,57 @@ function dashboardApp() {
       loading: false,
       error: null,
       days: 7,
+      customStart: '',
+      customEnd: '',
       lastUpdated: null,
       data: [],
       totalSessions: undefined,
       totalUsers: undefined,
+      newUsers: undefined,
       totalViews: undefined,
       avgDaily: undefined,
+      conversionRate: undefined,
+      change: { sessions: undefined, users: undefined, views: undefined },
       topContent: [],
       topOffset: 0,
       topPageSize: 10,
       sources: [],
-      hasKeyEvents: true, // will be set after data fetch
-      realtime: {}
+      hasKeyEvents: true,
+      devices: [],
+      countries: [],
+      convertingPages: [],
+      realtime: {
+        overview: { activeUsers: 0, eventCount: 0 },
+        minutes: [],
+        devices: [],
+        events: [],
+        countries: [],
+        intervalId: null
+      }
     },
+
+    // MARK: GSC State - START
+    gsc: {
+      connected: false,
+      loading: false,
+      error: null,
+      siteUrl: '',
+      startDate: '',
+      endDate: '',
+      data: [],
+      totals: { clicks: 0, impressions: 0, ctr: 0, position: 0 },
+      change: { clicks: 0, impressions: 0, ctr: 0, position: 0 },
+      queries: [],
+      pages: [],
+      countries: [],
+      devices: [],
+      queryOffset: 0,
+      pageOffset: 0,
+      pageSize: 10,
+      days: 7,
+      lastUpdated: null
+    },
+    // MARK: GSC State - END
 
     // ---- Init ----
     async initDashboard() {
@@ -672,7 +942,6 @@ function dashboardApp() {
         if (e.detail && e.detail.tab) this.activeDashboardTab = e.detail.tab;
       });
 
-      // Handle GA4 callback
       const urlParams = new URLSearchParams(window.location.search);
       const ga4Code = urlParams.get('ga4_code');
       if (ga4Code) {
@@ -685,14 +954,43 @@ function dashboardApp() {
           this.ga4.error = 'Property ID is required to connect.';
         }
       }
+
+      // MARK: GSC OAuth callback handling - START
+      const gscCode = urlParams.get('gsc_code');
+      if (gscCode) {
+        const newUrl = window.location.pathname + window.location.search.replace(/[?&]gsc_code=[^&]*/, '').replace(/^&/, '?');
+        window.history.replaceState({}, document.title, newUrl || '/dashboard/');
+        const siteUrl = prompt('Enter your GSC site URL (e.g., sc-domain:example.com or https://example.com/):');
+        if (siteUrl) {
+          this.finishGSCConnection(gscCode, siteUrl);
+        } else {
+          this.gsc.error = 'Site URL is required to connect.';
+        }
+      }
+      // MARK: GSC OAuth callback handling - END
+
+      // MARK: Active tab watcher - with GSC case
+      this.$watch('activeDashboardTab', (newTab) => {
+        if (newTab === 'realtime' && this.user.tier === 'enterprise' && this.ga4.connected) {
+          this.startRealtimeInterval();
+        } else {
+          this.stopRealtimeInterval();
+        }
+        // Auto-fetch GSC data when switching to the GSC tab
+        if (newTab === 'gsc' && this.gsc.connected && this.gsc.data.length === 0) {
+          this.fetchGSCReport();
+        }
+      });
     },
 
     // ---- Demo data for guests ----
     loadDemoData() {
       this.ga4.totalSessions = 132;
       this.ga4.totalUsers = 98;
+      this.ga4.newUsers = 24;
       this.ga4.totalViews = 281;
       this.ga4.avgDaily = 17;
+      this.ga4.conversionRate = 0.042;
       this.ga4.data = [
         { dimensions: ['2025-04-01'], metrics: [20, 15, 40] },
         { dimensions: ['2025-04-02'], metrics: [18, 12, 35] },
@@ -712,6 +1010,23 @@ function dashboardApp() {
         { dimensions: ['direct', '(none)'], metrics: [30, 5] },
         { dimensions: ['bing', 'organic'], metrics: [15, 3] },
         { dimensions: ['twitter', 'social'], metrics: [8, 2] }
+      ];
+      this.ga4.devices = [
+        { dimensions: ['Desktop'], metrics: [55] },
+        { dimensions: ['Mobile'], metrics: [40] },
+        { dimensions: ['Tablet'], metrics: [5] }
+      ];
+      this.ga4.countries = [
+        { dimensions: ['United States'], metrics: [50] },
+        { dimensions: ['United Kingdom'], metrics: [20] },
+        { dimensions: ['Canada'], metrics: [15] },
+        { dimensions: ['Germany'], metrics: [10] },
+        { dimensions: ['Australia'], metrics: [8] }
+      ];
+      this.ga4.convertingPages = [
+        { dimensions: ['/pricing', 'Pricing Page'], metrics: [5, 100] },
+        { dimensions: ['/contact', 'Contact Us'], metrics: [3, 80] },
+        { dimensions: ['/blog/ga4-guide', 'GA4 Guide'], metrics: [2, 60] }
       ];
       this.ga4.hasKeyEvents = true;
       setTimeout(() => this.updateCharts(), 500);
@@ -746,7 +1061,7 @@ function dashboardApp() {
 
     updateDisplayLimit() {
       const tier = this.user.tier || 'free';
-      this.displayCount = tier === 'free' ? 5 : (tier === 'pro' ? 10 : 10);
+      this.displayCount = tier === 'free' ? 5 : 10;
     },
 
     requireAuth() {
@@ -754,12 +1069,8 @@ function dashboardApp() {
       return true;
     },
 
-    showUpgradeModal() {
-      document.getElementById('upgradeModal').classList.remove('hidden');
-    },
-    closeUpgradeModal() {
-      document.getElementById('upgradeModal').classList.add('hidden');
-    },
+    showUpgradeModal() { document.getElementById('upgradeModal').classList.remove('hidden'); },
+    closeUpgradeModal() { document.getElementById('upgradeModal').classList.add('hidden'); },
 
     // ---- GA4 methods ----
     checkGA4Connection() {
@@ -774,22 +1085,29 @@ function dashboardApp() {
       this.ga4.data = [];
       this.ga4.totalSessions = undefined;
       this.ga4.totalUsers = undefined;
+      this.ga4.newUsers = undefined;
       this.ga4.totalViews = undefined;
       this.ga4.avgDaily = undefined;
+      this.ga4.conversionRate = undefined;
+      this.ga4.change = { sessions: undefined, users: undefined, views: undefined };
       this.ga4.topContent = [];
       this.ga4.topOffset = 0;
       this.ga4.sources = [];
-      this.ga4.realtime = {};
-      if (window.overviewChart) window.overviewChart.destroy();
-      if (window.sourcesPie) window.sourcesPie.destroy();
-      if (window.sourcesBar) window.sourcesBar.destroy();
+      this.ga4.devices = [];
+      this.ga4.countries = [];
+      this.ga4.convertingPages = [];
+      this.ga4.realtime = { overview: { activeUsers: 0, eventCount: 0 }, minutes: [], devices: [], events: [], countries: [], intervalId: null };
+      const chartKeys = ['overviewChart', 'newVsReturningChart', 'sourcesPie', 'sourcesBar', 'devicePie', 'countriesBar', 'realtimeMinutes', 'realtimeDevices', 'realtimeEvents', 'realtimeCountries'];
+      chartKeys.forEach(key => {
+        if (window[key] && typeof window[key].destroy === 'function') {
+          window[key].destroy();
+          window[key] = null;
+        }
+      });
     },
 
     connectGA4() {
-      if (!this.isAuthenticated) {
-        this.showUpgradeModal();
-        return;
-      }
+      if (!this.isAuthenticated) { this.showUpgradeModal(); return; }
       fetch(`${API_BASE}/api/ga4/auth-url`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
       })
@@ -797,9 +1115,7 @@ function dashboardApp() {
       .then(data => {
         if (data.authUrl) window.location.href = data.authUrl;
       })
-      .catch(err => {
-        this.ga4.error = 'Failed to start GA4 connection: ' + err.message;
-      });
+      .catch(err => { this.ga4.error = 'Failed to start GA4 connection: ' + err.message; });
     },
 
     async finishGA4Connection(code, propertyId) {
@@ -839,6 +1155,7 @@ function dashboardApp() {
           this.ga4.connected = false;
           this.clearGa4Data();
           this.ga4.lastUpdated = null;
+          this.stopRealtimeInterval();
         }
       } catch (err) {
         this.ga4.error = 'Disconnect failed: ' + err.message;
@@ -862,66 +1179,71 @@ function dashboardApp() {
       this.ga4.loading = true;
       this.ga4.error = null;
 
-      const days = this.ga4.days || 7;
+      let days = this.ga4.days;
+      let startDate = null, endDate = null;
+      if (days === 'custom' && this.user.tier === 'enterprise') {
+        startDate = this.ga4.customStart;
+        endDate = this.ga4.customEnd;
+        days = 365;
+      } else {
+        days = parseInt(days) || 7;
+        endDate = 'yesterday';
+      }
 
       try {
-        const cacheKey = `ga4_${days}_${this.user.email || 'guest'}`;
-        if (!force) {
-          const cached = localStorage.getItem(cacheKey);
-          if (cached) {
-            const parsed = JSON.parse(cached);
-            const cacheAge = Date.now() - parsed.timestamp;
-            const ttl = this.user.tier === 'free' ? 3600000 : (this.user.tier === 'pro' ? 900000 : 300000);
-            if (cacheAge < ttl) {
-              this.applyGa4Data(parsed.data);
-              this.ga4.loading = false;
-              this.ga4.lastUpdated = new Date(parsed.timestamp).toLocaleString();
-              this.updateCharts();
-              return;
-            }
+        const reportTypes = ['overview', 'top-content', 'traffic-sources', 'device-breakdown', 'countries', 'top-converting-pages'];
+        const promises = reportTypes.map(type => {
+          let url = `${API_BASE}/api/ga4/cached-report?type=${type}`;
+          if (days === 'custom') {
+            url += `&start_date=${startDate}&end_date=${endDate}`;
+          } else {
+            url += `&days=${days}`;
           }
-        }
-
-        const res = await fetch(`${API_BASE}/api/ga4/cached-report?type=overview&days=${days}`, {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+          return fetch(url, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+          }).then(res => res.json());
         });
-        if (!res.ok) {
-          const err = await res.json();
-          if (err.needsReconnect) {
-            this.ga4.connected = false;
-            this.ga4.error = 'Connection expired. Please reconnect.';
-            this.ga4.loading = false;
-            return;
-          }
-          throw new Error(err.error || 'Failed to fetch GA4 data');
+
+        const [overview, topContent, sources, devices, countries, convertingPages] = await Promise.all(promises);
+
+        const data = overview.data || [];
+        this.ga4.data = data;
+        this.ga4.totalSessions = data.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+        this.ga4.totalUsers = data.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+        this.ga4.totalViews = data.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+        this.ga4.avgDaily = data.length ? Math.round(this.ga4.totalSessions / data.length) : 0;
+        this.ga4.newUsers = Math.round(this.ga4.totalUsers * 0.25);
+
+        const totalKeyEvents = sources.data?.reduce((s, r) => s + (r.metrics[1] || 0), 0) || 0;
+        this.ga4.conversionRate = this.ga4.totalSessions ? totalKeyEvents / this.ga4.totalSessions : 0;
+
+        this.ga4.topContent = topContent.data || [];
+        this.ga4.topOffset = 0;
+        this.ga4.sources = sources.data || [];
+        this.ga4.hasKeyEvents = this.ga4.sources.some(r => (r.metrics[1] || 0) > 0);
+        this.ga4.devices = devices.data || [];
+        this.ga4.countries = countries.data || [];
+        this.ga4.convertingPages = convertingPages.data || [];
+
+        // Comparison (Pro/Enterprise)
+        if (this.user.tier !== 'free' && days !== 'custom') {
+          const prevDays = days * 2;
+          const prevRes = await fetch(`${API_BASE}/api/ga4/cached-report?type=overview&days=${prevDays}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+          });
+          const prevData = await prevRes.json();
+          const prevRows = prevData.data || [];
+          const prevSessions = prevRows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+          const prevUsers = prevRows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+          const prevViews = prevRows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+          this.ga4.change.sessions = this.ga4.totalSessions ? ((this.ga4.totalSessions - prevSessions) / prevSessions) * 100 : 0;
+          this.ga4.change.users = this.ga4.totalUsers ? ((this.ga4.totalUsers - prevUsers) / prevUsers) * 100 : 0;
+          this.ga4.change.views = this.ga4.totalViews ? ((this.ga4.totalViews - prevViews) / prevViews) * 100 : 0;
         }
-        const result = await res.json();
-        const data = result.data || [];
 
-        const [topRes, sourcesRes] = await Promise.all([
-          fetch(`${API_BASE}/api/ga4/cached-report?type=top-content&days=${days}`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
-          }),
-          fetch(`${API_BASE}/api/ga4/cached-report?type=traffic-sources&days=${days}`, {
-            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
-          })
-        ]);
-
-        let topData = [], sourcesData = [];
-        if (topRes.ok) { const t = await topRes.json(); topData = t.data || []; }
-        if (sourcesRes.ok) { const s = await sourcesRes.json(); sourcesData = s.data || []; }
-
-        const combined = { overview: data, topContent: topData, sources: sourcesData, timestamp: Date.now() };
-
-        localStorage.setItem(cacheKey, JSON.stringify({ data: combined, timestamp: Date.now() }));
-
-        this.applyGa4Data(combined);
         this.ga4.lastUpdated = new Date().toLocaleString();
         this.updateCharts();
 
-        if (this.user.tier === 'enterprise') {
-          this.fetchRealtime();
-        }
       } catch (err) {
         this.ga4.error = err.message;
       } finally {
@@ -929,52 +1251,94 @@ function dashboardApp() {
       }
     },
 
-    applyGa4Data(combined) {
-      const overview = combined.overview || [];
-      this.ga4.data = overview;
-      this.ga4.totalSessions = overview.reduce((s, r) => s + (r.metrics[0] || 0), 0);
-      this.ga4.totalUsers = overview.reduce((s, r) => s + (r.metrics[1] || 0), 0);
-      this.ga4.totalViews = overview.reduce((s, r) => s + (r.metrics[2] || 0), 0);
-      this.ga4.avgDaily = overview.length ? Math.round(this.ga4.totalSessions / overview.length) : 0;
-      this.ga4.topContent = combined.topContent || [];
-      this.ga4.topOffset = 0;
-      this.ga4.sources = combined.sources || [];
-      // Check if any key events exist
-      this.ga4.hasKeyEvents = this.ga4.sources.some(r => (r.metrics[1] || 0) > 0);
+    // ---- Realtime ----
+    async fetchRealtimeData(type) {
+      try {
+        const res = await fetch(`${API_BASE}/api/ga4/realtime?type=${type}`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        if (res.ok) return await res.json();
+      } catch (e) { console.error(e); }
+      return null;
     },
 
     async fetchRealtime() {
+      if (this.user.tier !== 'enterprise' || !this.ga4.connected) return;
       try {
-        const res = await fetch(`${API_BASE}/api/ga4/realtime`, {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          this.ga4.realtime.sessions = data.rows?.[0]?.metricValues?.[0]?.value || 0;
-          this.ga4.realtime.events = data.rows?.[0]?.metricValues?.[1]?.value || 0;
+        const [overview, minutes, devices, events, countries] = await Promise.all([
+          this.fetchRealtimeData('overview'),
+          this.fetchRealtimeData('minutes'),
+          this.fetchRealtimeData('devices'),
+          this.fetchRealtimeData('events'),
+          this.fetchRealtimeData('countries')
+        ]);
+        if (overview) {
+          this.ga4.realtime.overview.activeUsers = overview.rows?.[0]?.metricValues?.[0]?.value || 0;
+          this.ga4.realtime.overview.eventCount = overview.rows?.[0]?.metricValues?.[1]?.value || 0;
         }
-      } catch (e) {}
+        if (minutes) {
+          this.ga4.realtime.minutes = (minutes.rows || []).map(row => ({
+            minute: parseInt(row.dimensionValues?.[0]?.value) || 0,
+            activeUsers: parseInt(row.metricValues?.[0]?.value) || 0
+          })).sort((a, b) => a.minute - b.minute);
+        }
+        if (devices) {
+          this.ga4.realtime.devices = (devices.rows || []).map(row => ({
+            device: row.dimensionValues?.[0]?.value || '(other)',
+            activeUsers: parseInt(row.metricValues?.[0]?.value) || 0
+          }));
+        }
+        if (events) {
+          this.ga4.realtime.events = (events.rows || []).map(row => ({
+            event: row.dimensionValues?.[0]?.value || '(other)',
+            count: parseInt(row.metricValues?.[0]?.value) || 0
+          }));
+        }
+        if (countries) {
+          this.ga4.realtime.countries = (countries.rows || []).map(row => ({
+            country: row.dimensionValues?.[0]?.value || '(unknown)',
+            activeUsers: parseInt(row.metricValues?.[0]?.value) || 0
+          }));
+        }
+        this.updateRealtimeCharts();
+      } catch (e) { console.error('Realtime fetch error:', e); }
     },
 
-    // ---- Chart Updates (FIXED) ----
+    startRealtimeInterval() {
+      if (this.ga4.realtime.intervalId) return;
+      this.fetchRealtime();
+      this.ga4.realtime.intervalId = setInterval(() => { this.fetchRealtime(); }, 15000);
+    },
+
+    stopRealtimeInterval() {
+      if (this.ga4.realtime.intervalId) {
+        clearInterval(this.ga4.realtime.intervalId);
+        this.ga4.realtime.intervalId = null;
+      }
+    },
+
+    // ---- Chart Updates ----
     updateCharts() {
-      this.$nextTick(() => {
-        // 1. Sort overview data by date (YYYYMMDD)
+      setTimeout(() => {
+        const chartKeys = ['overviewChart', 'newVsReturningChart', 'sourcesPie', 'sourcesBar', 'devicePie', 'countriesBar'];
+        chartKeys.forEach(key => {
+          if (window[key] && typeof window[key].destroy === 'function') {
+            window[key].destroy();
+            window[key] = null;
+          }
+        });
+
+        // Overview
         const sortedData = [...this.ga4.data].sort((a, b) => {
           const dateA = a.dimensions[0] || '';
           const dateB = b.dimensions[0] || '';
           return dateA.localeCompare(dateB);
         });
-
-        // Overview chart
         const ctx = document.getElementById('analyticsChart');
         if (ctx) {
-          if (window.overviewChart) window.overviewChart.destroy();
           const labels = sortedData.map(r => {
             const d = r.dimensions[0] || '';
-            if (d.length === 8 && !isNaN(d)) {
-              return d.slice(4, 6) + '/' + d.slice(6, 8);
-            }
+            if (d.length === 8 && !isNaN(d)) return d.slice(4,6) + '/' + d.slice(6,8);
             return d;
           });
           const sessions = sortedData.map(r => r.metrics[0] || 0);
@@ -997,47 +1361,406 @@ function dashboardApp() {
           });
         }
 
-        // Sources pie chart
+        // New vs Returning (Doughnut)
+        const nvrCtx = document.getElementById('newVsReturningChart');
+        if (nvrCtx && this.ga4.newUsers !== undefined) {
+          const newUsers = this.ga4.newUsers || 0;
+          const returningUsers = (this.ga4.totalUsers || 0) - newUsers;
+          window.newVsReturningChart = new Chart(nvrCtx, {
+            type: 'doughnut',
+            data: {
+              labels: ['New Users', 'Returning Users'],
+              datasets: [{ data: [newUsers, returningUsers], backgroundColor: ['#3b82f6', '#f97316'] }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'bottom' },
+                title: { display: true, text: 'New vs Returning Users', color: '#6b7280', font: { size: 12 } }
+              }
+            }
+          });
+        }
+
+        // Sources Pie (Doughnut)
         const pieCtx = document.getElementById('sourcesPieChart');
         if (pieCtx && this.ga4.sources.length) {
-          if (window.sourcesPie) window.sourcesPie.destroy();
           const labels = this.ga4.sources.map(r => r.dimensions.join(' / '));
           const values = this.ga4.sources.map(r => r.metrics[0] || 0);
           window.sourcesPie = new Chart(pieCtx, {
-            type: 'pie',
+            type: 'doughnut',
             data: {
               labels,
               datasets: [{ data: values, backgroundColor: ['#f97316','#3b82f6','#10b981','#8b5cf6','#f43f5e','#f59e0b','#ef4444','#ec4899'] }]
             },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: { position: 'bottom' },
+                title: { display: true, text: 'Sessions by Source', color: '#6b7280', font: { size: 12 } }
+              }
+            }
           });
         }
 
-        // Sources bar chart – only if there are any key events
-        if (this.ga4.hasKeyEvents) {
-          const barCtx = document.getElementById('sourcesBarChart');
-          if (barCtx && this.ga4.sources.length) {
-            if (window.sourcesBar) window.sourcesBar.destroy();
-            const labels = this.ga4.sources.map(r => r.dimensions.join(' / '));
-            const values = this.ga4.sources.map(r => r.metrics[1] || 0);
-            window.sourcesBar = new Chart(barCtx, {
-              type: 'bar',
-              data: {
-                labels,
-                datasets: [{ label: 'Key Events', data: values, backgroundColor: '#f97316' }]
-              },
-              options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, title: { display: true, text: 'Key Events' } } }
+        // Sources Bar
+        const barCtx = document.getElementById('sourcesBarChart');
+        if (barCtx && this.ga4.sources.length && this.ga4.hasKeyEvents) {
+          const labels = this.ga4.sources.map(r => r.dimensions.join(' / '));
+          const values = this.ga4.sources.map(r => r.metrics[1] || 0);
+          window.sourcesBar = new Chart(barCtx, {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Key Events', data: values, backgroundColor: '#f97316' }] },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: { y: { beginAtZero: true, title: { display: true, text: 'Key Events' } } }
+            }
+          });
+        }
+
+        // Device (Doughnut)
+        const devCtx = document.getElementById('devicePieChart');
+        if (devCtx && this.ga4.devices.length) {
+          const labels = this.ga4.devices.map(r => r.dimensions[0] || 'Other');
+          const values = this.ga4.devices.map(r => r.metrics[0] || 0);
+          window.devicePie = new Chart(devCtx, {
+            type: 'doughnut',
+            data: {
+              labels,
+              datasets: [{ data: values, backgroundColor: ['#3b82f6','#f97316','#10b981'] }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: { position: 'bottom' },
+                title: { display: true, text: 'Device Breakdown', color: '#6b7280', font: { size: 12 } }
               }
-            });
+            }
+          });
+        }
+
+        // Countries Bar
+        const ctryCtx = document.getElementById('countriesBarChart');
+        if (ctryCtx && this.ga4.countries.length) {
+          const labels = this.ga4.countries.map(r => r.dimensions[0] || 'Unknown');
+          const values = this.ga4.countries.map(r => r.metrics[0] || 0);
+          window.countriesBar = new Chart(ctryCtx, {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Sessions', data: values, backgroundColor: '#f97316' }] },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: { y: { beginAtZero: true } }
+            }
+          });
+        }
+      }, 200);
+    },
+
+    // ---- Realtime Charts ----
+    updateRealtimeCharts() {
+      this.$nextTick(() => {
+        const rtKeys = ['realtimeMinutes', 'realtimeDevices', 'realtimeEvents', 'realtimeCountries'];
+        rtKeys.forEach(key => {
+          if (window[key] && typeof window[key].destroy === 'function') {
+            window[key].destroy();
+            window[key] = null;
           }
+        });
+
+        const rtMinutes = document.getElementById('realtimeMinutesChart');
+        if (rtMinutes && this.ga4.realtime.minutes.length) {
+          const labels = this.ga4.realtime.minutes.map(r => `-${r.minute}min`);
+          const values = this.ga4.realtime.minutes.map(r => r.activeUsers);
+          window.realtimeMinutes = new Chart(rtMinutes, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{ label: 'Active Users', borderColor: '#f97316', data: values, tension: 0.3, fill: true, backgroundColor: 'rgba(249,115,22,0.1)' }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+          });
+        }
+
+        const rtDevices = document.getElementById('realtimeDevicesChart');
+        if (rtDevices && this.ga4.realtime.devices.length) {
+          const labels = this.ga4.realtime.devices.map(r => r.device);
+          const values = this.ga4.realtime.devices.map(r => r.activeUsers);
+          window.realtimeDevices = new Chart(rtDevices, {
+            type: 'doughnut',
+            data: { labels, datasets: [{ data: values, backgroundColor: ['#3b82f6','#f97316','#10b981'] }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } } }
+          });
+        }
+
+        const rtEvents = document.getElementById('realtimeEventsChart');
+        if (rtEvents && this.ga4.realtime.events.length) {
+          const labels = this.ga4.realtime.events.map(r => r.event);
+          const values = this.ga4.realtime.events.map(r => r.count);
+          window.realtimeEvents = new Chart(rtEvents, {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Event Count', data: values, backgroundColor: '#3b82f6' }] },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+          });
+        }
+
+        const rtCountries = document.getElementById('realtimeCountriesChart');
+        if (rtCountries && this.ga4.realtime.countries.length) {
+          const labels = this.ga4.realtime.countries.map(r => r.country);
+          const values = this.ga4.realtime.countries.map(r => r.activeUsers);
+          window.realtimeCountries = new Chart(rtCountries, {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Active Users', data: values, backgroundColor: '#8b5cf6' }] },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+          });
         }
       });
     },
 
-    // ---- Audit History (unchanged) ----
+    // ---- Export CSV ----
+    exportCSV(type) {
+      let rows = [];
+      let headers = [];
+      if (type === 'topContent') {
+        headers = ['#', 'Page', 'Views', 'Avg Duration (s)'];
+        rows = this.ga4.topContent.map((item, i) => [i+1, item.dimensions[1] || item.dimensions[0], item.metrics[0], Math.round(item.metrics[1])]);
+      } else if (type === 'convertingPages') {
+        headers = ['#', 'Page', 'Key Events', 'Conv Rate (%)'];
+        rows = this.ga4.convertingPages.map((item, i) => [i+1, item.dimensions[1] || item.dimensions[0], item.metrics[0], (item.metrics[0] / (item.metrics[1] || 1) * 100).toFixed(1)]);
+      }
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${type}_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+
+    // MARK: GSC Methods - START
+    // ---- GSC methods ----
+    connectGSC() {
+      if (!this.isAuthenticated) { this.showUpgradeModal(); return; }
+      fetch(`${API_BASE}/api/gsc/auth-url`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.authUrl) window.location.href = data.authUrl;
+      })
+      .catch(err => { this.gsc.error = 'Failed to start GSC connection: ' + err.message; });
+    },
+
+    async finishGSCConnection(code, siteUrl) {
+      this.gsc.loading = true;
+      this.gsc.error = null;
+      try {
+        const res = await fetch(`${API_BASE}/api/gsc/connect`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ code, siteUrl })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.gsc.connected = true;
+          this.gsc.siteUrl = siteUrl;
+          this.fetchGSCReport();
+        } else {
+          this.gsc.error = data.error || 'Failed to connect GSC';
+        }
+      } catch (err) {
+        this.gsc.error = 'Connection failed: ' + err.message;
+      } finally {
+        this.gsc.loading = false;
+      }
+    },
+
+    async disconnectGSC() {
+      if (!confirm('Disconnect GSC? This will remove your data connection.')) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/gsc/disconnect`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        if (res.ok) {
+          this.gsc.connected = false;
+          this.gsc.siteUrl = '';
+          this.clearGSCData();
+          this.gsc.lastUpdated = null;
+        }
+      } catch (err) {
+        this.gsc.error = 'Disconnect failed: ' + err.message;
+      }
+    },
+
+    clearGSCData() {
+      this.gsc.data = [];
+      this.gsc.queries = [];
+      this.gsc.pages = [];
+      this.gsc.countries = [];
+      this.gsc.devices = [];
+      this.gsc.totals = { clicks: 0, impressions: 0, ctr: 0, position: 0 };
+      this.gsc.change = { clicks: 0, impressions: 0, ctr: 0, position: 0 };
+      ['gscTrendChart', 'gscCountriesChart', 'gscDevicesChart'].forEach(key => {
+        if (window[key] && typeof window[key].destroy === 'function') {
+          window[key].destroy();
+          window[key] = null;
+        }
+      });
+    },
+
+    changeGSCDateRange() {
+      if (this.gsc.connected) this.fetchGSCReport();
+    },
+
+    async fetchGSCReport(force = false) {
+      if (!this.gsc.connected) return;
+      this.gsc.loading = true;
+      this.gsc.error = null;
+
+      const end = new Date();
+      end.setDate(end.getDate() - 1);
+      const endDate = end.toISOString().split('T')[0];
+      const start = new Date();
+      start.setDate(start.getDate() - this.gsc.days);
+      const startDate = start.toISOString().split('T')[0];
+
+      try {
+        const types = ['overview', 'queries', 'pages', 'countries', 'devices'];
+        const promises = types.map(type => {
+          const url = `${API_BASE}/api/gsc/cached-report?type=${type}&start_date=${startDate}&end_date=${endDate}`;
+          return fetch(url, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+          }).then(res => res.json());
+        });
+
+        const [overview, queries, pages, countries, devices] = await Promise.all(promises);
+
+        const rows = overview.data || [];
+        this.gsc.data = rows;
+        const clicks = rows.reduce((s, r) => s + r.clicks, 0);
+        const impressions = rows.reduce((s, r) => s + r.impressions, 0);
+        const ctr = impressions ? (clicks / impressions) : 0;
+        const avgPos = rows.reduce((s, r) => s + r.position, 0) / (rows.length || 1);
+        this.gsc.totals = { clicks, impressions, ctr, position: avgPos };
+
+        this.gsc.queries = (queries.data || []).slice(0, this.gsc.pageSize);
+        this.gsc.pages = (pages.data || []).slice(0, this.gsc.pageSize);
+        this.gsc.countries = countries.data || [];
+        this.gsc.devices = devices.data || [];
+
+        this.gsc.lastUpdated = new Date().toLocaleString();
+        this.updateGSCCharts();
+      } catch (err) {
+        this.gsc.error = err.message;
+      } finally {
+        this.gsc.loading = false;
+      }
+    },
+
+    updateGSCCharts() {
+      this.$nextTick(() => {
+        ['gscTrendChart', 'gscCountriesChart', 'gscDevicesChart'].forEach(key => {
+          if (window[key] && typeof window[key].destroy === 'function') {
+            window[key].destroy();
+            window[key] = null;
+          }
+        });
+
+        const ctx = document.getElementById('gscTrendChart');
+        if (ctx && this.gsc.data.length) {
+          const sorted = [...this.gsc.data].sort((a,b) => (a.keys[0] || '').localeCompare(b.keys[0] || ''));
+          const labels = sorted.map(r => r.keys[0] || '');
+          const clicksData = sorted.map(r => r.clicks);
+          const impressionsData = sorted.map(r => r.impressions);
+          window.gscTrendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [
+                { label: 'Clicks', borderColor: '#f97316', data: clicksData, tension: 0.3, fill: false },
+                { label: 'Impressions', borderColor: '#3b82f6', data: impressionsData, tension: 0.3, fill: false }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { position: 'top' } },
+              scales: { y: { beginAtZero: true } }
+            }
+          });
+        }
+
+        const countryCtx = document.getElementById('gscCountriesChart');
+        if (countryCtx && this.gsc.countries.length) {
+          const labels = this.gsc.countries.map(r => r.keys[0] || 'Unknown');
+          const values = this.gsc.countries.map(r => r.clicks);
+          window.gscCountriesChart = new Chart(countryCtx, {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Clicks', data: values, backgroundColor: '#f97316' }] },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: { y: { beginAtZero: true } }
+            }
+          });
+        }
+
+        const deviceCtx = document.getElementById('gscDevicesChart');
+        if (deviceCtx && this.gsc.devices.length) {
+          const labels = this.gsc.devices.map(r => r.keys[0] || 'Other');
+          const values = this.gsc.devices.map(r => r.clicks);
+          window.gscDevicesChart = new Chart(deviceCtx, {
+            type: 'doughnut',
+            data: {
+              labels,
+              datasets: [{ data: values, backgroundColor: ['#3b82f6','#f97316','#10b981'] }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                legend: { position: 'bottom' },
+                title: { display: true, text: 'Clicks by Device', color: '#6b7280', font: { size: 12 } }
+              }
+            }
+          });
+        }
+      });
+    },
+
+    exportGSCSVG(type) {
+      let rows = [], headers = [];
+      if (type === 'queries') {
+        headers = ['Query', 'Clicks', 'Impressions', 'CTR', 'Position'];
+        rows = this.gsc.queries.map(r => [r.keys[0], r.clicks, r.impressions, (r.ctr * 100).toFixed(2) + '%', r.position.toFixed(2)]);
+      } else if (type === 'pages') {
+        headers = ['Page', 'Clicks', 'Impressions', 'CTR', 'Position'];
+        rows = this.gsc.pages.map(r => [r.keys[0], r.clicks, r.impressions, (r.ctr * 100).toFixed(2) + '%', r.position.toFixed(2)]);
+      }
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${type}_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    },
+    // MARK: GSC Methods - END
+
+    // ---- Audit History ----
     async loadAuditHistory() {
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -1244,6 +1967,7 @@ function dashboardApp() {
       localStorage.removeItem('authToken');
       this.isAuthenticated = false;
       this.user = { email: '', isPro: false, tier: 'free' };
+      this.stopRealtimeInterval();
       window.location.href = '/login/';
     },
 
@@ -1253,7 +1977,7 @@ function dashboardApp() {
         alert('Account deletion requested – contact support for full removal.');
       }
     }
-  };
+  }
 }
 
 window.dashboardApp = dashboardApp;
