@@ -552,25 +552,14 @@ connectGA4() {
     this.showUpgradeModal();
     return;
   }
-  // Step 1: Get auth URL from backend
-  fetch('/api/ga4/auth-url', {
+  // Use API_BASE instead of relative path
+  fetch(`${API_BASE}/api/ga4/auth-url`, {
     headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
   })
   .then(res => res.json())
   .then(data => {
     if (data.authUrl) {
-      // Open Google OAuth popup or redirect
-      // We'll use a popup for better UX
-      const width = 500, height = 600;
-      const left = (screen.width - width) / 2;
-      const top = (screen.height - height) / 2;
-      const popup = window.open(
-        data.authUrl,
-        'Connect GA4',
-        `width=${width},height=${height},left=${left},top=${top}`
-      );
-      // Listen for the callback
-      window.addEventListener('message', this.handleGA4Callback.bind(this));
+      window.location.href = data.authUrl;
     }
   })
   .catch(err => {
