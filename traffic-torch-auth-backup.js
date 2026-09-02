@@ -1,14 +1,15 @@
 // ============================================================
-// TRAFFIC TORCH – AUTH WORKER (ONE WORKER)
+// TRAFFIC TORCH – AUTH WORKER (ONE WORKER) – WITH GA4 OAUTH
 // ============================================================
 // Env: JWT_SECRET, RESEND_API_KEY, STRIPE_SECRET_KEY,
-//      STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_ID
+//      STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_ID,
+//      GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, ENCRYPTION_KEY
 // D1 binding: MY_BINDING
 
 function corsResponse(body, status = 200, headers = {}) {
   const h = new Headers(headers);
   h.set('Access-Control-Allow-Origin', '*');
-  h.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  h.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE');
   h.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   return new Response(body, { status, headers: h });
 }
@@ -77,6 +78,81 @@ async function comparePassword(password, storedHash) {
   }
 }
 
+function getTierLimit(tier) {
+  switch (tier) {
+    case 'enterprise': return 100;
+    case 'pro': return 10;
+    default: return 5;
+  }
+}
+
+// ---- GA4 Helpers ----
+function encrypt(text) { return btoa(text); }
+function decrypt(encoded) { return atob(encoded); }
+
+async function exchangeCodeForTokens(code, env) {
+  const params = new URLSearchParams({
+    code,
+    client_id: env.GOOGLE_CLIENT_ID,
+    client_secret: env.GOOGLE_CLIENT_SECRET,
+    redirect_uri: 'https://traffic-torch-auth.traffictorch.workers.dev/api/ga4/callback',
+    grant_type: 'authorization_code'
+  });
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString()
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Token exchange failed: ${err}`);
+  }
+  return await res.json();
+}
+
+async function refreshAccessToken(refreshToken, env) {
+  const params = new URLSearchParams({
+    refresh_token: refreshToken,
+    client_id: env.GOOGLE_CLIENT_ID,
+    client_secret: env.GOOGLE_CLIENT_SECRET,
+    grant_type: 'refresh_token'
+  });
+  const res = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString()
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Token refresh failed: ${err}`);
+  }
+  const data = await res.json();
+  return data.access_token;
+}
+
+async function fetchGA4Report(accessToken, propertyId, dimensions, metrics, days = 7) {
+  const body = {
+    dimensions: dimensions.map(d => ({ name: d })),
+    metrics: metrics.map(m => ({ name: m })),
+    dateRanges: [{ startDate: `${days}daysAgo`, endDate: 'today' }],
+    limit: 20
+  };
+  const res = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`GA4 API error: ${err}`);
+  }
+  return res.json();
+}
+
+// ---- ensureTables with migrations ----
 async function ensureTables(env) {
   await env.MY_BINDING.prepare(
     `CREATE TABLE IF NOT EXISTS users (
@@ -86,9 +162,17 @@ async function ensureTables(env) {
       name TEXT,
       subscription_status TEXT DEFAULT 'free',
       pro_since TIMESTAMP,
-      stripe_customer_id TEXT
+      stripe_customer_id TEXT,
+      tier TEXT DEFAULT 'free',
+      ga4_property_id TEXT
     )`
   ).run();
+
+  // Add ga4_property_id if missing
+  try {
+    await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN ga4_property_id TEXT`).run();
+  } catch (e) {}
+
   await env.MY_BINDING.prepare(
     `CREATE TABLE IF NOT EXISTS magic_links (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -98,6 +182,7 @@ async function ensureTables(env) {
       used INTEGER DEFAULT 0
     )`
   ).run();
+
   await env.MY_BINDING.prepare(
     `CREATE TABLE IF NOT EXISTS password_reset_tokens (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -106,6 +191,7 @@ async function ensureTables(env) {
       expires_at TIMESTAMP NOT NULL
     )`
   ).run();
+
   await env.MY_BINDING.prepare(
     `CREATE TABLE IF NOT EXISTS usage_logs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -114,6 +200,31 @@ async function ensureTables(env) {
       run_count INTEGER,
       tool_name TEXT,
       identifier TEXT
+    )`
+  ).run();
+
+  try {
+    await env.MY_BINDING.prepare(`ALTER TABLE usage_logs ADD COLUMN identifier TEXT`).run();
+  } catch (e) {}
+
+  await env.MY_BINDING.prepare(
+    `CREATE TABLE IF NOT EXISTS audit_history (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      url TEXT NOT NULL,
+      tool_name TEXT NOT NULL,
+      score INTEGER,
+      timestamp INTEGER NOT NULL
+    )`
+  ).run();
+
+  await env.MY_BINDING.prepare(
+    `CREATE TABLE IF NOT EXISTS user_ga4 (
+      user_id INTEGER PRIMARY KEY,
+      refresh_token TEXT NOT NULL,
+      property_id TEXT,
+      connected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )`
   ).run();
 }
@@ -130,7 +241,7 @@ export default {
         status: 204,
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
           'Access-Control-Max-Age': '86400',
         },
@@ -150,10 +261,10 @@ export default {
         }
         const hash = await hashPassword(password);
         const result = await env.MY_BINDING.prepare(
-          `INSERT INTO users (email, password_hash, name, subscription_status)
-           VALUES (?, ?, ?, 'free') RETURNING id`
+          `INSERT INTO users (email, password_hash, name, subscription_status, tier)
+           VALUES (?, ?, ?, 'free', 'free') RETURNING id`
         ).bind(email, hash, name || email.split('@')[0]).first();
-        const token = await signJWT({ id: result.id, status: 'free' }, env.JWT_SECRET, '7d');
+        const token = await signJWT({ id: result.id, status: 'free', tier: 'free' }, env.JWT_SECRET, '7d');
         return corsResponse(JSON.stringify({ token }));
       }
 
@@ -164,7 +275,7 @@ export default {
           return corsResponse(JSON.stringify({ error: 'Email and password required' }), 400);
         }
         const user = await env.MY_BINDING.prepare(
-          'SELECT id, password_hash, subscription_status FROM users WHERE email = ?'
+          'SELECT id, password_hash, subscription_status, tier FROM users WHERE email = ?'
         ).bind(email).first();
         if (!user) {
           return corsResponse(JSON.stringify({ error: 'Invalid email or password' }), 401);
@@ -174,7 +285,7 @@ export default {
           return corsResponse(JSON.stringify({ error: 'Invalid email or password' }), 401);
         }
         const token = await signJWT(
-          { id: user.id, status: user.subscription_status || 'free' },
+          { id: user.id, status: user.subscription_status || 'free', tier: user.tier || 'free' },
           env.JWT_SECRET,
           '7d'
         );
@@ -229,14 +340,18 @@ export default {
         }
         await env.MY_BINDING.prepare('UPDATE magic_links SET used = 1 WHERE token_hash = ?').bind(tokenHash).run();
         const email = record.email;
-        let user = await env.MY_BINDING.prepare('SELECT id, subscription_status FROM users WHERE email = ?').bind(email).first();
+        let user = await env.MY_BINDING.prepare('SELECT id, subscription_status, tier FROM users WHERE email = ?').bind(email).first();
         if (!user) {
           const result = await env.MY_BINDING.prepare(
-            `INSERT INTO users (email, name, subscription_status) VALUES (?, ?, 'free') RETURNING id`
+            `INSERT INTO users (email, name, subscription_status, tier) VALUES (?, ?, 'free', 'free') RETURNING id`
           ).bind(email, email.split('@')[0]).first();
-          user = { id: result.id, subscription_status: 'free' };
+          user = { id: result.id, subscription_status: 'free', tier: 'free' };
         }
-        const jwt = await signJWT({ id: user.id, status: user.subscription_status }, env.JWT_SECRET, '7d');
+        const jwt = await signJWT(
+          { id: user.id, status: user.subscription_status, tier: user.tier },
+          env.JWT_SECRET,
+          '7d'
+        );
         return Response.redirect(`https://traffictorch.net/pro/?magic_token=${jwt}`, 302);
       }
 
@@ -314,11 +429,12 @@ export default {
           return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
         }
         const user = await env.MY_BINDING.prepare(
-          'SELECT email, subscription_status, pro_since FROM users WHERE id = ?'
+          'SELECT email, subscription_status, pro_since, tier, ga4_property_id FROM users WHERE id = ?'
         ).bind(decoded.id).first();
         if (!user) return corsResponse(JSON.stringify({ error: 'User not found' }), 404);
         const isPro = user.subscription_status === 'pro';
-        const limit = isPro ? 25 : 50;
+        const tier = user.tier || 'free';
+        const limit = getTierLimit(tier);
         const today = new Date().toISOString().split('T')[0];
         const log = await env.MY_BINDING.prepare(
           'SELECT MAX(run_count) as run_count FROM usage_logs WHERE identifier = ? AND tool_run_date = ?'
@@ -330,23 +446,26 @@ export default {
           proSince: user.pro_since,
           dailyUsed: used,
           dailyLimit: limit,
-          dailyRemaining: limit - used
+          dailyRemaining: limit - used,
+          tier: tier,
+          ga4Connected: !!user.ga4_property_id
         }));
       }
 
       // ---- Check Rate ----
       if (url.pathname === '/api/check-rate' && method === 'POST') {
         const auth = request.headers.get('Authorization');
-        let userId = null, isPro = false;
+        let userId = null, isPro = false, tier = 'free';
         if (auth && auth.startsWith('Bearer ')) {
           const token = auth.split(' ')[1];
           try {
             const decoded = await verifyJWT(token, env.JWT_SECRET);
             userId = decoded.id;
             isPro = decoded.status === 'pro';
+            tier = decoded.tier || 'free';
           } catch {}
         }
-        const limit = isPro ? 25 : 3;
+        const limit = getTierLimit(tier);
         const today = new Date().toISOString().split('T')[0];
         const identifier = userId ? userId.toString() : request.headers.get('cf-connecting-ip') || 'anon';
         const log = await env.MY_BINDING.prepare(
@@ -357,7 +476,7 @@ export default {
           return corsResponse(JSON.stringify({
             allowed: false,
             remaining: 0,
-            message: isPro ? 'Daily limit reached.' : 'Free limit reached – upgrade.'
+            message: tier === 'free' ? 'Free limit reached – upgrade.' : 'Daily limit reached.'
           }));
         }
         const newCount = used + 1;
@@ -421,7 +540,7 @@ export default {
           const session = event.data.object;
           const userId = session.client_reference_id;
           await env.MY_BINDING.prepare(
-            'UPDATE users SET subscription_status = "pro", pro_since = CURRENT_TIMESTAMP, stripe_customer_id = ? WHERE id = ?'
+            'UPDATE users SET subscription_status = "pro", pro_since = CURRENT_TIMESTAMP, stripe_customer_id = ?, tier = "pro" WHERE id = ?'
           ).bind(session.customer, userId).run();
         } else if (event.type === 'customer.subscription.deleted' || event.type === 'customer.subscription.updated') {
           const subscription = event.data.object;
@@ -429,7 +548,7 @@ export default {
           const status = subscription.status;
           if (['canceled', 'past_due', 'unpaid', 'incomplete_expired'].includes(status)) {
             await env.MY_BINDING.prepare(
-              'UPDATE users SET subscription_status = "free", pro_since = NULL WHERE stripe_customer_id = ?'
+              'UPDATE users SET subscription_status = "free", pro_since = NULL, tier = "free" WHERE stripe_customer_id = ?'
             ).bind(customerId).run();
           }
         }
@@ -464,32 +583,259 @@ export default {
       }
 
       // ---- Refresh Token ----
-if (url.pathname === '/api/refresh-token' && method === 'POST') {
-  const auth = request.headers.get('Authorization');
-  if (!auth || !auth.startsWith('Bearer ')) {
-    return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
-  }
-  const token = auth.split(' ')[1];
-  let decoded;
-  try {
-    decoded = await verifyJWT(token, env.JWT_SECRET);
-  } catch {
-    return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
-  }
-  // Issue a new token with the same user data
-  const user = await env.MY_BINDING.prepare(
-    'SELECT id, subscription_status FROM users WHERE id = ?'
-  ).bind(decoded.id).first();
-  if (!user) {
-    return corsResponse(JSON.stringify({ error: 'User not found' }), 404);
-  }
-  const newToken = await signJWT(
-    { id: user.id, status: user.subscription_status || 'free' },
-    env.JWT_SECRET,
-    '7d'
-  );
-  return corsResponse(JSON.stringify({ token: newToken }));
-}
+      if (url.pathname === '/api/refresh-token' && method === 'POST') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) {
+          return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        }
+        const token = auth.split(' ')[1];
+        let decoded;
+        try {
+          decoded = await verifyJWT(token, env.JWT_SECRET);
+        } catch {
+          return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
+        }
+        const user = await env.MY_BINDING.prepare(
+          'SELECT id, subscription_status, tier FROM users WHERE id = ?'
+        ).bind(decoded.id).first();
+        if (!user) {
+          return corsResponse(JSON.stringify({ error: 'User not found' }), 404);
+        }
+        const newToken = await signJWT(
+          { id: user.id, status: user.subscription_status || 'free', tier: user.tier || 'free' },
+          env.JWT_SECRET,
+          '7d'
+        );
+        return corsResponse(JSON.stringify({ token: newToken }));
+      }
+
+      // ---- GA4 OAuth Endpoints ----
+      // Get auth URL
+      if (url.pathname === '/api/ga4/auth-url' && method === 'GET') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) {
+          return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        }
+        try {
+          await verifyJWT(auth.split(' ')[1], env.JWT_SECRET);
+        } catch {
+          return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
+        }
+        const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+        authUrl.searchParams.set('client_id', env.GOOGLE_CLIENT_ID);
+        authUrl.searchParams.set('redirect_uri', 'https://traffic-torch-auth.traffictorch.workers.dev/api/ga4/callback');
+        authUrl.searchParams.set('response_type', 'code');
+        authUrl.searchParams.set('scope', 'https://www.googleapis.com/auth/analytics.readonly');
+        authUrl.searchParams.set('access_type', 'offline');
+        authUrl.searchParams.set('prompt', 'consent');
+        return corsResponse(JSON.stringify({ authUrl: authUrl.toString() }));
+      }
+
+      // OAuth callback (redirects back to dashboard with code)
+      if (url.pathname === '/api/ga4/callback' && method === 'GET') {
+        const code = url.searchParams.get('code');
+        const error = url.searchParams.get('error');
+        if (error) return new Response(`Authorization failed: ${error}`, { status: 400 });
+        if (!code) return new Response('Missing authorization code', { status: 400 });
+        return Response.redirect(`https://traffictorch.net/dashboard/?ga4_code=${code}`, 302);
+      }
+
+      // Connect GA4 (store refresh token)
+      if (url.pathname === '/api/ga4/connect' && method === 'POST') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) {
+          return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        }
+        const token = auth.split(' ')[1];
+        let decoded;
+        try {
+          decoded = await verifyJWT(token, env.JWT_SECRET);
+        } catch {
+          return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
+        }
+        const { code, propertyId } = await request.json().catch(() => ({}));
+        if (!code) return corsResponse(JSON.stringify({ error: 'Authorization code required' }), 400);
+        if (!propertyId) return corsResponse(JSON.stringify({ error: 'GA4 Property ID required' }), 400);
+
+        try {
+          const tokens = await exchangeCodeForTokens(code, env);
+          const encryptedRefresh = encrypt(tokens.refresh_token);
+          await env.MY_BINDING.prepare(
+            `INSERT OR REPLACE INTO user_ga4 (user_id, refresh_token, property_id)
+             VALUES (?, ?, ?)`
+          ).bind(decoded.id, encryptedRefresh, propertyId).run();
+          await env.MY_BINDING.prepare(
+            'UPDATE users SET ga4_property_id = ? WHERE id = ?'
+          ).bind(propertyId, decoded.id).run();
+          return corsResponse(JSON.stringify({ success: true, message: 'GA4 connected' }));
+        } catch (err) {
+          return corsResponse(JSON.stringify({ error: err.message }), 500);
+        }
+      }
+
+      // Get GA4 report
+      if (url.pathname === '/api/ga4/report' && method === 'GET') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) {
+          return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        }
+        const token = auth.split(' ')[1];
+        let decoded;
+        try {
+          decoded = await verifyJWT(token, env.JWT_SECRET);
+        } catch {
+          return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
+        }
+
+        const reportType = url.searchParams.get('type') || 'overview';
+        const days = parseInt(url.searchParams.get('days')) || 7;
+
+        const ga4Data = await env.MY_BINDING.prepare(
+          'SELECT refresh_token, property_id FROM user_ga4 WHERE user_id = ?'
+        ).bind(decoded.id).first();
+
+        if (!ga4Data || !ga4Data.property_id) {
+          return corsResponse(JSON.stringify({ error: 'GA4 not connected' }), 400);
+        }
+
+        try {
+          const refreshToken = decrypt(ga4Data.refresh_token);
+          const accessToken = await refreshAccessToken(refreshToken, env);
+
+          let dimensions, metrics;
+          switch (reportType) {
+            case 'overview':
+              dimensions = ['date'];
+              metrics = ['sessions', 'totalUsers', 'screenPageViews'];
+              break;
+            default:
+              dimensions = ['date'];
+              metrics = ['sessions'];
+          }
+
+          const data = await fetchGA4Report(accessToken, ga4Data.property_id, dimensions, metrics, days);
+          const rows = data.rows || [];
+          const transformed = rows.map(row => ({
+            dimensions: row.dimensionValues?.map(d => d.value) || [],
+            metrics: row.metricValues?.map(m => parseFloat(m.value) || 0) || []
+          }));
+          return corsResponse(JSON.stringify({ reportType, propertyId: ga4Data.property_id, data: transformed }));
+        } catch (err) {
+          if (err.message.includes('refresh_token')) {
+            await env.MY_BINDING.prepare('DELETE FROM user_ga4 WHERE user_id = ?').bind(decoded.id).run();
+            await env.MY_BINDING.prepare('UPDATE users SET ga4_property_id = NULL WHERE id = ?').bind(decoded.id).run();
+            return corsResponse(JSON.stringify({
+              error: 'GA4 connection expired. Please reconnect.',
+              needsReconnect: true
+            }), 401);
+          }
+          return corsResponse(JSON.stringify({ error: err.message }), 500);
+        }
+      }
+
+      // Disconnect GA4
+      if (url.pathname === '/api/ga4/disconnect' && method === 'POST') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) {
+          return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        }
+        const token = auth.split(' ')[1];
+        let decoded;
+        try {
+          decoded = await verifyJWT(token, env.JWT_SECRET);
+        } catch {
+          return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
+        }
+        await env.MY_BINDING.prepare('DELETE FROM user_ga4 WHERE user_id = ?').bind(decoded.id).run();
+        await env.MY_BINDING.prepare('UPDATE users SET ga4_property_id = NULL WHERE id = ?').bind(decoded.id).run();
+        return corsResponse(JSON.stringify({ success: true, message: 'GA4 disconnected' }));
+      }
+
+      // ---- AUDIT HISTORY ENDPOINTS ----
+      // GET /api/audit-history
+      if (url.pathname === '/api/audit-history' && method === 'GET') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) {
+          return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        }
+        const token = auth.split(' ')[1];
+        let decoded;
+        try {
+          decoded = await verifyJWT(token, env.JWT_SECRET);
+        } catch {
+          return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
+        }
+        const userId = decoded.id;
+        const rows = await env.MY_BINDING.prepare(
+          'SELECT id, url, tool_name, score, timestamp FROM audit_history WHERE user_id = ? ORDER BY timestamp DESC'
+        ).bind(userId).all();
+        return corsResponse(JSON.stringify({ audits: rows.results }));
+      }
+
+      // POST /api/audit-history
+      if (url.pathname === '/api/audit-history' && method === 'POST') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) {
+          return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        }
+        const token = auth.split(' ')[1];
+        let decoded;
+        try {
+          decoded = await verifyJWT(token, env.JWT_SECRET);
+        } catch {
+          return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
+        }
+        const userId = decoded.id;
+        const body = await request.json().catch(() => ({}));
+        const { url, tool_name, score } = body;
+        if (!url || !tool_name) {
+          return corsResponse(JSON.stringify({ error: 'url and tool_name required' }), 400);
+        }
+        const user = await env.MY_BINDING.prepare('SELECT tier FROM users WHERE id = ?').bind(userId).first();
+        const tier = user?.tier || 'free';
+        const limit = getTierLimit(tier);
+        const countResult = await env.MY_BINDING.prepare(
+          'SELECT COUNT(*) as count FROM audit_history WHERE user_id = ?'
+        ).bind(userId).first();
+        const currentCount = countResult?.count || 0;
+        const now = Math.floor(Date.now() / 1000);
+        if (currentCount >= limit) {
+          await env.MY_BINDING.prepare(
+            'DELETE FROM audit_history WHERE user_id = ? AND id = (SELECT id FROM audit_history WHERE user_id = ? ORDER BY timestamp ASC LIMIT 1)'
+          ).bind(userId, userId).run();
+        }
+        const result = await env.MY_BINDING.prepare(
+          'INSERT INTO audit_history (user_id, url, tool_name, score, timestamp) VALUES (?, ?, ?, ?, ?) RETURNING id'
+        ).bind(userId, url, tool_name, score !== undefined ? score : null, now).first();
+        return corsResponse(JSON.stringify({ id: result.id }));
+      }
+
+      // DELETE /api/audit-history/:id
+      if (url.pathname.startsWith('/api/audit-history/') && method === 'DELETE') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) {
+          return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        }
+        const token = auth.split(' ')[1];
+        let decoded;
+        try {
+          decoded = await verifyJWT(token, env.JWT_SECRET);
+        } catch {
+          return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
+        }
+        const userId = decoded.id;
+        const id = url.pathname.split('/').pop();
+        if (!id || isNaN(id)) {
+          return corsResponse(JSON.stringify({ error: 'Invalid id' }), 400);
+        }
+        const audit = await env.MY_BINDING.prepare(
+          'SELECT user_id FROM audit_history WHERE id = ?'
+        ).bind(parseInt(id)).first();
+        if (!audit) return corsResponse(JSON.stringify({ error: 'Audit not found' }), 404);
+        if (audit.user_id !== userId) return corsResponse(JSON.stringify({ error: 'Forbidden' }), 403);
+        await env.MY_BINDING.prepare('DELETE FROM audit_history WHERE id = ?').bind(parseInt(id)).run();
+        return corsResponse(JSON.stringify({ success: true }));
+      }
 
       // ---- 404 ----
       return corsResponse('Not found', 404);
