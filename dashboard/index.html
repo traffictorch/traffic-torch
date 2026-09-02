@@ -481,8 +481,7 @@ function dashboardApp() {
     quickUrl: '',
     recentAudits: [],
     analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
-    // ---- Audits tab state ----
-    displayCount: 10, // will be set based on tier
+    displayCount: 10,
 
     tabs: [
       { id: 'dashboard', label: 'Dashboard' },
@@ -515,168 +514,19 @@ function dashboardApp() {
       const today = new Date().toISOString().split('T')[0];
       localStorage.setItem('tt_daily_usage', JSON.stringify({ date: today, count: val }));
     },
-    
-    // Add to data object
-ga4: {
-  connected: false,
-  loading: false,
-  error: null,
-  data: [],
-  totalSessions: 0,
-  totalUsers: 0,
-  totalViews: 0,
-  avgDaily: 0,
-  propertyId: ''
-},
 
-// Add these methods
-async checkGA4Connection() {
-  try {
-    const res = await fetch('/api/account-info', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
-    });
-    if (res.ok) {
-      const data = await res.json();
-      this.ga4.connected = data.ga4Connected || false;
-      if (this.ga4.connected) {
-        this.fetchGA4Report();
-      }
-    }
-  } catch (e) {
-    console.error('Failed to check GA4 connection:', e);
-  }
-},
-
-connectGA4() {
-  if (!this.isAuthenticated) {
-    this.showUpgradeModal();
-    return;
-  }
-  // Use API_BASE instead of relative path
-  fetch(`${API_BASE}/api/ga4/auth-url`, {
-    headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.authUrl) {
-      window.location.href = data.authUrl;
-    }
-  })
-  .catch(err => {
-    this.ga4.error = 'Failed to start GA4 connection: ' + err.message;
-  });
-},
-
-handleGA4Callback(event) {
-  // This will be called when the popup sends a message with the code
-  if (event.data && event.data.type === 'ga4_code') {
-    const code = event.data.code;
-    // Now we need to get the property ID from the user
-    // Show a prompt or a modal to enter property ID
-    const propertyId = prompt('Enter your GA4 Property ID (e.g., 123456789):');
-    if (!propertyId) {
-      this.ga4.error = 'Property ID is required to connect.';
-      return;
-    }
-    // Send the code and property ID to the backend
-    this.finishGA4Connection(code, propertyId);
-  }
-},
-
-async finishGA4Connection(code, propertyId) {
-  this.ga4.loading = true;
-  this.ga4.error = null;
-  try {
-    const res = await fetch('/api/ga4/connect', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ code, propertyId })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      this.ga4.connected = true;
-      this.ga4.propertyId = propertyId;
-      this.fetchGA4Report();
-    } else {
-      this.ga4.error = data.error || 'Failed to connect GA4';
-    }
-  } catch (err) {
-    this.ga4.error = 'Connection failed: ' + err.message;
-  } finally {
-    this.ga4.loading = false;
-  }
-},
-
-async disconnectGA4() {
-  if (!confirm('Disconnect GA4? This will remove your data connection.')) return;
-  try {
-    const res = await fetch('/api/ga4/disconnect', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
-    });
-    if (res.ok) {
-      this.ga4.connected = false;
-      this.ga4.data = [];
-      this.ga4.totalSessions = 0;
-      this.ga4.totalUsers = 0;
-      this.ga4.totalViews = 0;
-      this.ga4.avgDaily = 0;
-      if (window.analyticsChartInstance) {
-        window.analyticsChartInstance.data.labels = [];
-        window.analyticsChartInstance.data.datasets[0].data = [];
-        window.analyticsChartInstance.data.datasets[1].data = [];
-        window.analyticsChartInstance.update();
-      }
-    }
-  } catch (err) {
-    this.ga4.error = 'Disconnect failed: ' + err.message;
-  }
-},
-
-async fetchGA4Report() {
-  if (!this.ga4.connected) return;
-  this.ga4.loading = true;
-  this.ga4.error = null;
-  try {
-    const res = await fetch('/api/ga4/report?type=overview&days=7', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      if (data.needsReconnect) {
-        this.ga4.connected = false;
-        this.ga4.error = 'Connection expired. Please reconnect.';
-        return;
-      }
-      throw new Error(data.error || 'Failed to fetch GA4 data');
-    }
-
-    const raw = data.data || [];
-    this.ga4.data = raw;
-    this.ga4.totalSessions = raw.reduce((sum, row) => sum + (row.metrics[0] || 0), 0);
-    this.ga4.totalUsers = raw.reduce((sum, row) => sum + (row.metrics[1] || 0), 0);
-    this.ga4.totalViews = raw.reduce((sum, row) => sum + (row.metrics[2] || 0), 0);
-    this.ga4.avgDaily = raw.length ? Math.round(this.ga4.totalSessions / raw.length) : 0;
-
-    // Update Chart.js
-    if (window.analyticsChartInstance) {
-      const labels = raw.map(row => row.dimensions[0] || '');
-      const sessions = raw.map(row => row.metrics[0] || 0);
-      const users = raw.map(row => row.metrics[1] || 0);
-      window.analyticsChartInstance.data.labels = labels;
-      window.analyticsChartInstance.data.datasets[0].data = sessions;
-      window.analyticsChartInstance.data.datasets[1].data = users;
-      window.analyticsChartInstance.update();
-    }
-  } catch (err) {
-    this.ga4.error = err.message;
-  } finally {
-    this.ga4.loading = false;
-  }
-},
+    // ---- GA4 state ----
+    ga4: {
+      connected: false,
+      loading: false,
+      error: null,
+      data: [],
+      totalSessions: 0,
+      totalUsers: 0,
+      totalViews: 0,
+      avgDaily: 0,
+      propertyId: ''
+    },
 
     // ---- Init ----
     initDashboard() {
@@ -684,7 +534,6 @@ async fetchGA4Report() {
       if (token) {
         this.fetchAccountInfo();
       } else {
-        // Guest = free tier, limit 5
         this.displayCount = 5;
       }
       this.loadAuditHistory();
@@ -693,6 +542,153 @@ async fetchGA4Report() {
           this.activeDashboardTab = e.detail.tab;
         }
       });
+
+      // ***** GA4 CALLBACK HANDLER – ADD THIS *****
+      const urlParams = new URLSearchParams(window.location.search);
+      const ga4Code = urlParams.get('ga4_code');
+      if (ga4Code) {
+        // Clean the URL
+        const newUrl = window.location.pathname + window.location.search.replace(/[?&]ga4_code=[^&]*/, '').replace(/^&/, '?');
+        window.history.replaceState({}, document.title, newUrl || '/dashboard/');
+
+        const propertyId = prompt('Enter your GA4 Property ID (e.g., 123456789):');
+        if (propertyId) {
+          this.finishGA4Connection(ga4Code, propertyId);
+        } else {
+          this.ga4.error = 'Property ID is required to connect.';
+        }
+      }
+    },
+
+    // ---- GA4 methods ----
+    async checkGA4Connection() {
+      try {
+        const res = await fetch(`${API_BASE}/api/account-info`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.ga4.connected = data.ga4Connected || false;
+          if (this.ga4.connected) {
+            this.fetchGA4Report();
+          }
+        }
+      } catch (e) {
+        console.error('Failed to check GA4 connection:', e);
+      }
+    },
+
+    connectGA4() {
+      if (!this.isAuthenticated) {
+        this.showUpgradeModal();
+        return;
+      }
+      fetch(`${API_BASE}/api/ga4/auth-url`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.authUrl) {
+          window.location.href = data.authUrl;
+        }
+      })
+      .catch(err => {
+        this.ga4.error = 'Failed to start GA4 connection: ' + err.message;
+      });
+    },
+
+    async finishGA4Connection(code, propertyId) {
+      this.ga4.loading = true;
+      this.ga4.error = null;
+      try {
+        const res = await fetch(`${API_BASE}/api/ga4/connect`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ code, propertyId })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.ga4.connected = true;
+          this.ga4.propertyId = propertyId;
+          this.fetchGA4Report();
+        } else {
+          this.ga4.error = data.error || 'Failed to connect GA4';
+        }
+      } catch (err) {
+        this.ga4.error = 'Connection failed: ' + err.message;
+      } finally {
+        this.ga4.loading = false;
+      }
+    },
+
+    async disconnectGA4() {
+      if (!confirm('Disconnect GA4? This will remove your data connection.')) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/ga4/disconnect`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        if (res.ok) {
+          this.ga4.connected = false;
+          this.ga4.data = [];
+          this.ga4.totalSessions = 0;
+          this.ga4.totalUsers = 0;
+          this.ga4.totalViews = 0;
+          this.ga4.avgDaily = 0;
+          if (window.analyticsChartInstance) {
+            window.analyticsChartInstance.data.labels = [];
+            window.analyticsChartInstance.data.datasets[0].data = [];
+            window.analyticsChartInstance.data.datasets[1].data = [];
+            window.analyticsChartInstance.update();
+          }
+        }
+      } catch (err) {
+        this.ga4.error = 'Disconnect failed: ' + err.message;
+      }
+    },
+
+    async fetchGA4Report() {
+      if (!this.ga4.connected) return;
+      this.ga4.loading = true;
+      this.ga4.error = null;
+      try {
+        const res = await fetch(`${API_BASE}/api/ga4/report?type=overview&days=7`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (data.needsReconnect) {
+            this.ga4.connected = false;
+            this.ga4.error = 'Connection expired. Please reconnect.';
+            return;
+          }
+          throw new Error(data.error || 'Failed to fetch GA4 data');
+        }
+
+        const raw = data.data || [];
+        this.ga4.data = raw;
+        this.ga4.totalSessions = raw.reduce((sum, row) => sum + (row.metrics[0] || 0), 0);
+        this.ga4.totalUsers = raw.reduce((sum, row) => sum + (row.metrics[1] || 0), 0);
+        this.ga4.totalViews = raw.reduce((sum, row) => sum + (row.metrics[2] || 0), 0);
+        this.ga4.avgDaily = raw.length ? Math.round(this.ga4.totalSessions / raw.length) : 0;
+
+        if (window.analyticsChartInstance) {
+          const labels = raw.map(row => row.dimensions[0] || '');
+          const sessions = raw.map(row => row.metrics[0] || 0);
+          const users = raw.map(row => row.metrics[1] || 0);
+          window.analyticsChartInstance.data.labels = labels;
+          window.analyticsChartInstance.data.datasets[0].data = sessions;
+          window.analyticsChartInstance.data.datasets[1].data = users;
+          window.analyticsChartInstance.update();
+        }
+      } catch (err) {
+        this.ga4.error = err.message;
+      } finally {
+        this.ga4.loading = false;
+      }
     },
 
     // ---- Auth methods ----
@@ -700,7 +696,7 @@ async fetchGA4Report() {
       const token = localStorage.getItem('authToken');
       if (!token) return;
       try {
-        const res = await fetch(API_BASE + '/api/account-info', {
+        const res = await fetch(`${API_BASE}/api/account-info`, {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         if (res.ok) {
@@ -712,7 +708,6 @@ async fetchGA4Report() {
         } else {
           localStorage.removeItem('authToken');
           this.isAuthenticated = false;
-          // fallback to guest limit
           this.displayCount = 5;
         }
       } catch {
@@ -726,7 +721,7 @@ async fetchGA4Report() {
       const tier = this.user.tier || 'free';
       if (tier === 'free') this.displayCount = 5;
       else if (tier === 'pro') this.displayCount = 10;
-      else if (tier === 'enterprise') this.displayCount = 10; // initial, will show more on demand
+      else if (tier === 'enterprise') this.displayCount = 10;
       else this.displayCount = 5;
     },
 
@@ -747,42 +742,40 @@ async fetchGA4Report() {
     },
 
     // ---- Audit History methods ----
-async loadAuditHistory() {
-  const token = localStorage.getItem('authToken');
-  if (token) {
-    try {
-      const res = await fetch(`${API_BASE}/api/audit-history`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        // Map tool_name to tool
-        this.recentAudits = (data.audits || []).map(a => ({ ...a, tool: a.tool_name }));
-        return;
+    async loadAuditHistory() {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        try {
+          const res = await fetch(`${API_BASE}/api/audit-history`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            this.recentAudits = (data.audits || []).map(a => ({ ...a, tool: a.tool_name }));
+            return;
+          }
+        } catch (e) {}
       }
-    } catch (e) {}
-  }
-  // Guest mode: load from localStorage
-  const stored = localStorage.getItem('audit_guest');
-  if (stored) {
-    try {
-      const parsed = JSON.parse(stored);
-      const now = Date.now();
-      if (parsed.savedAt && (now - parsed.savedAt) > 24 * 60 * 60 * 1000) {
-        localStorage.removeItem('audit_guest');
-        this.recentAudits = [];
-      } else {
-        this.recentAudits = parsed.entries || [];
-        if (this.recentAudits.length > 5) {
-          this.recentAudits = this.recentAudits.slice(0, 5);
-          this.saveGuestAudits();
+      const stored = localStorage.getItem('audit_guest');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          const now = Date.now();
+          if (parsed.savedAt && (now - parsed.savedAt) > 24 * 60 * 60 * 1000) {
+            localStorage.removeItem('audit_guest');
+            this.recentAudits = [];
+          } else {
+            this.recentAudits = parsed.entries || [];
+            if (this.recentAudits.length > 5) {
+              this.recentAudits = this.recentAudits.slice(0, 5);
+              this.saveGuestAudits();
+            }
+          }
+        } catch (e) {
+          this.recentAudits = [];
         }
       }
-    } catch (e) {
-      this.recentAudits = [];
-    }
-  }
-},
+    },
 
     saveGuestAudits() {
       if (this.recentAudits.length > 5) {
@@ -816,7 +809,6 @@ async loadAuditHistory() {
           }
         } catch (e) {}
       }
-      // Guest fallback
       const entry = {
         _localId: Date.now() + '_' + Math.random(),
         url: audit.url,
@@ -866,7 +858,6 @@ async loadAuditHistory() {
       });
     },
 
-    // ---- Fixed scanAgain ----
     scanAgain(audit) {
       const toolMap = {
         'SEO Intent': '/seo-intent-tool/',
@@ -897,7 +888,6 @@ async loadAuditHistory() {
       }
     },
 
-    // ---- Run Audit ----
     async runTool() {
       if (!this.requireAuth()) return;
       const url = this.quickUrl.trim();
@@ -958,7 +948,6 @@ async loadAuditHistory() {
       this.dailyUsed = used;
     },
 
-    // ---- View Report (legacy) ----
     viewReport(audit) {
       if (!this.requireAuth()) return;
       const toolMap = {
@@ -996,7 +985,6 @@ async loadAuditHistory() {
   };
 }
 
-// Make Alpine component globally accessible
 window.dashboardApp = dashboardApp;
 </script>
 
