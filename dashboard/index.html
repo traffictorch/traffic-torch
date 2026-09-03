@@ -23,6 +23,9 @@
   <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
   <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
 
+  <!-- ✅ Add config.js here, before Stripe.js -->
+  <script src="/config.js"></script>
+
   <script>
     (function() {
       const saved = localStorage.getItem('theme');
@@ -171,77 +174,94 @@
         <!-- ===== DASHBOARD TAB ===== -->
         <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
 
-          <!-- ===== NEW CARDS: GA4 & GSC ===== -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- GA4 Card -->
-            <div class="glass rounded-2xl p-6">
-              <div class="flex justify-between items-start mb-3">
-                <h4 class="text-lg font-bold">📊 Google Analytics 4</h4>
-                <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
-                <span x-show="!ga4.connected && isAuthenticated" class="text-sm text-red-500">● Not connected</span>
-                <span x-show="!isAuthenticated" class="text-sm text-yellow-500">● Demo mode</span>
-              </div>
-              <div x-show="ga4.lastUpdated" class="text-xs text-gray-500 mb-4">Last updated: <span x-text="ga4.lastUpdated"></span></div>
-              <div x-show="!ga4.lastUpdated && !isAuthenticated" class="text-xs text-gray-500 mb-4">Last updated: demo data</div>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">Sessions</p>
-                  <p class="text-2xl font-bold" x-text="ga4.totalSessions !== undefined ? ga4.totalSessions : '—'"></p>
-                  <p x-show="ga4.change.sessions !== undefined" class="text-xs" :class="ga4.change.sessions >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(ga4.change.sessions >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.sessions).toFixed(1) + '%'"></p>
-                  <p x-show="ga4.change.sessions === undefined && !isAuthenticated" class="text-xs text-gray-400">▼ 40.0%</p>
-                </div>
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">Users</p>
-                  <p class="text-2xl font-bold" x-text="ga4.totalUsers !== undefined ? ga4.totalUsers : '—'"></p>
-                  <p x-show="ga4.change.users !== undefined" class="text-xs" :class="ga4.change.users >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(ga4.change.users >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.users).toFixed(1) + '%'"></p>
-                  <p x-show="ga4.change.users === undefined && !isAuthenticated" class="text-xs text-red-500">▼ 45.1%</p>
-                </div>
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">New Users</p>
-                  <p class="text-2xl font-bold" x-text="ga4.newUsers !== undefined ? ga4.newUsers : '—'"></p>
-                </div>
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">Page Views</p>
-                  <p class="text-2xl font-bold" x-text="ga4.totalViews !== undefined ? ga4.totalViews : '—'"></p>
-                  <p x-show="ga4.change.views !== undefined" class="text-xs" :class="ga4.change.views >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(ga4.change.views >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.views).toFixed(1) + '%'"></p>
-                </div>
-              </div>
-            </div>
+<!-- ===== EPIC CARDS: GA4 & GSC (no emoji, zeros for demo) ===== -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
 
-            <!-- GSC Card -->
-            <div class="glass rounded-2xl p-6">
-              <div class="flex justify-between items-start mb-3">
-                <h4 class="text-lg font-bold">🔍 Search Console</h4>
-                <span x-show="gsc.connected" class="text-sm text-green-500">● Connected</span>
-                <span x-show="!gsc.connected && isAuthenticated" class="text-sm text-red-500">● Not connected</span>
-                <span x-show="!isAuthenticated" class="text-sm text-yellow-500">● Demo mode</span>
-              </div>
-              <div x-show="gsc.lastUpdated" class="text-xs text-gray-500 mb-4">Last updated: <span x-text="gsc.lastUpdated"></span></div>
-              <div x-show="!gsc.lastUpdated && !isAuthenticated" class="text-xs text-gray-500 mb-4">Last updated: demo data</div>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">Total Clicks</p>
-                  <p class="text-2xl font-bold" x-text="gsc.totals.clicks || 0"></p>
-                  <p x-show="gsc.change.clicks !== undefined" class="text-xs" :class="gsc.change.clicks >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(gsc.change.clicks >= 0 ? '▲' : '▼') + ' ' + Math.abs(gsc.change.clicks).toFixed(1) + '%'"></p>
-                  <p x-show="gsc.change.clicks === undefined && !isAuthenticated" class="text-xs text-green-500">▲ 0.0%</p>
-                </div>
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">Impressions</p>
-                  <p class="text-2xl font-bold" x-text="gsc.totals.impressions || 0"></p>
-                  <p x-show="gsc.change.impressions !== undefined" class="text-xs" :class="gsc.change.impressions >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(gsc.change.impressions >= 0 ? '▲' : '▼') + ' ' + Math.abs(gsc.change.impressions).toFixed(1) + '%'"></p>
-                  <p x-show="gsc.change.impressions === undefined && !isAuthenticated" class="text-xs text-green-500">▲ 0.0%</p>
-                </div>
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">CTR</p>
-                  <p class="text-2xl font-bold" x-text="(gsc.totals.ctr * 100).toFixed(2) + '%'"></p>
-                </div>
-                <div class="text-center">
-                  <p class="text-sm text-gray-500">Avg Position</p>
-                  <p class="text-2xl font-bold" x-text="gsc.totals.position ? gsc.totals.position.toFixed(1) : '—'"></p>
-                </div>
-              </div>
-            </div>
-          </div>
+  <!-- GA4 Card -->
+  <div class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+    <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+    <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+      <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+    </div>
+
+    <div class="flex justify-between items-start mb-4">
+      <h4 class="text-xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent">Google Analytics 4</h4>
+      <span x-show="ga4.connected" class="inline-flex items-center px-2 py-1 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
+      <span x-show="!ga4.connected && isAuthenticated" class="inline-flex items-center px-2 py-1 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
+      <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
+    </div>
+
+    <div x-show="ga4.lastUpdated" class="text-xs text-gray-400 mb-4">Last updated: <span x-text="ga4.lastUpdated" class="font-mono"></span></div>
+    <div x-show="!ga4.lastUpdated && !isAuthenticated" class="text-xs text-gray-400 mb-4">Last updated: demo data</div>
+
+    <div class="grid grid-cols-2 gap-5">
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+        <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+        <p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.totalSessions ?? 0) : 0"></p>
+        <p x-show="isAuthenticated && ga4.change.sessions !== undefined" class="text-xs font-semibold" :class="ga4.change.sessions >= 0 ? 'text-green-400' : 'text-red-400'" x-text="(ga4.change.sessions >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.sessions).toFixed(1) + '%'"></p>
+        <p x-show="!isAuthenticated" class="text-xs text-gray-400">0%</p>
+      </div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+        <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+        <p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.totalUsers ?? 0) : 0"></p>
+        <p x-show="isAuthenticated && ga4.change.users !== undefined" class="text-xs font-semibold" :class="ga4.change.users >= 0 ? 'text-green-400' : 'text-red-400'" x-text="(ga4.change.users >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.users).toFixed(1) + '%'"></p>
+        <p x-show="!isAuthenticated" class="text-xs text-red-400">0%</p>
+      </div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+        <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+        <p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.newUsers ?? 0) : 0"></p>
+      </div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+        <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+        <p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.totalViews ?? 0) : 0"></p>
+        <p x-show="isAuthenticated && ga4.change.views !== undefined" class="text-xs font-semibold" :class="ga4.change.views >= 0 ? 'text-green-400' : 'text-red-400'" x-text="(ga4.change.views >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.views).toFixed(1) + '%'"></p>
+        <p x-show="!isAuthenticated" class="text-xs text-gray-400">0%</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- GSC Card -->
+  <div class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+    <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+    <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+      <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+    </div>
+
+    <div class="flex justify-between items-start mb-4">
+      <h4 class="text-xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-500 bg-clip-text text-transparent">Search Console</h4>
+      <span x-show="gsc.connected" class="inline-flex items-center px-2 py-1 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
+      <span x-show="!gsc.connected && isAuthenticated" class="inline-flex items-center px-2 py-1 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
+      <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
+    </div>
+
+    <div x-show="gsc.lastUpdated" class="text-xs text-gray-400 mb-4">Last updated: <span x-text="gsc.lastUpdated" class="font-mono"></span></div>
+    <div x-show="!gsc.lastUpdated && !isAuthenticated" class="text-xs text-gray-400 mb-4">Last updated: demo data</div>
+
+    <div class="grid grid-cols-2 gap-5">
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+        <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+        <p class="text-3xl font-black" x-text="isAuthenticated ? (gsc.totals.clicks ?? 0) : 0"></p>
+        <p x-show="isAuthenticated && gsc.change.clicks !== undefined" class="text-xs font-semibold" :class="gsc.change.clicks >= 0 ? 'text-green-400' : 'text-red-400'" x-text="(gsc.change.clicks >= 0 ? '▲' : '▼') + ' ' + Math.abs(gsc.change.clicks).toFixed(1) + '%'"></p>
+        <p x-show="!isAuthenticated" class="text-xs text-green-400">0%</p>
+      </div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+        <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+        <p class="text-3xl font-black" x-text="isAuthenticated ? (gsc.totals.impressions ?? 0) : 0"></p>
+        <p x-show="isAuthenticated && gsc.change.impressions !== undefined" class="text-xs font-semibold" :class="gsc.change.impressions >= 0 ? 'text-green-400' : 'text-red-400'" x-text="(gsc.change.impressions >= 0 ? '▲' : '▼') + ' ' + Math.abs(gsc.change.impressions).toFixed(1) + '%'"></p>
+        <p x-show="!isAuthenticated" class="text-xs text-green-400">0%</p>
+      </div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+        <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+        <p class="text-3xl font-black" x-text="isAuthenticated ? ((gsc.totals.ctr ?? 0) * 100).toFixed(2) + '%' : '0%'"></p>
+      </div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+        <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+        <p class="text-3xl font-black" x-text="isAuthenticated ? (gsc.totals.position ? gsc.totals.position.toFixed(1) : '—') : '—'"></p>
+      </div>
+    </div>
+  </div>
+
+</div>
 
           <!-- Quick Audit -->
           <div class="glass rounded-2xl p-6 mb-8">
@@ -457,56 +477,40 @@
                 <button @click="connectGA4()" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Connect GA4</button>
               </div>
 
-              <!-- ======== TOP CONTENT (Pro/Enterprise) ======== -->
-              <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
-                   class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-lg font-semibold">📄 Top Content</h4>
-                  <button x-show="user.tier !== 'free'" @click="exportCSV('topContent')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
-                </div>
-                <div x-show="ga4.topContent.length > 0">
-                  <!-- Desktop: Table -->
-                  <div class="block overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                      <thead class="border-b border-gray-200 dark:border-gray-700">
-                        <tr><th class="py-2 pr-4">#</th><th class="py-2 pr-4">Page</th><th class="py-2 pr-4">Views</th><th class="py-2">Avg Duration</th></tr>
-                      </thead>
-                      <tbody>
-                        <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
-                          <tr class="border-t border-gray-100 dark:border-gray-800">
-                            <td class="py-2 pr-4 text-gray-500" x-text="ga4.topOffset + index + 1"></td>
-                            <td class="py-2 pr-4 break-all" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></td>
-                            <td class="py-2 pr-4" x-text="item.metrics[0]"></td>
-                            <td class="py-2" x-text="Math.round(item.metrics[1]) + 's'"></td>
-                          </tr>
-                        </template>
-                      </tbody>
-                    </table>
-                  </div>
-                  <!-- Mobile Cards -->
-                  <div class="sm:hidden space-y-3">
-                    <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
-                      <div class="glass rounded-xl p-3">
-                        <div class="text-sm font-medium mb-1 break-words" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></div>
-                        <div class="flex justify-between text-xs text-gray-500">
-                          <span>Views: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span>
-                          <span>Avg Duration: <span class="font-medium text-gray-900 dark:text-white" x-text="Math.round(item.metrics[1]) + 's'"></span></span>
-                        </div>
-                      </div>
-                    </template>
-                  </div>
-                  <!-- Pagination -->
-                  <div x-show="ga4.topContent.length > ga4.topPageSize" class="mt-3 flex items-center justify-center gap-2">
-                    <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)" :disabled="ga4.topOffset === 0">← Previous</button>
-                    <span class="text-sm text-gray-600 dark:text-gray-400">
-                      <span x-text="Math.floor(ga4.topOffset / ga4.topPageSize) + 1"></span> /
-                      <span x-text="Math.ceil(ga4.topContent.length / ga4.topPageSize)"></span>
-                    </span>
-                    <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.topContent.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)" :disabled="ga4.topOffset + ga4.topPageSize >= ga4.topContent.length">Next →</button>
-                  </div>
-                </div>
-                <div x-show="ga4.topContent.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No content data available.</div>
-              </div>
+<!-- ======== TOP CONTENT ======== -->
+<div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
+     class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+  <div class="flex justify-between items-center mb-3">
+    <h4 class="text-lg font-semibold">📄 Top Content</h4>
+    <button x-show="user.tier !== 'free'" @click="exportCSV('topContent')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+  </div>
+  <div x-show="ga4.topContent.length > 0">
+    <!-- Unified Card Layout (same on all devices) -->
+    <div class="space-y-3">
+      <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
+        <div class="glass rounded-xl p-3 space-y-1">
+          <div class="text-sm font-medium break-words" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></div>
+          <div class="text-xs text-gray-500">
+            <span>Views: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span>
+          </div>
+          <div class="text-xs text-gray-500">
+            <span>Avg Duration: <span class="font-medium text-gray-900 dark:text-white" x-text="Math.round(item.metrics[1]) + 's'"></span></span>
+          </div>
+        </div>
+      </template>
+    </div>
+    <!-- Pagination -->
+    <div x-show="ga4.topContent.length > ga4.topPageSize" class="mt-3 flex items-center justify-center gap-2">
+      <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)" :disabled="ga4.topOffset === 0">← Previous</button>
+      <span class="text-sm text-gray-600 dark:text-gray-400">
+        <span x-text="Math.floor(ga4.topOffset / ga4.topPageSize) + 1"></span> /
+        <span x-text="Math.ceil(ga4.topContent.length / ga4.topPageSize)"></span>
+      </span>
+      <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.topContent.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)" :disabled="ga4.topOffset + ga4.topPageSize >= ga4.topContent.length">Next →</button>
+    </div>
+  </div>
+  <div x-show="ga4.topContent.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No content data available.</div>
+</div>
 
               <!-- ======== TRAFFIC SOURCES ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
@@ -540,45 +544,40 @@
                 <div x-show="ga4.countries.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No geographic data available.</div>
               </div>
 
-              <!-- ======== TOP CONVERTING PAGES ======== -->
-              <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
-                   class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-lg font-semibold">🎯 Top Converting Pages</h4>
-                  <button x-show="user.tier !== 'free'" @click="exportCSV('convertingPages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
-                </div>
-                <div x-show="ga4.convertingPages.length > 0">
-                  <div class="block overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                      <thead class="border-b border-gray-200 dark:border-gray-700">
-                        <tr><th class="py-2 pr-4">#</th><th class="py-2 pr-4">Page</th><th class="py-2 pr-4">Key Events</th><th class="py-2">Conv Rate</th></tr>
-                      </thead>
-                      <tbody>
-                        <template x-for="(item, idx) in ga4.convertingPages.slice(0, 10)" :key="idx">
-                          <tr class="border-t border-gray-100 dark:border-gray-800">
-                            <td class="py-2 pr-4" x-text="idx+1"></td>
-                            <td class="py-2 pr-4 break-all" x-text="item.dimensions[1] || item.dimensions[0]"></td>
-                            <td class="py-2 pr-4" x-text="item.metrics[0]"></td>
-                            <td class="py-2" x-text="(item.metrics[0] / (item.metrics[1] || 1) * 100).toFixed(1) + '%'"></td>
-                          </tr>
-                        </template>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="sm:hidden space-y-3">
-                    <template x-for="(item, idx) in ga4.convertingPages.slice(0, 10)" :key="idx">
-                      <div class="glass rounded-xl p-3">
-                        <div class="text-sm font-medium mb-1 break-words" x-text="item.dimensions[1] || item.dimensions[0]"></div>
-                        <div class="flex justify-between text-xs text-gray-500">
-                          <span>Key Events: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span>
-                          <span>Conv Rate: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.metrics[0] / (item.metrics[1] || 1) * 100).toFixed(1) + '%'"></span></span>
-                        </div>
-                      </div>
-                    </template>
-                  </div>
-                </div>
-                <div x-show="ga4.convertingPages.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No conversion data available.</div>
-              </div>
+<!-- ======== TOP CONVERTING PAGES ======== -->
+<div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
+     class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+  <div class="flex justify-between items-center mb-3">
+    <h4 class="text-lg font-semibold">🎯 Top Converting Pages</h4>
+    <button x-show="user.tier !== 'free'" @click="exportCSV('convertingPages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+  </div>
+  <div x-show="ga4.convertingPages.length > 0">
+    <!-- Unified Card Layout (same on all devices) -->
+    <div class="space-y-3">
+      <template x-for="(item, idx) in ga4.convertingPages.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="idx">
+        <div class="glass rounded-xl p-3 space-y-1">
+          <div class="text-sm font-medium break-words" x-text="item.dimensions[1] || item.dimensions[0]"></div>
+          <div class="text-xs text-gray-500">
+            <span>Key Events: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span>
+          </div>
+          <div class="text-xs text-gray-500">
+            <span>Conv Rate: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.metrics[0] / (item.metrics[1] || 1) * 100).toFixed(1) + '%'"></span></span>
+          </div>
+        </div>
+      </template>
+    </div>
+    <!-- Pagination (reuses same pagination as Top Content) -->
+    <div x-show="ga4.convertingPages.length > ga4.topPageSize" class="mt-3 flex items-center justify-center gap-2">
+      <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)" :disabled="ga4.topOffset === 0">← Previous</button>
+      <span class="text-sm text-gray-600 dark:text-gray-400">
+        <span x-text="Math.floor(ga4.topOffset / ga4.topPageSize) + 1"></span> /
+        <span x-text="Math.ceil(ga4.convertingPages.length / ga4.topPageSize)"></span>
+      </span>
+      <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.convertingPages.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)" :disabled="ga4.topOffset + ga4.topPageSize >= ga4.convertingPages.length">Next →</button>
+    </div>
+  </div>
+  <div x-show="ga4.convertingPages.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No conversion data available.</div>
+</div>
 
             </div><!-- end !loading -->
           </div>
@@ -754,130 +753,281 @@
           </div>
         </div>
 
-        <!-- ===== INTEGRATIONS TAB ===== -->
-        <div x-show="activeDashboardTab === 'integrations'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
-            <h3 class="text-xl font-bold mb-6">🔗 Integrations</h3>
+ <!-- ===== INTEGRATIONS TAB ===== -->
+<div x-show="activeDashboardTab === 'integrations'" x-cloak>
+  <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
+    <h3 class="text-xl font-bold mb-6">🔗 Integrations</h3>
 
-            <!-- GA4 -->
-            <div class="flex flex-wrap items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <div>
-                <span class="font-medium">📊 Google Analytics 4</span>
-                <span x-show="ga4.connected" class="ml-3 text-sm text-green-500">● Connected</span>
-                <span x-show="!ga4.connected && isAuthenticated" class="ml-3 text-sm text-red-500">● Not connected</span>
-                <span x-show="!isAuthenticated" class="ml-3 text-sm text-yellow-500">● Demo mode</span>
-              </div>
-              <div class="flex gap-2">
-                <button x-show="!ga4.connected && isAuthenticated" @click="connectGA4()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">Connect</button>
-                <button x-show="ga4.connected" @click="disconnectGA4()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition">Disconnect</button>
-              </div>
+    <!-- ===== GA4 CONNECTION CARD ===== -->
+    <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl mb-4 transition hover:bg-white/5 dark:hover:bg-white/5">
+      <div class="flex-1 min-w-[150px]">
+        <div class="flex items-center gap-3 mb-1">
+          <span class="text-2xl">📊</span>
+          <span class="font-bold text-lg">Google Analytics 4</span>
+          <span x-show="ga4.connected" class="inline-flex items-center px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
+          <span x-show="!ga4.connected && isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
+          <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
+        </div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 space-y-0.5">
+          <template x-if="ga4.connected">
+            <div>
+              <span class="font-medium">Property ID:</span>
+              <span x-text="user.ga4_property_id || '—'"></span>
             </div>
-
-            <!-- GSC -->
-            <div class="flex flex-wrap items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <div>
-                <span class="font-medium">🔍 Google Search Console</span>
-                <span x-show="gsc.connected" class="ml-3 text-sm text-green-500">● Connected</span>
-                <span x-show="!gsc.connected && isAuthenticated" class="ml-3 text-sm text-red-500">● Not connected</span>
-                <span x-show="!isAuthenticated" class="ml-3 text-sm text-yellow-500">● Demo mode</span>
-              </div>
-              <div class="flex gap-2">
-                <button x-show="!gsc.connected && isAuthenticated" @click="connectGSC()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">Connect</button>
-                <button x-show="gsc.connected" @click="disconnectGSC()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition">Disconnect</button>
-              </div>
-            </div>
-
-            <!-- Tool Access Table (All tools available, daily limits apply) -->
-            <div class="mt-8">
-              <h4 class="text-lg font-semibold mb-3">🛠️ Tool Access</h4>
-              <p class="text-sm text-gray-500 mb-3">All tools are available for every plan. Your daily run limit depends on your tier.</p>
-              <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left">
-                  <thead class="border-b border-gray-200 dark:border-gray-700">
-                    <tr><th class="py-2 pr-4">Tool</th><th class="py-2 pr-4">Free</th><th class="py-2 pr-4">Pro</th><th class="py-2">Enterprise</th></tr>
-                  </thead>
-                  <tbody>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">SEO Intent</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Full SEO + UX</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Local SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Product SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Entity Extractor</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Topical Authority</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Schema Generator</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">GEO / AI Search</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Voice Search</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">AI Content Audit</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Quit Risk</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Research</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Placement</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword vs</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Homepage Tool</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <p class="text-xs text-gray-500 mt-2">Daily run limits: Free = 3, Pro = 25, Enterprise = 300</p>
-            </div>
+          </template>
+          <div x-show="ga4.lastUpdated" class="text-xs">
+            Last sync: <span x-text="ga4.lastUpdated"></span>
+          </div>
+          <div x-show="!ga4.lastUpdated && !ga4.connected && !isAuthenticated" class="text-xs">
+            Last sync: demo data
           </div>
         </div>
+      </div>
+      <div class="flex gap-2 mt-3 sm:mt-0">
+        <button x-show="!ga4.connected && isAuthenticated" @click="connectGA4()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">Connect</button>
+        <button x-show="ga4.connected" @click="disconnectGA4()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition">Disconnect</button>
+        <button x-show="ga4.connected" @click="refreshGA4()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">↻ Refresh</button>
+      </div>
+    </div>
 
-        <!-- ===== UPGRADE TAB ===== -->
-        <div x-show="activeDashboardTab === 'upgrade'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
-            <h3 class="text-2xl font-bold mb-6 text-center">🚀 Choose Your Plan</h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <!-- Free -->
-              <div class="glass rounded-xl p-6 text-center border border-gray-200 dark:border-gray-700">
-                <h4 class="text-xl font-bold">Free</h4>
-                <p class="text-3xl font-black mt-2">$0</p>
-                <ul class="mt-4 space-y-2 text-sm text-left">
-                  <li>✅ 3 runs per day</li>
-                  <li>✅ 7‑day GA4 & GSC data</li>
-                  <li>✅ All 15 tools</li>
-                  <li>❌ No real‑time</li>
-                  <li>❌ No custom date ranges</li>
-                  <li>❌ No CSV exports</li>
-                </ul>
-                <button class="mt-6 w-full py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg cursor-default" disabled>Current Plan</button>
-              </div>
-
-              <!-- Pro -->
-              <div class="glass rounded-xl p-6 text-center border-2 border-orange-500 relative">
-                <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white text-xs px-3 py-1 rounded-full">Popular</span>
-                <h4 class="text-xl font-bold">Pro</h4>
-                <p class="text-3xl font-black mt-2">$48<span class="text-base font-normal">/year</span></p>
-                <ul class="mt-4 space-y-2 text-sm text-left">
-                  <li>✅ 25 runs per day</li>
-                  <li>✅ 30‑day GA4 data</li>
-                  <li>✅ 28‑day GSC data</li>
-                  <li>✅ All 15 tools</li>
-                  <li>✅ CSV exports</li>
-                  <li>✅ Priority support</li>
-                  <li>❌ Real‑time (Enterprise only)</li>
-                </ul>
-                <button @click="upgradeToPro()" class="mt-6 w-full py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg hover:opacity-90 transition">Upgrade to Pro</button>
-              </div>
-
-              <!-- Enterprise -->
-              <div class="glass rounded-xl p-6 text-center border border-gray-200 dark:border-gray-700">
-                <h4 class="text-xl font-bold">Enterprise</h4>
-                <p class="text-3xl font-black mt-2">$68<span class="text-base font-normal">/mo</span></p>
-                <p class="text-sm text-gray-400">or $680/year</p>
-                <ul class="mt-4 space-y-2 text-sm text-left">
-                  <li>✅ 300 runs per day</li>
-                  <li>✅ 365‑day GA4 & GSC data</li>
-                  <li>✅ All 15 tools</li>
-                  <li>✅ Real‑time</li>
-                  <li>✅ Custom date ranges</li>
-                  <li>✅ Dedicated support</li>
-                </ul>
-                <button @click="contactSales()" class="mt-6 w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Contact Sales</button>
-              </div>
+    <!-- ===== GSC CONNECTION CARD ===== -->
+    <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl mb-6 transition hover:bg-white/5 dark:hover:bg-white/5">
+      <div class="flex-1 min-w-[150px]">
+        <div class="flex items-center gap-3 mb-1">
+          <span class="text-2xl">🔍</span>
+          <span class="font-bold text-lg">Google Search Console</span>
+          <span x-show="gsc.connected" class="inline-flex items-center px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
+          <span x-show="!gsc.connected && isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
+          <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
+        </div>
+        <div class="text-sm text-gray-500 dark:text-gray-400 space-y-0.5">
+          <template x-if="gsc.connected">
+            <div>
+              <span class="font-medium">Site URL:</span>
+              <span x-text="user.gscSiteUrl || '—'"></span>
             </div>
-
-            <p class="text-center text-sm text-gray-500 mt-6">All plans include full access to all 15 Traffic Torch tools.</p>
+          </template>
+          <div x-show="gsc.lastUpdated" class="text-xs">
+            Last sync: <span x-text="gsc.lastUpdated"></span>
+          </div>
+          <div x-show="!gsc.lastUpdated && !gsc.connected && !isAuthenticated" class="text-xs">
+            Last sync: demo data
           </div>
         </div>
+      </div>
+      <div class="flex gap-2 mt-3 sm:mt-0">
+        <button x-show="!gsc.connected && isAuthenticated" @click="connectGSC()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">Connect</button>
+        <button x-show="gsc.connected" @click="disconnectGSC()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition">Disconnect</button>
+        <button x-show="gsc.connected" @click="fetchGSCReport()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">↻ Refresh</button>
+      </div>
+    </div>
+
+    <!-- ===== API INTEGRATION DETAILS (for developers) ===== -->
+    <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+      <h4 class="text-lg font-semibold mb-3">🔌 API Integration Details</h4>
+      <p class="text-sm text-gray-500 mb-4">REST API endpoints for developers – integrate Traffic Torch into your own tools and workflows.</p>
+
+      <!-- API Endpoints Table -->
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm text-left">
+          <thead class="border-b border-gray-200 dark:border-gray-700">
+            <tr>
+              <th class="py-2 pr-4 font-semibold">Endpoint</th>
+              <th class="py-2 pr-4 font-semibold">Method</th>
+              <th class="py-2 pr-4 font-semibold">Description</th>
+              <th class="py-2 font-semibold">Auth</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-gray-100 dark:border-gray-800">
+              <td class="py-2 pr-4 font-mono text-xs">/api/check-rate</td>
+              <td class="py-2 pr-4">POST</td>
+              <td class="py-2 pr-4">Check daily run limit &amp; increment usage</td>
+              <td class="py-2">Bearer token</td>
+            </tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800">
+              <td class="py-2 pr-4 font-mono text-xs">/api/account-info</td>
+              <td class="py-2 pr-4">GET</td>
+              <td class="py-2 pr-4">Get user account status, tier, daily usage</td>
+              <td class="py-2">Bearer token</td>
+            </tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800">
+              <td class="py-2 pr-4 font-mono text-xs">/api/ga4/cached-report</td>
+              <td class="py-2 pr-4">GET</td>
+              <td class="py-2 pr-4">Fetch GA4 data (overview, top content, sources, etc.)</td>
+              <td class="py-2">Bearer token</td>
+            </tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800">
+              <td class="py-2 pr-4 font-mono text-xs">/api/gsc/cached-report</td>
+              <td class="py-2 pr-4">GET</td>
+              <td class="py-2 pr-4">Fetch GSC data (overview, queries, pages, etc.)</td>
+              <td class="py-2">Bearer token</td>
+            </tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800">
+              <td class="py-2 pr-4 font-mono text-xs">/api/audit-history</td>
+              <td class="py-2 pr-4">GET / POST</td>
+              <td class="py-2 pr-4">Retrieve or save audit history</td>
+              <td class="py-2">Bearer token</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Rate Limits -->
+      <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-4">
+        <h5 class="font-semibold mb-2">📊 Rate Limits (per day)</h5>
+        <div class="grid grid-cols-3 gap-4 text-sm">
+          <div><span class="text-gray-500">Free:</span> <span class="font-bold">3</span> requests</div>
+          <div><span class="text-gray-500">Pro:</span> <span class="font-bold">25</span> requests</div>
+          <div><span class="text-gray-500">Enterprise:</span> <span class="font-bold">300</span> requests</div>
+        </div>
+      </div>
+
+      <!-- Authentication -->
+      <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-4">
+        <h5 class="font-semibold mb-2">🔐 Authentication</h5>
+        <p class="text-sm text-gray-600 dark:text-gray-300">All API requests require a Bearer token obtained after login.</p>
+        <pre class="mt-2 text-xs bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>Authorization: Bearer YOUR_JWT_TOKEN</code></pre>
+      </div>
+
+      <!-- API Key Management (placeholder) -->
+      <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+        <h5 class="font-semibold mb-2">🔑 API Key Management</h5>
+        <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">Generate an API key for programmatic access to Traffic Torch tools.</p>
+        <div class="flex flex-wrap items-center gap-3">
+          <input type="text" value="sk_live_xxxxxxxxxxxxxxxxxxxxxxxx" disabled class="flex-1 p-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-mono min-w-[200px]">
+          <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">Generate New</button>
+          <button class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition">Copy</button>
+        </div>
+        <p class="text-xs text-gray-400 mt-2">API keys are rate-limited based on your plan. Regenerating revokes the previous key.</p>
+      </div>
+
+      <!-- Webhook Endpoints (placeholder) -->
+      <div class="mt-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+        <h5 class="font-semibold mb-2">📡 Webhook Endpoints</h5>
+        <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">Receive real-time notifications for audit completions, usage alerts, and more.</p>
+        <div class="flex flex-wrap items-center gap-3">
+          <input type="url" placeholder="https://your-domain.com/webhook" class="flex-1 p-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-sm min-w-[200px]">
+          <button class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition">Add Webhook</button>
+        </div>
+        <p class="text-xs text-gray-400 mt-2">Supported events: <code class="bg-gray-800 px-1 py-0.5 rounded text-gray-300">audit.completed</code>, <code class="bg-gray-800 px-1 py-0.5 rounded text-gray-300">usage.alert</code></p>
+      </div>
+    </div>
+    
+ <!-- ===== DEVELOPER API ===== -->
+<div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+  <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl transition hover:bg-white/5 dark:hover:bg-white/5">
+    <div class="flex-1 min-w-[150px]">
+      <div class="flex items-center gap-3 mb-1">
+        <span class="text-2xl">🧑‍💻</span>
+        <span class="font-bold text-lg">Developer API</span>
+      </div>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Programmatically run all 15 audit tools, retrieve results, and manage your API keys.
+      </p>
+    </div>
+    <a href="/developer/api/" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition mt-3 sm:mt-0">
+      Go to API Docs →
+    </a>
+  </div>
+</div>
+
+    <!-- ===== TOOL ACCESS TABLE (keep for now) ===== -->
+    <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+      <h4 class="text-lg font-semibold mb-3">🛠️ Tool Access</h4>
+      <p class="text-sm text-gray-500 mb-3">All tools are available for every plan. Your daily run limit depends on your tier.</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+          <thead class="border-b border-gray-200 dark:border-gray-700">
+            <tr><th class="py-2 pr-4">Tool</th><th class="py-2 pr-4">Free</th><th class="py-2 pr-4">Pro</th><th class="py-2">Enterprise</th></tr>
+          </thead>
+          <tbody>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">SEO Intent</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Full SEO + UX</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Local SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Product SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Entity Extractor</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Topical Authority</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Schema Generator</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">GEO / AI Search</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Voice Search</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">AI Content Audit</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Quit Risk</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Research</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Placement</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword vs</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Homepage Tool</td><td>✅</td><td>✅</td><td>✅</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-gray-500 mt-2">Daily run limits: Free = 3, Pro = 25, Enterprise = 300</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== UPGRADE TAB ===== -->
+<div x-show="activeDashboardTab === 'upgrade'" x-cloak>
+  <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
+    <h3 class="text-2xl font-bold mb-6 text-center">🚀 Choose Your Plan</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- FREE -->
+      <div class="glass rounded-xl p-6 text-center border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold">Free</h4>
+        <p class="text-3xl font-black mt-2">$0</p>
+        <ul class="mt-4 space-y-2 text-sm text-left">
+          <li>✅ 3 runs per day</li>
+          <li>✅ 7‑day GA4 & GSC data</li>
+          <li>✅ All 15 tools</li>
+          <li>❌ No real‑time</li>
+          <li>❌ No custom date ranges</li>
+          <li>❌ No CSV exports</li>
+        </ul>
+        <button class="mt-6 w-full py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg cursor-default" disabled>Current Plan</button>
+      </div>
+
+      <!-- PRO -->
+      <div class="glass rounded-xl p-6 text-center border border-orange-500 dark:border-orange-600">
+        <h4 class="text-xl font-bold">Pro</h4>
+        <p class="text-3xl font-black mt-2">$48<span class="text-base font-normal text-gray-500">/year</span></p>
+        <ul class="mt-4 space-y-2 text-sm text-left">
+          <li>✅ 25 runs per day</li>
+          <li>✅ 30‑day GA4 data</li>
+          <li>✅ 28‑day GSC data</li>
+          <li>✅ All 15 tools</li>
+          <li>✅ CSV exports</li>
+          <li>✅ Priority support</li>
+        </ul>
+        <button @click="window.upgradeToPlan('pro')" class="mt-6 w-full py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg hover:opacity-90 transition">
+          Upgrade to Pro
+        </button>
+      </div>
+
+      <!-- ENTERPRISE -->
+      <div class="glass rounded-xl p-6 text-center border border-gray-200 dark:border-gray-700">
+        <h4 class="text-xl font-bold">Enterprise</h4>
+        <p class="text-3xl font-black mt-2">$68<span class="text-base font-normal text-gray-500">/mo</span></p>
+        <p class="text-sm text-gray-400">or $680/year</p>
+        <ul class="mt-4 space-y-2 text-sm text-left">
+          <li>✅ 300 runs per day</li>
+          <li>✅ 365‑day GA4 & GSC data</li>
+          <li>✅ All 15 tools</li>
+          <li>✅ Real‑time</li>
+          <li>✅ Custom date ranges</li>
+          <li>✅ Dedicated support</li>
+        </ul>
+        <button @click="window.upgradeToPlan('enterprise')" class="mt-6 w-full py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition">
+          Upgrade to Enterprise
+        </button>
+      </div>
+
+    </div>
+
+    <p class="text-center text-sm text-gray-500 mt-6">All plans include full access to all 15 Traffic Torch tools.</p>
+  </div>
+</div>
 
         <!-- ===== SETTINGS TAB ===== -->
         <div x-show="activeDashboardTab === 'settings'" x-cloak>
@@ -996,7 +1146,7 @@ window.upgradeToPro = async function upgradeToPro() {
       return;
     }
     container.classList.remove('hidden');
-    const stripe = Stripe('pk_live_51SyjNi35Al6CUgc4jAcWAszElUF4iMpBZOj5UGM9gk7KZKxBSlDGP06S9S0kv7mlkUfZa7yTgFtP6PBEl39b5dKt00hzl1NEgr');
+    const stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
     const fetchClientSecret = async () => {
       const response = await fetch(`${API_BASE}/api/upgrade`, {
         method: 'POST',
@@ -1143,12 +1293,14 @@ function dashboardApp() {
       if (token) {
         await this.fetchAccountInfo();
         this.checkGA4Connection();
-        if (this.user.gscConnected) {
-          this.gsc.connected = true;
-          this.gsc.siteUrl = this.user.gscSiteUrl || '';
-        } else {
-          this.loadGSCDemoData();
-        }
+       if (this.user.gscConnected) {
+  this.gsc.connected = true;
+  this.gsc.siteUrl = this.user.gscSiteUrl || '';
+  // 👇 Fetch GSC data for the dashboard card
+  this.fetchGSCReport();
+} else {
+  this.loadGSCDemoData();
+}
       } else {
         this.displayCount = 5;
         this.loadDemoData();

@@ -1,4 +1,4 @@
-/* Traffic Torch – SEO/UX Tool Results Styles
+/* Traffic Torch – Homepage Tool Results Styles
    Mobile-first, glassmorphism, day/night ready */
 
 body { transition: background-color 0.3s ease; }
@@ -414,4 +414,18 @@ body { transition: background-color 0.3s ease; }
 [data-rating].selected-rating:hover {
   scale: 1.5 !important;          /* keep enlarged on hover too */
   background-color: rgba(59, 130, 246, 0.2) !important; /* slightly stronger blue */
+}
+
+/* Force upgrade buttons to be visible */
+#ga4-card a[href="/upgrade/"],
+#gsc-card a[href="/upgrade/"] {
+  display: inline-block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 999 !important;
+  height: auto !important;
+  width: auto !important;
+  overflow: visible !important;
 }
