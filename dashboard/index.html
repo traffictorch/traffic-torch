@@ -638,15 +638,6 @@
       </template>
     </div>
 
-    <!-- Pagination -->
-    <div class="mt-3 flex items-center justify-center gap-2">
-      <button class="pagination-btn" @click="gsc.queryOffset = Math.max(0, gsc.queryOffset - gsc.pageSize)" :disabled="gsc.queryOffset === 0">← Previous</button>
-      <span class="text-sm text-gray-600 dark:text-gray-400">
-        <span x-text="Math.floor(gsc.queryOffset / gsc.pageSize) + 1"></span> /
-        <span x-text="Math.ceil(gsc.queries.length / gsc.pageSize)"></span>
-      </span>
-      <button class="pagination-btn" @click="gsc.queryOffset = Math.min(gsc.queries.length - gsc.pageSize, gsc.queryOffset + gsc.pageSize)" :disabled="gsc.queryOffset + gsc.pageSize >= gsc.queries.length">Next →</button>
-    </div>
   </div>
   <div x-show="gsc.queries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No query data available.</div>
 </div>
@@ -674,32 +665,29 @@
       </template>
     </div>
 
-    <!-- Pagination -->
-    <div class="mt-3 flex items-center justify-center gap-2">
-      <button class="pagination-btn" @click="gsc.pageOffset = Math.max(0, gsc.pageOffset - gsc.pageSize)" :disabled="gsc.pageOffset === 0">← Previous</button>
-      <span class="text-sm text-gray-600 dark:text-gray-400">
-        <span x-text="Math.floor(gsc.pageOffset / gsc.pageSize) + 1"></span> /
-        <span x-text="Math.ceil(gsc.pages.length / gsc.pageSize)"></span>
-      </span>
-      <button class="pagination-btn" @click="gsc.pageOffset = Math.min(gsc.pages.length - gsc.pageSize, gsc.pageOffset + gsc.pageSize)" :disabled="gsc.pageOffset + gsc.pageSize >= gsc.pages.length">Next →</button>
-    </div>
   </div>
   <div x-show="gsc.pages.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No page data available.</div>
 </div>
 
-              <!-- Countries & Devices side by side -->
-              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 class="text-lg font-semibold mb-3">🌍 Top Countries</h4>
-                  <div x-show="gsc.countries.length > 0"><canvas id="gscCountriesChart" height="150"></canvas></div>
-                  <div x-show="gsc.countries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No country data.</div>
-                </div>
-                <div>
-                  <h4 class="text-lg font-semibold mb-3">📱 Devices</h4>
-                  <div x-show="gsc.devices.length > 0"><canvas id="gscDevicesChart" height="150"></canvas></div>
-                  <div x-show="gsc.devices.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No device data.</div>
-                </div>
-              </div>
+<!-- Countries & Devices side by side -->
+<div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div>
+    <h4 class="text-lg font-semibold mb-3 text-center">🌍 Top Countries</h4>
+    <div x-show="gsc.countries.length > 0" class="h-64">
+      <canvas id="gscCountriesChart"></canvas>
+    </div>
+    <div x-show="gsc.countries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No country data.</div>
+  </div>
+<div>
+  <h4 class="text-lg font-semibold mb-3 text-center">📱 Devices</h4>
+  <div x-show="gsc.devices.length > 0" class="flex justify-center items-center h-64">
+    <div class="w-[200px] h-[200px]">
+      <canvas id="gscDevicesChart"></canvas>
+    </div>
+  </div>
+  <div x-show="gsc.devices.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No device data.</div>
+</div>
+</div>
 
               <!-- Guest / not connected CTA -->
               <div x-show="!isAuthenticated" class="mt-6 text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
@@ -714,6 +702,180 @@
           </div>
         </div>
         <!-- MARK: GSC TAB - END -->
+        
+        <!-- ===== BING SEARCH CONSOLE TAB (BWMT) ===== -->
+<div x-show="activeDashboardTab === 'bwmt'" x-cloak>
+  <div class="glass rounded-2xl p-6 max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
+      <h3 class="text-xl font-bold">🔍 Bing Search Console</h3>
+      <div class="flex flex-wrap items-center gap-3">
+        <span x-show="bwmt.connected" class="text-sm text-green-500">● Connected</span>
+        <span x-show="!bwmt.connected" class="text-sm text-red-500">● Not connected</span>
+
+        <select x-model="bwmt.days" @change="changeBWMTDateRange()"
+                class="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm">
+          <option value="7">Last 7 days</option>
+          <option value="28" x-bind:disabled="user.tier === 'free' ? true : false">Last 28 days</option>
+          <option value="90" x-bind:disabled="user.tier !== 'enterprise' ? true : false">Last 90 days</option>
+        </select>
+
+        <button x-show="bwmt.connected || !isAuthenticated" @click="fetchBWMTReport()"
+                class="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600 transition">
+          ↻ Refresh
+        </button>
+        <button x-show="!bwmt.connected && isAuthenticated" @click="connectBWMT()"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">Connect Bing</button>
+        <button x-show="bwmt.connected" @click="disconnectBWMT()"
+                class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition">Disconnect</button>
+      </div>
+    </div>
+
+    <div x-show="bwmt.lastUpdated" class="text-xs text-gray-500 mb-4">Last updated: <span x-text="bwmt.lastUpdated"></span></div>
+    <div x-show="bwmt.error" class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 rounded-lg text-red-800 dark:text-red-200 text-sm" x-text="bwmt.error"></div>
+
+    <div x-show="bwmt.loading" class="text-center py-8">
+      <div class="spinner mx-auto"></div>
+      <p class="mt-3 text-gray-500">Loading Bing data...</p>
+    </div>
+
+    <div x-show="!bwmt.loading">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="text-center">
+          <p class="text-sm text-gray-500">Total Clicks</p>
+          <p class="text-2xl font-bold" x-text="bwmt.totals.clicks || 0"></p>
+          <p x-show="bwmt.change.clicks !== undefined" class="text-xs" :class="bwmt.change.clicks >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(bwmt.change.clicks >= 0 ? '▲' : '▼') + ' ' + Math.abs(bwmt.change.clicks).toFixed(1) + '%'"></p>
+        </div>
+        <div class="text-center">
+          <p class="text-sm text-gray-500">Impressions</p>
+          <p class="text-2xl font-bold" x-text="bwmt.totals.impressions || 0"></p>
+          <p x-show="bwmt.change.impressions !== undefined" class="text-xs" :class="bwmt.change.impressions >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(bwmt.change.impressions >= 0 ? '▲' : '▼') + ' ' + Math.abs(bwmt.change.impressions).toFixed(1) + '%'"></p>
+        </div>
+        <div class="text-center">
+          <p class="text-sm text-gray-500">CTR</p>
+          <p class="text-2xl font-bold" x-text="(bwmt.totals.ctr * 100).toFixed(2) + '%'"></p>
+        </div>
+        <div class="text-center">
+          <p class="text-sm text-gray-500">Avg Position</p>
+          <p class="text-2xl font-bold" x-text="bwmt.totals.position ? bwmt.totals.position.toFixed(1) : '—'"></p>
+        </div>
+      </div>
+
+      <!-- Trend Chart -->
+      <div><canvas id="bwmtTrendChart" height="150"></canvas></div>
+
+      <!-- Top Queries -->
+      <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+        <div class="flex justify-between items-center mb-3">
+          <h4 class="text-lg font-semibold">🔎 Top Queries</h4>
+          <button @click="exportBWMTCSV('queries')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+        </div>
+        <div x-show="bwmt.queries.length > 0">
+          <div class="space-y-3">
+            <template x-for="(item, idx) in bwmt.queries.slice(bwmt.queryOffset, bwmt.queryOffset + bwmt.pageSize)" :key="idx">
+              <div class="glass rounded-xl p-3 query-card">
+                <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-xs text-gray-500">
+                  <span>Clicks: <span class="font-medium text-gray-900 dark:text-white" x-text="item.clicks"></span></span>
+                  <span>Impressions: <span class="font-medium text-gray-900 dark:text-white" x-text="item.impressions"></span></span>
+                  <span>CTR: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.ctr * 100).toFixed(2) + '%'"></span></span>
+                  <span>Position: <span class="font-medium text-gray-900 dark:text-white" x-text="item.position ? item.position.toFixed(1) : '—'"></span></span>
+                </div>
+              </div>
+            </template>
+          </div>
+          <div x-show="bwmt.queries.length > bwmt.pageSize" class="mt-3 flex items-center justify-center gap-2">
+            <button class="pagination-btn" @click="bwmt.queryOffset = Math.max(0, bwmt.queryOffset - bwmt.pageSize)" :disabled="bwmt.queryOffset === 0">← Previous</button>
+            <span class="text-sm text-gray-600 dark:text-gray-400">
+              <span x-text="Math.floor(bwmt.queryOffset / bwmt.pageSize) + 1"></span> /
+              <span x-text="Math.ceil(bwmt.queries.length / bwmt.pageSize)"></span>
+            </span>
+            <button class="pagination-btn" @click="bwmt.queryOffset = Math.min(bwmt.queries.length - bwmt.pageSize, bwmt.queryOffset + bwmt.pageSize)" :disabled="bwmt.queryOffset + bwmt.pageSize >= bwmt.queries.length">Next →</button>
+          </div>
+        </div>
+        <div x-show="bwmt.queries.length === 0 && bwmt.connected" class="text-center text-gray-500 py-4">No query data available.</div>
+      </div>
+
+      <!-- Top Pages -->
+      <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+        <div class="flex justify-between items-center mb-3">
+          <h4 class="text-lg font-semibold">📄 Top Pages</h4>
+          <button @click="exportBWMTCSV('pages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+        </div>
+        <div x-show="bwmt.pages.length > 0">
+          <div class="space-y-3">
+            <template x-for="(item, idx) in bwmt.pages.slice(bwmt.pageOffset, bwmt.pageOffset + bwmt.pageSize)" :key="idx">
+              <div class="glass rounded-xl p-3 page-card">
+                <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-xs text-gray-500">
+                  <span>Clicks: <span class="font-medium text-gray-900 dark:text-white" x-text="item.clicks"></span></span>
+                  <span>Impressions: <span class="font-medium text-gray-900 dark:text-white" x-text="item.impressions"></span></span>
+                  <span>CTR: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.ctr * 100).toFixed(2) + '%'"></span></span>
+                  <span>Position: <span class="font-medium text-gray-900 dark:text-white" x-text="item.position ? item.position.toFixed(1) : '—'"></span></span>
+                </div>
+              </div>
+            </template>
+          </div>
+          <div x-show="bwmt.pages.length > bwmt.pageSize" class="mt-3 flex items-center justify-center gap-2">
+            <button class="pagination-btn" @click="bwmt.pageOffset = Math.max(0, bwmt.pageOffset - bwmt.pageSize)" :disabled="bwmt.pageOffset === 0">← Previous</button>
+            <span class="text-sm text-gray-600 dark:text-gray-400">
+              <span x-text="Math.floor(bwmt.pageOffset / bwmt.pageSize) + 1"></span> /
+              <span x-text="Math.ceil(bwmt.pages.length / bwmt.pageSize)"></span>
+            </span>
+            <button class="pagination-btn" @click="bwmt.pageOffset = Math.min(bwmt.pages.length - bwmt.pageSize, bwmt.pageOffset + bwmt.pageSize)" :disabled="bwmt.pageOffset + bwmt.pageSize >= bwmt.pages.length">Next →</button>
+          </div>
+        </div>
+        <div x-show="bwmt.pages.length === 0 && bwmt.connected" class="text-center text-gray-500 py-4">No page data available.</div>
+      </div>
+
+      <!-- Countries & Devices -->
+      <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h4 class="text-lg font-semibold mb-3 text-center">🌍 Top Countries</h4>
+          <div x-show="bwmt.countries.length > 0" class="h-64">
+            <canvas id="bwmtCountriesChart"></canvas>
+          </div>
+          <div x-show="bwmt.countries.length === 0 && bwmt.connected" class="text-center text-gray-500 py-4">No country data.</div>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-3 text-center">📱 Devices</h4>
+          <div x-show="bwmt.devices.length > 0" class="flex justify-center items-center h-64">
+            <div class="w-[200px] h-[200px]">
+              <canvas id="bwmtDevicesChart"></canvas>
+            </div>
+          </div>
+          <div x-show="bwmt.devices.length === 0 && bwmt.connected" class="text-center text-gray-500 py-4">No device data.</div>
+        </div>
+      </div>
+
+      <!-- Coming Soon: AI Performance -->
+      <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+        <div class="flex items-center gap-2">
+          <h4 class="text-lg font-semibold">🤖 AI-Generated Search Performance</h4>
+          <span class="inline-block px-2 py-1 text-xs font-bold bg-yellow-200 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded">BETA</span>
+          <span class="text-sm text-gray-500">Coming Soon</span>
+        </div>
+        <p class="text-sm text-gray-500 mt-1">
+          Bing's AI performance data (Copilot / Deep Search) is currently in private beta. As soon as Microsoft makes it available via their API, we'll unlock this section for you.
+        </p>
+        <div class="mt-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-center text-gray-600 dark:text-gray-400">
+          🚧 Stay tuned – this feature is on our roadmap.
+        </div>
+      </div>
+
+      <!-- Not connected CTA -->
+      <div x-show="!isAuthenticated" class="mt-6 text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+        <p class="text-sm text-gray-700 dark:text-gray-300">Sign up to connect your Bing Webmaster Tools and see your data.</p>
+        <a href="/login/" class="mt-2 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Create Account</a>
+      </div>
+      <div x-show="isAuthenticated && !bwmt.connected" class="mt-6 text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+        <p class="text-sm text-gray-700 dark:text-gray-300">Connect your Bing Webmaster Tools property to see your data.</p>
+        <button @click="connectBWMT()" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Connect Bing</button>
+      </div>
+    </div>
+  </div>
+</div>
 
         <!-- ===== INTEGRATIONS TAB ===== -->
         <div x-show="activeDashboardTab === 'integrations'" x-cloak>
@@ -833,7 +995,7 @@ window.upgradeToPro = async function upgradeToPro() {
 function dashboardApp() {
   return {
     isAuthenticated: false,
-    user: { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null },
+    user: { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null, bwmtConnected: false, bwmtSiteUrl: null },
     activeDashboardTab: 'dashboard',
     dailyLimit: 50,
     selectedTool: 'seo-intent-tool',
@@ -848,6 +1010,7 @@ function dashboardApp() {
       { id: 'analytics', label: 'Analytics' },
       { id: 'realtime', label: 'Real‑time' },
       { id: 'gsc', label: 'Search Console' },
+      { id: 'bwmt', label: 'Bing Search Console' },
       { id: 'integrations', label: 'Integrations' },
       { id: 'settings', label: 'Settings' }
     ],
@@ -905,7 +1068,7 @@ function dashboardApp() {
       }
     },
 
-    // MARK: GSC State - START
+    // MARK: GSC State
     gsc: {
       connected: false,
       loading: false,
@@ -926,7 +1089,28 @@ function dashboardApp() {
       days: 7,
       lastUpdated: null
     },
-    // MARK: GSC State - END
+  
+    // MARK: BWMT State
+    bwmt: {
+      connected: false,
+      loading: false,
+      error: null,
+      siteUrl: '',
+      startDate: '',
+      endDate: '',
+      data: [],
+      totals: { clicks: 0, impressions: 0, ctr: 0, position: 0 },
+      change: { clicks: 0, impressions: 0, ctr: 0, position: 0 },
+      queries: [],
+      pages: [],
+      countries: [],
+      devices: [],
+      queryOffset: 0,
+      pageOffset: 0,
+      pageSize: 10,
+      days: 7,
+      lastUpdated: null
+    },
 
     // ---- Init ----
     async initDashboard() {
@@ -934,22 +1118,27 @@ function dashboardApp() {
       if (token) {
         await this.fetchAccountInfo();
         this.checkGA4Connection();
-        // Restore GSC connection if backend says connected
         if (this.user.gscConnected) {
           this.gsc.connected = true;
           this.gsc.siteUrl = this.user.gscSiteUrl || '';
-          // Fetch data when tab becomes active (already handled in watcher)
+        }
+        if (this.user.bwmtConnected) {
+          this.bwmt.connected = true;
+          this.bwmt.siteUrl = this.user.bwmtSiteUrl || '';
         }
       } else {
         this.displayCount = 5;
         this.loadDemoData();
       }
       this.loadAuditHistory();
+
       document.addEventListener('switchTab', (e) => {
         if (e.detail && e.detail.tab) this.activeDashboardTab = e.detail.tab;
       });
 
       const urlParams = new URLSearchParams(window.location.search);
+
+      // GA4 callback
       const ga4Code = urlParams.get('ga4_code');
       if (ga4Code) {
         const newUrl = window.location.pathname + window.location.search.replace(/[?&]ga4_code=[^&]*/, '').replace(/^&/, '?');
@@ -962,14 +1151,13 @@ function dashboardApp() {
         }
       }
 
-      // MARK: GSC OAuth callback handling - START
+      // GSC callback
       const gscCode = urlParams.get('gsc_code');
       if (gscCode) {
         const newUrl = window.location.pathname + window.location.search.replace(/[?&]gsc_code=[^&]*/, '').replace(/^&/, '?');
         window.history.replaceState({}, document.title, newUrl || '/dashboard/');
         const rawSite = prompt('Enter your GSC site URL (e.g., example.com or https://example.com/) – we\'ll auto‑convert the format:');
         if (rawSite) {
-          // Convert to correct format
           let siteUrl = rawSite.trim();
           if (!siteUrl.startsWith('sc-domain:') && !siteUrl.startsWith('http://') && !siteUrl.startsWith('https://')) {
             siteUrl = 'sc-domain:' + siteUrl;
@@ -982,18 +1170,36 @@ function dashboardApp() {
           this.gsc.error = 'Site URL is required to connect.';
         }
       }
-      // MARK: GSC OAuth callback handling - END
 
-      // MARK: Active tab watcher - with GSC case
+      // ---- BWMT OAuth callback handling ----
+      const bwmtCode = urlParams.get('bwmt_code');
+      if (bwmtCode) {
+        const newUrl = window.location.pathname + window.location.search.replace(/[?&]bwmt_code=[^&]*/, '').replace(/^&/, '?');
+        window.history.replaceState({}, document.title, newUrl || '/dashboard/');
+        const rawSite = prompt('Enter your Bing Webmaster Tools site URL (e.g., https://example.com/):');
+        if (rawSite) {
+          let siteUrl = rawSite.trim();
+          if (!siteUrl.startsWith('http://') && !siteUrl.startsWith('https://')) {
+            siteUrl = 'https://' + siteUrl;
+          }
+          this.finishBWMTConnection(bwmtCode, siteUrl);
+        } else {
+          this.bwmt.error = 'Site URL required.';
+        }
+      }
+
+      // Tab watcher
       this.$watch('activeDashboardTab', (newTab) => {
         if (newTab === 'realtime' && this.user.tier === 'enterprise' && this.ga4.connected) {
           this.startRealtimeInterval();
         } else {
           this.stopRealtimeInterval();
         }
-        // Auto-fetch GSC data when switching to the GSC tab
         if (newTab === 'gsc' && this.gsc.connected && this.gsc.data.length === 0) {
           this.fetchGSCReport();
+        }
+        if (newTab === 'bwmt' && this.bwmt.connected && this.bwmt.data.length === 0) {
+          this.fetchBWMTReport();
         }
       });
     },
@@ -1063,6 +1269,13 @@ function dashboardApp() {
           this.ga4.connected = data.ga4Connected || false;
           this.user.gscConnected = data.gscConnected || false;
           this.user.gscSiteUrl = data.gscSiteUrl || null;
+          this.user.bwmtConnected = data.bwmtConnected || false;
+          this.user.bwmtSiteUrl = data.bwmtSiteUrl || null;
+          // sync state with user
+          this.gsc.connected = this.user.gscConnected;
+          this.gsc.siteUrl = this.user.gscSiteUrl || '';
+          this.bwmt.connected = this.user.bwmtConnected;
+          this.bwmt.siteUrl = this.user.bwmtSiteUrl || '';
           this.updateDisplayLimit();
         } else {
           localStorage.removeItem('authToken');
@@ -1591,7 +1804,6 @@ function dashboardApp() {
         if (res.ok) {
           this.gsc.connected = true;
           this.gsc.siteUrl = siteUrl;
-          // Update user object for persistence
           this.user.gscConnected = true;
           this.user.gscSiteUrl = siteUrl;
           this.fetchGSCReport();
@@ -1657,8 +1869,6 @@ function dashboardApp() {
       start.setDate(start.getDate() - this.gsc.days);
       const startDate = start.toISOString().split('T')[0];
 
-      console.log('GSC fetch range:', startDate, 'to', endDate);
-
       try {
         const types = ['overview', 'queries', 'pages', 'countries', 'devices'];
         const promises = types.map(type => {
@@ -1670,7 +1880,6 @@ function dashboardApp() {
 
         const [overview, queries, pages, countries, devices] = await Promise.all(promises);
 
-        // Overview: fill missing dates
         const originalRows = overview.data || [];
         this.gsc.totals = {
           clicks: originalRows.reduce((s, r) => s + r.clicks, 0),
@@ -1679,7 +1888,6 @@ function dashboardApp() {
           position: originalRows.length ? (originalRows.reduce((s, r) => s + r.position, 0) / originalRows.length) : 0
         };
 
-        // Fill missing dates for chart
         const dateMap = {};
         originalRows.forEach(row => {
           const key = row.keys[0];
@@ -1704,13 +1912,10 @@ function dashboardApp() {
         this.gsc.countries = countries.data || [];
         this.gsc.devices = devices.data || [];
 
-        console.log('GSC data loaded:', { queries: this.gsc.queries.length, pages: this.gsc.pages.length });
-
         this.gsc.lastUpdated = new Date().toLocaleString();
         this.updateGSCCharts();
       } catch (err) {
         this.gsc.error = err.message;
-        console.error('GSC fetch error:', err);
       } finally {
         this.gsc.loading = false;
       }
@@ -1729,7 +1934,6 @@ function dashboardApp() {
         if (ctx && this.gsc.data.length) {
           const labels = this.gsc.data.map(r => {
             const d = r.keys[0] || '';
-            // shorten date display
             const parts = d.split('-');
             if (parts.length === 3) return parts[1] + '/' + parts[2];
             return d;
@@ -1812,6 +2016,236 @@ function dashboardApp() {
       URL.revokeObjectURL(url);
     },
     // MARK: GSC Methods - END
+    
+    // ---- BWMT methods ----
+connectBWMT() {
+  if (!this.isAuthenticated) { this.showUpgradeModal(); return; }
+  fetch(`${API_BASE}/api/bwmt/auth-url`, {
+    headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.authUrl) window.location.href = data.authUrl;
+  })
+  .catch(err => { this.bwmt.error = 'Failed to start BWMT connection: ' + err.message; });
+},
+
+async finishBWMTConnection(code, siteUrl) {
+  this.bwmt.loading = true;
+  this.bwmt.error = null;
+  try {
+    const res = await fetch(`${API_BASE}/api/bwmt/connect`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ code, siteUrl })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      this.bwmt.connected = true;
+      this.bwmt.siteUrl = siteUrl;
+      this.user.bwmtConnected = true;
+      this.user.bwmtSiteUrl = siteUrl;
+      this.fetchBWMTReport();
+    } else {
+      this.bwmt.error = data.error || 'Failed to connect BWMT';
+    }
+  } catch (err) {
+    this.bwmt.error = 'Connection failed: ' + err.message;
+  } finally {
+    this.bwmt.loading = false;
+  }
+},
+
+async disconnectBWMT() {
+  if (!confirm('Disconnect Bing Webmaster Tools? This will remove your data connection.')) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/bwmt/disconnect`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+    });
+    if (res.ok) {
+      this.bwmt.connected = false;
+      this.bwmt.siteUrl = '';
+      this.user.bwmtConnected = false;
+      this.user.bwmtSiteUrl = null;
+      this.clearBWMTData();
+      this.bwmt.lastUpdated = null;
+    }
+  } catch (err) {
+    this.bwmt.error = 'Disconnect failed: ' + err.message;
+  }
+},
+
+clearBWMTData() {
+  this.bwmt.data = [];
+  this.bwmt.queries = [];
+  this.bwmt.pages = [];
+  this.bwmt.countries = [];
+  this.bwmt.devices = [];
+  this.bwmt.totals = { clicks: 0, impressions: 0, ctr: 0, position: 0 };
+  this.bwmt.change = { clicks: 0, impressions: 0, ctr: 0, position: 0 };
+  ['bwmtTrendChart', 'bwmtCountriesChart', 'bwmtDevicesChart'].forEach(key => {
+    if (window[key] && typeof window[key].destroy === 'function') {
+      window[key].destroy();
+      window[key] = null;
+    }
+  });
+},
+
+changeBWMTDateRange() {
+  if (this.bwmt.connected) this.fetchBWMTReport();
+},
+
+async fetchBWMTReport(force = false) {
+  if (!this.bwmt.connected) return;
+  this.bwmt.loading = true;
+  this.bwmt.error = null;
+
+  const end = new Date();
+  end.setDate(end.getDate() - 1);
+  const endDate = end.toISOString().split('T')[0];
+  const start = new Date();
+  start.setDate(start.getDate() - this.bwmt.days);
+  const startDate = start.toISOString().split('T')[0];
+
+  try {
+    const types = ['overview', 'queries', 'pages', 'countries', 'devices'];
+    const promises = types.map(type => {
+      const url = `${API_BASE}/api/bwmt/cached-report?type=${type}&start_date=${startDate}&end_date=${endDate}`;
+      return fetch(url, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+      }).then(res => res.json());
+    });
+
+    const [overview, queries, pages, countries, devices] = await Promise.all(promises);
+
+    const originalRows = overview.data || [];
+    this.bwmt.totals = {
+      clicks: originalRows.reduce((s, r) => s + r.clicks, 0),
+      impressions: originalRows.reduce((s, r) => s + r.impressions, 0),
+      ctr: originalRows.reduce((s, r) => s + r.impressions, 0) ? (originalRows.reduce((s, r) => s + r.clicks, 0) / originalRows.reduce((s, r) => s + r.impressions, 0)) : 0,
+      position: originalRows.length ? (originalRows.reduce((s, r) => s + r.position, 0) / originalRows.length) : 0
+    };
+
+    const dateMap = {};
+    originalRows.forEach(row => { dateMap[row.keys[0]] = row; });
+    const filledData = [];
+    let current = new Date(start);
+    const endObj = new Date(end);
+    while (current <= endObj) {
+      const key = current.toISOString().split('T')[0];
+      if (dateMap[key]) filledData.push(dateMap[key]);
+      else filledData.push({ keys: [key], clicks: 0, impressions: 0, ctr: 0, position: 0 });
+      current.setDate(current.getDate() + 1);
+    }
+    this.bwmt.data = filledData;
+
+    this.bwmt.queries = (queries.data || []).slice(0, this.bwmt.pageSize);
+    this.bwmt.pages = (pages.data || []).slice(0, this.bwmt.pageSize);
+    this.bwmt.countries = countries.data || [];
+    this.bwmt.devices = devices.data || [];
+
+    this.bwmt.lastUpdated = new Date().toLocaleString();
+    this.updateBWMTCharts();
+  } catch (err) {
+    this.bwmt.error = err.message;
+  } finally {
+    this.bwmt.loading = false;
+  }
+},
+
+updateBWMTCharts() {
+  this.$nextTick(() => {
+    ['bwmtTrendChart', 'bwmtCountriesChart', 'bwmtDevicesChart'].forEach(key => {
+      if (window[key] && typeof window[key].destroy === 'function') {
+        window[key].destroy();
+        window[key] = null;
+      }
+    });
+
+    const ctx = document.getElementById('bwmtTrendChart');
+    if (ctx && this.bwmt.data.length) {
+      const labels = this.bwmt.data.map(r => r.keys[0] || '');
+      const clicksData = this.bwmt.data.map(r => r.clicks);
+      const impressionsData = this.bwmt.data.map(r => r.impressions);
+      window.bwmtTrendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Clicks', borderColor: '#f97316', data: clicksData, tension: 0.3, fill: false },
+            { label: 'Impressions', borderColor: '#3b82f6', data: impressionsData, tension: 0.3, fill: false }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    }
+
+    const countryCtx = document.getElementById('bwmtCountriesChart');
+    if (countryCtx && this.bwmt.countries.length) {
+      const labels = this.bwmt.countries.map(r => r.keys[0] || 'Unknown');
+      const values = this.bwmt.countries.map(r => r.clicks);
+      window.bwmtCountriesChart = new Chart(countryCtx, {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Clicks', data: values, backgroundColor: '#f97316' }] },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    }
+
+    const deviceCtx = document.getElementById('bwmtDevicesChart');
+    if (deviceCtx && this.bwmt.devices.length) {
+      const labels = this.bwmt.devices.map(r => r.keys[0] || 'Other');
+      const values = this.bwmt.devices.map(r => r.clicks);
+      window.bwmtDevicesChart = new Chart(deviceCtx, {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{ data: values, backgroundColor: ['#3b82f6','#f97316','#10b981'] }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            title: { display: true, text: 'Clicks by Device', color: '#6b7280', font: { size: 12 } }
+          }
+        }
+      });
+    }
+  });
+},
+
+exportBWMTCSV(type) {
+  let rows = [], headers = [];
+  if (type === 'queries') {
+    headers = ['Query', 'Clicks', 'Impressions', 'CTR', 'Position'];
+    rows = this.bwmt.queries.map(r => [r.keys[0], r.clicks, r.impressions, (r.ctr * 100).toFixed(2) + '%', r.position.toFixed(2)]);
+  } else if (type === 'pages') {
+    headers = ['Page', 'Clicks', 'Impressions', 'CTR', 'Position'];
+    rows = this.bwmt.pages.map(r => [r.keys[0], r.clicks, r.impressions, (r.ctr * 100).toFixed(2) + '%', r.position.toFixed(2)]);
+  }
+  const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${type}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+},
 
     // ---- Audit History ----
     async loadAuditHistory() {
@@ -2019,7 +2453,7 @@ function dashboardApp() {
     logout() {
       localStorage.removeItem('authToken');
       this.isAuthenticated = false;
-      this.user = { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null };
+      this.user = { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null, bwmtConnected: false, bwmtSiteUrl: null };
       this.stopRealtimeInterval();
       window.location.href = '/login/';
     },
