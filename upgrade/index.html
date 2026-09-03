@@ -38,7 +38,6 @@
   </script>
 
   <script src="https://js.stripe.com/v3/"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
   <style>
     [x-cloak] { display: none !important; }
@@ -111,216 +110,196 @@
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
-<!-- Simple Alpine for upgrade logic -->
-<div x-data="upgradeApp()" x-init="initApp()" class="flex flex-1 min-h-screen">
-
-  <!-- Sidebar (unchanged from original pro page) -->
-  <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
-    <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+  <!-- ===== HEADER (same as /pro/) ===== -->
+  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
       <a href="/" class="flex items-center gap-4">
         <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-        <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden md:block">Traffic Torch</span>
+        <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden sm:inline">Traffic Torch</span>
       </a>
-    </div>
-    <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
-    <div class="p-4 border-t border-white/10 dark:border-white/5">
-      <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
-    </div>
-  </aside>
-
-  <!-- Main Content -->
-  <div class="flex-1 flex flex-col min-h-screen">
-
-    <!-- Header (same as original pro) -->
-    <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
-      <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="/" class="flex items-center gap-4 md:hidden">
-          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-          <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
-        </a>
-        <div class="w-10 md:hidden"></div>
-        <button id="menuToggle" class="md:hidden text-3xl text-gray-500">☰</button>
-        <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+      <div class="flex items-center gap-4">
+        <a href="/pro/" class="text-sm text-gray-600 dark:text-gray-300 hover:text-orange-500 transition">Dashboard</a>
         <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
       </div>
-      <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
-        <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
-        <div id="mobile-menu-placeholder"></div>
-      </div>
-    </header>
+    </div>
+  </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 container mx-auto px-4 py-12 md:py-20">
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="flex-1 container mx-auto px-4 py-12 md:py-20">
 
-      <div class="text-center max-w-3xl mx-auto mb-16">
-        <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Choose Your Plan</h1>
-        <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Get unlimited access to all Traffic Torch tools with the plan that fits your workflow.</p>
-      </div>
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Choose Your Plan</h1>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Get unlimited access to all Traffic Torch tools with the plan that fits your workflow.</p>
+    </div>
 
-      <!-- Pricing Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+    <!-- Pricing Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
 
-        <!-- FREE -->
-        <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col">
-          <h2 class="text-2xl font-bold">Free</h2>
-          <p class="text-4xl font-black mt-2">$0</p>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Forever free</p>
-          <ul class="mt-6 space-y-3 text-left text-sm flex-1">
-            <li><span class="feature-check">✓</span> 3 audits per day</li>
-            <li><span class="feature-check">✓</span> All 15 tools</li>
-            <li><span class="feature-check">✓</span> 7‑day data retention</li>
-            <li><span class="feature-missing">✗</span> CSV exports</li>
-            <li><span class="feature-missing">✗</span> Real‑time analytics</li>
-            <li><span class="feature-missing">✗</span> Custom date ranges</li>
-            <li><span class="feature-missing">✗</span> Priority support</li>
-          </ul>
-          <button class="mt-8 w-full py-3 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold cursor-default" disabled>Current Plan</button>
-        </div>
-
-        <!-- PRO (Yearly $48) -->
-        <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col">
-          <h2 class="text-2xl font-bold">Pro</h2>
-          <p class="text-4xl font-black mt-2">$48 <span class="text-base font-normal text-gray-500">/ year</span></p>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Best for professionals</p>
-          <ul class="mt-6 space-y-3 text-left text-sm flex-1">
-            <li><span class="feature-check">✓</span> 25 audits per day</li>
-            <li><span class="feature-check">✓</span> All 15 tools</li>
-            <li><span class="feature-check">✓</span> 30‑day data retention</li>
-            <li><span class="feature-check">✓</span> CSV exports</li>
-            <li><span class="feature-missing">✗</span> Real‑time analytics</li>
-            <li><span class="feature-missing">✗</span> Custom date ranges</li>
-            <li><span class="feature-check">✓</span> Priority support</li>
-          </ul>
-          <button @click="upgradeToPlan('pro')" class="mt-8 w-full py-3 btn-upgrade text-white font-bold rounded-xl transition">Upgrade to Pro</button>
-        </div>
-
-        <!-- ENTERPRISE (Monthly $68) -->
-        <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col">
-          <h2 class="text-2xl font-bold">Enterprise</h2>
-          <p class="text-4xl font-black mt-2">$68 <span class="text-base font-normal text-gray-500">/ month</span></p>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">or $680 / year</p>
-          <ul class="mt-6 space-y-3 text-left text-sm flex-1">
-            <li><span class="feature-check">✓</span> 300 audits per day</li>
-            <li><span class="feature-check">✓</span> All 15 tools</li>
-            <li><span class="feature-check">✓</span> 365‑day data retention</li>
-            <li><span class="feature-check">✓</span> CSV exports</li>
-            <li><span class="feature-check">✓</span> Real‑time analytics</li>
-            <li><span class="feature-check">✓</span> Custom date ranges</li>
-            <li><span class="feature-check">✓</span> Dedicated support</li>
-          </ul>
-          <button @click="upgradeToPlan('enterprise')" class="mt-8 w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">Upgrade to Enterprise</button>
-        </div>
+      <!-- FREE -->
+      <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col">
+        <h2 class="text-2xl font-bold">Free</h2>
+        <p class="text-4xl font-black mt-2">$0</p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Forever free</p>
+        <ul class="mt-6 space-y-3 text-left text-sm flex-1">
+          <li><span class="feature-check">✓</span> 3 audits per day</li>
+          <li><span class="feature-check">✓</span> All 15 tools</li>
+          <li><span class="feature-check">✓</span> 7‑day data retention</li>
+          <li><span class="feature-missing">✗</span> CSV exports</li>
+          <li><span class="feature-missing">✗</span> Real‑time analytics</li>
+          <li><span class="feature-missing">✗</span> Custom date ranges</li>
+          <li><span class="feature-missing">✗</span> Priority support</li>
+        </ul>
+        <button class="mt-8 w-full py-3 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold cursor-default" disabled>Current Plan</button>
       </div>
 
-      <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12 max-w-2xl mx-auto">
-        All plans include full access to every Traffic Torch tool. Upgrade anytime. Questions? <a href="mailto:support@traffictorch.net" class="text-orange-500 hover:underline">Contact support</a>.
-      </p>
+      <!-- PRO (Yearly $48) -->
+      <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col">
+        <h2 class="text-2xl font-bold">Pro</h2>
+        <p class="text-4xl font-black mt-2">$48 <span class="text-base font-normal text-gray-500">/ year</span></p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Best for professionals</p>
+        <ul class="mt-6 space-y-3 text-left text-sm flex-1">
+          <li><span class="feature-check">✓</span> 25 audits per day</li>
+          <li><span class="feature-check">✓</span> All 15 tools</li>
+          <li><span class="feature-check">✓</span> 30‑day data retention</li>
+          <li><span class="feature-check">✓</span> CSV exports</li>
+          <li><span class="feature-missing">✗</span> Real‑time analytics</li>
+          <li><span class="feature-missing">✗</span> Custom date ranges</li>
+          <li><span class="feature-check">✓</span> Priority support</li>
+        </ul>
+        <button onclick="upgradeToPlan('pro')" class="mt-8 w-full py-3 btn-upgrade text-white font-bold rounded-xl transition">Upgrade to Pro</button>
+      </div>
 
-    </main>
+      <!-- ENTERPRISE (Monthly $68) -->
+      <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col">
+        <h2 class="text-2xl font-bold">Enterprise</h2>
+        <p class="text-4xl font-black mt-2">$68 <span class="text-base font-normal text-gray-500">/ month</span></p>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">or $680 / year</p>
+        <ul class="mt-6 space-y-3 text-left text-sm flex-1">
+          <li><span class="feature-check">✓</span> 300 audits per day</li>
+          <li><span class="feature-check">✓</span> All 15 tools</li>
+          <li><span class="feature-check">✓</span> 365‑day data retention</li>
+          <li><span class="feature-check">✓</span> CSV exports</li>
+          <li><span class="feature-check">✓</span> Real‑time analytics</li>
+          <li><span class="feature-check">✓</span> Custom date ranges</li>
+          <li><span class="feature-check">✓</span> Dedicated support</li>
+        </ul>
+        <button onclick="upgradeToPlan('enterprise')" class="mt-8 w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">Upgrade to Enterprise</button>
+      </div>
+    </div>
 
-    <div id="footer-placeholder"></div>
+    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12 max-w-2xl mx-auto">
+      All plans include full access to every Traffic Torch tool. Upgrade anytime. Questions? <a href="mailto:support@traffictorch.net" class="text-orange-500 hover:underline">Contact support</a>.
+    </p>
+
+  </main>
+
+  <!-- ===== FOOTER (same placeholder as /pro/) ===== -->
+  <div id="footer-placeholder"></div>
+
+  <!-- ===== STRIPE CHECKOUT MODAL ===== -->
+  <div id="checkout-container">
+    <div id="checkout-embedded">
+      <button class="checkout-close" onclick="document.getElementById('checkout-container').classList.remove('active')">×</button>
+      <div id="checkout-mount"></div>
+    </div>
   </div>
-</div>
 
-<!-- Stripe Checkout Modal -->
-<div id="checkout-container">
-  <div id="checkout-embedded">
-    <button class="checkout-close" onclick="document.getElementById('checkout-container').classList.remove('active')">×</button>
-    <div id="checkout-mount"></div>
-  </div>
-</div>
+  <!-- ========================================================== -->
+  <!-- SCRIPTS (plain JS – no Alpine) -->
+  <!-- ========================================================== -->
+  <script>
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
-<script>
-const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Theme toggle
-  const toggle = document.getElementById('themeToggle');
-  const html = document.documentElement;
-  if (toggle) {
-    toggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
-    toggle.addEventListener('click', () => {
-      html.classList.toggle('dark');
-      const isDark = html.classList.contains('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      toggle.textContent = isDark ? '☀️' : '🌙';
-    });
-  }
-  // Footer
-  fetch('/footer.html')
-    .then(res => res.text())
-    .then(html => document.getElementById('footer-placeholder').innerHTML = html)
-    .catch(() => {});
-});
-
-// ---- Upgrade Function ----
-window.upgradeToPlan = async function(plan = 'pro') {
-  const token = localStorage.getItem('authToken');
-  if (!token) {
-    alert('Please log in first. Redirecting to login...');
-    window.location.href = '/login/';
-    return;
-  }
-
-  const container = document.getElementById('checkout-container');
-  const mount = document.getElementById('checkout-mount');
-  if (!container || !mount) return;
-
-  container.classList.add('active');
-  mount.innerHTML = '<div class="text-center py-8"><div class="spinner mx-auto"></div><p class="mt-4 text-gray-600 dark:text-gray-300">Loading checkout…</p></div>';
-
-  try {
-    const stripe = Stripe('pk_live_51SyjNi35Al6CUgc4jAcWAszElUF4iMpBZOj5UGM9gk7KZKxBSlDGP06S9S0kv7mlkUfZa7yTgFtP6PBEl39b5dKt00hzl1NEgr');
-
-    const fetchClientSecret = async () => {
-      const res = await fetch(API_BASE + '/api/upgrade', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ plan })
-      });
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || 'Failed to create checkout session');
+    // Theme toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.getElementById('themeToggle');
+      const html = document.documentElement;
+      if (toggle) {
+        toggle.textContent = html.classList.contains('dark') ? '☀️' : '🌙';
+        toggle.addEventListener('click', () => {
+          html.classList.toggle('dark');
+          const isDark = html.classList.contains('dark');
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
+          toggle.textContent = isDark ? '☀️' : '🌙';
+        });
       }
-      const data = await res.json();
-      if (!data.clientSecret) throw new Error('No client secret returned');
-      return data.clientSecret;
+      // Load footer
+      fetch('/footer.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('footer-placeholder').innerHTML = html;
+        })
+        .catch(() => {});
+    });
+
+    // ---- Universal upgrade ----
+    window.upgradeToPlan = async function(plan = 'pro') {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        alert('Please log in first. Redirecting to login...');
+        window.location.href = '/login/';
+        return;
+      }
+
+      const container = document.getElementById('checkout-container');
+      const mount = document.getElementById('checkout-mount');
+      if (!container || !mount) return;
+
+      container.classList.add('active');
+      mount.innerHTML = '<div class="text-center py-8"><div class="spinner mx-auto"></div><p class="mt-4 text-gray-600 dark:text-gray-300">Loading checkout…</p></div>';
+
+      try {
+        const stripe = Stripe('pk_live_51SyjNi35Al6CUgc4jAcWAszElUF4iMpBZOj5UGM9gk7KZKxBSlDGP06S9S0kv7mlkUfZa7yTgFtP6PBEl39b5dKt00hzl1NEgr');
+
+        const fetchClientSecret = async () => {
+          const res = await fetch(API_BASE + '/api/upgrade', {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ plan })
+          });
+          if (!res.ok) {
+            const text = await res.text();
+            throw new Error(text || 'Failed to create checkout session');
+          }
+          const data = await res.json();
+          if (!data.clientSecret) throw new Error('No client secret returned');
+          return data.clientSecret;
+        };
+
+        const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
+        checkout.mount('#checkout-mount');
+
+        localStorage.setItem('just_upgraded', 'true');
+      } catch (err) {
+        alert('Upgrade error: ' + err.message);
+        container.classList.remove('active');
+        mount.innerHTML = '';
+      }
     };
 
-    const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
-    checkout.mount('#checkout-mount');
+    // Close modal on backdrop click
+    document.getElementById('checkout-container')?.addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('active');
+    });
 
-    localStorage.setItem('just_upgraded', 'true');
-  } catch (err) {
-    alert('Upgrade error: ' + err.message);
-    container.classList.remove('active');
-    mount.innerHTML = '';
-  }
-};
-
-// Close modal on backdrop click
-document.getElementById('checkout-container')?.addEventListener('click', function(e) {
-  if (e.target === this) this.classList.remove('active');
-});
-
-// Handle return from Stripe
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const sessionId = params.get('session_id');
-  if (sessionId) {
-    window.history.replaceState({}, '', '/upgrade/');
-    const msg = document.createElement('div');
-    msg.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-100 dark:bg-green-900/30 border border-green-400 text-green-800 dark:text-green-200 px-6 py-4 rounded-xl shadow-lg z-50 max-w-md text-center';
-    msg.innerHTML = '✅ Payment successful! Your account is now upgraded. <a href="/pro/" class="font-bold underline text-orange-500">Go to Dashboard</a>';
-    document.body.prepend(msg);
-    setTimeout(() => msg.remove(), 8000);
-    localStorage.removeItem('just_upgraded');
-  }
-})();
-</script>
+    // Handle return from Stripe
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
+      if (sessionId) {
+        window.history.replaceState({}, '', '/upgrade/');
+        const msg = document.createElement('div');
+        msg.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-100 dark:bg-green-900/30 border border-green-400 text-green-800 dark:text-green-200 px-6 py-4 rounded-xl shadow-lg z-50 max-w-md text-center';
+        msg.innerHTML = '✅ Payment successful! Your account is now upgraded. <a href="/pro/" class="font-bold underline text-orange-500">Go to Dashboard</a>';
+        document.body.prepend(msg);
+        setTimeout(() => msg.remove(), 8000);
+        localStorage.removeItem('just_upgraded');
+      }
+    })();
+  </script>
 
 </body>
 </html>
