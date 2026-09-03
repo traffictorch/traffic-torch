@@ -542,3 +542,18 @@ div.prose p {
 #auth-forms .flex.border-b {
   justify-content: center;
 }
+
+/* New upgradeModal */
+#upgradeModal {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+#upgradeModal:not(.hidden) {
+  display: flex;
+}
+#upgradeModalContent {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+#upgradeModal:not(.hidden) #upgradeModalContent {
+  transform: scale(1);
+  opacity: 1;
+}

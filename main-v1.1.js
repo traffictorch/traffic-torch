@@ -1,4 +1,5 @@
-const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
 // Day Night Mode
 document.addEventListener('DOMContentLoaded', () => {
   const html = document.documentElement;
@@ -89,16 +90,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 // PWA Install
 let deferredPrompt = null;
 const isInStandaloneMode = () =>
   window.matchMedia('(display-mode: standalone)').matches ||
   window.navigator.standalone === true ||
   document.referrer.includes('ios-app://');
+
 function isIOS() {
   return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase()) ||
          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
+
 function createInstallButton() {
   if (isInStandaloneMode()) return;
   document.querySelectorAll('#pwa-install-btn').forEach(el => el.remove());
@@ -133,6 +137,7 @@ function createInstallButton() {
   });
   document.documentElement.appendChild(btn);
 }
+
 function showIOSInstallInstructions() {
   if (document.getElementById('ios-install-modal')) return;
   const modal = document.createElement('div');
@@ -203,6 +208,7 @@ function showIOSInstallInstructions() {
   };
   modal.addEventListener('click', closeModal);
 }
+
 // ── Event Listeners ─────────────────────────────────────────────────────
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
@@ -220,6 +226,7 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('pwa-install-btn')?.remove();
   deferredPrompt = null;
 });
+
 // Minimal service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -228,6 +235,7 @@ if ('serviceWorker' in navigator) {
       .catch(err => {});
   });
 }
+
 // Mobile menu – with close button + body scroll lock
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.getElementById('menuToggle');
@@ -258,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
 // Desktop Sidebar Collapse - Icons + Centered Logo Only (No Title Text)
 const sidebar = document.getElementById('desktopSidebar');
 const collapseBtn = document.getElementById('sidebarCollapse');
@@ -279,6 +288,7 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
   // Start expanded
   if (sidebar.classList.contains('collapsed')) toggleSidebar();
 }
+
 // Login/Register Modal (mobile-first, Tailwind, dark mode)
 function showLoginModal() {
   const modal = document.createElement('div');
@@ -298,6 +308,7 @@ function showLoginModal() {
     </div>`;
   document.body.appendChild(modal);
 }
+
 async function handleAuth(mode) {
   const button = event.target;
   const originalText = button.textContent;
@@ -335,6 +346,7 @@ async function handleAuth(mode) {
     button.disabled = false;
   }
 }
+
 async function upgradeToPro() {
   const token = localStorage.getItem('authToken') || localStorage.getItem('torch_token');
   if (!token) return alert('Please login first');
@@ -393,6 +405,7 @@ async function upgradeToPro() {
     document.getElementById('checkout-container')?.classList.add('hidden');
   }
 }
+
 function updateRunsBadge(remaining) {
   const desktopBadge = document.getElementById('runs-left');
   const mobileBadge = document.getElementById('runs-left-mobile');
@@ -405,6 +418,7 @@ function updateRunsBadge(remaining) {
     mobileBadge.textContent = text;
   }
 }
+
 // Upgrade Modal – uses existing #upgradeModal in HTML
 function showUpgradeModal(message = "You've reached your daily limit. Upgrade to Pro for more runs.") {
   const modal = document.getElementById('upgradeModal');
@@ -549,6 +563,7 @@ async function pollForProUpgrade(sessionId) {
   // Stop polling after 5 min max
   setTimeout(() => clearInterval(interval), 300000);
 }
+
 // Shared Footer File
 document.addEventListener('DOMContentLoaded', () => {
   fetch('/footer.html')
@@ -559,7 +574,9 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => {});
 });
 
-// Pro menu link – always "Pro Portal" with green dot when logged in
+// ==========================================================
+// NEW: Pro Portal green dot (always shows "Pro Portal")
+// ==========================================================
 document.addEventListener('DOMContentLoaded', () => {
   const checkMenusLoaded = setInterval(() => {
     const desktopPlaceholder = document.getElementById('desktop-menu-placeholder');
@@ -572,21 +589,18 @@ document.addEventListener('DOMContentLoaded', () => {
       clearInterval(checkMenusLoaded);
      
       const token = localStorage.getItem('authToken');
+      // Find all Pro Portal top-level buttons/links with class .pro-menu-link
       const links = document.querySelectorAll('.pro-menu-link');
      
       links.forEach(link => {
-        const isDesktop = link.querySelector('.sidebar-text') !== null;
-        if (isDesktop) {
-          const textSpan = link.querySelector('.sidebar-text');
-          if (textSpan) textSpan.textContent = ' Pro Portal';
-        } else {
-          const textNode = link.lastChild;
-          if (textNode && textNode.nodeType === 3) {
-            textNode.textContent = ' Pro Portal';
+        // Ensure the label is "Pro Portal" – no swap logic needed
+        const textSpan = link.querySelector('.sidebar-text') || link.querySelector('.text-black, .text-gray-100');
+        if (textSpan) {
+          // Only set if it's not already set (prevent duplication)
+          if (!textSpan.textContent.includes('Pro Portal')) {
+            textSpan.textContent = ' Pro Portal';
           }
         }
-        // Always go to /pro/
-        link.href = '/pro/';
         // Green dot if logged in
         const existingBadge = link.querySelector('.pro-badge');
         if (existingBadge) existingBadge.remove();
@@ -599,8 +613,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 100);
 });
- 
+
+// ==========================================================
+// NEW: Event delegation for [data-tab] links (desktop + mobile)
+// ==========================================================
+document.addEventListener('click', (e) => {
+  const tabLink = e.target.closest('[data-tab]');
+  if (tabLink) {
+    e.preventDefault();
+    const tabId = tabLink.dataset.tab;
+    if (tabId) {
+      // Dispatch a custom event that the Alpine component listens to
+      const event = new CustomEvent('switchTab', { detail: { tab: tabId } });
+      document.dispatchEvent(event);
+    }
+  }
+});
+
+// ==========================================================
 // Toggle function – reusable for both desktop and mobile
+// ==========================================================
 function attachMenuToggles(containerId) {
   const container = document.getElementById(containerId);
   if (!container) {
@@ -622,7 +654,10 @@ function attachMenuToggles(containerId) {
     });
   });
 }
+
+// ==========================================================
 // Load shared menus + attach toggles after loading
+// ==========================================================
 document.addEventListener('DOMContentLoaded', () => {
   // Desktop menu
   fetch('/desktop-menu.html')
@@ -630,17 +665,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) throw new Error('Desktop menu fetch failed: ' + response.status);
       return response.text();
     })
-.then(html => {
-  const placeholder = document.getElementById('desktop-menu-placeholder');
-  placeholder.innerHTML = html;
- 
-  // Trigger fade-in after a tiny delay (helps perceived smoothness)
-  setTimeout(() => {
-    placeholder.classList.add('loaded');
-  }, 50);
- 
-  attachMenuToggles('desktopSidebar');
-})
+    .then(html => {
+      const placeholder = document.getElementById('desktop-menu-placeholder');
+      placeholder.innerHTML = html;
+      // Trigger fade-in after a tiny delay (helps perceived smoothness)
+      setTimeout(() => {
+        placeholder.classList.add('loaded');
+      }, 50);
+      attachMenuToggles('desktopSidebar');
+    })
+    .catch(err => console.error('Desktop menu error:', err));
+
   // Mobile menu
   fetch('/mobile-menu.html')
     .then(response => {
@@ -651,5 +686,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('mobile-menu-placeholder').innerHTML = html;
       attachMenuToggles('mobileMenu');
     })
-    .catch(err => {});
+    .catch(err => console.error('Mobile menu error:', err));
 });
+

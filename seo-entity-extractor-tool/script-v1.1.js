@@ -51,7 +51,7 @@ function simplePrefillAndRun() {
 // Run it
 document.addEventListener('DOMContentLoaded', simplePrefillAndRun);
 
-const API_BASE = 'https://traffic-torch-api.traffictorch.workers.dev';
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 const ANALYZE_ENDPOINT = 'https://entity-ai-proxy.traffictorch.workers.dev/entity-analyze';
 
