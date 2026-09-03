@@ -99,7 +99,6 @@
       cursor: not-allowed;
     }
 
-    /* Responsive cards for queries/pages */
     .query-card, .page-card {
       transition: background 0.2s;
     }
@@ -616,7 +615,7 @@
               <!-- Trend Chart -->
               <div><canvas id="gscTrendChart" height="150"></canvas></div>
 
-              <!-- Top Queries – New layout -->
+              <!-- Top Queries -->
               <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <div class="flex justify-between items-center mb-3">
                   <h4 class="text-lg font-semibold">🔎 Top Queries</h4>
@@ -624,7 +623,7 @@
                 </div>
 
                 <div x-show="gsc.queries.length > 0">
-                  <!-- Desktop: Table (visible on md and up) -->
+                  <!-- Desktop: Table -->
                   <div class="hidden sm:block overflow-x-auto">
                     <table class="w-full text-left text-sm">
                       <thead class="border-b border-gray-200 dark:border-gray-700">
@@ -680,7 +679,7 @@
                 <div x-show="gsc.queries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No query data available.</div>
               </div>
 
-              <!-- Top Pages – New layout -->
+              <!-- Top Pages -->
               <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <div class="flex justify-between items-center mb-3">
                   <h4 class="text-lg font-semibold">📄 Top Pages</h4>
@@ -890,7 +889,7 @@ window.upgradeToPro = async function upgradeToPro() {
 function dashboardApp() {
   return {
     isAuthenticated: false,
-    user: { email: '', isPro: false, tier: 'free' },
+    user: { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null },
     activeDashboardTab: 'dashboard',
     dailyLimit: 50,
     selectedTool: 'seo-intent-tool',
@@ -991,6 +990,12 @@ function dashboardApp() {
       if (token) {
         await this.fetchAccountInfo();
         this.checkGA4Connection();
+        // Restore GSC connection if backend says connected
+        if (this.user.gscConnected) {
+          this.gsc.connected = true;
+          this.gsc.siteUrl = this.user.gscSiteUrl || '';
+          // Fetch data when tab becomes active (already handled in watcher)
+        }
       } else {
         this.displayCount = 5;
         this.loadDemoData();
@@ -1018,8 +1023,16 @@ function dashboardApp() {
       if (gscCode) {
         const newUrl = window.location.pathname + window.location.search.replace(/[?&]gsc_code=[^&]*/, '').replace(/^&/, '?');
         window.history.replaceState({}, document.title, newUrl || '/dashboard/');
-        const siteUrl = prompt('Enter your GSC site URL (e.g., sc-domain:example.com or https://example.com/):');
-        if (siteUrl) {
+        const rawSite = prompt('Enter your GSC site URL (e.g., example.com or https://example.com/) – we\'ll auto‑convert the format:');
+        if (rawSite) {
+          // Convert to correct format
+          let siteUrl = rawSite.trim();
+          if (!siteUrl.startsWith('sc-domain:') && !siteUrl.startsWith('http://') && !siteUrl.startsWith('https://')) {
+            siteUrl = 'sc-domain:' + siteUrl;
+          }
+          if (siteUrl.startsWith('http') && !siteUrl.endsWith('/')) {
+            siteUrl += '/';
+          }
           this.finishGSCConnection(gscCode, siteUrl);
         } else {
           this.gsc.error = 'Site URL is required to connect.';
@@ -1104,6 +1117,8 @@ function dashboardApp() {
           this.isAuthenticated = true;
           this.user.tier = data.tier || (data.isPro ? 'pro' : 'free');
           this.ga4.connected = data.ga4Connected || false;
+          this.user.gscConnected = data.gscConnected || false;
+          this.user.gscSiteUrl = data.gscSiteUrl || null;
           this.updateDisplayLimit();
         } else {
           localStorage.removeItem('authToken');
@@ -1632,6 +1647,9 @@ function dashboardApp() {
         if (res.ok) {
           this.gsc.connected = true;
           this.gsc.siteUrl = siteUrl;
+          // Update user object for persistence
+          this.user.gscConnected = true;
+          this.user.gscSiteUrl = siteUrl;
           this.fetchGSCReport();
         } else {
           this.gsc.error = data.error || 'Failed to connect GSC';
@@ -1653,6 +1671,8 @@ function dashboardApp() {
         if (res.ok) {
           this.gsc.connected = false;
           this.gsc.siteUrl = '';
+          this.user.gscConnected = false;
+          this.user.gscSiteUrl = null;
           this.clearGSCData();
           this.gsc.lastUpdated = null;
         }
@@ -1693,6 +1713,8 @@ function dashboardApp() {
       start.setDate(start.getDate() - this.gsc.days);
       const startDate = start.toISOString().split('T')[0];
 
+      console.log('GSC fetch range:', startDate, 'to', endDate);
+
       try {
         const types = ['overview', 'queries', 'pages', 'countries', 'devices'];
         const promises = types.map(type => {
@@ -1704,23 +1726,47 @@ function dashboardApp() {
 
         const [overview, queries, pages, countries, devices] = await Promise.all(promises);
 
-        const rows = overview.data || [];
-        this.gsc.data = rows;
-        const clicks = rows.reduce((s, r) => s + r.clicks, 0);
-        const impressions = rows.reduce((s, r) => s + r.impressions, 0);
-        const ctr = impressions ? (clicks / impressions) : 0;
-        const avgPos = rows.reduce((s, r) => s + r.position, 0) / (rows.length || 1);
-        this.gsc.totals = { clicks, impressions, ctr, position: avgPos };
+        // Overview: fill missing dates
+        const originalRows = overview.data || [];
+        this.gsc.totals = {
+          clicks: originalRows.reduce((s, r) => s + r.clicks, 0),
+          impressions: originalRows.reduce((s, r) => s + r.impressions, 0),
+          ctr: originalRows.reduce((s, r) => s + r.impressions, 0) ? (originalRows.reduce((s, r) => s + r.clicks, 0) / originalRows.reduce((s, r) => s + r.impressions, 0)) : 0,
+          position: originalRows.length ? (originalRows.reduce((s, r) => s + r.position, 0) / originalRows.length) : 0
+        };
+
+        // Fill missing dates for chart
+        const dateMap = {};
+        originalRows.forEach(row => {
+          const key = row.keys[0];
+          dateMap[key] = row;
+        });
+        const filledData = [];
+        let current = new Date(start);
+        const endObj = new Date(end);
+        while (current <= endObj) {
+          const key = current.toISOString().split('T')[0];
+          if (dateMap[key]) {
+            filledData.push(dateMap[key]);
+          } else {
+            filledData.push({ keys: [key], clicks: 0, impressions: 0, ctr: 0, position: 0 });
+          }
+          current.setDate(current.getDate() + 1);
+        }
+        this.gsc.data = filledData;
 
         this.gsc.queries = (queries.data || []).slice(0, this.gsc.pageSize);
         this.gsc.pages = (pages.data || []).slice(0, this.gsc.pageSize);
         this.gsc.countries = countries.data || [];
         this.gsc.devices = devices.data || [];
 
+        console.log('GSC data loaded:', { queries: this.gsc.queries.length, pages: this.gsc.pages.length });
+
         this.gsc.lastUpdated = new Date().toLocaleString();
         this.updateGSCCharts();
       } catch (err) {
         this.gsc.error = err.message;
+        console.error('GSC fetch error:', err);
       } finally {
         this.gsc.loading = false;
       }
@@ -1737,10 +1783,15 @@ function dashboardApp() {
 
         const ctx = document.getElementById('gscTrendChart');
         if (ctx && this.gsc.data.length) {
-          const sorted = [...this.gsc.data].sort((a,b) => (a.keys[0] || '').localeCompare(b.keys[0] || ''));
-          const labels = sorted.map(r => r.keys[0] || '');
-          const clicksData = sorted.map(r => r.clicks);
-          const impressionsData = sorted.map(r => r.impressions);
+          const labels = this.gsc.data.map(r => {
+            const d = r.keys[0] || '';
+            // shorten date display
+            const parts = d.split('-');
+            if (parts.length === 3) return parts[1] + '/' + parts[2];
+            return d;
+          });
+          const clicksData = this.gsc.data.map(r => r.clicks);
+          const impressionsData = this.gsc.data.map(r => r.impressions);
           window.gscTrendChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -2024,7 +2075,7 @@ function dashboardApp() {
     logout() {
       localStorage.removeItem('authToken');
       this.isAuthenticated = false;
-      this.user = { email: '', isPro: false, tier: 'free' };
+      this.user = { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null };
       this.stopRealtimeInterval();
       window.location.href = '/login/';
     },
