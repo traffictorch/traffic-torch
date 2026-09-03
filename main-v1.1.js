@@ -419,23 +419,6 @@ function updateRunsBadge(remaining) {
   }
 }
 
-// Upgrade Modal – uses existing #upgradeModal in HTML
-function showUpgradeModal(message = "You've reached your daily limit. Upgrade to Pro for more runs.") {
-  const modal = document.getElementById('upgradeModal');
-  if (!modal) {
-    return;
-  }
-  // Update message (keep price/default text if needed)
-  const p = modal.querySelector('p.mb-6');
-  if (p) {
-    p.textContent = message;
-  }
-  // Show it
-  modal.classList.remove('hidden');
-  // Optional: scroll to top of modal on mobile
-  modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 // === UPDATED CANRUNTOOL WITH COMBINED LIMITING START (IndexedDB fingerprint – survives localStorage clear) ===
 const FINGERPRINT_KEY = 'tt_fingerprint';
 let currentFingerprint = null;
@@ -689,3 +672,41 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => console.error('Mobile menu error:', err));
 });
 
+// ==========================================================
+// showUpgradeModal
+// ==========================================================
+function showUpgradeModal() {
+  const modal = document.getElementById('upgradeModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    const content = document.getElementById('upgradeModalContent');
+    // Trigger animation
+    requestAnimationFrame(() => {
+      content.classList.remove('scale-95', 'opacity-0');
+      content.classList.add('scale-100', 'opacity-100');
+    });
+  }
+}
+
+function closeUpgradeModal() {
+  const modal = document.getElementById('upgradeModal');
+  if (modal) {
+    const content = document.getElementById('upgradeModalContent');
+    content.classList.remove('scale-100', 'opacity-100');
+    content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 300);
+  }
+}
+
+// Click outside to close
+document.addEventListener('click', function(e) {
+  const modal = document.getElementById('upgradeModal');
+  if (modal && !modal.classList.contains('hidden')) {
+    const content = document.getElementById('upgradeModalContent');
+    if (!content.contains(e.target) && e.target !== modal) {
+      closeUpgradeModal();
+    }
+  }
+});
