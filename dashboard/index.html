@@ -615,133 +615,77 @@
               <!-- Trend Chart -->
               <div><canvas id="gscTrendChart" height="150"></canvas></div>
 
-              <!-- Top Queries -->
-              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-lg font-semibold">🔎 Top Queries</h4>
-                  <button @click="exportGSCSVG('queries')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
-                </div>
+    <!-- Top Queries -->
+<div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+  <div class="flex justify-between items-center mb-3">
+    <h4 class="text-lg font-semibold">🔎 Top Queries</h4>
+    <button @click="exportGSCSVG('queries')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+  </div>
 
-                <div x-show="gsc.queries.length > 0">
-                  <!-- Desktop: Table -->
-                  <div class="hidden sm:block overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                      <thead class="border-b border-gray-200 dark:border-gray-700">
-                        <tr>
-                          <th class="py-2 pr-2">#</th>
-                          <th class="py-2 pr-2">Query</th>
-                          <th class="py-2 pr-2 text-center">Clicks</th>
-                          <th class="py-2 pr-2 text-center">Impressions</th>
-                          <th class="py-2 pr-2 text-center">CTR</th>
-                          <th class="py-2 text-center">Position</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <template x-for="(item, idx) in gsc.queries.slice(gsc.queryOffset, gsc.queryOffset + gsc.pageSize)" :key="idx">
-                          <tr class="border-t border-gray-100 dark:border-gray-800">
-                            <td class="py-2 pr-2 align-top" x-text="gsc.queryOffset + idx + 1"></td>
-                            <td class="py-2 pr-2 break-words max-w-xs" x-text="item.keys[0] || '—'"></td>
-                            <td class="py-2 pr-2 text-center" x-text="item.clicks"></td>
-                            <td class="py-2 pr-2 text-center" x-text="item.impressions"></td>
-                            <td class="py-2 pr-2 text-center" x-text="(item.ctr * 100).toFixed(2) + '%'"></td>
-                            <td class="py-2 text-center" x-text="item.position ? item.position.toFixed(1) : '—'"></td>
-                          </tr>
-                        </template>
-                      </tbody>
-                    </table>
-                  </div>
+  <div x-show="gsc.queries.length > 0">
+    <!-- Cards – visible on all screen sizes -->
+    <div class="space-y-3">
+      <template x-for="(item, idx) in gsc.queries.slice(gsc.queryOffset, gsc.queryOffset + gsc.pageSize)" :key="idx">
+        <div class="glass rounded-xl p-3 query-card">
+          <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-xs text-gray-500">
+            <span>Clicks: <span class="font-medium text-gray-900 dark:text-white" x-text="item.clicks"></span></span>
+            <span>Impressions: <span class="font-medium text-gray-900 dark:text-white" x-text="item.impressions"></span></span>
+            <span>CTR: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.ctr * 100).toFixed(2) + '%'"></span></span>
+            <span>Position: <span class="font-medium text-gray-900 dark:text-white" x-text="item.position ? item.position.toFixed(1) : '—'"></span></span>
+          </div>
+        </div>
+      </template>
+    </div>
 
-                  <!-- Mobile: Cards -->
-                  <div class="sm:hidden space-y-3">
-                    <template x-for="(item, idx) in gsc.queries.slice(gsc.queryOffset, gsc.queryOffset + gsc.pageSize)" :key="idx">
-                      <div class="glass rounded-xl p-3 query-card">
-                        <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
-                        <div class="grid grid-cols-2 gap-1 text-xs text-gray-500">
-                          <span>Clicks: <span class="font-medium text-gray-900 dark:text-white" x-text="item.clicks"></span></span>
-                          <span>Impressions: <span class="font-medium text-gray-900 dark:text-white" x-text="item.impressions"></span></span>
-                          <span>CTR: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.ctr * 100).toFixed(2) + '%'"></span></span>
-                          <span>Position: <span class="font-medium text-gray-900 dark:text-white" x-text="item.position ? item.position.toFixed(1) : '—'"></span></span>
-                        </div>
-                      </div>
-                    </template>
-                  </div>
+    <!-- Pagination -->
+    <div class="mt-3 flex items-center justify-center gap-2">
+      <button class="pagination-btn" @click="gsc.queryOffset = Math.max(0, gsc.queryOffset - gsc.pageSize)" :disabled="gsc.queryOffset === 0">← Previous</button>
+      <span class="text-sm text-gray-600 dark:text-gray-400">
+        <span x-text="Math.floor(gsc.queryOffset / gsc.pageSize) + 1"></span> /
+        <span x-text="Math.ceil(gsc.queries.length / gsc.pageSize)"></span>
+      </span>
+      <button class="pagination-btn" @click="gsc.queryOffset = Math.min(gsc.queries.length - gsc.pageSize, gsc.queryOffset + gsc.pageSize)" :disabled="gsc.queryOffset + gsc.pageSize >= gsc.queries.length">Next →</button>
+    </div>
+  </div>
+  <div x-show="gsc.queries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No query data available.</div>
+</div>
 
-                  <!-- Pagination -->
-                  <div class="mt-3 flex items-center justify-center gap-2">
-                    <button class="pagination-btn" @click="gsc.queryOffset = Math.max(0, gsc.queryOffset - gsc.pageSize)" :disabled="gsc.queryOffset === 0">← Previous</button>
-                    <span class="text-sm text-gray-600 dark:text-gray-400">
-                      <span x-text="Math.floor(gsc.queryOffset / gsc.pageSize) + 1"></span> /
-                      <span x-text="Math.ceil(gsc.queries.length / gsc.pageSize)"></span>
-                    </span>
-                    <button class="pagination-btn" @click="gsc.queryOffset = Math.min(gsc.queries.length - gsc.pageSize, gsc.queryOffset + gsc.pageSize)" :disabled="gsc.queryOffset + gsc.pageSize >= gsc.queries.length">Next →</button>
-                  </div>
-                </div>
-                <div x-show="gsc.queries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No query data available.</div>
-              </div>
+<!-- Top Pages -->
+<div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+  <div class="flex justify-between items-center mb-3">
+    <h4 class="text-lg font-semibold">📄 Top Pages</h4>
+    <button @click="exportGSCSVG('pages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+  </div>
 
-              <!-- Top Pages -->
-              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-lg font-semibold">📄 Top Pages</h4>
-                  <button @click="exportGSCSVG('pages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
-                </div>
+  <div x-show="gsc.pages.length > 0">
+    <!-- Cards – visible on all screen sizes -->
+    <div class="space-y-3">
+      <template x-for="(item, idx) in gsc.pages.slice(gsc.pageOffset, gsc.pageOffset + gsc.pageSize)" :key="idx">
+        <div class="glass rounded-xl p-3 page-card">
+          <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-xs text-gray-500">
+            <span>Clicks: <span class="font-medium text-gray-900 dark:text-white" x-text="item.clicks"></span></span>
+            <span>Impressions: <span class="font-medium text-gray-900 dark:text-white" x-text="item.impressions"></span></span>
+            <span>CTR: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.ctr * 100).toFixed(2) + '%'"></span></span>
+            <span>Position: <span class="font-medium text-gray-900 dark:text-white" x-text="item.position ? item.position.toFixed(1) : '—'"></span></span>
+          </div>
+        </div>
+      </template>
+    </div>
 
-                <div x-show="gsc.pages.length > 0">
-                  <!-- Desktop: Table -->
-                  <div class="hidden sm:block overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                      <thead class="border-b border-gray-200 dark:border-gray-700">
-                        <tr>
-                          <th class="py-2 pr-2">#</th>
-                          <th class="py-2 pr-2">Page</th>
-                          <th class="py-2 pr-2 text-center">Clicks</th>
-                          <th class="py-2 pr-2 text-center">Impressions</th>
-                          <th class="py-2 pr-2 text-center">CTR</th>
-                          <th class="py-2 text-center">Position</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <template x-for="(item, idx) in gsc.pages.slice(gsc.pageOffset, gsc.pageOffset + gsc.pageSize)" :key="idx">
-                          <tr class="border-t border-gray-100 dark:border-gray-800">
-                            <td class="py-2 pr-2 align-top" x-text="gsc.pageOffset + idx + 1"></td>
-                            <td class="py-2 pr-2 break-words max-w-xs" x-text="item.keys[0] || '—'"></td>
-                            <td class="py-2 pr-2 text-center" x-text="item.clicks"></td>
-                            <td class="py-2 pr-2 text-center" x-text="item.impressions"></td>
-                            <td class="py-2 pr-2 text-center" x-text="(item.ctr * 100).toFixed(2) + '%'"></td>
-                            <td class="py-2 text-center" x-text="item.position ? item.position.toFixed(1) : '—'"></td>
-                          </tr>
-                        </template>
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <!-- Mobile: Cards -->
-                  <div class="sm:hidden space-y-3">
-                    <template x-for="(item, idx) in gsc.pages.slice(gsc.pageOffset, gsc.pageOffset + gsc.pageSize)" :key="idx">
-                      <div class="glass rounded-xl p-3 page-card">
-                        <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
-                        <div class="grid grid-cols-2 gap-1 text-xs text-gray-500">
-                          <span>Clicks: <span class="font-medium text-gray-900 dark:text-white" x-text="item.clicks"></span></span>
-                          <span>Impressions: <span class="font-medium text-gray-900 dark:text-white" x-text="item.impressions"></span></span>
-                          <span>CTR: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.ctr * 100).toFixed(2) + '%'"></span></span>
-                          <span>Position: <span class="font-medium text-gray-900 dark:text-white" x-text="item.position ? item.position.toFixed(1) : '—'"></span></span>
-                        </div>
-                      </div>
-                    </template>
-                  </div>
-
-                  <!-- Pagination -->
-                  <div class="mt-3 flex items-center justify-center gap-2">
-                    <button class="pagination-btn" @click="gsc.pageOffset = Math.max(0, gsc.pageOffset - gsc.pageSize)" :disabled="gsc.pageOffset === 0">← Previous</button>
-                    <span class="text-sm text-gray-600 dark:text-gray-400">
-                      <span x-text="Math.floor(gsc.pageOffset / gsc.pageSize) + 1"></span> /
-                      <span x-text="Math.ceil(gsc.pages.length / gsc.pageSize)"></span>
-                    </span>
-                    <button class="pagination-btn" @click="gsc.pageOffset = Math.min(gsc.pages.length - gsc.pageSize, gsc.pageOffset + gsc.pageSize)" :disabled="gsc.pageOffset + gsc.pageSize >= gsc.pages.length">Next →</button>
-                  </div>
-                </div>
-                <div x-show="gsc.pages.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No page data available.</div>
-              </div>
+    <!-- Pagination -->
+    <div class="mt-3 flex items-center justify-center gap-2">
+      <button class="pagination-btn" @click="gsc.pageOffset = Math.max(0, gsc.pageOffset - gsc.pageSize)" :disabled="gsc.pageOffset === 0">← Previous</button>
+      <span class="text-sm text-gray-600 dark:text-gray-400">
+        <span x-text="Math.floor(gsc.pageOffset / gsc.pageSize) + 1"></span> /
+        <span x-text="Math.ceil(gsc.pages.length / gsc.pageSize)"></span>
+      </span>
+      <button class="pagination-btn" @click="gsc.pageOffset = Math.min(gsc.pages.length - gsc.pageSize, gsc.pageOffset + gsc.pageSize)" :disabled="gsc.pageOffset + gsc.pageSize >= gsc.pages.length">Next →</button>
+    </div>
+  </div>
+  <div x-show="gsc.pages.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No page data available.</div>
+</div>
 
               <!-- Countries & Devices side by side -->
               <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
