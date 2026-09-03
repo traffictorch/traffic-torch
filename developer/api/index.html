@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traffic Torch – Developer API</title>
+  <meta name="description" content="Traffic Torch Developer API – programmatically run audits, manage keys, and integrate with your tools.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/developer/api/">
+
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Traffic Torch – Developer API">
+  <meta property="og:description" content="Programmatic access to all Traffic Torch SEO, UX, and AI audit tools.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/developer/api/">
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Traffic Torch – Developer API">
+
+  <!-- Preload CSS -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style-v1.0.css"></noscript>
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+
+  <style>
+    [x-cloak] { display: none !important; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+    .dark .glass { background: rgba(0,0,0,0.3); }
+    .api-key-card {
+      transition: all 0.2s;
+    }
+    .api-key-card:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .spinner {
+      border: 4px solid rgba(0,0,0,0.1);
+      border-left-color: #f97316;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .endpoint-doc {
+      border-left: 3px solid #f97316;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+
+<div x-data="apiApp()" x-init="initApp()" class="flex flex-1 min-h-screen">
+
+  <!-- ===== SIDEBAR (same as dashboard) ===== -->
+  <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
+    <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+        <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden md:block">Traffic Torch</span>
+      </a>
+    </div>
+    <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+    <div class="p-4 border-t border-white/10 dark:border-white/5">
+      <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="flex-1 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+      <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
+        </a>
+        <div class="w-10 md:hidden"></div>
+        <button id="menuToggle" class="md:hidden text-3xl text-gray-500">☰</button>
+        <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+        <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+        <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+        <div id="mobile-menu-placeholder"></div>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="container mx-auto px-4 py-8 flex-1">
+
+      <div class="max-w-4xl mx-auto">
+
+        <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">🧑‍💻 Developer API</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">Programmatically run all 15 audit tools, retrieve results, and manage your API keys.</p>
+
+        <!-- ===== API KEY MANAGEMENT ===== -->
+        <section class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">🔑 Your API Keys</h2>
+
+          <div x-show="loading" class="text-center py-4">
+            <div class="spinner"></div>
+            <p class="mt-2 text-sm text-gray-500">Loading keys…</p>
+          </div>
+
+          <div x-show="!loading">
+            <template x-if="keys.length === 0">
+              <p class="text-gray-500 text-sm">No API keys yet. Generate one below.</p>
+            </template>
+
+            <template x-for="key in keys" :key="key.id">
+              <div class="api-key-card flex flex-wrap items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg mb-2">
+                <div class="flex-1">
+                  <span class="font-mono text-sm" x-text="key.prefix + '…'"></span>
+                  <span class="text-xs text-gray-500 ml-2" x-text="key.name || 'Unnamed'"></span>
+                  <span class="text-xs text-gray-400 ml-2" x-text="'Created: ' + new Date(key.created_at).toLocaleDateString()"></span>
+                </div>
+                <div class="flex gap-2 mt-2 sm:mt-0">
+                  <button @click="revokeKey(key.id)" class="text-xs text-red-500 hover:text-red-700 transition">Revoke</button>
+                </div>
+              </div>
+            </template>
+
+            <div class="mt-4 flex flex-wrap items-center gap-3">
+              <input type="text" x-model="newKeyName" placeholder="Key name (optional)" class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm flex-1 min-w-[150px]">
+              <button @click="generateKey()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">Generate New Key</button>
+            </div>
+
+            <div x-show="generatedKey" class="mt-4 p-3 bg-green-100 dark:bg-green-900/30 border border-green-400 rounded-lg">
+              <p class="text-sm font-semibold text-green-800 dark:text-green-200">Your new API key:</p>
+              <code class="block bg-gray-900 text-white p-2 rounded text-xs font-mono break-all mt-1" x-text="generatedKey"></code>
+              <p class="text-xs text-gray-500 mt-1">Copy this key now. It will not be shown again.</p>
+              <button @click="generatedKey = null" class="mt-2 text-sm text-gray-500 hover:underline">Dismiss</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== API DOCS ===== -->
+        <section class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📖 API Endpoints</h2>
+          <p class="text-sm text-gray-500 mb-4">All endpoints require authentication via <code>X-API-Key</code> header.</p>
+
+          <div class="space-y-4">
+            <!-- Tool endpoints -->
+            <div class="endpoint-doc pl-4 py-2">
+              <div class="flex flex-wrap items-start gap-2">
+                <span class="font-mono text-sm font-bold text-orange-500">POST</span>
+                <span class="font-mono text-sm">/api/tools/:tool</span>
+                <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Run audit</span>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Run any audit tool. Replace <code>:tool</code> with one of: <code>seo-intent</code>, <code>seo-ux</code>, <code>local-seo</code>, <code>product-seo</code>, <code>entity</code>, <code>topical</code>, <code>schema-generator</code>, <code>ai-search</code>, <code>ai-voice</code>, <code>ai-audit</code>, <code>quit-risk</code>, <code>keyword-research</code>, <code>keyword-placement</code>.</p>
+              <pre class="mt-2 text-xs bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>POST /api/tools/seo-intent
+X-API-Key: YOUR_API_KEY
+{"url": "https://example.com"}</code></pre>
+              <div class="mt-2 text-xs text-gray-500">Response: <code>{ success: true, data: { ...audit_results... } }</code></div>
+            </div>
+
+            <!-- Rate limits -->
+            <div class="endpoint-doc pl-4 py-2">
+              <div class="flex flex-wrap items-start gap-2">
+                <span class="font-mono text-sm font-bold text-orange-500">GET</span>
+                <span class="font-mono text-sm">/api/rate-limits</span>
+                <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Usage</span>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Get your current usage and remaining requests for the day.</p>
+            </div>
+
+            <!-- Account info -->
+            <div class="endpoint-doc pl-4 py-2">
+              <div class="flex flex-wrap items-start gap-2">
+                <span class="font-mono text-sm font-bold text-orange-500">GET</span>
+                <span class="font-mono text-sm">/api/account-info</span>
+                <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Account</span>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Get your account details (plan, daily usage).</p>
+            </div>
+
+            <!-- Keys management (already listed above) -->
+          </div>
+        </section>
+
+        <!-- ===== RATE LIMITS SUMMARY ===== -->
+        <section class="glass rounded-2xl p-6">
+          <h2 class="text-xl font-bold mb-4">📊 Rate Limits</h2>
+          <div class="grid grid-cols-3 gap-4 text-sm">
+            <div><span class="text-gray-500">Free:</span> <span class="font-bold">3</span> req/day</div>
+            <div><span class="text-gray-500">Pro:</span> <span class="font-bold">25</span> req/day</div>
+            <div><span class="text-gray-500">Enterprise:</span> <span class="font-bold">300</span> req/day</div>
+          </div>
+          <div x-show="remaining !== undefined" class="mt-4 text-sm">
+            <span class="text-gray-500">Remaining today:</span>
+            <span class="font-bold" x-text="remaining"></span>
+          </div>
+        </section>
+
+        <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">Privacy-first • Traffic Torch</p>
+      </div>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+</div>
+
+<!-- ========================================================== -->
+<!-- SCRIPTS -->
+<!-- ========================================================== -->
+<script src="/main-v1.1.js" type="module"></script>
+
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('apiApp', () => ({
+    loading: false,
+    keys: [],
+    newKeyName: '',
+    generatedKey: null,
+    remaining: undefined,
+
+    async initApp() {
+      // Load footer
+      fetch('/footer.html').then(r => r.text()).then(html => document.getElementById('footer-placeholder').innerHTML = html).catch(() => {});
+      // Load menus
+      this.loadMenus();
+      await this.fetchKeys();
+      await this.fetchUsage();
+    },
+
+    loadMenus() {
+      fetch('/desktop-menu.html')
+        .then(r => r.text())
+        .then(html => document.getElementById('desktop-menu-placeholder').innerHTML = html);
+      fetch('/mobile-menu.html')
+        .then(r => r.text())
+        .then(html => document.getElementById('mobile-menu-placeholder').innerHTML = html);
+    },
+
+    async fetchKeys() {
+      this.loading = true;
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          this.keys = [];
+          this.loading = false;
+          return;
+        }
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/keys', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.keys = data.keys || [];
+        } else {
+          this.keys = [];
+        }
+      } catch (e) {
+        this.keys = [];
+      }
+      this.loading = false;
+    },
+
+    async generateKey() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return alert('Please log in first.');
+      try {
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/keys/generate', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name: this.newKeyName })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.generatedKey = data.key;
+          this.newKeyName = '';
+          await this.fetchKeys();
+        } else {
+          const err = await res.text();
+          alert('Failed to generate key: ' + err);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    },
+
+    async revokeKey(id) {
+      if (!confirm('Revoke this API key? This cannot be undone.')) return;
+      const token = localStorage.getItem('authToken');
+      try {
+        const res = await fetch(`https://traffic-torch-auth.traffictorch.workers.dev/api/keys/revoke/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          await this.fetchKeys();
+        } else {
+          alert('Failed to revoke key.');
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    },
+
+    async fetchUsage() {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.remaining = data.dailyRemaining;
+        }
+      } catch (e) {}
+    }
+  }));
+});
+</script>
+
+</body>
+</html>
