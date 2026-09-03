@@ -105,6 +105,12 @@
     .query-card:hover, .page-card:hover {
       background: rgba(255,255,255,0.05);
     }
+
+    /* Delete modal overlay */
+    .modal-overlay {
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+    }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -173,6 +179,79 @@
 
         <!-- ===== DASHBOARD TAB ===== -->
         <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
+
+          <!-- ===== NEW CARDS: GA4 & GSC ===== -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- GA4 Card -->
+            <div class="glass rounded-2xl p-6">
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="text-lg font-bold">📊 Google Analytics 4</h4>
+                <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
+                <span x-show="!ga4.connected && isAuthenticated" class="text-sm text-red-500">● Not connected</span>
+                <span x-show="!isAuthenticated" class="text-sm text-yellow-500">● Demo mode</span>
+              </div>
+              <div x-show="ga4.lastUpdated" class="text-xs text-gray-500 mb-4">Last updated: <span x-text="ga4.lastUpdated"></span></div>
+              <div x-show="!ga4.lastUpdated && !isAuthenticated" class="text-xs text-gray-500 mb-4">Last updated: demo data</div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Sessions</p>
+                  <p class="text-2xl font-bold" x-text="ga4.totalSessions !== undefined ? ga4.totalSessions : '—'"></p>
+                  <p x-show="ga4.change.sessions !== undefined" class="text-xs" :class="ga4.change.sessions >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(ga4.change.sessions >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.sessions).toFixed(1) + '%'"></p>
+                  <p x-show="ga4.change.sessions === undefined && !isAuthenticated" class="text-xs text-gray-400">▼ 40.0%</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Users</p>
+                  <p class="text-2xl font-bold" x-text="ga4.totalUsers !== undefined ? ga4.totalUsers : '—'"></p>
+                  <p x-show="ga4.change.users !== undefined" class="text-xs" :class="ga4.change.users >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(ga4.change.users >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.users).toFixed(1) + '%'"></p>
+                  <p x-show="ga4.change.users === undefined && !isAuthenticated" class="text-xs text-red-500">▼ 45.1%</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">New Users</p>
+                  <p class="text-2xl font-bold" x-text="ga4.newUsers !== undefined ? ga4.newUsers : '—'"></p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Page Views</p>
+                  <p class="text-2xl font-bold" x-text="ga4.totalViews !== undefined ? ga4.totalViews : '—'"></p>
+                  <p x-show="ga4.change.views !== undefined" class="text-xs" :class="ga4.change.views >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(ga4.change.views >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.views).toFixed(1) + '%'"></p>
+                </div>
+              </div>
+            </div>
+
+            <!-- GSC Card -->
+            <div class="glass rounded-2xl p-6">
+              <div class="flex justify-between items-start mb-3">
+                <h4 class="text-lg font-bold">🔍 Search Console</h4>
+                <span x-show="gsc.connected" class="text-sm text-green-500">● Connected</span>
+                <span x-show="!gsc.connected && isAuthenticated" class="text-sm text-red-500">● Not connected</span>
+                <span x-show="!isAuthenticated" class="text-sm text-yellow-500">● Demo mode</span>
+              </div>
+              <div x-show="gsc.lastUpdated" class="text-xs text-gray-500 mb-4">Last updated: <span x-text="gsc.lastUpdated"></span></div>
+              <div x-show="!gsc.lastUpdated && !isAuthenticated" class="text-xs text-gray-500 mb-4">Last updated: demo data</div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Total Clicks</p>
+                  <p class="text-2xl font-bold" x-text="gsc.totals.clicks || 0"></p>
+                  <p x-show="gsc.change.clicks !== undefined" class="text-xs" :class="gsc.change.clicks >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(gsc.change.clicks >= 0 ? '▲' : '▼') + ' ' + Math.abs(gsc.change.clicks).toFixed(1) + '%'"></p>
+                  <p x-show="gsc.change.clicks === undefined && !isAuthenticated" class="text-xs text-green-500">▲ 0.0%</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Impressions</p>
+                  <p class="text-2xl font-bold" x-text="gsc.totals.impressions || 0"></p>
+                  <p x-show="gsc.change.impressions !== undefined" class="text-xs" :class="gsc.change.impressions >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(gsc.change.impressions >= 0 ? '▲' : '▼') + ' ' + Math.abs(gsc.change.impressions).toFixed(1) + '%'"></p>
+                  <p x-show="gsc.change.impressions === undefined && !isAuthenticated" class="text-xs text-green-500">▲ 0.0%</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">CTR</p>
+                  <p class="text-2xl font-bold" x-text="(gsc.totals.ctr * 100).toFixed(2) + '%'"></p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500">Avg Position</p>
+                  <p class="text-2xl font-bold" x-text="gsc.totals.position ? gsc.totals.position.toFixed(1) : '—'"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Quick Audit -->
           <div class="glass rounded-2xl p-6 mb-8">
             <h3 class="text-xl font-bold mb-4">🚀 Quick Audit</h3>
@@ -438,7 +517,7 @@
                 <div x-show="ga4.topContent.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No content data available.</div>
               </div>
 
-              <!-- ======== TRAFFIC SOURCES (Pro/Enterprise) – FIXED ======== -->
+              <!-- ======== TRAFFIC SOURCES (Pro/Enterprise) ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">📊 Traffic Sources</h4>
@@ -465,7 +544,7 @@
                 <div x-show="ga4.devices.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No device data available.</div>
               </div>
 
-              <!-- ======== GEOGRAPHIC (Pro/Enterprise) – Single column, fixed height ======== -->
+              <!-- ======== GEOGRAPHIC (Pro/Enterprise) ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">🌍 Geographic Breakdown</h4>
@@ -552,8 +631,7 @@
           </div>
         </div>
 
-        <!-- ===== SEARCH CONSOLE TAB (GSC) – UPDATED ===== -->
-        <!-- MARK: GSC TAB - START -->
+        <!-- ===== SEARCH CONSOLE TAB (GSC) – WITH DEMO DATA ===== -->
         <div x-show="activeDashboardTab === 'gsc'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-6xl mx-auto">
             <!-- Header -->
@@ -561,7 +639,8 @@
               <h3 class="text-xl font-bold">🔍 Search Console</h3>
               <div class="flex flex-wrap items-center gap-3">
                 <span x-show="gsc.connected" class="text-sm text-green-500">● Connected</span>
-                <span x-show="!gsc.connected" class="text-sm text-red-500">● Not connected</span>
+                <span x-show="!gsc.connected && isAuthenticated" class="text-sm text-red-500">● Not connected</span>
+                <span x-show="!isAuthenticated" class="text-sm text-yellow-500">● Demo mode</span>
 
                 <select x-model="gsc.days" @change="changeGSCDateRange()"
                         class="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm">
@@ -582,6 +661,7 @@
             </div>
 
             <div x-show="gsc.lastUpdated" class="text-xs text-gray-500 mb-4">Last updated: <span x-text="gsc.lastUpdated"></span></div>
+            <div x-show="!gsc.lastUpdated && !isAuthenticated" class="text-xs text-gray-500 mb-4">Last updated: demo data</div>
             <div x-show="gsc.error" class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 rounded-lg text-red-800 dark:text-red-200 text-sm" x-text="gsc.error"></div>
 
             <div x-show="gsc.loading" class="text-center py-8">
@@ -596,11 +676,13 @@
                   <p class="text-sm text-gray-500">Total Clicks</p>
                   <p class="text-2xl font-bold" x-text="gsc.totals.clicks || 0"></p>
                   <p x-show="gsc.change.clicks !== undefined" class="text-xs" :class="gsc.change.clicks >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(gsc.change.clicks >= 0 ? '▲' : '▼') + ' ' + Math.abs(gsc.change.clicks).toFixed(1) + '%'"></p>
+                  <p x-show="gsc.change.clicks === undefined && !isAuthenticated" class="text-xs text-green-500">▲ 0.0%</p>
                 </div>
                 <div class="text-center">
                   <p class="text-sm text-gray-500">Impressions</p>
                   <p class="text-2xl font-bold" x-text="gsc.totals.impressions || 0"></p>
                   <p x-show="gsc.change.impressions !== undefined" class="text-xs" :class="gsc.change.impressions >= 0 ? 'text-green-500' : 'text-red-500'" x-text="(gsc.change.impressions >= 0 ? '▲' : '▼') + ' ' + Math.abs(gsc.change.impressions).toFixed(1) + '%'"></p>
+                  <p x-show="gsc.change.impressions === undefined && !isAuthenticated" class="text-xs text-green-500">▲ 0.0%</p>
                 </div>
                 <div class="text-center">
                   <p class="text-sm text-gray-500">CTR</p>
@@ -615,79 +697,73 @@
               <!-- Trend Chart -->
               <div><canvas id="gscTrendChart" height="150"></canvas></div>
 
-    <!-- Top Queries -->
-<div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-  <div class="flex justify-between items-center mb-3">
-    <h4 class="text-lg font-semibold">🔎 Top Queries</h4>
-    <button @click="exportGSCSVG('queries')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
-  </div>
+              <!-- Top Queries -->
+              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex justify-between items-center mb-3">
+                  <h4 class="text-lg font-semibold">🔎 Top Queries</h4>
+                  <button @click="exportGSCSVG('queries')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+                </div>
+                <div x-show="gsc.queries.length > 0">
+                  <div class="space-y-3">
+                    <template x-for="(item, idx) in gsc.queries.slice(gsc.queryOffset, gsc.queryOffset + gsc.pageSize)" :key="idx">
+                      <div class="glass rounded-xl p-3 query-card">
+                        <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-xs text-gray-500">
+                          <span>Clicks: <span class="font-medium text-gray-900 dark:text-white" x-text="item.clicks"></span></span>
+                          <span>Impressions: <span class="font-medium text-gray-900 dark:text-white" x-text="item.impressions"></span></span>
+                          <span>CTR: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.ctr * 100).toFixed(2) + '%'"></span></span>
+                          <span>Position: <span class="font-medium text-gray-900 dark:text-white" x-text="item.position ? item.position.toFixed(1) : '—'"></span></span>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+                <div x-show="gsc.queries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No query data available.</div>
+              </div>
 
-  <div x-show="gsc.queries.length > 0">
-    <!-- Cards – visible on all screen sizes -->
-    <div class="space-y-3">
-      <template x-for="(item, idx) in gsc.queries.slice(gsc.queryOffset, gsc.queryOffset + gsc.pageSize)" :key="idx">
-        <div class="glass rounded-xl p-3 query-card">
-          <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-xs text-gray-500">
-            <span>Clicks: <span class="font-medium text-gray-900 dark:text-white" x-text="item.clicks"></span></span>
-            <span>Impressions: <span class="font-medium text-gray-900 dark:text-white" x-text="item.impressions"></span></span>
-            <span>CTR: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.ctr * 100).toFixed(2) + '%'"></span></span>
-            <span>Position: <span class="font-medium text-gray-900 dark:text-white" x-text="item.position ? item.position.toFixed(1) : '—'"></span></span>
-          </div>
-        </div>
-      </template>
-    </div>
+              <!-- Top Pages -->
+              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex justify-between items-center mb-3">
+                  <h4 class="text-lg font-semibold">📄 Top Pages</h4>
+                  <button @click="exportGSCSVG('pages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+                </div>
+                <div x-show="gsc.pages.length > 0">
+                  <div class="space-y-3">
+                    <template x-for="(item, idx) in gsc.pages.slice(gsc.pageOffset, gsc.pageOffset + gsc.pageSize)" :key="idx">
+                      <div class="glass rounded-xl p-3 page-card">
+                        <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-xs text-gray-500">
+                          <span>Clicks: <span class="font-medium text-gray-900 dark:text-white" x-text="item.clicks"></span></span>
+                          <span>Impressions: <span class="font-medium text-gray-900 dark:text-white" x-text="item.impressions"></span></span>
+                          <span>CTR: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.ctr * 100).toFixed(2) + '%'"></span></span>
+                          <span>Position: <span class="font-medium text-gray-900 dark:text-white" x-text="item.position ? item.position.toFixed(1) : '—'"></span></span>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+                <div x-show="gsc.pages.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No page data available.</div>
+              </div>
 
-  </div>
-  <div x-show="gsc.queries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No query data available.</div>
-</div>
-
-<!-- Top Pages -->
-<div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-  <div class="flex justify-between items-center mb-3">
-    <h4 class="text-lg font-semibold">📄 Top Pages</h4>
-    <button @click="exportGSCSVG('pages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
-  </div>
-
-  <div x-show="gsc.pages.length > 0">
-    <!-- Cards – visible on all screen sizes -->
-    <div class="space-y-3">
-      <template x-for="(item, idx) in gsc.pages.slice(gsc.pageOffset, gsc.pageOffset + gsc.pageSize)" :key="idx">
-        <div class="glass rounded-xl p-3 page-card">
-          <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-xs text-gray-500">
-            <span>Clicks: <span class="font-medium text-gray-900 dark:text-white" x-text="item.clicks"></span></span>
-            <span>Impressions: <span class="font-medium text-gray-900 dark:text-white" x-text="item.impressions"></span></span>
-            <span>CTR: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.ctr * 100).toFixed(2) + '%'"></span></span>
-            <span>Position: <span class="font-medium text-gray-900 dark:text-white" x-text="item.position ? item.position.toFixed(1) : '—'"></span></span>
-          </div>
-        </div>
-      </template>
-    </div>
-
-  </div>
-  <div x-show="gsc.pages.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No page data available.</div>
-</div>
-
-<!-- Countries & Devices side by side -->
-<div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-  <div>
-    <h4 class="text-lg font-semibold mb-3 text-center">🌍 Top Countries</h4>
-    <div x-show="gsc.countries.length > 0" class="h-64">
-      <canvas id="gscCountriesChart"></canvas>
-    </div>
-    <div x-show="gsc.countries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No country data.</div>
-  </div>
-<div>
-  <h4 class="text-lg font-semibold mb-3 text-center">📱 Devices</h4>
-  <div x-show="gsc.devices.length > 0" class="flex justify-center items-center h-64">
-    <div class="w-[200px] h-[200px]">
-      <canvas id="gscDevicesChart"></canvas>
-    </div>
-  </div>
-  <div x-show="gsc.devices.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No device data.</div>
-</div>
-</div>
+              <!-- Countries & Devices -->
+              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 class="text-lg font-semibold mb-3 text-center">🌍 Top Countries</h4>
+                  <div x-show="gsc.countries.length > 0" class="h-64">
+                    <canvas id="gscCountriesChart"></canvas>
+                  </div>
+                  <div x-show="gsc.countries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No country data.</div>
+                </div>
+                <div>
+                  <h4 class="text-lg font-semibold mb-3 text-center">📱 Devices</h4>
+                  <div x-show="gsc.devices.length > 0" class="flex justify-center items-center h-64">
+                    <div class="w-[200px] h-[200px]">
+                      <canvas id="gscDevicesChart"></canvas>
+                    </div>
+                  </div>
+                  <div x-show="gsc.devices.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No device data.</div>
+                </div>
+              </div>
 
               <!-- Guest / not connected CTA -->
               <div x-show="!isAuthenticated" class="mt-6 text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
@@ -701,39 +777,189 @@
             </div><!-- end !loading -->
           </div>
         </div>
-        <!-- MARK: GSC TAB - END -->
 
         <!-- ===== INTEGRATIONS TAB ===== -->
         <div x-show="activeDashboardTab === 'integrations'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
-            <h3 class="text-xl font-bold mb-4">Integrations</h3>
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <span>🔗 Google Search Console</span>
-              <span class="text-red-500">Not connected</span>
-              <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm" @click="requireAuth()">Connect</button>
+          <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
+            <h3 class="text-xl font-bold mb-6">🔗 Integrations</h3>
+
+            <!-- GA4 -->
+            <div class="flex flex-wrap items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <div>
+                <span class="font-medium">📊 Google Analytics 4</span>
+                <span x-show="ga4.connected" class="ml-3 text-sm text-green-500">● Connected</span>
+                <span x-show="!ga4.connected && isAuthenticated" class="ml-3 text-sm text-red-500">● Not connected</span>
+                <span x-show="!isAuthenticated" class="ml-3 text-sm text-yellow-500">● Demo mode</span>
+              </div>
+              <div class="flex gap-2">
+                <button x-show="!ga4.connected && isAuthenticated" @click="connectGA4()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">Connect</button>
+                <button x-show="ga4.connected" @click="disconnectGA4()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition">Disconnect</button>
+              </div>
             </div>
+
+            <!-- GSC -->
+            <div class="flex flex-wrap items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+              <div>
+                <span class="font-medium">🔍 Google Search Console</span>
+                <span x-show="gsc.connected" class="ml-3 text-sm text-green-500">● Connected</span>
+                <span x-show="!gsc.connected && isAuthenticated" class="ml-3 text-sm text-red-500">● Not connected</span>
+                <span x-show="!isAuthenticated" class="ml-3 text-sm text-yellow-500">● Demo mode</span>
+              </div>
+              <div class="flex gap-2">
+                <button x-show="!gsc.connected && isAuthenticated" @click="connectGSC()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">Connect</button>
+                <button x-show="gsc.connected" @click="disconnectGSC()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition">Disconnect</button>
+              </div>
+            </div>
+
+            <!-- Tool Access Table -->
+            <div class="mt-8">
+              <h4 class="text-lg font-semibold mb-3">🛠️ Tool Access by Tier</h4>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                  <thead class="border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                      <th class="py-2 pr-4">Tool</th>
+                      <th class="py-2 pr-4">Free</th>
+                      <th class="py-2 pr-4">Pro</th>
+                      <th class="py-2">Enterprise</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">SEO Intent</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Full SEO + UX</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Local SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Product SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Entity Extractor</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Topical Authority</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Schema Generator</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">GEO / AI Search</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Voice Search</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">AI Content Audit</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Quit Risk</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Research</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Placement</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword vs</td><td>❌</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Homepage Tool</td><td>❌</td><td>✅</td><td>✅</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">✅ = Included &nbsp;❌ = Upgrade required</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== UPGRADE TAB ===== -->
+        <div x-show="activeDashboardTab === 'upgrade'" x-cloak>
+          <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
+            <h3 class="text-2xl font-bold mb-6 text-center">🚀 Choose Your Plan</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Free -->
+              <div class="glass rounded-xl p-6 text-center border border-gray-200 dark:border-gray-700">
+                <h4 class="text-xl font-bold">Free</h4>
+                <p class="text-3xl font-black mt-2">$0</p>
+                <ul class="mt-4 space-y-2 text-sm text-left">
+                  <li>✅ 5 audits per day</li>
+                  <li>✅ 7‑day GA4 data</li>
+                  <li>✅ 7‑day GSC data</li>
+                  <li>✅ All core tools (except 2)</li>
+                  <li>❌ No real‑time</li>
+                  <li>❌ No custom date ranges</li>
+                  <li>❌ No CSV exports</li>
+                </ul>
+                <button class="mt-6 w-full py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg cursor-default" disabled>Current Plan</button>
+              </div>
+
+              <!-- Pro -->
+              <div class="glass rounded-xl p-6 text-center border-2 border-orange-500 relative">
+                <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white text-xs px-3 py-1 rounded-full">Popular</span>
+                <h4 class="text-xl font-bold">Pro</h4>
+                <p class="text-3xl font-black mt-2">$19<span class="text-base font-normal">/mo</span></p>
+                <ul class="mt-4 space-y-2 text-sm text-left">
+                  <li>✅ 50 audits per day</li>
+                  <li>✅ 30‑day GA4 data</li>
+                  <li>✅ 28‑day GSC data</li>
+                  <li>✅ All 15 tools</li>
+                  <li>✅ CSV exports</li>
+                  <li>✅ Priority support</li>
+                  <li>❌ Real‑time (Enterprise only)</li>
+                </ul>
+                <button @click="upgradeToPro()" class="mt-6 w-full py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg hover:opacity-90 transition">Upgrade to Pro</button>
+              </div>
+
+              <!-- Enterprise -->
+              <div class="glass rounded-xl p-6 text-center border border-gray-200 dark:border-gray-700">
+                <h4 class="text-xl font-bold">Enterprise</h4>
+                <p class="text-3xl font-black mt-2">$49<span class="text-base font-normal">/mo</span></p>
+                <ul class="mt-4 space-y-2 text-sm text-left">
+                  <li>✅ Unlimited audits</li>
+                  <li>✅ 365‑day GA4 data</li>
+                  <li>✅ 365‑day GSC data</li>
+                  <li>✅ All 15 tools</li>
+                  <li>✅ Real‑time</li>
+                  <li>✅ Custom date ranges</li>
+                  <li>✅ Dedicated support</li>
+                </ul>
+                <button @click="upgradeToPro()" class="mt-6 w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Contact Sales</button>
+              </div>
+            </div>
+
+            <p class="text-center text-sm text-gray-500 mt-6">All plans include full access to the 15 Traffic Torch tools.</p>
           </div>
         </div>
 
         <!-- ===== SETTINGS TAB ===== -->
         <div x-show="activeDashboardTab === 'settings'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
-            <h3 class="text-xl font-bold mb-4">Account Settings</h3>
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <span>Email</span>
-              <span x-text="isAuthenticated ? user.email : 'Not logged in'"></span>
+            <h3 class="text-xl font-bold mb-6">⚙️ Account Settings</h3>
+
+            <!-- Account Details -->
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <span class="font-medium">Email</span>
+                <span x-text="isAuthenticated ? user.email : 'Not logged in'"></span>
+              </div>
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <span class="font-medium">Plan</span>
+                <span x-text="isAuthenticated ? (user.tier || 'free').charAt(0).toUpperCase() + (user.tier || 'free').slice(1) : 'Guest'"></span>
+              </div>
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <span class="font-medium">Member since</span>
+                <span x-text="isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—'"></span>
+              </div>
             </div>
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <span>Plan</span>
-              <span x-text="isAuthenticated ? (user.isPro ? 'Pro' : 'Free') : 'Guest'"></span>
+
+            <!-- Billing -->
+            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <h4 class="font-semibold mb-2">💳 Billing & Subscription</h4>
+              <button x-show="isAuthenticated && user.tier !== 'free'" @click="manageBilling()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Manage Subscription</button>
+              <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade Now</button>
             </div>
+
+            <!-- Change Password -->
+            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <h4 class="font-semibold mb-3">🔒 Change Password</h4>
+              <form @submit.prevent="changePassword()" class="space-y-3">
+                <input type="password" x-model="passwordForm.current" placeholder="Current password" required class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                <input type="password" x-model="passwordForm.new" placeholder="New password (min 8 chars)" required minlength="8" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                <input type="password" x-model="passwordForm.confirm" placeholder="Confirm new password" required class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                <button type="submit" class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" :disabled="!isAuthenticated">Update Password</button>
+              </form>
+            </div>
+
+            <!-- Delete Account -->
+            <div class="mt-8 p-4 border border-red-500 rounded-lg">
+              <h4 class="font-semibold text-red-500 mb-2">⚠️ Danger Zone</h4>
+              <button @click="openDeleteModal()" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition" :disabled="!isAuthenticated">Delete Account</button>
+            </div>
+
+            <!-- Logout -->
             <template x-if="isAuthenticated">
               <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
             </template>
             <template x-if="!isAuthenticated">
               <button @click="showUpgradeModal()" class="mt-6 w-full py-3 bg-orange-500 text-white rounded-lg">Login / Register</button>
             </template>
-            <button @click="deleteAccount()" class="mt-3 w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10" :disabled="!isAuthenticated">Delete Account</button>
           </div>
         </div>
 
@@ -757,10 +983,25 @@
     </div>
   </div>
 
+  <!-- Delete Account Confirmation Modal -->
+  <div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-[10001] flex items-center justify-center modal-overlay">
+    <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
+      <button @click="closeDeleteModal()" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
+      <h3 class="text-2xl font-bold text-red-600 mb-4">⚠️ Permanently Delete Account</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">This action <strong>cannot</strong> be undone. All your data, audits, and connections will be erased forever.</p>
+      <p class="text-sm text-gray-500 mb-4">Please type your email address to confirm:</p>
+      <input type="email" x-model="deleteEmail" placeholder="your@email.com" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 mb-4">
+      <div class="flex gap-3">
+        <button @click="confirmDeleteAccount()" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg" :disabled="deleteEmail !== user.email">Delete Permanently</button>
+        <button @click="closeDeleteModal()" class="flex-1 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition">Cancel</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Checkout container -->
-<div id="checkout-container" class="fixed inset-0 z-[10001] bg-black bg-opacity-80 flex items-center justify-center hidden">
+<div id="checkout-container" class="fixed inset-0 z-[10002] bg-black bg-opacity-80 flex items-center justify-center hidden">
   <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl max-w-lg w-full relative">
     <button onclick="document.getElementById('checkout-container').classList.add('hidden')" class="absolute top-2 right-4 text-3xl text-gray-500">&times;</button>
     <div id="checkout-embedded"></div>
@@ -830,6 +1071,11 @@ function dashboardApp() {
     analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
     displayCount: 10,
 
+    // Password & delete modals
+    passwordForm: { current: '', new: '', confirm: '' },
+    showDeleteModal: false,
+    deleteEmail: '',
+
     tabs: [
       { id: 'dashboard', label: 'Dashboard' },
       { id: 'audits', label: 'Audits' },
@@ -837,6 +1083,7 @@ function dashboardApp() {
       { id: 'realtime', label: 'Real‑time' },
       { id: 'gsc', label: 'Search Console' },
       { id: 'integrations', label: 'Integrations' },
+      { id: 'upgrade', label: 'Upgrade' },
       { id: 'settings', label: 'Settings' }
     ],
 
@@ -893,7 +1140,7 @@ function dashboardApp() {
       }
     },
 
-    // MARK: GSC State - START
+    // ---- GSC State ----
     gsc: {
       connected: false,
       loading: false,
@@ -914,7 +1161,6 @@ function dashboardApp() {
       days: 7,
       lastUpdated: null
     },
-    // MARK: GSC State - END
 
     // ---- Init ----
     async initDashboard() {
@@ -922,15 +1168,17 @@ function dashboardApp() {
       if (token) {
         await this.fetchAccountInfo();
         this.checkGA4Connection();
-        // Restore GSC connection if backend says connected
         if (this.user.gscConnected) {
           this.gsc.connected = true;
           this.gsc.siteUrl = this.user.gscSiteUrl || '';
-          // Fetch data when tab becomes active (already handled in watcher)
+        } else {
+          // If not connected, load demo data
+          this.loadGSCDemoData();
         }
       } else {
         this.displayCount = 5;
         this.loadDemoData();
+        this.loadGSCDemoData();
       }
       this.loadAuditHistory();
       document.addEventListener('switchTab', (e) => {
@@ -950,14 +1198,12 @@ function dashboardApp() {
         }
       }
 
-      // MARK: GSC OAuth callback handling - START
       const gscCode = urlParams.get('gsc_code');
       if (gscCode) {
         const newUrl = window.location.pathname + window.location.search.replace(/[?&]gsc_code=[^&]*/, '').replace(/^&/, '?');
         window.history.replaceState({}, document.title, newUrl || '/dashboard/');
         const rawSite = prompt('Enter your GSC site URL (e.g., example.com or https://example.com/) – we\'ll auto‑convert the format:');
         if (rawSite) {
-          // Convert to correct format
           let siteUrl = rawSite.trim();
           if (!siteUrl.startsWith('sc-domain:') && !siteUrl.startsWith('http://') && !siteUrl.startsWith('https://')) {
             siteUrl = 'sc-domain:' + siteUrl;
@@ -970,16 +1216,13 @@ function dashboardApp() {
           this.gsc.error = 'Site URL is required to connect.';
         }
       }
-      // MARK: GSC OAuth callback handling - END
 
-      // MARK: Active tab watcher - with GSC case
       this.$watch('activeDashboardTab', (newTab) => {
         if (newTab === 'realtime' && this.user.tier === 'enterprise' && this.ga4.connected) {
           this.startRealtimeInterval();
         } else {
           this.stopRealtimeInterval();
         }
-        // Auto-fetch GSC data when switching to the GSC tab
         if (newTab === 'gsc' && this.gsc.connected && this.gsc.data.length === 0) {
           this.fetchGSCReport();
         }
@@ -989,9 +1232,9 @@ function dashboardApp() {
     // ---- Demo data for guests ----
     loadDemoData() {
       this.ga4.totalSessions = 132;
-      this.ga4.totalUsers = 98;
+      this.ga4.totalUsers = 96;
       this.ga4.newUsers = 24;
-      this.ga4.totalViews = 281;
+      this.ga4.totalViews = 290;
       this.ga4.avgDaily = 17;
       this.ga4.conversionRate = 0.042;
       this.ga4.data = [
@@ -1032,7 +1275,51 @@ function dashboardApp() {
         { dimensions: ['/blog/ga4-guide', 'GA4 Guide'], metrics: [2, 60] }
       ];
       this.ga4.hasKeyEvents = true;
+      this.ga4.lastUpdated = 'demo data';
       setTimeout(() => this.updateCharts(), 500);
+    },
+
+    // ---- GSC Demo Data ----
+    loadGSCDemoData() {
+      this.gsc.totals = { clicks: 5, impressions: 948, ctr: 0.0053, position: 24.2 };
+      this.gsc.data = [
+        { keys: ['2026-03-03'], clicks: 0, impressions: 120, ctr: 0, position: 25.1 },
+        { keys: ['2026-03-04'], clicks: 1, impressions: 145, ctr: 0.0069, position: 23.8 },
+        { keys: ['2026-03-05'], clicks: 0, impressions: 98, ctr: 0, position: 27.3 },
+        { keys: ['2026-03-06'], clicks: 2, impressions: 210, ctr: 0.0095, position: 21.4 },
+        { keys: ['2026-03-07'], clicks: 1, impressions: 180, ctr: 0.0056, position: 22.9 },
+        { keys: ['2026-03-08'], clicks: 0, impressions: 95, ctr: 0, position: 26.7 },
+        { keys: ['2026-03-09'], clicks: 1, impressions: 100, ctr: 0.01, position: 24.0 }
+      ];
+      this.gsc.queries = [
+        { keys: ['seo audit tool'], clicks: 2, impressions: 180, ctr: 0.011, position: 12.4 },
+        { keys: ['traffic analytics'], clicks: 1, impressions: 95, ctr: 0.0105, position: 8.7 },
+        { keys: ['google search console guide'], clicks: 1, impressions: 120, ctr: 0.0083, position: 15.2 },
+        { keys: ['free seo checker'], clicks: 0, impressions: 210, ctr: 0, position: 18.9 },
+        { keys: ['keyword research tool'], clicks: 0, impressions: 87, ctr: 0, position: 22.1 }
+      ];
+      this.gsc.pages = [
+        { keys: ['/tools/seo-audit'], clicks: 2, impressions: 250, ctr: 0.008, position: 14.5 },
+        { keys: ['/blog/seo-tips'], clicks: 1, impressions: 180, ctr: 0.0056, position: 18.2 },
+        { keys: ['/analytics/dashboard'], clicks: 1, impressions: 95, ctr: 0.0105, position: 9.7 },
+        { keys: ['/tools/keyword-finder'], clicks: 0, impressions: 220, ctr: 0, position: 21.3 },
+        { keys: ['/contact'], clicks: 0, impressions: 70, ctr: 0, position: 34.8 }
+      ];
+      this.gsc.countries = [
+        { keys: ['United States'], clicks: 3, impressions: 450 },
+        { keys: ['United Kingdom'], clicks: 1, impressions: 180 },
+        { keys: ['Canada'], clicks: 0, impressions: 95 },
+        { keys: ['Australia'], clicks: 0, impressions: 80 },
+        { keys: ['Germany'], clicks: 1, impressions: 70 }
+      ];
+      this.gsc.devices = [
+        { keys: ['Desktop'], clicks: 3, impressions: 580 },
+        { keys: ['Mobile'], clicks: 2, impressions: 320 },
+        { keys: ['Tablet'], clicks: 0, impressions: 48 }
+      ];
+      this.gsc.lastUpdated = 'demo data';
+      this.gsc.change = { clicks: 0, impressions: 0, ctr: 0, position: 0 };
+      setTimeout(() => this.updateGSCCharts(), 500);
     },
 
     // ---- Auth ----
@@ -1056,11 +1343,15 @@ function dashboardApp() {
           localStorage.removeItem('authToken');
           this.isAuthenticated = false;
           this.displayCount = 5;
+          this.loadDemoData();
+          this.loadGSCDemoData();
         }
       } catch {
         localStorage.removeItem('authToken');
         this.isAuthenticated = false;
         this.displayCount = 5;
+        this.loadDemoData();
+        this.loadGSCDemoData();
       }
     },
 
@@ -1178,7 +1469,7 @@ function dashboardApp() {
       this.fetchCachedReport(true);
     },
 
-    // ---- Core GA4 fetch with caching ----
+    // ---- Core GA4 fetch ----
     async fetchCachedReport(force = false) {
       if (!this.ga4.connected && this.isAuthenticated) return;
       this.ga4.loading = true;
@@ -1230,7 +1521,6 @@ function dashboardApp() {
         this.ga4.countries = countries.data || [];
         this.ga4.convertingPages = convertingPages.data || [];
 
-        // Comparison (Pro/Enterprise)
         if (this.user.tier !== 'free' && days !== 'custom') {
           const prevDays = days * 2;
           const prevRes = await fetch(`${API_BASE}/api/ga4/cached-report?type=overview&days=${prevDays}`, {
@@ -1333,7 +1623,6 @@ function dashboardApp() {
           }
         });
 
-        // Overview
         const sortedData = [...this.ga4.data].sort((a, b) => {
           const dateA = a.dimensions[0] || '';
           const dateB = b.dimensions[0] || '';
@@ -1366,7 +1655,6 @@ function dashboardApp() {
           });
         }
 
-        // New vs Returning (Doughnut)
         const nvrCtx = document.getElementById('newVsReturningChart');
         if (nvrCtx && this.ga4.newUsers !== undefined) {
           const newUsers = this.ga4.newUsers || 0;
@@ -1388,7 +1676,6 @@ function dashboardApp() {
           });
         }
 
-        // Sources Pie (Doughnut)
         const pieCtx = document.getElementById('sourcesPieChart');
         if (pieCtx && this.ga4.sources.length) {
           const labels = this.ga4.sources.map(r => r.dimensions.join(' / '));
@@ -1410,7 +1697,6 @@ function dashboardApp() {
           });
         }
 
-        // Sources Bar
         const barCtx = document.getElementById('sourcesBarChart');
         if (barCtx && this.ga4.sources.length && this.ga4.hasKeyEvents) {
           const labels = this.ga4.sources.map(r => r.dimensions.join(' / '));
@@ -1427,7 +1713,6 @@ function dashboardApp() {
           });
         }
 
-        // Device (Doughnut)
         const devCtx = document.getElementById('devicePieChart');
         if (devCtx && this.ga4.devices.length) {
           const labels = this.ga4.devices.map(r => r.dimensions[0] || 'Other');
@@ -1449,7 +1734,6 @@ function dashboardApp() {
           });
         }
 
-        // Countries Bar
         const ctryCtx = document.getElementById('countriesBarChart');
         if (ctryCtx && this.ga4.countries.length) {
           const labels = this.ga4.countries.map(r => r.dimensions[0] || 'Unknown');
@@ -1549,7 +1833,6 @@ function dashboardApp() {
       URL.revokeObjectURL(url);
     },
 
-    // MARK: GSC Methods - START
     // ---- GSC methods ----
     connectGSC() {
       if (!this.isAuthenticated) { this.showUpgradeModal(); return; }
@@ -1579,7 +1862,6 @@ function dashboardApp() {
         if (res.ok) {
           this.gsc.connected = true;
           this.gsc.siteUrl = siteUrl;
-          // Update user object for persistence
           this.user.gscConnected = true;
           this.user.gscSiteUrl = siteUrl;
           this.fetchGSCReport();
@@ -1607,6 +1889,7 @@ function dashboardApp() {
           this.user.gscSiteUrl = null;
           this.clearGSCData();
           this.gsc.lastUpdated = null;
+          this.loadGSCDemoData(); // fallback to demo
         }
       } catch (err) {
         this.gsc.error = 'Disconnect failed: ' + err.message;
@@ -1645,8 +1928,6 @@ function dashboardApp() {
       start.setDate(start.getDate() - this.gsc.days);
       const startDate = start.toISOString().split('T')[0];
 
-      console.log('GSC fetch range:', startDate, 'to', endDate);
-
       try {
         const types = ['overview', 'queries', 'pages', 'countries', 'devices'];
         const promises = types.map(type => {
@@ -1658,7 +1939,6 @@ function dashboardApp() {
 
         const [overview, queries, pages, countries, devices] = await Promise.all(promises);
 
-        // Overview: fill missing dates
         const originalRows = overview.data || [];
         this.gsc.totals = {
           clicks: originalRows.reduce((s, r) => s + r.clicks, 0),
@@ -1667,7 +1947,6 @@ function dashboardApp() {
           position: originalRows.length ? (originalRows.reduce((s, r) => s + r.position, 0) / originalRows.length) : 0
         };
 
-        // Fill missing dates for chart
         const dateMap = {};
         originalRows.forEach(row => {
           const key = row.keys[0];
@@ -1692,13 +1971,10 @@ function dashboardApp() {
         this.gsc.countries = countries.data || [];
         this.gsc.devices = devices.data || [];
 
-        console.log('GSC data loaded:', { queries: this.gsc.queries.length, pages: this.gsc.pages.length });
-
         this.gsc.lastUpdated = new Date().toLocaleString();
         this.updateGSCCharts();
       } catch (err) {
         this.gsc.error = err.message;
-        console.error('GSC fetch error:', err);
       } finally {
         this.gsc.loading = false;
       }
@@ -1717,7 +1993,6 @@ function dashboardApp() {
         if (ctx && this.gsc.data.length) {
           const labels = this.gsc.data.map(r => {
             const d = r.keys[0] || '';
-            // shorten date display
             const parts = d.split('-');
             if (parts.length === 3) return parts[1] + '/' + parts[2];
             return d;
@@ -1799,7 +2074,6 @@ function dashboardApp() {
       a.click();
       URL.revokeObjectURL(url);
     },
-    // MARK: GSC Methods - END
 
     // ---- Audit History ----
     async loadAuditHistory() {
@@ -1983,25 +2257,74 @@ function dashboardApp() {
       this.dailyUsed = used;
     },
 
-    viewReport(audit) {
-      if (!this.requireAuth()) return;
-      const toolMap = {
-        'SEO Intent': '/seo-intent-tool/',
-        'Full SEO + UX': '/seo-ux-tool/',
-        'Local SEO': '/local-seo-tool/',
-        'Product SEO': '/product-seo-tool/',
-        'Entity Extractor': '/seo-entity-extractor-tool/',
-        'Topical Authority': '/topical-authority-audit-tool/',
-        'Schema Generator': '/schema-generator/',
-        'GEO / AI Search': '/ai-search-optimization-tool/',
-        'Voice Search': '/ai-voice-search-tool/',
-        'AI Content Audit': '/ai-audit-tool/',
-        'Quit Risk': '/quit-risk-tool/',
-        'Keyword Research': '/keyword-research-tool/',
-        'Keyword Placement': '/keyword-tool/'
-      };
-      const path = toolMap[audit.tool] || '/';
-      window.location.href = path + '?url=' + encodeURIComponent(audit.url);
+    // ---- Settings: Billing portal ----
+    async manageBilling() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/portal`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.url) window.location.href = data.url;
+        else alert('Failed to load billing portal.');
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    },
+
+    // ---- Change Password ----
+    async changePassword() {
+      if (!this.isAuthenticated) { alert('You must be logged in.'); return; }
+      const { current, new: newPw, confirm } = this.passwordForm;
+      if (newPw !== confirm) { alert('New passwords do not match.'); return; }
+      if (newPw.length < 8) { alert('New password must be at least 8 characters.'); return; }
+      // We'll use the reset-password endpoint, but we need a token.
+      // Since we don't have a token for the current user, we'll first call a dedicated change-password endpoint.
+      // For simplicity, we'll just call /api/reset-password with a special token? Better: add a new endpoint.
+      // Since we only have the Worker code from earlier, we'll implement a simple client-side simulation.
+      // In production, you'd have a /api/change-password endpoint.
+      alert('Password change endpoint not yet implemented. Please contact support.');
+      // Reset form
+      this.passwordForm = { current: '', new: '', confirm: '' };
+    },
+
+    // ---- Delete Account ----
+    openDeleteModal() {
+      if (!this.isAuthenticated) return;
+      this.showDeleteModal = true;
+      this.deleteEmail = '';
+    },
+    closeDeleteModal() {
+      this.showDeleteModal = false;
+      this.deleteEmail = '';
+    },
+    async confirmDeleteAccount() {
+      if (this.deleteEmail !== this.user.email) {
+        alert('Email does not match. Please type your account email to confirm.');
+        return;
+      }
+      if (!confirm('Are you absolutely sure? This will erase all your data forever.')) return;
+      const token = localStorage.getItem('authToken');
+      try {
+        const res = await fetch(`${API_BASE}/api/user`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          alert('Account permanently deleted.');
+          localStorage.removeItem('authToken');
+          this.isAuthenticated = false;
+          this.user = { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null };
+          this.showDeleteModal = false;
+          window.location.href = '/';
+        } else {
+          const data = await res.json();
+          alert('Delete failed: ' + data.error);
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
     },
 
     logout() {
@@ -2010,13 +2333,6 @@ function dashboardApp() {
       this.user = { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null };
       this.stopRealtimeInterval();
       window.location.href = '/login/';
-    },
-
-    deleteAccount() {
-      if (!this.isAuthenticated) return;
-      if (confirm('Permanently delete your account? This cannot be undone.')) {
-        alert('Account deletion requested – contact support for full removal.');
-      }
     }
   }
 }
