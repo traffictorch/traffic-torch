@@ -1,3 +1,5 @@
+// Global Main JS
+
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
 // Day Night Mode
@@ -710,3 +712,6 @@ document.addEventListener('click', function(e) {
     }
   }
 });
+
+window.showUpgradeModal = showUpgradeModal;
+window.closeUpgradeModal = closeUpgradeModal;

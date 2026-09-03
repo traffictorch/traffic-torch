@@ -557,3 +557,11 @@ div.prose p {
   transform: scale(1);
   opacity: 1;
 }
+
+#upgradeModal {
+  position: sticky !important;
+  top: 0 !important;
+  height: 100vh !important;
+  width: 100% !important;
+  z-index: 99999 !important;
+}
