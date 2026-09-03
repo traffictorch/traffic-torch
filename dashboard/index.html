@@ -1134,6 +1134,11 @@ function dashboardApp() {
 
     // ---- Init ----
     async initDashboard() {
+    // add the hash-reading code here, at the very top
+      const hash = window.location.hash.replace('#', '');
+      if (hash && this.tabs.some(t => t.id === hash)) {
+        this.activeDashboardTab = hash;
+      }
       const token = localStorage.getItem('authToken');
       if (token) {
         await this.fetchAccountInfo();
@@ -2296,13 +2301,19 @@ function dashboardApp() {
       }
     },
 
-    logout() {
-      localStorage.removeItem('authToken');
-      this.isAuthenticated = false;
-      this.user = { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null };
-      this.stopRealtimeInterval();
-      window.location.href = '/login/';
-    }
+logout() {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('traffic_torch_jwt');
+  localStorage.removeItem('torch_token');
+  this.isAuthenticated = false;
+  this.user = { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null };
+  this.stopRealtimeInterval();
+  
+  // Notify the dot script to update
+  document.dispatchEvent(new CustomEvent('loginStatusChanged'));
+  
+  window.location.href = '/login/';
+}
   }
 }
 

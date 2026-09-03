@@ -1,27 +1,42 @@
 <!-- mobile-menu.html – Pro Portal dropdown (collapsible) + Login at bottom -->
 <nav class="flex flex-col gap-6 py-20 px-4 text-xl">
 
-  <!-- Pro Portal – dropdown (collapsible) -->
-  <div>
-    <button
-      type="button"
-      class="group flex items-center justify-between w-full text-black dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none pro-menu-link"
-      aria-expanded="false"
-      data-category="proportal-mobile"
-    >
-      🚥 Pro Portal
-      <span class="text-sm transition-transform">▼</span>
-    </button>
-    <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="proportal-mobile">
-      <a href="/dashboard/#" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="dashboard">📊 Dashboard</a>
-      <a href="/dashboard/#" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="audits">📋 Audits</a>
-      <a href="/dashboard/#" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="analytics">📈 Analytics</a>
-      <a href="/dashboard/#" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="realtime">🔴 Real‑time</a>
-      <a href="/dashboard/#" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="gsc">🔍 Search Console</a>
-      <a href="/dashboard/#" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="integrations">🔗 Integrations</a>
-      <a href="/dashboard/#" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="upgrade">🚀 Upgrade</a>
-      <a href="/dashboard/#" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="settings">⚙️ Settings</a>
-    </div>
+<!-- Pro Portal – mobile (collapsible) -->
+<div>
+  <button
+    type="button"
+    class="pro-menu-link group flex items-center justify-between w-full text-black dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
+    aria-expanded="false"
+    data-category="proportal-mobile"
+  >
+    🚥 Pro Portal
+    <span class="text-sm transition-transform">▼</span>
+  </button>
+  <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="proportal-mobile">
+    <a href="/dashboard/#dashboard" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="dashboard">📊 Dashboard</a>
+    <a href="/dashboard/#audits" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="audits">📋 Audits</a>
+    <a href="/dashboard/#analytics" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="analytics">📈 Analytics</a>
+    <a href="/dashboard/#realtime" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="realtime">🔴 Real‑time</a>
+    <a href="/dashboard/#gsc" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="gsc">🔍 Search Console</a>
+    <a href="/dashboard/#integrations" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="integrations">🔗 Integrations</a>
+    <a href="/dashboard/#upgrade" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="upgrade">🚀 Upgrade</a>
+    <a href="/dashboard/#settings" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="settings">⚙️ Settings</a>
+  </div>
+</div>
+  
+    <!-- UX Tools group -->
+  <button
+    type="button"
+    class="group flex items-center justify-between w-full text-black dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
+    aria-expanded="false"
+    data-category="ux-mobile"
+  >
+    🛡️ UX Tools
+    <span class="text-sm transition-transform">▼</span>
+  </button>
+  <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="ux-mobile">
+    <a href="/quit-risk-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚠️ Quit Risk</a>
+    <a href="/#seo-ux-tool" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚖️ SEO + UX</a>
   </div>
 
   <!-- SEO Tools group -->
@@ -57,21 +72,6 @@
     <a href="/ai-search-optimization-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🔍 GEO Audit</a>
     <a href="/ai-voice-search-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🎙️ AI Voice Search</a>
     <a href="/ai-audit-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🤖 AI Content</a>
-  </div>
-
-  <!-- UX Tools group -->
-  <button
-    type="button"
-    class="group flex items-center justify-between w-full text-black dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    data-category="ux-mobile"
-  >
-    🛡️ UX Tools
-    <span class="text-sm transition-transform">▼</span>
-  </button>
-  <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="ux-mobile">
-    <a href="/quit-risk-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚠️ Quit Risk</a>
-    <a href="/#seo-ux-tool" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚖️ SEO + UX</a>
   </div>
   
   <!-- Keyword Tools group -->

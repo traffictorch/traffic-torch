@@ -1307,7 +1307,7 @@
   });
 </script>
 
-<!-- ===== FIXED UPGRADE MODAL – ALWAYS CENTERED IN VIEWPORT ===== -->
+<!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
   <div class="relative w-full max-w-md bg-white/10 dark:bg-gray-900/80 backdrop-blur-2xl rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto" id="upgradeModalContent">
     
@@ -1324,15 +1324,15 @@
     </p>
 
     <div class="mt-6 space-y-4">
-      <!-- Pro -->
-      <button onclick="window.upgradeToPlan('pro')" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg">
+      <!-- Pro link -->
+      <a href="/upgrade/" class="block w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg text-center">
         Upgrade to Pro – $6/month or $48/year
-      </button>
+      </a>
 
-      <!-- Enterprise -->
-      <button onclick="window.upgradeToPlan('enterprise')" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow-lg">
+      <!-- Enterprise link -->
+      <a href="/upgrade/" class="block w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow-lg text-center">
         Upgrade to Enterprise – $68/month
-      </button>
+      </a>
     </div>
 
     <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">

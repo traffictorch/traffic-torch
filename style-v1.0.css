@@ -565,3 +565,14 @@ div.prose p {
   width: 100% !important;
   z-index: 99999 !important;
 }
+
+/* Pro badge RED/GREEN dot */
+.pro-badge {
+  display: inline-block !important;
+  width: 0.625rem !important;
+  height: 0.625rem !important;
+  border-radius: 9999px !important;
+  margin-left: 0.5rem !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+}

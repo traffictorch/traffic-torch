@@ -560,44 +560,45 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================================
-// NEW: Pro Portal green dot (always shows "Pro Portal")
+// Pro Portal dot – green when logged in, red when logged out
 // ==========================================================
+function updateProPortalDot() {
+  const token = localStorage.getItem('authToken') || 
+                localStorage.getItem('traffic_torch_jwt') || 
+                localStorage.getItem('torch_token');
+  const isLoggedIn = token && token !== 'null' && token !== 'undefined';
+
+  console.log('🟢 Dot check – token:', token, 'isLoggedIn:', isLoggedIn);
+
+  const links = document.querySelectorAll('.pro-menu-link');
+  links.forEach(link => {
+    let badge = link.querySelector('.pro-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'pro-badge';
+      link.appendChild(badge);
+    }
+    // Update class – remove old colors, add correct one
+    badge.className = `pro-badge inline-block w-2.5 h-2.5 rounded-full ml-2 ${isLoggedIn ? 'bg-green-500' : 'bg-red-500'}`;
+  });
+}
+
+// Run on page load (after menus load)
 document.addEventListener('DOMContentLoaded', () => {
   const checkMenusLoaded = setInterval(() => {
     const desktopPlaceholder = document.getElementById('desktop-menu-placeholder');
     const mobilePlaceholder = document.getElementById('mobile-menu-placeholder');
-   
     if (desktopPlaceholder && mobilePlaceholder &&
         desktopPlaceholder.innerHTML.trim() !== '' &&
         mobilePlaceholder.innerHTML.trim() !== '') {
-     
       clearInterval(checkMenusLoaded);
-     
-      const token = localStorage.getItem('authToken');
-      // Find all Pro Portal top-level buttons/links with class .pro-menu-link
-      const links = document.querySelectorAll('.pro-menu-link');
-     
-      links.forEach(link => {
-        // Ensure the label is "Pro Portal" – no swap logic needed
-        const textSpan = link.querySelector('.sidebar-text') || link.querySelector('.text-black, .text-gray-100');
-        if (textSpan) {
-          // Only set if it's not already set (prevent duplication)
-          if (!textSpan.textContent.includes('Pro Portal')) {
-            textSpan.textContent = ' Pro Portal';
-          }
-        }
-        // Green dot if logged in
-        const existingBadge = link.querySelector('.pro-badge');
-        if (existingBadge) existingBadge.remove();
-        if (token) {
-          const badge = document.createElement('span');
-          badge.className = 'inline-block w-2.5 h-2.5 bg-green-500 rounded-full ml-2 pro-badge';
-          link.appendChild(badge);
-        }
-      });
+      updateProPortalDot();
     }
   }, 100);
 });
+
+// Also listen for a custom event to update when login status changes
+document.addEventListener('loginStatusChanged', updateProPortalDot);
 
 // ==========================================================
 // NEW: Event delegation for [data-tab] links (desktop + mobile)
@@ -605,13 +606,17 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('click', (e) => {
   const tabLink = e.target.closest('[data-tab]');
   if (tabLink) {
-    e.preventDefault();
-    const tabId = tabLink.dataset.tab;
-    if (tabId) {
-      // Dispatch a custom event that the Alpine component listens to
-      const event = new CustomEvent('switchTab', { detail: { tab: tabId } });
-      document.dispatchEvent(event);
+    const currentPath = window.location.pathname;
+    // Only intercept if we are on the dashboard page
+    if (currentPath === '/dashboard/' || currentPath === '/dashboard' || currentPath === '/pro/' || currentPath === '/pro') {
+      e.preventDefault();
+      const tabId = tabLink.dataset.tab;
+      if (tabId) {
+        const event = new CustomEvent('switchTab', { detail: { tab: tabId } });
+        document.dispatchEvent(event);
+      }
     }
+    // otherwise, do nothing – let the link navigate normally
   }
 });
 

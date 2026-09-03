@@ -457,21 +457,6 @@
   </form>
 </div>
 
-<div id="upgradeModal" class="hidden fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-50 flex justify-center pt-20 md:pt-32">
-  <div class="bg-white dark:bg-gray-900 rounded-lg p-6 max-w-md w-full text-center text-gray-800 dark:text-gray-200 shadow-xl">
-    <h2 class="text-xl font-bold mb-4">Daily Limit Reached</h2>
-    <p class="mb-6">You've used all your audits today. Upgrade to Pro USD $48 per year for 25 daily SEO, UX & GEO analysis runs. Secure Stripe Checkout</p>
-    <a href="/pro/" 
-       class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-green-600 transition">
-      Upgrade to Pro
-    </a>
-	<button onclick="document.getElementById('upgradeModal').classList.add('hidden')"
-            class="mt-6 block mx-auto text-gray-600 dark:text-gray-400 underline hover:text-gray-800 dark:hover:text-gray-200">
-      Close
-    </button>
-  </div>
-</div>
-
 <!-- Main single loading spinner -->
 <div id="loading" class="hidden mt-12 flex flex-col items-center justify-center py-12 bg-white dark:bg-gray-900 rounded-3xl shadow-inner border border-orange-200 dark:border-gray-700">
   <div class="relative">
@@ -1381,6 +1366,44 @@
 <script src="/seo-intent-tool/module-explanations-v1.0.js" type="module"></script>
 <script src="/seo-intent-tool/script-v1.4.js" type="module"></script>
 <script type="module" src="/shared/google-analytics.js"></script>
+
+<!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
+<div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+  <div class="relative w-full max-w-md bg-white/10 dark:bg-gray-900/80 backdrop-blur-2xl rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto" id="upgradeModalContent">
+    
+    <!-- Close button -->
+    <button onclick="window.closeUpgradeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white text-2xl">&times;</button>
+
+    <!-- Icon -->
+    <div class="text-5xl mb-4">🚀</div>
+
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Daily Limit Reached</h2>
+    <p class="mt-2 text-gray-600 dark:text-gray-300">
+      You’ve used all your free audits today.<br>
+      Choose a plan to continue:
+    </p>
+
+    <div class="mt-6 space-y-4">
+      <!-- Pro link -->
+      <a href="/upgrade/" class="block w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg text-center">
+        Upgrade to Pro – $6/month or $48/year
+      </a>
+
+      <!-- Enterprise link -->
+      <a href="/upgrade/" class="block w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow-lg text-center">
+        Upgrade to Enterprise – $68/month
+      </a>
+    </div>
+
+    <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">
+      Pro: 25 audits/day • Enterprise: 300 audits/day + real‑time analytics
+    </p>
+
+    <button onclick="window.closeUpgradeModal()" class="mt-4 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 underline">
+      Maybe later
+    </button>
+  </div>
+</div>
 
 <noscript>
   <div class="max-w-5xl mx-auto px-6 py-12 prose dark:prose-invert">
