@@ -106,7 +106,6 @@
       background: rgba(255,255,255,0.05);
     }
 
-    /* Delete modal overlay */
     .modal-overlay {
       background: rgba(0,0,0,0.7);
       backdrop-filter: blur(4px);
@@ -474,7 +473,7 @@
                   <button x-show="user.tier !== 'free'" @click="exportCSV('topContent')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
                 </div>
                 <div x-show="ga4.topContent.length > 0">
-                  <!-- Desktop: Table (visible on sm and up) -->
+                  <!-- Desktop: Table -->
                   <div class="block overflow-x-auto">
                     <table class="w-full text-left text-sm">
                       <thead class="border-b border-gray-200 dark:border-gray-700">
@@ -492,7 +491,7 @@
                       </tbody>
                     </table>
                   </div>
-                  <!-- Mobile: Cards (visible only on xs) -->
+                  <!-- Mobile Cards -->
                   <div class="sm:hidden space-y-3">
                     <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
                       <div class="glass rounded-xl p-3">
@@ -517,47 +516,39 @@
                 <div x-show="ga4.topContent.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No content data available.</div>
               </div>
 
-              <!-- ======== TRAFFIC SOURCES (Pro/Enterprise) ======== -->
+              <!-- ======== TRAFFIC SOURCES ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">📊 Traffic Sources</h4>
                 <div x-show="ga4.sources.length > 0">
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <canvas id="sourcesPieChart" height="150"></canvas>
-                    </div>
-                    <div>
-                      <canvas id="sourcesBarChart" height="150"></canvas>
-                    </div>
+                    <div><canvas id="sourcesPieChart" height="150"></canvas></div>
+                    <div><canvas id="sourcesBarChart" height="150"></canvas></div>
                   </div>
                 </div>
                 <div x-show="ga4.sources.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No traffic source data available.</div>
               </div>
 
-              <!-- ======== DEVICE BREAKDOWN (Pro/Enterprise) ======== -->
+              <!-- ======== DEVICE BREAKDOWN ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">📱 Device Breakdown</h4>
-                <div x-show="ga4.devices.length > 0" class="max-w-sm mx-auto">
-                  <canvas id="devicePieChart" height="120"></canvas>
-                </div>
+                <div x-show="ga4.devices.length > 0" class="max-w-sm mx-auto"><canvas id="devicePieChart" height="120"></canvas></div>
                 <div x-show="ga4.devices.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No device data available.</div>
               </div>
 
-              <!-- ======== GEOGRAPHIC (Pro/Enterprise) ======== -->
+              <!-- ======== GEOGRAPHIC ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">🌍 Geographic Breakdown</h4>
                 <div x-show="ga4.countries.length > 0">
                   <p class="text-sm text-gray-500 text-center mb-1">Sessions by Country</p>
-                  <div class="max-h-64 overflow-hidden">
-                    <canvas id="countriesBarChart" height="150"></canvas>
-                  </div>
+                  <div class="max-h-64 overflow-hidden"><canvas id="countriesBarChart" height="150"></canvas></div>
                 </div>
                 <div x-show="ga4.countries.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No geographic data available.</div>
               </div>
 
-              <!-- ======== TOP CONVERTING PAGES (Pro/Enterprise) ======== -->
+              <!-- ======== TOP CONVERTING PAGES ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <div class="flex justify-between items-center mb-3">
@@ -565,7 +556,6 @@
                   <button x-show="user.tier !== 'free'" @click="exportCSV('convertingPages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
                 </div>
                 <div x-show="ga4.convertingPages.length > 0">
-                  <!-- Desktop: Table -->
                   <div class="block overflow-x-auto">
                     <table class="w-full text-left text-sm">
                       <thead class="border-b border-gray-200 dark:border-gray-700">
@@ -583,7 +573,6 @@
                       </tbody>
                     </table>
                   </div>
-                  <!-- Mobile: Cards -->
                   <div class="sm:hidden space-y-3">
                     <template x-for="(item, idx) in ga4.convertingPages.slice(0, 10)" :key="idx">
                       <div class="glass rounded-xl p-3">
@@ -600,7 +589,6 @@
               </div>
 
             </div><!-- end !loading -->
-
           </div>
         </div>
 
@@ -749,17 +737,13 @@
               <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h4 class="text-lg font-semibold mb-3 text-center">🌍 Top Countries</h4>
-                  <div x-show="gsc.countries.length > 0" class="h-64">
-                    <canvas id="gscCountriesChart"></canvas>
-                  </div>
+                  <div x-show="gsc.countries.length > 0" class="h-64"><canvas id="gscCountriesChart"></canvas></div>
                   <div x-show="gsc.countries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No country data.</div>
                 </div>
                 <div>
                   <h4 class="text-lg font-semibold mb-3 text-center">📱 Devices</h4>
                   <div x-show="gsc.devices.length > 0" class="flex justify-center items-center h-64">
-                    <div class="w-[200px] h-[200px]">
-                      <canvas id="gscDevicesChart"></canvas>
-                    </div>
+                    <div class="w-[200px] h-[200px]"><canvas id="gscDevicesChart"></canvas></div>
                   </div>
                   <div x-show="gsc.devices.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No device data.</div>
                 </div>
@@ -811,18 +795,14 @@
               </div>
             </div>
 
-            <!-- Tool Access Table -->
+            <!-- Tool Access Table (All tools available, daily limits apply) -->
             <div class="mt-8">
-              <h4 class="text-lg font-semibold mb-3">🛠️ Tool Access by Tier</h4>
+              <h4 class="text-lg font-semibold mb-3">🛠️ Tool Access</h4>
+              <p class="text-sm text-gray-500 mb-3">All tools are available for every plan. Your daily run limit depends on your tier.</p>
               <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left">
                   <thead class="border-b border-gray-200 dark:border-gray-700">
-                    <tr>
-                      <th class="py-2 pr-4">Tool</th>
-                      <th class="py-2 pr-4">Free</th>
-                      <th class="py-2 pr-4">Pro</th>
-                      <th class="py-2">Enterprise</th>
-                    </tr>
+                    <tr><th class="py-2 pr-4">Tool</th><th class="py-2 pr-4">Free</th><th class="py-2 pr-4">Pro</th><th class="py-2">Enterprise</th></tr>
                   </thead>
                   <tbody>
                     <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">SEO Intent</td><td>✅</td><td>✅</td><td>✅</td></tr>
@@ -838,12 +818,12 @@
                     <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Quit Risk</td><td>✅</td><td>✅</td><td>✅</td></tr>
                     <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Research</td><td>✅</td><td>✅</td><td>✅</td></tr>
                     <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Placement</td><td>✅</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword vs</td><td>❌</td><td>✅</td><td>✅</td></tr>
-                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Homepage Tool</td><td>❌</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword vs</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Homepage Tool</td><td>✅</td><td>✅</td><td>✅</td></tr>
                   </tbody>
                 </table>
               </div>
-              <p class="text-xs text-gray-500 mt-2">✅ = Included &nbsp;❌ = Upgrade required</p>
+              <p class="text-xs text-gray-500 mt-2">Daily run limits: Free = 3, Pro = 25, Enterprise = 300</p>
             </div>
           </div>
         </div>
@@ -859,10 +839,9 @@
                 <h4 class="text-xl font-bold">Free</h4>
                 <p class="text-3xl font-black mt-2">$0</p>
                 <ul class="mt-4 space-y-2 text-sm text-left">
-                  <li>✅ 5 audits per day</li>
-                  <li>✅ 7‑day GA4 data</li>
-                  <li>✅ 7‑day GSC data</li>
-                  <li>✅ All core tools (except 2)</li>
+                  <li>✅ 3 runs per day</li>
+                  <li>✅ 7‑day GA4 & GSC data</li>
+                  <li>✅ All 15 tools</li>
                   <li>❌ No real‑time</li>
                   <li>❌ No custom date ranges</li>
                   <li>❌ No CSV exports</li>
@@ -874,9 +853,9 @@
               <div class="glass rounded-xl p-6 text-center border-2 border-orange-500 relative">
                 <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white text-xs px-3 py-1 rounded-full">Popular</span>
                 <h4 class="text-xl font-bold">Pro</h4>
-                <p class="text-3xl font-black mt-2">$19<span class="text-base font-normal">/mo</span></p>
+                <p class="text-3xl font-black mt-2">$48<span class="text-base font-normal">/year</span></p>
                 <ul class="mt-4 space-y-2 text-sm text-left">
-                  <li>✅ 50 audits per day</li>
+                  <li>✅ 25 runs per day</li>
                   <li>✅ 30‑day GA4 data</li>
                   <li>✅ 28‑day GSC data</li>
                   <li>✅ All 15 tools</li>
@@ -890,21 +869,21 @@
               <!-- Enterprise -->
               <div class="glass rounded-xl p-6 text-center border border-gray-200 dark:border-gray-700">
                 <h4 class="text-xl font-bold">Enterprise</h4>
-                <p class="text-3xl font-black mt-2">$49<span class="text-base font-normal">/mo</span></p>
+                <p class="text-3xl font-black mt-2">$68<span class="text-base font-normal">/mo</span></p>
+                <p class="text-sm text-gray-400">or $680/year</p>
                 <ul class="mt-4 space-y-2 text-sm text-left">
-                  <li>✅ Unlimited audits</li>
-                  <li>✅ 365‑day GA4 data</li>
-                  <li>✅ 365‑day GSC data</li>
+                  <li>✅ 300 runs per day</li>
+                  <li>✅ 365‑day GA4 & GSC data</li>
                   <li>✅ All 15 tools</li>
                   <li>✅ Real‑time</li>
                   <li>✅ Custom date ranges</li>
                   <li>✅ Dedicated support</li>
                 </ul>
-                <button @click="upgradeToPro()" class="mt-6 w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Contact Sales</button>
+                <button @click="contactSales()" class="mt-6 w-full py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Contact Sales</button>
               </div>
             </div>
 
-            <p class="text-center text-sm text-gray-500 mt-6">All plans include full access to the 15 Traffic Torch tools.</p>
+            <p class="text-center text-sm text-gray-500 mt-6">All plans include full access to all 15 Traffic Torch tools.</p>
           </div>
         </div>
 
@@ -936,15 +915,11 @@
               <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade Now</button>
             </div>
 
-            <!-- Change Password -->
+            <!-- Password Reset (send email) -->
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-3">🔒 Change Password</h4>
-              <form @submit.prevent="changePassword()" class="space-y-3">
-                <input type="password" x-model="passwordForm.current" placeholder="Current password" required class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                <input type="password" x-model="passwordForm.new" placeholder="New password (min 8 chars)" required minlength="8" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                <input type="password" x-model="passwordForm.confirm" placeholder="Confirm new password" required class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                <button type="submit" class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" :disabled="!isAuthenticated">Update Password</button>
-              </form>
+              <p class="text-sm text-gray-500 mb-3">We'll send a password reset link to your email address.</p>
+              <button @click="sendPasswordReset()" class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" :disabled="!isAuthenticated">Send Reset Email</button>
             </div>
 
             <!-- Delete Account -->
@@ -1058,21 +1033,24 @@ window.upgradeToPro = async function upgradeToPro() {
   }
 };
 
+window.contactSales = function contactSales() {
+  window.location.href = 'mailto:support@traffictorch.net?subject=Enterprise%20Traffic%20Torch';
+};
+
 // ----- Alpine Component -----
 function dashboardApp() {
   return {
     isAuthenticated: false,
     user: { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null },
     activeDashboardTab: 'dashboard',
-    dailyLimit: 50,
+    dailyLimit: 3, // will be updated from account-info
     selectedTool: 'seo-intent-tool',
     quickUrl: '',
     recentAudits: [],
     analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
     displayCount: 10,
 
-    // Password & delete modals
-    passwordForm: { current: '', new: '', confirm: '' },
+    // Delete modal
     showDeleteModal: false,
     deleteEmail: '',
 
@@ -1172,7 +1150,6 @@ function dashboardApp() {
           this.gsc.connected = true;
           this.gsc.siteUrl = this.user.gscSiteUrl || '';
         } else {
-          // If not connected, load demo data
           this.loadGSCDemoData();
         }
       } else {
@@ -1338,6 +1315,7 @@ function dashboardApp() {
           this.ga4.connected = data.ga4Connected || false;
           this.user.gscConnected = data.gscConnected || false;
           this.user.gscSiteUrl = data.gscSiteUrl || null;
+          this.dailyLimit = data.dailyLimit || 3;
           this.updateDisplayLimit();
         } else {
           localStorage.removeItem('authToken');
@@ -1889,7 +1867,7 @@ function dashboardApp() {
           this.user.gscSiteUrl = null;
           this.clearGSCData();
           this.gsc.lastUpdated = null;
-          this.loadGSCDemoData(); // fallback to demo
+          this.loadGSCDemoData();
         }
       } catch (err) {
         this.gsc.error = 'Disconnect failed: ' + err.message;
@@ -2208,7 +2186,7 @@ function dashboardApp() {
       const url = this.quickUrl.trim();
       if (!url) { alert('Please enter a valid URL'); return; }
       if (this.dailyUsed >= this.dailyLimit) {
-        alert('Daily audit limit reached. Upgrade to Pro for unlimited audits.');
+        alert(`Daily audit limit reached (${this.dailyLimit} runs). Upgrade to Pro for more.`);
         this.showUpgradeModal();
         return;
       }
@@ -2273,20 +2251,19 @@ function dashboardApp() {
       }
     },
 
-    // ---- Change Password ----
-    async changePassword() {
+    // ---- Send password reset email ----
+    sendPasswordReset() {
       if (!this.isAuthenticated) { alert('You must be logged in.'); return; }
-      const { current, new: newPw, confirm } = this.passwordForm;
-      if (newPw !== confirm) { alert('New passwords do not match.'); return; }
-      if (newPw.length < 8) { alert('New password must be at least 8 characters.'); return; }
-      // We'll use the reset-password endpoint, but we need a token.
-      // Since we don't have a token for the current user, we'll first call a dedicated change-password endpoint.
-      // For simplicity, we'll just call /api/reset-password with a special token? Better: add a new endpoint.
-      // Since we only have the Worker code from earlier, we'll implement a simple client-side simulation.
-      // In production, you'd have a /api/change-password endpoint.
-      alert('Password change endpoint not yet implemented. Please contact support.');
-      // Reset form
-      this.passwordForm = { current: '', new: '', confirm: '' };
+      fetch(`${API_BASE}/api/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: this.user.email })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert('Reset link sent to your email. Check your inbox.');
+      })
+      .catch(err => alert('Failed to send reset email.'));
     },
 
     // ---- Delete Account ----

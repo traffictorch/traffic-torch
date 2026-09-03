@@ -1,7 +1,7 @@
-<!-- desktop-menu.html – with Pro Portal dropdown and all existing tools -->
+<!-- desktop-menu.html – Pro Portal dropdown (toggle) + Login at bottom -->
 <nav class="p-2 space-y-4 flex-1">
 
-  <!-- Pro Portal – dropdown with tabs -->
+  <!-- Pro Portal – dropdown (collapsible) -->
   <div>
     <button
       type="button"
@@ -28,9 +28,21 @@
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📈</span>
         <span class="sidebar-text hidden md:block">Analytics</span>
       </a>
+      <a href="#" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="realtime">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔴</span>
+        <span class="sidebar-text hidden md:block">Real‑time</span>
+      </a>
+      <a href="#" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="gsc">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔍</span>
+        <span class="sidebar-text hidden md:block">Search Console</span>
+      </a>
       <a href="#" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="integrations">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔗</span>
         <span class="sidebar-text hidden md:block">Integrations</span>
+      </a>
+      <a href="#" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="upgrade">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🚀</span>
+        <span class="sidebar-text hidden md:block">Upgrade</span>
       </a>
       <a href="#" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="settings">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
@@ -210,4 +222,12 @@
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">💠</span>
     <span class="sidebar-text hidden md:block">Plugins</span>
   </a>
+
+  <!-- Login link at bottom (separate from dropdown) -->
+  <div class="mt-8 border-t border-white/10 dark:border-white/5 pt-4">
+    <a href="/login/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition px-3 py-2 rounded-lg">
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔑</span>
+      <span class="sidebar-text hidden md:block">Login</span>
+    </a>
+  </div>
 </nav>
