@@ -238,7 +238,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Mobile menu – with close button + body scroll lock
+// Mobile menu – with close button + body scroll lock + delegated close on link clicks
 document.addEventListener('DOMContentLoaded', () => {
   const button = document.getElementById('menuToggle');
   const menu = document.getElementById('mobileMenu');
@@ -259,13 +259,14 @@ document.addEventListener('DOMContentLoaded', () => {
       button.setAttribute('aria-expanded', 'false');
     });
   }
-  // Close on link click
-  menu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
+  // ✅ Close mobile menu when any link inside it is clicked (delegated)
+  menu.addEventListener('click', function(e) {
+    const link = e.target.closest('a');
+    if (link && menu.contains(link)) {
       menu.classList.add('hidden');
       document.body.classList.remove('overflow-hidden');
-      button.setAttribute('aria-expanded', 'false');
-    });
+      if (button) button.setAttribute('aria-expanded', 'false');
+    }
   });
 });
 
@@ -568,8 +569,6 @@ function updateProPortalDot() {
                 localStorage.getItem('torch_token');
   const isLoggedIn = token && token !== 'null' && token !== 'undefined';
 
-  console.log('🟢 Dot check – token:', token, 'isLoggedIn:', isLoggedIn);
-
   const links = document.querySelectorAll('.pro-menu-link');
   links.forEach(link => {
     let badge = link.querySelector('.pro-badge');
@@ -578,7 +577,6 @@ function updateProPortalDot() {
       badge.className = 'pro-badge';
       link.appendChild(badge);
     }
-    // Update class – remove old colors, add correct one
     badge.className = `pro-badge inline-block w-2.5 h-2.5 rounded-full ml-2 ${isLoggedIn ? 'bg-green-500' : 'bg-red-500'}`;
   });
 }

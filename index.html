@@ -434,7 +434,7 @@
       <div class="mt-4 text-center">
         <a href="/upgrade/" 
            style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important;">
-          🚀 Upgrade to Pro
+          🚀 Upgrade
         </a>
         <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
       </div>
@@ -477,7 +477,7 @@
       <div class="mt-4 text-center">
         <a href="/upgrade/" 
            style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important;">
-          🚀 Upgrade to Pro
+          🚀 Upgrade
         </a>
         <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
       </div>
@@ -485,106 +485,6 @@
 
   </div>
 </div>
-
-<script>
-  (function() {
-    const token = localStorage.getItem('authToken');
-    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
-
-    function setGA4Status(text, cls, bg) {
-      const el = document.getElementById('ga4-status');
-      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
-    }
-    function setGSCStatus(text, cls, bg) {
-      const el = document.getElementById('gsc-status');
-      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
-    }
-
-    function setExtraCTA(containerId, html) {
-      const el = document.getElementById(containerId);
-      if (el) el.innerHTML = html;
-    }
-
-    if (!token) {
-      setGA4Status('Demo mode', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
-      setGSCStatus('Demo mode', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
-      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
-      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
-      setExtraCTA('ga4-extra-cta', '');
-      setExtraCTA('gsc-extra-cta', '');
-      return;
-    }
-
-    (async function fetchData() {
-      try {
-        const res = await fetch(API_BASE + '/api/account-info', {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        const accountInfo = await res.json();
-        const ga4Connected = accountInfo.ga4Connected || false;
-        const gscConnected = accountInfo.gscConnected || false;
-
-        if (ga4Connected) {
-          try {
-            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
-              headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const d = await r.json();
-            const rows = d.data || [];
-            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
-            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
-            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
-            const newUsers = Math.round(users * 0.25);
-            document.getElementById('ga4-sessions').textContent = sessions;
-            document.getElementById('ga4-users').textContent = users;
-            document.getElementById('ga4-new-users').textContent = newUsers;
-            document.getElementById('ga4-views').textContent = views;
-            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
-            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
-            setExtraCTA('ga4-extra-cta', '');
-          } catch (e) {
-            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
-          }
-        } else {
-          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
-          document.getElementById('ga4-last-updated').textContent = 'Not connected';
-          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
-        }
-
-        if (gscConnected) {
-          try {
-            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
-              headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const d = await r.json();
-            const rows = d.data || [];
-            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
-            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
-            const ctr = impressions ? (clicks / impressions) : 0;
-            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
-            document.getElementById('gsc-clicks').textContent = clicks;
-            document.getElementById('gsc-impressions').textContent = impressions;
-            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
-            document.getElementById('gsc-position').textContent = position.toFixed(1);
-            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
-            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
-            setExtraCTA('gsc-extra-cta', '');
-          } catch (e) {
-            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
-          }
-        } else {
-          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
-          document.getElementById('gsc-last-updated').textContent = 'Not connected';
-          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
-        }
-      } catch (err) {
-        console.error('Homepage cards error:', err);
-        setExtraCTA('ga4-extra-cta', '');
-        setExtraCTA('gsc-extra-cta', '');
-      }
-    })();
-  })();
-</script>
 
 <!-- OFUX: Online Findability & User Experience – Zero FUX Given -->
 <div class="max-w-4xl mx-auto my-20">
@@ -1498,6 +1398,106 @@
     }
     runHomepageAnalysis(url, 'homepage-cards-container', 'homepage-ai-container');
   });
+</script>
+
+<script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Demo mode', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Demo mode', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
 </script>
 
 <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->

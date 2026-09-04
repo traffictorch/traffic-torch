@@ -562,7 +562,7 @@ export default {
         }
         const jwt = await signJWT(
           { id: user.id, status: user.subscription_status, tier: user.tier },
-          env.JWT_SECRET,
+          env.JWT_SECRET, 
           '7d'
         );
         return Response.redirect(`https://traffictorch.net/dashboard/?magic_token=${jwt}`, 302);
@@ -713,7 +713,7 @@ if (url.pathname === '/api/account-info' && method === 'GET') {
         }));
       }
 
-      // ---- Upgrade ----
+// ---- Upgrade ----
 if (url.pathname === '/api/upgrade' && method === 'POST') {
   const auth = request.headers.get('Authorization');
   if (!auth || !auth.startsWith('Bearer ')) {
@@ -728,31 +728,73 @@ if (url.pathname === '/api/upgrade' && method === 'POST') {
   }
 
   const { plan } = await request.json().catch(() => ({}));
-  const selectedPlan = plan === 'enterprise' ? 'enterprise' : 'pro';
 
   let priceId;
-  if (selectedPlan === 'enterprise') {
-    priceId = env.STRIPE_PRICE_ENTERPRISE_MONTHLY; // $68/month
-  } else {
-    priceId = env.STRIPE_PRICE_PRO_YEARLY;         // $48/year
+  switch (plan) {
+    case 'pro_6month':
+      priceId = env.STRIPE_PRICE_PRO_6MONTH;
+      break;
+    case 'pro_yearly':
+      priceId = env.STRIPE_PRICE_PRO_YEARLY;
+      break;
+    case 'pro_lifetime':
+      priceId = env.STRIPE_PRICE_PRO_LIFETIME;
+      break;
+    case 'enterprise_monthly':
+      priceId = env.STRIPE_PRICE_ENTERPRISE_MONTHLY;
+      break;
+    case 'enterprise_yearly':
+      priceId = env.STRIPE_PRICE_ENTERPRISE_YEARLY;
+      break;
+    default:
+      return corsResponse(JSON.stringify({ error: 'Invalid plan' }), 400);
   }
 
   if (!priceId) {
     return corsResponse(JSON.stringify({ error: 'Price ID not configured for this plan' }), 500);
   }
 
-  const stripe = new (await import('stripe')).default(env.STRIPE_SECRET_KEY);
-  const session = await stripe.checkout.sessions.create({
-    ui_mode: 'embedded',
-    mode: 'subscription',
-    payment_method_types: ['card'],
-    line_items: [{ price: priceId, quantity: 1 }],
-    return_url: 'https://traffictorch.net/upgrade/?session_id={CHECKOUT_SESSION_ID}',
-    client_reference_id: decoded.id.toString(),
-    metadata: { plan: selectedPlan }
-  });
+  try {
+    const isLifetime = plan === 'pro_lifetime';
+    const mode = isLifetime ? 'payment' : 'subscription';
 
-  return corsResponse(JSON.stringify({ clientSecret: session.client_secret }));
+    const stripeSecretKey = env.STRIPE_SECRET_KEY;
+    const body = new URLSearchParams({
+      'ui_mode': 'embedded',
+      'mode': mode,
+      'payment_method_types[]': 'card',
+      'line_items[0][price]': priceId,
+      'line_items[0][quantity]': '1',
+      'return_url': 'https://traffictorch.net/upgrade/?session_id={CHECKOUT_SESSION_ID}',
+      'client_reference_id': decoded.id.toString(),
+      'metadata[plan]': plan,
+    });
+
+    const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${stripeSecretKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: body.toString(),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Stripe API error:', data);
+      return corsResponse(JSON.stringify({ error: 'Stripe API error: ' + (data.error?.message || 'Unknown') }), 500);
+    }
+
+    if (!data.client_secret) {
+      return corsResponse(JSON.stringify({ error: 'No client_secret returned' }), 500);
+    }
+
+    return corsResponse(JSON.stringify({ clientSecret: data.client_secret }));
+  } catch (err) {
+    console.error('Upgrade error:', err.message, err.stack);
+    return corsResponse(JSON.stringify({ error: 'Upgrade failed: ' + err.message }), 500);
+  }
 }
 
       // ---- Session Status ----
@@ -795,32 +837,36 @@ if (url.pathname === '/api/upgrade' && method === 'POST') {
         return corsResponse('Webhook received', 200);
       }
 
-      // ---- Portal ----
-      if (url.pathname === '/api/portal' && method === 'GET') {
-        const auth = request.headers.get('Authorization');
-        if (!auth || !auth.startsWith('Bearer ')) {
-          return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
-        }
-        const token = auth.split(' ')[1];
-        let decoded;
-        try {
-          decoded = await verifyJWT(token, env.JWT_SECRET);
-        } catch {
-          return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
-        }
-        const user = await env.MY_BINDING.prepare(
-          'SELECT stripe_customer_id, subscription_status FROM users WHERE id = ?'
-        ).bind(decoded.id).first();
-        if (!user || user.subscription_status !== 'pro' || !user.stripe_customer_id) {
-          return corsResponse(JSON.stringify({ error: 'No active subscription' }), 403);
-        }
-        const stripe = new (await import('stripe')).default(env.STRIPE_SECRET_KEY);
-        const session = await stripe.billingPortal.sessions.create({
-          customer: user.stripe_customer_id,
-          return_url: 'https://traffictorch.net/dashboard/'
-        });
-        return corsResponse(JSON.stringify({ url: session.url }));
-      }
+// ---- Portal ----
+if (url.pathname === '/api/portal' && method === 'GET') {
+  const auth = request.headers.get('Authorization');
+  if (!auth || !auth.startsWith('Bearer ')) {
+    return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+  }
+  const token = auth.split(' ')[1];
+  let decoded;
+  try {
+    decoded = await verifyJWT(token, env.JWT_SECRET);
+  } catch {
+    return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401);
+  }
+  const user = await env.MY_BINDING.prepare(
+    'SELECT stripe_customer_id, subscription_status FROM users WHERE id = ?'
+  ).bind(decoded.id).first();
+  if (!user || !user.stripe_customer_id) {
+    return corsResponse(JSON.stringify({ error: 'No active subscription' }), 403);
+  }
+  // ✅ Allow both pro and enterprise
+  if (user.subscription_status !== 'pro' && user.subscription_status !== 'enterprise') {
+    return corsResponse(JSON.stringify({ error: 'No active subscription' }), 403);
+  }
+  const stripe = new (await import('stripe')).default(env.STRIPE_SECRET_KEY);
+  const session = await stripe.billingPortal.sessions.create({
+    customer: user.stripe_customer_id,
+    return_url: 'https://traffictorch.net/dashboard/'
+  });
+  return corsResponse(JSON.stringify({ url: session.url }));
+}
 
       // ---- Refresh Token ----
       if (url.pathname === '/api/refresh-token' && method === 'POST') {
