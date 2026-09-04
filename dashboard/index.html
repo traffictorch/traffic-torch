@@ -1168,7 +1168,16 @@
 <script>
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
-window.upgradeToPro = async function upgradeToPro() {
+// ---- Unified upgrade function (handles all plans + cleanup) ----
+window.upgradeToPlan = async function upgradeToPlan(plan = 'pro') {
+  // Destroy any existing checkout instance
+  if (window.currentCheckout) {
+    try {
+      window.currentCheckout.destroy();
+    } catch (e) {}
+    window.currentCheckout = null;
+  }
+
   const token = localStorage.getItem('authToken');
   if (!token) {
     window.location.href = '/login/';
@@ -1181,6 +1190,11 @@ window.upgradeToPro = async function upgradeToPro() {
       return;
     }
     container.classList.remove('hidden');
+
+    // Clear the mount element before mounting
+    const mountEl = document.getElementById('checkout-embedded');
+    if (mountEl) mountEl.innerHTML = '';
+
     const stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
     const fetchClientSecret = async () => {
       const response = await fetch(`${API_BASE}/api/upgrade`, {
@@ -1188,7 +1202,8 @@ window.upgradeToPro = async function upgradeToPro() {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({ plan })
       });
       if (!response.ok) {
         const errText = await response.text();
@@ -1199,20 +1214,60 @@ window.upgradeToPro = async function upgradeToPro() {
       return data.clientSecret;
     };
     const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
+    window.currentCheckout = checkout; // store reference
     checkout.mount('#checkout-embedded');
     localStorage.setItem('just_upgraded', 'true');
     setTimeout(() => {
       window.location.href = '/dashboard/';
     }, 15000);
   } catch (err) {
-    alert('Upgrade failed: ' + err.message);
+    alert('Upgrade error: ' + err.message);
     document.getElementById('checkout-container')?.classList.add('hidden');
+    if (window.currentCheckout) {
+      try { window.currentCheckout.destroy(); } catch(e) {}
+      window.currentCheckout = null;
+    }
   }
+};
+
+// Keep the old upgradeToPro for compatibility (calls upgradeToPlan)
+window.upgradeToPro = function() {
+  window.upgradeToPlan('pro');
 };
 
 window.contactSales = function contactSales() {
   window.location.href = 'mailto:support@traffictorch.net?subject=Enterprise%20Traffic%20Torch';
 };
+
+// ---- Cleanup on modal close ----
+document.addEventListener('DOMContentLoaded', function() {
+  // When the close button inside the modal is clicked
+  const closeBtn = document.querySelector('#checkout-container .checkout-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      const container = document.getElementById('checkout-container');
+      container?.classList.add('hidden');
+      if (window.currentCheckout) {
+        try { window.currentCheckout.destroy(); } catch(e) {}
+        window.currentCheckout = null;
+      }
+    });
+  }
+
+  // Click on backdrop
+  const container = document.getElementById('checkout-container');
+  if (container) {
+    container.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.add('hidden');
+        if (window.currentCheckout) {
+          try { window.currentCheckout.destroy(); } catch(e) {}
+          window.currentCheckout = null;
+        }
+      }
+    });
+  }
+});
 
 // ----- Alpine Component -----
 function dashboardApp() {

@@ -304,8 +304,16 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(() => {});
 });
 
-// ---- Universal upgrade function ----
+// ---- Universal upgrade function with cleanup ----
 window.upgradeToPlan = async function(plan = 'pro') {
+  // Destroy any existing checkout instance
+  if (window.currentCheckout) {
+    try {
+      window.currentCheckout.destroy();
+    } catch (e) {}
+    window.currentCheckout = null;
+  }
+
   const token = localStorage.getItem('authToken');
   if (!token) {
     alert('Please log in first. Redirecting to login...');
@@ -318,8 +326,6 @@ window.upgradeToPlan = async function(plan = 'pro') {
   if (!container || !mount) return;
 
   container.classList.add('active');
-
-  // ⚠️ Clear the mount element before showing spinner and mounting
   mount.innerHTML = '<div class="text-center py-8"><div class="spinner mx-auto"></div><p class="mt-4 text-gray-600 dark:text-gray-300">Loading checkout…</p></div>';
 
   try {
@@ -343,22 +349,51 @@ window.upgradeToPlan = async function(plan = 'pro') {
       return data.clientSecret;
     };
 
-    // Clear again before mounting (removes the spinner)
+    // Clear mount before mounting
     mount.innerHTML = '';
     const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
+    window.currentCheckout = checkout;
     checkout.mount('#checkout-mount');
-
     localStorage.setItem('just_upgraded', 'true');
   } catch (err) {
     alert('Upgrade error: ' + err.message);
     container.classList.remove('active');
     mount.innerHTML = '';
+    if (window.currentCheckout) {
+      try { window.currentCheckout.destroy(); } catch(e) {}
+      window.currentCheckout = null;
+    }
   }
 };
 
-// Close modal on backdrop click
-document.getElementById('checkout-container')?.addEventListener('click', function(e) {
-  if (e.target === this) this.classList.remove('active');
+// ---- Cleanup on modal close ----
+document.addEventListener('DOMContentLoaded', function() {
+  // The close button (×) inside the modal
+  const closeBtn = document.querySelector('#checkout-container .checkout-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      const container = document.getElementById('checkout-container');
+      container?.classList.remove('active');
+      if (window.currentCheckout) {
+        try { window.currentCheckout.destroy(); } catch(e) {}
+        window.currentCheckout = null;
+      }
+    });
+  }
+
+  // Backdrop click
+  const container = document.getElementById('checkout-container');
+  if (container) {
+    container.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('active');
+        if (window.currentCheckout) {
+          try { window.currentCheckout.destroy(); } catch(e) {}
+          window.currentCheckout = null;
+        }
+      }
+    });
+  }
 });
 
 // Handle return from Stripe
@@ -373,6 +408,11 @@ document.getElementById('checkout-container')?.addEventListener('click', functio
     document.body.prepend(msg);
     setTimeout(() => msg.remove(), 8000);
     localStorage.removeItem('just_upgraded');
+    // Cleanup any leftover checkout instance
+    if (window.currentCheckout) {
+      try { window.currentCheckout.destroy(); } catch(e) {}
+      window.currentCheckout = null;
+    }
   }
 })();
 </script>
