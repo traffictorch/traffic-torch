@@ -3,706 +3,356 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
-<title>Traffic Torch Pro – Dashboard</title>
-<meta name="description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
-<meta name="robots" content="noindex, nofollow">
-<link rel="canonical" href="https://traffictorch.net/pro/">
+  <title>Traffic Torch – Pricing &amp; Plans</title>
+  <meta name="description" content="Compare Traffic Torch plans: Free, Pro, and Enterprise. Find the right tier for your SEO, UX, and AI audits.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/pro/">
 
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
-<meta property="og:title" content="Traffic Torch Pro – Dashboard">
-<meta property="og:description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://traffictorch.net/pro/">
-<meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Traffic Torch Pro – Dashboard">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Traffic Torch – Pricing &amp; Plans">
+  <meta property="og:description" content="Compare Traffic Torch plans: Free, Pro, and Enterprise. Find the right tier for your SEO, UX, and AI audits.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/pro/">
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Traffic Torch – Pricing &amp; Plans">
 
-<!-- Preload CSS -->
-<link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="/style-v1.0.css"></noscript>
-<style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
-<link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
-<noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
+  <!-- Preload CSS (same as site) -->
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style-v1.0.css"></noscript>
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
 
-<script>
-  (function() {
-    const saved = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (saved === 'dark' || (!saved && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+  <!-- Additional global CSS (inlined to avoid extra request, but you can link if preferred) -->
+  <style>
+    /* Reuse glass and utility classes */
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+    .dark .glass { background: rgba(0,0,0,0.3); }
+
+    .plan-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
-  })();
-</script>
+    .plan-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px -12px rgba(0,0,0,0.25);
+    }
+    .dark .plan-card:hover {
+      box-shadow: 0 20px 40px -12px rgba(0,0,0,0.6);
+    }
 
-<script src="https://js.stripe.com/v3/"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    .plan-card .btn-cta {
+      margin-top: auto;
+      width: 100%;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 700;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+    .btn-cta:hover { opacity: 0.85; }
 
-<style>
-  [x-cloak] { display: none !important; }
-  .tab-active { border-bottom: 3px solid #f97316; color: #f97316; }
-  .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-  .dark .glass { background: rgba(0,0,0,0.3); }
-  .stat-card { transition: transform 0.2s; }
-  .stat-card:hover { transform: translateY(-4px); }
-  .result-detail { border-left: 3px solid #f97316; }
-</style>
+    .feature-check { color: #22c55e; font-weight: 700; }
+    .feature-missing { color: #9ca3af; }
 
+    .badge-pro {
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.75rem;
+      border-radius: 9999px;
+      display: inline-block;
+      letter-spacing: 0.5px;
+    }
+    .badge-enterprise {
+      background: #8b5cf6;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.75rem;
+      border-radius: 9999px;
+      display: inline-block;
+      letter-spacing: 0.5px;
+    }
+
+    .price-tag {
+      font-size: 2.5rem;
+      font-weight: 900;
+    }
+    .price-period {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: #6b7280;
+    }
+    .dark .price-period { color: #9ca3af; }
+
+    /* Plan grid responsive */
+    .plan-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .plan-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+      }
+    }
+    /* Fix for iOS Safari */
+    .plan-card { -webkit-tap-highlight-color: transparent; }
+  </style>
+
+  <!-- Stripe (for upgrade CTAs) and config -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="/config.js"></script>
+
+  <!-- Theme script (same as site) -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
-<!-- Alpine App -->
-<div x-data="combinedApp()" x-init="initApp()" class="flex flex-1 min-h-screen">
-
-  <!-- ======== AUTH FORMS (FULL) ======== -->
-  <div x-show="!isAuthenticated" class="flex-1 flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8">
-      <div class="flex justify-center mb-6">
-        <img src="/logo-160w.webp" class="w-16 rounded-xl" alt="Traffic Torch">
+  <!-- ===== HEADER (identical to other pages) ===== -->
+  <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+        <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden sm:block">Traffic Torch</span>
+      </a>
+      <div class="flex items-center gap-3">
+        <!-- Mobile menu toggle -->
+        <button id="menuToggle" class="md:hidden text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition">☰</button>
+        <!-- Desktop menu toggle -->
+        <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-2">☰</button>
+        <!-- Theme toggle -->
+        <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
       </div>
+    </div>
+    <!-- Mobile menu container -->
+    <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+      <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+      <div id="mobile-menu-placeholder"></div>
+    </div>
+  </header>
 
-      <!-- Tabs -->
-      <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
-        <button @click="activeTab='magic'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='magic' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Magic Link</button>
-        <button @click="activeTab='login'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='login' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Login</button>
-        <button @click="activeTab='register'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='register' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Register</button>
-      </div>
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="flex-1 container mx-auto px-4 py-12 md:py-20">
 
-      <!-- Message -->
-      <div x-show="message" class="mb-4 p-3 rounded-lg text-sm" :class="messageType==='success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" x-text="message"></div>
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Choose Your Plan</h1>
+      <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Get unlimited access to all Traffic Torch tools with the plan that fits your workflow.</p>
+    </div>
 
-      <!-- Magic Link -->
-      <div x-show="activeTab==='magic'" x-cloak>
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">Email</label>
-          <input type="email" x-model="magicEmail" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-        </div>
-        <button @click="sendMagicLink()" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition" :disabled="loading">Send Magic Link</button>
-      </div>
+    <!-- Plan Cards Grid -->
+    <div class="plan-grid max-w-6xl mx-auto">
 
-      <!-- Login -->
-      <div x-show="activeTab==='login'" x-cloak>
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">Email</label>
-          <input type="email" x-model="loginEmail" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-        </div>
-        <div class="mb-4 relative">
-          <label class="block text-sm font-medium mb-1">Password</label>
-          <input :type="loginPasswordVisible ? 'text' : 'password'" x-model="loginPassword" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none pr-10">
-          <button type="button" @click="loginPasswordVisible = !loginPasswordVisible" class="absolute right-3 bottom-3 text-gray-500">👁</button>
-        </div>
-        <button @click="login()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition" :disabled="loading">Login</button>
-        <div class="mt-2 text-right">
-          <button @click="showForgot=true" class="text-sm text-gray-500 hover:underline">Forgot password?</button>
-        </div>
-        <div x-show="showForgot" x-cloak class="mt-3 p-3 border border-gray-200 rounded-lg">
-          <p class="text-sm text-gray-600">Enter your email to reset password.</p>
-          <div class="flex gap-2 mt-2">
-            <input type="email" x-model="resetEmail" placeholder="Your email" class="flex-1 p-2 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500">
-            <button @click="sendResetLink()" class="px-4 py-2 bg-purple-600 text-white rounded-lg" :disabled="loading">Send</button>
+      <!-- FREE -->
+      <div class="plan-card glass rounded-2xl p-6 text-center flex flex-col">
+        <div class="flex-1">
+          <h2 class="text-2xl font-bold">Free</h2>
+          <div class="mt-2">
+            <span class="price-tag">$0</span>
+            <span class="price-period">forever</span>
           </div>
+          <ul class="mt-6 space-y-3 text-left text-sm">
+            <li><span class="feature-check">✓</span> 3 audits per day</li>
+            <li><span class="feature-check">✓</span> All 15 tools</li>
+            <li><span class="feature-check">✓</span> 7‑day data retention</li>
+            <li><span class="feature-missing">✗</span> CSV exports</li>
+            <li><span class="feature-missing">✗</span> Real‑time analytics</li>
+            <li><span class="feature-missing">✗</span> Custom date ranges</li>
+            <li><span class="feature-missing">✗</span> Priority support</li>
+            <li><span class="feature-missing">✗</span> Dedicated support</li>
+          </ul>
         </div>
+        <a href="/login/" class="btn-cta bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-600 transition">Login / Register</a>
       </div>
 
-      <!-- Register -->
-      <div x-show="activeTab==='register'" x-cloak>
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1">Email</label>
-          <input type="email" x-model="registerEmail" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
+      <!-- PRO -->
+      <div class="plan-card glass rounded-2xl p-6 text-center flex flex-col border-2 border-orange-500/30 relative">
+        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+          <span class="badge-pro">Most Popular</span>
         </div>
-        <div class="mb-4 relative">
-          <label class="block text-sm font-medium mb-1">Password</label>
-          <input :type="registerPasswordVisible ? 'text' : 'password'" x-model="registerPassword" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none pr-10">
-          <button type="button" @click="registerPasswordVisible = !registerPasswordVisible" class="absolute right-3 bottom-3 text-gray-500">👁</button>
+        <div class="flex-1">
+          <h2 class="text-2xl font-bold">Pro</h2>
+          <div class="mt-2">
+            <span class="price-tag">$48</span>
+            <span class="price-period">/ year</span>
+          </div>
+          <ul class="mt-6 space-y-3 text-left text-sm">
+            <li><span class="feature-check">✓</span> 25 audits per day</li>
+            <li><span class="feature-check">✓</span> All 15 tools</li>
+            <li><span class="feature-check">✓</span> 30‑day data retention</li>
+            <li><span class="feature-check">✓</span> CSV exports</li>
+            <li><span class="feature-missing">✗</span> Real‑time analytics</li>
+            <li><span class="feature-missing">✗</span> Custom date ranges</li>
+            <li><span class="feature-check">✓</span> Priority support</li>
+            <li><span class="feature-missing">✗</span> Dedicated support</li>
+          </ul>
         </div>
-        <div class="mb-4 relative">
-          <label class="block text-sm font-medium mb-1">Confirm Password</label>
-          <input :type="registerConfirmVisible ? 'text' : 'password'" x-model="registerConfirm" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none pr-10">
-          <button type="button" @click="registerConfirmVisible = !registerConfirmVisible" class="absolute right-3 bottom-3 text-gray-500">👁</button>
-        </div>
-        <button @click="register()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition" :disabled="loading">Register</button>
+        <button onclick="upgradeToPlan('pro')" class="btn-cta bg-gradient-to-r from-orange-500 to-pink-600 text-white">Upgrade to Pro</button>
       </div>
 
-      <!-- Reset (show when reset_token in URL) -->
-      <div x-show="resetToken" x-cloak class="mt-4 p-4 border border-blue-300 rounded-lg">
-        <h3 class="font-bold text-lg">Set new password</h3>
-        <div class="relative mt-3">
-          <input :type="resetPasswordVisible ? 'text' : 'password'" x-model="resetNewPassword" placeholder="New password" class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
-          <button type="button" @click="resetPasswordVisible = !resetPasswordVisible" class="absolute right-3 bottom-3 text-gray-500">👁</button>
+      <!-- ENTERPRISE -->
+      <div class="plan-card glass rounded-2xl p-6 text-center flex flex-col">
+        <div class="flex-1">
+          <h2 class="text-2xl font-bold">Enterprise</h2>
+          <div class="mt-2">
+            <span class="price-tag">$68</span>
+            <span class="price-period">/ month</span>
+            <div class="text-sm text-gray-500 dark:text-gray-400">or $680 / year</div>
+          </div>
+          <ul class="mt-6 space-y-3 text-left text-sm">
+            <li><span class="feature-check">✓</span> 300 audits per day</li>
+            <li><span class="feature-check">✓</span> All 15 tools</li>
+            <li><span class="feature-check">✓</span> 365‑day data retention</li>
+            <li><span class="feature-check">✓</span> CSV exports</li>
+            <li><span class="feature-check">✓</span> Real‑time analytics</li>
+            <li><span class="feature-check">✓</span> Custom date ranges</li>
+            <li><span class="feature-check">✓</span> Priority support</li>
+            <li><span class="feature-check">✓</span> Dedicated support</li>
+          </ul>
         </div>
-        <div class="relative mt-2">
-          <input :type="resetConfirmVisible ? 'text' : 'password'" x-model="resetConfirmPassword" placeholder="Confirm password" class="w-full p-3 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-orange-500 pr-10">
-          <button type="button" @click="resetConfirmVisible = !resetConfirmVisible" class="absolute right-3 bottom-3 text-gray-500">👁</button>
-        </div>
-        <button @click="resetPassword()" class="mt-3 w-full py-3 bg-blue-600 text-white font-bold rounded-lg" :disabled="loading">Reset Password</button>
+        <button onclick="upgradeToPlan('enterprise')" class="btn-cta bg-purple-600 hover:bg-purple-700 text-white">Upgrade to Enterprise</button>
+      </div>
+
+    </div>
+
+    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12 max-w-2xl mx-auto">
+      All plans include full access to every Traffic Torch tool. Already have an account? <a href="/dashboard/" class="text-orange-500 hover:underline">Go to dashboard</a>.
+      Questions? <a href="mailto:support@traffictorch.net" class="text-orange-500 hover:underline">Contact support</a>.
+    </p>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <div id="footer-placeholder"></div>
+
+  <!-- ========================================================== -->
+  <!-- Upgrade Modal (used by upgradeToPro and showUpgradeModal) -->
+  <!-- ========================================================== -->
+  <div id="upgradeModal" class="fixed inset-0 z-[10000] flex items-center justify-center bg-black bg-opacity-70 hidden">
+    <div id="upgradeModalContent" class="bg-white dark:bg-gray-900 p-8 pt-12 rounded-2xl text-center max-w-sm mx-4 shadow-2xl relative transform scale-95 opacity-0 transition-all duration-300">
+      <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Unlock Pro Features</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-6">Log in or upgrade to Traffic Torch Pro for unlimited audits, analytics, and more.</p>
+      <div class="flex flex-col gap-3">
+        <a href="/login/" class="px-6 py-3 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition">Login / Register</a>
+        <button onclick="upgradeToPro()" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg font-bold hover:opacity-90 transition">Upgrade to Pro</button>
+        <button onclick="closeUpgradeModal()" class="text-sm text-gray-500 hover:underline">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- ======== DASHBOARD (full page) ======== -->
-  <div x-show="isAuthenticated" x-cloak class="flex flex-1 min-h-screen">
-
-    <!-- Desktop Sidebar (unchanged) -->
-    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
-      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
-        <a href="/" class="flex items-center gap-4">
-          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden md:block">Traffic Torch</span>
-        </a>
-      </div>
-      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
-      <div class="p-4 border-t border-white/10 dark:border-white/5">
-        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col min-h-screen">
-      <!-- Header -->
-      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-          <a href="/" class="flex items-center gap-4 md:hidden">
-            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-            <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
-          </a>
-          <div class="w-10 md:hidden"></div>
-          <button id="menuToggle" class="md:hidden text-3xl text-gray-500">☰</button>
-          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
-          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
-        </div>
-        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
-          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
-          <div id="mobile-menu-placeholder"></div>
-        </div>
-      </header>
-
-      <!-- Main Content -->
-      <main class="container mx-auto px-4 py-4 flex-1">
-
-        <!-- Horizontal Tabs -->
-        <div class="flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
-          <template x-for="tab in tabs" :key="tab.id">
-            <button @click="activeDashboardTab = tab.id" 
-                    class="px-6 py-3 text-sm font-medium transition-all duration-200"
-                    :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
-              <span x-text="tab.label"></span>
-            </button>
-          </template>
-        </div>
-
-        <!-- DASHBOARD TAB -->
-        <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
-
-          <!-- Stats Row -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <!-- Audits Today -->
-            <div class="glass rounded-2xl p-5 stat-card">
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm text-gray-500 dark:text-gray-400">Audits Today</h3>
-                <span class="text-2xl">📊</span>
-              </div>
-              <p class="text-3xl font-bold mt-2" x-text="`${dailyUsed} / ${dailyLimit}`"></p>
-              <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-3">
-                <div class="bg-gradient-to-r from-orange-500 to-pink-600 h-2 rounded-full transition-all" :style="`width: ${(dailyUsed/dailyLimit)*100}%`"></div>
-              </div>
-              <p class="text-xs text-gray-500 mt-2" x-text="`${dailyRemaining} remaining`"></p>
-            </div>
-            <!-- Total Audits -->
-            <div class="glass rounded-2xl p-5 stat-card">
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm text-gray-500 dark:text-gray-400">Total Audits</h3>
-                <span class="text-2xl">📈</span>
-              </div>
-              <p class="text-3xl font-bold mt-2" x-text="totalAudits || 0"></p>
-            </div>
-            <!-- Average Score -->
-            <div class="glass rounded-2xl p-5 stat-card">
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm text-gray-500 dark:text-gray-400">Average Score</h3>
-                <span class="text-2xl">🏆</span>
-              </div>
-              <p class="text-3xl font-bold mt-2" x-text="averageScore ? averageScore + '%' : '—'"></p>
-            </div>
-            <!-- Pro Status -->
-            <div class="glass rounded-2xl p-5 stat-card">
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm text-gray-500 dark:text-gray-400">Plan</h3>
-                <span class="text-2xl">⭐</span>
-              </div>
-              <p class="text-2xl font-bold mt-2" x-text="user.isPro ? 'Pro' : 'Free'"></p>
-              <template x-if="!user.isPro">
-                <a href="/pro/upgrade" class="mt-2 inline-block text-sm text-orange-500 hover:underline">Upgrade →</a>
-              </template>
-            </div>
-          </div>
-
-          <!-- Quick Audit (tool selector above URL) -->
-          <div class="glass rounded-2xl p-6 mb-8">
-            <h3 class="text-xl font-bold mb-4">🚀 Quick Audit</h3>
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1">Select Tool</label>
-                <select x-model="selectedTool" id="tool-selector" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                  <option value="seo-intent-tool">SEO Intent</option>
-                  <option value="seo-ux-tool">Full SEO + UX</option>
-                  <option value="local-seo-tool">Local SEO</option>
-                  <option value="product-seo-tool">Product SEO</option>
-                  <option value="entity">Entity Extractor</option>
-                  <option value="topical">Topical Authority</option>
-                  <option value="schema-generator">Schema Generator</option>
-                  <option value="ai-search-optimization-tool">GEO / AI Search</option>
-                  <option value="ai-voice-search-tool">Voice Search</option>
-                  <option value="ai-audit-tool">AI Content Audit</option>
-                  <option value="quit-risk-tool">Quit Risk</option>
-                  <option value="keyword-research-tool">Keyword Research</option>
-                  <option value="keyword-tool">Keyword Placement</option>
-                </select>
-              </div>
-              <div class="flex flex-col sm:flex-row gap-4">
-                <input type="url" id="url-input" x-model="quickUrl" placeholder="https://example.com" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                <button id="analyze-url-btn" @click="runTool()" class="px-6 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition whitespace-nowrap">Run Audit</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Results Container -->
-          <div id="results" class="mt-8 space-y-16"></div>
-
-          <!-- Recent Audits -->
-          <h3 class="text-lg font-bold mt-12 mb-4">📋 Recent Audits</h3>
-          <div class="glass rounded-2xl overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left">
-                <thead class="bg-gray-100 dark:bg-gray-800">
-                  <tr><th class="p-3">Date</th><th class="p-3">URL</th><th class="p-3">Score</th><th class="p-3">Tool</th><th class="p-3">Actions</th></tr>
-                </thead>
-                <tbody>
-                  <template x-for="audit in recentAudits" :key="audit.id">
-                    <tr class="border-t border-gray-200 dark:border-gray-700">
-                      <td class="p-3 text-sm" x-text="new Date(audit.timestamp).toLocaleDateString()"></td>
-                      <td class="p-3 text-sm truncate max-w-[150px]" x-text="audit.url"></td>
-                      <td class="p-3 font-bold" :class="{'text-green-500': audit.score >= 80, 'text-yellow-500': audit.score >= 50 && audit.score < 80, 'text-red-500': audit.score < 50}" x-text="audit.score + '%'"></td>
-                      <td class="p-3 text-sm" x-text="audit.tool"></td>
-                      <td class="p-3"><button @click="viewReport(audit)" class="text-blue-500 hover:underline text-sm">View Report</button></td>
-                    </tr>
-                  </template>
-                  <tr x-show="recentAudits.length === 0">
-                    <td colspan="5" class="p-6 text-center text-gray-500">No audits yet.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-        </div><!-- end dashboard tab -->
-
-        <!-- Other tabs -->
-        <div x-show="activeDashboardTab === 'audits'" x-cloak><p class="text-center text-gray-500 py-20">Audits history – coming soon.</p></div>
-        <div x-show="activeDashboardTab === 'analytics'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
-            <h3 class="text-xl font-bold mb-4">Analytics (Pro)</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div class="text-center"><p class="text-sm text-gray-500">Clicks</p><p class="text-2xl font-bold" x-text="analytics.clicks || 0"></p></div>
-              <div class="text-center"><p class="text-sm text-gray-500">Impressions</p><p class="text-2xl font-bold" x-text="analytics.impressions || 0"></p></div>
-              <div class="text-center"><p class="text-sm text-gray-500">CTR</p><p class="text-2xl font-bold" x-text="analytics.ctr ? (analytics.ctr*100).toFixed(1)+'%' : '-'"></p></div>
-              <div class="text-center"><p class="text-sm text-gray-500">Position</p><p class="text-2xl font-bold" x-text="analytics.position ? analytics.position.toFixed(1) : '-'"></p></div>
-            </div>
-            <canvas id="analyticsChart" height="150"></canvas>
-          </div>
-        </div>
-        <div x-show="activeDashboardTab === 'integrations'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
-            <h3 class="text-xl font-bold mb-4">Integrations</h3>
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <span>🔗 Google Search Console</span>
-              <span class="text-red-500">Not connected</span>
-              <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Connect</button>
-            </div>
-          </div>
-        </div>
-        <div x-show="activeDashboardTab === 'settings'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
-            <h3 class="text-xl font-bold mb-4">Account Settings</h3>
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <span>Email</span>
-              <span x-text="user.email"></span>
-            </div>
-            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-              <span>Plan</span>
-              <span x-text="user.isPro ? 'Pro' : 'Free'"></span>
-            </div>
-            <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
-            <button @click="deleteAccount()" class="mt-3 w-full py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10">Delete Account</button>
-          </div>
-        </div>
-
-        <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">Privacy-first • Traffic Torch</p>
-      </main>
-
-      <div id="footer-placeholder"></div>
+  <!-- ========================================================== -->
+  <!-- Stripe Checkout Container (used by upgradeToPro)          -->
+  <!-- ========================================================== -->
+  <div id="checkout-container" class="fixed inset-0 z-[10001] bg-black bg-opacity-80 flex items-center justify-center hidden">
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl max-w-lg w-full relative">
+      <button onclick="document.getElementById('checkout-container').classList.add('hidden')" class="absolute top-2 right-4 text-3xl text-gray-500">&times;</button>
+      <div id="checkout-embedded"></div>
     </div>
   </div>
-</div>
 
-<!-- ========================================================== -->
-<!-- SCRIPTS -->
-<!-- ========================================================== -->
-<script src="/main-v1.1.js" type="module"></script>
+  <!-- ========================================================== -->
+  <!-- Global main.js (handles menu loading, theme, upgrade logic) -->
+  <!-- ========================================================== -->
+  <script src="/main-v1.1.js" type="module"></script>
 
-<script>
-const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
-
-function combinedApp() {
-  return {
-    // ---- Auth state ----
-    isAuthenticated: false,
-    user: { email: '', isPro: false },
-    activeTab: 'magic',
-    loading: false,
-    message: '',
-    messageType: 'error',
-    magicEmail: '',
-    loginEmail: '',
-    loginPassword: '',
-    loginPasswordVisible: false,
-    showForgot: false,
-    registerEmail: '',
-    registerPassword: '',
-    registerPasswordVisible: false,
-    registerConfirm: '',
-    registerConfirmVisible: false,
-    resetEmail: '',
-    resetToken: new URLSearchParams(window.location.search).get('reset_token') || '',
-    resetNewPassword: '',
-    resetPasswordVisible: false,
-    resetConfirmPassword: '',
-    resetConfirmVisible: false,
-
-    // ---- Dashboard state ----
-    activeDashboardTab: 'dashboard',
-    dailyUsed: 0,
-    dailyLimit: 3,
-    dailyRemaining: 3,
-    totalAudits: 0,
-    averageScore: null,
-    selectedTool: 'seo-intent-tool',
-    quickUrl: '',
-    quickResult: null,
-    recentAudits: [],
-    analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
-
-    tabs: [
-      { id: 'dashboard', label: 'Dashboard' },
-      { id: 'audits', label: 'Audits' },
-      { id: 'analytics', label: 'Analytics' },
-      { id: 'integrations', label: 'Integrations' },
-      { id: 'settings', label: 'Settings' }
-    ],
-
-    // ---- Init ----
-    initApp() {
-      if (this.resetToken) {
-        this.activeTab = 'login';
-        this.showForgot = false;
-      }
-      const magicToken = new URLSearchParams(window.location.search).get('magic_token');
-      if (magicToken) {
-        localStorage.setItem('authToken', magicToken);
-        window.history.replaceState({}, '', '/pro');
-        this.fetchAccountInfo();
-        return;
-      }
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        this.fetchAccountInfo();
-      }
-      this.loadAuditHistory();
-
-      document.addEventListener('switchTab', (e) => {
-        if (e.detail && e.detail.tab) {
-          this.activeDashboardTab = e.detail.tab;
-        }
-      });
-    },
-
-    // ---- Auth methods ----
-    setMessage(msg, type = 'error') {
-      this.message = msg;
-      this.messageType = type;
-      clearTimeout(this.msgTimeout);
-      this.msgTimeout = setTimeout(() => (this.message = ''), 5000);
-    },
-
-    async fetchAccountInfo() {
-      const token = localStorage.getItem('authToken');
-      if (!token) return;
-      try {
-        const res = await fetch(API_BASE + '/api/account-info', {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          this.user = data;
-          this.isAuthenticated = true;
-          this.dailyUsed = data.dailyUsed || 0;
-          this.dailyLimit = data.dailyLimit || 3;
-          this.dailyRemaining = data.dailyRemaining || 0;
-        } else {
-          localStorage.removeItem('authToken');
-          this.isAuthenticated = false;
-        }
-      } catch {
-        localStorage.removeItem('authToken');
-        this.isAuthenticated = false;
-      }
-    },
-
-    // --- FIXED ENDPOINTS: /auth/ → /api/ ---
-    async sendMagicLink() {
-      this.loading = true;
-      try {
-        const res = await fetch(API_BASE + '/api/magic-link', {  // fixed
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.magicEmail })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          this.setMessage('Magic link sent! Check your email.', 'success');
-          this.magicEmail = '';
-        } else {
-          this.setMessage(data.error || 'Failed to send');
-        }
-      } catch { this.setMessage('Network error'); }
-      this.loading = false;
-    },
-
-    async login() {
-      this.loading = true;
-      try {
-        const res = await fetch(API_BASE + '/api/login', {  // fixed
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.loginEmail, password: this.loginPassword })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          localStorage.setItem('authToken', data.token);
-          await this.fetchAccountInfo();
-          if (this.isAuthenticated) {
-            this.loginEmail = '';
-            this.loginPassword = '';
-            this.setMessage('Login successful', 'success');
-          }
-        } else {
-          this.setMessage(data.error || 'Login failed');
-        }
-      } catch { this.setMessage('Network error'); }
-      this.loading = false;
-    },
-
-    async register() {
-      if (this.registerPassword !== this.registerConfirm) {
-        this.setMessage('Passwords do not match');
-        return;
-      }
-      if (this.registerPassword.length < 8) {
-        this.setMessage('Password must be at least 8 characters');
-        return;
-      }
-      this.loading = true;
-      try {
-        const res = await fetch(API_BASE + '/api/register', {  // fixed
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.registerEmail, password: this.registerPassword })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          localStorage.setItem('authToken', data.token);
-          await this.fetchAccountInfo();
-          if (this.isAuthenticated) {
-            this.registerEmail = '';
-            this.registerPassword = '';
-            this.registerConfirm = '';
-            this.setMessage('Registration successful', 'success');
-          }
-        } else {
-          this.setMessage(data.error || 'Registration failed');
-        }
-      } catch { this.setMessage('Network error'); }
-      this.loading = false;
-    },
-
-    async sendResetLink() {
-      this.loading = true;
-      try {
-        const res = await fetch(API_BASE + '/api/reset-password', {  // fixed
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.resetEmail })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          this.setMessage('Reset link sent! Check your email.', 'success');
-          this.resetEmail = '';
-          this.showForgot = false;
-        } else {
-          this.setMessage(data.error || 'Failed');
-        }
-      } catch { this.setMessage('Network error'); }
-      this.loading = false;
-    },
-
-    async resetPassword() {
-      if (this.resetNewPassword !== this.resetConfirmPassword) {
-        this.setMessage('Passwords do not match');
-        return;
-      }
-      if (this.resetNewPassword.length < 8) {
-        this.setMessage('Password must be at least 8 characters');
-        return;
-      }
-      this.loading = true;
-      try {
-        const res = await fetch(API_BASE + '/api/reset-password/confirm', {  // fixed
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: this.resetToken, password: this.resetNewPassword })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          this.setMessage('Password reset successfully!', 'success');
-          this.resetToken = '';
-          this.resetNewPassword = '';
-          this.resetConfirmPassword = '';
-          this.showForgot = false;
-          this.activeTab = 'login';
-          window.history.replaceState({}, '', '/pro');
-        } else {
-          this.setMessage(data.error || 'Reset failed');
-        }
-      } catch { this.setMessage('Network error'); }
-      this.loading = false;
-    },
-
-    // ---- Dashboard methods ----
-    loadAuditHistory() {
-      const stored = localStorage.getItem('proAuditHistory');
-      if (stored) {
-        try {
-          this.recentAudits = JSON.parse(stored).slice(0, 10);
-          this.totalAudits = JSON.parse(stored).length;
-          const scores = JSON.parse(stored).map(a => a.score);
-          this.averageScore = scores.length ? Math.round(scores.reduce((a,b) => a+b, 0) / scores.length) : null;
-        } catch(e) { this.recentAudits = []; this.totalAudits = 0; this.averageScore = null; }
+  <!-- Small inline upgrade wrapper to pass plan -->
+  <script>
+    // Wrapper that calls upgradeToPro with the plan parameter
+    window.upgradeToPlan = function(plan) {
+      // Store the selected plan in a global variable so upgradeToPro can use it
+      window._selectedPlan = plan;
+      // Call the global upgradeToPro function (defined in main.js)
+      if (typeof window.upgradeToPro === 'function') {
+        window.upgradeToPro();
       } else {
-        this.recentAudits = [];
-        this.totalAudits = 0;
-        this.averageScore = null;
+        // Fallback: redirect to dashboard upgrade page
+        window.location.href = '/dashboard/?upgrade=' + plan;
       }
-    },
+    };
 
-    saveAudit(audit) {
-      let history = [];
-      const stored = localStorage.getItem('proAuditHistory');
-      if (stored) try { history = JSON.parse(stored); } catch(e) {}
-      history.unshift(audit);
-      if (history.length > 50) history = history.slice(0, 50);
-      localStorage.setItem('proAuditHistory', JSON.stringify(history));
-      this.loadAuditHistory();
-    },
-
-    runTool() {
-      const url = this.quickUrl.trim();
-      if (!url) {
-        this.setMessage('Please enter a valid URL', 'error');
-        return;
+    // Override the original upgradeToPro to use the plan from window._selectedPlan
+    // We'll just modify the global function – but since main.js defines it, we can wrap it.
+    // Actually, main.js defines upgradeToPro as async, but it doesn't accept a plan parameter.
+    // We'll patch it by saving the plan and then calling the original.
+    // We'll do a safe override.
+    (function() {
+      const originalUpgrade = window.upgradeToPro;
+      if (originalUpgrade) {
+        window.upgradeToPro = async function() {
+          const plan = window._selectedPlan || 'pro';
+          const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+          if (!token) {
+            alert('Please log in first.');
+            window.location.href = '/login/';
+            return;
+          }
+          // Now we need to call the original function, but we need to pass the plan to the API.
+          // We can't easily modify the original fetch clientSecret because it's inside.
+          // Instead, we'll duplicate the logic here using the same API_BASE.
+          try {
+            const container = document.getElementById('checkout-container');
+            if (!container) throw new Error('Checkout container not found');
+            container.classList.remove('hidden');
+            const stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
+            const fetchClientSecret = async () => {
+              const response = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/upgrade', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ plan })
+              });
+              if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(errText || 'Failed to create checkout session');
+              }
+              const data = await response.json();
+              if (!data.clientSecret) throw new Error('No clientSecret returned');
+              return data.clientSecret;
+            };
+            const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
+            checkout.mount('#checkout-embedded');
+            localStorage.setItem('just_upgraded', 'true');
+          } catch (err) {
+            alert('Upgrade failed: ' + err.message);
+            document.getElementById('checkout-container')?.classList.add('hidden');
+          }
+        };
       }
+    })();
 
-      const urlInput = document.getElementById('url-input');
-      if (urlInput) urlInput.value = url;
-
-      const tool = this.selectedTool;
-      const toolMap = {
-        'seo-intent-tool': '/seo-intent-tool/script-v1.4.js',
-        'seo-ux-tool': '/seo-ux-tool/script-v1.3.js',
-        'local-seo-tool': '/local-seo-tool/script-v1.0.js',
-        'product-seo-tool': '/product-seo-tool/script-v1.0.js',
-        'entity': '/seo-entity-extractor-tool/script-v1.0.js',
-        'topical': '/topical-authority-audit-tool/script-v1.0.js',
-        'schema-generator': '/schema-generator/script-v1.0.js',
-        'ai-search-optimization-tool': '/ai-search-optimization-tool/script-v1.0.js',
-        'ai-voice-search-tool': '/ai-voice-search-tool/script-v1.0.js',
-        'ai-audit-tool': '/ai-audit-tool/script-v1.0.js',
-        'quit-risk-tool': '/quit-risk-tool/script-v1.0.js',
-        'keyword-research-tool': '/keyword-research-tool/script-v1.0.js',
-        'keyword-tool': '/keyword-tool/script-v1.0.js'
-      };
-      const scriptPath = toolMap[tool];
-      if (!scriptPath) {
-        this.setMessage('Tool script not found', 'error');
-        return;
-      }
-
-      const resultsContainer = document.getElementById('results');
-      resultsContainer.innerHTML = `
-        <div class="flex flex-col items-center justify-center py-12">
-          <div class="spinner border-4 border-orange-500 border-t-transparent rounded-full w-16 h-16 animate-spin"></div>
-          <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">Loading ${tool.replace(/-/g,' ')}...</p>
-        </div>
-      `;
-
-      this.loadToolScript(scriptPath, () => {
-        document.dispatchEvent(new Event('DOMContentLoaded'));
-        const analyzeBtn = document.getElementById('analyze-url-btn');
-        if (analyzeBtn) {
-          analyzeBtn.click();
-        } else {
-          this.setMessage('Tool button not found', 'error');
+    // Also make closeUpgradeModal available
+    window.closeUpgradeModal = function() {
+      const modal = document.getElementById('upgradeModal');
+      if (modal) {
+        const content = document.getElementById('upgradeModalContent');
+        if (content) {
+          content.classList.remove('scale-100', 'opacity-100');
+          content.classList.add('scale-95', 'opacity-0');
         }
-      });
-    },
-
-    loadToolScript(src, callback) {
-      const existing = document.querySelector(`script[src="${src}"]`);
-      if (existing) existing.remove();
-      const script = document.createElement('script');
-      script.src = src;
-      script.type = 'module';
-      script.onload = callback;
-      script.onerror = () => this.setMessage('Failed to load tool script', 'error');
-      document.head.appendChild(script);
-    },
-
-    viewReport(audit) {
-      this.selectedTool = audit.tool;
-      this.quickUrl = audit.url;
-      this.$nextTick(() => {
-        this.runTool();
-        this.activeDashboardTab = 'dashboard';
-      });
-    },
-
-    logout() {
-      localStorage.removeItem('authToken');
-      this.isAuthenticated = false;
-      this.user = { email: '', isPro: false };
-      window.location.href = '/pro';
-    },
-
-    deleteAccount() {
-      if (confirm('Permanently delete your account? This cannot be undone.')) {
-        alert('Account deletion requested – contact support for full removal.');
+        setTimeout(() => modal.classList.add('hidden'), 300);
       }
-    }
-  };
-}
-</script>
+    };
+  </script>
 
 </body>
 </html>

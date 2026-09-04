@@ -388,6 +388,32 @@ await env.MY_BINDING.prepare(
       PRIMARY KEY (user_id, report_type, days, start_date, end_date)
     )`
   ).run();
+
+  // Inside ensureTables(), after existing tables:
+await env.MY_BINDING.prepare(
+  `CREATE TABLE IF NOT EXISTS api_keys (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    key_hash TEXT NOT NULL UNIQUE,
+    key_prefix TEXT NOT NULL,
+    name TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_used_at TIMESTAMP,
+    is_active INTEGER DEFAULT 1,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  )`
+).run();
+
+await env.MY_BINDING.prepare(
+  `CREATE TABLE IF NOT EXISTS api_usage (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    api_key_id INTEGER NOT NULL,
+    endpoint TEXT NOT NULL,
+    request_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    response_status INTEGER,
+    FOREIGN KEY (api_key_id) REFERENCES api_keys(id) ON DELETE CASCADE
+  )`
+).run();
 }
 
 async function getCachedReport(userId, reportType, days, startDate, endDate, env) {
@@ -539,7 +565,7 @@ export default {
           env.JWT_SECRET,
           '7d'
         );
-        return Response.redirect(`https://traffictorch.net/pro/?magic_token=${jwt}`, 302);
+        return Response.redirect(`https://traffictorch.net/dashboard/?magic_token=${jwt}`, 302);
       }
 
       // ---- Forgot Password ----
@@ -559,7 +585,7 @@ export default {
         await env.MY_BINDING.prepare(
           'INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)'
         ).bind(user.id, tokenHash, expiresAt).run();
-        const resetLink = `https://traffictorch.net/pro/?reset_token=${rawToken}`;
+        const resetLink = `https://traffictorch.net/dashboard/?reset_token=${rawToken}`;
         const resendRes = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${env.RESEND_API_KEY}` },
@@ -791,7 +817,7 @@ if (url.pathname === '/api/upgrade' && method === 'POST') {
         const stripe = new (await import('stripe')).default(env.STRIPE_SECRET_KEY);
         const session = await stripe.billingPortal.sessions.create({
           customer: user.stripe_customer_id,
-          return_url: 'https://traffictorch.net/pro/'
+          return_url: 'https://traffictorch.net/dashboard/'
         });
         return corsResponse(JSON.stringify({ url: session.url }));
       }
@@ -999,6 +1025,91 @@ if (url.pathname === '/api/upgrade' && method === 'POST') {
           return corsResponse(JSON.stringify({ error: err.message }), 500);
         }
       }
+
+      // ---- API KEYS ----
+if (url.pathname === '/api/keys' && method === 'GET') {
+  const auth = request.headers.get('Authorization');
+  if (!auth || !auth.startsWith('Bearer ')) return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+  const token = auth.split(' ')[1];
+  let decoded;
+  try { decoded = await verifyJWT(token, env.JWT_SECRET); } catch { return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401); }
+  const keys = await env.MY_BINDING.prepare(
+    'SELECT id, key_prefix, name, created_at FROM api_keys WHERE user_id = ? AND is_active = 1 ORDER BY created_at DESC'
+  ).bind(decoded.id).all();
+  return corsResponse(JSON.stringify({ keys: keys.results }));
+}
+
+if (url.pathname === '/api/keys/generate' && method === 'POST') {
+  const auth = request.headers.get('Authorization');
+  if (!auth || !auth.startsWith('Bearer ')) return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+  const token = auth.split(' ')[1];
+  let decoded;
+  try { decoded = await verifyJWT(token, env.JWT_SECRET); } catch { return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401); }
+  const { name } = await request.json().catch(() => ({}));
+  const rawKey = 'tt_' + crypto.randomUUID().replace(/-/g, '').substring(0, 32);
+  const keyHash = await sha256(rawKey);
+  const keyPrefix = rawKey.substring(0, 8);
+  const result = await env.MY_BINDING.prepare(
+    'INSERT INTO api_keys (user_id, key_hash, key_prefix, name) VALUES (?, ?, ?, ?) RETURNING id'
+  ).bind(decoded.id, keyHash, keyPrefix, name || null).first();
+  return corsResponse(JSON.stringify({ key: rawKey, id: result.id }));
+}
+
+if (url.pathname.startsWith('/api/keys/revoke/') && method === 'DELETE') {
+  const auth = request.headers.get('Authorization');
+  if (!auth || !auth.startsWith('Bearer ')) return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+  const token = auth.split(' ')[1];
+  let decoded;
+  try { decoded = await verifyJWT(token, env.JWT_SECRET); } catch { return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401); }
+  const id = parseInt(url.pathname.split('/').pop());
+  if (isNaN(id)) return corsResponse(JSON.stringify({ error: 'Invalid ID' }), 400);
+  const key = await env.MY_BINDING.prepare('SELECT user_id FROM api_keys WHERE id = ?').bind(id).first();
+  if (!key) return corsResponse(JSON.stringify({ error: 'Key not found' }), 404);
+  if (key.user_id !== decoded.id) return corsResponse(JSON.stringify({ error: 'Forbidden' }), 403);
+  await env.MY_BINDING.prepare('UPDATE api_keys SET is_active = 0 WHERE id = ?').bind(id).run();
+  return corsResponse(JSON.stringify({ success: true }));
+}
+
+// ---- TOOL API (proxy to existing tool logic) ----
+if (url.pathname.startsWith('/api/tools/') && method === 'POST') {
+  const apiKey = request.headers.get('X-API-Key');
+  if (!apiKey) return corsResponse(JSON.stringify({ error: 'Missing X-API-Key header' }), 401);
+  const keyHash = await sha256(apiKey);
+  const keyRecord = await env.MY_BINDING.prepare(
+    'SELECT id, user_id FROM api_keys WHERE key_hash = ? AND is_active = 1'
+  ).bind(keyHash).first();
+  if (!keyRecord) return corsResponse(JSON.stringify({ error: 'Invalid or revoked API key' }), 401);
+
+  // Get user tier
+  const user = await env.MY_BINDING.prepare('SELECT tier FROM users WHERE id = ?').bind(keyRecord.user_id).first();
+  const tier = user?.tier || 'free';
+  const limit = getTierLimit(tier);
+  // Check daily usage for this key
+  const today = new Date().toISOString().split('T')[0];
+  const usage = await env.MY_BINDING.prepare(
+    'SELECT COUNT(*) as count FROM api_usage WHERE api_key_id = ? AND DATE(request_at) = ?'
+  ).bind(keyRecord.id, today).first();
+  const used = usage?.count || 0;
+  if (used >= limit) {
+    return corsResponse(JSON.stringify({ error: 'Daily rate limit exceeded' }), 429);
+  }
+
+  // Extract tool from path
+  const tool = url.pathname.split('/').pop();
+  // Map tool name to the actual audit logic (reuse existing functions)
+  // For now, we'll return a placeholder – you need to plug your audit functions here.
+  // Example: const result = await runAudit(tool, { url: body.url });
+  const body = await request.json().catch(() => ({}));
+  // Replace this with actual audit logic.
+  const result = { message: `Audit for ${tool} with URL ${body.url} – not fully implemented yet` };
+
+  // Log usage
+  await env.MY_BINDING.prepare(
+    'INSERT INTO api_usage (api_key_id, endpoint, response_status) VALUES (?, ?, ?)'
+  ).bind(keyRecord.id, url.pathname, 200).run();
+
+  return corsResponse(JSON.stringify({ success: true, data: result }));
+}
 
       // ---- GA4 Realtime (Pro/Enterprise only) ----
       if (url.pathname === '/api/ga4/realtime' && method === 'GET') {
