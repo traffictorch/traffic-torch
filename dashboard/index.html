@@ -1101,32 +1101,22 @@
     </div>
   </div>
 
-  <!-- Delete Account Confirmation Modal -->
-  <div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-[10001] flex items-center justify-center modal-overlay">
-    <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
-      <button @click="closeDeleteModal()" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
-      <h3 class="text-2xl font-bold text-red-600 mb-4">⚠️ Permanently Delete Account</h3>
-      <p class="text-gray-600 dark:text-gray-300 mb-4">This action <strong>cannot</strong> be undone. All your data, audits, and connections will be erased forever.</p>
-      <p class="text-sm text-gray-500 mb-4">Please type your email address to confirm:</p>
-      <input type="email" x-model="deleteEmail" placeholder="your@email.com" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 mb-4">
-      <div class="flex gap-3">
-        <button @click="confirmDeleteAccount()" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg" :disabled="deleteEmail !== user.email">Delete Permanently</button>
-        <button @click="closeDeleteModal()" class="flex-1 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition">Cancel</button>
-      </div>
+<!-- Delete Account Confirmation Modal -->
+<div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-[10001] flex items-center justify-center modal-overlay">
+  <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
+    <button @click="closeDeleteModal()" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
+    <h3 class="text-2xl font-bold text-red-600 mb-4">⚠️ Permanently Delete Account</h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">This action <strong>cannot</strong> be undone. All your data, audits, and connections will be erased forever.</p>
+    <p class="text-sm text-gray-500 mb-4">Please type your email address to confirm:</p>
+    <input type="email" x-model="deleteEmail" placeholder="your@email.com" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 mb-4">
+    <div class="flex gap-3">
+      <button @click="confirmDeleteAccount()" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg" :disabled="deleteEmail !== user.email">Delete Permanently</button>
+      <button @click="closeDeleteModal()" class="flex-1 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition">Cancel</button>
     </div>
   </div>
-
 </div>
 
-<!-- Checkout container -->
-<div id="checkout-container" class="fixed inset-0 z-[10002] bg-black bg-opacity-80 flex items-center justify-center hidden">
-  <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl max-w-lg w-full relative">
-    <button onclick="document.getElementById('checkout-container').classList.add('hidden')" class="absolute top-2 right-4 text-3xl text-gray-500">&times;</button>
-    <div id="checkout-embedded"></div>
-  </div>  
-</div>
-  
-  <!-- Reset Password Modal (fixed to viewport, with toggles) -->
+<!-- Reset Password Modal (now inside x-data) -->
 <div x-show="showResetModal" x-cloak class="fixed inset-0 z-[10003] flex items-center justify-center modal-overlay">
   <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
     <button @click="showResetModal = false; resetToken = null" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
@@ -1157,6 +1147,16 @@
       <span x-show="loadingReset">Processing...</span>
     </button>
   </div>
+</div>
+
+</div> 
+
+<!-- Checkout container (kept outside x-data) -->
+<div id="checkout-container" class="fixed inset-0 z-[10002] bg-black bg-opacity-80 flex items-center justify-center hidden">
+  <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl max-w-lg w-full relative">
+    <button onclick="document.getElementById('checkout-container').classList.add('hidden')" class="absolute top-2 right-4 text-3xl text-gray-500">&times;</button>
+    <div id="checkout-embedded"></div>
+  </div>  
 </div>
 
 <!-- ========================================================== -->
