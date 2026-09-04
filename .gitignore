@@ -23,5 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 
-# Secret keys (DO NOT COMMIT)
-config.js
