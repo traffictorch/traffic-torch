@@ -1384,6 +1384,19 @@ function dashboardApp() {
           this.gsc.error = 'Site URL is required to connect.';
         }
       }
+      
+      // ---- MAGIC TOKEN DETECTION ----
+const magicToken = urlParams.get('magic_token');
+if (magicToken) {
+  // Store the token in localStorage
+  localStorage.setItem('authToken', magicToken);
+  // Remove the param from URL to keep it clean
+  const newUrl = window.location.pathname + window.location.search.replace(/[?&]magic_token=[^&]*/, '').replace(/^&/, '?');
+  window.history.replaceState({}, document.title, newUrl || '/dashboard/');
+  // Fetch account info and update the UI
+  await this.fetchAccountInfo();
+  this.checkGA4Connection();
+}
 
       // ---- RESET TOKEN DETECTION (NEW) ----
       const resetToken = urlParams.get('reset_token');
