@@ -17,6 +17,91 @@
   <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Traffic Torch – Developer API">
+  
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/developer/api/",
+      "url": "https://traffictorch.net/developer/api/",
+      "name": "Traffic Torch Developer API",
+      "description": "Programmatically run all 15 audit tools, retrieve results, and manage your API keys.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://traffictorch.net/",
+        "name": "Traffic Torch"
+      },
+      "about": {
+        "@type": "Thing",
+        "name": "SEO API"
+      },
+      "mainEntity": {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I get an API key?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Generate one on this page after logging in. Use the 'Generate New Key' button."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What's the difference between the Bearer token and X-API-Key?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Bearer token (JWT) is used for management endpoints (keys, webhooks). The X-API-Key is used exclusively for running audits via /api/tools/*."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How are daily limits calculated?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The limit applies to the API key (for tool calls) and resets at midnight UTC. The /api/account-info endpoint shows your current usage and remaining requests."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I revoke an API key?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes – click 'Revoke' next to any key on this page. Revoked keys are immediately invalid."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What events trigger webhooks?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Currently only audit.completed. usage.alert (when you reach 80% of your daily limit) is planned."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a test environment?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The same endpoints work for both live and test; you can use https://webhook.site to test webhooks."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you have a sandbox mode?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Not yet, but you can create a test API key and use it with your own development environment."
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+</script>
 
   <!-- Preload CSS -->
   <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
@@ -208,7 +293,7 @@ pre, pre code {
           <!-- Add webhook form -->
           <div class="flex flex-wrap items-center gap-3 mb-4">
             <input type="url" x-model="newWebhookUrl" placeholder="https://your-domain.com/webhook" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm min-w-[200px]">
-            <select x-model="newWebhookEvents" multiple class="px-2 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm min-w-[150px]">
+<select x-model="newWebhookEvents" multiple aria-label="Select events" class="px-2 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm min-w-[150px]">
               <option value="audit.completed">Audit Completed</option>
               <option value="usage.alert">Usage Alert</option>
             </select>
