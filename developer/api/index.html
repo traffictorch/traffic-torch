@@ -68,6 +68,26 @@
     .webhook-item:hover {
       background: rgba(255,255,255,0.05);
     }
+    /* Smooth scroll for anchor links */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+/* Code blocks – wrap long lines and prevent clipping */
+pre, pre code {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  overflow-x: auto;
+  white-space: pre-wrap !important;      /* allow wrapping */
+  word-break: break-word !important;    /* break long words */
+  font-family: monospace;
+  font-size: 0.875rem;
+  line-height: 2;
+  max-width: 100%;
+}
+
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -116,6 +136,25 @@
 
         <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">🧑‍💻 Developer API</h1>
         <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">Programmatically run all 15 audit tools, retrieve results, and manage your API keys.</p>
+
+        <!-- ===== TABLE OF CONTENTS ===== -->
+        <nav id="toc" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📚 Table of Contents</h2>
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+            <li><a href="#auth" class="text-orange-500 hover:underline">🔐 Authentication</a></li>
+            <li><a href="#endpoints" class="text-orange-500 hover:underline">📡 Endpoints Overview</a></li>
+            <li><a href="#tool-endpoint" class="text-orange-500 hover:underline">🛠️ Tool Endpoint</a></li>
+            <li><a href="#webhooks-doc" class="text-orange-500 hover:underline">🔗 Webhook Endpoints</a></li>
+            <li><a href="#account-info" class="text-orange-500 hover:underline">👤 Account Info</a></li>
+            <li><a href="#errors" class="text-orange-500 hover:underline">❌ Error Codes</a></li>
+            <li><a href="#rate-limits-doc" class="text-orange-500 hover:underline">📊 Rate Limits</a></li>
+            <li><a href="#examples" class="text-orange-500 hover:underline">💻 Code Examples</a></li>
+            <li><a href="#webhook-payload" class="text-orange-500 hover:underline">📦 Webhook Payload</a></li>
+            <li><a href="#faq" class="text-orange-500 hover:underline">❓ FAQ</a></li>
+            <li><a href="#changelog" class="text-orange-500 hover:underline">📅 Changelog</a></li>
+            <li><a href="#support" class="text-orange-500 hover:underline">📧 Support</a></li>
+          </ul>
+        </nav>
 
         <!-- ===== API KEY MANAGEMENT ===== -->
         <section class="glass rounded-2xl p-6 mb-8">
@@ -193,13 +232,11 @@
           <p x-show="webhooks.length === 0 && !webhookLoading" class="text-gray-500 text-sm">No webhooks configured.</p>
         </section>
 
-        <!-- ===== API DOCS ===== -->
+        <!-- ===== API DOCS (quick reference) ===== -->
         <section class="glass rounded-2xl p-6 mb-8">
-          <h2 class="text-xl font-bold mb-4">📖 API Endpoints</h2>
-          <p class="text-sm text-gray-500 mb-4">All endpoints require authentication via <code>X-API-Key</code> header.</p>
-
+          <h2 class="text-xl font-bold mb-4">📖 API Endpoints (Quick Reference)</h2>
+          <p class="text-sm text-gray-500 mb-4">All endpoints require authentication via <code>X-API-Key</code> or <code>Authorization</code> header (see <a href="#auth" class="text-orange-500 hover:underline">Authentication</a>).</p>
           <div class="space-y-4">
-            <!-- Tool endpoints -->
             <div class="endpoint-doc pl-4 py-2">
               <div class="flex flex-wrap items-start gap-2">
                 <span class="font-mono text-sm font-bold text-orange-500">POST</span>
@@ -210,10 +247,8 @@
               <pre class="mt-2 text-xs bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>POST /api/tools/seo-intent
 X-API-Key: YOUR_API_KEY
 {"url": "https://example.com"}</code></pre>
-              <div class="mt-2 text-xs text-gray-500">Response: <code>{ success: true, data: { ...audit_results... } }</code></div>
             </div>
 
-            <!-- Webhooks -->
             <div class="endpoint-doc pl-4 py-2">
               <div class="flex flex-wrap items-start gap-2">
                 <span class="font-mono text-sm font-bold text-orange-500">GET / POST / DELETE</span>
@@ -223,7 +258,6 @@ X-API-Key: YOUR_API_KEY
               <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manage your webhooks. <code>POST</code> with <code>{ url, events: ["audit.completed"] }</code>, <code>GET</code> to list, <code>DELETE /:id</code> to remove.</p>
             </div>
 
-            <!-- Account info -->
             <div class="endpoint-doc pl-4 py-2">
               <div class="flex flex-wrap items-start gap-2">
                 <span class="font-mono text-sm font-bold text-orange-500">GET</span>
@@ -232,12 +266,21 @@ X-API-Key: YOUR_API_KEY
               </div>
               <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Get your account details, including remaining daily usage.</p>
             </div>
+
+            <div class="endpoint-doc pl-4 py-2">
+              <div class="flex flex-wrap items-start gap-2">
+                <span class="font-mono text-sm font-bold text-orange-500">GET / POST / DELETE</span>
+                <span class="font-mono text-sm">/api/keys</span>
+                <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">API Keys</span>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">List, generate, and revoke API keys (managed above).</p>
+            </div>
           </div>
         </section>
 
-        <!-- ===== RATE LIMITS SUMMARY ===== -->
-        <section class="glass rounded-2xl p-6">
-          <h2 class="text-xl font-bold mb-4">📊 Rate Limits</h2>
+        <!-- ===== RATE LIMITS (quick summary) ===== -->
+        <section class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📊 Rate Limits (Summary)</h2>
           <div class="grid grid-cols-3 gap-4 text-sm">
             <div><span class="text-gray-500">Free:</span> <span class="font-bold">3</span> req/day</div>
             <div><span class="text-gray-500">Pro:</span> <span class="font-bold">25</span> req/day</div>
@@ -246,6 +289,295 @@ X-API-Key: YOUR_API_KEY
           <div x-show="remaining !== undefined" class="mt-4 text-sm">
             <span class="text-gray-500">Remaining today:</span>
             <span class="font-bold" x-text="remaining"></span>
+          </div>
+          <p class="mt-2 text-xs text-gray-500">See <a href="#rate-limits-doc" class="text-orange-500 hover:underline">detailed rate limit documentation</a> for more info.</p>
+        </section>
+
+        <!-- ================================================ -->
+        <!-- ===== DETAILED DOCUMENTATION SECTIONS ===== -->
+        <!-- ================================================ -->
+
+        <!-- Authentication -->
+        <section id="auth" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">🔐 Authentication</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p>All API requests require authentication. There are two types of credentials:</p>
+            <ul class="list-disc list-inside space-y-2">
+              <li><strong>Bearer Token (JWT)</strong> – used for most endpoints (keys, webhooks, account info). Obtain it by logging in via the <a href="/login/" class="text-blue-500 hover:underline">login page</a>.</li>
+              <li><strong>X-API-Key</strong> – used exclusively for the tool endpoint <code>/api/tools/*</code>. Generate a key on this page.</li>
+            </ul>
+            <pre class="bg-gray-900 text-white p-3 rounded-lg mt-2 overflow-x-auto"><code>Authorization: Bearer &lt;your_jwt&gt;
+X-API-Key: &lt;your_api_key&gt;</code></pre>
+            <p class="text-xs text-gray-500">The <code>X-API-Key</code> header is only required for the tool endpoint; all other endpoints use the <code>Authorization</code> header.</p>
+          </div>
+        </section>
+
+        <!-- Endpoints Overview -->
+        <section id="endpoints" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📡 Endpoints Overview</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
+              <thead class="border-b border-gray-200 dark:border-gray-700">
+                <tr><th class="py-2 pr-4">Method</th><th class="py-2 pr-4">Endpoint</th><th class="py-2">Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4 font-mono text-xs">/api/keys</td><td>List your API keys</td></tr>
+                <tr><td class="py-2 pr-4">POST</td><td class="py-2 pr-4 font-mono text-xs">/api/keys/generate</td><td>Generate a new API key</td></tr>
+                <tr><td class="py-2 pr-4">DELETE</td><td class="py-2 pr-4 font-mono text-xs">/api/keys/revoke/:id</td><td>Revoke an API key</td></tr>
+                <tr><td class="py-2 pr-4">POST</td><td class="py-2 pr-4 font-mono text-xs">/api/tools/:tool</td><td>Run an audit (requires X-API-Key)</td></tr>
+                <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4 font-mono text-xs">/api/webhooks</td><td>List your webhooks</td></tr>
+                <tr><td class="py-2 pr-4">POST</td><td class="py-2 pr-4 font-mono text-xs">/api/webhooks</td><td>Create a webhook</td></tr>
+                <tr><td class="py-2 pr-4">DELETE</td><td class="py-2 pr-4 font-mono text-xs">/api/webhooks/:id</td><td>Delete a webhook</td></tr>
+                <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4 font-mono text-xs">/api/account-info</td><td>Get account details &amp; usage</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Tool Endpoint -->
+        <section id="tool-endpoint" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">🛠️ Tool Endpoint</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p><strong>POST</strong> <code>/api/tools/:tool</code></p>
+            <p><strong>Headers:</strong> <code>X-API-Key: &lt;your_api_key&gt;</code> and <code>Content-Type: application/json</code></p>
+            <p><strong>Request body:</strong></p>
+            <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>{
+  "url": "https://example.com"
+}</code></pre>
+            <p><strong>Response (success):</strong></p>
+            <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>{
+  "success": true,
+  "data": {
+    "tool": "seo-intent",
+    "url": "https://example.com",
+    "score": 85,
+    "summary": "Good intent match"
+  }
+}</code></pre>
+            <p><strong>Available tools:</strong> <code>seo-intent</code>, <code>seo-ux</code>, <code>local-seo</code>, <code>product-seo</code>, <code>entity</code>, <code>topical</code>, <code>schema-generator</code>, <code>ai-search</code>, <code>ai-voice</code>, <code>ai-audit</code>, <code>quit-risk</code>, <code>keyword-research</code>, <code>keyword-placement</code>.</p>
+          </div>
+        </section>
+
+        <!-- Webhook Endpoints (detailed) -->
+        <section id="webhooks-doc" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">🔗 Webhook Endpoints (Detailed)</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p><strong>GET</strong> <code>/api/webhooks</code> – list your webhooks (requires Bearer token).</p>
+            <p><strong>POST</strong> <code>/api/webhooks</code> – create a new webhook (requires Bearer token).</p>
+            <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>{
+  "url": "https://your-domain.com/webhook",
+  "events": ["audit.completed"]
+}</code></pre>
+            <p><strong>DELETE</strong> <code>/api/webhooks/:id</code> – delete a webhook (requires Bearer token).</p>
+            <p>All webhook endpoints return JSON with <code>{ success: true, ... }</code> or an error object.</p>
+          </div>
+        </section>
+
+        <!-- Account Info -->
+        <section id="account-info" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">👤 Account Info</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p><strong>GET</strong> <code>/api/account-info</code> – returns your account details and daily usage.</p>
+            <p><strong>Response example:</strong></p>
+            <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>{
+  "email": "user@example.com",
+  "isPro": true,
+  "proSince": "2025-03-01T...",
+  "dailyUsed": 3,
+  "dailyLimit": 25,
+  "dailyRemaining": 22,
+  "tier": "pro",
+  "ga4Connected": true,
+  "gscConnected": true,
+  "gscSiteUrl": "sc-domain:example.com"
+}</code></pre>
+          </div>
+        </section>
+
+        <!-- Error Codes -->
+        <section id="errors" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">❌ Error Codes</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
+              <thead class="border-b border-gray-200 dark:border-gray-700">
+                <tr><th class="py-2 pr-4">Status</th><th class="py-2 pr-4">Meaning</th><th class="py-2">Common Cause</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="py-2 pr-4">400</td><td class="py-2 pr-4">Bad Request</td><td>Missing or invalid parameters</td></tr>
+                <tr><td class="py-2 pr-4">401</td><td class="py-2 pr-4">Unauthorized</td><td>Missing/invalid Bearer token or X-API-Key</td></tr>
+                <tr><td class="py-2 pr-4">403</td><td class="py-2 pr-4">Forbidden</td><td>You don't own the resource (e.g., revoking someone else's key)</td></tr>
+                <tr><td class="py-2 pr-4">404</td><td class="py-2 pr-4">Not Found</td><td>Endpoint or resource ID does not exist</td></tr>
+                <tr><td class="py-2 pr-4">429</td><td class="py-2 pr-4">Too Many Requests</td><td>Daily rate limit exceeded</td></tr>
+                <tr><td class="py-2 pr-4">500</td><td class="py-2 pr-4">Internal Server Error</td><td>Unexpected server issue – contact support</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-gray-500">All error responses include an <code>error</code> field with a description.</p>
+          </div>
+        </section>
+
+        <!-- Rate Limits (detailed) -->
+        <section id="rate-limits-doc" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📊 Rate Limits (Detailed)</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p>Daily request limits are applied per API key (for the tool endpoint) and per user (for other endpoints). The limit depends on your subscription tier:</p>
+            <div class="grid grid-cols-3 gap-4 text-sm">
+              <div><span class="text-gray-500">Free:</span> <span class="font-bold">3</span> req/day</div>
+              <div><span class="text-gray-500">Pro:</span> <span class="font-bold">25</span> req/day</div>
+              <div><span class="text-gray-500">Enterprise:</span> <span class="font-bold">300</span> req/day</div>
+            </div>
+            <p>The <code>/api/account-info</code> endpoint returns your current usage and remaining requests.</p>
+            <p><strong>Note:</strong> The tool endpoint (<code>/api/tools/*</code>) counts against the API key's daily limit. Other endpoints (keys, webhooks, account) are not rate-limited (but may be in the future).</p>
+          </div>
+        </section>
+
+        <!-- Code Examples -->
+        <section id="examples" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">💻 Code Examples</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-6 text-sm text-gray-700 dark:text-gray-300">
+            <div>
+              <h4 class="font-bold text-base">cURL</h4>
+              <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>curl -X POST https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com"}'</code></pre>
+            </div>
+            <div>
+              <h4 class="font-bold text-base">JavaScript (fetch)</h4>
+              <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent', {
+  method: 'POST',
+  headers: {
+    'X-API-Key': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ url: 'https://example.com' })
+})
+.then(res => res.json())
+.then(data => console.log(data))
+.catch(err => console.error(err));</code></pre>
+            </div>
+            <div>
+              <h4 class="font-bold text-base">Python (requests)</h4>
+              <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>import requests
+
+url = 'https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent'
+headers = {'X-API-Key': 'YOUR_API_KEY', 'Content-Type': 'application/json'}
+payload = {'url': 'https://example.com'}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())</code></pre>
+            </div>
+            <div>
+              <h4 class="font-bold text-base">PHP (cURL)</h4>
+              <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>$ch = curl_init('https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+  'X-API-Key: YOUR_API_KEY',
+  'Content-Type: application/json'
+]);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['url' => 'https://example.com']));
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Webhook Payload -->
+        <section id="webhook-payload" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📦 Webhook Payload</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p>When an audit completes, Traffic Torch sends a POST request to your registered webhook URL with the following JSON payload:</p>
+            <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>{
+  "event": "audit.completed",
+  "tool": "seo-intent",
+  "url": "https://example.com",
+  "result": {
+    "tool": "seo-intent",
+    "url": "https://example.com",
+    "score": 85,
+    "summary": "Good intent match"
+  },
+  "timestamp": "2025-03-01T12:34:56.789Z"
+}</code></pre>
+            <p>The <code>result</code> field contains the exact response you'd get from the tool endpoint.</p>
+            <p><strong>Event types:</strong> <code>audit.completed</code> (currently the only event). <code>usage.alert</code> will be added in the future.</p>
+          </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">❓ FAQ</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">How do I get an API key?</summary>
+              <div class="mt-2 pl-4">Generate one on this page after logging in. Use the "Generate New Key" button.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">What's the difference between the Bearer token and X-API-Key?</summary>
+              <div class="mt-2 pl-4">The Bearer token (JWT) is used for management endpoints (keys, webhooks). The X-API-Key is used exclusively for running audits via <code>/api/tools/*</code>.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">How are daily limits calculated?</summary>
+              <div class="mt-2 pl-4">The limit applies to the API key (for tool calls) and resets at midnight UTC. The <code>/api/account-info</code> endpoint shows your current usage and remaining requests.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Can I revoke an API key?</summary>
+              <div class="mt-2 pl-4">Yes – click "Revoke" next to any key on this page. Revoked keys are immediately invalid.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">What events trigger webhooks?</summary>
+              <div class="mt-2 pl-4">Currently only <code>audit.completed</code>. <code>usage.alert</code> (when you reach 80% of your daily limit) is planned.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Is there a test environment?</summary>
+              <div class="mt-2 pl-4">The same endpoints work for both live and test; you can use <code>https://webhook.site</code> to test webhooks.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Do you have a sandbox mode?</summary>
+              <div class="mt-2 pl-4">Not yet, but you can create a test API key and use it with your own development environment.</div>
+            </details>
+          </div>
+        </section>
+
+        <!-- Changelog -->
+        <section id="changelog" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📅 Changelog</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <p><strong>v1.0.0</strong> – <span class="text-gray-500">March 1, 2025</span></p>
+            <ul class="list-disc list-inside pl-4 space-y-1">
+              <li>Initial API release</li>
+              <li>Support for 13 audit tools</li>
+              <li>API key generation and revocation</li>
+              <li>Webhook management (audit.completed)</li>
+              <li>Account info and rate limits</li>
+            </ul>
+            <p class="mt-4 text-xs text-gray-500">Future versions will include additional tools, event types, and pagination.</p>
+          </div>
+        </section>
+
+        <!-- Support -->
+        <section id="support" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📧 Support</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <p>For API support, bug reports, or feature requests, please contact us:</p>
+            <ul class="list-disc list-inside pl-4 space-y-1">
+              <li><strong>Email:</strong> <a href="mailto:support@traffictorch.net" class="text-blue-500 hover:underline">support@traffictorch.net</a></li>
+              <li><strong>Help Guides:</strong> <a href="/ai-ux-seo-help-guides/" class="text-blue-500 hover:underline">traffictorch.net/ai-ux-seo-help-guides</a></li>
+            </ul>
+            <p class="mt-4">We aim to respond within 24 hours (business days).</p>
           </div>
         </section>
 
