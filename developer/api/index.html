@@ -62,13 +62,19 @@
     .endpoint-doc {
       border-left: 3px solid #f97316;
     }
+    .webhook-item {
+      transition: background 0.2s;
+    }
+    .webhook-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
 <div x-data="apiApp()" x-init="initApp()" class="flex flex-1 min-h-screen">
 
-  <!-- ===== SIDEBAR (same as dashboard) ===== -->
+  <!-- ===== SIDEBAR ===== -->
   <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
     <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
       <a href="/" class="flex items-center gap-4">
@@ -128,7 +134,7 @@
             <template x-for="key in keys" :key="key.id">
               <div class="api-key-card flex flex-wrap items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg mb-2">
                 <div class="flex-1">
-                  <span class="font-mono text-sm" x-text="key.prefix + '…'"></span>
+                  <span class="font-mono text-sm" x-text="key.key_prefix + '…'"></span>
                   <span class="text-xs text-gray-500 ml-2" x-text="key.name || 'Unnamed'"></span>
                   <span class="text-xs text-gray-400 ml-2" x-text="'Created: ' + new Date(key.created_at).toLocaleDateString()"></span>
                 </div>
@@ -147,9 +153,44 @@
               <p class="text-sm font-semibold text-green-800 dark:text-green-200">Your new API key:</p>
               <code class="block bg-gray-900 text-white p-2 rounded text-xs font-mono break-all mt-1" x-text="generatedKey"></code>
               <p class="text-xs text-gray-500 mt-1">Copy this key now. It will not be shown again.</p>
-              <button @click="generatedKey = null" class="mt-2 text-sm text-gray-500 hover:underline">Dismiss</button>
+              <div class="mt-2 flex gap-3">
+                <button @click="copyKey(generatedKey)" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition">Copy</button>
+                <button @click="generatedKey = null" class="text-sm text-gray-500 hover:underline">Dismiss</button>
+              </div>
             </div>
           </div>
+        </section>
+
+        <!-- ===== WEBHOOK MANAGEMENT ===== -->
+        <section class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📡 Webhooks</h2>
+          <p class="text-sm text-gray-500 mb-4">Receive real‑time notifications when audits complete.</p>
+
+          <!-- Add webhook form -->
+          <div class="flex flex-wrap items-center gap-3 mb-4">
+            <input type="url" x-model="newWebhookUrl" placeholder="https://your-domain.com/webhook" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm min-w-[200px]">
+            <select x-model="newWebhookEvents" multiple class="px-2 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm min-w-[150px]">
+              <option value="audit.completed">Audit Completed</option>
+              <option value="usage.alert">Usage Alert</option>
+            </select>
+            <button @click="addWebhook()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition">Add Webhook</button>
+          </div>
+          <div x-show="webhookError" class="text-red-500 text-sm mb-2" x-text="webhookError"></div>
+
+          <!-- List webhooks -->
+          <div x-show="webhooks.length > 0">
+            <template x-for="wh in webhooks" :key="wh.id">
+              <div class="webhook-item flex flex-wrap items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg mb-2">
+                <div class="flex-1 text-sm">
+                  <span class="font-mono" x-text="wh.url"></span>
+                  <span class="ml-2 text-xs text-gray-500" x-text="'Events: ' + wh.events.join(', ')"></span>
+                  <span class="ml-2 text-xs text-gray-400" x-text="'Added: ' + new Date(wh.created_at).toLocaleDateString()"></span>
+                </div>
+                <button @click="deleteWebhook(wh.id)" class="text-xs text-red-500 hover:text-red-700 transition">Delete</button>
+              </div>
+            </template>
+          </div>
+          <p x-show="webhooks.length === 0 && !webhookLoading" class="text-gray-500 text-sm">No webhooks configured.</p>
         </section>
 
         <!-- ===== API DOCS ===== -->
@@ -165,21 +206,21 @@
                 <span class="font-mono text-sm">/api/tools/:tool</span>
                 <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Run audit</span>
               </div>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Run any audit tool. Replace <code>:tool</code> with one of: <code>seo-intent</code>, <code>seo-ux</code>, <code>local-seo</code>, <code>product-seo</code>, <code>entity</code>, <code>topical</code>, <code>schema-generator</code>, <code>ai-search</code>, <code>ai-voice</code>, <code>ai-audit</code>, <code>quit-risk</code>, <code>keyword-research</code>, <code>keyword-placement</code>.</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Run any audit tool. Replace <code>:tool</code> with: <code>seo-intent</code>, <code>seo-ux</code>, <code>local-seo</code>, <code>product-seo</code>, <code>entity</code>, <code>topical</code>, <code>schema-generator</code>, <code>ai-search</code>, <code>ai-voice</code>, <code>ai-audit</code>, <code>quit-risk</code>, <code>keyword-research</code>, <code>keyword-placement</code>.</p>
               <pre class="mt-2 text-xs bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>POST /api/tools/seo-intent
 X-API-Key: YOUR_API_KEY
 {"url": "https://example.com"}</code></pre>
               <div class="mt-2 text-xs text-gray-500">Response: <code>{ success: true, data: { ...audit_results... } }</code></div>
             </div>
 
-            <!-- Rate limits -->
+            <!-- Webhooks -->
             <div class="endpoint-doc pl-4 py-2">
               <div class="flex flex-wrap items-start gap-2">
-                <span class="font-mono text-sm font-bold text-orange-500">GET</span>
-                <span class="font-mono text-sm">/api/rate-limits</span>
-                <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Usage</span>
+                <span class="font-mono text-sm font-bold text-orange-500">GET / POST / DELETE</span>
+                <span class="font-mono text-sm">/api/webhooks</span>
+                <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Webhooks</span>
               </div>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Get your current usage and remaining requests for the day.</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manage your webhooks. <code>POST</code> with <code>{ url, events: ["audit.completed"] }</code>, <code>GET</code> to list, <code>DELETE /:id</code> to remove.</p>
             </div>
 
             <!-- Account info -->
@@ -189,10 +230,8 @@ X-API-Key: YOUR_API_KEY
                 <span class="font-mono text-sm">/api/account-info</span>
                 <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Account</span>
               </div>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Get your account details (plan, daily usage).</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Get your account details, including remaining daily usage.</p>
             </div>
-
-            <!-- Keys management (already listed above) -->
           </div>
         </section>
 
@@ -233,6 +272,13 @@ document.addEventListener('alpine:init', () => {
     generatedKey: null,
     remaining: undefined,
 
+    // Webhooks
+    webhooks: [],
+    newWebhookUrl: '',
+    newWebhookEvents: ['audit.completed'],
+    webhookError: '',
+    webhookLoading: false,
+
     async initApp() {
       // Load footer
       fetch('/footer.html').then(r => r.text()).then(html => document.getElementById('footer-placeholder').innerHTML = html).catch(() => {});
@@ -240,6 +286,7 @@ document.addEventListener('alpine:init', () => {
       this.loadMenus();
       await this.fetchKeys();
       await this.fetchUsage();
+      await this.fetchWebhooks();
     },
 
     loadMenus() {
@@ -319,6 +366,22 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    copyKey(key) {
+      if (!key) return;
+      navigator.clipboard.writeText(key).then(() => {
+        alert('API key copied to clipboard!');
+      }).catch(() => {
+        // Fallback
+        const input = document.createElement('input');
+        input.value = key;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('API key copied to clipboard!');
+      });
+    },
+
     async fetchUsage() {
       try {
         const token = localStorage.getItem('authToken');
@@ -331,6 +394,78 @@ document.addEventListener('alpine:init', () => {
           this.remaining = data.dailyRemaining;
         }
       } catch (e) {}
+    },
+
+    // ---- Webhooks ----
+    async fetchWebhooks() {
+      this.webhookLoading = true;
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/webhooks', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.webhooks = data.webhooks || [];
+        }
+      } catch (e) {
+        console.error('Webhook fetch error', e);
+      } finally {
+        this.webhookLoading = false;
+      }
+    },
+
+    async addWebhook() {
+      this.webhookError = '';
+      const url = this.newWebhookUrl.trim();
+      if (!url) {
+        this.webhookError = 'Please enter a valid URL.';
+        return;
+      }
+      const token = localStorage.getItem('authToken');
+      if (!token) return alert('Please log in first.');
+      try {
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/webhooks', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            url,
+            events: this.newWebhookEvents
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.newWebhookUrl = '';
+          this.newWebhookEvents = ['audit.completed'];
+          await this.fetchWebhooks();
+        } else {
+          this.webhookError = data.error || 'Failed to add webhook.';
+        }
+      } catch (e) {
+        this.webhookError = 'Error: ' + e.message;
+      }
+    },
+
+    async deleteWebhook(id) {
+      if (!confirm('Delete this webhook?')) return;
+      const token = localStorage.getItem('authToken');
+      try {
+        const res = await fetch(`https://traffic-torch-auth.traffictorch.workers.dev/api/webhooks/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          await this.fetchWebhooks();
+        } else {
+          alert('Failed to delete webhook.');
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
     }
   }));
 });
