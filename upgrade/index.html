@@ -36,8 +36,9 @@
       }
     })();
   </script>
-
-  <script src="https://js.stripe.com/v3/"></script>
+  
+<script src="/config.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
 
   <!-- Keep the same styles as original (glass, plan-card, etc.) -->
   <style>
@@ -312,10 +313,12 @@ window.upgradeToPlan = async function(plan = 'pro') {
   if (!container || !mount) return;
 
   container.classList.add('active');
+
+  // ⚠️ Clear the mount element before showing spinner and mounting
   mount.innerHTML = '<div class="text-center py-8"><div class="spinner mx-auto"></div><p class="mt-4 text-gray-600 dark:text-gray-300">Loading checkout…</p></div>';
 
   try {
-    const stripe = Stripe('window.STRIPE_PUBLISHABLE_KEY');
+    const stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
 
     const fetchClientSecret = async () => {
       const res = await fetch(API_BASE + '/api/upgrade', {
@@ -335,7 +338,7 @@ window.upgradeToPlan = async function(plan = 'pro') {
       return data.clientSecret;
     };
 
-    // ⚠️ Important: clear mount before mounting Stripe
+    // Clear again before mounting (removes the spinner)
     mount.innerHTML = '';
     const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
     checkout.mount('#checkout-mount');
