@@ -4,15 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login – Traffic Torch</title>
+
+  <!-- SEO & Crawling -->
   <meta name="robots" content="noindex, nofollow">
   <link rel="canonical" href="https://traffictorch.net/login/">
 
+  <!-- Schema.org markup (optional but good for rich snippets) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Login – Traffic Torch",
+      "description": "Log in, register, or use a magic link to access your Traffic Torch account.",
+      "url": "https://traffictorch.net/login/"
+    }
+  </script>
+
+  <!-- Preload critical CSS -->
   <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/style-v1.0.css"></noscript>
   <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
   <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
   <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
 
+  <!-- Theme detection (dark/light) -->
   <script>
     (function() {
       const saved = localStorage.getItem('theme');
@@ -25,13 +40,21 @@
     })();
   </script>
 
+  <!-- Stripe (for future upgrades) -->
   <script src="https://js.stripe.com/v3/"></script>
+  <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
   <style>
     [x-cloak] { display: none !important; }
-    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-    .dark .glass { background: rgba(0,0,0,0.3); }
+    .glass {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .dark .glass {
+      background: rgba(0,0,0,0.3);
+    }
     .password-toggle {
       position: absolute;
       right: 12px;
@@ -60,6 +83,7 @@
 
 <div x-data="authApp()" x-init="initAuth()" class="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-8">
 
+  <!-- Logo -->
   <div class="flex justify-center mb-6">
     <img src="/logo-160w.webp" class="w-16 rounded-xl" alt="Traffic Torch">
   </div>
@@ -74,7 +98,7 @@
   <!-- Message -->
   <div x-show="message" class="mb-4 p-3 rounded-lg text-sm" :class="messageType==='success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" x-text="message"></div>
 
-  <!-- Magic Link -->
+  <!-- Magic Link Tab -->
   <div x-show="activeTab==='magic'" x-cloak>
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Email</label>
@@ -83,7 +107,7 @@
     <button @click="sendMagicLink()" class="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition" :disabled="loading">Send Magic Link</button>
   </div>
 
-  <!-- Login -->
+  <!-- Login Tab -->
   <div x-show="activeTab==='login'" x-cloak>
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Email</label>
@@ -116,7 +140,7 @@
     </div>
   </div>
 
-  <!-- Register -->
+  <!-- Register Tab -->
   <div x-show="activeTab==='register'" x-cloak>
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Email</label>
@@ -153,7 +177,7 @@
     <button @click="register()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition" :disabled="loading">Register</button>
   </div>
 
-  <!-- Reset (show when reset_token in URL) -->
+  <!-- Password Reset Form (shown when reset_token is in URL) -->
   <div x-show="resetToken" x-cloak class="mt-4 p-4 border border-blue-300 rounded-lg">
     <h3 class="font-bold text-lg">Set new password</h3>
     <div class="relative mt-3">
@@ -187,6 +211,9 @@
 </div>
 
 <script>
+// ============================================================
+// TRAFFIC TORCH – LOGIN SCRIPT (FIXED ENDPOINTS)
+// ============================================================
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
 function authApp() {
@@ -214,18 +241,22 @@ function authApp() {
     msgTimeout: null,
 
     initAuth() {
+      // If reset token is present, show the reset form and switch to login tab
       if (this.resetToken) {
         this.activeTab = 'login';
         this.showForgot = false;
       }
+
+      // Magic link token: store and redirect
       const magicToken = new URLSearchParams(window.location.search).get('magic_token');
       if (magicToken) {
         localStorage.setItem('authToken', magicToken);
         window.location.href = '/dashboard/';
       }
+
+      // Already logged in? Redirect to dashboard
       const token = localStorage.getItem('authToken');
       if (token) {
-        // Already logged in – redirect to dashboard
         window.location.href = '/dashboard/';
       }
     },
@@ -237,10 +268,11 @@ function authApp() {
       this.msgTimeout = setTimeout(() => (this.message = ''), 5000);
     },
 
+    // ---- Magic Link ----
     async sendMagicLink() {
       this.loading = true;
       try {
-        const res = await fetch(API_BASE + '/api/magic-link', {
+        const res = await fetch(API_BASE + '/api/auth/magic-link', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.magicEmail })
@@ -252,10 +284,13 @@ function authApp() {
         } else {
           this.setMessage(data.error || 'Failed to send');
         }
-      } catch { this.setMessage('Network error'); }
+      } catch {
+        this.setMessage('Network error');
+      }
       this.loading = false;
     },
 
+    // ---- Login ----
     async login() {
       this.loading = true;
       try {
@@ -271,10 +306,13 @@ function authApp() {
         } else {
           this.setMessage(data.error || 'Login failed');
         }
-      } catch { this.setMessage('Network error'); }
+      } catch {
+        this.setMessage('Network error');
+      }
       this.loading = false;
     },
 
+    // ---- Register ----
     async register() {
       if (this.registerPassword !== this.registerConfirm) {
         this.setMessage('Passwords do not match');
@@ -298,14 +336,17 @@ function authApp() {
         } else {
           this.setMessage(data.error || 'Registration failed');
         }
-      } catch { this.setMessage('Network error'); }
+      } catch {
+        this.setMessage('Network error');
+      }
       this.loading = false;
     },
 
+    // ---- Send Reset Link (Forgot Password) ----
     async sendResetLink() {
       this.loading = true;
       try {
-        const res = await fetch(API_BASE + '/api/reset-password', {
+        const res = await fetch(API_BASE + '/api/forgot-password', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.resetEmail })
@@ -316,12 +357,15 @@ function authApp() {
           this.resetEmail = '';
           this.showForgot = false;
         } else {
-          this.setMessage(data.error || 'Failed');
+          this.setMessage(data.error || 'Failed to send reset link');
         }
-      } catch { this.setMessage('Network error'); }
+      } catch {
+        this.setMessage('Network error');
+      }
       this.loading = false;
     },
 
+    // ---- Confirm Reset Password (using token from URL) ----
     async resetPassword() {
       if (this.resetNewPassword !== this.resetConfirmPassword) {
         this.setMessage('Passwords do not match');
@@ -333,7 +377,7 @@ function authApp() {
       }
       this.loading = true;
       try {
-        const res = await fetch(API_BASE + '/api/reset-password/confirm', {
+        const res = await fetch(API_BASE + '/api/reset-password', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token: this.resetToken, password: this.resetNewPassword })
@@ -341,20 +385,25 @@ function authApp() {
         const data = await res.json();
         if (res.ok) {
           this.setMessage('Password reset successfully!', 'success');
+          // Clear the form and token
           this.resetToken = '';
           this.resetNewPassword = '';
           this.resetConfirmPassword = '';
           this.showForgot = false;
           this.activeTab = 'login';
+          // Remove token from URL
           window.history.replaceState({}, '', '/login/');
         } else {
           this.setMessage(data.error || 'Reset failed');
         }
-      } catch { this.setMessage('Network error'); }
+      } catch {
+        this.setMessage('Network error');
+      }
       this.loading = false;
     }
   };
 }
 </script>
+
 </body>
 </html>
