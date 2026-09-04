@@ -991,7 +991,8 @@
       <!-- PRO -->
       <div class="glass rounded-xl p-6 text-center border border-orange-500 dark:border-orange-600">
         <h4 class="text-xl font-bold">Pro</h4>
-        <p class="text-3xl font-black mt-2">$48<span class="text-base font-normal text-gray-500">/year</span></p>
+        <p class="text-3xl font-black mt-2">$6<span class="text-base font-normal text-gray-500">/mo</span></p>
+        <p class="text-sm text-gray-400">or $48/year</p>
         <ul class="mt-4 space-y-2 text-sm text-left">
           <li>✅ 25 runs per day</li>
           <li>✅ 30‑day GA4 data</li>
@@ -1115,6 +1116,26 @@
     </div>
   </div>
 
+  <!-- Reset Password Modal (NEW) -->
+  <div x-show="showResetModal" x-cloak class="fixed inset-0 z-[10003] flex items-center justify-center modal-overlay">
+    <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
+      <button @click="showResetModal = false; resetToken = null" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
+      <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Reset Your Password</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">Enter a new password (min 8 characters).</p>
+
+      <input type="password" x-model="newPassword" placeholder="New password" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 mb-4 text-gray-900 dark:text-white">
+      <input type="password" x-model="confirmPassword" placeholder="Confirm password" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 mb-4 text-gray-900 dark:text-white">
+
+      <div x-show="resetError" class="text-red-500 text-sm mb-2" x-text="resetError"></div>
+      <div x-show="resetSuccess" class="text-green-500 text-sm mb-2" x-text="resetSuccess"></div>
+
+      <button @click="submitResetPassword()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition" :disabled="loadingReset">
+        <span x-show="!loadingReset">Reset Password</span>
+        <span x-show="loadingReset">Processing...</span>
+      </button>
+    </div>
+  </div>
+
 </div>
 
 <!-- Checkout container -->
@@ -1182,6 +1203,13 @@ window.contactSales = function contactSales() {
 // ----- Alpine Component -----
 function dashboardApp() {
   return {
+    resetToken: null,
+    showResetModal: false,
+    newPassword: '',
+    confirmPassword: '',
+    resetError: '',
+    resetSuccess: '',
+    loadingReset: false,
     isAuthenticated: false,
     user: { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null },
     activeDashboardTab: 'dashboard',
@@ -1341,6 +1369,13 @@ function dashboardApp() {
         } else {
           this.gsc.error = 'Site URL is required to connect.';
         }
+      }
+
+      // ---- RESET TOKEN DETECTION (NEW) ----
+      const resetToken = urlParams.get('reset_token');
+      if (resetToken) {
+        this.resetToken = resetToken;
+        this.showResetModal = true;
       }
 
       this.$watch('activeDashboardTab', (newTab) => {
@@ -2413,6 +2448,43 @@ function dashboardApp() {
         alert('Reset link sent to your email. Check your inbox.');
       })
       .catch(err => alert('Failed to send reset email.'));
+    },
+
+    // ---- Reset Password (NEW) ----
+    async submitResetPassword() {
+      if (this.newPassword.length < 8) {
+        this.resetError = 'Password must be at least 8 characters.';
+        return;
+      }
+      if (this.newPassword !== this.confirmPassword) {
+        this.resetError = 'Passwords do not match.';
+        return;
+      }
+      this.loadingReset = true;
+      this.resetError = '';
+      this.resetSuccess = '';
+      try {
+        const res = await fetch(`${API_BASE}/api/reset-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: this.resetToken, password: this.newPassword })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.resetSuccess = 'Password reset successfully! You can now login.';
+          setTimeout(() => {
+            this.showResetModal = false;
+            this.resetToken = null;
+            window.location.href = '/login/';
+          }, 3000);
+        } else {
+          this.resetError = data.error || 'Failed to reset password.';
+        }
+      } catch (err) {
+        this.resetError = 'Network error. Please try again.';
+      } finally {
+        this.loadingReset = false;
+      }
     },
 
     // ---- Delete Account ----
