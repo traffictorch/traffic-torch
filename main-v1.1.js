@@ -356,7 +356,7 @@ async function upgradeToPro() {
     const container = document.getElementById('checkout-container');
     if (!container) throw new Error('Checkout container not found – add <div id="checkout-container"> to the page');
     container.classList.remove('hidden');
-    const stripe = Stripe('window.STRIPE_PUBLISHABLE_KEY');
+    const stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
     const fetchClientSecret = async () => {
       const response = await fetch(`${API_BASE}/api/upgrade`, {
         method: 'POST',
