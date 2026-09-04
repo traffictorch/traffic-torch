@@ -214,40 +214,45 @@
           <button class="mt-8 w-full py-3 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-semibold cursor-default" disabled>Current Plan</button>
         </div>
 
-        <!-- PRO (Yearly $48) -->
-        <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col">
-          <h2 class="text-2xl font-bold">Pro</h2>
-          <p class="text-4xl font-black mt-2">$48 <span class="text-base font-normal text-gray-500">/ year</span></p>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Best for professionals</p>
-          <ul class="mt-6 space-y-3 text-left text-sm flex-1">
-            <li><span class="feature-check">✓</span> 25 audits per day</li>
-            <li><span class="feature-check">✓</span> All 15 tools</li>
-            <li><span class="feature-check">✓</span> 30‑day data retention</li>
-            <li><span class="feature-check">✓</span> CSV exports</li>
-            <li><span class="feature-missing">✗</span> Real‑time analytics</li>
-            <li><span class="feature-missing">✗</span> Custom date ranges</li>
-            <li><span class="feature-check">✓</span> Priority support</li>
-          </ul>
-          <button onclick="upgradeToPlan('pro')" class="mt-8 w-full py-3 btn-upgrade text-white font-bold rounded-xl transition">Upgrade to Pro</button>
-        </div>
+<!-- PRO -->
+<div class="plan-card glass rounded-2xl p-8 text-center flex flex-col">
+  <h2 class="text-2xl font-bold">Pro</h2>
+  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Best for professionals</p>
+  <ul class="mt-6 space-y-3 text-left text-sm flex-1">
+    <li><span class="feature-check">✓</span> 25 audits per day</li>
+    <li><span class="feature-check">✓</span> All 15 tools</li>
+    <li><span class="feature-check">✓</span> 30‑day data retention</li>
+    <li><span class="feature-check">✓</span> CSV exports</li>
+    <li><span class="feature-missing">✗</span> Real‑time analytics</li>
+    <li><span class="feature-missing">✗</span> Custom date ranges</li>
+    <li><span class="feature-check">✓</span> Priority support</li>
+  </ul>
+  <!-- 3 buttons stacked -->
+  <div class="mt-6 space-y-3 w-full">
+    <button onclick="upgradeToPlan('pro_6month')" class="w-full py-2.5 btn-upgrade text-white font-semibold rounded-xl transition text-sm">$6 / month</button>
+    <button onclick="upgradeToPlan('pro_yearly')" class="w-full py-2.5 btn-upgrade text-white font-semibold rounded-xl transition text-sm">$48 / year</button>
+    <button onclick="upgradeToPlan('pro_lifetime')" class="w-full py-2.5 btn-upgrade text-white font-semibold rounded-xl transition text-sm">$198 / lifetime</button>
+  </div>
+</div>
 
-        <!-- ENTERPRISE (Monthly $68) -->
-        <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col">
-          <h2 class="text-2xl font-bold">Enterprise</h2>
-          <p class="text-4xl font-black mt-2">$68 <span class="text-base font-normal text-gray-500">/ month</span></p>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">or $680 / year</p>
-          <ul class="mt-6 space-y-3 text-left text-sm flex-1">
-            <li><span class="feature-check">✓</span> 300 audits per day</li>
-            <li><span class="feature-check">✓</span> All 15 tools</li>
-            <li><span class="feature-check">✓</span> 365‑day data retention</li>
-            <li><span class="feature-check">✓</span> CSV exports</li>
-            <li><span class="feature-check">✓</span> Real‑time analytics</li>
-            <li><span class="feature-check">✓</span> Custom date ranges</li>
-            <li><span class="feature-check">✓</span> Dedicated support</li>
-          </ul>
-          <button onclick="upgradeToPlan('enterprise')" class="mt-8 w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">Upgrade to Enterprise</button>
-        </div>
-      </div>
+<!-- ENTERPRISE -->
+<div class="plan-card glass rounded-2xl p-8 text-center flex flex-col">
+  <h2 class="text-2xl font-bold">Enterprise</h2>
+  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">For teams and agencies</p>
+  <ul class="mt-6 space-y-3 text-left text-sm flex-1">
+    <li><span class="feature-check">✓</span> 300 audits per day</li>
+    <li><span class="feature-check">✓</span> All 15 tools</li>
+    <li><span class="feature-check">✓</span> 365‑day data retention</li>
+    <li><span class="feature-check">✓</span> CSV exports</li>
+    <li><span class="feature-check">✓</span> Real‑time analytics</li>
+    <li><span class="feature-check">✓</span> Custom date ranges</li>
+    <li><span class="feature-check">✓</span> Dedicated support</li>
+  </ul>
+  <div class="mt-6 space-y-3 w-full">
+    <button onclick="upgradeToPlan('enterprise_monthly')" class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition text-sm">$68 / month</button>
+    <button onclick="upgradeToPlan('enterprise_yearly')" class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition text-sm">$680 / year</button>
+  </div>
+</div>
 
       <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12 max-w-2xl mx-auto">
         All plans include full access to every Traffic Torch tool. Upgrade anytime. Questions? <a href="mailto:support@traffictorch.net" class="text-orange-500 hover:underline">Contact support</a>.

@@ -988,41 +988,42 @@
         <button class="mt-6 w-full py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg cursor-default" disabled>Current Plan</button>
       </div>
 
-      <!-- PRO -->
-      <div class="glass rounded-xl p-6 text-center border border-orange-500 dark:border-orange-600">
-        <h4 class="text-xl font-bold">Pro</h4>
-        <p class="text-3xl font-black mt-2">$6<span class="text-base font-normal text-gray-500">/mo</span></p>
-        <p class="text-sm text-gray-400">or $48/year</p>
-        <ul class="mt-4 space-y-2 text-sm text-left">
-          <li>✅ 25 runs per day</li>
-          <li>✅ 30‑day GA4 data</li>
-          <li>✅ 28‑day GSC data</li>
-          <li>✅ All 15 tools</li>
-          <li>✅ CSV exports</li>
-          <li>✅ Priority support</li>
-        </ul>
-        <button @click="window.upgradeToPlan('pro')" class="mt-6 w-full py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg hover:opacity-90 transition">
-          Upgrade to Pro
-        </button>
-      </div>
+<!-- PRO -->
+<div class="glass rounded-xl p-6 text-center border border-orange-500 dark:border-orange-600">
+  <h4 class="text-xl font-bold">Pro</h4>
+  <p class="text-sm text-gray-400">Best for professionals</p>
+  <ul class="mt-4 space-y-2 text-sm text-left">
+    <li>✅ 25 runs per day</li>
+    <li>✅ 30‑day GA4 data</li>
+    <li>✅ 28‑day GSC data</li>
+    <li>✅ All 15 tools</li>
+    <li>✅ CSV exports</li>
+    <li>✅ Priority support</li>
+  </ul>
+  <div class="mt-6 space-y-3">
+    <button @click="window.upgradeToPlan('pro_6month')" class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg hover:opacity-90 transition text-sm font-semibold">$6 / month</button>
+    <button @click="window.upgradeToPlan('pro_yearly')" class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg hover:opacity-90 transition text-sm font-semibold">$48 / year</button>
+    <button @click="window.upgradeToPlan('pro_lifetime')" class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg hover:opacity-90 transition text-sm font-semibold">$198 / lifetime</button>
+  </div>
+</div>
 
-      <!-- ENTERPRISE -->
-      <div class="glass rounded-xl p-6 text-center border border-gray-200 dark:border-gray-700">
-        <h4 class="text-xl font-bold">Enterprise</h4>
-        <p class="text-3xl font-black mt-2">$68<span class="text-base font-normal text-gray-500">/mo</span></p>
-        <p class="text-sm text-gray-400">or $680/year</p>
-        <ul class="mt-4 space-y-2 text-sm text-left">
-          <li>✅ 300 runs per day</li>
-          <li>✅ 365‑day GA4 & GSC data</li>
-          <li>✅ All 15 tools</li>
-          <li>✅ Real‑time</li>
-          <li>✅ Custom date ranges</li>
-          <li>✅ Dedicated support</li>
-        </ul>
-        <button @click="window.upgradeToPlan('enterprise')" class="mt-6 w-full py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition">
-          Upgrade to Enterprise
-        </button>
-      </div>
+<!-- ENTERPRISE -->
+<div class="glass rounded-xl p-6 text-center border border-gray-200 dark:border-gray-700">
+  <h4 class="text-xl font-bold">Enterprise</h4>
+  <p class="text-sm text-gray-400">For teams and agencies</p>
+  <ul class="mt-4 space-y-2 text-sm text-left">
+    <li>✅ 300 runs per day</li>
+    <li>✅ 365‑day GA4 & GSC data</li>
+    <li>✅ All 15 tools</li>
+    <li>✅ Real‑time</li>
+    <li>✅ Custom date ranges</li>
+    <li>✅ Dedicated support</li>
+  </ul>
+  <div class="mt-6 space-y-3">
+    <button @click="window.upgradeToPlan('enterprise_monthly')" class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition text-sm font-semibold">$68 / month</button>
+    <button @click="window.upgradeToPlan('enterprise_yearly')" class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition text-sm font-semibold">$680 / year</button>
+  </div>
+</div>
 
     </div>
 
