@@ -1116,26 +1116,6 @@
     </div>
   </div>
 
-  <!-- Reset Password Modal (NEW) -->
-  <div x-show="showResetModal" x-cloak class="fixed inset-0 z-[10003] flex items-center justify-center modal-overlay">
-    <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
-      <button @click="showResetModal = false; resetToken = null" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
-      <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Reset Your Password</h3>
-      <p class="text-gray-600 dark:text-gray-300 mb-4">Enter a new password (min 8 characters).</p>
-
-      <input type="password" x-model="newPassword" placeholder="New password" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 mb-4 text-gray-900 dark:text-white">
-      <input type="password" x-model="confirmPassword" placeholder="Confirm password" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 mb-4 text-gray-900 dark:text-white">
-
-      <div x-show="resetError" class="text-red-500 text-sm mb-2" x-text="resetError"></div>
-      <div x-show="resetSuccess" class="text-green-500 text-sm mb-2" x-text="resetSuccess"></div>
-
-      <button @click="submitResetPassword()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition" :disabled="loadingReset">
-        <span x-show="!loadingReset">Reset Password</span>
-        <span x-show="loadingReset">Processing...</span>
-      </button>
-    </div>
-  </div>
-
 </div>
 
 <!-- Checkout container -->
@@ -1144,6 +1124,40 @@
     <button onclick="document.getElementById('checkout-container').classList.add('hidden')" class="absolute top-2 right-4 text-3xl text-gray-500">&times;</button>
     <div id="checkout-embedded"></div>
   </div>
+  
+  <!-- Reset Password Modal (fixed to viewport, with toggles) -->
+<div x-show="showResetModal" x-cloak class="fixed inset-0 z-[10003] flex items-center justify-center modal-overlay">
+  <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
+    <button @click="showResetModal = false; resetToken = null" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
+    <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Reset Your Password</h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">Enter a new password (min 8 characters).</p>
+
+    <!-- New password with toggle -->
+    <div class="relative mb-4">
+      <input type="password" x-bind:type="showPassword ? 'text' : 'password'" x-model="newPassword" placeholder="New password" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white pr-10">
+      <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-2 flex items-center text-gray-500 dark:text-gray-400">
+        <span x-text="showPassword ? '🙈' : '👁️'"></span>
+      </button>
+    </div>
+
+    <!-- Confirm password with toggle -->
+    <div class="relative mb-4">
+      <input type="password" x-bind:type="showPassword ? 'text' : 'password'" x-model="confirmPassword" placeholder="Confirm password" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white pr-10">
+      <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-2 flex items-center text-gray-500 dark:text-gray-400">
+        <span x-text="showPassword ? '🙈' : '👁️'"></span>
+      </button>
+    </div>
+
+    <div x-show="resetError" class="text-red-500 text-sm mb-2" x-text="resetError"></div>
+    <div x-show="resetSuccess" class="text-green-500 text-sm mb-2" x-text="resetSuccess"></div>
+
+    <button @click="submitResetPassword()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition" :disabled="loadingReset">
+      <span x-show="!loadingReset">Reset Password</span>
+      <span x-show="loadingReset">Processing...</span>
+    </button>
+  </div>
+</div>
+  
 </div>
 
 <!-- ========================================================== -->
@@ -1210,6 +1224,7 @@ function dashboardApp() {
     resetError: '',
     resetSuccess: '',
     loadingReset: false,
+    showPassword: false,
     isAuthenticated: false,
     user: { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null },
     activeDashboardTab: 'dashboard',
