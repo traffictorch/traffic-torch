@@ -635,7 +635,13 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     // ─── Initialise Share Module ──────────────────────────────────────
     const shareContainer = document.createElement('div');
     shareContainer.id = 'share-module-container';
-    aiContainer.parentNode.insertBefore(shareContainer, aiContainer.nextSibling);
+    // Use after() – inserts as next sibling, more reliable
+    if (aiContainer.parentNode) {
+      aiContainer.after(shareContainer);
+      console.log('✅ Share container inserted, sibling check:', document.getElementById('share-module-container'));
+    } else {
+      console.error('❌ aiContainer has no parent – cannot insert share module');
+    }
 
     const overall = Math.round((uxSummary.score + seoSummary.score + aiSummary.score) / 3);
     const shareResults = {
@@ -659,6 +665,7 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
       ]
     };
     initShareModule(shareContainer, shareResults);
+    console.log('✅ Share module initialised, container exists now?', document.getElementById('share-module-container'));
 
     document.getElementById('generate-ai-fixes').addEventListener('click', async () => {
       const btn = document.getElementById('generate-ai-fixes');
