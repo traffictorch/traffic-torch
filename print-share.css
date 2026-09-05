@@ -1,0 +1,55 @@
+/* print-share.css – only show report content, hide dashboard UI */
+
+@media print {
+  /* Hide everything on the page except the share dashboard container */
+  body * {
+    visibility: hidden;
+  }
+  .share-dashboard,
+  .share-dashboard * {
+    visibility: visible;
+  }
+  .share-dashboard {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 2rem 1rem;
+    background: white !important;
+    color: black !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Hide dashboard UI elements */
+  .share-dashboard .share-dashboard-header,
+  .share-dashboard .share-dashboard-actions,
+  .share-dashboard #share-email-area,
+  .share-dashboard #share-badge-area,
+  .share-dashboard #share-qr-area,
+  .share-dashboard #share-feedback-area,
+  .share-dashboard .share-dashboard-footer {
+    display: none !important;
+  }
+
+  /* Show only the report content */
+  .share-dashboard .module-scores-grid,
+  .share-dashboard .passed-failed-grid,
+  .share-dashboard .ai-fixes-section {
+    display: block !important;
+  }
+
+  /* Optional: keep overall score ring */
+  .share-dashboard .overall-score-ring {
+    display: block !important;
+  }
+
+  /* Adjust spacing */
+  .share-dashboard .module-scores-grid {
+    margin-bottom: 1.5rem;
+  }
+  .share-dashboard .passed-failed-grid {
+    margin-bottom: 1.5rem;
+  }
+}

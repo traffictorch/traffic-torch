@@ -1,6 +1,9 @@
 // homepage-analysis.js
 // Orchestrates the three tools on the homepage.
 
+// Share Dashboard
+import { initShareModule } from '/share-module.js';
+
 // ─── Quit Risk imports ────────────────────────────────────────────────────
 import { calculateReadability } from '/quit-risk-tool/modules/readability.js';
 import { calculateNavigation } from '/quit-risk-tool/modules/navigation.js';
@@ -26,6 +29,19 @@ import { computeConversational } from '/ai-search-optimization-tool/modules/conv
 import { computeReadability as computeAIReadability } from '/ai-search-optimization-tool/modules/readability.js';
 import { computeUniqueInsights } from '/ai-search-optimization-tool/modules/uniqueInsights.js';
 import { computeAntiAiSafety } from '/ai-search-optimization-tool/modules/antiAiSafety.js';
+
+// ─── Helper to count pass/average/fail from modules ─────────────────────
+function countStatuses(modules) {
+  let passed = 0, avg = 0, failed = 0;
+  modules.forEach(mod => {
+    mod.metrics.forEach(m => {
+      if (m.status === 'pass') passed++;
+      else if (m.status === 'average') avg++;
+      else if (m.status === 'fail') failed++;
+    });
+  });
+  return { passed, average: avg, failed };
+}
 
 // ─── Shared DOM extraction for Quit Risk ────────────────────────────────
 function getUXContent(doc) {
@@ -602,7 +618,7 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
 
     aiContainer.innerHTML = `
       <div class="p-6 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-purple-500/30 text-center">
-        <h3 class="text-2xl font-bold mb-4 text-purple-600 dark:text-purple-400">AI-Generated CMS Fixes</h3>
+        <h3 class="text-2xl font-bold mb-4 text-purple-600 dark:text-purple-400">AI-Generated Fixes</h3>
         <p class="text-gray-600 dark:text-gray-400 mb-6">Get specific recommendations based on your top failures.</p>
         <button id="generate-ai-fixes" class="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold rounded-2xl hover:opacity-90 transition">
           Generate AI Fixes 🔮
@@ -610,6 +626,39 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
         <div id="ai-results" class="mt-6"></div>
       </div>
     `;
+    
+    // ─── Compute module details for charts ──────────────────────────
+    const uxCounts = countStatuses(uxSummary.modules);
+    const seoCounts = countStatuses(seoSummary.modules);
+    const aiCounts = countStatuses(aiSummary.modules);
+
+    // ─── Initialise Share Module ──────────────────────────────────────
+    const shareContainer = document.createElement('div');
+    shareContainer.id = 'share-module-container';
+    aiContainer.parentNode.insertBefore(shareContainer, aiContainer.nextSibling);
+
+    const overall = Math.round((uxSummary.score + seoSummary.score + aiSummary.score) / 3);
+    const shareResults = {
+      toolName: 'Report',
+      url: url,
+      pageTitle: doc.title || url,
+      overallScore: overall,
+      moduleScores: [
+        { name: 'UX Health', score: uxSummary.score },
+        { name: 'SEO Intent', score: seoSummary.score },
+        { name: 'AI Search', score: aiSummary.score }
+      ],
+      passedMetrics: [...uxSummary.passed, ...seoSummary.passed, ...aiSummary.passed],
+      failedMetrics: [...uxSummary.failed, ...seoSummary.failed, ...aiSummary.failed],
+      aiFixes: [],
+      rawData: { ux: uxSummary, seo: seoSummary, ai: aiSummary },
+      moduleDetails: [
+        { name: 'UX Health', ...uxCounts },
+        { name: 'SEO Intent', ...seoCounts },
+        { name: 'AI Search', ...aiCounts }
+      ]
+    };
+    initShareModule(shareContainer, shareResults);
 
     document.getElementById('generate-ai-fixes').addEventListener('click', async () => {
       const btn = document.getElementById('generate-ai-fixes');
@@ -776,3 +825,21 @@ function renderCards(container, summaries, url) {
     </div>
   `;
 }
+
+// Auto-run from ?url= parameter (like other tools)
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const urlParam = params.get('url');
+  if (urlParam) {
+    const form = document.getElementById('homepage-audit-form');
+    const input = document.getElementById('homepage-url-input');
+    if (form && input) {
+      let cleanUrl = decodeURIComponent(urlParam.trim());
+      if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = 'https://' + cleanUrl;
+      input.value = cleanUrl;
+      setTimeout(() => {
+        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      }, 500);
+    }
+  }
+});

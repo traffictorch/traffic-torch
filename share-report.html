@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shared Report – Traffic Torch</title>
+  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  <link rel="stylesheet" href="/style-v1.0.css">
+  <link rel="stylesheet" href="/home-css-v1.0.css">
+  <style>
+    body { background: #0f172a; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; font-family: system-ui; }
+    .report-card { max-width: 800px; width:100%; background: rgba(255,255,255,0.05); backdrop-filter: blur(16px); border-radius: 2rem; padding: 2rem; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.5); color: #f1f5f9; }
+    .score-ring { width: 140px; height: 140px; margin: 0 auto; }
+    .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 0.8rem; margin: 1.5rem 0; }
+    .module-item { background: rgba(255,255,255,0.08); padding: 0.8rem; border-radius: 1rem; text-align: center; }
+    .badge { display: inline-block; background: linear-gradient(135deg,#f97316,#ec4899); color: white; padding: 0.2rem 1rem; border-radius: 9999px; font-weight: bold; }
+    .stats-grid { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; }
+    .stats-col { flex:1; min-width:180px; }
+    .stats-col h4 { font-weight:600; margin-bottom:0.4rem; }
+    .stats-col ul { list-style:none; padding:0; }
+    .stats-col ul li { padding:0.2rem 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+    a { color: #fb923c; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div id="report-root" class="report-card">
+    <div style="text-align:center; padding:2rem;">Loading report...</div>
+  </div>
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const data = params.get('data');
+      if (!data) {
+        document.getElementById('report-root').innerHTML = '<p>No report data. Please use a valid share link.</p>';
+        return;
+      }
+      try {
+        function base64ToUtf8(str) {
+          const binary = atob(str);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+          return new TextDecoder().decode(bytes);
+        }
+        const decoded = JSON.parse(base64ToUtf8(data));
+        const { toolName, url, pageTitle, overallScore, moduleScores, passedMetrics, failedMetrics, aiFixes = [] } = decoded;
+
+        const root = document.getElementById('report-root');
+        root.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h1 style="font-size:2rem; font-weight:800; background:linear-gradient(135deg,#f97316,#ec4899); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">${toolName}</h1>
+            <span class="badge">Traffic Torch</span>
+          </div>
+          <p style="color:#94a3b8; margin-bottom:1.5rem;">${pageTitle} · <a href="${url}" target="_blank">${url}</a></p>
+          <div style="text-align:center; margin-bottom:2rem;">
+            <div class="score-ring" style="position:relative; width:140px; height:140px; margin:0 auto;">
+              <svg viewBox="0 0 140 140" style="transform:rotate(-90deg);">
+                <circle cx="70" cy="70" r="60" fill="none" stroke="#334155" stroke-width="12"/>
+                <circle cx="70" cy="70" r="60" fill="none" stroke="${overallScore>=80?'#22c55e':overallScore>=60?'#fb923c':'#ef4444'}" stroke-width="12"
+                  stroke-dasharray="${(overallScore/100)*376.99} 376.99" stroke-linecap="round"/>
+                <text x="70" y="72" text-anchor="middle" dominant-baseline="middle" font-size="40" font-weight="900" fill="#f1f5f9">${overallScore}</text>
+              </svg>
+            </div>
+            <div style="margin-top:0.5rem; font-weight:600; font-size:1.1rem; color:#cbd5e1;">Overall Score</div>
+          </div>
+
+          <div class="module-grid">
+            ${moduleScores.map(m => `
+              <div class="module-item">
+                <div style="font-weight:600; font-size:0.9rem; color:#94a3b8;">${m.name}</div>
+                <div style="font-size:1.8rem; font-weight:800; color:${m.score>=80?'#22c55e':m.score>=60?'#fb923c':'#ef4444'}">${m.score}</div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="stats-grid">
+            <div class="stats-col">
+              <h4 style="color:#22c55e;">✅ Passed</h4>
+              <ul>${passedMetrics.slice(0,8).map(m => `<li>${m}</li>`).join('')}${passedMetrics.length>8?`<li>+${passedMetrics.length-8} more</li>`:''}</ul>
+            </div>
+            <div class="stats-col">
+              <h4 style="color:#ef4444;">❌ Failed</h4>
+              <ul>${failedMetrics.slice(0,8).map(m => `<li>${m}</li>`).join('')}${failedMetrics.length>8?`<li>+${failedMetrics.length-8} more</li>`:''}</ul>
+            </div>
+          </div>
+
+          ${aiFixes.length ? `
+            <div style="margin-top:2rem; background:rgba(255,255,255,0.05); padding:1rem; border-radius:1rem;">
+              <h4 style="font-weight:600; color:#fb923c;">💡 AI Fixes</h4>
+              <ul>${aiFixes.map(f => `<li>${f}</li>`).join('')}</ul>
+            </div>
+          ` : ''}
+
+          <div style="margin-top:2rem; text-align:center; font-size:0.85rem; color:#64748b;">
+            Generated by <a href="https://traffictorch.net" style="color:#f97316;">Traffic Torch</a>
+          </div>
+        `;
+      } catch (e) {
+        document.getElementById('report-root').innerHTML = `<p style="color:#ef4444;">Invalid report data: ${e.message}</p>`;
+      }
+    })();
+  </script>
+</body>
+</html>
