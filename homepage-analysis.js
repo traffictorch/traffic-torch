@@ -633,15 +633,14 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     const aiCounts = countStatuses(aiSummary.modules);
 
     // ─── Initialise Share Module ──────────────────────────────────────
+    console.log('Creating share container...');
     const shareContainer = document.createElement('div');
     shareContainer.id = 'share-module-container';
-    // Use after() – inserts as next sibling, more reliable
-    if (aiContainer.parentNode) {
-      aiContainer.after(shareContainer);
-      console.log('✅ Share container inserted, sibling check:', document.getElementById('share-module-container'));
-    } else {
-      console.error('❌ aiContainer has no parent – cannot insert share module');
-    }
+    console.log('AI container:', aiContainer);
+    console.log('AI parent:', aiContainer?.parentNode);
+    // Use insertAdjacentElement for maximum compatibility
+    aiContainer.insertAdjacentElement('afterend', shareContainer);
+    console.log('Share container inserted, checking if in DOM:', document.getElementById('share-module-container'));
 
     const overall = Math.round((uxSummary.score + seoSummary.score + aiSummary.score) / 3);
     const shareResults = {
@@ -664,8 +663,13 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
         { name: 'AI Search', ...aiCounts }
       ]
     };
-    initShareModule(shareContainer, shareResults);
-    console.log('✅ Share module initialised, container exists now?', document.getElementById('share-module-container'));
+    try {
+      initShareModule(shareContainer, shareResults);
+      console.log('✅ Share module initialised successfully');
+    } catch (e) {
+      console.error('❌ initShareModule failed:', e);
+    }
+    console.log('After init, container in DOM:', document.getElementById('share-module-container'));
 
     document.getElementById('generate-ai-fixes').addEventListener('click', async () => {
       const btn = document.getElementById('generate-ai-fixes');
