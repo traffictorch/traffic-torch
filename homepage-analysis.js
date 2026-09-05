@@ -636,12 +636,15 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     console.log('Creating share container...');
     const shareContainer = document.createElement('div');
     shareContainer.id = 'share-module-container';
-    const aiContainer = document.getElementById('homepage-ai-container');
+    // Use the existing aiContainer variable (from function parameter)
     if (aiContainer) {
       aiContainer.insertAdjacentElement('afterend', shareContainer);
       console.log('Share container inserted');
     } else {
       console.error('AI container not found');
+      // Fallback: append to the main container
+      const mainContainer = document.getElementById(containerId);
+      if (mainContainer) mainContainer.appendChild(shareContainer);
     }
 
     const overall = Math.round((uxSummary.score + seoSummary.score + aiSummary.score) / 3);
@@ -667,7 +670,7 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     };
     initShareModule(shareContainer, shareResults);
     console.log('Share module initialised');
-
+    
     document.getElementById('generate-ai-fixes').addEventListener('click', async () => {
       const btn = document.getElementById('generate-ai-fixes');
       const resultsContainer = document.getElementById('ai-results');
