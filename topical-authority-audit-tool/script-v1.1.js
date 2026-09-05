@@ -1,6 +1,6 @@
 // script-v1.1.js — Topical Authority Audit Tool (refactored from entity extractor)
 // Single-file version — modules inlined/minimized; heavy logic in Worker AI
-import { canRunTool } from '/main-v1.2.js';
+import { canRunTool } from '/main-v1.1.js';
 import { initShareReport } from './share-report-v1.js';
 import { initSubmitFeedback } from './submit-feedback-v1.js';
 

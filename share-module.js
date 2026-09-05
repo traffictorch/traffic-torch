@@ -1,4 +1,4 @@
-// share-module.js – Dashboard UI with print classes, fixed forms, dark/light
+// share-module.js – Dashboard with responsive grids
 
 export function initShareModule(container, results) {
   if (!container) return;
@@ -35,7 +35,7 @@ export function initShareModule(container, results) {
       </div>
 
       <!-- Module Scores Grid (visible in print) -->
-      <div class="module-scores-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:1rem; margin-bottom:2rem;">
+      <div class="module-scores-grid grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         ${moduleScores.map(m => `
           <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:0.8rem 1rem; text-align:center; border:1px solid rgba(255,255,255,0.06);">
             <div class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">${m.name}</div>
@@ -44,8 +44,8 @@ export function initShareModule(container, results) {
         `).join('')}
       </div>
 
-      <!-- Passed / Failed Metrics (visible in print) -->
-      <div class="passed-failed-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2rem;">
+      <!-- Passed / Failed Metrics – responsive grid -->
+      <div class="passed-failed-grid grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div style="background:rgba(34,197,94,0.08); border-radius:1rem; padding:0.8rem 1.2rem;">
           <h4 class="font-semibold text-green-600 dark:text-green-400 text-sm mb-2">✅ Passed</h4>
           <ul class="list-none text-sm text-gray-700 dark:text-gray-300 space-y-1">
@@ -64,7 +64,7 @@ export function initShareModule(container, results) {
 
       <!-- AI Fixes (visible in print) -->
       ${aiFixes && aiFixes.length ? `
-        <div class="ai-fixes-section" style="margin-bottom:2rem;">
+        <div class="ai-fixes-section mb-6">
           <h4 class="font-semibold text-purple-600 dark:text-purple-400 text-sm mb-2">💡 AI‑Generated Fixes</h4>
           <ul class="list-none text-sm text-gray-700 dark:text-gray-300 space-y-1">
             ${aiFixes.map(f => `<li class="border-b border-gray-200/50 dark:border-gray-700/50 py-1">${f}</li>`).join('')}
@@ -72,8 +72,8 @@ export function initShareModule(container, results) {
         </div>
       ` : ''}
 
-      <!-- Three Cards (Share, Export, Send) – hidden in print -->
-      <div class="share-dashboard-actions" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:1rem; border-top:1px solid rgba(255,255,255,0.08); padding-top:1.5rem;">
+      <!-- Three Cards (Share, Export, Send) – responsive grid -->
+      <div class="share-dashboard-actions grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-gray-200/50 dark:border-gray-700/50 pt-6">
         
         <!-- Share Card -->
         <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:1rem; border:1px solid rgba(255,255,255,0.06);">
@@ -108,7 +108,7 @@ export function initShareModule(container, results) {
         </div>
       </div>
 
-      <!-- Email Form (hidden by default) -->
+      <!-- Dynamic areas for email input, badge, QR -->
       <div id="share-email-area" style="display:none; margin-top:1rem;">
         <div style="display:flex; flex-direction:column; gap:0.6rem;">
           <input type="email" id="share-email-input" placeholder="recipient@example.com" class="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
@@ -118,20 +118,17 @@ export function initShareModule(container, results) {
         <div id="share-email-status" class="mt-2 text-sm text-gray-500 dark:text-gray-400"></div>
       </div>
 
-      <!-- Badge Area (hidden by default) -->
       <div id="share-badge-area" style="display:none; margin-top:1rem;">
         <p class="font-semibold text-gray-700 dark:text-gray-200 mb-1">Copy this HTML badge:</p>
         <textarea id="share-badge-html" rows="2" class="w-full px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm" readonly></textarea>
         <button id="copy-badge-btn" class="mt-2 px-4 py-2 text-sm rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition text-gray-700 dark:text-gray-200 shadow-sm">Copy Badge</button>
       </div>
 
-      <!-- QR Area (hidden by default) -->
       <div id="share-qr-area" style="display:none; margin-top:1rem; text-align:center;">
         <div id="share-qr-container"></div>
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Scan to open on mobile</p>
       </div>
 
-      <!-- Feedback Form (hidden by default) -->
       <div id="share-feedback-area" style="display:none; margin-top:1rem;">
         <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:1rem; border:1px solid rgba(255,255,255,0.06);">
           <h4 class="font-semibold text-gray-700 dark:text-gray-200 text-sm mb-3">💬 Submit Feedback</h4>
