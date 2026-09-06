@@ -761,9 +761,9 @@
     <!-- ===== GA4 CONNECTION CARD ===== -->
     <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl mb-4 transition hover:bg-white/5 dark:hover:bg-white/5">
       <div class="flex-1 min-w-[150px]">
-        <div class="flex items-center gap-3 mb-1">
+        <div class="flex items-center gap-4 mb-1">
           <span class="text-2xl">📊</span>
-          <span class="font-bold text-lg">Google Analytics 4</span>
+          <span class="font-bold text-lg">GA4</span>
           <span x-show="ga4.connected" class="inline-flex items-center px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
           <span x-show="!ga4.connected && isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
           <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
@@ -793,9 +793,9 @@
     <!-- ===== GSC CONNECTION CARD ===== -->
     <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl mb-6 transition hover:bg-white/5 dark:hover:bg-white/5">
       <div class="flex-1 min-w-[150px]">
-        <div class="flex items-center gap-3 mb-1">
+        <div class="flex items-center gap-4 mb-1">
           <span class="text-2xl">🔍</span>
-          <span class="font-bold text-lg">Google Search Console</span>
+          <span class="font-bold text-lg">GSC</span>
           <span x-show="gsc.connected" class="inline-flex items-center px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
           <span x-show="!gsc.connected && isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
           <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
@@ -889,44 +889,20 @@
         <p class="text-sm text-gray-600 dark:text-gray-300">All API requests require a Bearer token obtained after login.</p>
         <pre class="mt-2 text-xs bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>Authorization: Bearer YOUR_JWT_TOKEN</code></pre>
       </div>
-
-      <!-- API Key Management (placeholder) -->
-      <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
-        <h5 class="font-semibold mb-2">🔑 API Key Management</h5>
-        <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">Generate an API key for programmatic access to Traffic Torch tools.</p>
-        <div class="flex flex-wrap items-center gap-3">
-          <input type="text" value="sk_live_xxxxxxxxxxxxxxxxxxxxxxxx" disabled class="flex-1 p-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-sm font-mono min-w-[200px]">
-          <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">Generate New</button>
-          <button class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition">Copy</button>
-        </div>
-        <p class="text-xs text-gray-400 mt-2">API keys are rate-limited based on your plan. Regenerating revokes the previous key.</p>
-      </div>
-
-      <!-- Webhook Endpoints (placeholder) -->
-      <div class="mt-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
-        <h5 class="font-semibold mb-2">📡 Webhook Endpoints</h5>
-        <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">Receive real-time notifications for audit completions, usage alerts, and more.</p>
-        <div class="flex flex-wrap items-center gap-3">
-          <input type="url" placeholder="https://your-domain.com/webhook" class="flex-1 p-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-sm min-w-[200px]">
-          <button class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition">Add Webhook</button>
-        </div>
-        <p class="text-xs text-gray-400 mt-2">Supported events: <code class="bg-gray-800 px-1 py-0.5 rounded text-gray-300">audit.completed</code>, <code class="bg-gray-800 px-1 py-0.5 rounded text-gray-300">usage.alert</code></p>
-      </div>
-    </div>
     
- <!-- ===== DEVELOPER API ===== -->
+<!-- ===== DEVELOPER API ===== -->
 <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-  <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl transition hover:bg-white/5 dark:hover:bg-white/5">
-    <div class="flex-1 min-w-[150px]">
-      <div class="flex items-center gap-3 mb-1">
-        <span class="text-2xl">🧑‍💻</span>
-        <span class="font-bold text-lg">Developer API</span>
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl transition hover:bg-white/5 dark:hover:bg-white/5 gap-4 sm:gap-0">
+    <div class="w-full sm:flex-1">
+      <div class="flex items-center gap-4 mb-1">
+        <span class="text-2xl flex-shrink-0">🧑‍💻</span>
+        <span class="font-bold text-lg break-words">Developer API</span>
       </div>
-      <p class="text-sm text-gray-500 dark:text-gray-400">
+      <p class="text-sm text-gray-500 dark:text-gray-400 break-words">
         Programmatically run all 15 audit tools, retrieve results, and manage your API keys.
       </p>
     </div>
-    <a href="/developer/api/" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition mt-3 sm:mt-0">
+    <a href="/developer/api/" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition whitespace-nowrap w-full sm:w-auto text-center">
       Go to API Docs →
     </a>
   </div>
@@ -1036,21 +1012,24 @@
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-6">⚙️ Account Settings</h3>
 
-            <!-- Account Details -->
-            <div class="space-y-4">
-              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-                <span class="font-medium">Email</span>
-                <span x-text="isAuthenticated ? user.email : 'Not logged in'"></span>
-              </div>
-              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-                <span class="font-medium">Plan</span>
-                <span x-text="isAuthenticated ? (user.tier || 'free').charAt(0).toUpperCase() + (user.tier || 'free').slice(1) : 'Guest'"></span>
-              </div>
-              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-                <span class="font-medium">Member since</span>
-                <span x-text="isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—'"></span>
-              </div>
-            </div>
+<!-- Account Details -->
+<div class="space-y-4">
+  <!-- Email – stacked -->
+  <div class="flex flex-col items-start p-4 border-b border-gray-200 dark:border-gray-700">
+    <span class="font-medium">Email</span>
+    <span class="break-all" x-text="isAuthenticated ? user.email : 'Not logged in'"></span>
+  </div>
+  <!-- Plan – side‑by‑side -->
+  <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+    <span class="font-medium">Plan</span>
+    <span x-text="isAuthenticated ? (user.tier || 'free').charAt(0).toUpperCase() + (user.tier || 'free').slice(1) : 'Guest'"></span>
+  </div>
+  <!-- Member since – side‑by‑side -->
+  <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+    <span class="font-medium">Member since</span>
+    <span x-text="isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—'"></span>
+  </div>
+</div>
 
             <!-- Billing -->
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
@@ -1058,18 +1037,18 @@
               <button x-show="isAuthenticated && user.tier !== 'free'" @click="manageBilling()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Manage Subscription</button>
               <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade here</button>
             </div>
+            
+             <!-- Delete Account -->
+            <div class="mt-8 p-4 border border-red-500 rounded-lg">
+              <h4 class="font-semibold text-red-500 mb-2">⚠️</h4>
+              <button @click="openDeleteModal()" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition" :disabled="!isAuthenticated">Delete Account</button>
+            </div>
 
             <!-- Password Reset (send email) -->
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-3">🔒 Change Password</h4>
               <p class="text-sm text-gray-500 mb-3">We'll send a password reset link to your email address.</p>
               <button @click="sendPasswordReset()" class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" :disabled="!isAuthenticated">Send Reset Email</button>
-            </div>
-
-            <!-- Delete Account -->
-            <div class="mt-8 p-4 border border-red-500 rounded-lg">
-              <h4 class="font-semibold text-red-500 mb-2">⚠️ Danger Zone</h4>
-              <button @click="openDeleteModal()" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition" :disabled="!isAuthenticated">Delete Account</button>
             </div>
 
             <!-- Logout -->
