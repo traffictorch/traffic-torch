@@ -102,22 +102,6 @@
           "width": 1200,
           "height": 375,
           "caption": "Traffic Torch Keyword Tool overview: Keyword discovery, search volume & difficulty scores, competition analysis, and on-page SEO optimization insights"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/keyword-tool/images/seo-keywords-infographic-800w.webp",
-          "contentUrl": "https://traffictorch.net/keyword-tool/images/seo-keywords-infographic-800w.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "SEO Keywords Infographic: Meta Title & Description, H1 & Headings, Content Density as on-page signals for better SEO relevance and topical authority"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/keyword-tool/images/keyword-placement-infographic-800w.webp",
-          "contentUrl": "https://traffictorch.net/keyword-tool/images/keyword-placement-infographic-800w.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "Keyword Placement Infographic: Image Alts, Anchor Text, URL & Schema for maximum on-page keyword impact, internal authority, and rich SERPs"
         }
       ],
       "author": {
@@ -134,7 +118,7 @@
         }
       },
       "datePublished": "2025-12-21T14:56:00+11:00",
-      "dateModified": "2026-06-02T15:22:00+11:00"
+      "dateModified": "2026-09-07T15:22:00+11:00"
     },
     {
       "@type": "Person",
@@ -465,6 +449,160 @@
       <!-- Your existing cards/Chart.js output goes here -->
     </div>
     
+        <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
+  </div>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share Buttons -->
+<div id="share-buttons" class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_email"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_linkedin"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+	      <!-- Deep Dive into Key Modules -->
+      <section id="deep-dive" class="py-6 bg-gray dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-2">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            Deep Dive into Key Modules
+          </h2>
+          <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center lg:justify-start">
+            <!-- Cards generated dynamically -->
+          </div>
+        </div>
+      </section>
+      
+        <!-- SEO Keyword Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      Keyword Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/keyword-research-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔑</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">Keyword Research Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Long-tail keyword generator</p>
+      </div>
+    </a>
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">VS Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>   
+      
     <div class="center-btn-container mt-4 mb-4">
   <button
     class="copy-link-btn"
@@ -521,287 +659,6 @@
     </div>
   </details>
 </div>
-
-<section id="faq" class="container mx-auto px-4 py-6 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-    Frequently Asked Questions about On-Page Keyword SEO
-  </h2>
-  <div class="space-y-6 max-w-6xl mx-auto">
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is Meta Title & Description in SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Meta title (the &lt;title&gt; tag) is the clickable headline in search results, while the meta description is the short summary below it. In 2026, they must align with user intent, incorporate primary keywords naturally near the start, stay within 50-60 characters for titles and 150-160 for descriptions, and support E-E-A-T signals for AI overviews and rich snippets. Traffic Torch scans these instantly for keyword presence, length issues, and CTR potential, to boost visibility and clicks.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is H1 & Headings optimization?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        The H1 tag is the main on-page heading that defines the page's core topic (ideally one per page, matching search intent and often aligning with the title tag). H2–H6 create a logical hierarchy for subtopics, improving readability, accessibility, and semantic understanding for search engines and AI in 2026. Traffic Torch audits check for keyword inclusion in the primary H1, proper nesting (no skipped levels), and overall structure, offering deep-dive insights.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is Content Density in SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Content density measures how often your target keyword (or close variations) appears relative to total word count in the main content, typically calculated as (keyword mentions ÷ total words) × 100. In 2026, the sweet spot is 1-2% for primary keywords to signal relevance without stuffing, paired with in-depth content (800+ words recommended) that fully satisfies user intent and incorporates semantic entities. Traffic Torch computes this accurately (excluding nav/footers), flags low/high issues, and suggests expansions for better depth and competitive edge.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is Image Alt Text for SEO & Accessibility?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Alt text (the alt attribute on &lt;img&gt; tags) describes images for screen readers, accessibility compliance (WCAG), and search engines, enabling Google Images rankings and providing contextual signals. In 2026, write descriptive, natural alt text (include keywords only if relevant to the image and page topic), avoid stuffing, and use empty alt="" for purely decorative images. Traffic Torch scans all images for keyword matches, completeness, and relevance, then delivers alt suggestions to improve UX, accessibility scores, and extra traffic from image search.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is Anchor Text in internal linking?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Anchor text is the visible, clickable text in an &lt;a&gt; tag for internal links. It helps search engines understand the linked page's topic, builds topical clusters, and improves site navigation. In 2026, use natural, descriptive phrases with keyword variations (avoid exact-match overuse or generic terms like "click here"). Traffic Torch analyzes internal anchors for target keyword presence and diversity, highlights over-optimization risks, and recommends optimized alternatives to strengthen internal authority and user flow.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is URL & Schema in on-page SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        URL structure should be clean, readable, and include the target keyword (hyphen-separated, short, no parameters). Schema markup (JSON-LD preferred) is structured data that explicitly tells search engines about your content (e.g., Article, FAQ, Product), enabling rich snippets, enhanced visibility in AI results, and higher CTR. In 2026, both reinforce relevance and trust. Traffic Torch checks URLs or HTML for keyword inclusion and scans for valid schema presence, then provides implementation code snippets and fixes to unlock rich results and predictive ranking improvements.
-      </div>
-    </details>
-  </div>
-</section>
-
-<!-- Share Buttons -->
-<div id="share-buttons" class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_email"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_linkedin"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-	
-	      <!-- Deep Dive into Key Modules -->
-      <section id="deep-dive" class="py-6 bg-gray dark:bg-gray-900">
-        <div class="max-w-7xl mx-auto px-2">
-          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-            Deep Dive into Key Modules
-          </h2>
-          <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center lg:justify-start">
-            <!-- Cards generated dynamically -->
-          </div>
-        </div>
-      </section>
-      
-
-<!-- WHAT IS MODERN KEYWORD STRATEGY -->
-<section id="what-is" class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    What is a Modern Keyword Strategy?
-  </h2>
-
-  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-900 dark:text-gray-100">
-    <strong>Modern keyword strategy means selecting, grouping, and targeting terms that actually drive qualified traffic. While perfectly aligning with user intent, business goals, and current search behavior.</strong>
-  </p>
-
-  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
-    <p>Most sites still hunt high-volume keywords: chase vanity metrics, force-fit terms, write generic content around them.</p>
-    <p>Today that produces low-quality traffic, high bounce rates, and fragile rankings that vanish on every update.</p>
-    <p class="font-semibold text-purple-700 dark:text-purple-300">
-      Real keyword success now depends on these interconnected principles:
-    </p>
-    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
-      <li>→ True user intent & SERP understanding.</li>
-      <li>→ Commercial value & conversion potential.</li>
-      <li>→ Topic clusters & semantic depth.</li>
-      <li>→ Realistic competitiveness & opportunity scoring.</li>
-    </ul>
-    <p class="pt-4">
-      <a href="/"><strong>Traffic Torch</strong></a> Keyword Tool instantly analyzes any keyword or seed → scores opportunity → groups semantically → shows intent type, difficulty, value, and gaps.
-    </p>
-  </div>
-</section>
-
-<!-- Two-column infographic grid – stacks on mobile, side-by-side on md+ -->
-<div id="infographics" class="grid md:grid-cols-2 gap-4 my-4 max-w-6xl mx-auto px-4">
-  <!-- Left image -->
-  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
-    <img
-      src="/keyword-tool/images/keyword-placement-infographic-800w.webp"
-      srcset="/keyword-tool/images/keyword-placement-infographic-480w.webp 480w,
-              /keyword-tool/images/keyword-placement-infographic-800w.webp 800w,
-              /keyword-tool/images/keyword-placement-infographic-1200w.webp 1200w"
-      sizes="(max-width: 767px) 100vw, 50vw"
-      alt="SEO Keywords Infographic – Meta Title & Description, H1 & Headings Keywords for better SEO relevance"
-      class="w-full h-auto object-cover"
-      width="800"
-      height="1200"
-      loading="lazy"
-      decoding="async">
-    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
-      Keyword Placement: Image Alts & Anchor Text – Unlock images + build internal authority
-    </figcaption>
-  </figure>
-
-  <!-- Right image -->
-  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
-    <img
-      src="/keyword-tool/images/keyword-placement-infographic-800w.webp"
-      srcset="/keyword-tool/images/keyword-placement-infographic-480w.webp 480w,
-              /keyword-tool/images/keyword-placement-infographic-800w.webp 800w,
-              /keyword-tool/images/keyword-placement-infographic-1200w.webp 1200w"
-      sizes="(max-width: 767px) 100vw, 50vw"
-      alt="Keyword Placement Infographic – Image Alts, Anchor Text and URL & Schema checks"
-      class="w-full h-auto object-cover"
-      width="800"
-      height="1200"
-      loading="lazy"
-      decoding="async">
-    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
-      Keyword Placement: URL & Schema + Combined Signal – Rich SERPs & maximum relevance
-    </figcaption>
-  </figure>
-</div>
-
-<!-- 6 HIGH-IMPACT MOVES FOR KEYWORD DOMINANCE    -->
-<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-12">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    6 High-Impact Moves to Master Keyword Strategy
-  </h2>
-
-  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
-      <span class="text-4xl flex-shrink-0">1</span>
-      <div>
-        <strong>Start with user-first intent analysis</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Study top 10 SERP — classify informational, commercial, transactional, local. Then build content that matches exactly.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
-      <span class="text-4xl flex-shrink-0">2</span>
-      <div>
-        <strong>Prioritize commercial & conversion value</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Score keywords by real business potential (not just volume). Focus on terms that drive leads, sales, or qualified traffic.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
-      <span class="text-4xl flex-shrink-0">3</span>
-      <div>
-        <strong>Build topic clusters, not single pages</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Group related terms semantically. Create pillar + cluster content structure that signals topical authority to Google.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
-      <span class="text-4xl flex-shrink-0">4</span>
-      <div>
-        <strong>Use realistic difficulty & opportunity scoring</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Combine keyword difficulty, SERP features, domain strength, and intent match, Target winnable, high-value terms first.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
-      <span class="text-4xl flex-shrink-0">5</span>
-      <div>
-        <strong>Monitor freshness & seasonal trends</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Prioritize keywords that reward recent content. Catch rising queries early and refresh core pages regularly.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/30 dark:to-teal-900/30 p-7 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
-      <span class="text-4xl flex-shrink-0">6</span>
-      <div>
-        <strong>Competitive keyword gap domination</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Find terms competitors rank for that you miss. Especially long-tail and question-based search queries.</span>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- COMPARISON TABLE – OLD vs MODERN KEYWORD      -->
-<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-6">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    Old Keyword Hunting vs Modern Keyword Mastery
-  </h2>
-
-  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
-    <table class="w-full text-left min-w-[640px]">
-      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
-        <tr>
-          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
-          <th class="px-6 py-5 text-lg font-semibold">Old-School Keyword Hunting</th>
-          <th class="px-6 py-5 text-lg font-semibold">Modern Keyword Mastery Focus</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        <tr>
-          <td class="px-6 py-5 font-medium">Primary Goal:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank for highest volume keywords.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Drive qualified, converting traffic.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Selection Criteria:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High search volume, low difficulty.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent match + commercial value + realistic win probability.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">Content Approach:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">One page per keyword.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Topic clusters + semantic depth + pillar content.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Optimization Focus:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Exact-match phrases & density.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">User-first answers + conversational natural language.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">Competitive Analysis:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mostly Keyword difficulty score.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">SERP features, content gaps, intent alignment, freshness.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Future-Proofing:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Vulnerable to algorithm shifts.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent + value + topical authority = resilient traffic.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">
-    Modern keyword strategy isn’t about ranking for everything. It’s about ranking for the right search queries that actually grow your business.
-  </p>
-</section>
 
 <!-- Expandable On-Page SEO Checklist Accordion -->
 <section class="py-6 px-3 max-w-6xl mx-auto">
@@ -1045,37 +902,215 @@
     </div>
   </details>
 </div>
-      
-    <!-- SEO Keyword Tools Section -->
-<div class="my-16"></div>
-<div class="tools-grid max-w-7xl mx-auto px-2">
-      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      Keyword Tools
-      </h2>
-  <div class="grid md:grid-cols-3 gap-8">
-    <a href="/keyword-research-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔑</div>
-        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">Keyword Research Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Long-tail keyword generator</p>
+
+<section id="faq" class="container mx-auto px-4 py-6 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about On-Page Keyword SEO
+  </h2>
+  <div class="space-y-6 max-w-6xl mx-auto">
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is Meta Title & Description in SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Meta title (the &lt;title&gt; tag) is the clickable headline in search results, while the meta description is the short summary below it. In 2026, they must align with user intent, incorporate primary keywords naturally near the start, stay within 50-60 characters for titles and 150-160 for descriptions, and support E-E-A-T signals for AI overviews and rich snippets. Traffic Torch scans these instantly for keyword presence, length issues, and CTR potential, to boost visibility and clicks.
       </div>
-    </a>
-    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
-        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
-        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">VS Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis</p>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is H1 & Headings optimization?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        The H1 tag is the main on-page heading that defines the page's core topic (ideally one per page, matching search intent and often aligning with the title tag). H2–H6 create a logical hierarchy for subtopics, improving readability, accessibility, and semantic understanding for search engines and AI in 2026. Traffic Torch audits check for keyword inclusion in the primary H1, proper nesting (no skipped levels), and overall structure, offering deep-dive insights.
       </div>
-    </a>
-    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
-        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
-        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is Content Density in SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Content density measures how often your target keyword (or close variations) appears relative to total word count in the main content, typically calculated as (keyword mentions ÷ total words) × 100. In 2026, the sweet spot is 1-2% for primary keywords to signal relevance without stuffing, paired with in-depth content (800+ words recommended) that fully satisfies user intent and incorporates semantic entities. Traffic Torch computes this accurately (excluding nav/footers), flags low/high issues, and suggests expansions for better depth and competitive edge.
       </div>
-    </a>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is Image Alt Text for SEO & Accessibility?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Alt text (the alt attribute on &lt;img&gt; tags) describes images for screen readers, accessibility compliance (WCAG), and search engines, enabling Google Images rankings and providing contextual signals. In 2026, write descriptive, natural alt text (include keywords only if relevant to the image and page topic), avoid stuffing, and use empty alt="" for purely decorative images. Traffic Torch scans all images for keyword matches, completeness, and relevance, then delivers alt suggestions to improve UX, accessibility scores, and extra traffic from image search.
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is Anchor Text in internal linking?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Anchor text is the visible, clickable text in an &lt;a&gt; tag for internal links. It helps search engines understand the linked page's topic, builds topical clusters, and improves site navigation. In 2026, use natural, descriptive phrases with keyword variations (avoid exact-match overuse or generic terms like "click here"). Traffic Torch analyzes internal anchors for target keyword presence and diversity, highlights over-optimization risks, and recommends optimized alternatives to strengthen internal authority and user flow.
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is URL & Schema in on-page SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        URL structure should be clean, readable, and include the target keyword (hyphen-separated, short, no parameters). Schema markup (JSON-LD preferred) is structured data that explicitly tells search engines about your content (e.g., Article, FAQ, Product), enabling rich snippets, enhanced visibility in AI results, and higher CTR. In 2026, both reinforce relevance and trust. Traffic Torch checks URLs or HTML for keyword inclusion and scans for valid schema presence, then provides implementation code snippets and fixes to unlock rich results and predictive ranking improvements.
+      </div>
+    </details>
   </div>
-</div> 
+</section>
+
+<!-- WHAT IS MODERN KEYWORD STRATEGY -->
+<section id="what-is" class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    What is a Modern Keyword Strategy?
+  </h2>
+
+  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-900 dark:text-gray-100">
+    <strong>Modern keyword strategy means selecting, grouping, and targeting terms that actually drive qualified traffic. While perfectly aligning with user intent, business goals, and current search behavior.</strong>
+  </p>
+
+  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+    <p>Most sites still hunt high-volume keywords: chase vanity metrics, force-fit terms, write generic content around them.</p>
+    <p>Today that produces low-quality traffic, high bounce rates, and fragile rankings that vanish on every update.</p>
+    <p class="font-semibold text-purple-700 dark:text-purple-300">
+      Real keyword success now depends on these interconnected principles:
+    </p>
+    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
+      <li>→ True user intent & SERP understanding.</li>
+      <li>→ Commercial value & conversion potential.</li>
+      <li>→ Topic clusters & semantic depth.</li>
+      <li>→ Realistic competitiveness & opportunity scoring.</li>
+    </ul>
+    <p class="pt-4">
+      <a href="/"><strong>Traffic Torch</strong></a> Keyword Tool instantly analyzes any keyword or seed → scores opportunity → groups semantically → shows intent type, difficulty, value, and gaps.
+    </p>
+  </div>
+</section>
+
+<!-- 6 HIGH-IMPACT MOVES FOR KEYWORD DOMINANCE    -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    6 High-Impact Moves to Master Keyword Strategy
+  </h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+      <span class="text-4xl flex-shrink-0">1</span>
+      <div>
+        <strong>Start with user-first intent analysis</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Study top 10 SERP — classify informational, commercial, transactional, local. Then build content that matches exactly.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
+      <span class="text-4xl flex-shrink-0">2</span>
+      <div>
+        <strong>Prioritize commercial & conversion value</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Score keywords by real business potential (not just volume). Focus on terms that drive leads, sales, or qualified traffic.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
+      <span class="text-4xl flex-shrink-0">3</span>
+      <div>
+        <strong>Build topic clusters, not single pages</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Group related terms semantically. Create pillar + cluster content structure that signals topical authority to Google.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
+      <span class="text-4xl flex-shrink-0">4</span>
+      <div>
+        <strong>Use realistic difficulty & opportunity scoring</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Combine keyword difficulty, SERP features, domain strength, and intent match, Target winnable, high-value terms first.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0">5</span>
+      <div>
+        <strong>Monitor freshness & seasonal trends</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Prioritize keywords that reward recent content. Catch rising queries early and refresh core pages regularly.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/30 dark:to-teal-900/30 p-7 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
+      <span class="text-4xl flex-shrink-0">6</span>
+      <div>
+        <strong>Competitive keyword gap domination</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Find terms competitors rank for that you miss. Especially long-tail and question-based search queries.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMPARISON TABLE – OLD vs MODERN KEYWORD      -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-6">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    Old Keyword Hunting vs Modern Keyword Mastery
+  </h2>
+
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old-School Keyword Hunting</th>
+          <th class="px-6 py-5 text-lg font-semibold">Modern Keyword Mastery Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium">Primary Goal:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank for highest volume keywords.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Drive qualified, converting traffic.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Selection Criteria:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High search volume, low difficulty.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent match + commercial value + realistic win probability.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Content Approach:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">One page per keyword.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Topic clusters + semantic depth + pillar content.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Optimization Focus:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Exact-match phrases & density.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">User-first answers + conversational natural language.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Competitive Analysis:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mostly Keyword difficulty score.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">SERP features, content gaps, intent alignment, freshness.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Future-Proofing:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Vulnerable to algorithm shifts.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent + value + topical authority = resilient traffic.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">
+    Modern keyword strategy isn’t about ranking for everything. It’s about ranking for the right search queries that actually grow your business.
+  </p>
+</section>
 
 <!-- UNIFIED EXTENSIONS, TOOLS & INTEGRATIONS SECTION -->
 <section id="extensions-tools-integrations" class="py-8">
@@ -1307,7 +1342,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2025-12-21</p>
-          <p>Last updated: 2026-06-02</p>
+          <p>Last updated: 2026-09-07</p>
         </div>
       </div>
     </div>
@@ -1373,6 +1408,106 @@
   <script src="/keyword-tool/module-explanations-v1.0.js" type="module"></script>
   <script src="/keyword-tool/script-v1.1.js" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
+  
+  <script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
   
   <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">

@@ -1,10 +1,8 @@
 // script-v1.0.js – Traffic Torch Schema Generator & Detector
-// Simplified manual schema builder + basic URL scan
-// March 2026 – Vanilla JS, Tailwind dark mode (gray-800 light / gray-200 dark), mobile-first
-// Uses dynamic import per schema file → modules/xxx-schema.js
+
 import { canRunTool } from '/main-v1.1.js';
-import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js';
+// Replace old share/feedback imports with the new dashboard
+import { initShareModule } from '/share-module.js';
 import { prettyJsonLd } from './modules/schema-base.js';
 
 const API_PROXY = 'https://full-render.traffictorch.workers.dev/?url=';
@@ -247,7 +245,10 @@ doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
       progressContainer.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // Simplified report – only show detected schemas + shared buttons
+      // ─── Build the page title ──────────────────────────────────────
+      const pageTitle = doc?.title || new URL(url).hostname;
+
+      // ─── Simplified report ──────────────────────────────────────────
       results.innerHTML = `
         <div class="my-10 px-4">
           <h2 class="text-3xl font-black text-center mb-6 text-gray-800 dark:text-gray-200">
@@ -272,72 +273,61 @@ doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
             }
           </div>
 
-              <div class="text-center mt-10 opacity-80 space-y-6">
-      <p>Use the manual builder below to create or enhance schemas.</p>
+          <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
+          <div id="share-dashboard-container" class="mt-8"></div>
 
-      <!-- Share Report + Submit Feedback Buttons -->
-      <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
-        <button id="share-report-btn" 
-                class="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-          Share Report Link
-        </button>
-        <button id="feedback-btn" 
-                class="px-8 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
-          Submit Feedback
-        </button>
-      </div>
-
-      <!-- Feedback Form Container (hidden by default) -->
-      <div id="feedback-form-container" class="hidden mt-8 p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700">
-        <form id="feedback-form" class="space-y-6">
-          <!-- Rating -->
-          <div class="flex justify-center gap-4">
-            <button type="button" data-rating="5" class="text-4xl hover:scale-125 transition">😍</button>
-            <button type="button" data-rating="4" class="text-4xl hover:scale-125 transition">😊</button>
-            <button type="button" data-rating="3" class="text-4xl hover:scale-125 transition">😐</button>
-            <button type="button" data-rating="2" class="text-4xl hover:scale-125 transition">😕</button>
-            <button type="button" data-rating="1" class="text-4xl hover:scale-125 transition">😡</button>
+          <!-- Manual builder (unchanged) -->
+          <div class="text-center mt-10 opacity-80 space-y-6">
+            <p>Use the manual builder below to create or enhance schemas.</p>
           </div>
-          <input type="hidden" id="feedback-rating" name="rating" value="">
+        </div>
+      `;
 
-          <!-- Textarea -->
-          <textarea id="feedback-text" name="feedback" rows="5" placeholder="Your feedback about the tool, suggestions, bugs..." 
-                    class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
-          <div class="text-right text-sm text-gray-500 dark:text-gray-400">
-            <span id="char-count">0</span>/500
-          </div>
+      // ─── Set data-url for the analyzed page ──────────────────────
+      document.body.setAttribute('data-url', url);
 
-          <!-- Reply requested -->
-          <div class="flex items-center gap-3">
-            <input type="checkbox" id="reply-requested" name="replyRequested" class="w-5 h-5 text-blue-600 rounded">
-            <label for="reply-requested" class="text-gray-700 dark:text-gray-300">I'd like a reply</label>
-          </div>
+      // ─── Prepare and initialise share dashboard ──────────────────
+      // Build module scores: treat "Schema Detection" as a single module
+      const moduleScores = [
+        { name: 'Schema Detection', score: existingSchemas.length > 0 ? 100 : 0 }
+      ];
 
-          <!-- Email (hidden until checked) -->
-          <div id="email-group" class="hidden">
-            <label class="block mb-2 font-medium">Email</label>
-            <input type="email" id="feedback-email" name="email" placeholder="your@email.com" 
-                   class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
-          </div>
+      // Build passed/failed metrics
+      const passedMetrics = [];
+      const failedMetrics = [];
+      if (existingSchemas.length > 0) {
+        passedMetrics.push('Schema markup detected');
+        // Also add each schema type as a passed metric
+        existingSchemas.forEach(s => {
+          passedMetrics.push(s.types);
+        });
+      } else {
+        failedMetrics.push('No schema markup found');
+      }
 
-          <!-- Submit -->
-          <button type="submit" class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold rounded-xl transition">
-            Send Feedback
-          </button>
-        </form>
+      // Build a list of detected schema types for aiFixes
+      const detectedTypes = existingSchemas.map(s => s.types).filter(t => t && t !== 'Unknown');
+      const aiFixes = detectedTypes.length > 0
+        ? [`Detected schema types: ${detectedTypes.join(', ')}`]
+        : ['No schema detected. Consider adding relevant schema markup (e.g., Article, Product, FAQPage, LocalBusiness).'];
 
-        <!-- Message area -->
-        <div id="feedback-message" class="mt-6 hidden p-4 rounded-2xl text-center font-medium"></div>
-      </div>
-    </div>
-  </div>
-`;
+      const shareData = {
+        toolName: 'Schema Generator & Detector',
+        url: url,
+        pageTitle: pageTitle,
+        overallScore: existingSchemas.length > 0 ? 100 : 0,
+        moduleScores: moduleScores,
+        passedMetrics: passedMetrics,
+        failedMetrics: failedMetrics,
+        aiFixes: aiFixes,
+        rawData: { existingSchemas, url, pageTitle },
+        shareLink: `${window.location.origin}/schema-generator/?url=${encodeURIComponent(url)}`
+      };
 
-// Attach shared features AFTER DOM update
-setTimeout(() => {
-  initShareReport(results);
-  initSubmitFeedback(results);
-}, 0);
+      const shareContainer = document.getElementById('share-dashboard-container');
+      if (shareContainer) {
+        initShareModule(shareContainer, shareData);
+      }
 
       results.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (err) {

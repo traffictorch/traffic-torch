@@ -1,55 +1,208 @@
-/* print-share.css – only show report content, hide dashboard UI */
+/* print-share.css – Report print styles for OFUX homepage */
 
 @media print {
-  /* Hide everything on the page except the share dashboard container */
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 11pt;
+    line-height: 1.5;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", system-ui, -apple-system, sans-serif !important;
+  }
+
+  /* ─── COVER PAGE ─── */
+body::before {
+  content: "TrafficTorch.net ⚖️\A\A OFUX – Online Findability & User Experience\A\A Report:\A " attr(data-url);
+  display: block;
+  height: 100vh;
+  min-height: 100vh;
+  page-break-after: always;
+  color: #4b5563;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 900;
+  text-align: center;
+  padding-top: 20vh;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: 2rem;
+  text-shadow:
+    -2px -2px 0 #fb923c,
+    2px -2px 0 #fb923c,
+    -2px 2px 0 #fb923c,
+    2px 2px 0 #fb923c,
+    -2px 0 0 #fb923c,
+    2px 0 0 #fb923c,
+    0 -2px 0 #fb923c,
+    0 2px 0 #fb923c,
+    0 10px 30px rgba(0,0,0,0.5);
+}
+
+  /* ─── HIDE EVERYTHING EXCEPT REPORT ─── */
   body * {
     visibility: hidden;
   }
-  .share-dashboard,
-  .share-dashboard * {
-    visibility: visible;
-  }
-  .share-dashboard {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 2rem 1rem;
-    background: white !important;
-    color: black !important;
-    border: none !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
+  #homepage-cards-container,
+  #homepage-cards-container *,
+  #homepage-ai-container,
+  #homepage-ai-container * {
+    visibility: visible !important;
   }
 
-  /* Hide dashboard UI elements */
-  .share-dashboard .share-dashboard-header,
-  .share-dashboard .share-dashboard-actions,
-  .share-dashboard #share-email-area,
-  .share-dashboard #share-badge-area,
-  .share-dashboard #share-qr-area,
-  .share-dashboard #share-feedback-area,
-  .share-dashboard .share-dashboard-footer {
+  /* ─── HIDE UI ELEMENTS ─── */
+  #homepage-cards-container .mt-6 a,
+  #homepage-ai-container button,
+  #homepage-ai-container .text-gray-600.mb-6,
+  #homepage-ai-container .text-2xl.font-bold.mb-4,
+  .share-dashboard,
+  #epic-cards,
+  #upgrade-short,
+  #extensions,
+  #dev-tools,
+  #ai-seo-plugins,
+  #footer-placeholder,
+  header,
+  aside,
+  #share-buttons,
+  .tools-grid,
+  #tools-grid,
+  #faq,
+  #seo-ux-checklist,
+  #homepage-audit-form,
+  .container .text-center.mb-4,
+  .container .text-xl.md\:text-2xl,
+  .text-1xl.md\:text-2xl {
     display: none !important;
   }
 
-  /* Show only the report content */
-  .share-dashboard .module-scores-grid,
-  .share-dashboard .passed-failed-grid,
-  .share-dashboard .ai-fixes-section {
+  /* ─── EACH MODULE ON NEW PAGE ─── */
+  #homepage-cards-container .module-card {
+    page-break-before: always !important;
+    page-break-inside: avoid !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1.5rem !important;
+    background: white !important;
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    color: #111827 !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+  #homepage-cards-container .module-card:first-child {
+    page-break-before: avoid !important;
+  }
+
+  /* ─── AI FIXES PAGE ─── */
+  #homepage-ai-container {
+    page-break-before: always !important;
+    margin-top: 0 !important;
+    background: white !important;
+    padding: 1.5rem !important;
+    color: #111827 !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  /* ─── FIX SCORE RING AND NUMBER ─── */
+  #homepage-cards-container .module-card .relative.mx-auto.w-32.h-32 {
+    width: 128px !important;
+    height: 128px !important;
+    overflow: visible !important;
+    margin: 0 auto !important;
+  }
+  #homepage-cards-container .module-card .relative.mx-auto.w-32.h-32 svg {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  #homepage-cards-container .module-card .absolute.inset-0.flex.items-center.justify-center.text-4xl.font-black {
+    color: #111827 !important;
+    font-size: 3rem !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+  }
+
+  /* ─── FIX GRADE EMOJI ─── */
+  #homepage-cards-container .module-card .text-center.mt-2 span[style*="font-size:2.2rem"] {
+    font-size: 2.5rem !important;
+    line-height: 1.4 !important;
+    display: inline-block !important;
+    min-width: 2.8rem !important;
+    text-align: center !important;
+  }
+
+  /* ─── FIX METRIC ICONS (✅, ⚠️, ❌) ─── */
+  #homepage-cards-container .module-card .flex.items-center.gap-2 span[style*="font-size:1.2rem"] {
+    font-size: 1.4rem !important;
+    line-height: 1.4 !important;
+    min-width: 1.8rem !important;
+    display: inline-block !important;
+    text-align: center !important;
+  }
+
+  /* ─── ENSURE ALL EMOJIS USE SYSTEM FONTS ─── */
+  #homepage-cards-container .module-card span[style*="font-size"],
+  #homepage-ai-container span[style*="font-size"] {
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif !important;
+  }
+
+  /* ─── CARD TEXT COLORS ─── */
+  #homepage-cards-container .module-card .text-gray-800,
+  #homepage-cards-container .module-card .text-gray-700,
+  #homepage-ai-container .text-gray-700,
+  #homepage-ai-container .text-gray-800 {
+    color: #111827 !important;
+  }
+  #homepage-cards-container .module-card .text-gray-600,
+  #homepage-ai-container .text-gray-600 {
+    color: #444 !important;
+  }
+  #homepage-cards-container .module-card .text-green-600,
+  #homepage-cards-container .module-card .dark\:text-green-400 {
+    color: #15803d !important;
+  }
+  #homepage-cards-container .module-card .text-red-600,
+  #homepage-cards-container .module-card .dark\:text-red-400 {
+    color: #b91c1c !important;
+  }
+  #homepage-cards-container .module-card .text-orange-500,
+  #homepage-cards-container .module-card .dark\:text-orange-400 {
+    color: #c2410c !important;
+  }
+
+  /* ─── PREVENT METRIC LIST CLIPPING ─── */
+  #homepage-cards-container .module-card .max-h-80 {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* ─── GRID STACK ─── */
+  #homepage-cards-container .grid {
     display: block !important;
   }
 
-  /* Optional: keep overall score ring */
-  .share-dashboard .overall-score-ring {
-    display: block !important;
+  /* ─── CLEANUP ─── */
+  .shadow-lg, .shadow-xl, [class*="shadow"] {
+    box-shadow: none !important;
   }
-
-  /* Adjust spacing */
-  .share-dashboard .module-scores-grid {
-    margin-bottom: 1.5rem;
+  img {
+    max-width: 100% !important;
+    height: auto !important;
   }
-  .share-dashboard .passed-failed-grid {
-    margin-bottom: 1.5rem;
+  .dark body, body.dark {
+    background: #ffffff !important;
+    color: #111827 !important;
   }
 }

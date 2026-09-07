@@ -103,22 +103,6 @@
           "width": 1200,
           "height": 347,
           "caption": "Traffic Torch AI Audit Tool overview: Comprehensive SEO content audit with health scores, issues detection (perplexity, burstiness, repetition, sentence/vocab patterns), and optimization suggestions to make text more human-like"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/ai-audit-tool/images/ai-vs-human-infographic-800w.webp",
-          "contentUrl": "https://traffictorch.net/ai-audit-tool/images/ai-vs-human-infographic-800w.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "AI vs Human Content Patterns Infographic: Perplexity, Burstiness, Repetition – key signals Traffic Torch’s AI Audit Tool uses to distinguish generated vs authentic writing"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/ai-audit-tool/images/sentence-vocab-infographic-800w.webp",
-          "contentUrl": "https://traffictorch.net/ai-audit-tool/images/sentence-vocab-infographic-800w.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "Sentence Length & Vocabulary Exposed Infographic: Human natural flow vs AI grid-like patterns – Traffic Torch AI Audit Tool metrics for authenticity and SEO improvement"
         }
       ],
       "author": {
@@ -135,7 +119,7 @@
         }
       },
       "datePublished": "2026-01-12T18:12:00+11:00",
-      "dateModified": "2026-06-02T10:36:00+11:00"
+      "dateModified": "2026-09-07T10:36:00+11:00"
     },
     {
       "@type": "Person",
@@ -436,6 +420,163 @@
       <!-- Report sections goes here -->
     </div>
     
+        <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
+  </div>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share Buttons -->
+<div id="share-buttons" class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_email"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_linkedin"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+	<!-- module explanations -->
+	<section id="how-it-works" class="py-4 bg-gray dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-2">
+    <h2 class="text-4xl md:text-4xl font-black text-center text-gray-900 dark:text-gray-100 mb-4">
+      How We Detect AI Content
+    </h2>
+    <p class="text-xl text-center text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-16">
+      Our AI Audit Tool analyzes five key linguistic patterns proven to distinguish human from AI-generated text.
+    </p>
+    <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Cards injected by module-explanations.js -->
+    </div>
+  </div>
+</section>
+
+ <!-- AI Tools Section -->
+ <div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      AI SEO Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">GEO Audit Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Optimize for AI-powered search engines</p>
+      </div>
+    </a>
+    <a href="/ai-voice-search-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🎙️</div>
+        <h3 class="text-orange-400 text-2xl font-bold mb-3">360° audit for voice SEO</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>
+    
 <div class="center-btn-container mt-4 mb-4">
   <button
     class="copy-link-btn"
@@ -491,287 +632,6 @@
     </div>
   </details>
 </div>
-
-<section id="faq" class="container mx-auto px-4 py-6 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-    Frequently Asked Questions about AI Content Detection
-  </h2>
-  <div class="space-y-6 max-w-6xl mx-auto">
-    
-    <!-- Perplexity -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Why does low perplexity mean text is likely AI-generated?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Low perplexity indicates highly predictable word sequences: AI models favor statistically common, formulaic patterns learned from vast training data, making text easy for language models to “guess.” High perplexity reflects surprising, varied, less-predictable phrasing typical of human creativity. The Traffic Torch AI Audit Tool calculates perplexity using bigram and trigram entropy to quantify how surprising and diverse word pairings are.
-      </div>
-    </details>
-
-    <!-- Burstiness -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Why do AI texts have low burstiness compared to human writing?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Burstiness measures variation in sentence length and complexity. Humans naturally alternate short, punchy sentences with longer, more elaborate ones, creating dynamic rhythm (high variance — e.g., standard deviation often ~8.7 words). AI tends to generate uniform lengths (low variance — e.g., ~3.2). The Traffic Torch AI Audit Tool measures burstiness through statistical variance in sentence length (word count) and word length (characters).
-      </div>
-    </details>
-
-    <!-- Repetition -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Why does AI repeat phrases so much, and how can I fix it in my webpage text?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        AI repeats phrases because it defaults to high-probability, “safe” word sequences and structures heavily reinforced in training data. It often loops ideas or echoes previous phrasing (e.g., the classic “salt, salt, salt” loop). Humans instinctively vary wording for freshness. The Traffic Torch AI Audit Tool tracks repetition by measuring the maximum occurrences of any bigram (two-word) or trigram (three-word) sequences.
-      </div>
-    </details>
-
-    <!-- Sentence Length -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How does sentence length variation differ between AI and human writing?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Human writing averages 14–20 words per sentence with high variation (std dev ~8.7), mixing short punchy sentences with longer complex ones for natural flow. AI often averages ~27 words with low variation (std dev ~3.2), producing uniform medium-length sentences. The Traffic Torch AI Audit Tool analyzes sentence length by combining average words per sentence (ideal 15–23) with comma usage as a proxy for structural complexity.
-      </div>
-    </details>
-
-    <!-- Vocabulary -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What vocabulary patterns give away AI-generated text on websites?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        AI overuses formal or pseudo-sophisticated words far more than humans e.g., “delve” (100–200× more frequent), “testament,” “realm,” “tapestry,” “intricate,” “elevate,” “harness,” “nuanced,” “play a significant role in shaping” (up to 182× more), and “in today’s fast-paced world.” The Traffic Torch AI Audit Tool measures vocabulary diversity through unique word ratio and frequency of hapax legomena (words appearing only once).
-      </div>
-    </details>
-
-  </div>
-</section>
-
-<!-- Share Buttons -->
-<div id="share-buttons" class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_email"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_linkedin"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-	
-	<!-- module explanations -->
-	<section id="how-it-works" class="py-4 bg-gray dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-2">
-    <h2 class="text-4xl md:text-4xl font-black text-center text-gray-900 dark:text-gray-100 mb-4">
-      How We Detect AI Content
-    </h2>
-    <p class="text-xl text-center text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-16">
-      Our AI Audit Tool analyzes five key linguistic patterns proven to distinguish human from AI-generated text.
-    </p>
-    <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Cards injected by module-explanations.js -->
-    </div>
-  </div>
-</section>
-
-<!-- WHAT IS AI CONTENT AUDIT                     -->
-<section id="what-is" class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    What is an AI Content Audit?
-  </h2>
-
-  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-900 dark:text-gray-100">
-    <strong>The AI Content Audit detects how likely your text is to be flagged as AI-generated. By analyzing perplexity, burstiness, repetition, sentence length, and vocabulary diversity. So you can humanize it for better SEO, GEO & AEO trust, and rankings.</strong>
-  </p>
-
-  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
-    <p>Search engines like Google increasingly penalize robotic, low-quality AI content. Even if it's accurate, it often lacks the natural flow that keeps users engaged.</p>
-    <p>High AI detection risk means lower rankings, less traffic, and lost credibility.</p>
-    <p class="font-semibold text-purple-700 dark:text-purple-300">
-      A strong audit checks these key human writing signals:
-    </p>
-    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
-      <li>→ Perplexity: Unpredictable, creative word flow.</li>
-      <li>→ Burstiness: Varied sentence lengths for rhythm.</li>
-      <li>→ Low repetition: Fresh phrasing throughout.</li>
-      <li>→ Balanced sentence length: Readable mix.</li>
-      <li>→ Rich vocabulary: Diverse, expert-level words.</li>
-    </ul>
-    <p class="pt-4">
-      <a href="/"><strong>Traffic Torch</strong></a> AI Audit Tool instantly scores your text's AI risk, breaks down each metric, and provides humanizing fixes + predictive ranking boosts.
-    </p>
-  </div>
-</section>
-
-<!-- Two-column infographic grid – stacks on mobile, side-by-side on md+ -->
-<div id="infographics" class="grid md:grid-cols-2 gap-4 my-4 max-w-6xl mx-auto px-4">
-  <!-- Left image -->
-  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
-    <img
-      src="/ai-audit-tool/images/ai-vs-human-infographic-800w.webp"
-      srcset="/ai-audit-tool/images/ai-vs-human-infographic-480w.webp 480w,
-              /ai-audit-tool/images/ai-vs-human-infographic-800w.webp 800w,
-              /ai-audit-tool/images/ai-vs-human-infographic-1200w.webp 1200w"
-      sizes="(max-width: 767px) 100vw, 50vw"
-      alt="AI vs Human Content Infographic - Perplexity, Burstiness, Repetition - AI Audit Tool"
-      class="w-full h-auto object-cover"
-      width="800"
-      height="1200"
-      loading="lazy"
-      decoding="async">
-    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
-      AI vs Human writing patterns.
-    </figcaption>
-  </figure>
-
-  <!-- Right image -->
-  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
-    <img
-      src="/ai-audit-tool/images/sentence-vocab-infographic-800w.webp"
-      srcset="/ai-audit-tool/images/sentence-vocab-infographic-480w.webp 480w,
-              /ai-audit-tool/images/sentence-vocab-infographic-800w.webp 800w,
-              /ai-audit-tool/images/sentence-vocab-infographic-1200w.webp 1200w"
-      sizes="(max-width: 767px) 100vw, 50vw"
-      alt="Sentence Length & Vocabulary Infographic - Human Flow vs AI Grid - AI Audit Tool"
-      class="w-full h-auto object-cover"
-      width="800"
-      height="1200"
-      loading="lazy"
-      decoding="async">
-    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
-      Sentence Length & Vocabulary.
-    </figcaption>
-  </figure>
-</div>
-
-<!-- 6 HIGH-IMPACT MOVES TO HUMANIZE CONTENT      -->
-<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    6 High-Impact Moves to Lower AI Detection Risk
-  </h2>
-
-  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
-      <span class="text-4xl flex-shrink-0">1</span>
-      <div>
-        <strong>Boost perplexity with creative phrasing</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Mix metaphors, idioms, and unexpected word choices. Make text less predictable like real human thought.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
-      <span class="text-4xl flex-shrink-0">2</span>
-      <div>
-        <strong>Vary sentence lengths for burstiness</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Blend short punchy sentences with longer detailed ones. Create natural rhythm that engages readers.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
-      <span class="text-4xl flex-shrink-0">3</span>
-      <div>
-        <strong>Eliminate repetitive phrases</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Use synonyms, rephrase ideas. Avoid echoing the same words or structures over and over.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
-      <span class="text-4xl flex-shrink-0">4</span>
-      <div>
-        <strong>Optimize average sentence length</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Aim for 15–23 words per sentence. Balance complexity without overwhelming or simplifying too much.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
-      <span class="text-4xl flex-shrink-0">5</span>
-      <div>
-        <strong>Enrich vocabulary diversity</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Incorporate precise, varied words. Show expertise without jargon overload or basic repetition.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/30 dark:to-teal-900/30 p-7 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
-      <span class="text-4xl flex-shrink-0">6</span>
-      <div>
-        <strong>Add personal anecdotes & opinions</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Weave in stories, examples, or views. Human touch that AI struggles to mimic authentically.</span>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- COMPARISON TABLE – AI-GENERATED vs HUMAN-WRITTEN -->
-<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-6">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    AI-Generated Content vs Human-Written Mastery
-  </h2>
-
-  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
-    <table class="w-full text-left min-w-[640px]">
-      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
-        <tr>
-          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
-          <th class="px-6 py-5 text-lg font-semibold">AI-Generated Content Focus</th>
-          <th class="px-6 py-5 text-lg font-semibold">Human-Written Mastery Focus</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        <tr>
-          <td class="px-6 py-5 font-medium">Perplexity:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Low — predictable patterns.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High — creative, unexpected flow.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Burstiness:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Uniform — even lengths.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Varied — natural rhythm.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">Repetition:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High — recycled phrases.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Low — fresh expressions.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Sentence Length:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Consistent — robotic average.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Balanced mix — readable flow.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">Vocabulary:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Limited — basic repeats.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Diverse — rich & precise.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">SEO Impact:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Penalties & low engagement.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Higher rankings & trust.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">
-    Human-like content wins trust, engagement, and search visibility. Traffic Torch helps you get there fast.
-  </p>
-</section>
 
 <section id="ai-audit-seo-checklist" class="py-6 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900">
   <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-pink-600">
@@ -915,37 +775,213 @@
     </div>
   </details>
 </div>
-  
- <!-- AI Tools Section -->
- <div class="my-16"></div>
-<div class="tools-grid max-w-7xl mx-auto px-2">
-      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      AI SEO Tools
-      </h2>
-  <div class="grid md:grid-cols-3 gap-8">
-    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
-        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">GEO Audit Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Optimize for AI-powered search engines</p>
+
+<section id="faq" class="container mx-auto px-4 py-6 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about AI Content Detection
+  </h2>
+  <div class="space-y-6 max-w-6xl mx-auto">
+    
+    <!-- Perplexity -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why does low perplexity mean text is likely AI-generated?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Low perplexity indicates highly predictable word sequences: AI models favor statistically common, formulaic patterns learned from vast training data, making text easy for language models to “guess.” High perplexity reflects surprising, varied, less-predictable phrasing typical of human creativity. The Traffic Torch AI Audit Tool calculates perplexity using bigram and trigram entropy to quantify how surprising and diverse word pairings are.
       </div>
-    </a>
-    <a href="/ai-voice-search-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
-        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🎙️</div>
-        <h3 class="text-orange-400 text-2xl font-bold mb-3">360° audit for voice SEO</h3>
-        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+    </details>
+
+    <!-- Burstiness -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why do AI texts have low burstiness compared to human writing?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Burstiness measures variation in sentence length and complexity. Humans naturally alternate short, punchy sentences with longer, more elaborate ones, creating dynamic rhythm (high variance — e.g., standard deviation often ~8.7 words). AI tends to generate uniform lengths (low variance — e.g., ~3.2). The Traffic Torch AI Audit Tool measures burstiness through statistical variance in sentence length (word count) and word length (characters).
       </div>
-    </a>
-    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
-        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
-        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+    </details>
+
+    <!-- Repetition -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why does AI repeat phrases so much, and how can I fix it in my webpage text?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        AI repeats phrases because it defaults to high-probability, “safe” word sequences and structures heavily reinforced in training data. It often loops ideas or echoes previous phrasing (e.g., the classic “salt, salt, salt” loop). Humans instinctively vary wording for freshness. The Traffic Torch AI Audit Tool tracks repetition by measuring the maximum occurrences of any bigram (two-word) or trigram (three-word) sequences.
       </div>
-    </a>
+    </details>
+
+    <!-- Sentence Length -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does sentence length variation differ between AI and human writing?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Human writing averages 14–20 words per sentence with high variation (std dev ~8.7), mixing short punchy sentences with longer complex ones for natural flow. AI often averages ~27 words with low variation (std dev ~3.2), producing uniform medium-length sentences. The Traffic Torch AI Audit Tool analyzes sentence length by combining average words per sentence (ideal 15–23) with comma usage as a proxy for structural complexity.
+      </div>
+    </details>
+
+    <!-- Vocabulary -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What vocabulary patterns give away AI-generated text on websites?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        AI overuses formal or pseudo-sophisticated words far more than humans e.g., “delve” (100–200× more frequent), “testament,” “realm,” “tapestry,” “intricate,” “elevate,” “harness,” “nuanced,” “play a significant role in shaping” (up to 182× more), and “in today’s fast-paced world.” The Traffic Torch AI Audit Tool measures vocabulary diversity through unique word ratio and frequency of hapax legomena (words appearing only once).
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- WHAT IS AI CONTENT AUDIT                     -->
+<section id="what-is" class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    What is an AI Content Audit?
+  </h2>
+
+  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-900 dark:text-gray-100">
+    <strong>The AI Content Audit detects how likely your text is to be flagged as AI-generated. By analyzing perplexity, burstiness, repetition, sentence length, and vocabulary diversity. So you can humanize it for better SEO, GEO & AEO trust, and rankings.</strong>
+  </p>
+
+  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+    <p>Search engines like Google increasingly penalize robotic, low-quality AI content. Even if it's accurate, it often lacks the natural flow that keeps users engaged.</p>
+    <p>High AI detection risk means lower rankings, less traffic, and lost credibility.</p>
+    <p class="font-semibold text-purple-700 dark:text-purple-300">
+      A strong audit checks these key human writing signals:
+    </p>
+    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
+      <li>→ Perplexity: Unpredictable, creative word flow.</li>
+      <li>→ Burstiness: Varied sentence lengths for rhythm.</li>
+      <li>→ Low repetition: Fresh phrasing throughout.</li>
+      <li>→ Balanced sentence length: Readable mix.</li>
+      <li>→ Rich vocabulary: Diverse, expert-level words.</li>
+    </ul>
+    <p class="pt-4">
+      <a href="/"><strong>Traffic Torch</strong></a> AI Audit Tool instantly scores your text's AI risk, breaks down each metric, and provides humanizing fixes + predictive ranking boosts.
+    </p>
+  </div>
+</section>
+
+<!-- 6 HIGH-IMPACT MOVES TO HUMANIZE CONTENT      -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    6 High-Impact Moves to Lower AI Detection Risk
+  </h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+      <span class="text-4xl flex-shrink-0">1</span>
+      <div>
+        <strong>Boost perplexity with creative phrasing</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Mix metaphors, idioms, and unexpected word choices. Make text less predictable like real human thought.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
+      <span class="text-4xl flex-shrink-0">2</span>
+      <div>
+        <strong>Vary sentence lengths for burstiness</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Blend short punchy sentences with longer detailed ones. Create natural rhythm that engages readers.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
+      <span class="text-4xl flex-shrink-0">3</span>
+      <div>
+        <strong>Eliminate repetitive phrases</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Use synonyms, rephrase ideas. Avoid echoing the same words or structures over and over.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
+      <span class="text-4xl flex-shrink-0">4</span>
+      <div>
+        <strong>Optimize average sentence length</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Aim for 15–23 words per sentence. Balance complexity without overwhelming or simplifying too much.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0">5</span>
+      <div>
+        <strong>Enrich vocabulary diversity</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Incorporate precise, varied words. Show expertise without jargon overload or basic repetition.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/30 dark:to-teal-900/30 p-7 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
+      <span class="text-4xl flex-shrink-0">6</span>
+      <div>
+        <strong>Add personal anecdotes & opinions</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Weave in stories, examples, or views. Human touch that AI struggles to mimic authentically.</span>
+      </div>
+    </div>
+
   </div>
 </div>
+
+<!-- COMPARISON TABLE – AI-GENERATED vs HUMAN-WRITTEN -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-6">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    AI-Generated Content vs Human-Written Mastery
+  </h2>
+
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">AI-Generated Content Focus</th>
+          <th class="px-6 py-5 text-lg font-semibold">Human-Written Mastery Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium">Perplexity:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Low — predictable patterns.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High — creative, unexpected flow.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Burstiness:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Uniform — even lengths.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Varied — natural rhythm.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Repetition:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High — recycled phrases.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Low — fresh expressions.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Sentence Length:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Consistent — robotic average.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Balanced mix — readable flow.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Vocabulary:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Limited — basic repeats.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Diverse — rich & precise.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">SEO Impact:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Penalties & low engagement.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Higher rankings & trust.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">
+    Human-like content wins trust, engagement, and search visibility. Traffic Torch helps you get there fast.
+  </p>
+</section>
 
 <!-- UNIFIED EXTENSIONS, TOOLS & INTEGRATIONS SECTION -->
 <section id="extensions-tools-integrations" class="py-8">
@@ -1176,7 +1212,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-01-12</p>
-          <p>Last updated: 2026-06-02</p>
+          <p>Last updated: 2026-09-07</p>
         </div>
       </div>
     </div>
@@ -1242,6 +1278,106 @@
   <script src="/ai-audit-tool/module-explanations-v1.2.js" type="module"></script>
   <script src="/ai-audit-tool/script-v1.3.js" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
+  
+  <script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
   
   <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">

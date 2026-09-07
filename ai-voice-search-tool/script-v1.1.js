@@ -1,12 +1,13 @@
 // ai-voice-search-tool/script-v1.1.js
+
 import { computeAIVisibility } from './modules/ai-visibility.js';
 import { computeContentQuality } from './modules/content-quality.js';
 import { computeSnippetVisibility } from './modules/snippet-visibility.js';
 import { computeSentimentQuality } from './modules/sentiment-quality.js';
 import { computeTraditionalKeywords } from './modules/traditional-keywords.js';
 import { canRunTool } from '/main-v1.1.js';
-import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js';
+// Replace old share/feedback imports with the new dashboard
+import { initShareModule } from '/share-module.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -219,6 +220,26 @@ document.addEventListener('DOMContentLoaded', () => {
       const failingModules = modules.filter(m => m.score < 20).length;
       const boost = failingModules * 15;
       const optimizedScore = Math.min(100, yourScore + boost);
+
+      // ─── Compute top failed sub‑metrics for priority fixes ──────────
+      const allFailed = [];
+      modules.forEach(m => {
+        const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
+        const subMetrics = analysis.details?.[detailsKey]?.subMetrics || [];
+        subMetrics.forEach(s => {
+          if (s.score < 60) {
+            allFailed.push({
+              moduleName: m.name,
+              subName: s.name,
+              score: s.score,
+              fix: s.fix || 'Improve this metric for better voice SEO performance.',
+              impact: s.name.includes('Visibility') || s.name.includes('Snippet') ? 25 : s.name.includes('Content') || s.name.includes('Quality') ? 20 : s.name.includes('Keywords') ? 15 : 10
+            });
+          }
+        });
+      });
+      const topFailed = allFailed.sort((a, b) => b.impact - a.impact || b.score - a.score).slice(0, 3);
+
       const elapsed = Date.now() - startTime;
       const remaining = Math.max(0, minLoadTime - elapsed);
 
@@ -415,116 +436,41 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 <!-- Top Priority Fixes -->
-${(() => {
-  const allFailed = [];
-  modules.forEach(m => {
-    const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
-    const subMetrics = analysis.details?.[detailsKey]?.subMetrics || [];
-    subMetrics.forEach(s => {
-      if (s.score < 60) {
-        allFailed.push({
-          moduleName: m.name,
-          subName: s.name,
-          score: s.score,
-          fix: s.fix || 'Improve this metric for better voice SEO performance.',
-          impact: s.name.includes('Visibility') || s.name.includes('Snippet') ? 25 : s.name.includes('Content') || s.name.includes('Quality') ? 20 : s.name.includes('Keywords') ? 15 : 10
-        });
-      }
-    });
-  });
-  const topFailed = allFailed.sort((a, b) => b.impact - a.impact || b.score - a.score).slice(0, 3);
-  if (topFailed.length === 0) {
-    return `
-      <div class="mt-12 text-center">
-        <p class="text-2xl font-bold text-green-600 dark:text-green-400">All sub-metrics strong! ✅</p>
-        <p class="mt-4 text-lg text-gray-700 dark:text-gray-300">Your page is well-optimized for AI voice search.</p>
-      </div>
-    `;
-  }
-  return `
-    <div class="mt-16 px-4 max-w-5xl mx-auto">
-      <h2 class="text-3xl md:text-4xl font-black text-center mb-10 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        Top Priority Fixes
-      </h2>
-      <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
-        ${topFailed.map((f, idx) => `
-          <div class="bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl p-6 md:p-8 border border-orange-500/30 shadow-lg hover:shadow-xl transition-all">
-            <div class="flex items-center gap-4 mb-4">
-              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white text-2xl font-bold">
-                ${idx + 1}
-              </div>
-              <h3 class="text-xl md:text-2xl font-bold text-orange-600 dark:text-orange-400">${f.subName}</h3>
-            </div>
-            <p class="text-gray-800 dark:text-gray-200 mb-4">
-              <span class="font-semibold">${f.moduleName}</span> – Score ${f.score}/100
-            </p>
-            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-              ${f.fix}
-            </p>
-            <div class="mt-4 inline-block px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold rounded-full">
-              +${f.impact}–${f.impact + 10} points
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-})()}
-<!-- Action Buttons -->
-<div class="text-center my-16 px-4">
-  <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-    <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Share Report ↗️
-    </button>
-    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Save Report 📥
-    </button>
-    <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Submit Feedback 💬
-    </button>
+${topFailed.length === 0 ? `
+  <div class="mt-12 text-center">
+    <p class="text-2xl font-bold text-green-600 dark:text-green-400">All sub-metrics strong! ✅</p>
+    <p class="mt-4 text-lg text-gray-700 dark:text-gray-300">Your page is well-optimized for AI voice search.</p>
   </div>
-  <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-  <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8"></div>
-  <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
-      <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-        Feedback for AI Audit Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
-      </p>
-      <form id="feedback-form" class="space-y-6">
-        <div>
-          <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
-          <div class="flex gap-3 text-3xl justify-center sm:justify-start">
-            <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
-            <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
-            <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
-            <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
-            <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
+` : `
+  <div class="mt-16 px-4 max-w-5xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-black text-center mb-10 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+      Top Priority Fixes
+    </h2>
+    <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+      ${topFailed.map((f, idx) => `
+        <div class="bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl p-6 md:p-8 border border-orange-500/30 shadow-lg hover:shadow-xl transition-all">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white text-2xl font-bold">
+              ${idx + 1}
+            </div>
+            <h3 class="text-xl md:text-2xl font-bold text-orange-600 dark:text-orange-400">${f.subName}</h3>
           </div>
-          <input type="hidden" id="feedback-rating" name="rating">
-        </div>
-        <div>
-          <label class="flex items-center gap-2 justify-center sm:justify-start">
-            <input type="checkbox" id="reply-requested" class="w-5 h-5">
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
-          </label>
-        </div>
-        <div id="email-group" class="hidden">
-          <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
-          <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
-          <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
-            <span id="char-count">0</span>/1000 characters
+          <p class="text-gray-800 dark:text-gray-200 mb-4">
+            <span class="font-semibold">${f.moduleName}</span> – Score ${f.score}/100
           </p>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+            ${f.fix}
+          </p>
+          <div class="mt-4 inline-block px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold rounded-full">
+            +${f.impact}–${f.impact + 10} points
+          </div>
         </div>
-        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
-      </form>
-      <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
+      `).join('')}
     </div>
   </div>
-</div>
+`}
+<!-- Share Dashboard Container (replaces old share/feedback buttons) -->
+<div id="share-dashboard-container" class="mt-16"></div>
         `;
 
         setTimeout(() => {
@@ -584,9 +530,11 @@ ${(() => {
           } catch (e) {}
         }, 150);
 
-        initShareReport(results);
-        initSubmitFeedback(results);
+        // ─── Remove old initShareReport / initSubmitFeedback ──────────
+        // initShareReport(results);   // removed
+        // initSubmitFeedback(results); // removed
 
+        // ─── Set data-url ──────────────────────────────────────────────
         let displayUrl = 'traffictorch.net';
         if (pageUrl) {
           let cleaned = pageUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
@@ -600,6 +548,56 @@ ${(() => {
           }
         }
         document.body.setAttribute('data-url', displayUrl);
+
+        // ─── Prepare and initialise share dashboard ──────────────────
+        const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
+
+        const passedMetrics = [];
+        const failedMetrics = [];
+        // Collect sub-metrics pass/fail
+        modules.forEach(m => {
+          const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
+          const subMetrics = analysis.details?.[detailsKey]?.subMetrics || [];
+          subMetrics.forEach(s => {
+            if (s.score >= 60) {
+              passedMetrics.push(s.name);
+            } else {
+              failedMetrics.push(s.name);
+            }
+          });
+          // Also add module-level pass/fail (score >= 60 as pass)
+          if (m.score >= 60) {
+            passedMetrics.push(m.name);
+          } else {
+            failedMetrics.push(m.name);
+          }
+        });
+
+        const shareData = {
+          toolName: 'AI Voice Search Tool',
+          url: pageUrl || displayUrl,
+          pageTitle: doc?.title || 'AI Voice Page',
+          overallScore: yourScore,
+          moduleScores: moduleScores,
+          passedMetrics: passedMetrics,
+          failedMetrics: failedMetrics,
+          aiFixes: topFailed.map(f => f.subName + ': ' + f.fix),
+          rawData: { modules, analysis, topFailed },
+          shareLink: pageUrl ? `${window.location.origin}/ai-voice-search-tool/?url=${encodeURIComponent(pageUrl)}` : ''
+        };
+
+        const shareContainer = document.getElementById('share-dashboard-container');
+        if (shareContainer) {
+          if (pageUrl) {
+            initShareModule(shareContainer, shareData);
+          } else {
+            shareContainer.innerHTML = `
+              <div class="text-center text-gray-500 dark:text-gray-400 p-4 border border-gray-300 dark:border-gray-600 rounded-xl">
+                <p>Sharing is available for live URLs only. Please run the analysis with a URL to share this report.</p>
+              </div>
+            `;
+          }
+        }
 
       }, remaining);
 

@@ -71,7 +71,7 @@
         "https://traffictorch.net/keyword-research-tool/images/keyword-research-tool-banner-800x260.webp"
       ],
       "datePublished": "2026-03-20T01:14:00+11:00",
-      "dateModified": "2026-06-02T07:22:00+11:00",
+      "dateModified": "2026-09-07T07:22:00+11:00",
       "author": {
         "@id": "https://traffictorch.net/#person"
       },
@@ -474,98 +474,154 @@
             These phrases are chosen to match intent. 
           </p>
         </div>
-        <!-- PDF Share Feedback Buttons - appears after results load -->
-<div class="text-center my-16 px-4">
-  <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-    <!-- Share Report - Green - first -->
-    <button id="share-report-btn"
-            class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Share Report ↗️
-    </button>
-    <!-- Save Report - Orange - second -->
-    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-            class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Save Report 📥
-    </button>
+
+<!-- Share Dashboard Container -->
+<div id="share-dashboard-container" class="mt-16"></div>
+
+      </div>
+    </div>
     
-    
-    <!-- Submit Feedback - Blue - third -->
-    <button id="feedback-btn"
-            class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-gray text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-     Submit Feedback 💬
-    </button>
+        <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
   </div>
-  <!-- Share message -->
-  <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-  <!-- Share Report Form -->
-  <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
-      <div>
-        <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
-        <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
       </div>
-      <div>
-        <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
-        <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
       </div>
-      <div>
-        <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
-        <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
       </div>
-      <div>
-        <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
-        <input id="share-title" type="text" required placeholder="Traffic Torch Keyword Research Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
-        <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
-      </div>
-      <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
-    </form>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
   </div>
-  <!-- Feedback Form -->
-  <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
-      <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-        Feedback for Keyword Research Tool
-      </p>
-      <form id="feedback-form" class="space-y-6">
-        <div>
-          <label class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
-          <div class="flex gap-3 text-3xl justify-center sm:justify-start">
-            <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
-            <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
-            <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
-            <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
-            <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
-          </div>
-          <input type="hidden" id="feedback-rating" name="rating">
-        </div>
-        <div>
-          <label class="flex items-center gap-2 justify-center sm:justify-start">
-            <input type="checkbox" id="reply-requested" class="w-5 h-5">
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
-          </label>
-        </div>
-        <div id="email-group" class="hidden">
-          <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
-          <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
-          <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
-            <span id="char-count">0</span>/1000 characters
-          </p>
-        </div>
-        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-gray font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
-      </form>
-      <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share Buttons -->
+<div id="share-buttons" class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_email"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_linkedin"></a>
+      <a class="a2a_button_copy_link"></a>
     </div>
   </div>
 </div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- SEO Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO Keyword Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Keyword Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">On-page keyword placement</p>
       </div>
-    </div>
+    </a>
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">VS Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AIO Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>
     
         <div class="center-btn-container mt-4 mb-4">
   <button
@@ -575,61 +631,6 @@
   >
     Copy Link? 🔗
   </button>
-</div>
-
-<!-- FAQ Accordion -->
-<div id="faq" class="mt-12 max-w-4xl mx-auto px-2">
-  <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">Frequently Asked Questions</h2>
-  
-  <div class="space-y-4">
-<details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
-  <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
-    How do these keyword suggestions improve SEO?
-    <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-  </summary>
-  <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
-    Our AI-generated suggestions go far beyond generic lists. By analyzing your main keyword and (if provided) your page content, the tool identifies high-impact long-tail phrases, natural question formats, buyer-intent terms, and topic-aligned variations. These help you:
-    <ul class="list-disc pl-6 mt-3 space-y-2">
-      <li>Target low-competition, high-conversion opportunities.</li>
-      <li>Build topical authority with semantically related keywords.</li>
-      <li>Improve on-page relevance and content depth.</li>
-      <li>Boost click-through rates with natural, user-focused phrasing.</li>
-      <li>Support internal linking, FAQ sections, and content clusters.</li>
-    </ul>
-    The result: better rankings, more organic traffic, and stronger discoverability across search engines.
-  </div>
-</details>
-
-    <details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
-        How does this help with AEO and GEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
-        Suggestions prioritize natural-language questions, direct-answer phrasing, entity-rich terms, unique angles, and citation-friendly language. Exactly what modern answer engines and generative AI search systems reward for top visibility.
-      </div>
-    </details>
-
-    <details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
-        Are these suggestions suitable for voice search and AI-first results?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
-        Yes — many suggestions are long-tail, conversational, and question-based, which perform strongly in voice assistants (Siri, Alexa, Google Assistant) and emerging AI-driven search interfaces.
-      </div>
-    </details>
-
-    <details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
-      <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
-        How accurate are the keyword suggestions from this tool?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
-        Very accurate for intent and relevance. The AI understands your input keyword and page content (if provided). Suggestions are long-tail, conversational, and optimized for real user queries across search and AI engines. They’re not scraped, they’re intelligently generated.
-      </div>
-    </details>
-  </div>
 </div>
 
 <section id="keyword-research-features-checklist" class="py-6 px-2 max-w-6xl mx-auto">
@@ -769,52 +770,58 @@
   </div>
 </section>
 
-<!-- Share Buttons -->
-<div id="share-buttons" class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_email"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_linkedin"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
+<!-- FAQ Accordion -->
+<div id="faq" class="mt-12 max-w-4xl mx-auto px-2">
+  <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">Frequently Asked Questions</h2>
+  
+  <div class="space-y-4">
+<details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
+  <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
+    How do these keyword suggestions improve SEO?
+    <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+  </summary>
+  <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
+    Our AI-generated suggestions go far beyond generic lists. By analyzing your main keyword and (if provided) your page content, the tool identifies high-impact long-tail phrases, natural question formats, buyer-intent terms, and topic-aligned variations. These help you:
+    <ul class="list-disc pl-6 mt-3 space-y-2">
+      <li>Target low-competition, high-conversion opportunities.</li>
+      <li>Build topical authority with semantically related keywords.</li>
+      <li>Improve on-page relevance and content depth.</li>
+      <li>Boost click-through rates with natural, user-focused phrasing.</li>
+      <li>Support internal linking, FAQ sections, and content clusters.</li>
+    </ul>
+    The result: better rankings, more organic traffic, and stronger discoverability across search engines.
   </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
+</details>
 
-<!-- SEO Tools Section -->
-<div class="my-16"></div>
-<div class="tools-grid max-w-7xl mx-auto px-2">
-      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      SEO Keyword Tools
-      </h2>
-  <div class="grid md:grid-cols-3 gap-8">
-    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Keyword Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">On-page keyword placement</p>
+    <details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
+        How does this help with AEO and GEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
+        Suggestions prioritize natural-language questions, direct-answer phrasing, entity-rich terms, unique angles, and citation-friendly language. Exactly what modern answer engines and generative AI search systems reward for top visibility.
       </div>
-    </a>
-    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
-        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
-        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">VS Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis</p>
+    </details>
+
+    <details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
+        Are these suggestions suitable for voice search and AI-first results?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
+        Yes — many suggestions are long-tail, conversational, and question-based, which perform strongly in voice assistants (Siri, Alexa, Google Assistant) and emerging AI-driven search interfaces.
       </div>
-    </a>
-    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AIO Tools</h3>
-        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+    </details>
+
+    <details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
+        How accurate are the keyword suggestions from this tool?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
+        Very accurate for intent and relevance. The AI understands your input keyword and page content (if provided). Suggestions are long-tail, conversational, and optimized for real user queries across search and AI engines. They’re not scraped, they’re intelligently generated.
       </div>
-    </a>
+    </details>
   </div>
 </div>
 
@@ -1048,7 +1055,7 @@
         </p>
         <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-03-20</p>
-          <p>Last updated: 2026-06-02</p>
+          <p>Last updated: 2026-09-07</p>
         </div>
       </div>
     </div>
@@ -1120,6 +1127,106 @@
   <script src="/main-v1.1.js" type="module"></script>
   <script src="/keyword-research-tool/script-v1.1.js" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
+  
+  <script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
   
   <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">

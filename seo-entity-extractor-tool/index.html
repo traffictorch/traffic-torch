@@ -110,7 +110,7 @@
         }
       },
       "datePublished": "2026-03-14T09:34:00+11:00",
-      "dateModified": "2026-06-01T09:49:00+11:00"
+      "dateModified": "2026-09-07T09:49:00+11:00"
     },
     {
       "@type": "Article",
@@ -457,7 +457,182 @@
   <!-- All report content (score, modules, gaps, fixes) goes here via JS -->
 </div>
 
-    <div class="center-btn-container mt-12">
+    <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
+  </div>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share Buttons -->
+<div id="share-buttons" class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_email"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_linkedin"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+<!-- Deep Dive into SEO Entity Modules -->
+<section id="deep-dive" class="py-4 bg-gray dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-2">
+    <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      Deep Dive into SEO Entity Modules
+    </h2>
+    <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+     <!-- 6 cards will be injected here by script.js -->
+    </div>
+  </div>
+</section>
+
+<!-- SEO Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+      <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Topical Authority Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Detect main topics & subtopics</p>
+      </div>
+    </a>
+      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+      </div>
+    </a>
+    <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Schema Generator Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Detect & Generate Schema Markups</p>
+      </div>
+    </a>
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO</h3>
+        <p class="text-gray-800 dark:text-gray-100">On-page Local SEO Audit</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+  <div class="center-btn-container mt-12">
   <button
     class="copy-link-btn"
     onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
@@ -542,235 +717,6 @@
     </div>
   </details>
 </div>
-
-<div id="how-it-works" class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/30 dark:to-blue-900/30 p-8 rounded-2xl mt-12 border border-green-200 dark:border-green-800 text-center shadow-md hover:shadow-xl transition-shadow duration-300">
-  <p class="text-xl md:text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-200">
-    Learn more about building stronger semantic entities.
-  </p>
-  <a
-    href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/"
-    class="inline-flex items-center gap-3 px-10 py-6 bg-gradient-to-r from-purple-600 to-cyan-600 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:brightness-110 transition-all duration-300 transform hover:-translate-y-1"
-  >
-    Read the Semantic Entity Help Guide →
-  </a>
-  <p class="mt-8 text-lg text-gray-600 dark:text-gray-400">
-    Get step-by-step insights on the six semantic layers (Entities, Coverage, Salience, Relationships, Practices & Readiness), entity extraction, knowledge graph signals, schema optimization, AI visibility, and how to close gaps for stronger rankings, local/geo results, and answer engine performance.
-  </p>
-</div>
-
-<section id="entity-faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-    Semantic Entities & Topics: Most Common Questions Answered
-  </h2>
-  <p class="text-center text-lg mb-8 max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
-    <a href="/"><strong>Traffic Torch</strong></a> instantly extracts semantic entities, topics, relationships & salience Google sees on your page. Then delivers AI-powered fixes, analysis and education to strengthen topical relevance and entity optimization for 2026 rankings.
-  </p>
-  <div class="space-y-6 max-w-6xl mx-auto">
-    <!-- Entity Extraction -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Why are semantic entities so critical for SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Google relies heavily on named entities (people, places, things, concepts) and their relationships to understand topic depth and relevance. Pages with clear, salient entities connected logically outrank vague or entity-poor content, especially in AI Overviews and zero-click searches. Traffic Torch scans your page in seconds, extracts visible entities + implied ones, scores salience, and suggests high-impact fixes like entity additions, disambiguation, or relationship markup to recover visibility in entity-driven queries.
-      </div>
-    </details>
-    <!-- Topic Coverage -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How do I identify and fill topical coverage gaps?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Topical coverage requires comprehensive sub-topic handling with strong entity interconnectivity. Traffic Torch compares your page/cluster against top-ranking competitors, highlights missing sub-entities/topics, and generates fix outlines (new sections, internal links, entity mentions) to build stronger topical authority fast and capture long-tail entity-based traffic.
-      </div>
-    </details>
-    <!-- Relationships & Salience -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What makes an entity salient and well-connected in Google's eyes?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Salience comes from frequency, context prominence, relationships to main topic, and supporting signals (headings, bolding, images with alt text). Traffic Torch analyzes entity salience scores, relationship strength (co-occurrence, proximity), and suggests optimizations like better placement, schema (Entity markup if advanced), or content expansion to make key entities more prominent and trusted.
-      </div>
-    </details>
-    <!-- Competitive Analysis -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How does entity optimization beat competitors?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Competitors often miss secondary entities or weak relationships. Traffic Torch runs side-by-side entity extraction vs. top results, reveals gaps (missing brands, concepts, LSI-like terms), and provides exact insertion points + wording suggestions to leapfrog rankings in semantic search and featured snippets.
-      </div>
-    </details>
-    <!-- Tool Benefits -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How fast can entity fixes impact rankings?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Many entity optimizations (better mentions, salience boosts, relationship clarity) show movement in days to weeks, especially for mid-competitive queries. Traffic Torch provides quickest wins and educates on monitoring entity evolution in Search Console + rankings.
-      </div>
-    </details>
-  </div>
-</section>
-
-<!-- Share Buttons -->
-<div id="share-buttons" class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_email"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_linkedin"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-	
-<!-- Deep Dive into SEO Entity Modules -->
-<section id="deep-dive" class="py-4 bg-gray dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-2">
-    <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      Deep Dive into SEO Entity Modules
-    </h2>
-    <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-     <!-- 6 cards will be injected here by script.js -->
-    </div>
-  </div>
-</section>
-
-<!-- WHAT IS MODERN SEMANTIC ENTITY OPTIMIZATION -->
-<section id="what-is" class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    What is Modern Semantic Entity Optimization?
-  </h2>
-  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-500 dark:text-gray-200">
-    <strong>Modern semantic entity optimization means creating content rich in clear, prominent, well-connected named entities that search engines and AI systems can confidently understand and trust. Which can lead to better rankings, more frequent citations in AI answers, and stronger visibility across SERPs, answer engines, and generative outputs.</strong>
-  </p>
-  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
-    <p>Most sites still focus narrowly on keywords: repeating exact phrases, chasing search volume, producing generic long-form pages. That keyword-centric approach is increasingly deprioritized by entity-aware ranking algorithms that value topical depth, semantic clarity, and machine-readable signals over raw keyword density.</p>
-    <p class="font-semibold text-purple-700 dark:text-purple-300">
-      Today’s highest-performing pages excel across these four core semantic dimensions:
-    </p>
-    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
-      <li>→ Entity Coverage & Diversity: broad, relevant set of named entities with varied types (people, organizations, products, locations, concepts).</li>
-      <li>→ Entity Salience & Prominence: main entities clearly emphasized through position, repetition, headings, and formatting.</li>
-      <li>→ Entity Relationships & Clusters: logical co-occurrences and topical connections that form meaningful semantic groups.</li>
-      <li>→ On-Page Semantic Practices: consistent entity naming, strategic heading usage, and strong schema readiness (Organization, Product, LocalBusiness, etc.).</li>
-    </ul>
-    <p class="pt-4">
-      Traffic Torch Semantic Entity Extractor & Audit Tool instantly detects entities on your page, scores each of the four dimensions above, calculates an overall Semantic Readiness score (0–100), and provides actionable fixes to strengthen your entity foundation.
-    </p>
-  </div>
-</section>
-
-
-<!-- 5 HIGH-IMPACT MOVES TO MASTER SEMANTIC ENTITY OPTIMIZATION -->
-<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    5 High-Impact Moves to Win on Semantic Entities
-  </h2>
-  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
-      <span class="text-4xl flex-shrink-0 text-gray-500">1</span>
-      <div>
-        <strong class="text-gray-500">Build strong entity coverage & diversity</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Include a broad, relevant set of named entities (brands, people, products, locations, concepts) with good type variety. This creates topical breadth and authority signals search & AI systems reward.</span>
-      </div>
-    </div>
-    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
-      <span class="text-4xl flex-shrink-0 text-gray-500">2</span>
-      <div>
-        <strong class="text-gray-500">Maximize salience for key entities</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Place your primary entities in title, H1, first 150–250 words, headings, bold text, and prominent images/alt. High salience clearly communicates main topics and boosts extractability.</span>
-      </div>
-    </div>
-    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
-      <span class="text-4xl flex-shrink-0 text-gray-500">3</span>
-      <div>
-        <strong class="text-gray-500">Strengthen entity relationships & clusters</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Group related entities in the same sections, paragraphs, lists, or internal links. Logical co-occurrence and type synergy build topical depth and help search engines form semantic clusters.</span>
-      </div>
-    </div>
-    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
-      <span class="text-4xl flex-shrink-0 text-gray-500">4</span>
-      <div>
-        <strong class="text-gray-500">Implement on-page semantic best practices</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Use top entities consistently in headings (H1–H3), standardize naming, and add JSON-LD schema (Organization, Product, LocalBusiness, etc.) Which makes entities machine-readable and increases rich result / AI citation chances.</span>
-      </div>
-    </div>
-    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
-      <span class="text-4xl flex-shrink-0 text-gray-500">5</span>
-      <div>
-        <strong class="text-gray-500">Monitor & improve overall semantic readiness</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Run Traffic Torch and track Coverage, Salience, Relationships, Practices scores and the combined Readiness index (0–100) to prioritize fixes that deliver the biggest visibility lift in entity-aware search.</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- OLD KEYWORD SEO vs MODERN SEMANTIC ENTITY OPTIMIZATION -->
-<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    Old Keyword SEO vs Modern Semantic Entity Optimization
-  </h2>
-  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
-    <table class="w-full text-left min-w-[640px]">
-      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
-        <tr>
-          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
-          <th class="px-6 py-5 text-lg font-semibold">Old-School Keyword SEO Focus</th>
-          <th class="px-6 py-5 text-lg font-semibold">Modern Semantic Entity Mastery Focus</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        <tr>
-          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Primary Goal:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank for high-volume exact keywords.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Build strong, machine-readable entity signals → better topical relevance & AI/SERP visibility.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Content Strategy:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High keyword density + long generic articles.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rich entity coverage + diversity + logical topical clusters.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Optimization Focus:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Exact-match phrases repeated throughout.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High salience for key entities + strong relationships & schema readiness.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Trust & Quality Signals:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mostly backlinks & domain age.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Clear entity prominence + consistent naming + structured data (Organization, Product, LocalBusiness).</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">SERP & AI Alignment:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Ignored.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Entity salience + topical clusters mirror top results & support direct extraction.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Future-Proofing:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Vulnerable to algorithm updates.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High Semantic Readiness score → resilient in entity-aware search, AEO & generative AI.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">
-    Pages with strong, clear, connected entities and solid on-page semantic practices are rewarded by modern ranking systems and more frequently cited in AI-generated answers.
-  </p>
-</section>
 
 <!-- SEMANTIC ENTITY OPTIMIZATION CHECKLIST -->
 <section id="seo-ux-checklist" class="py-2 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900">
@@ -945,57 +891,178 @@
   </details>
 </div>
 
-<!-- SEO Tools Section -->
-<div class="my-16"></div>
-<div class="tools-grid max-w-7xl mx-auto px-2">
-      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      SEO Tools
-      </h2>
-  <div class="grid md:grid-cols-3 gap-8">
-      <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Topical Authority Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Detect main topics & subtopics</p>
+<section id="entity-faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Semantic Entities & Topics: Most Common Questions Answered
+  </h2>
+  <p class="text-center text-lg mb-8 max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
+    <a href="/"><strong>Traffic Torch</strong></a> instantly extracts semantic entities, topics, relationships & salience Google sees on your page. Then delivers AI-powered fixes, analysis and education to strengthen topical relevance and entity optimization for 2026 rankings.
+  </p>
+  <div class="space-y-6 max-w-6xl mx-auto">
+    <!-- Entity Extraction -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why are semantic entities so critical for SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Google relies heavily on named entities (people, places, things, concepts) and their relationships to understand topic depth and relevance. Pages with clear, salient entities connected logically outrank vague or entity-poor content, especially in AI Overviews and zero-click searches. Traffic Torch scans your page in seconds, extracts visible entities + implied ones, scores salience, and suggests high-impact fixes like entity additions, disambiguation, or relationship markup to recover visibility in entity-driven queries.
       </div>
-    </a>
-      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
-        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+    </details>
+    <!-- Topic Coverage -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How do I identify and fill topical coverage gaps?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Topical coverage requires comprehensive sub-topic handling with strong entity interconnectivity. Traffic Torch compares your page/cluster against top-ranking competitors, highlights missing sub-entities/topics, and generates fix outlines (new sections, internal links, entity mentions) to build stronger topical authority fast and capture long-tail entity-based traffic.
       </div>
-    </a>
-    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+    </details>
+    <!-- Relationships & Salience -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What makes an entity salient and well-connected in Google's eyes?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Salience comes from frequency, context prominence, relationships to main topic, and supporting signals (headings, bolding, images with alt text). Traffic Torch analyzes entity salience scores, relationship strength (co-occurrence, proximity), and suggests optimizations like better placement, schema (Entity markup if advanced), or content expansion to make key entities more prominent and trusted.
       </div>
-    </a>
-    <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Schema Generator Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Detect & Generate Schema Markups</p>
+    </details>
+    <!-- Competitive Analysis -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does entity optimization beat competitors?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Competitors often miss secondary entities or weak relationships. Traffic Torch runs side-by-side entity extraction vs. top results, reveals gaps (missing brands, concepts, LSI-like terms), and provides exact insertion points + wording suggestions to leapfrog rankings in semantic search and featured snippets.
       </div>
-    </a>
-    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO</h3>
-        <p class="text-gray-800 dark:text-gray-100">On-page Local SEO Audit</p>
+    </details>
+    <!-- Tool Benefits -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How fast can entity fixes impact rankings?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Many entity optimizations (better mentions, salience boosts, relationship clarity) show movement in days to weeks, especially for mid-competitive queries. Traffic Torch provides quickest wins and educates on monitoring entity evolution in Search Console + rankings.
       </div>
-    </a>
-    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
-        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+    </details>
+  </div>
+</section>
+
+<!-- 5 HIGH-IMPACT MOVES TO MASTER SEMANTIC ENTITY OPTIMIZATION -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    5 High-Impact Moves to Win on Semantic Entities
+  </h2>
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">1</span>
+      <div>
+        <strong class="text-gray-500">Build strong entity coverage & diversity</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Include a broad, relevant set of named entities (brands, people, products, locations, concepts) with good type variety. This creates topical breadth and authority signals search & AI systems reward.</span>
       </div>
-    </a>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">2</span>
+      <div>
+        <strong class="text-gray-500">Maximize salience for key entities</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Place your primary entities in title, H1, first 150–250 words, headings, bold text, and prominent images/alt. High salience clearly communicates main topics and boosts extractability.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">3</span>
+      <div>
+        <strong class="text-gray-500">Strengthen entity relationships & clusters</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Group related entities in the same sections, paragraphs, lists, or internal links. Logical co-occurrence and type synergy build topical depth and help search engines form semantic clusters.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">4</span>
+      <div>
+        <strong class="text-gray-500">Implement on-page semantic best practices</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Use top entities consistently in headings (H1–H3), standardize naming, and add JSON-LD schema (Organization, Product, LocalBusiness, etc.) Which makes entities machine-readable and increases rich result / AI citation chances.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0 text-gray-500">5</span>
+      <div>
+        <strong class="text-gray-500">Monitor & improve overall semantic readiness</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Run Traffic Torch and track Coverage, Salience, Relationships, Practices scores and the combined Readiness index (0–100) to prioritize fixes that deliver the biggest visibility lift in entity-aware search.</span>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- OLD KEYWORD SEO vs MODERN SEMANTIC ENTITY OPTIMIZATION -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    Old Keyword SEO vs Modern Semantic Entity Optimization
+  </h2>
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old-School Keyword SEO Focus</th>
+          <th class="px-6 py-5 text-lg font-semibold">Modern Semantic Entity Mastery Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Primary Goal:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank for high-volume exact keywords.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Build strong, machine-readable entity signals → better topical relevance & AI/SERP visibility.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Content Strategy:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High keyword density + long generic articles.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rich entity coverage + diversity + logical topical clusters.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Optimization Focus:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Exact-match phrases repeated throughout.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High salience for key entities + strong relationships & schema readiness.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Trust & Quality Signals:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mostly backlinks & domain age.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Clear entity prominence + consistent naming + structured data (Organization, Product, LocalBusiness).</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">SERP & AI Alignment:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Ignored.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Entity salience + topical clusters mirror top results & support direct extraction.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium text-gray-700 dark:text-gray-300">Future-Proofing:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Vulnerable to algorithm updates.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High Semantic Readiness score → resilient in entity-aware search, AEO & generative AI.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">
+    Pages with strong, clear, connected entities and solid on-page semantic practices are rewarded by modern ranking systems and more frequently cited in AI-generated answers.
+  </p>
+</section>
+
+<div id="how-it-works" class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/30 dark:to-blue-900/30 p-8 rounded-2xl mt-12 border border-green-200 dark:border-green-800 text-center shadow-md hover:shadow-xl transition-shadow duration-300">
+  <p class="text-xl md:text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-200">
+    Learn more about building stronger semantic entities.
+  </p>
+  <a
+    href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/"
+    class="inline-flex items-center gap-3 px-10 py-6 bg-gradient-to-r from-purple-600 to-cyan-600 text-white text-xl md:text-2xl font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:brightness-110 transition-all duration-300 transform hover:-translate-y-1"
+  >
+    Read the Semantic Entity Help Guide →
+  </a>
+  <p class="mt-8 text-lg text-gray-600 dark:text-gray-400">
+    Get step-by-step insights on the six semantic layers (Entities, Coverage, Salience, Relationships, Practices & Readiness), entity extraction, knowledge graph signals, schema optimization, AI visibility, and how to close gaps for stronger rankings, local/geo results, and answer engine performance.
+  </p>
+</div
 
 <!-- UNIFIED EXTENSIONS, TOOLS & INTEGRATIONS SECTION -->
 <section id="extensions-tools-integrations" class="py-8">
@@ -1227,7 +1294,7 @@
         </p>
         <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-03-14</p>
-          <p>Last updated: 2026-06-01</p>
+          <p>Last updated: 2026-09-07</p>
         </div>
       </div>
     </div>
@@ -1303,6 +1370,106 @@
 <script src="/seo-entity-extractor-tool/module-explanations-v1.0.js" type="module"></script>
 <script src="/seo-entity-extractor-tool/script-v1.1.js" type="module"></script>
 <script type="module" src="/shared/google-analytics.js"></script>  
+
+<script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
 
 <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">

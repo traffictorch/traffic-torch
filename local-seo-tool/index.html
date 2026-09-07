@@ -96,22 +96,6 @@
           "width": 1200,
           "height": 430,
           "caption": "Traffic Torch Local SEO Tool overview: On-page local signals audit, NAP consistency checker, schema markup validation, Google Business Profile optimization insights and rich results unlock"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/local-seo-tool/images/local-seo-optimizations-infographic-800w.webp",
-          "contentUrl": "https://traffictorch.net/local-seo-tool/images/local-seo-optimizations-infographic-800w.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "Local SEO Optimizations Infographic: Core on-page signals Traffic Torch audits for better Local Pack visibility – NAP & Contact, Local Keywords & Titles, Local Content & Relevance"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/local-seo-tool/images/local-maps-schema-infographic-800w.webp",
-          "contentUrl": "https://traffictorch.net/local-seo-tool/images/local-maps-schema-infographic-800w.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "Local Maps and Schema Infographic: Visual, schema & trust signals Traffic Torch checks to unlock rich results and build trust – Maps & Visuals, Structured Data, Reviews & Structure"
         }
       ],
       "author": {
@@ -128,7 +112,7 @@
         }
       },
       "datePublished": "2025-01-12T10:36:00+11:00",
-      "dateModified": "2026-06-01T09:27:00+11:00"
+      "dateModified": "2026-09-07T09:27:00+11:00"
     },
     {
       "@type": "Person",
@@ -457,6 +441,181 @@
       <!-- cards/Chart.js output goes here -->
     </div>
     
+        <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
+  </div>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share Buttons -->
+<div id="share-buttons" class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_email"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_linkedin"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- Deep Dive into SEO Intent Modules -->
+<section id="deep-dive" class="py-4 bg-gray dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-2">
+    <h2 class="text-4xl md:text-5xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      Deep Dive into Local SEO Modules
+    </h2>
+    <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+     <!-- 6 cards will be injected here by script.js -->
+    </div>
+  </div>
+</section>
+
+
+<!-- SEO Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+      <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Topical Authority Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Detect main topics & subtopics</p>
+      </div>
+    </a>
+    <a href="/seo-entity-extractor-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🧬</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Entity Extractor Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Semantic entity extractor + audit</p>
+      </div>
+    </a>
+    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+      </div>
+    </a>
+    <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Schema Generator Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Detect & Generate Schema Markups</p>
+      </div>
+    </a>
+      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>
     
     <div class="center-btn-container mt-4 mb-4">
   <button
@@ -514,283 +673,6 @@
     </div>
   </details>
 </div>
-
-<section id="faq" class="container mx-auto px-4 py-4 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-    Frequently Asked Questions about Local SEO
-  </h2>
-  <div class="space-y-6 max-w-6xl mx-auto">
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is NAP in local SEO and why is it important?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        NAP stands for Name, Address, Phone number - the core business contact details. In 2026, NAP consistency remains foundational because it helps Google confirm your business entity's identity and trustworthiness across the web. Inconsistent NAP reduces entity recognition and can lower visibility in Maps, local pack, and AI results. Clean, consistent NAP across directories, GBP, and your site improves trust scores and AI visibility by up to 73%.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How do I conduct local keyword research for SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        In 2026, focus on intent mapping: Start with explicit local terms (e.g., "plumber Sydney CBD"), include implicit ones ("near me", "emergency plumber"), use tools like Google Keyword Planner/Ahrefs with location targeting, analyze "People Also Ask", and map to GBP categories/service pages. Prioritize natural placement for relevance signals without stuffing.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What type of local content should I produce to improve SEO relevance?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Produce intent-focused, E-E-A-T content: geo-specific service pages with local details/landmarks, question-answering blog posts (e.g., "How to Choose a Plumber in NSW"), unique location landing pages, and entity-rich guides. Prioritize user value, mobile speed, and low bounce rates over keyword density.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How do I rank higher on Google Maps?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Optimize GBP fully (accurate category, photos, hours, services), generate recent high-quality reviews and respond quickly, add fresh media, drive actions (calls/directions), maintain NAP consistency, post updates, and build local citations/backlinks. GBP signals are still ~32% of Maps ranking, reviews ~20%.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is schema markup and how does it benefit SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Schema is structured data (Schema.org) added to HTML to help search engines understand content. For local SEO in 2026, use LocalBusiness schema with name, address, phone, hours, reviews, geo. Benefits: rich results (stars, hours, maps), 20-30% higher CTR, better entity recognition, Maps/local pack boosts, and stronger AI/knowledge panel integration.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is a canonical tag and when should it be used?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        A canonical tag (&lt;link rel="canonical" href="preferred-url"&gt;) specifies the preferred page version when duplicates exist (e.g., URL params, trailing slashes, similar location pages). Use it to consolidate link equity, avoid duplicate penalties, and unify authority on multi-location sites. Pair with reviews and local links for amplified trust.
-      </div>
-    </details>
-  </div>
-</section>
-
-<!-- Share Buttons -->
-<div id="share-buttons" class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_email"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_linkedin"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-
-<!-- Deep Dive into SEO Intent Modules -->
-<section id="deep-dive" class="py-4 bg-gray dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-2">
-    <h2 class="text-4xl md:text-5xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      Deep Dive into Local SEO Modules
-    </h2>
-    <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
-     <!-- 6 cards will be injected here by script.js -->
-    </div>
-  </div>
-</section>
-     
-<!-- WHAT IS MODERN LOCAL SEO   -->
-<section id="what-is" class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    What is Modern Local SEO?
-  </h2>
-
-  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-500 dark:text-gray-100">
-    <strong>Modern local SEO means ranking in Google Local Pack, Maps, voice search, and getting your business directly featured or quoted in AI local answers.</strong>
-  </p>
-
-  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
-    <p>Most local businesses still optimize citations, generic keyword stuffing, and hoping reviews magically appear. That old playbook now gets you buried below competitors who understand today's signals.</p>
-    <p class="font-semibold text-cyan-700 dark:text-cyan-300">
-      Real local search placement requires mastery of these core pillars at once:
-    </p>
-    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
-      <li>→ Perfect Google Business Profile & freshness.</li>
-      <li>→ Consistent citations + strong review velocity.</li>
-      <li>→ Fast, conversion-focused website experience.</li>
-      <li>→ AI & voice search readiness.</li>
-    </ul>
-    <p class="pt-4">
-      <a href="/"><strong>Traffic Torch</strong></a> delivers 360° local health check with visibility gaps, trust signals, conversion leaks, AI citation readiness.
-    </p>
-  </div>
-</section>
-
-<!-- Two-column infographic grid – stacks on mobile, side-by-side on md+ -->
-<div id="infographics" class="grid md:grid-cols-2 gap-4 my-4 max-w-6xl mx-auto px-4">
-  <!-- Left image -->
-  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
-    <img
-      src="/local-seo-tool/images/local-seo-optimizations-infographic-800w.webp"
-      srcset="/local-seo-tool/images/local-seo-optimizations-infographic-480w.webp 480w,
-              /local-seo-tool/images/local-seo-optimizations-infographic-800w.webp 800w,
-              /local-seo-tool/images/local-seo-optimizations-infographic-1200w.webp 1200w"
-      sizes="(max-width: 767px) 100vw, 50vw"
-      alt="Local SEO Optimizations Infographic – NAP & Contact, Local Keywords & Titles, Local Content & Relevance"
-      class="w-full h-auto object-cover"
-      width="800"
-      height="1200"
-      loading="lazy"
-      decoding="async">
-    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
-      Core on-page local signals Traffic Torch audits for better Local Pack visibility.
-    </figcaption>
-  </figure>
-
-  <!-- Right image -->
-  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
-    <img
-      src="/local-seo-tool/images/local-maps-schema-infographic-800w.webp"
-      srcset="/local-seo-tool/images/local-maps-schema-infographic-480w.webp 480w,
-              /local-seo-tool/images/local-maps-schema-infographic-800w.webp 800w,
-              /local-seo-tool/images/local-maps-schema-infographic-1200w.webp 1200w"
-      sizes="(max-width: 767px) 100vw, 50vw"
-      alt="Local Maps and Schema Infographic – Maps & Visuals, Structured Data, Reviews & Structure"
-      class="w-full h-auto object-cover"
-      width="800"
-      height="1200"
-      loading="lazy"
-      decoding="async">
-    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
-      Visual, schema & trust signals Traffic Torch checks to unlock rich results and trust.
-    </figcaption>
-  </figure>
-</div>
-
-<!-- 5 HIGH-IMPACT LOCAL ACTIONS CARDS            -->
-<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    5 High-Impact Moves to Rank in Your Local Market
-  </h2>
-
-  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/30 dark:to-teal-900/30 p-7 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
-      <span class="text-4xl flex-shrink-0">1</span>
-      <div>
-        <strong>Google Business Profile perfection</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Complete every field, weekly fresh posts, Q&A answered, services/products menu, high-quality photos & video.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/30 p-7 rounded-2xl border border-teal-100 dark:border-teal-800/40">
-      <span class="text-4xl flex-shrink-0">2</span>
-      <div>
-        <strong>Citation consistency at scale</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Exact same Name, Address, Phone & categories across 50+ major directories — tiny inconsistencies destroy local trust.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/30 dark:to-green-900/30 p-7 rounded-2xl border border-emerald-100 dark:border-emerald-800/40">
-      <span class="text-4xl flex-shrink-0">3</span>
-      <div>
-        <strong>Review velocity + intelligent responses</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Generate fresh 4.8+ star reviews regularly and reply thoughtfully to every review (including negatives) within 24 hours.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-green-50 to-lime-50 dark:from-green-900/30 dark:to-lime-900/30 p-7 rounded-2xl border border-green-100 dark:border-green-800/40">
-      <span class="text-4xl flex-shrink-0">4</span>
-      <div>
-        <strong>Local intent content + structured data</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">FAQ pages, service pages, “near me” content with LocalBusiness + FAQPage schema — wins rich results, voice & AI answers.</span>
-      </div>
-    </div>
-
-    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
-      <span class="text-4xl flex-shrink-0">5</span>
-      <div>
-        <strong>Mobile-first, conversion-optimized website</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Lightning fast, click-to-call, embedded map, clear hours & CTA buttons. Turn searchers into callers/visitors instantly.</span>
-      </div>
-    </div>
-
-
-  </div>
-</div>
-
-<!-- COMPARISON TABLE – OLD vs MODERN LOCAL        -->
-<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-4">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    Old Local SEO vs Modern Local SEO
-  </h2>
-
-  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
-    <table class="w-full text-left min-w-[640px]">
-      <thead class="bg-gradient-to-r from-cyan-600 to-teal-600 text-white">
-        <tr>
-          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
-          <th class="px-6 py-5 text-lg font-semibold">Old-School Local SEO Focus</th>
-          <th class="px-6 py-5 text-lg font-semibold">Modern Local Mastery Focus</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        <tr>
-          <td class="px-6 py-5 font-medium">Primary Goal:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Appear in the 3-pack.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Drive calls, visits, directions + pack + Maps + AI mentions.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Core Asset:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Maximum citations.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Perfect GBP + review velocity + fast converting site.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">Reviews Strategy:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Quantity over everything.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Quality + consistent flow + fast thoughtful replies.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Content Approach:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword-stuffed pages.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent-first + LocalBusiness/FAQ schema + real photos.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">Website Role:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Just needs to exist.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Conversion engine (mobile speed, click-to-call, trust signals).</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Trust Signals:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Directory listings only.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Customer signals (reviews, photos, Q&A) + E-E-A-T.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">AI / Voice Search:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Completely ignored.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Answer extractability + voice-friendly schema & content.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <p class="text-center mt-10 text-lg text-gray-600 dark:text-gray-400">
-    Modern local search rewards businesses that are consistent, loved, fast, and instantly trustworthy to both customers and machines.
-  </p>
-</section>
 
 <!-- Expandable Local SEO Checklist Accordion -->
 <section class="py-16 px-2 max-w-6xl mx-auto">
@@ -1037,57 +919,184 @@
   </details>
 </div>
 
-<!-- SEO Tools Section -->
-<div class="my-16"></div>
-<div class="tools-grid max-w-7xl mx-auto px-2">
-      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      SEO Tools
-      </h2>
-  <div class="grid md:grid-cols-3 gap-8">
-      <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Topical Authority Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Detect main topics & subtopics</p>
+<section id="faq" class="container mx-auto px-4 py-16 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about Local SEO
+  </h2>
+  <div class="space-y-6 max-w-6xl mx-auto">
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is NAP in local SEO and why is it important?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        NAP stands for Name, Address, Phone number - the core business contact details. In 2026, NAP consistency remains foundational because it helps Google confirm your business entity's identity and trustworthiness across the web. Inconsistent NAP reduces entity recognition and can lower visibility in Maps, local pack, and AI results. Clean, consistent NAP across directories, GBP, and your site improves trust scores and AI visibility by up to 73%.
       </div>
-    </a>
-    <a href="/seo-entity-extractor-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🧬</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Entity Extractor Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Semantic entity extractor + audit</p>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How do I conduct local keyword research for SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        In 2026, focus on intent mapping: Start with explicit local terms (e.g., "plumber Sydney CBD"), include implicit ones ("near me", "emergency plumber"), use tools like Google Keyword Planner/Ahrefs with location targeting, analyze "People Also Ask", and map to GBP categories/service pages. Prioritize natural placement for relevance signals without stuffing.
       </div>
-    </a>
-    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What type of local content should I produce to improve SEO relevance?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Produce intent-focused, E-E-A-T content: geo-specific service pages with local details/landmarks, question-answering blog posts (e.g., "How to Choose a Plumber in NSW"), unique location landing pages, and entity-rich guides. Prioritize user value, mobile speed, and low bounce rates over keyword density.
       </div>
-    </a>
-    <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Schema Generator Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Detect & Generate Schema Markups</p>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How do I rank higher on Google Maps?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Optimize GBP fully (accurate category, photos, hours, services), generate recent high-quality reviews and respond quickly, add fresh media, drive actions (calls/directions), maintain NAP consistency, post updates, and build local citations/backlinks. GBP signals are still ~32% of Maps ranking, reviews ~20%.
       </div>
-    </a>
-      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
-        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is schema markup and how does it benefit SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Schema is structured data (Schema.org) added to HTML to help search engines understand content. For local SEO in 2026, use LocalBusiness schema with name, address, phone, hours, reviews, geo. Benefits: rich results (stars, hours, maps), 20-30% higher CTR, better entity recognition, Maps/local pack boosts, and stronger AI/knowledge panel integration.
       </div>
-    </a>
-    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
-        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is a canonical tag and when should it be used?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        A canonical tag (&lt;link rel="canonical" href="preferred-url"&gt;) specifies the preferred page version when duplicates exist (e.g., URL params, trailing slashes, similar location pages). Use it to consolidate link equity, avoid duplicate penalties, and unify authority on multi-location sites. Pair with reviews and local links for amplified trust.
       </div>
-    </a>
+    </details>
+  </div>
+</section>
+     
+<!-- 5 HIGH-IMPACT LOCAL ACTIONS CARDS            -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    5 High-Impact Moves to Rank in Your Local Market
+  </h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/30 dark:to-teal-900/30 p-7 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
+      <span class="text-4xl flex-shrink-0">1</span>
+      <div>
+        <strong>Google Business Profile perfection</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Complete every field, weekly fresh posts, Q&A answered, services/products menu, high-quality photos & video.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/30 p-7 rounded-2xl border border-teal-100 dark:border-teal-800/40">
+      <span class="text-4xl flex-shrink-0">2</span>
+      <div>
+        <strong>Citation consistency at scale</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Exact same Name, Address, Phone & categories across 50+ major directories — tiny inconsistencies destroy local trust.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/30 dark:to-green-900/30 p-7 rounded-2xl border border-emerald-100 dark:border-emerald-800/40">
+      <span class="text-4xl flex-shrink-0">3</span>
+      <div>
+        <strong>Review velocity + intelligent responses</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Generate fresh 4.8+ star reviews regularly and reply thoughtfully to every review (including negatives) within 24 hours.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-green-50 to-lime-50 dark:from-green-900/30 dark:to-lime-900/30 p-7 rounded-2xl border border-green-100 dark:border-green-800/40">
+      <span class="text-4xl flex-shrink-0">4</span>
+      <div>
+        <strong>Local intent content + structured data</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">FAQ pages, service pages, “near me” content with LocalBusiness + FAQPage schema — wins rich results, voice & AI answers.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0">5</span>
+      <div>
+        <strong>Mobile-first, conversion-optimized website</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Lightning fast, click-to-call, embedded map, clear hours & CTA buttons. Turn searchers into callers/visitors instantly.</span>
+      </div>
+    </div>
+
+
   </div>
 </div>
+
+<!-- COMPARISON TABLE – OLD vs MODERN LOCAL        -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-4">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    Old Local SEO vs Modern Local SEO
+  </h2>
+
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-cyan-600 to-teal-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old-School Local SEO Focus</th>
+          <th class="px-6 py-5 text-lg font-semibold">Modern Local Mastery Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium">Primary Goal:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Appear in the 3-pack.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Drive calls, visits, directions + pack + Maps + AI mentions.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Core Asset:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Maximum citations.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Perfect GBP + review velocity + fast converting site.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Reviews Strategy:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Quantity over everything.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Quality + consistent flow + fast thoughtful replies.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Content Approach:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword-stuffed pages.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent-first + LocalBusiness/FAQ schema + real photos.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Website Role:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Just needs to exist.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Conversion engine (mobile speed, click-to-call, trust signals).</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Trust Signals:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Directory listings only.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Customer signals (reviews, photos, Q&A) + E-E-A-T.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">AI / Voice Search:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Completely ignored.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Answer extractability + voice-friendly schema & content.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-center mt-10 text-lg text-gray-600 dark:text-gray-400">
+    Modern local search rewards businesses that are consistent, loved, fast, and instantly trustworthy to both customers and machines.
+  </p>
+</section>
 
 <!-- UNIFIED EXTENSIONS, TOOLS & INTEGRATIONS SECTION -->
 <section id="extensions-tools-integrations" class="py-8">
@@ -1319,7 +1328,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2025-01-12</p>
-          <p>Last updated: 2026-06-01</p>
+          <p>Last updated: 2026-09-07</p>
         </div>
       </div>
     </div>
@@ -1384,6 +1393,106 @@
   <script src="/local-seo-tool/module-explanations-v1.0.js" type="module"></script>
   <script src="/local-seo-tool/script-v1.3.js" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
+  
+  <script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
   
   <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">

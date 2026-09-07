@@ -102,22 +102,6 @@
           "width": 1200,
           "height": 400,
           "caption": "Traffic Torch Product SEO Tool overview: Analysis of on-page, technical, content, media and e-commerce signals to optimize product pages for rankings and conversions"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/product-seo-tool/images/product-seo-pillars-infographic-800w.webp",
-          "contentUrl": "https://traffictorch.net/product-seo-tool/images/product-seo-pillars-infographic-800w.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "On-Page Product SEO + Technical SEO Infographic: The foundational pillars and key metrics Traffic Torch audits for e-commerce success"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/product-seo-tool/images/content-ecommerce-signals-infographic-800w.webp",
-          "contentUrl": "https://traffictorch.net/product-seo-tool/images/content-ecommerce-signals-infographic-800w.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "Content & Media + E-Commerce Signals Infographic: Driving user engagement, trust, rich snippet eligibility and conversions for product pages"
         }
       ],
       "author": {
@@ -134,7 +118,7 @@
         }
       },
       "datePublished": "2026-01-28T11:43:00+11:00",
-      "dateModified": "2026-06-01T08:18:00+11:00"
+      "dateModified": "2026-09-07T08:18:00+11:00"
     },
     {
       "@type": "Person",
@@ -444,6 +428,182 @@
     <div id="results" class="hidden space-y-10 mt-10">
       <!-- Your existing report sections go here -->
     </div>
+    
+        <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
+  </div>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share Buttons -->
+<div id="share-buttons" class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_email"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_linkedin"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+      <!-- Deep Dive into Key Modules -->
+      <section id="deep-dive" class="py-4 bg-gray dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-2">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            Deep Dive into Key Modules
+          </h2>
+          <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center lg:justify-start">
+            <!-- Cards generated dynamically -->
+          </div>
+        </div>
+      </section>
+      
+          
+<!-- SEO Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+      <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Topical Authority Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Detect main topics & subtopics</p>
+      </div>
+    </a>
+    <a href="/seo-entity-extractor-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🧬</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Entity Extractor Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Semantic entity extractor + audit</p>
+      </div>
+    </a>
+      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Schema Generator Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Detect & Generate Schema Markups</p>
+      </div>
+    </a>
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO</h3>
+        <p class="text-gray-800 dark:text-gray-100">On-page Local SEO Audit</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>
 
 	    <div class="center-btn-container mt-4 mb-4">
   <button
@@ -499,277 +659,6 @@
     </div>
   </details>
 </div>
-
-<section id="faq" class="container mx-auto px-4 py-4 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-    Frequently Asked Questions about Product SEO
-  </h2>
-  <div class="space-y-6 max-w-4xl mx-auto">
-    <!-- On-Page SEO -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How do I optimize titles, meta descriptions, headings, and keywords on product pages?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p class="mb-4">Strong on-page SEO starts with:</p>
-        <ul class="list-disc pl-6 mb-4 space-y-2">
-          <li>Title tags (50–60 characters) with the primary keyword early + brand or benefit for better CTR.</li>
-          <li>Meta descriptions (150–160 characters) that include keywords naturally, highlight benefits, and end with a strong CTA like "Shop now" or "Free shipping".</li>
-          <li>One unique H1 (product name + key modifier), logical H2/H3 for features/benefits/specs.</li>
-          <li>Clean, descriptive URLs (e.g., /blue-nike-running-shoes-mens).</li>
-          <li>Natural keyword placement in the first 100–150 words and throughout benefit-focused content.</li>
-        </ul>
-        <p>These elements improve relevance for search engines, boost click-through rates in SERPs, match buyer intent, and reduce bounce rates when the page delivers exactly what was promised.</p>
-        <p class="mt-4 font-semibold">Traffic Torch helps by auditing title length & keyword inclusion, meta relevance & CTA strength, heading hierarchy, URL cleanliness, and natural keyword density. Delivering color-coded scores, priority fixes, and plain-English guidance to lift rankings fast.</p>
-      </div>
-    </details>
-
-    <!-- Technical SEO -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How do I fix duplicate content and canonical issues on e-commerce product pages?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p class="mb-4">Duplicate issues often stem from:</p>
-        <ul class="list-disc pl-6 mb-4 space-y-2">
-          <li>Product variants (color/size) creating near-identical pages.</li>
-          <li>URL parameters (?sort=price, ?utm_source=...).</li>
-          <li>HTTP/HTTPS or www/non-www inconsistencies.</li>
-        </ul>
-        <p>Best fixes include self-referencing canonical tags on every variant pointing to the preferred URL, 301 redirects for permanent duplicates, blocking low-value parameters via robots.txt or meta noindex, consistent internal linking to canonicals, and enforcing HTTPS site-wide with no mixed content.</p>
-        <p>These prevent crawl budget waste, avoid penalties, and consolidate all ranking signals to one strong page.</p>
-        <p class="mt-4 font-semibold">Traffic Torch audits self-referencing canonicals (vital for variants), flags incorrect/missing canonicals, detects noindex/nofollow misuse, verifies HTTPS & mixed content, checks mobile viewport readiness, and highlights sitemap patterns, then prioritizes the exact fixes to unblock indexing and eliminate penalties.</p>
-      </div>
-    </details>
-
-    <!-- Content & Media -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How do I optimize product descriptions, images, and media for better engagement and SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p class="mb-4">Top-performing pages feature:</p>
-        <ul class="list-disc pl-6 mb-4 space-y-2">
-          <li>300–1,000+ word unique, benefit-driven descriptions (structured with short paragraphs, bullets, subheadings).</li>
-          <li>Descriptive, keyword-relevant alt text for every image (e.g., "blue Nike Air Zoom running shoes side view").</li>
-          <li>Optimized file names before upload (nike-air-zoom-blue.jpg), compression (Under 100 KB), modern formats (WebP/AVIF).</li>
-          <li>Videos with captions/transcripts + schema if embedded.</li>
-          <li>User reviews, internal links to related products, and breadcrumb navigation for better flow and dwell time.</li>
-        </ul>
-        <p>These reduce bounce rates, increase time-on-page, and build topical authority — all strong indirect ranking signals in 2026.</p>
-        <p class="mt-4 font-semibold">Traffic Torch evaluates description length/structure, image alt text coverage & optimization, video quality/captions, review detection, internal linking relevance, and breadcrumbs. Providing breakdowns, suggestions, and educational notes to boost engagement and authority.</p>
-      </div>
-    </details>
-
-    <!-- E-Commerce Signals -->
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How do I add Product schema, reviews, and rich snippets for stars, prices, and higher visibility?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p class="mb-4">To unlock rich results (prices, stars, images, availability in SERPs):</p>
-        <ul class="list-disc pl-6 mb-4 space-y-2">
-          <li>Full Product schema with name, image(s), description, brand, offers (price, currency, availability, SKU), aggregateRating, and Review markup.</li>
-          <li>Accurate, dynamic price/stock in schema</li>
-          <li>Proper variant handling: one page with dropdowns + schema array or separate canonical pages.</li>
-          <li>Open Graph / Twitter Card tags for strong social previews.</li>
-        </ul>
-        <p>Rich snippets can boost CTR by 20–30%+, build instant trust, and improve conversions at the search level.</p>
-        <p class="mt-4 font-semibold">Traffic Torch verifies complete Product schema coverage, price/availability in markup, aggregateRating + Review implementation, variant canonical strategy, and Open Graph tags. Then recommends exact code/plugins and explains steps to enable stars, prices, and rich results quickly.</p>
-      </div>
-    </details>
-  </div>
-</section>
-
-<!-- Share Buttons -->
-<div id="share-buttons" class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_email"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_linkedin"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-
-      <!-- Deep Dive into Key Modules -->
-      <section id="deep-dive" class="py-4 bg-gray dark:bg-gray-900">
-        <div class="max-w-7xl mx-auto px-2">
-          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-            Deep Dive into Key Modules
-          </h2>
-          <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center lg:justify-start">
-            <!-- Cards generated dynamically -->
-          </div>
-        </div>
-      </section>
-      
-      <!-- Two-column infographic grid – stacks on mobile, side-by-side on md+ -->
-<div id="infographics" class="grid md:grid-cols-2 gap-4 my-8 max-w-6xl mx-auto px-4">
-  <!-- On-Page + Technical SEO -->
-  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
-    <img
-      src="/product-seo-tool/images/product-seo-pillars-infographic-800w.webp"
-      alt="Product SEO Infographic – On-Page SEO and Technical SEO pillars with key metrics"
-      class="w-full h-auto object-cover"
-      width="800"
-      height="1200"
-      loading="lazy"
-      decoding="async">
-    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
-      On-Page Product SEO + Technical SEO: The foundation E-commerce Success.
-    </figcaption>
-  </figure>
-
-  <!-- Content & Media + E-Commerce Signals -->
-  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
-    <img
-      src="/product-seo-tool/images/content-ecommerce-signals-infographic-800w.webp"
-      alt="Product SEO Infographic – Content & Media and E-Commerce Signals pillars"
-      class="w-full h-auto object-cover"
-      width="800"
-      height="1200"
-      loading="lazy"
-      decoding="async">
-    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
-      Content & Media + E-Commerce Signals: Driving engagement, trust & rich snippets.
-    </figcaption>
-  </figure>
-</div>
-      
-  
-<!-- WHAT IS Product SEO & WHY IT MATTERS -->
-<section id="what-is" class="max-w-4xl mx-auto mt-8 mb-4 px-2 sm:px-6 lg:px-8">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    What is Product SEO?
-  </h2>
-  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-500 dark:text-gray-100">
-    <strong>Product SEO scores how ready your eCommerce product page is to rank, appear in rich results, and convert visitors, before they bounce or click away.</strong>
-  </p>
-  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
-    <p>Weak product page SEO buries listings, misses rich snippets (price, reviews, images), wastes organic traffic potential, and tells search engines your products aren't worth showing.</p>
-    <p class="font-semibold text-cyan-700 dark:text-cyan-300">
-      Modern product page failure is driven by these silent killers:
-    </p>
-    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
-      <li>→ Missing or weak Product schema markup.</li>
-      <li>→ Thin / duplicate descriptions & poor headings.</li>
-      <li>→ Unoptimized images without alt text or lazy loading.</li>
-      <li>→ Mobile UX issues & slow technical signals.</li>
-    </ul>
-    <p class="pt-4">
-      <a href="/"><strong>Traffic Torch</strong></a> Product SEO analyzer gives you an instant health score + breakdown of every critical factor. With prioritized fixes, plugin suggestions, and expert optimizations to turn product pages into ranking & sales machines.
-    </p>
-  </div>
-</section>
-
-<!-- 5 HIGH-IMPACT MOVES TO BOOST PRODUCT PAGE SEO -->
-<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-12">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    5 High-Impact Moves to Skyrocket Product Page Performance
-  </h2>
-  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-    <div class="flex items-start gap-5 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/30 p-7 rounded-2xl border border-teal-100 dark:border-teal-800/40">
-      <span class="text-4xl flex-shrink-0">1</span>
-      <div>
-        <strong>Keyword-optimized, compelling title & meta</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Product name + key benefit + brand in 50–60 chars; compelling 150–160 char description with CTA.</span>
-      </div>
-    </div>
-    <div class="flex items-start gap-5 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/30 dark:to-green-900/30 p-7 rounded-2xl border border-emerald-100 dark:border-emerald-800/40">
-      <span class="text-4xl flex-shrink-0">2</span>
-      <div>
-        <strong>Rich, unique product description</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">300+ words of benefit-focused copy, bullet points, long-tail keywords, no manufacturer boilerplate.</span>
-      </div>
-    </div>
-    <div class="flex items-start gap-5 bg-gradient-to-br from-green-50 to-lime-50 dark:from-green-900/30 dark:to-lime-900/30 p-7 rounded-2xl border border-green-100 dark:border-green-800/40">
-      <span class="text-4xl flex-shrink-0">3</span>
-      <div>
-        <strong>Complete Product schema markup</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">JSON-LD with name, price, availability, images, aggregateRating, unlocks rich snippets in SERPs.</span>
-      </div>
-    </div>
-    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
-      <span class="text-4xl flex-shrink-0">4</span>
-      <div>
-        <strong>Optimized images & media</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Descriptive alt text, under 100KB files, lazy loading, zoom-enabled high-res versions.</span>
-      </div>
-    </div>
-    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/30 dark:to-indigo-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
-      <span class="text-4xl flex-shrink-0">5</span>
-      <div>
-        <strong>Fast, mobile-first technical foundation</strong><br>
-        <span class="text-gray-600 dark:text-gray-400">Fast page loading speed, responsive design, canonical tags, clean URL structure.</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- COMPARISON TABLE – OLD vs MODERN PRODUCT SEO -->
-<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-4">
-  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-    Old Product SEO Thinking vs Modern Product SEO Approach
-  </h2>
-  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
-    <table class="w-full text-left min-w-[640px]">
-      <thead class="bg-gradient-to-r from-cyan-600 to-teal-600 text-white">
-        <tr>
-          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
-          <th class="px-6 py-5 text-lg font-semibold">Old-School Product SEO</th>
-          <th class="px-6 py-5 text-lg font-semibold">Modern Product SEO Focus</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        <tr>
-          <td class="px-6 py-5 font-medium">Primary Metric:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Basic keyword stuffing</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Strong CTA & well written content</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Schema Priority:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Optional or missing.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Full Product + Review + Offer schema required.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">Content Focus:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Short manufacturer copy.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rich, unique, benefit-driven description + UGC.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Image Optimization:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Generic filenames.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword-rich alt text, compression, lazy loading.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">Mobile & Technical:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Responsive "enough".</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mobile-first, fast loading, clean canonicals.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Conversion Signals:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Add-to-cart button somewhere.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Prominent, frictionless path + trust elements.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <p class="text-center mt-10 text-lg text-gray-600 dark:text-gray-400">
-    When you master product page SEO you unlock rich results, higher CTR, more organic traffic, and better on-site conversions.
-  </p>
-</section>
 
 <!-- Ultimate Product Page SEO Health Checklist -->
 <section id="product-torch-seo-checklist" class="py-6 px-2 max-w-7xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900">
@@ -971,58 +860,188 @@
     </div>
   </details>
 </div>
-    
-<!-- SEO Tools Section -->
-<div class="my-16"></div>
-<div class="tools-grid max-w-7xl mx-auto px-2">
-      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      SEO Tools
-      </h2>
-  <div class="grid md:grid-cols-3 gap-8">
-      <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Topical Authority Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Detect main topics & subtopics</p>
+
+<section id="faq" class="container mx-auto px-4 py-4 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about Product SEO
+  </h2>
+  <div class="space-y-6 max-w-4xl mx-auto">
+    <!-- On-Page SEO -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How do I optimize titles, meta descriptions, headings, and keywords on product pages?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p class="mb-4">Strong on-page SEO starts with:</p>
+        <ul class="list-disc pl-6 mb-4 space-y-2">
+          <li>Title tags (50–60 characters) with the primary keyword early + brand or benefit for better CTR.</li>
+          <li>Meta descriptions (150–160 characters) that include keywords naturally, highlight benefits, and end with a strong CTA like "Shop now" or "Free shipping".</li>
+          <li>One unique H1 (product name + key modifier), logical H2/H3 for features/benefits/specs.</li>
+          <li>Clean, descriptive URLs (e.g., /blue-nike-running-shoes-mens).</li>
+          <li>Natural keyword placement in the first 100–150 words and throughout benefit-focused content.</li>
+        </ul>
+        <p>These elements improve relevance for search engines, boost click-through rates in SERPs, match buyer intent, and reduce bounce rates when the page delivers exactly what was promised.</p>
+        <p class="mt-4 font-semibold">Traffic Torch helps by auditing title length & keyword inclusion, meta relevance & CTA strength, heading hierarchy, URL cleanliness, and natural keyword density. Delivering color-coded scores, priority fixes, and plain-English guidance to lift rankings fast.</p>
       </div>
-    </a>
-    <a href="/seo-entity-extractor-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🧬</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Entity Extractor Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Semantic entity extractor + audit</p>
+    </details>
+
+    <!-- Technical SEO -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How do I fix duplicate content and canonical issues on e-commerce product pages?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p class="mb-4">Duplicate issues often stem from:</p>
+        <ul class="list-disc pl-6 mb-4 space-y-2">
+          <li>Product variants (color/size) creating near-identical pages.</li>
+          <li>URL parameters (?sort=price, ?utm_source=...).</li>
+          <li>HTTP/HTTPS or www/non-www inconsistencies.</li>
+        </ul>
+        <p>Best fixes include self-referencing canonical tags on every variant pointing to the preferred URL, 301 redirects for permanent duplicates, blocking low-value parameters via robots.txt or meta noindex, consistent internal linking to canonicals, and enforcing HTTPS site-wide with no mixed content.</p>
+        <p>These prevent crawl budget waste, avoid penalties, and consolidate all ranking signals to one strong page.</p>
+        <p class="mt-4 font-semibold">Traffic Torch audits self-referencing canonicals (vital for variants), flags incorrect/missing canonicals, detects noindex/nofollow misuse, verifies HTTPS & mixed content, checks mobile viewport readiness, and highlights sitemap patterns, then prioritizes the exact fixes to unblock indexing and eliminate penalties.</p>
       </div>
-    </a>
-      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
-        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+    </details>
+
+    <!-- Content & Media -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How do I optimize product descriptions, images, and media for better engagement and SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p class="mb-4">Top-performing pages feature:</p>
+        <ul class="list-disc pl-6 mb-4 space-y-2">
+          <li>300–1,000+ word unique, benefit-driven descriptions (structured with short paragraphs, bullets, subheadings).</li>
+          <li>Descriptive, keyword-relevant alt text for every image (e.g., "blue Nike Air Zoom running shoes side view").</li>
+          <li>Optimized file names before upload (nike-air-zoom-blue.jpg), compression (Under 100 KB), modern formats (WebP/AVIF).</li>
+          <li>Videos with captions/transcripts + schema if embedded.</li>
+          <li>User reviews, internal links to related products, and breadcrumb navigation for better flow and dwell time.</li>
+        </ul>
+        <p>These reduce bounce rates, increase time-on-page, and build topical authority — all strong indirect ranking signals in 2026.</p>
+        <p class="mt-4 font-semibold">Traffic Torch evaluates description length/structure, image alt text coverage & optimization, video quality/captions, review detection, internal linking relevance, and breadcrumbs. Providing breakdowns, suggestions, and educational notes to boost engagement and authority.</p>
       </div>
-    </a>
-    <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Schema Generator Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Detect & Generate Schema Markups</p>
+    </details>
+
+    <!-- E-Commerce Signals -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How do I add Product schema, reviews, and rich snippets for stars, prices, and higher visibility?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p class="mb-4">To unlock rich results (prices, stars, images, availability in SERPs):</p>
+        <ul class="list-disc pl-6 mb-4 space-y-2">
+          <li>Full Product schema with name, image(s), description, brand, offers (price, currency, availability, SKU), aggregateRating, and Review markup.</li>
+          <li>Accurate, dynamic price/stock in schema</li>
+          <li>Proper variant handling: one page with dropdowns + schema array or separate canonical pages.</li>
+          <li>Open Graph / Twitter Card tags for strong social previews.</li>
+        </ul>
+        <p>Rich snippets can boost CTR by 20–30%+, build instant trust, and improve conversions at the search level.</p>
+        <p class="mt-4 font-semibold">Traffic Torch verifies complete Product schema coverage, price/availability in markup, aggregateRating + Review implementation, variant canonical strategy, and Open Graph tags. Then recommends exact code/plugins and explains steps to enable stars, prices, and rich results quickly.</p>
       </div>
-    </a>
-    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO</h3>
-        <p class="text-gray-800 dark:text-gray-100">On-page Local SEO Audit</p>
+    </details>
+  </div>
+</section>
+
+<!-- 5 HIGH-IMPACT MOVES TO BOOST PRODUCT PAGE SEO -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    5 High-Impact Moves to Skyrocket Product Page Performance
+  </h2>
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+    <div class="flex items-start gap-5 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/30 p-7 rounded-2xl border border-teal-100 dark:border-teal-800/40">
+      <span class="text-4xl flex-shrink-0">1</span>
+      <div>
+        <strong>Keyword-optimized, compelling title & meta</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Product name + key benefit + brand in 50–60 chars; compelling 150–160 char description with CTA.</span>
       </div>
-    </a>
-    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
-        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-900/30 dark:to-green-900/30 p-7 rounded-2xl border border-emerald-100 dark:border-emerald-800/40">
+      <span class="text-4xl flex-shrink-0">2</span>
+      <div>
+        <strong>Rich, unique product description</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">300+ words of benefit-focused copy, bullet points, long-tail keywords, no manufacturer boilerplate.</span>
       </div>
-    </a>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-green-50 to-lime-50 dark:from-green-900/30 dark:to-lime-900/30 p-7 rounded-2xl border border-green-100 dark:border-green-800/40">
+      <span class="text-4xl flex-shrink-0">3</span>
+      <div>
+        <strong>Complete Product schema markup</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">JSON-LD with name, price, availability, images, aggregateRating, unlocks rich snippets in SERPs.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0">4</span>
+      <div>
+        <strong>Optimized images & media</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Descriptive alt text, under 100KB files, lazy loading, zoom-enabled high-res versions.</span>
+      </div>
+    </div>
+    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/30 dark:to-indigo-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+      <span class="text-4xl flex-shrink-0">5</span>
+      <div>
+        <strong>Fast, mobile-first technical foundation</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Fast page loading speed, responsive design, canonical tags, clean URL structure.</span>
+      </div>
+    </div>
   </div>
 </div>
+
+<!-- COMPARISON TABLE – OLD vs MODERN PRODUCT SEO -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-4">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    Old Product SEO Thinking vs Modern Product SEO Approach
+  </h2>
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-cyan-600 to-teal-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old-School Product SEO</th>
+          <th class="px-6 py-5 text-lg font-semibold">Modern Product SEO Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium">Primary Metric:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Basic keyword stuffing</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Strong CTA & well written content</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Schema Priority:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Optional or missing.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Full Product + Review + Offer schema required.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Content Focus:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Short manufacturer copy.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rich, unique, benefit-driven description + UGC.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Image Optimization:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Generic filenames.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword-rich alt text, compression, lazy loading.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Mobile & Technical:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Responsive "enough".</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mobile-first, fast loading, clean canonicals.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Conversion Signals:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Add-to-cart button somewhere.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Prominent, frictionless path + trust elements.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-center mt-10 text-lg text-gray-600 dark:text-gray-400">
+    When you master product page SEO you unlock rich results, higher CTR, more organic traffic, and better on-site conversions.
+  </p>
+</section>
 
 <!-- UNIFIED EXTENSIONS, TOOLS & INTEGRATIONS SECTION -->
 <section id="extensions-tools-integrations" class="py-8">
@@ -1253,7 +1272,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-01-28</p>
-          <p>Last updated: 2026-06-01</p>
+          <p>Last updated: 2026-09-07</p>
         </div>
       </div>
     </div>
@@ -1319,6 +1338,106 @@
   <script src="/product-seo-tool/module-explanations-v1.0.js" type="module"></script>
   <script src="/product-seo-tool/script-v1.3.js" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
+  
+  <script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
   
   <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">

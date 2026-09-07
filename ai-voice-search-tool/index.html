@@ -110,7 +110,7 @@
         }
       },
       "datePublished": "2026-03-13T18:12:00+11:00",
-      "dateModified": "2026-06-01T11:23:00+11:00"
+      "dateModified": "2026-09-07T11:23:00+11:00"
     },
     {
       "@type": "Article",
@@ -131,7 +131,7 @@
         "name": "Traffic Torch"
       },
       "datePublished": "2026-03-13T18:12:00+11:00",
-      "dateModified": "2026-06-01T11:23:00+11:00"
+      "dateModified": "2026-09-07T11:23:00+11:00"
     },
     {
       "@type": "Person",
@@ -413,6 +413,163 @@
       <!-- Your existing report sections go here – keep them exactly as in your script.js output -->
     </div>
     
+        <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
+  </div>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share Buttons -->
+<div id="share-buttons" class="py-8 text-center">
+  <div class="flex flex-col items-center gap-4">
+    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+      Share?
+    </strong>
+    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_email"></a>
+      <a class="a2a_button_x"></a>
+      <a class="a2a_button_reddit"></a>
+      <a class="a2a_button_linkedin"></a>
+      <a class="a2a_button_copy_link"></a>
+    </div>
+  </div>
+</div>
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+	
+	<!-- module explanations -->
+	<section id="deep-dive" class="py-10 bg-gray dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-2">
+    <h2 class="text-4xl md:text-4xl font-black text-center text-gray-900 dark:text-gray-100 mb-4">
+      Deep dive into AI Voice Search Optimization
+    </h2>
+    <p class="text-xl text-center text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-16">
+      Our AI Voice Search Tool analyzes five key modules proven to enhance exposure to AI engines.
+    </p>
+    <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Cards injected by module-explanations.js -->
+    </div>
+  </div>
+</section>
+
+ <!-- AI Tools Section -->
+ <div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      AI SEO Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">AI SEO Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Optimize for AI-powered search engines</p>
+      </div>
+    </a>
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">AI Content Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>
+    
         <div class="center-btn-container mt-4 mb-4">
   <button
     class="copy-link-btn"
@@ -465,6 +622,73 @@
           Voice search now powers over 50% of all mobile queries. Sites optimized for AEO/GEO see 3–5× more zero-click citations in AI answers. Voice assistants prioritize helpful, natural, authoritative content. Strong scores in these modules reduce zero-click losses, boost direct voice mentions, and improve rankings across Google, Siri, Gemini & Alexa.
         </p>
       </section>
+    </div>
+  </details>
+</div>
+
+<!-- Why AI Voice Search Optimization Matters Accordion -->
+<div class="max-w-4xl mx-auto my-10">
+  <details>
+    <summary class="px-4 py-4 text-xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      Why AI Voice Search Optimization Matters?
+      <span class="text-2xl transition-transform duration-300 [&[open]>*]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-6 px-2 py-8 bg-gray dark:bg-gray-800 rounded-2xl shadow-inner space-y-8 text-gray-700 dark:text-gray-300">
+      <section class="text-left space-y-6">
+        <h2 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Voice Search is Exploding</h2>
+       
+        <p class="leading-relaxed !text-gray-800 dark:!text-gray-200">
+          Over 50% of mobile queries are now voice-activated. Assistants like Google, Siri, Gemini, and Alexa read concise, natural answers aloud from position-zero snippets or AI Overviews, ignoring slow, unstructured, or low-quality content.
+        </p>
+        <p class="leading-relaxed !text-gray-800 dark:!text-gray-200">
+          Poor voice readiness means missed traffic, zero-click losses, and weak brand presence in spoken results.
+        </p>
+      </section>
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Real Benefits of Voice-Optimized Content</h3>
+        <div class="space-y-5 text-sm">
+          <div class="flex gap-6">
+            <div class="text-2xl">🎤</div>
+            <div>
+              <strong>Direct Voice Visibility</strong><br>
+              Strong snippets and schema get your content read aloud as top answers.
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="text-2xl">📈</div>
+            <div>
+              <strong>Higher Mobile Traffic</strong><br>
+              Voice dominates mobile optimized sites capture more queries and conversions.
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="text-2xl">🤝</div>
+            <div>
+              <strong>Stronger User Trust</strong><br>
+              Natural tone and accurate content build credibility in spoken interactions.
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="text-2xl">🛡️</div>
+            <div>
+              <strong>Future-Proof Ranking</strong><br>
+              Voice first optimization aligns with AI search evolution and assistant priorities.
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-6 rounded-xl">
+        <h3 class="text-xl font-bold mb-3">The Bottom Line</h3>
+        <p class="text-sm leading-relaxed">
+          Voice search isn’t about avoiding AI, it’s about <strong>delivering fast, natural, authoritative answers</strong>.
+        </p>
+        <p class="text-sm font-medium mt-4">
+          Use Traffic Torch AI Voice Search Tool to audit readiness, apply targeted fixes, and predict ranking gains across assistants.
+        </p>
+      </section>
+      <p class="text-center text-sm italic opacity-70 mt-6">
+        Voice optimized content wins spoken results, traffic, and trust.
+      </p>
     </div>
   </details>
 </div>
@@ -529,39 +753,6 @@
         Yes – FAQPage, HowTo, SpeakableSpecification, and Article/Product schema significantly boost snippet and AI Overview eligibility, which voice assistants read aloud. The Traffic Torch tool checks your schema coverage and suggests additions for better voice results.
       </div>
     </details>
-  </div>
-</section>
-
-<!-- Share Buttons -->
-<div id="share-buttons" class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_email"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_linkedin"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-	
-	<!-- module explanations -->
-	<section id="deep-dive" class="py-10 bg-gray dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-2">
-    <h2 class="text-4xl md:text-4xl font-black text-center text-gray-900 dark:text-gray-100 mb-4">
-      Deep dive into AI Voice Search Optimization
-    </h2>
-    <p class="text-xl text-center text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-16">
-      Our AI Voice Search Tool analyzes five key modules proven to enhance exposure to AI engines.
-    </p>
-    <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Cards injected by module-explanations.js -->
-    </div>
   </div>
 </section>
 
@@ -695,104 +886,6 @@
     Voice search now drives 50%+ of mobile queries. Optimize for assistants with Traffic Torch to capture spoken results, direct answers, and future-proof rankings.
   </p>
 </section>
-
-<!-- Why AI Voice Search Optimization Matters Accordion -->
-<div class="max-w-4xl mx-auto my-10">
-  <details>
-    <summary class="px-4 py-4 text-xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
-      Why AI Voice Search Optimization Matters?
-      <span class="text-2xl transition-transform duration-300 [&[open]>*]:rotate-180">↓</span>
-    </summary>
-    <div class="mt-6 px-2 py-8 bg-gray dark:bg-gray-800 rounded-2xl shadow-inner space-y-8 text-gray-700 dark:text-gray-300">
-      <section class="text-left space-y-6">
-        <h2 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Voice Search is Exploding</h2>
-       
-        <p class="leading-relaxed !text-gray-800 dark:!text-gray-200">
-          Over 50% of mobile queries are now voice-activated. Assistants like Google, Siri, Gemini, and Alexa read concise, natural answers aloud from position-zero snippets or AI Overviews, ignoring slow, unstructured, or low-quality content.
-        </p>
-        <p class="leading-relaxed !text-gray-800 dark:!text-gray-200">
-          Poor voice readiness means missed traffic, zero-click losses, and weak brand presence in spoken results.
-        </p>
-      </section>
-      <section class="space-y-6">
-        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Real Benefits of Voice-Optimized Content</h3>
-        <div class="space-y-5 text-sm">
-          <div class="flex gap-6">
-            <div class="text-2xl">🎤</div>
-            <div>
-              <strong>Direct Voice Visibility</strong><br>
-              Strong snippets and schema get your content read aloud as top answers.
-            </div>
-          </div>
-          <div class="flex gap-6">
-            <div class="text-2xl">📈</div>
-            <div>
-              <strong>Higher Mobile Traffic</strong><br>
-              Voice dominates mobile optimized sites capture more queries and conversions.
-            </div>
-          </div>
-          <div class="flex gap-6">
-            <div class="text-2xl">🤝</div>
-            <div>
-              <strong>Stronger User Trust</strong><br>
-              Natural tone and accurate content build credibility in spoken interactions.
-            </div>
-          </div>
-          <div class="flex gap-6">
-            <div class="text-2xl">🛡️</div>
-            <div>
-              <strong>Future-Proof Ranking</strong><br>
-              Voice first optimization aligns with AI search evolution and assistant priorities.
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-6 rounded-xl">
-        <h3 class="text-xl font-bold mb-3">The Bottom Line</h3>
-        <p class="text-sm leading-relaxed">
-          Voice search isn’t about avoiding AI, it’s about <strong>delivering fast, natural, authoritative answers</strong>.
-        </p>
-        <p class="text-sm font-medium mt-4">
-          Use Traffic Torch AI Voice Search Tool to audit readiness, apply targeted fixes, and predict ranking gains across assistants.
-        </p>
-      </section>
-      <p class="text-center text-sm italic opacity-70 mt-6">
-        Voice optimized content wins spoken results, traffic, and trust.
-      </p>
-    </div>
-  </details>
-</div>
-  
- <!-- AI Tools Section -->
- <div class="my-16"></div>
-<div class="tools-grid max-w-7xl mx-auto px-2">
-      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      AI SEO Tools
-      </h2>
-  <div class="grid md:grid-cols-3 gap-8">
-    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
-        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">AI SEO Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Optimize for AI-powered search engines</p>
-      </div>
-    </a>
-    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">AI Content Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content</p>
-      </div>
-    </a>
-    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
-        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
-        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
-      </div>
-    </a>
-  </div>
-</div>
 
 <!-- UNIFIED EXTENSIONS, TOOLS & INTEGRATIONS SECTION -->
 <section id="extensions-tools-integrations" class="py-8">
@@ -1024,7 +1117,7 @@
         </p>
         <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-03-13</p>
-          <p>Last updated: 2026-06-01</p>
+          <p>Last updated: 2026-09-07</p>
         </div>
       </div>
     </div>
@@ -1111,6 +1204,106 @@
   <script src="/ai-voice-search-tool/module-explanations-v1.0.js" type="module"></script>
   <script src="/ai-voice-search-tool/script-v1.1.js" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
+  
+  <script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
   
   <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">

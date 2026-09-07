@@ -1,12 +1,13 @@
 // ai-audit-tool/script-v1.3.js
+
 import { computePerplexity } from './modules/perplexity.js';
 import { computeBurstiness } from './modules/burstiness.js';
 import { computeRepetition } from './modules/repetition.js';
 import { computeSentenceLength } from './modules/sentenceLength.js';
 import { computeVocabulary } from './modules/vocabulary.js';
 import { canRunTool } from '/main-v1.1.js';
-import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js';
+// Replace old share/feedback imports with the new dashboard
+import { initShareModule } from '/share-module.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -573,78 +574,8 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<div class="text-center my-16 px-4">
-  <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-    <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">Share Report ↗️</button>
-    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">Save Report 📥</button>
-    <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">Submit Feedback 💬</button>
-  </div>
-  <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-  <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
-      <div>
-        <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
-        <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
-        <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
-        <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
-        <input id="share-title" type="text" required placeholder="Traffic Torch AI Audit Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
-        <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
-      </div>
-      <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
-    </form>
-  </div>
-  <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
-      <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-        Feedback for AI Audit Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
-      </p>
-      <form id="feedback-form" class="space-y-6">
-        <div>
-          <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
-          <div class="flex gap-3 text-3xl justify-center sm:justify-start">
-            <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
-            <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
-            <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
-            <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
-            <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
-          </div>
-          <input type="hidden" id="feedback-rating" name="rating">
-        </div>
-        <div>
-          <label class="flex items-center gap-2 justify-center sm:justify-start">
-            <input type="checkbox" id="reply-requested" class="w-5 h-5">
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
-          </label>
-        </div>
-        <div id="email-group" class="hidden">
-          <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
-          <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
-          <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
-            <span id="char-count">0</span>/1000 characters
-          </p>
-        </div>
-        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
-      </form>
-      <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
-    </div>
-  </div>
-</div>
+<!-- Share Dashboard Container (replaces old share/feedback buttons) -->
+<div id="share-dashboard-container" class="mt-16"></div>
         `;
 
         // Radar chart
@@ -706,10 +637,11 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }, 150);
 
-        initShareReport(results);
-        initSubmitFeedback(results);
+        // ─── Remove old initShareReport / initSubmitFeedback ──────────
+        // initShareReport(results);   // removed
+        // initSubmitFeedback(results); // removed
 
-        // Set display URL for print/share
+        // ─── Set data-url ──────────────────────────────────────────────
         let displayUrl = 'traffictorch.net';
         if (isUrlMode) {
           let fullUrl = urlInput.value.trim();
@@ -720,6 +652,127 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
         document.body.setAttribute('data-url', displayUrl);
+
+        // ─── Prepare and initialise share dashboard ──────────────────
+        const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
+
+        const passedMetrics = [];
+        const failedMetrics = [];
+        // Collect sub-metrics pass/fail (score >= 10 is pass)
+        const subMetricsMap = {
+          'Perplexity': ['Trigram Entropy', 'Bigram Entropy'],
+          'Burstiness': ['Sentence Length Variation', 'Word Length Burstiness'],
+          'Repetition': ['Bigram Repetition', 'Trigram Repetition'],
+          'Sentence Length': ['Average Length', 'Sentence Complexity'],
+          'Vocabulary': ['Diversity', 'Rare Word Frequency']
+        };
+        const subScoresMap = {
+          'Perplexity': [analysis.details.perplexity.scores.trigram, analysis.details.perplexity.scores.bigram],
+          'Burstiness': [analysis.details.burstiness.scores.sentence, analysis.details.burstiness.scores.word],
+          'Repetition': [analysis.details.repetition.scores.bigram, analysis.details.repetition.scores.trigram],
+          'Sentence Length': [analysis.details.sentenceLength.scores.avg, analysis.details.sentenceLength.scores.complexity],
+          'Vocabulary': [analysis.details.vocabulary.scores.diversity, analysis.details.vocabulary.scores.rare]
+        };
+        modules.forEach(m => {
+          const subs = subMetricsMap[m.name] || [];
+          const scores = subScoresMap[m.name] || [];
+          subs.forEach((name, idx) => {
+            const score = scores[idx] || 0;
+            if (score >= 10) {
+              passedMetrics.push(name);
+            } else {
+              failedMetrics.push(name);
+            }
+          });
+          // Also add module-level pass/fail (score >= 20 as pass)
+          if (m.score >= 20) {
+            passedMetrics.push(m.name);
+          } else {
+            failedMetrics.push(m.name);
+          }
+        });
+
+        // Build aiFixes from top priority fixes (the same 'priority' array)
+        const priorityModules = [
+          {
+            name: 'Perplexity',
+            score: analysis.moduleScores[0],
+            details: analysis.details.perplexity,
+            fixes: [
+              analysis.details.perplexity.scores.trigram < 10 ? 'Improve trigram entropy with unexpected word combinations.' : '',
+              analysis.details.perplexity.scores.bigram < 10 ? 'Boost bigram entropy with creative phrase variations.' : ''
+            ].filter(f => f).join('; ')
+          },
+          {
+            name: 'Burstiness',
+            score: analysis.moduleScores[1],
+            details: analysis.details.burstiness,
+            fixes: [
+              analysis.details.burstiness.scores.sentence < 10 ? 'Alternate short and long sentences for rhythm.' : '',
+              analysis.details.burstiness.scores.word < 10 ? 'Mix short and long words for variety.' : ''
+            ].filter(f => f).join('; ')
+          },
+          {
+            name: 'Repetition',
+            score: analysis.moduleScores[2],
+            details: analysis.details.repetition,
+            fixes: [
+              analysis.details.repetition.scores.bigram < 10 ? 'Replace common two-word phrases with synonyms.' : '',
+              analysis.details.repetition.scores.trigram < 10 ? 'Rewrite recurring three-word sequences.' : ''
+            ].filter(f => f).join('; ')
+          },
+          {
+            name: 'Sentence Length',
+            score: analysis.moduleScores[3],
+            details: analysis.details.sentenceLength,
+            fixes: [
+              analysis.details.sentenceLength.scores.avg < 10 ? 'Balance average sentence length (15–23 words).' : '',
+              analysis.details.sentenceLength.scores.complexity < 10 ? 'Add clauses for sentence complexity.' : ''
+            ].filter(f => f).join('; ')
+          },
+          {
+            name: 'Vocabulary',
+            score: analysis.moduleScores[4],
+            details: analysis.details.vocabulary,
+            fixes: [
+              analysis.details.vocabulary.scores.diversity < 10 ? 'Use synonyms to boost vocabulary diversity.' : '',
+              analysis.details.vocabulary.scores.rare < 10 ? 'Add niche-specific rare words.' : ''
+            ].filter(f => f).join('; ')
+          }
+        ];
+        const priority = priorityModules
+          .filter(m => m.score < 20 && m.fixes)
+          .sort((a, b) => a.score - b.score)
+          .slice(0, 3);
+        const aiFixes = priority.map(m => m.name + ': ' + m.fixes);
+
+        const shareUrl = isUrlMode ? urlInput.value.trim() : '';
+        const shareData = {
+          toolName: 'AI Audit Tool',
+          url: shareUrl || displayUrl,
+          pageTitle: doc?.title || 'AI Audit Page',
+          overallScore: yourScore,
+          moduleScores: moduleScores,
+          passedMetrics: passedMetrics,
+          failedMetrics: failedMetrics,
+          aiFixes: aiFixes,
+          rawData: { modules, analysis, priority },
+          shareLink: shareUrl ? `${window.location.origin}/ai-audit-tool/?url=${encodeURIComponent(shareUrl)}` : ''
+        };
+
+        const shareContainer = document.getElementById('share-dashboard-container');
+        if (shareContainer) {
+          if (shareUrl) {
+            initShareModule(shareContainer, shareData);
+          } else {
+            shareContainer.innerHTML = `
+              <div class="text-center text-gray-500 dark:text-gray-400 p-4 border border-gray-300 dark:border-gray-600 rounded-xl">
+                <p>Sharing is available for live URLs only. Please run the analysis with a URL to share this report.</p>
+              </div>
+            `;
+          }
+        }
+
       }, remaining);
 
     } catch (err) {

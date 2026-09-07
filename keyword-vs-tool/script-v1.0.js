@@ -1,6 +1,8 @@
+// Keyword Competition Tool Script v1.0
+
 import { canRunTool } from '/main-v1.1.js';
-import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js';
+// ✅ Fixed import – absolute path from root
+import { initShareModule } from '/share-module.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -357,15 +359,11 @@ data.urlSchema = {
       const finalFixes = topFixes.slice(0, 3);
       results.classList.remove('hidden');
       
-// Scroll to results from top of viewport + generous offset - always consistent
-const offset = 320; // (adjust 80–340)
-
+// Scroll to results
+const offset = 320;
 const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-window.scrollTo({
-  top: targetY,
-  behavior: 'smooth'
-});
       results.innerHTML = `
       
       
@@ -718,103 +716,78 @@ window.scrollTo({
     `}
   </div>
 </div>
-<div class="text-center my-16 px-4">
-  <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-    <!-- Share Report - Green - first -->
-    <button id="share-report-btn"
-            class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Share Report ↗️
-    </button>
-    <!-- Save Report - Orange - second -->
-    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-            class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Save Report 📥
-    </button>
-    <!-- Submit Feedback - Blue - third -->
-    <button id="feedback-btn"
-            class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-     Submit Feedback 💬
-    </button>
-  </div>
-
-  <!-- Share message - placed directly below buttons, always visible when triggered -->
-  <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-
-  <!-- Share Report Form (still hidden/expandable) -->
-  <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
-      <div>
-        <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
-        <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
-        <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
-        <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
-        <input id="share-title" type="text" required placeholder="Traffic Torch Keyword VS Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
-        <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
-      </div>
-      <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
-    </form>
-  </div>
-
-  <!-- Feedback Form (unchanged) -->
-  <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
-      <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-        Feedback for Keyword VS Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
-      </p>
-      <form id="feedback-form" class="space-y-6">
-        <div>
-          <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
-          <div class="flex gap-3 text-3xl justify-center sm:justify-start">
-            <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
-            <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
-            <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
-            <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
-            <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
-          </div>
-          <input type="hidden" id="feedback-rating" name="rating">
-        </div>
-        <div>
-          <label class="flex items-center gap-2 justify-center sm:justify-start">
-            <input type="checkbox" id="reply-requested" class="w-5 h-5">
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
-          </label>
-        </div>
-        <div id="email-group" class="hidden">
-          <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
-          <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
-          <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
-            <span id="char-count">0</span>/1000 characters
-          </p>
-        </div>
-        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
-      </form>
-      <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
-    </div>
-  </div>
-</div>
+<!-- Share Dashboard Container -->
+<div id="share-dashboard-container" class="mt-16"></div>
       `;
 
-      // Small delay to ensure buttons are in DOM before attaching listeners
-      setTimeout(() => {
-        initShareReport(results);
-        initSubmitFeedback(results);
-      }, 50);
+      // ─── FALLBACK: Create container if missing ─────────────────────
+      let shareContainer = document.getElementById('share-dashboard-container');
+      if (!shareContainer) {
+        shareContainer = document.createElement('div');
+        shareContainer.id = 'share-dashboard-container';
+        shareContainer.className = 'mt-16';
+        results.appendChild(shareContainer);
+      }
+
+      // ─── Prepare share data ────────────────────────────────────────
+      const moduleNames = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'Image Alts', 'Anchor Text', 'URL & Schema'];
+      const yourScores = [
+        data.meta.yourMatches > 0 ? 100 : 0,
+        data.headings.yourH1Match > 0 ? 100 : 0,
+        calculateContentScore(data.content.yourWords, data.content.yourDensity),
+        data.alts.yourPhrase > 0 ? 100 : 0,
+        data.anchors.your > 0 ? 100 : 0,
+        Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0))
+      ];
+
+      const moduleScores = moduleNames.map((name, i) => ({
+        name: name,
+        score: yourScores[i]
+      }));
+
+      const passedMetrics = [];
+      const failedMetrics = [];
+      moduleNames.forEach((name, i) => {
+        if (yourScores[i] >= 70) {
+          passedMetrics.push(name);
+        } else {
+          failedMetrics.push(name);
+        }
+      });
+
+      if (data.meta.yourMatches === 0) failedMetrics.push('Keyword missing from meta title/desc');
+      if (data.headings.yourH1Match === 0) failedMetrics.push('Keyword missing from H1');
+      if (data.content.yourWords < 800) failedMetrics.push('Low word count (' + data.content.yourWords + ' words)');
+      if (data.content.yourDensity < 0.5) failedMetrics.push('Keyword density too low');
+      if (data.alts.yourPhrase === 0) failedMetrics.push('Keyword missing from image alts');
+      if (data.anchors.your === 0) failedMetrics.push('No keyword-rich internal anchors');
+      if (data.urlSchema.yourUrlMatch === 0) failedMetrics.push('Keyword missing from URL');
+      if (!data.urlSchema.yourSchema) failedMetrics.push('No structured data (schema)');
+
+      const aiFixes = finalFixes.map(f => f.module + ': ' + f.text.split('\n')[0]);
+
+      const shareLink = `${window.location.origin}/keyword-competition-tool/?your-url=${encodeURIComponent(yourUrl)}&comp-url=${encodeURIComponent(compUrl)}&keyword=${encodeURIComponent(phrase)}`;
+
+      const shareData = {
+        toolName: 'Keyword Competition Tool',
+        url: yourUrl,
+        pageTitle: yourTitle || 'Your Page',
+        overallScore: yourScore,
+        moduleScores: moduleScores,
+        passedMetrics: passedMetrics,
+        failedMetrics: failedMetrics,
+        aiFixes: aiFixes,
+        rawData: { data, yourScore, compScore, finalFixes },
+        shareLink: shareLink
+      };
+
+      // ─── Render dashboard ──────────────────────────────────────────
+      if (typeof initShareModule === 'function') {
+        initShareModule(shareContainer, shareData);
+      } else {
+        console.error('initShareModule not loaded – check import path');
+      }
+
     };
   });
 });

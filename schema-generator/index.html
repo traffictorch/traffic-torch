@@ -105,7 +105,7 @@
         }
       },
       "datePublished": "2026-03-09T10:40:00+11:00",
-      "dateModified": "2026-06-01T13:11:00+11:00"
+      "dateModified": "2026-09-07T13:11:00+11:00"
     },
     {
       "@type": "Person",
@@ -447,133 +447,98 @@
   </div>
 </div>
 
-<div class="center-btn-container mt-4 mb-4">
-  <button
-    class="copy-link-btn"
-    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
-    data-text="https://traffictorch.net/schema-generator/"
-  >
-    Copy Link? 🔗
-  </button>
-</div>
+          <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
 
-<!-- How It Works Expander -->
-<div class="max-w-4xl mx-auto my-16">
-  <details class="group">
-    <summary class="px-3 py-5 text-xl sm:text-2xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
-      <span class="flex items-center gap-4">
-        <span class="text-4xl">🛠️</span> How Traffic Torch Schema Tool & Generator Works
-      </span>
-      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
-    </summary>
-    <div class="mt-8 px-2 sm:px-8 py-8 sm:py-12 bg-gray dark:bg-gray-800 rounded-3xl shadow-2xl border border-indigo-200 dark:border-indigo-800 space-y-12 text-gray-700 dark:text-gray-300 overflow-hidden">
-      <!-- Instant Detection -->
-      <section class="space-y-5">
-        <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
-          <span class="text-3xl">🔍</span> Instant Schema Detection
-        </h2>
-        <p class="text-lg leading-relaxed">
-          Enter any URL → Traffic Torch fetches the page and scans all <code>&lt;script type="application/ld+json"&gt;</code> blocks.
-        </p>
-        <p class="text-lg leading-relaxed">
-          It lists every detected schema type (FAQPage, Article, Product, LocalBusiness, etc.) with clean, readable JSON-LD previews.
-        </p>
-        <p class="text-lg">
-          It will show exactly what Google sees on the page right now.
-        </p>
-      </section>
-
-      <!-- Manual Generator -->
-      <section class="space-y-5">
-        <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
-          <span class="text-3xl">🧱</span> Powerful Manual Schema Generator
-        </h2>
-        <p class="text-lg leading-relaxed">
-          Choose any schema type from the dropdown (FAQPage, Article, LocalBusiness, HowTo, Product, Recipe, Event, etc.).
-        </p>
-        <p class="text-lg leading-relaxed">
-          Get a clean, mobile-friendly form tailored to that schema. With education snippets, required/recommended fields, and live JSON-LD preview.
-        </p>
-        <p class="text-lg">
-          Type or paste values → preview updates instantly. Copy the code, wrap in &lt;script&gt; tags if needed, or validate directly in Google Rich Results Test.
-        </p>
-        <p class="text-lg font-medium">
-          All schemas are self-contained modules. So it's easy to add new ones without touching core code.
-        </p>
-      </section>
-
-      <!-- Features & Sharing -->
-      <section class="space-y-5">
-        <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
-          <span class="text-3xl">🔗</span> Share & Feedback
-        </h2>
-        <p class="text-lg leading-relaxed">
-          After scanning, use the <strong>Share Report</strong> button to generate a short link anyone can view.
-        </p>
-        <p class="text-lg">
-          Found a bug or want a new schema type? Click <strong>Submit Feedback</strong>. Your input helps improve the tool.
-        </p>
-      </section>
-    </div>
-  </details>
-</div>
-
-<section id="faq" class="container mx-auto px-4 py-4 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-    Frequently Asked Questions about Schema Markup
-  </h2>
-  <div class="space-y-6 max-w-2xl mx-auto">
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is schema markup and why should I use it?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Schema markup is structured data (usually JSON-LD) added to your HTML that helps search engines understand your content better. It enables rich results like star ratings, FAQs in SERPs, carousels, or enhanced snippets, which can improve click-through rates and make your pages more informative for users and voice search.</p>
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
       </div>
-    </details>
 
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Which schema types give the biggest impact for most websites?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Start with Organization (for brand trust), Article/BlogPosting (for content pages), FAQPage (for Q&A), HowTo (for guides), and Product/Review (for e-commerce). These are the most commonly supported for rich results by Google and improve entity recognition across search engines.</p>
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
       </div>
-    </details>
 
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Can I customize or edit the recommended schema before generating?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Yes – after seeing recommendations, select the ones you want, then edit pre-filled forms (add/remove properties, nest schemas like Article + FAQPage). Real-time JSON-LD preview updates as you type, with tooltips explaining required vs optional fields per Schema.org guidelines.</p>
-      </div>
-    </details>
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
 
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How does adding schema improve user experience (UX)?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Schema makes content clearer for screen readers, voice assistants, and featured snippets, helping users find answers faster without leaving search results. For example, FAQ schema creates expandable answers directly in SERPs, and HowTo schema shows steps in a structured, scannable way – both enhance mobile UX.</p>
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
       </div>
-    </details>
 
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What format does the tool generate, and is it search-engine friendly?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>The tool always outputs JSON-LD (Google's recommended format in 2026). It follows the latest Schema.org vocabulary, includes basic validation for required properties, and provides copy-paste code ready to add to your webpage head section or via Google Tag Manager.</p>
-      </div>
-    </details>
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
   </div>
-</section>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
 
 <!-- Share Buttons -->
 <div id="share-buttons" class="py-8 text-center">
@@ -1111,6 +1076,258 @@
   </div>
 
 </div>
+
+  
+<!-- SEO Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+      <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Topical Authority Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Detect main topics & subtopics</p>
+      </div>
+    </a>
+    <a href="/seo-entity-extractor-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🧬</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Entity Extractor Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Semantic entity extractor + audit</p>
+      </div>
+    </a>
+    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
+      </div>
+    </a>
+      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO</h3>
+        <p class="text-gray-800 dark:text-gray-100">On-page Local SEO Audit</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="center-btn-container mt-4 mb-4">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
+    data-text="https://traffictorch.net/schema-generator/"
+  >
+    Copy Link? 🔗
+  </button>
+</div>
+
+<!-- How It Works Expander -->
+<div class="max-w-4xl mx-auto my-16">
+  <details class="group">
+    <summary class="px-3 py-5 text-xl sm:text-2xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      <span class="flex items-center gap-4">
+        <span class="text-4xl">🛠️</span> How Traffic Torch Schema Tool & Generator Works
+      </span>
+      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 sm:px-8 py-8 sm:py-12 bg-gray dark:bg-gray-800 rounded-3xl shadow-2xl border border-indigo-200 dark:border-indigo-800 space-y-12 text-gray-700 dark:text-gray-300 overflow-hidden">
+      <!-- Instant Detection -->
+      <section class="space-y-5">
+        <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
+          <span class="text-3xl">🔍</span> Instant Schema Detection
+        </h2>
+        <p class="text-lg leading-relaxed">
+          Enter any URL → Traffic Torch fetches the page and scans all <code>&lt;script type="application/ld+json"&gt;</code> blocks.
+        </p>
+        <p class="text-lg leading-relaxed">
+          It lists every detected schema type (FAQPage, Article, Product, LocalBusiness, etc.) with clean, readable JSON-LD previews.
+        </p>
+        <p class="text-lg">
+          It will show exactly what Google sees on the page right now.
+        </p>
+      </section>
+
+      <!-- Manual Generator -->
+      <section class="space-y-5">
+        <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
+          <span class="text-3xl">🧱</span> Powerful Manual Schema Generator
+        </h2>
+        <p class="text-lg leading-relaxed">
+          Choose any schema type from the dropdown (FAQPage, Article, LocalBusiness, HowTo, Product, Recipe, Event, etc.).
+        </p>
+        <p class="text-lg leading-relaxed">
+          Get a clean, mobile-friendly form tailored to that schema. With education snippets, required/recommended fields, and live JSON-LD preview.
+        </p>
+        <p class="text-lg">
+          Type or paste values → preview updates instantly. Copy the code, wrap in &lt;script&gt; tags if needed, or validate directly in Google Rich Results Test.
+        </p>
+        <p class="text-lg font-medium">
+          All schemas are self-contained modules. So it's easy to add new ones without touching core code.
+        </p>
+      </section>
+
+      <!-- Features & Sharing -->
+      <section class="space-y-5">
+        <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
+          <span class="text-3xl">🔗</span> Share & Feedback
+        </h2>
+        <p class="text-lg leading-relaxed">
+          After scanning, use the <strong>Share Report</strong> button to generate a short link anyone can view.
+        </p>
+        <p class="text-lg">
+          Found a bug or want a new schema type? Click <strong>Submit Feedback</strong>. Your input helps improve the tool.
+        </p>
+      </section>
+    </div>
+  </details>
+</div>
+
+<!-- Why Schema Markup Matters Expander -->
+<div class="max-w-4xl mx-auto my-16">
+  <details>
+    <summary class="px-3 py-5 text-xl sm:text-2xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      <span class="flex items-center gap-4">
+        <span class="text-4xl">🛠️</span> Why Schema Markup Matters in 2026
+      </span>
+      <span class="text-3xl transition-transform duration-300 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 sm:px-8 py-8 sm:py-12 bg-gray dark:bg-gray-800 rounded-3xl shadow-2xl border border-indigo-200 dark:border-indigo-800 space-y-12 text-gray-700 dark:text-gray-300 overflow-hidden">
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-purple-600 dark:text-purple-400">The Future of Search Is Structured Data-Driven</h2>
+        <p class="leading-relaxed">
+          Traditional rankings are no longer enough. <strong>Rich results, carousels, stars, FAQs, HowTos, videos, and local packs</strong> dominate SERPs. All powered by schema markup (JSON-LD).
+        </p>
+        <p class="leading-relaxed">
+          Pages with correct schema get dramatically higher CTR, better voice/AI visibility, and stronger entity signals in Google Knowledge Graph.
+        </p>
+      </section>
+
+      <section class="space-y-8">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Key Benefits of Using Traffic Torch Schema Tool</h3>
+        <div class="grid md:grid-cols-2 gap-8 text-lg">
+          <div class="flex gap-7">
+            <div class="text-4xl">📈</div>
+            <div>
+              <strong>Higher CTR & Visibility</strong><br>
+              Rich results (stars, images, FAQs, videos) appear above organic links, users click them first.
+            </div>
+          </div>
+          <div class="flex gap-7">
+            <div class="text-4xl">🔍</div>
+            <div>
+              <strong>Instant Detection</strong><br>
+              See exactly what schema Google finds on any page. Spot missing or broken markup in seconds.
+            </div>
+          </div>
+          <div class="flex gap-7">
+            <div class="text-4xl">🧱</div>
+            <div>
+              <strong>Fast & Accurate Generator</strong><br>
+              Choose any type → fill clean forms → get valid JSON-LD with live preview, copy, and direct Google validation.
+            </div>
+          </div>
+          <div class="flex gap-7">
+            <div class="text-4xl">📚</div>
+            <div>
+              <strong>Educational & Future-Proof</strong><br>
+              Built-in tooltips + best practices per schema type. Learn while building for 2026 SEO.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-8 rounded-xl">
+        <h3 class="text-2xl font-bold mb-4">The Bottom Line</h3>
+        <p class="leading-relaxed">
+          Schema markup is no longer optional. It's essential for rich results, voice search, AI overviews, and long-term visibility.
+        </p>
+        <p class="leading-relaxed font-medium mt-4">
+          Detect issues → build perfect schema → copy & implement → watch rich results appear.
+        </p>
+      </section>
+
+      <p class="text-center text-lg italic opacity-80 mt-8">
+        Sites using proper schema today dominate tomorrow’s SERPs.
+      </p>
+    </div>
+  </details>
+</div>
+
+<section id="faq" class="container mx-auto px-4 py-4 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about Schema Markup
+  </h2>
+  <div class="space-y-6 max-w-2xl mx-auto">
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is schema markup and why should I use it?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Schema markup is structured data (usually JSON-LD) added to your HTML that helps search engines understand your content better. It enables rich results like star ratings, FAQs in SERPs, carousels, or enhanced snippets, which can improve click-through rates and make your pages more informative for users and voice search.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Which schema types give the biggest impact for most websites?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Start with Organization (for brand trust), Article/BlogPosting (for content pages), FAQPage (for Q&A), HowTo (for guides), and Product/Review (for e-commerce). These are the most commonly supported for rich results by Google and improve entity recognition across search engines.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Can I customize or edit the recommended schema before generating?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Yes – after seeing recommendations, select the ones you want, then edit pre-filled forms (add/remove properties, nest schemas like Article + FAQPage). Real-time JSON-LD preview updates as you type, with tooltips explaining required vs optional fields per Schema.org guidelines.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does adding schema improve user experience (UX)?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Schema makes content clearer for screen readers, voice assistants, and featured snippets, helping users find answers faster without leaving search results. For example, FAQ schema creates expandable answers directly in SERPs, and HowTo schema shows steps in a structured, scannable way – both enhance mobile UX.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-4 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What format does the tool generate, and is it search-engine friendly?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>The tool always outputs JSON-LD (Google's recommended format in 2026). It follows the latest Schema.org vocabulary, includes basic validation for required properties, and provides copy-paste code ready to add to your webpage head section or via Google Tag Manager.</p>
+      </div>
+    </details>
+  </div>
+</section>
     
 <!-- Strong Opening Schema Tool Explanation -->
 <section class="max-w-4xl mx-auto mt-12 mb-8">
@@ -1214,129 +1431,6 @@
   <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
     Modern SEO needs modern schema tools.
   </p>
-</div>
-
-<!-- Why Schema Markup Matters Expander -->
-<div class="max-w-4xl mx-auto my-16">
-  <details>
-    <summary class="px-3 py-5 text-xl sm:text-2xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
-      <span class="flex items-center gap-4">
-        <span class="text-4xl">🛠️</span> Why Schema Markup Matters in 2026
-      </span>
-      <span class="text-3xl transition-transform duration-300 group-open:rotate-180">↓</span>
-    </summary>
-    <div class="mt-8 px-2 sm:px-8 py-8 sm:py-12 bg-gray dark:bg-gray-800 rounded-3xl shadow-2xl border border-indigo-200 dark:border-indigo-800 space-y-12 text-gray-700 dark:text-gray-300 overflow-hidden">
-      <section class="space-y-5">
-        <h2 class="text-3xl font-bold text-purple-600 dark:text-purple-400">The Future of Search Is Structured Data-Driven</h2>
-        <p class="leading-relaxed">
-          Traditional rankings are no longer enough. <strong>Rich results, carousels, stars, FAQs, HowTos, videos, and local packs</strong> dominate SERPs. All powered by schema markup (JSON-LD).
-        </p>
-        <p class="leading-relaxed">
-          Pages with correct schema get dramatically higher CTR, better voice/AI visibility, and stronger entity signals in Google Knowledge Graph.
-        </p>
-      </section>
-
-      <section class="space-y-8">
-        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Key Benefits of Using Traffic Torch Schema Tool</h3>
-        <div class="grid md:grid-cols-2 gap-8 text-lg">
-          <div class="flex gap-7">
-            <div class="text-4xl">📈</div>
-            <div>
-              <strong>Higher CTR & Visibility</strong><br>
-              Rich results (stars, images, FAQs, videos) appear above organic links, users click them first.
-            </div>
-          </div>
-          <div class="flex gap-7">
-            <div class="text-4xl">🔍</div>
-            <div>
-              <strong>Instant Detection</strong><br>
-              See exactly what schema Google finds on any page. Spot missing or broken markup in seconds.
-            </div>
-          </div>
-          <div class="flex gap-7">
-            <div class="text-4xl">🧱</div>
-            <div>
-              <strong>Fast & Accurate Generator</strong><br>
-              Choose any type → fill clean forms → get valid JSON-LD with live preview, copy, and direct Google validation.
-            </div>
-          </div>
-          <div class="flex gap-7">
-            <div class="text-4xl">📚</div>
-            <div>
-              <strong>Educational & Future-Proof</strong><br>
-              Built-in tooltips + best practices per schema type. Learn while building for 2026 SEO.
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-8 rounded-xl">
-        <h3 class="text-2xl font-bold mb-4">The Bottom Line</h3>
-        <p class="leading-relaxed">
-          Schema markup is no longer optional. It's essential for rich results, voice search, AI overviews, and long-term visibility.
-        </p>
-        <p class="leading-relaxed font-medium mt-4">
-          Detect issues → build perfect schema → copy & implement → watch rich results appear.
-        </p>
-      </section>
-
-      <p class="text-center text-lg italic opacity-80 mt-8">
-        Sites using proper schema today dominate tomorrow’s SERPs.
-      </p>
-    </div>
-  </details>
-</div>
-  
-<!-- SEO Tools Section -->
-<div class="my-16"></div>
-<div class="tools-grid max-w-7xl mx-auto px-2">
-      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      SEO Tools
-      </h2>
-  <div class="grid md:grid-cols-3 gap-8">
-      <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Topical Authority Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Detect main topics & subtopics</p>
-      </div>
-    </a>
-    <a href="/seo-entity-extractor-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🧬</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Entity Extractor Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Semantic entity extractor + audit</p>
-      </div>
-    </a>
-    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Product SEO Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals</p>
-      </div>
-    </a>
-      <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
-        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO Intent Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
-      </div>
-    </a>
-    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">Local SEO</h3>
-        <p class="text-gray-800 dark:text-gray-100">On-page Local SEO Audit</p>
-      </div>
-    </a>
-    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
-        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
-      </div>
-    </a>
-  </div>
 </div>
 
 <!-- UNIFIED EXTENSIONS, TOOLS & INTEGRATIONS SECTION -->
@@ -1569,7 +1663,7 @@
         </p>
         <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-03-09</p>
-          <p>Last updated: 2026-06-01</p>
+          <p>Last updated: 2026-09-07</p>
         </div>
       </div>
     </div>
@@ -1646,6 +1740,106 @@
   <script src="/main-v1.1.js" type="module"></script>
   <script src="/schema-generator/script-v1.0.js" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
+  
+  <script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
   
   <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">

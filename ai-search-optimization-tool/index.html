@@ -102,22 +102,6 @@
           "width": 1200,
           "height": 338,
           "caption": "Traffic Torch AI Search Optimization Tool overview: GEO, AEO & AIO search optimization for generative search engines, answer engine visibility, structured content strategies, zero-click SERP performance, and citation maximization"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/ai-search-optimization-tool/images/ai-engine-seo-infographic-800x1200.webp",
-          "contentUrl": "https://traffictorch.net/ai-search-optimization-tool/images/ai-engine-seo-infographic-800x1200.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "Comprehensive Answerability, Structured Data, EEAT Signals and Scannability guide: What it is, how it's measured, why it matters for AI search visibility and generative engine citation"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/ai-search-optimization-tool/images/ai-search-optimization-infographic-800x1200.webp",
-          "contentUrl": "https://traffictorch.net/ai-search-optimization-tool/images/ai-search-optimization-infographic-800x1200.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "360° AI SEO Guide: Key strategies to make your content stand out to AI search engines – Conversational Tone, Readability, Unique Insights, Anti-AI Safety, powered by Traffic Torch"
         }
       ],
       "author": {
@@ -134,7 +118,7 @@
         }
       },
       "datePublished": "2026-01-01T16:51:00+11:00",
-      "dateModified": "2026-06-01T12:26:00+11:00"
+      "dateModified": "2026-09-07T12:26:00+11:00"
     },
     {
       "@type": "Person",
@@ -477,248 +461,98 @@
     <div id="results" class="hidden"></div>
   </div>
   
-      <div id="copy-link-btn" class="center-btn-container mt-4 mb-4">
-  <button
-    class="copy-link-btn"
-    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
-    data-text="https://traffictorch.net/ai-search-optimization-tool/"
-  >
-    Copy Link? 🔗
-  </button>
-</div>
+      <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
 
-  <!-- How It Works Expander (simplified) -->
-   <div id="how-it-works" class="max-w-4xl mx-auto my-16"> 
-  <details class="group">
-    <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
-      <span class="flex items-center gap-4">
-        <span class="text-4xl">🤖</span> How GEO Audit Tool Works?
-      </span>
-      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
-    </summary>
-    <div class="mt-8 px-3 sm:px-8 py-8 sm:py-12 bg-gray dark:bg-gray-800 rounded-3xl shadow-2xl border border-indigo-200 dark:border-indigo-800 space-y-12 text-gray-700 dark:text-gray-300 overflow-hidden"> <!-- Reduced mobile padding, added overflow-hidden -->
-      <!-- Overall Score Explanation -->
-<section class="space-y-6">
-  <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
-    <span class="text-2xl sm:text-2xl">📊</span> 
-    Your AI Citation Potential Score for GEO & AEO
-  </h2>
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
 
-  <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
-    This free <strong>AI Search Optimization Tool</strong> predicts how likely your page is to be cited in AI answers and generative search results.
-  </p>
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
 
-  <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
-    It evaluates 8 research-backed factors for <strong>Generative Engine Optimization (GEO)</strong> and <strong>Answer Engine Optimization (AEO)</strong> to help you rank higher in Google AI Overviews, Perplexity, ChatGPT Search, Gemini, and Grok.
-  </p>
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
 
-  <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
-    The tool focuses on modern AI visibility signals: answerability, structured data, EEAT, scannability, conversational tone, readability, unique insights, and anti-AI safety - going far beyond traditional SEO.
-  </p>
-
-  <p class="text-lg font-medium text-gray-700 dark:text-gray-300">
-    We analyzed hundreds of pages that consistently appear in AI answers. The highest-cited content follows clear GEO and AEO patterns. This tool instantly checks your URL or HTML against those patterns and gives you an AI citation potential score, prioritized fixes by impact, and clear next steps.
-  </p>
-</section>
-
-      <!-- The 8 Key Metrics -->
-      <section class="space-y-8">
-        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
-          <span class="text-2xl sm:text-2xl">🔑</span> The 8 Key Metrics for GEO, AEO & AIO Search Explained
-        </h3>
-        <div class="grid md:grid-cols-2 gap-8 sm:gap-10"> <!-- Reduced gap on mobile -->
-          <div class="space-y-8">
-            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl w-full">
-              <span class="text-2xl sm:text-2xl flex-shrink-0">❓</span>
-              <div class="min-w-0 flex-1"> <!-- min-w-0 prevents text from forcing stretch -->
-                <h4 class="font-bold text-xl">Answerability</h4>
-                <p class="text-base leading-relaxed">Direct, bold answers early on? AI prioritizes pages with immediate, quotable facts, definitions, or step-by-step guidance for generative answers.</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl w-full">
-              <span class="text-2xl sm:text-2xl flex-shrink-0">🏷️</span>
-              <div class="min-w-0 flex-1">
-                <h4 class="font-bold text-xl">Structured Data</h4>
-                <p class="text-base leading-relaxed">JSON-LD schema (Article, FAQ, HowTo) helps AI understand and extract content accurately for rich citations in AI Overviews.</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 rounded-xl w-full">
-              <span class="text-2xl sm:text-2xl flex-shrink-0">🔍</span>
-              <div class="min-w-0 flex-1">
-                <h4 class="font-bold text-xl">E-E-A-T Signals</h4>
-                <p class="text-base leading-relaxed">Author bio, photo, dates, trusted links, HTTPS — proves real experience, expertise, and trustworthiness to AI evaluators.</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl w-full">
-              <span class="text-2xl sm:text-2xl flex-shrink-0">📑</span>
-              <div class="min-w-0 flex-1">
-                <h4 class="font-bold text-xl">Scannability</h4>
-                <p class="text-base leading-relaxed">Headings, lists, tables, short paragraphs make facts instantly extractable for AI summarization and citation.</p>
-              </div>
-            </div>
-          </div>
-          <div class="space-y-8">
-            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 rounded-xl w-full">
-              <span class="text-2xl sm:text-2xl flex-shrink-0">💬</span>
-              <div class="min-w-0 flex-1">
-                <h4 class="font-bold text-xl">Conversational Tone</h4>
-                <p class="text-base leading-relaxed">Using “you”, “we”, rhetorical questions creates natural language matching real user queries in AI search.</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 rounded-xl w-full">
-              <span class="text-2xl sm:text-2xl flex-shrink-0">📖</span>
-              <div class="min-w-0 flex-1">
-                <h4 class="font-bold text-xl">Readability</h4>
-                <p class="text-base leading-relaxed">Simple sentences (Flesch 60–70) ensure accurate understanding and summarization by AI models.</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl w-full">
-              <span class="text-2xl sm:text-2xl flex-shrink-0">💡</span>
-              <div class="min-w-0 flex-1">
-                <h4 class="font-bold text-xl">Unique Insights</h4>
-                <p class="text-base leading-relaxed">First-hand experience, case studies, original data prevent de-duplication and signal true value for AI citations.</p>
-              </div>
-            </div>
-            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl w-full">
-              <span class="text-2xl sm:text-2xl flex-shrink-0">🌊</span>
-              <div class="min-w-0 flex-1">
-                <h4 class="font-bold text-xl">Burstiness (Anti-AI Patterns)</h4>
-                <p class="text-base leading-relaxed">Natural sentence length variation avoids robotic repetition common in AI-generated text, boosting authenticity.</p>
-              </div>
-            </div>
-          </div>
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
         </div>
-      </section>
-
-      <!-- How to Use -->
-      <section class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-8 sm:p-10 rounded-2xl">
-        <h3 class="text-2xl font-bold mb-8 flex items-center gap-4 sm:gap-7">
-          <span class="text-2xl">🎯</span> How to Use This GEO and AEO Report
-        </h3>
-        <ul class="space-y-4 text-lg">
-          <li class="flex items-start gap-6 sm:gap-7">
-            <span class="text-2xl">✅</span>
-            <span>Focus on lowest-scoring modules first. Biggest potential gains in AI visibility.</span>
-          </li>
-          <li class="flex items-start gap-6 sm:gap-7">
-            <span class="text-2xl">✅</span>
-            <span>Apply prioritized fixes for fast improvements.</span>
-          </li>
-          <li class="flex items-start gap-6 sm:gap-7">
-            <span class="text-2xl">✅</span>
-            <span>Re-run the tool after updates to measure progress.</span>
-          </li>
-          <li class="flex items-start gap-6 sm:gap-7">
-            <span class="text-2xl">✅</span>
-            <span>Scores 80+ position you for top AI citations and traffic surges.</span>
-          </li>
-        </ul>
-      </section>
-
-      <p class="text-center text-xl italic opacity-80 mt-10">
-        Pages optimized for AI search often influence both traditional rankings and new generative results.
-      </p>
-    </div>
-  </details>
-</div>
-
-<div id="rank-higher" class="max-w-3xl mx-auto px-4 py-6 bg-gray-100 dark:bg-gray-800 rounded-xl">
-  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">Rank your pages higher in AI answers</h2>
-  <p class="text-gray-700 dark:text-gray-300">Adding a strong meta description, on-page JSON-LD schema, structured comparison tables, and clear freshness signals will increase citation likelihood by 35–50% in Perplexity, ChatGPT, Google AI Overviews, and Gemini. Follow the steps below.</p>
-  <ul class="list-disc pl-6 space-y-2 text-gray-700 dark:text-gray-300">
-    <li>Place direct answer in first 150 words.</li>
-    <li>Add FAQPage + HowTo sections + schema.</li>
-    <li>Improve EEAT author signals.</li>
-    <li>Write conversational content + unique insights.</li>
-  </ul>
-</div>
-
-<section id="faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-    Frequently Asked Questions about GEO in 2026
-  </h2>
-  <div class="space-y-6 max-w-6xl mx-auto">
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What actually makes content highly answerable so AI engines cite it directly?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Answerability is now the strongest signal for direct quotes in Google AI Overviews, Perplexity, ChatGPT and Gemini. The winning pattern is answering the core question completely and clearly within the first 100–150 words, using a bold summary, definition-style paragraph, numbered steps or concise TL;DR block. Traffic Torch audits your intro for resolution speed and quotable density, assigns an Answerability Score (target 80%+).</p>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
       </div>
-    </details>
 
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-       Which schema markup gives the biggest boost for AI citations right now?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>FAQPage, HowTo, Article, Product and Organization JSON-LD schemas are still extremely powerful, they enable 2–3× more precise fact extraction and reduce hallucinations. Traffic Torch validates your existing schema, (especially FAQ schema on question-heavy content), and shows predictive visibility uplift in clean, mobile-friendly reports.</p>
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How much does strong EEAT actually decide whether AI mentions your brand correctly?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>EEAT influences 30–40% of citation decisions in 2026. AI engines heavily favor content showing real expertise, first-hand experience, authority signals and trustworthiness. Traffic Torch audits author bios, publish/modified dates and entity strength, delivers an EEAT health score, suggests fast trust improvements (e.g. credentialed bylines + recent timestamps), and forecasts better AI-referred traffic when scores rise above 80.</p>
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-       What page layout helps AI pull facts fastest and most accurately?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Dense, descriptive headings (every 150–250 words), short paragraphs (under 4 lines), bullets, numbered lists and tables make content far easier for LLMs to chunk and extract accurately, correlating with 35–45% better fact fidelity. Traffic Torch measures heading hierarchy, paragraph length and list density, scores scannability, recommends precise reformatting actions (e.g. convert dense blocks to bullets), and predicts 160%+ visibility gains against less scannable competitors.</p>
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Does writing conversationally really help content show up more in AI answers?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Yes — direct “you” language, rhetorical questions and natural phrasing align with 60–75% of real AI/voice prompts, reducing model perplexity and increasing inclusion by 25–30%. Traffic Torch analyzes pronoun usage, question density and overall tone, scores conversational fit, suggests targeted rewrites, and projects 170% higher engagement potential through side-by-side competitor analysis.</p>
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How important is simple language for preventing AI mis-summarization?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Extremely — Flesch Reading Ease 60–70 (short sentences ~15–20 words, active voice) cuts hallucination risk by ~40% and greatly improves summary accuracy. Traffic Torch calculates Flesch & Gunning Fog scores, flags overly complex sentences, recommends simplifications that forecast +18–25% better fidelity.</p>
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Why do pages with original data or insights get cited so much more often?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>AI engines reward “information gain” — proprietary stats, fresh case studies, exclusive frameworks or firsthand research, because they provide unique value over generic sources. Strong unique-insight content is cited up to 3× more frequently.</p>
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How do I stop AI from misquoting or inventing things about my page?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
-        <p>Use explicit inline sources/citations, natural sentence variation (burstiness), dated & specific claims, and zero ambiguity. These reduce misattribution by 25–35%. Traffic Torch’s Anti-AI Safety audit flags vague or high-risk statements, scores hallucination exposure, provides concrete safeguards (e.g. “add [source] to this stat”), and forecasts significantly more reliable AI visibility through competitive safety comparisons.</p>
-      </div>
-    </details>
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
   </div>
-</section>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
 
 <!-- Share Buttons -->
 <div id="share-buttons" class="py-8 text-center">
@@ -1148,165 +982,193 @@
   });
 </script>
 
-<!-- Strong Answerability Section -->
-<section id="what-is" class="max-w-4xl mx-auto mt-12 mb-8">
-  <h2 class="text-3xl md:text-4xl pt-8 font-bold font-black text-orange-700 dark:text-orange-400 text-center mb-8">
-    What is AI Search Optimization? (GEO + AEO Explained)
+<!-- AI Tools Section -->
+  <div class="my-16"></div>
+        <h2 id="tools-grid" class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      AI SEO Tools
+      </h2>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">AI Content Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content</p>
+      </div>
+    </a>
+    <a href="/ai-voice-search-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🎙️</div>
+        <h3 class="text-orange-400 text-2xl font-bold mb-3">360° audit for voice SEO</h3>
+        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-red-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>
+  
+      <div id="copy-link-btn" class="center-btn-container mt-4 mb-4">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
+    data-text="https://traffictorch.net/ai-search-optimization-tool/"
+  >
+    Copy Link? 🔗
+  </button>
+</div>
+
+  <!-- How It Works Expander (simplified) -->
+   <div id="how-it-works" class="max-w-4xl mx-auto my-16"> 
+  <details class="group">
+    <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      <span class="flex items-center gap-4">
+        <span class="text-4xl">🤖</span> How GEO Audit Tool Works?
+      </span>
+      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-3 sm:px-8 py-8 sm:py-12 bg-gray dark:bg-gray-800 rounded-3xl shadow-2xl border border-indigo-200 dark:border-indigo-800 space-y-12 text-gray-700 dark:text-gray-300 overflow-hidden"> <!-- Reduced mobile padding, added overflow-hidden -->
+      <!-- Overall Score Explanation -->
+<section class="space-y-6">
+  <h2 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
+    <span class="text-2xl sm:text-2xl">📊</span> 
+    Your AI Citation Potential Score for GEO & AEO
   </h2>
 
-  <p class="text-2xl md:text-3xl font-bold text-gray-700 dark:text-gray-200 text-center mb-8 leading-tight">
-    <strong>AI Search Optimization means writing and structuring your content so AI engines confidently quote and cite it in their generated answers.</strong>
+  <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+    This free <strong>AI Search Optimization Tool</strong> predicts how likely your page is to be cited in AI answers and generative search results.
   </p>
 
-  <p class="text-xl leading-relaxed text-center mb-8 text-gray-700 dark:text-gray-300">
-    It combines <strong>Generative Engine Optimization (GEO)</strong> and <strong>Answer Engine Optimization (AEO)</strong> to help your pages rank higher and appear directly in Google AI Overviews, Perplexity, ChatGPT Search, Gemini, and Grok.
+  <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+    It evaluates 8 research-backed factors for <strong>Generative Engine Optimization (GEO)</strong> and <strong>Answer Engine Optimization (AEO)</strong> to help you rank higher in Google AI Overviews, Perplexity, ChatGPT Search, Gemini, and Grok.
   </p>
 
-  <p class="text-xl leading-relaxed text-center mb-8 text-gray-700 dark:text-gray-300">
-    Most websites still optimize only for traditional SEO and get skipped by AI. They hide the actual answer, lack clear structure, weak EEAT signals, or poor scannability. So AI engines choose other sources instead.
+  <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+    The tool focuses on modern AI visibility signals: answerability, structured data, EEAT, scannability, conversational tone, readability, unique insights, and anti-AI safety - going far beyond traditional SEO.
   </p>
 
-  <p class="text-xl leading-relaxed text-center mb-6 text-gray-700 dark:text-gray-300">
-    With proper AI Search Optimization, your content becomes easy for AI to understand, trust, and extract. This can dramatically increase your chances of being cited in AI answers in 2026.
+  <p class="text-lg font-medium text-gray-700 dark:text-gray-300">
+    We analyzed hundreds of pages that consistently appear in AI answers. The highest-cited content follows clear GEO and AEO patterns. This tool instantly checks your URL or HTML against those patterns and gives you an AI citation potential score, prioritized fixes by impact, and clear next steps.
   </p>
 </section>
-  
-  <!-- Two-column infographic grid – stacks on mobile, side-by-side on md+ -->
-<div id="infographics" class="grid md:grid-cols-2 gap-4 my-4 max-w-6xl mx-auto px-4">
-  <!-- Left image:  -->
-<figure class="my-4 mx-auto max-w-[800px]">
-  <img 
-    src="/ai-search-optimization-tool/images/ai-engine-seo-infographic-800x1200.webp" 
-    alt="Vertical infographic guide to Answerability, Structured Data, EEAT Signals and Scannability" 
-    class="w-full h-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700"
-    width="800" 
-    height="1200" 
-    loading="lazy"
-  >
-  <figcaption class="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
-    Comprehensive Answerability, Structured Data, EEAT Signals and Scannability guide.
-  </figcaption>
-</figure>
 
-  <!-- Right image:  -->
-<figure class="my-4 mx-auto max-w-[800px]">
-  <img 
-    src="/ai-search-optimization-tool/images/ai-search-optimization-infographic-800x1200.webp" 
-    alt="AI Search Optimization Infographic – Key Strategies: Conversational Tone, Readability, Unique Insights and Anti-AI Safety" 
-    class="w-full h-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700"
-    width="800" 
-    height="1200" 
-    loading="lazy"
-  >
-  <figcaption class="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
-    360° AI SEO Guide: Make Your Content Stand out to AI Search Engines.
-  </figcaption>
-</figure>
-</div>
-     
+      <!-- The 8 Key Metrics -->
+      <section class="space-y-8">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-4">
+          <span class="text-2xl sm:text-2xl">🔑</span> The 8 Key Metrics for GEO, AEO & AIO Search Explained
+        </h3>
+        <div class="grid md:grid-cols-2 gap-8 sm:gap-10"> <!-- Reduced gap on mobile -->
+          <div class="space-y-8">
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">❓</span>
+              <div class="min-w-0 flex-1"> <!-- min-w-0 prevents text from forcing stretch -->
+                <h4 class="font-bold text-xl">Answerability</h4>
+                <p class="text-base leading-relaxed">Direct, bold answers early on? AI prioritizes pages with immediate, quotable facts, definitions, or step-by-step guidance for generative answers.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">🏷️</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Structured Data</h4>
+                <p class="text-base leading-relaxed">JSON-LD schema (Article, FAQ, HowTo) helps AI understand and extract content accurately for rich citations in AI Overviews.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">🔍</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">E-E-A-T Signals</h4>
+                <p class="text-base leading-relaxed">Author bio, photo, dates, trusted links, HTTPS — proves real experience, expertise, and trustworthiness to AI evaluators.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">📑</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Scannability</h4>
+                <p class="text-base leading-relaxed">Headings, lists, tables, short paragraphs make facts instantly extractable for AI summarization and citation.</p>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-8">
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">💬</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Conversational Tone</h4>
+                <p class="text-base leading-relaxed">Using “you”, “we”, rhetorical questions creates natural language matching real user queries in AI search.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">📖</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Readability</h4>
+                <p class="text-base leading-relaxed">Simple sentences (Flesch 60–70) ensure accurate understanding and summarization by AI models.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">💡</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Unique Insights</h4>
+                <p class="text-base leading-relaxed">First-hand experience, case studies, original data prevent de-duplication and signal true value for AI citations.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4 sm:gap-5 p-2 sm:p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl w-full">
+              <span class="text-2xl sm:text-2xl flex-shrink-0">🌊</span>
+              <div class="min-w-0 flex-1">
+                <h4 class="font-bold text-xl">Burstiness (Anti-AI Patterns)</h4>
+                <p class="text-base leading-relaxed">Natural sentence length variation avoids robotic repetition common in AI-generated text, boosting authenticity.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <section id="ai-seo-5-must-do-actions" class="py-4 px-2 max-w-6xl mx-auto">
-    <h2 class="text-3xl md:text-3xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-      5 Must-Do Actions to Win AI Citations
-    </h2>
-    <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-500 dark:text-gray-300 leading-relaxed">
-      In our hands-on testing of hundreds of pages that rank in AI answers, these five changes delivered the biggest visibility jumps.
-    </p>
-    <div class="max-w-4xl mx-auto">
-      <div class="space-y-8 text-lg">
-        <div class="flex items-start gap-6 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 p-6 rounded-2xl">
-          <span class="text-2xl">1️⃣</span>
-          <div>
-            <strong>Lead with a bold, complete answer</strong><br>
-            Put the direct answer in the first 200 words. AI engines quote it verbatim in their responses.
-          </div>
-        </div>
-        <div class="flex items-start gap-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-2xl">
-          <span class="text-2xl">2️⃣</span>
-          <div>
-            <strong>Add visible author credentials</strong><br>
-            Include your name, photo, bio, and expertise proof. Trust is the #1 factor AI uses to choose sources.
-          </div>
-        </div>
-        <div class="flex items-start gap-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-2xl">
-          <span class="text-2xl">3️⃣</span>
-          <div>
-            <strong>Use FAQ or HowTo structured data</strong><br>
-            Machine-readable markup makes your answers instantly extractable for rich AI results.
-          </div>
-        </div>
-        <div class="flex items-start gap-6 bg-gradient-to-r from-teal-50 to-green-50 dark:from-teal-900/20 dark:to-green-900/20 p-6 rounded-2xl">
-          <span class="text-2xl">4️⃣</span>
-          <div>
-            <strong>Include original insights or data</strong><br>
-            First-hand testing, case studies, or exclusive stats prevent de-duplication and boost perceived value.
-          </div>
-        </div>
-        <div class="flex items-start gap-6 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 rounded-2xl">
-          <span class="text-2xl">5️⃣</span>
-          <div>
-            <strong>Write conversationally with scannable formatting</strong><br>
-            Address “you” directly, use headings, lists, tables, and short paragraphs. This makes content human and AI-friendly.
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="text-center mt-16">
-      <p class="text-xl font-semibold max-w-3xl mx-auto text-green-800 dark:text-green-100">
-        Do these five things and watch AI engines start citing your content.
+      <!-- How to Use -->
+      <section class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-8 sm:p-10 rounded-2xl">
+        <h3 class="text-2xl font-bold mb-8 flex items-center gap-4 sm:gap-7">
+          <span class="text-2xl">🎯</span> How to Use This GEO and AEO Report
+        </h3>
+        <ul class="space-y-4 text-lg">
+          <li class="flex items-start gap-6 sm:gap-7">
+            <span class="text-2xl">✅</span>
+            <span>Focus on lowest-scoring modules first. Biggest potential gains in AI visibility.</span>
+          </li>
+          <li class="flex items-start gap-6 sm:gap-7">
+            <span class="text-2xl">✅</span>
+            <span>Apply prioritized fixes for fast improvements.</span>
+          </li>
+          <li class="flex items-start gap-6 sm:gap-7">
+            <span class="text-2xl">✅</span>
+            <span>Re-run the tool after updates to measure progress.</span>
+          </li>
+          <li class="flex items-start gap-6 sm:gap-7">
+            <span class="text-2xl">✅</span>
+            <span>Scores 80+ position you for top AI citations and traffic surges.</span>
+          </li>
+        </ul>
+      </section>
+
+      <p class="text-center text-xl italic opacity-80 mt-10">
+        Pages optimized for AI search often influence both traditional rankings and new generative results.
       </p>
     </div>
-  </section>
+  </details>
+</div>
 
+<div id="rank-higher" class="max-w-3xl mx-auto px-4 py-6 bg-gray-100 dark:bg-gray-800 rounded-xl">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">Rank your pages higher in AI answers</h2>
+  <p class="text-gray-700 dark:text-gray-300">Adding a strong meta description, on-page JSON-LD schema, structured comparison tables, and clear freshness signals will increase citation likelihood by 35–50% in Perplexity, ChatGPT, Google AI Overviews, and Gemini. Follow the steps below.</p>
+  <ul class="list-disc pl-6 space-y-2 text-gray-700 dark:text-gray-300">
+    <li>Place direct answer in first 150 words.</li>
+    <li>Add FAQPage + HowTo sections + schema.</li>
+    <li>Improve EEAT author signals.</li>
+    <li>Write conversational content + unique insights.</li>
+  </ul>
+</div>
 
-
-  <div  id="promo-old-vs-modern-seo" class="max-w-5xl mx-auto mt-12">
-    <h3 class="text-3xl font-bold text-center mb-10 font-black text-orange-700 dark:text-orange-400">
-      Traditional SEO vs GEO, AEO & AIO
-    </h3>
-    <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
-      <table class="w-full text-left">
-        <thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-          <tr>
-            <th class="px-6 py-5 text-lg font-semibold">Factor</th>
-            <th class="px-6 py-5 text-lg font-semibold">Traditional SEO Focus</th>
-            <th class="px-6 py-5 text-lg font-semibold">GEO & AEO Focus</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-          <tr>
-            <td class="px-6 py-5 font-medium">Primary Goal:</td>
-            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank high in blue links.</td>
-            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Get directly cited/quoted in AI answers.</td>
-          </tr>
-          <tr class="bg-gray-50 dark:bg-gray-900/50">
-            <td class="px-6 py-5 font-medium">Content Structure:</td>
-            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword density, H1–H6.</td>
-            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Bold answers early, lists, tables, schema.</td>
-          </tr>
-          <tr>
-            <td class="px-6 py-5 font-medium">Trust Signals:</td>
-            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Backlinks, domain authority.</td>
-            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Author bio, credentials, dates, trusted links.</td>
-          </tr>
-          <tr class="bg-gray-50 dark:bg-gray-900/50">
-            <td class="px-6 py-5 font-medium">Writing Style:</td>
-            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword-optimized, formal.</td>
-            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Conversational “you” language, natural variation.</td>
-          </tr>
-          <tr>
-            <td class="px-6 py-5 font-medium">Unique Value:</td>
-            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Comprehensive coverage.</td>
-            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">First-hand insights, original data, testing.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
-      AI engines reward pages that are easy to extract, trust, and quote.
-    </p>
-  </div>
-  
   <section id="ai-search-seo-checklist" class="py-6 px-2 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900">
   <h2 class="text-3xl md:text-3xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
     Ultimate AI Search Optimization Checklist
@@ -1538,37 +1400,216 @@
     </div>
   </details>
 </div>
-  
-<!-- AI Tools Section -->
-  <div class="my-16"></div>
-        <h2 id="tools-grid" class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      AI SEO Tools
-      </h2>
-<div class="tools-grid max-w-7xl mx-auto px-2">
-  <div class="grid md:grid-cols-3 gap-8">
-    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all">
-        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
-        <h3 class="text-green-400 text-2xl font-bold mb-3">AI Content Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content</p>
+
+<section id="faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about GEO in 2026
+  </h2>
+  <div class="space-y-6 max-w-6xl mx-auto">
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What actually makes content highly answerable so AI engines cite it directly?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Answerability is now the strongest signal for direct quotes in Google AI Overviews, Perplexity, ChatGPT and Gemini. The winning pattern is answering the core question completely and clearly within the first 100–150 words, using a bold summary, definition-style paragraph, numbered steps or concise TL;DR block. Traffic Torch audits your intro for resolution speed and quotable density, assigns an Answerability Score (target 80%+).</p>
       </div>
-    </a>
-    <a href="/ai-voice-search-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
-        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🎙️</div>
-        <h3 class="text-orange-400 text-2xl font-bold mb-3">360° audit for voice SEO</h3>
-        <p class="text-gray-800 dark:text-gray-100">Intent + E-E-A-T audit</p>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+       Which schema markup gives the biggest boost for AI citations right now?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>FAQPage, HowTo, Article, Product and Organization JSON-LD schemas are still extremely powerful, they enable 2–3× more precise fact extraction and reduce hallucinations. Traffic Torch validates your existing schema, (especially FAQ schema on question-heavy content), and shows predictive visibility uplift in clean, mobile-friendly reports.</p>
       </div>
-    </a>
-    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
-        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
-        <h3 class="text-red-400 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
-        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How much does strong EEAT actually decide whether AI mentions your brand correctly?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>EEAT influences 30–40% of citation decisions in 2026. AI engines heavily favor content showing real expertise, first-hand experience, authority signals and trustworthiness. Traffic Torch audits author bios, publish/modified dates and entity strength, delivers an EEAT health score, suggests fast trust improvements (e.g. credentialed bylines + recent timestamps), and forecasts better AI-referred traffic when scores rise above 80.</p>
       </div>
-    </a>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+       What page layout helps AI pull facts fastest and most accurately?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Dense, descriptive headings (every 150–250 words), short paragraphs (under 4 lines), bullets, numbered lists and tables make content far easier for LLMs to chunk and extract accurately, correlating with 35–45% better fact fidelity. Traffic Torch measures heading hierarchy, paragraph length and list density, scores scannability, recommends precise reformatting actions (e.g. convert dense blocks to bullets), and predicts 160%+ visibility gains against less scannable competitors.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Does writing conversationally really help content show up more in AI answers?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Yes — direct “you” language, rhetorical questions and natural phrasing align with 60–75% of real AI/voice prompts, reducing model perplexity and increasing inclusion by 25–30%. Traffic Torch analyzes pronoun usage, question density and overall tone, scores conversational fit, suggests targeted rewrites, and projects 170% higher engagement potential through side-by-side competitor analysis.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How important is simple language for preventing AI mis-summarization?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Extremely — Flesch Reading Ease 60–70 (short sentences ~15–20 words, active voice) cuts hallucination risk by ~40% and greatly improves summary accuracy. Traffic Torch calculates Flesch & Gunning Fog scores, flags overly complex sentences, recommends simplifications that forecast +18–25% better fidelity.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Why do pages with original data or insights get cited so much more often?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>AI engines reward “information gain” — proprietary stats, fresh case studies, exclusive frameworks or firsthand research, because they provide unique value over generic sources. Strong unique-insight content is cited up to 3× more frequently.</p>
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How do I stop AI from misquoting or inventing things about my page?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300">
+        <p>Use explicit inline sources/citations, natural sentence variation (burstiness), dated & specific claims, and zero ambiguity. These reduce misattribution by 25–35%. Traffic Torch’s Anti-AI Safety audit flags vague or high-risk statements, scores hallucination exposure, provides concrete safeguards (e.g. “add [source] to this stat”), and forecasts significantly more reliable AI visibility through competitive safety comparisons.</p>
+      </div>
+    </details>
   </div>
-</div>
+</section>
+
+<!-- Strong Answerability Section -->
+<section id="what-is" class="max-w-4xl mx-auto mt-12 mb-8">
+  <h2 class="text-3xl md:text-4xl pt-8 font-bold font-black text-orange-700 dark:text-orange-400 text-center mb-8">
+    What is AI Search Optimization? (GEO + AEO Explained)
+  </h2>
+
+  <p class="text-2xl md:text-3xl font-bold text-gray-700 dark:text-gray-200 text-center mb-8 leading-tight">
+    <strong>AI Search Optimization means writing and structuring your content so AI engines confidently quote and cite it in their generated answers.</strong>
+  </p>
+
+  <p class="text-xl leading-relaxed text-center mb-8 text-gray-700 dark:text-gray-300">
+    It combines <strong>Generative Engine Optimization (GEO)</strong> and <strong>Answer Engine Optimization (AEO)</strong> to help your pages rank higher and appear directly in Google AI Overviews, Perplexity, ChatGPT Search, Gemini, and Grok.
+  </p>
+
+  <p class="text-xl leading-relaxed text-center mb-8 text-gray-700 dark:text-gray-300">
+    Most websites still optimize only for traditional SEO and get skipped by AI. They hide the actual answer, lack clear structure, weak EEAT signals, or poor scannability. So AI engines choose other sources instead.
+  </p>
+
+  <p class="text-xl leading-relaxed text-center mb-6 text-gray-700 dark:text-gray-300">
+    With proper AI Search Optimization, your content becomes easy for AI to understand, trust, and extract. This can dramatically increase your chances of being cited in AI answers in 2026.
+  </p>
+</section>
+
+  <section id="ai-seo-5-must-do-actions" class="py-4 px-2 max-w-6xl mx-auto">
+    <h2 class="text-3xl md:text-3xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+      5 Must-Do Actions to Win AI Citations
+    </h2>
+    <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-500 dark:text-gray-300 leading-relaxed">
+      In our hands-on testing of hundreds of pages that rank in AI answers, these five changes delivered the biggest visibility jumps.
+    </p>
+    <div class="max-w-4xl mx-auto">
+      <div class="space-y-8 text-lg">
+        <div class="flex items-start gap-6 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 p-6 rounded-2xl">
+          <span class="text-2xl">1️⃣</span>
+          <div>
+            <strong>Lead with a bold, complete answer</strong><br>
+            Put the direct answer in the first 200 words. AI engines quote it verbatim in their responses.
+          </div>
+        </div>
+        <div class="flex items-start gap-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-2xl">
+          <span class="text-2xl">2️⃣</span>
+          <div>
+            <strong>Add visible author credentials</strong><br>
+            Include your name, photo, bio, and expertise proof. Trust is the #1 factor AI uses to choose sources.
+          </div>
+        </div>
+        <div class="flex items-start gap-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-2xl">
+          <span class="text-2xl">3️⃣</span>
+          <div>
+            <strong>Use FAQ or HowTo structured data</strong><br>
+            Machine-readable markup makes your answers instantly extractable for rich AI results.
+          </div>
+        </div>
+        <div class="flex items-start gap-6 bg-gradient-to-r from-teal-50 to-green-50 dark:from-teal-900/20 dark:to-green-900/20 p-6 rounded-2xl">
+          <span class="text-2xl">4️⃣</span>
+          <div>
+            <strong>Include original insights or data</strong><br>
+            First-hand testing, case studies, or exclusive stats prevent de-duplication and boost perceived value.
+          </div>
+        </div>
+        <div class="flex items-start gap-6 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-6 rounded-2xl">
+          <span class="text-2xl">5️⃣</span>
+          <div>
+            <strong>Write conversationally with scannable formatting</strong><br>
+            Address “you” directly, use headings, lists, tables, and short paragraphs. This makes content human and AI-friendly.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-16">
+      <p class="text-xl font-semibold max-w-3xl mx-auto text-green-800 dark:text-green-100">
+        Do these five things and watch AI engines start citing your content.
+      </p>
+    </div>
+  </section>
+
+  <div  id="promo-old-vs-modern-seo" class="max-w-5xl mx-auto mt-12">
+    <h3 class="text-3xl font-bold text-center mb-10 font-black text-orange-700 dark:text-orange-400">
+      Traditional SEO vs GEO, AEO & AIO
+    </h3>
+    <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+      <table class="w-full text-left">
+        <thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+          <tr>
+            <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+            <th class="px-6 py-5 text-lg font-semibold">Traditional SEO Focus</th>
+            <th class="px-6 py-5 text-lg font-semibold">GEO & AEO Focus</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <tr>
+            <td class="px-6 py-5 font-medium">Primary Goal:</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank high in blue links.</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Get directly cited/quoted in AI answers.</td>
+          </tr>
+          <tr class="bg-gray-50 dark:bg-gray-900/50">
+            <td class="px-6 py-5 font-medium">Content Structure:</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword density, H1–H6.</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Bold answers early, lists, tables, schema.</td>
+          </tr>
+          <tr>
+            <td class="px-6 py-5 font-medium">Trust Signals:</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Backlinks, domain authority.</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Author bio, credentials, dates, trusted links.</td>
+          </tr>
+          <tr class="bg-gray-50 dark:bg-gray-900/50">
+            <td class="px-6 py-5 font-medium">Writing Style:</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword-optimized, formal.</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Conversational “you” language, natural variation.</td>
+          </tr>
+          <tr>
+            <td class="px-6 py-5 font-medium">Unique Value:</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Comprehensive coverage.</td>
+            <td class="px-6 py-5 text-gray-700 dark:text-gray-300">First-hand insights, original data, testing.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+      AI engines reward pages that are easy to extract, trust, and quote.
+    </p>
+  </div>
 
 <!-- UNIFIED EXTENSIONS, TOOLS & INTEGRATIONS SECTION -->
 <section id="extensions-tools-integrations" class="py-8">
@@ -1800,7 +1841,7 @@
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-01-01</p>
-          <p>Last updated: 2026-06-01</p>
+          <p>Last updated: 2026-09-07</p>
         </div>
       </div>
     </div>
@@ -1865,6 +1906,106 @@
   <script src="/ai-search-optimization-tool/metric-explanations-v1.0.js" type="module"></script>
   <script src="/ai-search-optimization-tool/script-v1.3.js" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
+  
+  <script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
   
   <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">

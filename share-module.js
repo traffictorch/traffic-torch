@@ -7,7 +7,8 @@ export function initShareModule(container, results) {
     moduleScores, passedMetrics, failedMetrics, aiFixes = [], rawData = {}
   } = results;
 
-  const shareLink = `${window.location.origin}/?url=${encodeURIComponent(url)}`;
+  // Use custom shareLink if provided, otherwise fallback to homepage format
+  const shareLink = results.shareLink || `${window.location.origin}/?url=${encodeURIComponent(url)}`;
 
   const scoreColorClass = (s) => s >= 80 ? 'text-green-500' : s >= 60 ? 'text-orange-500' : 'text-red-500';
   const ringColorHex = (s) => s >= 80 ? '#22c55e' : s >= 60 ? '#f59e0b' : '#ef4444';
@@ -35,7 +36,7 @@ export function initShareModule(container, results) {
       </div>
 
       <!-- Module Scores Grid (visible in print) -->
-      <div class="module-scores-grid grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div class="module-scores-grid grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 mb-6">
         ${moduleScores.map(m => `
           <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:0.8rem 1rem; text-align:center; border:1px solid rgba(255,255,255,0.06);">
             <div class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">${m.name}</div>

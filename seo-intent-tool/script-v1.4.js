@@ -1,4 +1,4 @@
-// script-v1.4 - Complete 
+// SEO Intent Tool script js
 
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { analyzeExperience } from './modules/experience.js';
@@ -9,8 +9,7 @@ import { analyzeDepth } from './modules/depth.js';
 import { analyzeReadability } from './modules/readability.js';
 import { analyzeSchema } from './modules/schema.js';
 import { canRunTool } from '/main-v1.1.js';
-import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js';
+import { initShareModule } from '/share-module.js';  // <-- new import
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -387,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
               { name: 'Strong first-person language', value: metrics.firstPerson,
                 fix: 'Add more first-person language (“I/we/my/our”) throughout the content. Use it naturally in intros, examples, and conclusions to show personal involvement.',
                 how: 'The tool counts occurrences of first-person pronouns (I, we, my, our, me, us) and related forms. Strong = 15+ mentions across the page.',
-                why: 'First-person writing signals genuine hands-on experience to Google and readers. It increases trust, engagement, and dwell time — all positive ranking factors. Pages with strong personal voice often outperform third-person corporate content.' },
+                why: 'First-person writing signals genuine hands-on experience to Google and readers. It increases trust, engagement, and dwell time — all positive ranking factors. Pages with strong personal voice often outperform third-party corporate content.' },
               { name: 'Personal anecdotes included', value: metrics.anecdotes,
                 fix: 'Include personal anecdotes or real-world examples. Share specific stories like “I tested this method on 5 client sites and saw…” or “In my experience working with…” to make advice relatable.',
                 how: 'Scans for phrases like “I tested”, “in my experience”, “we found that”, “hands-on”, “real-world”. Strong = 3+ detections.',
@@ -689,85 +688,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <!-- Plugin Solutions Section - placed above share buttons -->
         <div id="plugin-solutions-section" class="mt-20"></div>
-        <!-- PDF Share Feedback Buttons -->
-        <div class="text-center my-16 px-4">
-          <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-            <button id="share-report-btn" class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-              Share Report ↗️
-            </button>
-            <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);" class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-              Save Report 📥
-            </button>
-            <button id="feedback-btn" class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-             Submit Feedback 💬
-            </button>
-          </div>
-          <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-          <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
-            <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
-              <div>
-                <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
-                <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-              </div>
-              <div>
-                <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
-                <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-              </div>
-              <div>
-                <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
-                <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-              </div>
-              <div>
-                <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
-                <input id="share-title" type="text" required placeholder="Traffic Torch SEO Intent Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-              </div>
-              <div>
-                <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
-                <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
-              </div>
-              <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
-            </form>
-          </div>
-          <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
-            <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
-              <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-                Feedback for SEO Intent Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
-              </p>
-              <form id="feedback-form" class="space-y-6">
-                <div>
-                  <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
-                  <div class="flex gap-3 text-3xl justify-center sm:justify-start">
-                    <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
-                    <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
-                    <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
-                    <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
-                    <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
-                  </div>
-                  <input type="hidden" id="feedback-rating" name="rating">
-                </div>
-                <div>
-                  <label class="flex items-center gap-2 justify-center sm:justify-start">
-                    <input type="checkbox" id="reply-requested" class="w-5 h-5">
-                    <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
-                  </label>
-                </div>
-                <div id="email-group" class="hidden">
-                  <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
-                  <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
-                </div>
-                <div>
-                  <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
-                  <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
-                    <span id="char-count">0</span>/1000 characters
-                  </p>
-                </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
-              </form>
-              <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
-            </div>
-          </div>
-        </div>
+        <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
+        <div id="share-dashboard-container" class="mt-16"></div>
       `;
       // All code AFTER report HTML - this is critical
       const pluginSection = document.createElement('div');
@@ -832,8 +754,65 @@ document.addEventListener('DOMContentLoaded', () => {
           } catch (e) {}
         }
       }, 150);
-      initShareReport(results);
-      initSubmitFeedback(results);
+      // ─── Remove old initShareReport and initSubmitFeedback calls ───
+      // initShareReport(results);   // removed
+      // initSubmitFeedback(results); // removed
+
+      // ─── Set data-url ──────────────────────────────────────────────────
+      let displayUrl = url || "Custom HTML Analysis";
+      document.body.setAttribute('data-url', displayUrl);
+
+      // ─── Prepare and initialise share dashboard ──────────────────────
+      // Build module scores from the 'modules' array
+      const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
+
+      // Build passed/failed metrics: we can use the existing failedMetrics (from earlier) and passedMetrics as complement.
+      const passedMetrics = [];
+      const failedMetricsForShare = [];
+      // Use thresholds to determine pass/fail for each module
+      const thresholds = {
+        'Experience': 60,
+        'Expertise': 60,
+        'Authoritativeness': 60,
+        'Trustworthiness': 60,
+        'Content Depth': 60,   // normalized score, threshold 60
+        'Readability': 60,
+        'Schema': 60
+      };
+      moduleScores.forEach(mod => {
+        const thresh = thresholds[mod.name] || 60;
+        if (mod.score >= thresh) {
+          passedMetrics.push(mod.name);
+        } else {
+          failedMetricsForShare.push(mod.name);
+        }
+      });
+
+      // Also add individual metric names from the detailed signals if they are 'good' or not.
+      // But we can keep it simple; the passed/failed lists are used for display in the dashboard.
+
+      const analyzedUrl = url || document.getElementById('url-input')?.value?.trim() || 'Code Analysis';
+
+      const shareData = {
+        toolName: 'SEO Intent Tool',
+        url: analyzedUrl,
+        pageTitle: (doc && doc.title) || 'Analyzed Page',
+        overallScore: overall,
+        moduleScores: moduleScores,
+        passedMetrics: passedMetrics,
+        failedMetrics: failedMetricsForShare,
+        aiFixes: priorityFixes.map(f => f.text + ' (' + f.impact + ')'), // use priority fixes as AI suggestions
+        rawData: { modules, experience: expResult, expertise: expertiseResult, auth, trust, depth, readability: read, schema: sch },
+        // Custom share link pointing back to this tool with the audited URL
+        shareLink: `${window.location.origin}/seo-intent-tool/?url=${encodeURIComponent(analyzedUrl)}`
+      };
+
+      const shareContainer = document.getElementById('share-dashboard-container');
+      if (shareContainer) {
+        initShareModule(shareContainer, shareData);
+      }
+
+      // ─── Keep the toggle listeners for fixes/details (unchanged) ──
       results.addEventListener('click', (e) => {
         if (e.target.matches('.fixes-toggle')) {
           const card = e.target.closest('.score-card');
@@ -846,8 +825,7 @@ document.addEventListener('DOMContentLoaded', () => {
           e.target.closest('.score-card').querySelector('.full-details').classList.toggle('hidden');
         }
       });
-      let displayUrl = url || "Custom HTML Analysis";
-      document.body.setAttribute('data-url', displayUrl);
+
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;
     }

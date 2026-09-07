@@ -615,6 +615,7 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
 
     window._homepageSummaries = summaries;
     window._homepageUrl = url;
+    document.body.setAttribute('data-url', url);
 
     aiContainer.innerHTML = `
       <div class="p-6 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-purple-500/30 text-center">
@@ -636,13 +637,11 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     console.log('Creating share container...');
     const shareContainer = document.createElement('div');
     shareContainer.id = 'share-module-container';
-    // Use the existing aiContainer variable (from function parameter)
     if (aiContainer) {
       aiContainer.insertAdjacentElement('afterend', shareContainer);
       console.log('Share container inserted');
     } else {
       console.error('AI container not found');
-      // Fallback: append to the main container
       const mainContainer = document.getElementById(containerId);
       if (mainContainer) mainContainer.appendChild(shareContainer);
     }
@@ -740,7 +739,6 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
 
 // ─── Card Renderer ────────────────────────────────────────────────────────
 function renderCards(container, summaries, url) {
-  // Map tool names to display prefixes
   const prefixMap = {
     'UX Health': 'UX',
     'SEO Intent': 'SEO',
@@ -763,8 +761,6 @@ function renderCards(container, summaries, url) {
     const modulesHTML = modules.map(mod => {
       const modScore = mod.score;
       const modRing = modScore >= 80 ? '#22c55e' : modScore >= 60 ? '#fb923c' : '#ef4444';
-
-      // Prefix the module name if we have a prefix
       const displayName = prefix ? `${prefix} ${mod.name}` : mod.name;
 
       const metricsHTML = mod.metrics.map(m => {
@@ -774,8 +770,8 @@ function renderCards(container, summaries, url) {
                       'text-red-600 dark:text-red-400';
         return `
           <div class="flex items-center gap-2 text-sm py-0.5">
-            <span class="text-base flex-shrink-0">${icon}</span>
-            <span class="${color} truncate">${m.name}</span>
+            <span style="display:inline-block; width:auto; height:auto; min-width:1.8rem; padding:0 0.1rem; font-size:1.2rem; line-height:1.4; text-align:center;">${icon}</span>
+            <span class="${color} break-words">${m.name}</span>
           </div>
         `;
       }).join('');
@@ -797,8 +793,8 @@ function renderCards(container, summaries, url) {
     if (summary.toolName === 'SEO Intent') toolPath = '/seo-intent-tool/';
     else if (summary.toolName === 'AI Search') toolPath = '/ai-search-optimization-tool/';
 
-    return `
-      <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border-4 ${borderClass} p-6 flex flex-col">
+return `
+      <div class="module-card bg-white dark:bg-gray-900 rounded-2xl shadow-xl border-4 ${borderClass} p-6 flex flex-col overflow-visible">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -810,11 +806,11 @@ function renderCards(container, summaries, url) {
           </div>
         </div>
         <p class="mt-4 text-2xl font-bold text-center text-gray-800 dark:text-gray-200">${summary.toolName}</p>
-        <div class="text-center mt-2">
-          <span class="text-2xl">${gradeEmoji}</span>
+        <div class="text-center mt-2 flex flex-col items-center">
+          <span style="display:inline-block; width:auto; height:auto; min-width:2.8rem; padding:0 0.2rem; font-size:2.2rem; line-height:1.4; text-align:center;">${gradeEmoji}</span>
           <span class="text-lg font-medium text-gray-600 dark:text-gray-400">${gradeText}</span>
         </div>
-        <div class="mt-4 max-h-80 overflow-y-auto">
+        <div class="mt-4 max-h-80 overflow-y-auto overflow-x-visible">
           ${modulesHTML}
         </div>
         <a href="${toolPath}?url=${encodeURIComponent(url)}" 
@@ -825,19 +821,18 @@ function renderCards(container, summaries, url) {
     `;
   });
 
-  // ─── Layout: UX and SEO side‑by‑side on desktop; AI full‑width below ──
   container.innerHTML = `
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-visible">
       ${cards[0]}
       ${cards[1]}
     </div>
-    <div class="mt-6 grid grid-cols-1">
+    <div class="mt-6 grid grid-cols-1 overflow-visible">
       ${cards[2]}
     </div>
   `;
 }
 
-// Auto-run from ?url= parameter (like other tools)
+// Auto-run from ?url= parameter
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const urlParam = params.get('url');

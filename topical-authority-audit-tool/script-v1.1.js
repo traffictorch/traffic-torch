@@ -1,8 +1,7 @@
 // script-v1.1.js — Topical Authority Audit Tool (refactored from entity extractor)
 // Single-file version — modules inlined/minimized; heavy logic in Worker AI
 import { canRunTool } from '/main-v1.1.js';
-import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js';
+import { initShareModule } from '/share-module.js';  // <-- new import
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -28,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // === AUTO-FILL + AUTO-RUN FROM ?input= QUERY PARAM (VS Code extension + direct links) ===
+  // === AUTO-FILL + AUTO-RUN FROM ?input= QUERY PARAM ===
   function autoFillAndRunFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
@@ -39,11 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     textarea.value = decodeURIComponent(inputData);
 
-    // Clear the opposite field to avoid leakage
     const urlInputEl = document.getElementById('url-input');
     if (urlInputEl) urlInputEl.value = '';
 
-    // Support both possible button IDs for maximum compatibility
     const analyzeBtn = document.getElementById('code-analyze-btn') || 
                        document.getElementById('analyze-code-btn');
 
@@ -54,10 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Run auto-fill (we are already inside DOMContentLoaded)
   setTimeout(autoFillAndRunFromUrl, 150);
 
-  // Auto-fill from shared link ?url= (kept for backward compatibility)
+  // Auto-fill from shared link ?url=
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
   let sharedDecodedUrl = '';
@@ -65,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     sharedDecodedUrl = decodeURIComponent(sharedUrl);
   }
 
-  // Respects anon vs logged-in Pro user limits via canRunTool
   let hasCheckedLimit = false;
 
 if (urlAnalyzeBtn) {
@@ -78,7 +73,6 @@ if (urlAnalyzeBtn) {
       return;
     }
 
-    // Clear opposite input to prevent state leakage
     if (codeInput) codeInput.value = '';
 
     let inputValue = urlInput?.value.trim();
@@ -108,7 +102,6 @@ if (codeAnalyzeBtn) {
       return;
     }
 
-    // Clear opposite input to prevent state leakage
     if (urlInput) urlInput.value = '';
 
     const rawCode = codeInput?.value.trim();
@@ -130,15 +123,13 @@ if (codeAnalyzeBtn) {
     const results = document.getElementById('results');
     if (!loading || !results) return;
 
-    // Force show spinner with multiple methods for reliability
     loading.classList.remove('hidden');
-    loading.style.display = 'flex';           // Force flex display
+    loading.style.display = 'flex';
     loading.style.visibility = 'visible';
     loading.style.opacity = '1';
 
     results.classList.add('hidden');
 
-    // Auto scroll to single spinner when URL or Code button is clicked
     setTimeout(() => {
       loading.scrollIntoView({
         behavior: 'smooth',
@@ -190,12 +181,10 @@ if (codeAnalyzeBtn) {
         throw new Error('Empty or invalid response from analysis server');
       }
 
-      // Hide the single spinner
       loading.classList.add('hidden');
       loading.style.display = 'none';
       results.classList.remove('hidden');
 
-      // Improved auto-scroll to results
       setTimeout(() => {
         results.scrollIntoView({
           behavior: 'smooth',
@@ -231,6 +220,7 @@ if (codeAnalyzeBtn) {
 
       const grade = getGrade(overallScore);
 
+      // --- Build the results HTML, now with share dashboard container ---
       results.innerHTML = `
         <div class="max-w-5xl mx-auto px-4 py-2 text-gray-900 dark:text-gray-100">
           <!-- Overall Score Card -->
@@ -312,7 +302,7 @@ ${cluster.subtopics && cluster.subtopics.length > 0
                 <ul class="space-y-4 text-base text-gray-900 dark:text-gray-100">
                   ${suggestions && suggestions.length > 0
                     ? suggestions.map(s => `
-                        <li class="flex items-start gap-4 p-4 bg-orange dark:bg-orange-950 rounded-2xl border border-orange-200 dark:border-orange-700">
+                        <li class="flex items-start gap-4 p-4 bg-orange-50 dark:bg-orange-950 rounded-2xl border border-orange-200 dark:border-orange-700">
                           <span class="flex-shrink-0 text-2xl">➕</span>
                           <div>
                             <p class="font-semibold text-lg text-gray-900 dark:text-white">${s.topic || 'Suggested subtopic'}</p>
@@ -327,95 +317,15 @@ ${cluster.subtopics && cluster.subtopics.length > 0
               </div>
             </div>
             <!-- Educational summary -->
-            <div class="text-center mt-12 p-6 bg-orange dark:bg-orange-950 rounded-3xl border border-orange-200 dark:border-orange-800">
+            <div class="text-center mt-12 p-6 bg-orange-50 dark:bg-orange-950 rounded-3xl border border-orange-200 dark:border-orange-800">
               <p class="text-lg text-gray-800 dark:text-gray-200">
                 These modules show how well your content covers key topics and subtopics.<br>
                 Higher coverage and more detailed subtopics = stronger topical authority in search.
               </p>
             </div>
           </div>
-          <!-- PDF Share Feedback Buttons -->
-          <div class="text-center my-16 px-4">
-            <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-              <button id="share-report-btn"
-                      class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-                Share Report ↗️
-              </button>
-              <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-                      class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-                Save Report 📥
-              </button>
-              <button id="feedback-btn"
-                      class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-               Submit Feedback 💬
-              </button>
-            </div>
-            <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-            <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
-              <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
-                <div>
-                  <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
-                  <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-                </div>
-                <div>
-                  <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
-                  <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-                </div>
-                <div>
-                  <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
-                  <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-                </div>
-                <div>
-                  <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
-                  <input id="share-title" type="text" required placeholder="Traffic Torch SEO Intent Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-                </div>
-                <div>
-                  <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
-                  <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
-                </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
-              </form>
-            </div>
-            <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
-              <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
-                <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
-                  Feedback for Topical Authority Tool on <strong>${document.body.getAttribute('data-url') || 'the analyzed page'}</strong>
-                </p>
-                <form id="feedback-form" class="space-y-6">
-                  <div>
-                    <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
-                    <div class="flex gap-3 text-3xl justify-center sm:justify-start">
-                      <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
-                      <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
-                      <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
-                      <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
-                      <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
-                    </div>
-                    <input type="hidden" id="feedback-rating" name="rating">
-                  </div>
-                  <div>
-                    <label class="flex items-center gap-2 justify-center sm:justify-start">
-                      <input type="checkbox" id="reply-requested" class="w-5 h-5">
-                      <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
-                    </label>
-                  </div>
-                  <div id="email-group" class="hidden">
-                    <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
-                    <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
-                  </div>
-                  <div>
-                    <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
-                    <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
-                      <span id="char-count">0</span>/1000 characters
-                    </p>
-                  </div>
-                  <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
-                </form>
-                <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
-              </div>
-            </div>
-          </div>
+          <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
+          <div id="share-dashboard-container" class="mt-16"></div>
         </div>
       `;
 
@@ -431,11 +341,57 @@ ${cluster.subtopics && cluster.subtopics.length > 0
         .trim() || 'Analyzed Page';
       document.body.setAttribute('data-print-title', printTitle);
    
-      document.body.setAttribute('data-url', url || 'Code Analysis');
+      // Set data-url for the page being audited
+      const analyzedUrl = url || document.getElementById('url-input')?.value?.trim() || 'Code Analysis';
+      document.body.setAttribute('data-url', analyzedUrl);
 
-      // Initialize share & feedback
-      initShareReport();
-      initSubmitFeedback();
+      // ─── Prepare and initialise the share dashboard ────────────────
+      // Build module scores, passed/failed metrics from clusters
+      const moduleScores = clusters.map(cluster => ({
+        name: cluster.pillar || 'Topic',
+        score: Math.round(cluster.coverage || 0)
+      }));
+
+      // For this tool, we define "passed" as coverage >= 50% (example threshold)
+      const passedMetrics = [];
+      const failedMetrics = [];
+      clusters.forEach(cluster => {
+        const score = Math.round(cluster.coverage || 0);
+        if (score >= 50) {
+          passedMetrics.push(cluster.pillar || 'Topic');
+        } else {
+          failedMetrics.push(cluster.pillar || 'Topic');
+        }
+      });
+
+      // If no clusters, treat overall score as single metric
+      if (clusters.length === 0) {
+        if (overallScore >= 50) {
+          passedMetrics.push('Overall Authority');
+        } else {
+          failedMetrics.push('Overall Authority');
+        }
+        moduleScores.push({ name: 'Overall Authority', score: overallScore });
+      }
+
+      const shareData = {
+        toolName: 'Topical Authority Tool',
+        url: analyzedUrl,
+        pageTitle: pageTitle || displayTitle || 'Analyzed Page',
+        overallScore: overallScore,
+        moduleScores: moduleScores,
+        passedMetrics: passedMetrics,
+        failedMetrics: failedMetrics,
+        aiFixes: suggestions ? suggestions.map(s => s.topic + (s.why ? ': ' + s.why : '')) : [],
+        rawData: { clusters, suggestions, coveragePercent, predictedRankLift },
+        // Custom share link pointing back to this tool with the audited URL
+        shareLink: `${window.location.origin}/topical-authority-tool/?url=${encodeURIComponent(analyzedUrl)}`
+      };
+
+      const shareContainer = document.getElementById('share-dashboard-container');
+      if (shareContainer) {
+        initShareModule(shareContainer, shareData);
+      }
 
     } catch (err) {
       clearTimeout(heavyTimeout);

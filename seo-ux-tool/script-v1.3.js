@@ -1,4 +1,4 @@
-// /seo-ux-tool/script js
+// /seo-ux-tool/script-v1.3.js
 
 import { renderPriorityAndGains } from './priority-gains-v1.0.js';
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
@@ -10,36 +10,30 @@ import { analyzeContentQuality } from './modules/analyze-content-v1.0.js';
 import { analyzeUXDesign } from './modules/analyze-ux-v1.0.js';
 import { analyzeSecurity } from './modules/analyze-security-v1.0.js';
 import { analyzeIndexability } from './modules/analyze-indexability-v1.0.js';
-import { initShareReport } from './share-report-v1.js';
-import { initSubmitFeedback } from './submit-feedback-v1.js';
 import { canRunTool } from '/main-v1.1.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
-  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
-  function autoFillFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const inputData = params.get('input');
-    
-    if (inputData) {
-      const textarea = document.getElementById('code-input');
-      if (textarea) {
-        textarea.value = decodeURIComponent(inputData);
-        
-        // Optional: Auto-click the Analyze button after a tiny delay
-        const analyzeBtn = document.getElementById('analyze-code-btn');
-        if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);   // Give the page time to render
-        }
+// Auto-fill HTML from ?input= query parameter
+function autoFillFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const inputData = params.get('input');
+  if (inputData) {
+    const textarea = document.getElementById('code-input');
+    if (textarea) {
+      textarea.value = decodeURIComponent(inputData);
+      const analyzeBtn = document.getElementById('analyze-code-btn');
+      if (analyzeBtn) {
+        setTimeout(() => {
+          analyzeBtn.click();
+        }, 800);
       }
     }
   }
+}
 
-  // Run when page loads
-  window.addEventListener('load', autoFillFromUrl);
+window.addEventListener('load', autoFillFromUrl);
 
 const moduleInfo = {
   seo: {
@@ -104,9 +98,10 @@ const deepDiveIdMap = {
   indexability: 'indexability'
 };
 
-  let currentAnalysisMode = null; 
-  let currentAnalysisHtml = '';  
-  let healthRadarChart = null;  
+let currentAnalysisMode = null;
+let currentAnalysisHtml = '';
+let healthRadarChart = null;
+let resultsWrapper = null; // Define in outer scope
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
@@ -116,12 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.getElementById('code-input');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
 
-  const results = document.getElementById('results');
-  const overallContainer = document.getElementById('overall-container');
   const progressContainer = document.getElementById('progress-container');
   const progressText = document.getElementById('progress-text');
-  const priorityFixes = document.getElementById('priority-fixes');
   const copyBadgeBtn = document.getElementById('copy-badge');
+
+  resultsWrapper = document.getElementById('results-wrapper'); // Assign here
 
   function cleanUrl(u) {
     const trimmed = u.trim();
@@ -209,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async e => {
     e.preventDefault();
 
-    // Clear opposite input to prevent leakage
     if (codeInput) codeInput.value = '';
 
     if (progressContainer) {
@@ -239,20 +232,33 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Network response was not ok');
       const html = await res.text();
-      currentAnalysisHtml = html; // Store only this analysis data
+      currentAnalysisHtml = html;
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
       await runFullAnalysis(html, doc, url, originalInput);
     } catch (err) {
-      alert('Failed to analyze - Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.');
+      console.error('Analysis error:', err);
       if (progressContainer) progressContainer.classList.add('hidden');
+      if (resultsWrapper) {
+        resultsWrapper.classList.remove('hidden');
+        resultsWrapper.innerHTML = `
+          <div class="text-center py-16 px-6">
+            <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">Analysis Failed</p>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">
+              ${err.message || 'Could not fetch or parse the page'}
+            </p>
+            <p class="text-lg text-gray-600 dark:text-gray-400">
+              Please try a different URL or use Code Analysis.
+            </p>
+          </div>
+        `;
+      }
     }
   });
 
-  // Code Analysis Button Handler - uses HTML textarea input
+  // Code Analysis Button Handler
   if (analyzeCodeBtn && codeInput) {
     analyzeCodeBtn.addEventListener('click', async () => {
-      // Clear opposite input to prevent leakage
       if (urlInput) urlInput.value = '';
 
       if (progressContainer) {
@@ -273,23 +279,35 @@ document.addEventListener('DOMContentLoaded', () => {
       progressText.textContent = 'Analyzing pasted HTML code...';
 
       currentAnalysisMode = 'code';
-      currentAnalysisHtml = htmlCode; // Store only this analysis data
+      currentAnalysisHtml = htmlCode;
 
       try {
         const doc = new DOMParser().parseFromString(htmlCode, 'text/html');
         const url = 'https://example.com/pasted-code';
         await runFullAnalysis(htmlCode, doc, url, '');
       } catch (err) {
-        alert('Failed to analyze pasted code');
+        console.error('Code analysis error:', err);
         if (progressContainer) progressContainer.classList.add('hidden');
+        if (resultsWrapper) {
+          resultsWrapper.classList.remove('hidden');
+          resultsWrapper.innerHTML = `
+            <div class="text-center py-16 px-6">
+              <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">Analysis Failed</p>
+              <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">
+                ${err.message || 'Invalid HTML code'}
+              </p>
+              <p class="text-lg text-gray-600 dark:text-gray-400">
+                Please check your HTML and try again.
+              </p>
+            </div>
+          `;
+        }
       }
     });
   }
 
-  // Shared analysis function - now receives clean isolated data only
+  // Shared analysis function
   async function runFullAnalysis(html, doc, url, originalInput) {
-
-    const resultsWrapper = document.getElementById('results-wrapper');
     const modules = [
       { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
       { id: 'mobile', name: 'Mobile & PWA', fn: analyzeMobile },
@@ -300,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: 'security', name: 'Security', fn: analyzeSecurity },
       { id: 'indexability', name: 'Indexability', fn: analyzeIndexability }
     ];
-    
+
     const scores = [];
     const allIssues = [];
 
@@ -420,8 +438,10 @@ document.addEventListener('DOMContentLoaded', () => {
       gradeEmoji = '🟢';
       overallGradeEl.className = 'text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3 text-green-500';
     }
-    overallGradeEl.querySelector('.grade-text').textContent = gradeText;
-    overallGradeEl.querySelector('.grade-emoji').textContent = gradeEmoji;
+    if (overallGradeEl) {
+      overallGradeEl.querySelector('.grade-text').textContent = gradeText;
+      overallGradeEl.querySelector('.grade-emoji').textContent = gradeEmoji;
+    }
 
     // Build detailed module cards with checklist + expand fixes
     modules.forEach(mod => {
@@ -536,17 +556,21 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
 
-    resultsWrapper.classList.remove('hidden');
-    document.getElementById('radar-title').classList.remove('hidden');
-    document.getElementById('copy-badge').classList.remove('hidden');
+    if (resultsWrapper) {
+      resultsWrapper.classList.remove('hidden');
+      const radarTitle = document.getElementById('radar-title');
+      if (radarTitle) radarTitle.classList.remove('hidden');
+      const copyBadge = document.getElementById('copy-badge');
+      if (copyBadge) copyBadge.classList.remove('hidden');
 
-    resultsWrapper.style.opacity = '0';
-    resultsWrapper.style.transform = 'translateY(40px)';
-    resultsWrapper.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
-    requestAnimationFrame(() => {
-      resultsWrapper.style.opacity = '1';
-      resultsWrapper.style.transform = 'translateY(0)';
-    });
+      resultsWrapper.style.opacity = '0';
+      resultsWrapper.style.transform = 'translateY(40px)';
+      resultsWrapper.style.transition = 'opacity 1.2s ease, transform 1.2s ease';
+      requestAnimationFrame(() => {
+        resultsWrapper.style.opacity = '1';
+        resultsWrapper.style.transform = 'translateY(0)';
+      });
+    }
 
     // Plugin solutions section
     const pluginSection = document.getElementById('plugin-solutions-section');
@@ -634,13 +658,32 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
+    // Scroll to results
     const offset = 240;
-    const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
-    window.scrollTo({ top: targetY, behavior: 'smooth' });
+    if (resultsWrapper) {
+      const targetY = resultsWrapper.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+    }
 
-    // Radar Chart
+    // ─── Radar Chart ─────────────────────────────────────────────────────
     try {
-      if (window.innerWidth >= 768 && document.getElementById('health-radar')) {
+      // Wait for Chart.js to be loaded
+      if (typeof Chart === 'undefined') {
+        console.warn('Chart.js not loaded, waiting...');
+        await new Promise((resolve) => {
+          const checkChart = () => {
+            if (typeof Chart !== 'undefined') {
+              resolve();
+            } else {
+              setTimeout(checkChart, 200);
+            }
+          };
+          checkChart();
+          setTimeout(resolve, 5000);
+        });
+      }
+
+      if (window.innerWidth >= 768 && document.getElementById('health-radar') && typeof Chart !== 'undefined') {
         const radarCanvas = document.getElementById('health-radar');
         
         if (healthRadarChart) {
@@ -733,8 +776,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
         });
+        console.log('✅ Radar chart rendered');
+      } else {
+        console.warn('Radar chart not rendered (window too small or Chart.js not loaded)');
       }
-    } catch (chartErr) {}
+    } catch (chartErr) {
+      console.error('Radar chart error:', chartErr);
+    }
 
     // Mobile preview
     try {
@@ -766,12 +814,103 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (previewErr) {}
 
-    // Initialize share & feedback
-    const resultsContainer = document.getElementById('results-wrapper') || document.body;
-    initShareReport(resultsContainer);
-    initSubmitFeedback(resultsContainer);
+    // ─── Set data-url ──────────────────────────────────────────────
+    const analyzedUrl = originalInput || url || 'Code Analysis';
+    document.body.setAttribute('data-url', analyzedUrl);
 
-    // === FINAL FIX: Hide spinner only after ALL results are fully loaded and displayed ===
+    // ─── Prepare and initialise share dashboard ──────────────────
+    const moduleScores = modules.map(mod => ({
+      name: mod.name,
+      score: scores[modules.indexOf(mod)]
+    }));
+
+    const passedMetrics = [];
+    const failedMetrics = [];
+    modules.forEach(mod => {
+      const card = document.getElementById(`${mod.id}-score`);
+      if (!card) return;
+      const checklistItems = card.querySelectorAll('.checklist p');
+      checklistItems.forEach(item => {
+        const text = item.textContent.trim();
+        if (text.startsWith('✅')) {
+          passedMetrics.push(text.replace(/^✅\s*/, '').trim());
+        } else if (text.startsWith('❌')) {
+          failedMetrics.push(text.replace(/^❌\s*/, '').trim());
+        }
+      });
+      const modScore = scores[modules.indexOf(mod)];
+      if (modScore >= 60) {
+        passedMetrics.push(mod.name);
+      } else {
+        failedMetrics.push(mod.name);
+      }
+    });
+
+    const shareData = {
+      toolName: 'SEO & UX Tool',
+      url: analyzedUrl,
+      pageTitle: pageTitle || 'Analyzed Page',
+      overallScore: overallScore,
+      moduleScores: moduleScores,
+      passedMetrics: passedMetrics,
+      failedMetrics: failedMetrics,
+      aiFixes: prioritisedFixes.map(f => f.title + ': ' + f.how),
+      rawData: { modules, scores, overallScore, prioritisedFixes },
+      shareLink: `${window.location.origin}/seo-ux-tool/?url=${encodeURIComponent(analyzedUrl)}`
+    };
+
+    // ─── Ensure share container exists ──────────────────────────
+    let shareContainer = document.getElementById('share-dashboard-container');
+    if (!shareContainer) {
+      shareContainer = document.createElement('div');
+      shareContainer.id = 'share-dashboard-container';
+      shareContainer.className = 'mt-16';
+      if (resultsWrapper) {
+        resultsWrapper.appendChild(shareContainer);
+      } else {
+        document.body.appendChild(shareContainer);
+      }
+    }
+
+    // ─── Dynamic import fallback for share module ──────────────
+    let shareFn = null;
+    try {
+      if (typeof initShareModule !== 'undefined') {
+        shareFn = initShareModule;
+        console.log('✅ Using static initShareModule');
+      } else {
+        const module = await import('/share-module.js');
+        shareFn = module.initShareModule;
+        console.log('✅ Dynamically loaded share-module.js');
+      }
+    } catch (e) {
+      console.error('❌ Failed to load share module:', e);
+    }
+
+    if (typeof shareFn === 'function') {
+      try {
+        shareFn(shareContainer, shareData);
+        console.log('✅ Share dashboard rendered');
+      } catch (err) {
+        console.error('❌ Render failed:', err);
+        shareContainer.innerHTML = `
+          <div class="text-center text-red-500 p-4 border border-red-300 rounded-xl">
+            <p>Share dashboard could not be rendered.</p>
+            <p class="text-sm">Error: ${err.message}</p>
+          </div>
+        `;
+      }
+    } else {
+      console.error('❌ initShareModule not available – dashboard not rendered.');
+      shareContainer.innerHTML = `
+        <div class="text-center text-gray-500 dark:text-gray-400 p-4 border border-gray-300 dark:border-gray-600 rounded-xl">
+          <p>Share dashboard could not be loaded.</p>
+          <p class="text-sm">Please check the console for errors.</p>
+        </div>
+      `;
+    }
+
+    // ─── Hide spinner after all results are loaded ──────────────
     if (progressContainer) {
       progressContainer.classList.add('hidden');
     }
@@ -787,11 +926,9 @@ document.addEventListener('DOMContentLoaded', () => {
       cleanUrl = 'https://' + cleanUrl;
     }
     urlInput.value = cleanUrl;
-    const progressContainer = document.getElementById('progress-container');
     if (progressContainer) {
       progressContainer.classList.remove('hidden');
-      const progressText = document.getElementById('progress-text');
-      if (progressText) progressText.textContent = 'Loading shared report...';
+      progressText.textContent = 'Loading shared report...';
     }
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   }
