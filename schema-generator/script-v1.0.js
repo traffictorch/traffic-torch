@@ -245,19 +245,19 @@ const doc = new DOMParser().parseFromString(html, 'text/html');
       const pageTitle = doc?.title || new URL(url).hostname;
 
       results.innerHTML = `
-        <div class="my-10 px-4">
+        <div class="my-10 px-2">
           <h2 class="text-3xl font-black text-center mb-6 text-gray-800 dark:text-gray-200">
             Schema Detection for ${new URL(url).hostname}
           </h2>
 
-          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-700">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-2 mb-8 border border-gray-200 dark:border-gray-700">
             <h3 class="text-2xl font-bold mb-4">Detected Schema Markup</h3>
             ${existingSchemas.length === 0
               ? '<p class="text-orange-600 dark:text-orange-400 text-center py-6">No JSON-LD schema found on this page.</p>'
               : `<ul class="space-y-3">
                   ${existingSchemas.map(s => `
                     <li class="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                      <span class="text-green-500 text-xl px-2 mt-1">✅</span>
+                      <span class="text-green-500 text-xl px-4 mt-1">✅</span>
                       <div>
                         <strong>${s.types}</strong>
                         <pre class="mt-2 text-xs bg-gray-900 text-green-300 p-3 rounded overflow-auto max-h-40 break-words whitespace-pre-wrap">${prettyJsonLd(s.raw)}</pre>

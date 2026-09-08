@@ -291,7 +291,7 @@ function renderPluginSolutions(failedMetrics, containerId = 'plugin-solutions-se
   }
 
   const section = document.createElement('section');
-  section.className = 'mt-20 max-w-5xl mx-auto px-4';
+  section.className = 'mt-20 max-w-4xl mx-auto px-2';
 
   section.innerHTML = `
     <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent mb-8">

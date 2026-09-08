@@ -684,7 +684,7 @@ const initTool = (form, results, progressContainer) => {
         </div>
         
         <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
-          <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About This Audit</h2>
+          <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About AEO/GEO/h2>
           <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
             Get tailored answers about AI search optimization, answerability, EEAT, and specific improvement steps.
           </p>

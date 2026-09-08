@@ -688,7 +688,7 @@ async function performAnalysis(source, isCode = false) {
       ];
       const scores = modules.map(m => m.score);
       const wrapper = document.createElement('div');
-      wrapper.className = 'container mx-auto px-4 py-8';
+      wrapper.className = 'container mx-auto px-2 py-8';
       const scoreCard = document.createElement('div');
       scoreCard.innerHTML = `
         <div class="flex justify-center my-8 sm:my-12 px-0 sm:px-6">
@@ -786,7 +786,7 @@ async function performAnalysis(source, isCode = false) {
         <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
           Top Priority Fixes
         </h2>
-        <div class="max-w-5xl mx-auto space-y-8">
+        <div class="max-w-4xl mx-auto space-y-8">
           ${priorityFixesHTML}
         </div>
         ${priorityFixes.length > 0 ? `
@@ -806,7 +806,7 @@ async function performAnalysis(source, isCode = false) {
       askAISection.id = 'ask-ai-section';
       askAISection.className = 'mt-20 max-w-4xl mx-auto px-4';
       askAISection.innerHTML = `
-        <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About This Audit</h2>
+        <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Product SEO</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
           Get tailored answers about product SEO, schema, content, and specific improvement steps.
         </p>

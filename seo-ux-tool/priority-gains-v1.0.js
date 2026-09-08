@@ -49,7 +49,7 @@ export function renderPriorityAndGains(prioritisedFixes, yourScore, overallScore
 
   gainsContainer.innerHTML = `
     <div class="grid md:grid-cols-2 gap-8">
-      <div class="p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
+      <div class="p-2 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700">
         <h3 class="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">Overall Score Improvement</h3>
         <div class="flex justify-center items-baseline gap-6 mb-10">
           <div class="text-6xl font-black text-gray-500 dark:text-gray-400">${yourScore}</div>
@@ -79,7 +79,7 @@ export function renderPriorityAndGains(prioritisedFixes, yourScore, overallScore
         </details>
       </div>
 
-      <div class="p-8 bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-3xl shadow-2xl">
+      <div class="p-2 bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-3xl shadow-2xl">
         <h3 class="text-3xl font-bold text-center mb-8">Potential Ranking & Traffic Gains</h3>
         <div class="space-y-8 text-center text-xl">
           <div class="text-5xl font-black">Page 2 → Page 1 potential</div>

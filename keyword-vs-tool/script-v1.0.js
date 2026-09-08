@@ -719,7 +719,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // ─── Insert Ask AI section before the share container ────────────
       const aiSectionHTML = `
 <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
-  <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About This Audit</h2>
+  <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Keyword Competition</h2>
   <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
     Get tailored answers about competitive gaps, keyword placement, and specific improvement steps to outrank your competitor.
   </p>
