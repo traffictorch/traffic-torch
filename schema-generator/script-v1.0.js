@@ -180,13 +180,27 @@ const initTool = (form, results, progressContainer) => {
     const interval = setInterval(updateProgress, 1800);
 
     try {
-      const res = await fetch(API_PROXY + encodeURIComponent(url));
-      if (!res.ok) throw new Error('Could not fetch page – check URL or HTTPS');
-      const html = await res.text();
-      await new Promise(r => setTimeout(r, 800));
-      updateProgress();
+const res = await fetch(API_PROXY + encodeURIComponent(url));
+if (!res.ok) throw new Error('Could not fetch page – check URL or HTTPS');
 
-      const doc = new DOMParser().parseFromString(html, 'text/html');
+let html = await res.text();
+// Always try to parse as JSON – the proxy returns a JSON envelope
+try {
+  const data = JSON.parse(html);
+  if (data.success && data.result) {
+    html = data.result;
+  } else {
+    const errMsg = data.errors?.[0]?.message || 'Unknown proxy error';
+    throw new Error('Proxy error: ' + errMsg);
+  }
+} catch (parseErr) {
+  // If parsing fails, treat it as raw HTML (e.g., direct fetch)
+  console.warn('Response not JSON – treating as raw HTML.');
+}
+await new Promise(r => setTimeout(r, 800));
+updateProgress();
+
+const doc = new DOMParser().parseFromString(html, 'text/html');
 
       const existingSchemas = [];
       doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
