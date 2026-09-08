@@ -1591,10 +1591,14 @@
 
 <!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
 <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
-  <div class="relative w-full max-w-md bg-white/10 dark:bg-gray-900/80 backdrop-blur-2xl rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto" id="upgradeModalContent">
+  <div class="relative w-full max-w-md bg-white/10 dark:bg-gray-900/80 backdrop-blur-2xl rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto" id="upgradeModalContent" style="-webkit-overflow-scrolling: touch;">
     
-    <!-- Close button -->
-    <button onclick="window.closeUpgradeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white text-2xl">&times;</button>
+    <!-- Sticky close button – stays at top-right of popup -->
+    <div class="sticky top-0 z-10 flex justify-end" style="margin-bottom: -3rem; pointer-events: none;">
+      <button onclick="window.closeUpgradeModal()" class="w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 text-white dark:text-gray-200 text-2xl font-bold transition" style="border: none; outline: none; pointer-events: auto; backdrop-filter: blur(4px);">
+        &times;
+      </button>
+    </div>
 
     <!-- Icon -->
     <div class="text-5xl mb-4">🚀</div>

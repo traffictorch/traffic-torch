@@ -590,7 +590,7 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
   `;
 
   try {
-    const proxy = 'https://full-render.traffictorch.workers.dev/';
+    const proxy = 'https://full-render-v2.traffictorch.workers.dev/';
     const res = await fetch(proxy + '?url=' + encodeURIComponent(url));
     if (!res.ok) throw new Error('Page not reachable');
     const html = await res.text();

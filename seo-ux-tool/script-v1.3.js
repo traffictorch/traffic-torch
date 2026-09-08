@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     currentAnalysisMode = 'url';
 
-    const proxyUrl = 'https://full-render.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
+    const proxyUrl = 'https://full-render-v2.traffictorch.workers.dev/?url=' + encodeURIComponent(url);
 
     try {
       const res = await fetch(proxyUrl);

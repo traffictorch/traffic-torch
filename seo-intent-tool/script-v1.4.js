@@ -183,8 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
         doc = new DOMParser().parseFromString(html, 'text/html');
       } else {
         progressText.textContent = "Fetching page...";
-        const res = await fetch(`https://full-render.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`);
-        if (!res.ok) throw new Error('Failed to analyze - Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.');
+        const res = await fetch(`https://full-render-v2.traffictorch.workers.dev/?url=${encodeURIComponent(url)}`);
+        if (!res.ok) throw new Error('Failed to analyze - Whitelist: full-render-v2.traffictorch.workers.dev or use Code Analysis.');
         html = await res.text();
         doc = new DOMParser().parseFromString(html, 'text/html');
       }

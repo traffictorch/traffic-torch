@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 300);
   }
 
-  const PROXY = 'https://full-render.traffictorch.workers.dev/?url=';
+  const PROXY = 'https://full-render-v2.traffictorch.workers.dev/?url=';
   let analyzedText = '';
   let wordCount = 0;
 
@@ -769,7 +769,7 @@ form.addEventListener('submit', async (e) => {
     results.innerHTML = `
       <div class="text-center py-20">
         <p class="text-3xl text-red-500 font-bold">Error: ${err.message}</p>
-        <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Failed to analyze - Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.</p>
+        <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Failed to analyze - Whitelist: full-render-v2.traffictorch.workers.dev or use Code Analysis.</p>
       </div>
     `;
   }

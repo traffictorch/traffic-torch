@@ -5,7 +5,7 @@ import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { prettyJsonLd } from './modules/schema-base.js';
 
-const API_PROXY = 'https://full-render.traffictorch.workers.dev/?url=';
+const API_PROXY = 'https://full-render-v2.traffictorch.workers.dev/?url=';
 
 const waitForElements = () => {
   const form = document.getElementById('audit-form');
@@ -326,7 +326,7 @@ const doc = new DOMParser().parseFromString(html, 'text/html');
       results.innerHTML = `
         <div class="text-red-600 dark:text-red-400 text-center text-xl p-10">
           Error: ${err.message}<br>
-          Failed to analyze - Whitelist: full-render.traffictorch.workers.dev and try again.
+          Failed to analyze - Whitelist: full-render-v2.traffictorch.workers.dev and try again.
         </div>
       `;
     }

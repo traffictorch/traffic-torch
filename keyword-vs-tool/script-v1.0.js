@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   }
 
-  const PROXY = 'https://full-render.traffictorch.workers.dev/';
+  const PROXY = 'https://full-render-v2.traffictorch.workers.dev/';
 
   const fetchPage = async (url) => {
     try {
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="text-center py-32 px-6 max-w-3xl mx-auto">
           <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-8">Error: Could not load one or both pages</p>
           <p class="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
-            Whitelist: full-render.traffictorch.workers.dev and try again.
+            Whitelist: full-render-v2.traffictorch.workers.dev and try again.
           </p>
         </div>
       `;

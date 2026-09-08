@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  const PROXY = 'https://full-render.traffictorch.workers.dev/';
+  const PROXY = 'https://full-render-v2.traffictorch.workers.dev/';
 
   const factorDefinitions = {
     readability: {
@@ -520,32 +520,33 @@ analyzeCodeBtn.addEventListener('click', async () => {
   triggerAnalysis(null, htmlCode);
 });
 
-// Shared trigger function (supports both URL via proxy and direct HTML code)
-async function triggerAnalysis(url, htmlCode) {
-  results.classList.remove('hidden');
-  document.getElementById('loading').classList.remove('hidden');
-  const progressText = document.getElementById('progressText');
-  const steps = [
-    { text: "Fetching page...", delay: 1200 },
-    { text: "Extracting main content", delay: 1600 },
-    { text: "Evaluating links and menu", delay: 1400 },
-    { text: "Evaluating images", delay: 1200 },
-    { text: "Check mobile responsive", delay: 1000 },
-    { text: "Assessing performance optimization", delay: 1400 },
-    { text: "Calculating quit risk", delay: 1600 }
-  ];
-
-  // Update progress sequentially with delays
-  for (const step of steps) {
-    progressText.textContent = step.text;
-    await new Promise(resolve => setTimeout(resolve, step.delay));
+  // Shared trigger function (supports both URL via proxy and direct HTML code)
+  async function triggerAnalysis(url, htmlCode) {
+    results.classList.remove('hidden');
+    document.getElementById('loading').classList.remove('hidden');
+    const progressText = document.getElementById('progressText');
+    const steps = [
+      { text: "Fetching page...", delay: 1200 },
+      { text: "Extracting main content", delay: 1600 },
+      { text: "Evaluating links and menu", delay: 1400 },
+      { text: "Evaluating images", delay: 1200 },
+      { text: "Check mobile responsive", delay: 1000 },
+      { text: "Assessing performance optimization", delay: 1400 },
+      { text: "Calculating quit risk", delay: 1600 }
+    ];
+    let currentStep = 0;
+    const runStep = () => {
+      if (currentStep < steps.length) {
+        progressText.textContent = steps[currentStep].text;
+        currentStep++;
+        setTimeout(runStep, steps[currentStep - 1].delay);
+      } else {
+        progressText.textContent = "Generating report";
+        setTimeout(() => performAnalysis(url, htmlCode), 3000);
+      }
+    };
+    runStep();
   }
-  progressText.textContent = "Generating report";
-  await new Promise(resolve => setTimeout(resolve, 3000));
-
-  // Now perform analysis; the loader will be hidden inside performAnalysis when done
-  await performAnalysis(url, htmlCode);
-}
 
   async function performAnalysis(url, htmlCode) {
     try {
@@ -591,6 +592,7 @@ async function triggerAnalysis(url, htmlCode) {
         });
       }
       const risk = getQuitRiskLabel(ux.score);
+      document.getElementById('loading').classList.add('hidden');
       const safeScore = isNaN(ux.score) ? 60 : ux.score;
       const overallGrade = getGradeInfo(safeScore);
       const readabilityHTML = buildModuleHTML('Readability', ux.readability, factorDefinitions.readability, factorDetails.readability);
@@ -1098,7 +1100,7 @@ if (shareContainer) {
       results.innerHTML = `
         <div class="text-center py-20">
           <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-          <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Whitelist: full-render.traffictorch.workers.dev or use Code Analysis.</p>
+          <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Whitelist: full-render-v2.traffictorch.workers.dev or use Code Analysis.</p>
         </div>
       `;
     }

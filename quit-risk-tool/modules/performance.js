@@ -16,7 +16,6 @@ export function calculatePerformance(data) {
   }
   score -= blockingPenalty;
   if (data.hasLazyLoading) score += 8;
-  if (data.hasFontDisplaySwap) score += 6;
   if (data.hasWebpOrAvif) score += 5;
   if (data.fontCount > 4) score -= 16;
   else if (data.fontCount > 2) score -= 7;
