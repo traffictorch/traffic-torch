@@ -648,7 +648,14 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
         { name: 'AI Search', ...aiCounts }
       ]
     };
-    initShareModule(shareContainer, shareResults);
+    const aiContainer = document.getElementById('ai-answer-container');
+if (!aiContainer) {
+  // fallback – create if missing (should exist in your HTML)
+  const fallback = document.createElement('div');
+  fallback.id = 'ai-answer-container';
+  document.body.appendChild(fallback);
+}
+initShareModule(shareContainer, shareResults, aiContainer);
     console.log('Share module initialised');
 
   } catch (err) {
