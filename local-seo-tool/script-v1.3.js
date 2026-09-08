@@ -738,6 +738,21 @@ if (!htmlCode || !location) {
       </div>
       <!-- Plugin Solutions -->
       <div id="plugin-solutions-section" class="mt-20"></div>
+      
+      <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About This Audit</h2>
+        <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+          Get tailored answers about local SEO, NAP, keywords, schema, and specific improvement steps.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <textarea id="ai-question-input" placeholder="e.g., Why is my NAP score low? How do I improve local schema?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
+          <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask AI</button>
+        </div>
+        <div id="ai-answer-container" class="mt-6 hidden">
+          <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+        </div>
+      </div>
+      
       <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
       <div id="share-dashboard-container" class="mt-16"></div>
     `;
@@ -844,6 +859,91 @@ if (!htmlCode || !location) {
     const shareContainer = document.getElementById('share-dashboard-container');
     if (shareContainer) {
       initShareModule(shareContainer, shareData);
+    }
+
+    // ─── Ask Traffic Torch AI Logic ──────────────────────────────────────────────
+    const askBtn = document.getElementById('ask-ai-btn');
+    const askInput = document.getElementById('ai-question-input');
+    const modelSelect = document.getElementById('ai-model-select');
+    const answerContainer = document.getElementById('ai-answer-container');
+    const answerContent = document.getElementById('ai-answer-content');
+
+    if (askBtn) {
+      // Remove old listener to avoid duplicates
+      const newAskBtn = askBtn.cloneNode(true);
+      askBtn.parentNode.replaceChild(newAskBtn, askBtn);
+
+      newAskBtn.addEventListener('click', async () => {
+        // ─── CHECK QUOTA FIRST ──────────────────────────────────
+        const canProceed = await canRunTool('limit-audit-id');
+        if (!canProceed) return;
+
+        const question = askInput?.value?.trim();
+        if (!question) {
+          alert('Please enter a question.');
+          return;
+        }
+
+        const selectedModel = modelSelect?.value || '@cf/deepseek-ai/deepseek-v4-flash-0731';
+
+        // Disable button & show loading
+        newAskBtn.disabled = true;
+        newAskBtn.textContent = 'Thinking...';
+        answerContainer.classList.remove('hidden');
+        answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+        try {
+          // Build the audit snapshot
+          const auditPayload = {
+            question: question,
+            auditData: {
+              url: fullUrl || document.getElementById('page-url')?.value?.trim() || 'Custom HTML',
+              pageTitle: pageTitle || 'Analyzed Page',
+              overallScore: yourScore,
+              scores: {
+                nap: normalizedModuleScores['NAP & Contact'],
+                keywords: normalizedModuleScores['Local Keywords & Titles'],
+                content: normalizedModuleScores['Local Content & Relevance'],
+                maps: normalizedModuleScores['Maps & Visuals'],
+                schema: normalizedModuleScores['Structured Data'],
+                reviews: normalizedModuleScores['Reviews & Structure']
+              },
+              flags: {
+                napPresent: napResult.data.present,
+                titleLocal: keywordsResult.data.title,
+                metaLocal: keywordsResult.data.meta,
+                mapEmbedded: mapsResult.data.embedded,
+                localSchema: schemaResult.data.localPresent,
+                reviewSchema: reviewsResult.data.schema
+              },
+              failedItems: failedMetrics,
+              priorityFixes: topPriorityFixes.map(f => f.issue + ' (' + f.module + ')')
+            }
+          };
+
+          const response = await fetch('https://local-seo-ai.traffictorch.workers.dev/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(auditPayload)
+          });
+
+          if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+          const data = await response.json();
+
+          if (data.success) {
+            answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+          } else {
+            answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+          }
+
+        } catch (err) {
+          answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+        } finally {
+          newAskBtn.disabled = false;
+          newAskBtn.textContent = 'Ask AI';
+        }
+      });
     }
 
   }

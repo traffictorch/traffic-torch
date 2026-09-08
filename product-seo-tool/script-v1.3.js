@@ -802,6 +802,23 @@ async function performAnalysis(source, isCode = false) {
       pluginSection.id = 'plugin-solutions-section';
       pluginSection.className = 'mt-16 px-1';
       wrapper.appendChild(pluginSection);
+      const askAISection = document.createElement('div');
+      askAISection.id = 'ask-ai-section';
+      askAISection.className = 'mt-20 max-w-4xl mx-auto px-4';
+      askAISection.innerHTML = `
+        <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About This Audit</h2>
+        <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+          Get tailored answers about product SEO, schema, content, and specific improvement steps.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+              <textarea id="ai-question-input" placeholder="e.g., Why is my schema score low? How do I improve product descriptions?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
+          <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask AI</button>
+        </div>
+        <div id="ai-answer-container" class="mt-6 hidden">
+          <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+        </div>
+      `;
+      wrapper.appendChild(askAISection);
       const pdfSection = document.createElement('div');
       pdfSection.className = 'text-center my-16';
       pdfSection.innerHTML = `
@@ -923,6 +940,85 @@ async function performAnalysis(source, isCode = false) {
             <p>Sharing is available for live URLs only. Please run the analysis with a URL to share this report.</p>
           </div>
         `;
+      }
+      
+            const askBtn = document.getElementById('ask-ai-btn');
+      const askInput = document.getElementById('ai-question-input');
+      const modelSelect = document.getElementById('ai-model-select');
+      const answerContainer = document.getElementById('ai-answer-container');
+      const answerContent = document.getElementById('ai-answer-content');
+
+      if (askBtn) {
+        const newAskBtn = askBtn.cloneNode(true);
+        askBtn.parentNode.replaceChild(newAskBtn, askBtn);
+
+        newAskBtn.addEventListener('click', async () => {
+          const canProceed = await canRunTool('limit-audit-id');
+          if (!canProceed) return;
+
+          const question = askInput?.value?.trim();
+          if (!question) {
+            alert('Please enter a question.');
+            return;
+          }
+
+          const selectedModel = modelSelect?.value || '@cf/deepseek-ai/deepseek-v4-flash-0731';
+
+          newAskBtn.disabled = true;
+          newAskBtn.textContent = 'Thinking...';
+          answerContainer.classList.remove('hidden');
+          answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+          try {
+            const auditPayload = {
+              question: question,
+              auditData: {
+                url: inputUrl || document.getElementById('url-input')?.value?.trim() || 'Custom HTML',
+                pageTitle: doc?.title || 'Analyzed Product Page',
+                overallScore: safeScore,
+                scores: {
+                  onPage: seo.onPage.score,
+                  technical: seo.technical.score,
+                  contentMedia: seo.contentMedia.score,
+                  ecommerce: seo.ecommerce.score
+                },
+                flags: {
+                  hasViewport: seoData.hasViewport,
+                  hasCanonical: seo.technical.details?.canonical?.score >= 50 || false,
+                  hasHttps: seo.technical.details?.https?.score >= 50 || false,
+                  hasSchema: seo.ecommerce.details?.schema?.score >= 50 || false,
+                  hasPriceMarkup: seo.ecommerce.details?.priceAvailability?.score >= 50 || false,
+                  hasReviewSchema: seo.ecommerce.details?.reviews?.score >= 50 || false,
+                  hasSocialMeta: seoData.hasSocialMeta || false
+                },
+                failedItems: failedMetrics,
+                priorityFixes: priorityFixes.map(f => f.name + ' (' + f.module + ')')
+              }
+            };
+
+            const response = await fetch('https://product-seo-ai.traffictorch.workers.dev/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(auditPayload)
+            });
+
+            if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+            const data = await response.json();
+
+            if (data.success) {
+              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+            } else {
+              answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+            }
+
+          } catch (err) {
+            answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+          } finally {
+            newAskBtn.disabled = false;
+            newAskBtn.textContent = 'Ask AI';
+          }
+        });
       }
 
       // ─── Scroll to results ──────────────────────────────────────────────

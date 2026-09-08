@@ -66,7 +66,7 @@ export function initShareModule(container, results) {
       <!-- AI Fixes (visible in print) -->
       ${aiFixes && aiFixes.length ? `
         <div class="ai-fixes-section mb-6">
-          <h4 class="font-semibold text-purple-600 dark:text-purple-400 text-sm mb-2">💡 AI‑Generated Fixes</h4>
+          <h4 class="font-semibold text-purple-600 dark:text-purple-400 text-sm mb-2">💡 Top Priority Fixes</h4>
           <ul class="list-none text-sm text-gray-700 dark:text-gray-300 space-y-1">
             ${aiFixes.map(f => `<li class="border-b border-gray-200/50 dark:border-gray-700/50 py-1">${f}</li>`).join('')}
           </ul>

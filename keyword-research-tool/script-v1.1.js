@@ -290,4 +290,68 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(tipInterval);
         }
     }
+    
+    // ─── Ask AI Listener ──────────────────────────────────────────────
+const askBtn = document.getElementById('ask-ai-btn');
+const askInput = document.getElementById('ai-question-input');
+const answerContainer = document.getElementById('ai-answer-container');
+const answerContent = document.getElementById('ai-answer-content');
+
+if (askBtn) {
+  askBtn.addEventListener('click', async () => {
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
+
+    const question = askInput?.value?.trim();
+    if (!question) {
+      alert('Please enter a question.');
+      return;
+    }
+
+    askBtn.disabled = true;
+    askBtn.textContent = 'Thinking...';
+    answerContainer.classList.remove('hidden');
+    answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+    try {
+      // Gather current data
+      const seed = document.getElementById('seed')?.value?.trim() || '';
+      const url = document.getElementById('url')?.value?.trim() || '';
+      const suggestions = Array.from(document.querySelectorAll('#suggestionsGrid button'))
+        .map(btn => btn.textContent.trim())
+        .filter(text => text && !text.includes('Copied'));
+
+      const auditPayload = {
+        question: question,
+        auditData: {
+          seedKeyword: seed,
+          url: url || 'Not provided',
+          suggestionsCount: suggestions.length,
+          suggestions: suggestions.slice(0, 20), // limit for token usage
+        },
+      };
+
+      const response = await fetch('https://keyword-research-ai.traffictorch.workers.dev/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(auditPayload),
+      });
+
+      if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+      const data = await response.json();
+
+      if (data.success) {
+        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+      } else {
+        answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+      }
+    } catch (err) {
+      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+    } finally {
+      askBtn.disabled = false;
+      askBtn.textContent = 'Ask Traffic Torch AI';
+    }
+  });
+}
 });

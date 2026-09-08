@@ -450,6 +450,21 @@
   <!-- All report content (score, clusters, gaps, fixes, viz) goes here via JS -->
 </div>
 
+<!-- ═══════ Ask AI Section (always visible) ═══════ -->
+<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+  <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Topical Authority</h2>
+  <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+    Get tailored answers about topical authority, subtopic coverage, gaps, and improvement strategies.
+  </p>
+  <div class="flex flex-col sm:flex-row gap-4">
+    <textarea id="ai-question-input" placeholder="e.g., Which subtopics are missing? How do I improve my authority score?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
+    <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask Traffic Torch AI</button>
+  </div>
+  <div id="ai-answer-container" class="mt-6 hidden">
+    <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+  </div>
+</div>
+
     <!-- ===== GA4 & GSC Dashboards ===== -->
 <div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">

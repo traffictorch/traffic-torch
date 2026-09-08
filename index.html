@@ -384,7 +384,20 @@
     </button>
   </form>
   <div id="homepage-cards-container"></div>
-  <div id="homepage-ai-container" class="mt-12"></div>
+<!-- ═══════ Ask TRAFFIC TORCH AI Section ═══════ -->
+<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+  <h2 class="text-2xl font-black text-center mb-2">🤖 Ask Traffic Torch AI</h2>
+  <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+    Get tailored answers about UX Health, SEO Intent, and AI Search (AEO) – all in one place.
+  </p>
+  <div class="flex flex-col sm:flex-row gap-4">
+    <textarea id="ai-question-input" placeholder="e.g., Why is my UX score low? How do I improve AI Search? What's wrong with my SEO?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
+    <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask Traffic Torch AI</button>
+  </div>
+  <div id="ai-answer-container" class="mt-6 hidden">
+    <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+  </div>
+</div>
 </section>
 
     <div id="progress-container" class="text-center my-8 hidden">

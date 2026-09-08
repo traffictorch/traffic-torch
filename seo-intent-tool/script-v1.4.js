@@ -9,34 +9,31 @@ import { analyzeDepth } from './modules/depth.js';
 import { analyzeReadability } from './modules/readability.js';
 import { analyzeSchema } from './modules/schema.js';
 import { canRunTool } from '/main-v1.1.js';
-import { initShareModule } from '/share-module.js';  // <-- new import
+import { initShareModule } from '/share-module.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
-  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
-  function autoFillFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const inputData = params.get('input');
-    
-    if (inputData) {
-      const textarea = document.getElementById('code-input');
-      if (textarea) {
-        textarea.value = decodeURIComponent(inputData);
-        
-        // Optional: Auto-click the Analyze button after a tiny delay
-        const analyzeBtn = document.getElementById('analyze-code-btn');
-        if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);   // Give the page time to render
-        }
+// Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
+function autoFillFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const inputData = params.get('input');
+  
+  if (inputData) {
+    const textarea = document.getElementById('code-input');
+    if (textarea) {
+      textarea.value = decodeURIComponent(inputData);
+      const analyzeBtn = document.getElementById('analyze-code-btn');
+      if (analyzeBtn) {
+        setTimeout(() => {
+          analyzeBtn.click();
+        }, 800);
       }
     }
   }
+}
 
-  // Run when page loads
-  window.addEventListener('load', autoFillFromUrl);
+window.addEventListener('load', autoFillFromUrl);
 
 // Minimal Prefill + Auto Submit for SEO Intent Tool
 function simpleIntentPrefillAndRun() {
@@ -297,6 +294,21 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: 'Schema', score: normalizeSchema }
       ];
       const scores = modules.map(m => m.score);
+      
+      // ─── Build failedMetricsForShare (reused for AI payload) ───
+      const failedMetricsForShare = [];
+      const schemaGrade = getGrade(schemaTypes.length, 'schema');
+      if (schemaGrade.text !== 'Excellent') failedMetricsForShare.push("Schema Markup");
+      if (!hasAuthorByline) failedMetricsForShare.push("Author Byline Present");
+      if (!hasAuthorBio) failedMetricsForShare.push("Author Bio Section");
+      if (!hasUpdateDate) failedMetricsForShare.push("Update Date Shown");
+      if (!hasContact) failedMetricsForShare.push("Contact Info Present");
+      if (!hasPolicies) failedMetricsForShare.push("Privacy & Terms Links");
+      if (!hasAboutLinks) failedMetricsForShare.push("About/Team Links");
+      
+      // ─── Determine displayUrl ───
+      let displayUrl = url || "Custom HTML Analysis";
+      
       results.innerHTML = `
         <!-- Overall Score Card (SEO Intent) -->
         <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -384,20 +396,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const border = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-orange-400' : 'border-red-500';
             const signals = key === 'Experience' ? [
               { name: 'Strong first-person language', value: metrics.firstPerson,
-                fix: 'Add more first-person language (“I/we/my/our”) throughout the content. Use it naturally in intros, examples, and conclusions to show personal involvement.',
+                fix: 'Add more first-person language ("I/we/my/our") throughout the content. Use it naturally in intros, examples, and conclusions to show personal involvement.',
                 how: 'The tool counts occurrences of first-person pronouns (I, we, my, our, me, us) and related forms. Strong = 15+ mentions across the page.',
                 why: 'First-person writing signals genuine hands-on experience to Google and readers. It increases trust, engagement, and dwell time — all positive ranking factors. Pages with strong personal voice often outperform third-party corporate content.' },
               { name: 'Personal anecdotes included', value: metrics.anecdotes,
-                fix: 'Include personal anecdotes or real-world examples. Share specific stories like “I tested this method on 5 client sites and saw…” or “In my experience working with…” to make advice relatable.',
-                how: 'Scans for phrases like “I tested”, “in my experience”, “we found that”, “hands-on”, “real-world”. Strong = 3+ detections.',
-                why: 'Anecdotes prove you’ve actually done what you’re teaching. They build emotional connection with readers and reduce bounce rates. Google favors content that demonstrates real application over theoretical advice.' },
+                fix: 'Include personal anecdotes or real-world examples. Share specific stories like "I tested this method on 5 client sites and saw…" or "In my experience working with…" to make advice relatable.',
+                how: 'Scans for phrases like "I tested", "in my experience", "we found that", "hands-on", "real-world". Strong = 3+ detections.',
+                why: 'Anecdotes prove you\'ve actually done what you\'re teaching. They build emotional connection with readers and reduce bounce rates. Google favors content that demonstrates real application over theoretical advice.' },
               { name: 'Timeline/date mentions', value: metrics.timelines,
-                fix: 'Mention specific timelines or dates from your experience, e.g., “Last year I tried…”, “Since 2020 we’ve used this approach…”, “Over the past 18 months our team has…”',
+                fix: 'Mention specific timelines or dates from your experience, e.g., "Last year I tried…", "Since 2020 we\'ve used this approach…", "Over the past 18 months our team has…"',
                 how: 'Looks for date/year references tied to first-person context. Strong = 2+ personal timeline mentions.',
                 why: 'Timelines show recency and depth of experience. They help Google assess content freshness and real-world testing. Dated personal experience outperforms generic evergreen claims.' },
               { name: 'Personal media/captions', value: metrics.personalMedia,
-                fix: 'Add original photos, screenshots, or videos with personal captions like “My setup for testing…”, “Our results after 3 months”, or “Client dashboard I managed”.',
-                how: 'Checks image alt text, captions, and figures for personal context (“my”, “our”, “I took this”). Strong = at least one detected.',
+                fix: 'Add original photos, screenshots, or videos with personal captions like "My setup for testing…", "Our results after 3 months", or "Client dashboard I managed".',
+                how: 'Checks image alt text, captions, and figures for personal context ("my", "our", "I took this"). Strong = at least one detected.',
                 why: 'Original media with personal context proves you actually did the work. It boosts credibility, reduces perceived AI content risk, and increases user trust and time on page.' }
             ] : key === 'Expertise' ? [
               { name: 'Author byline present', value: metrics.byline,
@@ -439,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 how: 'Looks for policy links across common locations. Strong = at least one found.',
                 why: 'Policy pages demonstrate legal compliance and transparency. They are expected on professional sites. Missing policies can trigger trust issues.' },
               { name: 'Update date shown', value: metrics.updateDate,
-                fix: 'Display a visible “Last updated” or “Published” date on the page.',
+                fix: 'Display a visible "Last updated" or "Published" date on the page.',
                 how: 'Searches common date selectors and visible text. Strong = date detected.',
                 why: 'Update dates signal content freshness and maintenance. Google prioritizes current information. Dated content builds confidence in accuracy.' }
             ];
@@ -519,7 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   : key === 'Authoritativeness' ? 'Recognition of the site or author as a leading voice in the niche, often through citations, references from reputable sources, or industry accolades.'
                   : 'Indicators that the site and content are reliable, secure, and transparent, fostering user confidence through clear policies and ethical practices.'}</p>
                 <p class="text-green-500 font-bold">How to improve?</p>
-                <p>${key === 'Experience' ? 'Incorporate first-person language like “I” or “we,” add personal photos or videos, include detailed case studies with outcomes, mention specific dates or timelines, and share lessons learned from your own trials and errors to make it authentic.'
+                <p>${key === 'Experience' ? 'Incorporate first-person language like "I" or "we," add personal photos or videos, include detailed case studies with outcomes, mention specific dates or timelines, and share lessons learned from your own trials and errors to make it authentic.'
                   : key === 'Expertise' ? 'Add an author bio box with a professional photo, detailed biography highlighting relevant education or experience, list certifications, degrees, or publications, and link to other works or speaking engagements to build proof.'
                   : key === 'Authoritativeness' ? 'Earn high-quality backlinks from trusted sites, get featured in press or media mentions, implement relevant schema markup like Organization or Person, display awards or endorsements, and contribute to industry forums or publications.'
                   : 'Switch to HTTPS if not already, create a dedicated contact page with real details, add a privacy policy and terms of service, include content update dates, and ensure no misleading claims or ads to maintain transparency.'}</p>
@@ -631,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <p class="font-bold ${titleColor} text-base">${g.emoji} Schema Markup</p>
                   ${g.text !== 'Excellent' ? `
                   <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
-                  <p class="mt-1 text-gray-800 dark:text-gray-200">Add JSON-LD script blocks for relevant types (Article + Person author, FAQPage, HowTo, Product, BreadcrumbList). Use at least two matching your content type. Validate with Google's testing tool.</p>` : ''}
+                  <p class="mt-1 text-gray-800 dark:text-gray-200">Add JSON-LD script blocks for relevant types (Article + Person author, FAQPage, HowTo, Product, BreadcrumbList). Use at least two matching your content type. Validate with Google\'s testing tool.</p>` : ''}
                   <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
                   <p class="mt-1 text-gray-700 dark:text-gray-300">Detects valid schema types in script[type="application/ld+json"]. Excellent = 2+ relevant types, Good = 1 type, Needs Work = none found.</p>
                   <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
@@ -686,18 +698,35 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
           })()}
         </div>
+        
         <!-- Plugin Solutions Section - placed above share buttons -->
         <div id="plugin-solutions-section" class="mt-20"></div>
+        
+        <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+          <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About This Audit</h2>
+          <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+            Get tailored answers about the pass/fail metrics, E-E-A-T signals, and specific improvement steps.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <textarea id="ai-question-input" placeholder="e.g., Why is Experience low? How do I add author bylines?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>            
+            <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask AI</button>
+          </div>
+          <div id="ai-answer-container" class="mt-6 hidden">
+            <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+          </div>
+        </div>
+                
         <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
         <div id="share-dashboard-container" class="mt-16"></div>
       `;
-      // All code AFTER report HTML - this is critical
+      
+      // ─── Plugin Solutions ──────────────────────────────────────────
       const pluginSection = document.createElement('div');
       pluginSection.id = 'plugin-solutions-section';
       pluginSection.className = 'mt-20';
       results.appendChild(pluginSection);
+      
       const failedMetrics = [];
-      const schemaGrade = getGrade(schemaTypes.length, 'schema');
       if (schemaGrade.text !== 'Excellent') failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
       if (!hasAuthorByline) failedMetrics.push({ name: "Author Byline Present", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
       if (!hasAuthorBio) failedMetrics.push({ name: "Author Bio Section", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
@@ -708,6 +737,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (failedMetrics.length > 0) {
         renderPluginSolutions(failedMetrics);
       }
+      
+      // ─── Radar Chart ──────────────────────────────────────────────
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (canvas) {
@@ -754,28 +785,18 @@ document.addEventListener('DOMContentLoaded', () => {
           } catch (e) {}
         }
       }, 150);
-      // ─── Remove old initShareReport and initSubmitFeedback calls ───
-      // initShareReport(results);   // removed
-      // initSubmitFeedback(results); // removed
 
-      // ─── Set data-url ──────────────────────────────────────────────────
-      let displayUrl = url || "Custom HTML Analysis";
+      // ─── Share Dashboard ──────────────────────────────────────────
       document.body.setAttribute('data-url', displayUrl);
 
-      // ─── Prepare and initialise share dashboard ──────────────────────
-      // Build module scores from the 'modules' array
       const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
-
-      // Build passed/failed metrics: we can use the existing failedMetrics (from earlier) and passedMetrics as complement.
       const passedMetrics = [];
-      const failedMetricsForShare = [];
-      // Use thresholds to determine pass/fail for each module
       const thresholds = {
         'Experience': 60,
         'Expertise': 60,
         'Authoritativeness': 60,
         'Trustworthiness': 60,
-        'Content Depth': 60,   // normalized score, threshold 60
+        'Content Depth': 60,
         'Readability': 60,
         'Schema': 60
       };
@@ -784,12 +805,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (mod.score >= thresh) {
           passedMetrics.push(mod.name);
         } else {
-          failedMetricsForShare.push(mod.name);
+          if (!failedMetricsForShare.includes(mod.name)) {
+            failedMetricsForShare.push(mod.name);
+          }
         }
       });
-
-      // Also add individual metric names from the detailed signals if they are 'good' or not.
-      // But we can keep it simple; the passed/failed lists are used for display in the dashboard.
 
       const analyzedUrl = url || document.getElementById('url-input')?.value?.trim() || 'Code Analysis';
 
@@ -801,9 +821,8 @@ document.addEventListener('DOMContentLoaded', () => {
         moduleScores: moduleScores,
         passedMetrics: passedMetrics,
         failedMetrics: failedMetricsForShare,
-        aiFixes: priorityFixes.map(f => f.text + ' (' + f.impact + ')'), // use priority fixes as AI suggestions
+        aiFixes: priorityFixes.map(f => f.text + ' (' + f.impact + ')'),
         rawData: { modules, experience: expResult, expertise: expertiseResult, auth, trust, depth, readability: read, schema: sch },
-        // Custom share link pointing back to this tool with the audited URL
         shareLink: `${window.location.origin}/seo-intent-tool/?url=${encodeURIComponent(analyzedUrl)}`
       };
 
@@ -812,7 +831,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initShareModule(shareContainer, shareData);
       }
 
-      // ─── Keep the toggle listeners for fixes/details (unchanged) ──
+      // ─── Toggle Listeners ──────────────────────────────────────────
       results.addEventListener('click', (e) => {
         if (e.target.matches('.fixes-toggle')) {
           const card = e.target.closest('.score-card');
@@ -825,6 +844,94 @@ document.addEventListener('DOMContentLoaded', () => {
           e.target.closest('.score-card').querySelector('.full-details').classList.toggle('hidden');
         }
       });
+
+      // ─── Ask AI Logic ──────────────────────────────────────────────
+      const askBtn = document.getElementById('ask-ai-btn');
+      const askInput = document.getElementById('ai-question-input');
+      const modelSelect = document.getElementById('ai-model-select');
+      const answerContainer = document.getElementById('ai-answer-container');
+      const answerContent = document.getElementById('ai-answer-content');
+
+      if (askBtn) {
+        // Remove old listener to avoid duplicates
+        const newAskBtn = askBtn.cloneNode(true);
+        askBtn.parentNode.replaceChild(newAskBtn, askBtn);
+        
+        newAskBtn.addEventListener('click', async () => {
+          // ─── CHECK QUOTA FIRST ──────────────────────────────────
+          const canProceed = await canRunTool('limit-audit-id');
+          if (!canProceed) return;
+
+          const question = askInput?.value?.trim();
+          if (!question) {
+            alert('Please enter a question.');
+            return;
+          }
+
+          const selectedModel = modelSelect?.value || '@cf/anthropic/claude-3-5-haiku';
+
+          // Disable button & show loading
+          newAskBtn.disabled = true;
+          newAskBtn.textContent = 'Thinking...';
+          answerContainer.classList.remove('hidden');
+          answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+          try {
+            const auditPayload = {
+              question: question,
+              auditData: {
+                url: url || document.getElementById('url-input')?.value?.trim() || 'Custom HTML',
+                pageTitle: (doc && doc.title) || 'Analyzed Page',
+                overallScore: overall,
+                intent: { type: intent, confidence: confidence },
+                scores: {
+                  experience: experienceScore,
+                  expertise: expertiseScore,
+                  authoritativeness: authoritativenessScore,
+                  trustworthiness: trustworthinessScore,
+                  contentDepth: normalizeDepth,
+                  readability: normalizeReadability,
+                  schema: normalizeSchema
+                },
+                flags: {
+                  hasAuthorByline: hasAuthorByline,
+                  hasAuthorBio: hasAuthorBio,
+                  hasContact: hasContact,
+                  hasPolicies: hasPolicies,
+                  hasUpdateDate: hasUpdateDate,
+                  hasAboutLinks: hasAboutLinks,
+                  hasCitations: expertiseResult?.metrics?.citations > 0 || false,
+                  hasCredentials: expertiseResult?.metrics?.credentials > 0 || false
+                },
+                failedItems: failedMetricsForShare,
+                priorityFixes: priorityFixes.map(f => f.text + ' (' + f.impact + ')')
+              }
+            };
+
+            const response = await fetch('https://seo-intent-ai.traffictorch.workers.dev/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(auditPayload)
+            });
+
+            if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+            const data = await response.json();
+
+            if (data.success) {
+              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+            } else {
+              answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+            }
+
+          } catch (err) {
+            answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+          } finally {
+            newAskBtn.disabled = false;
+            newAskBtn.textContent = 'Ask AI';
+          }
+        });
+      }
 
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;

@@ -760,6 +760,19 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
+<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+  <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About This Audit</h2>
+  <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+    Get tailored answers about keyword placement, meta tags, content density, and specific improvement steps.
+  </p>
+  <div class="flex flex-col sm:flex-row gap-4">
+    <textarea id="ai-question-input" placeholder="e.g., Why is my meta title missing the keyword? How do I improve content density?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
+    <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask Traffic Torch AI</button>
+  </div>
+  <div id="ai-answer-container" class="mt-6 hidden">
+    <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+  </div>
+</div>
 <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
 <div id="share-dashboard-container" class="mt-16"></div>
     `;
@@ -914,6 +927,99 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
     }
+    
+const askBtn = document.getElementById('ask-ai-btn');
+const askInput = document.getElementById('ai-question-input');
+const answerContainer = document.getElementById('ai-answer-container');
+const answerContent = document.getElementById('ai-answer-content');
+
+if (askBtn) {
+  const newAskBtn = askBtn.cloneNode(true);
+  askBtn.parentNode.replaceChild(newAskBtn, askBtn);
+
+  newAskBtn.addEventListener('click', async () => {
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
+
+    const question = askInput?.value?.trim();
+    if (!question) {
+      alert('Please enter a question.');
+      return;
+    }
+
+    newAskBtn.disabled = true;
+    newAskBtn.textContent = 'Thinking...';
+    answerContainer.classList.remove('hidden');
+    answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+    try {
+      const moduleScoresMap = {};
+      modules.forEach(m => {
+        const key = m.name.toLowerCase().replace(/[&\s]+/g, '');
+        moduleScoresMap[key] = m.score;
+      });
+
+      const auditPayload = {
+        question: question,
+        auditData: {
+          url: analysisType === 'url' ? fullUrl : 'Pasted HTML',
+          pageTitle: yourDoc?.title || 'Keyword Analysis',
+          targetKeyword: phrase,
+          overallScore: yourScore,
+          scores: {
+            metaTitleDesc: moduleScoresMap['metatitledesc'] || 0,
+            h1Headings: moduleScoresMap['h1headings'] || 0,
+            contentDensity: moduleScoresMap['contentdensity'] || 0,
+            imageAlts: moduleScoresMap['imagealts'] || 0,
+            anchorText: moduleScoresMap['anchortext'] || 0,
+            urlSchema: moduleScoresMap['urlschema'] || 0
+          },
+          flags: {
+            titleMatch: data.meta.titleMatch > 0,
+            descMatch: data.meta.descMatch > 0,
+            h1Match: data.h1.match > 0,
+            keywordInUrl: data.urlSchema.urlMatch > 0,
+            hasSchema: data.urlSchema.schema > 0,
+            hasKeywordInAlts: data.alts.phrase > 0,
+            hasKeywordInAnchors: data.anchors.count > 0
+          },
+          metrics: {
+            wordCount: data.content.words,
+            keywordMentions: data.content.matches,
+            density: data.content.density,
+            totalImages: data.alts.total,
+            matchingAlts: data.alts.phrase,
+            matchingAnchors: data.anchors.count
+          },
+          failedItems: failedMetricsShare.slice(0, 10),
+          priorityFixes: topPriorityFixes.map(f => f.issue + ': ' + f.how)
+        }
+      };
+
+      const response = await fetch('https://keyword-placement-ai.traffictorch.workers.dev/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(auditPayload)
+      });
+
+      if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+      const aiResponse = await response.json();   // ← renamed from 'data'
+
+      if (aiResponse.success) {
+        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${aiResponse.answer}`;
+      } else {
+        answerContent.innerHTML = `❌ Error: ${aiResponse.error || 'Unknown error'}`;
+      }
+
+    } catch (err) {
+      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+    } finally {
+      newAskBtn.disabled = false;
+      newAskBtn.textContent = 'Ask Traffic Torch AI';
+    }
+  });
+}
 
   }
 });

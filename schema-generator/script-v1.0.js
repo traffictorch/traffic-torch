@@ -40,8 +40,7 @@ const initTool = (form, results, progressContainer) => {
   const manualEditor = document.getElementById('manual-editor-container');
   const manualPreviewContainer = document.getElementById('manual-preview-container');
   const manualActions = document.getElementById('manual-actions');
-  let manualPreview = document.getElementById('manual-preview'); // let so we can re-assign when cloning
-
+  let manualPreview = document.getElementById('manual-preview');
 
   if (manualSelect && manualEditor && manualPreview && manualPreviewContainer && manualActions) {
     manualSelect.addEventListener('change', async (e) => {
@@ -56,57 +55,48 @@ const initTool = (form, results, progressContainer) => {
 
       manualEditor.innerHTML = '<div class="text-center py-12 text-gray-500 dark:text-gray-400 animate-pulse">Loading editor...</div>';
 
-        try {
-          // Clear old preview content and any lingering listeners
-          manualPreview.textContent = '// Loading new schema type...';
-          
-          // Remove any existing input/change listeners from previous render
-          // (simple way: clone and replace the preview element to detach old listeners)
-          const oldPreview = manualPreview;
-          const newPreview = oldPreview.cloneNode(true);
-          oldPreview.parentNode.replaceChild(newPreview, oldPreview);
-          manualPreview = document.getElementById('manual-preview'); // re-query
+      try {
+        manualPreview.textContent = '// Loading new schema type...';
+        const oldPreview = manualPreview;
+        const newPreview = oldPreview.cloneNode(true);
+        oldPreview.parentNode.replaceChild(newPreview, oldPreview);
+        manualPreview = document.getElementById('manual-preview');
 
-          const modulePath = `./modules/${type.toLowerCase()}-schema.js`;
-          const { default: schema } = await import(modulePath);
+        const modulePath = `./modules/${type.toLowerCase()}-schema.js`;
+        const { default: schema } = await import(modulePath);
 
-          manualEditor.innerHTML = '';
-          schema.render(manualEditor, manualPreview);
+        manualEditor.innerHTML = '';
+        schema.render(manualEditor, manualPreview);
 
-          // Force re-attach preview container visibility
-          manualPreviewContainer.classList.remove('hidden');
-          manualActions.classList.remove('hidden');
+        manualPreviewContainer.classList.remove('hidden');
+        manualActions.classList.remove('hidden');
 
-          // Give DOM a moment to settle (inputs exist), then force first update
+        requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              // Trigger updatePreview manually if the module exposes it or via input event
-              const anyInput = manualEditor.querySelector('input, textarea, select');
-              if (anyInput) {
-                anyInput.dispatchEvent(new Event('input', { bubbles: true }));
-              } else {
-                // Fallback: just set initial empty state
-manualPreview.textContent = prettyJsonLd({
-  "@context": "https://schema.org",
-  "@type": type
-});
-              }
-            });
+            const anyInput = manualEditor.querySelector('input, textarea, select');
+            if (anyInput) {
+              anyInput.dispatchEvent(new Event('input', { bubbles: true }));
+            } else {
+              manualPreview.textContent = prettyJsonLd({
+                "@context": "https://schema.org",
+                "@type": type
+              });
+            }
           });
-        } catch (err) {
-          manualEditor.innerHTML = `
-            <p class="text-red-600 dark:text-red-400 text-center py-10 text-lg font-medium">
-              Cannot load ${type} editor.<br>
-              File <code>modules/${type.toLowerCase()}-schema.js</code> is missing or has an error.
-            </p>
-          `;
-          manualPreview.textContent = '// Failed to load editor';
-          manualPreviewContainer.classList.add('hidden');
-          manualActions.classList.add('hidden');
-        }
+        });
+      } catch (err) {
+        manualEditor.innerHTML = `
+          <p class="text-red-600 dark:text-red-400 text-center py-10 text-lg font-medium">
+            Cannot load ${type} editor.<br>
+            File <code>modules/${type.toLowerCase()}-schema.js</code> is missing or has an error.
+          </p>
+        `;
+        manualPreview.textContent = '// Failed to load editor';
+        manualPreviewContainer.classList.add('hidden');
+        manualActions.classList.add('hidden');
+      }
     });
 
-    // Wrap in <script> tags checkbox
     document.getElementById('wrap-script-tags')?.addEventListener('change', (e) => {
       const pre = manualPreview;
       let text = pre.textContent.trim();
@@ -118,7 +108,6 @@ manualPreview.textContent = prettyJsonLd({
       }
     });
 
-    // Copy JSON-LD
     document.getElementById('manual-copy-btn')?.addEventListener('click', () => {
       const text = manualPreview.textContent?.trim();
       if (!text) return;
@@ -127,7 +116,6 @@ manualPreview.textContent = prettyJsonLd({
         .catch(() => alert('Copy failed – please select text manually'));
     });
 
-    // Validate button (last part of manual block)
     document.getElementById('manual-validate-btn')?.addEventListener('click', () => {
       const urlInput = document.getElementById('url-input');
       const url = urlInput?.value.trim();
@@ -144,11 +132,10 @@ manualPreview.textContent = prettyJsonLd({
         window.open('https://search.google.com/test/rich-results', '_blank');
       }
     });
-
-  } // closes the if (manualSelect && ...) block
+  }
 
   // ──────────────────────────────────────────────
-  // URL SCAN & SCHEMA DETECTION (moved INSIDE initTool so 'form' is defined)
+  // URL SCAN & SCHEMA DETECTION
   // ──────────────────────────────────────────────
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -201,54 +188,48 @@ manualPreview.textContent = prettyJsonLd({
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
-      // Detect all JSON-LD schemas
       const existingSchemas = [];
-doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
-  try {
-    const json = JSON.parse(script.textContent);
-    const types = new Set();
+      doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
+        try {
+          const json = JSON.parse(script.textContent);
+          const types = new Set();
 
-    function collectTypes(obj) {
-      if (!obj || typeof obj !== 'object') return;
-      if (obj['@type']) {
-        if (Array.isArray(obj['@type'])) {
-          obj['@type'].forEach(t => types.add(t));
-        } else {
-          types.add(obj['@type']);
-        }
-      }
-      // Recurse common nesting patterns
-      Object.values(obj).forEach(val => {
-        if (Array.isArray(val)) val.forEach(collectTypes);
-        else collectTypes(val);
+          function collectTypes(obj) {
+            if (!obj || typeof obj !== 'object') return;
+            if (obj['@type']) {
+              if (Array.isArray(obj['@type'])) {
+                obj['@type'].forEach(t => types.add(t));
+              } else {
+                types.add(obj['@type']);
+              }
+            }
+            Object.values(obj).forEach(val => {
+              if (Array.isArray(val)) val.forEach(collectTypes);
+              else collectTypes(val);
+            });
+          }
+
+          if (Array.isArray(json)) {
+            json.forEach(collectTypes);
+          } else {
+            collectTypes(json);
+          }
+
+          const displayTypes = types.size > 0 ? [...types].join(', ') : 'Unknown';
+
+          existingSchemas.push({
+            raw: json,
+            types: displayTypes
+          });
+        } catch (e) {}
       });
-    }
-
-    if (Array.isArray(json)) {
-      json.forEach(collectTypes);
-    } else {
-      collectTypes(json);
-    }
-
-    const displayTypes = types.size > 0 ? [...types].join(', ') : 'Unknown';
-
-    existingSchemas.push({
-      raw: json,
-      types: displayTypes
-    });
-  } catch (e) {
-    // silent fail on invalid JSON
-  }
-});
 
       clearInterval(interval);
       progressContainer.classList.add('hidden');
       results.classList.remove('hidden');
 
-      // ─── Build the page title ──────────────────────────────────────
       const pageTitle = doc?.title || new URL(url).hostname;
 
-      // ─── Simplified report ──────────────────────────────────────────
       results.innerHTML = `
         <div class="my-10 px-4">
           <h2 class="text-3xl font-black text-center mb-6 text-gray-800 dark:text-gray-200">
@@ -273,7 +254,7 @@ doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
             }
           </div>
 
-          <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
+          <!-- Share Dashboard Container -->
           <div id="share-dashboard-container" class="mt-8"></div>
 
           <!-- Manual builder (unchanged) -->
@@ -283,21 +264,16 @@ doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
         </div>
       `;
 
-      // ─── Set data-url for the analyzed page ──────────────────────
       document.body.setAttribute('data-url', url);
 
-      // ─── Prepare and initialise share dashboard ──────────────────
-      // Build module scores: treat "Schema Detection" as a single module
       const moduleScores = [
         { name: 'Schema Detection', score: existingSchemas.length > 0 ? 100 : 0 }
       ];
 
-      // Build passed/failed metrics
       const passedMetrics = [];
       const failedMetrics = [];
       if (existingSchemas.length > 0) {
         passedMetrics.push('Schema markup detected');
-        // Also add each schema type as a passed metric
         existingSchemas.forEach(s => {
           passedMetrics.push(s.types);
         });
@@ -305,7 +281,6 @@ doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
         failedMetrics.push('No schema markup found');
       }
 
-      // Build a list of detected schema types for aiFixes
       const detectedTypes = existingSchemas.map(s => s.types).filter(t => t && t !== 'Unknown');
       const aiFixes = detectedTypes.length > 0
         ? [`Detected schema types: ${detectedTypes.join(', ')}`]
@@ -342,6 +317,86 @@ doc.querySelectorAll('script[type="application/ld+json"]').forEach(script => {
       `;
     }
   });
-}; // ← This closes initTool
+
+  // ─── Ask AI Listener (static, works before or after audit) ──────
+  const askBtn = document.getElementById('ask-ai-btn');
+  const askInput = document.getElementById('ai-question-input');
+  const answerContainer = document.getElementById('ai-answer-container');
+  const answerContent = document.getElementById('ai-answer-content');
+
+  if (askBtn) {
+    askBtn.addEventListener('click', async () => {
+      const canProceed = await canRunTool('limit-schema-scan');
+      if (!canProceed) return;
+
+      const question = askInput?.value?.trim();
+      if (!question) {
+        alert('Please enter a question.');
+        return;
+      }
+
+      askBtn.disabled = true;
+      askBtn.textContent = 'Thinking...';
+      answerContainer.classList.remove('hidden');
+      answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+      try {
+        // Gather current audit data from the DOM
+        const resultsDiv = document.getElementById('results');
+        const hasResults = resultsDiv && !resultsDiv.classList.contains('hidden');
+
+        let schemasDetected = 0;
+        let schemaTypes = [];
+
+        if (hasResults) {
+          const schemaItems = resultsDiv.querySelectorAll('ul li strong');
+          schemaItems.forEach(el => {
+            const text = el.textContent.trim();
+            if (text && text !== 'Unknown') {
+              schemaTypes.push(text);
+              schemasDetected++;
+            }
+          });
+          // If no list items but the "No schema found" message is present, schemasDetected stays 0.
+          if (resultsDiv.querySelector('.text-orange-600')?.textContent.includes('No JSON-LD schema')) {
+            schemasDetected = 0;
+            schemaTypes = [];
+          }
+        }
+
+        const auditPayload = {
+          question: question,
+          auditData: {
+            url: document.getElementById('url-input')?.value?.trim() || '',
+            hasSchema: schemasDetected > 0,
+            schemasDetected: schemasDetected,
+            schemaTypes: schemaTypes.slice(0, 10),
+          },
+        };
+
+        const response = await fetch('https://schema-ai.traffictorch.workers.dev/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(auditPayload),
+        });
+
+        if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+        const data = await response.json();
+
+        if (data.success) {
+          answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+        } else {
+          answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+        }
+      } catch (err) {
+        answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+      } finally {
+        askBtn.disabled = false;
+        askBtn.textContent = 'Ask Traffic Torch AI';
+      }
+    });
+  }
+};
 
 document.addEventListener('DOMContentLoaded', waitForElements);

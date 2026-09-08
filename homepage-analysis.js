@@ -419,12 +419,11 @@ function getSEOSummary(doc, analyzedUrl) {
 
 // ─── AI Search Summary ────────────────────────────────────────────────────
 function getAISearchSummary(doc, analyzedUrl) {
-  // ─── Use the exact same main text extraction as the original AI Search tool ───
   const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
   const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
   mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
   const mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
-  const first300 = mainText.slice(0, 1200); // original uses 1200 chars
+  const first300 = mainText.slice(0, 1200);
 
   const ans = computeAnswerability(doc, first300);
   const struct = computeStructuredData(doc);
@@ -436,8 +435,8 @@ function getAISearchSummary(doc, analyzedUrl) {
   const anti = computeAntiAiSafety(mainText, read.variationScore || 0);
 
   const moduleScores = [ans.score, struct.score, eeat.score, scan.score, conv.score, read.score, unique.score, anti.score];
-const weights = [0.25, 0.15, 0.15, 0.10, 0.12, 0.10, 0.08, 0.05];
-const overallScore = Math.round(moduleScores.reduce((sum, score, i) => sum + score * weights[i], 0));
+  const weights = [0.25, 0.15, 0.15, 0.10, 0.12, 0.10, 0.08, 0.05];
+  const overallScore = Math.round(moduleScores.reduce((sum, score, i) => sum + score * weights[i], 0));
 
   const ansFlags = ans.flags || {};
   const structFlags = struct.flags || {};
@@ -448,8 +447,6 @@ const overallScore = Math.round(moduleScores.reduce((sum, score, i) => sum + sco
   const uniqueFlags = unique.flags || {};
   const antiFlags = anti.flags || {};
 
-  // ─── Helper: set status for each metric ──────────────────────────────
-  // For borderline metrics, use 'average' if the flag is false.
   const borderlineMetrics = [
     'JSON-LD structured data',
     'Publish/update date shown',
@@ -559,7 +556,7 @@ const overallScore = Math.round(moduleScores.reduce((sum, score, i) => sum + sco
   return { score: overallScore, passed, failed, modules: moduleData };
 }
 
-// ─── Top‑3 Failure Selection ────────────────────────────────────────────
+// ─── Top‑3 Failure Selection (kept for potential future use) ────────────
 function selectTopFailures(summaries) {
   const result = [];
   const remainingFailures = [];
@@ -582,7 +579,7 @@ function selectTopFailures(summaries) {
 // ─── Main Orchestration ──────────────────────────────────────────────────
 export async function runHomepageAnalysis(url, containerId, aiContainerId) {
   const container = document.getElementById(containerId);
-  const aiContainer = document.getElementById(aiContainerId);
+  // aiContainerId is not used anymore – we keep the static Ask AI section in HTML.
   if (!container) return;
 
   container.innerHTML = `
@@ -617,18 +614,7 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     window._homepageUrl = url;
     document.body.setAttribute('data-url', url);
 
-    aiContainer.innerHTML = `
-      <div class="p-6 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-purple-500/30 text-center">
-        <h3 class="text-2xl font-bold mb-4 text-purple-600 dark:text-purple-400">AI-Generated Fixes</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">Get specific recommendations based on your top failures.</p>
-        <button id="generate-ai-fixes" class="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold rounded-2xl hover:opacity-90 transition">
-          Generate AI Fixes 🔮
-        </button>
-        <div id="ai-results" class="mt-6"></div>
-      </div>
-    `;
-    
-    // ─── Compute module details for charts ──────────────────────────
+    // ─── Compute module details for share module ────────────────────
     const uxCounts = countStatuses(uxSummary.modules);
     const seoCounts = countStatuses(seoSummary.modules);
     const aiCounts = countStatuses(aiSummary.modules);
@@ -637,14 +623,9 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     console.log('Creating share container...');
     const shareContainer = document.createElement('div');
     shareContainer.id = 'share-module-container';
-    if (aiContainer) {
-      aiContainer.insertAdjacentElement('afterend', shareContainer);
-      console.log('Share container inserted');
-    } else {
-      console.error('AI container not found');
-      const mainContainer = document.getElementById(containerId);
-      if (mainContainer) mainContainer.appendChild(shareContainer);
-    }
+    // Insert after the cards container
+    container.insertAdjacentElement('afterend', shareContainer);
+    console.log('Share container inserted');
 
     const overall = Math.round((uxSummary.score + seoSummary.score + aiSummary.score) / 3);
     const shareResults = {
@@ -669,63 +650,6 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     };
     initShareModule(shareContainer, shareResults);
     console.log('Share module initialised');
-    
-    document.getElementById('generate-ai-fixes').addEventListener('click', async () => {
-      const btn = document.getElementById('generate-ai-fixes');
-      const resultsContainer = document.getElementById('ai-results');
-      btn.textContent = 'Generating...';
-      btn.disabled = true;
-
-      const topResult = selectTopFailures(window._homepageSummaries);
-      if (topResult.status === 'congrats') {
-        resultsContainer.innerHTML = `
-          <div class="p-4 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-2xl border border-green-500/50 text-center">
-            <p class="text-5xl mb-2">🎉</p>
-            <p class="text-2xl font-bold text-green-600 dark:text-green-400">All metrics passed!</p>
-            <p class="text-gray-700 dark:text-gray-300">No AI fixes needed.</p>
-          </div>
-        `;
-        btn.textContent = '✅ Done';
-        btn.disabled = false;
-        return;
-      }
-
-      try {
-        const workerUrl = 'https://ai-cms.traffictorch.workers.dev/';
-        const response = await fetch(workerUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: window._homepageUrl, failures: topResult.failures })
-        });
-        const workerData = await response.json();
-
-        resultsContainer.innerHTML = `
-          <div class="text-left">
-            <p class="text-sm font-medium text-purple-600 dark:text-purple-400 mb-4">
-              ${workerData.cms ? `CMS Detected: ${workerData.cms}` : 'CMS Unknown'}
-            </p>
-            <div class="space-y-4">
-              ${workerData.recommendations && workerData.recommendations.length > 0 ? workerData.recommendations.map((rec, i) => `
-                <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border-l-4 border-purple-500">
-                  <p class="font-bold text-gray-800 dark:text-gray-200">${i+1}. ${rec.title || rec}</p>
-                  <p class="text-gray-700 dark:text-gray-300 mt-1">${rec.description || rec}</p>
-                </div>
-              `).join('') : `<p class="text-gray-600 dark:text-gray-400">No recommendations available.</p>`}
-            </div>
-          </div>
-        `;
-      } catch (err) {
-        resultsContainer.innerHTML = `
-          <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-500 text-center">
-            <p class="text-red-600 dark:text-red-400 font-bold">Error: ${err.message}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Check worker is deployed and CORS is enabled.</p>
-          </div>
-        `;
-      }
-
-      btn.textContent = 'Regenerate 🔮';
-      btn.disabled = false;
-    });
 
   } catch (err) {
     container.innerHTML = `
@@ -793,7 +717,7 @@ function renderCards(container, summaries, url) {
     if (summary.toolName === 'SEO Intent') toolPath = '/seo-intent-tool/';
     else if (summary.toolName === 'AI Search') toolPath = '/ai-search-optimization-tool/';
 
-return `
+    return `
       <div class="module-card bg-white dark:bg-gray-900 rounded-2xl shadow-xl border-4 ${borderClass} p-6 flex flex-col overflow-visible">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
@@ -847,5 +771,96 @@ document.addEventListener('DOMContentLoaded', () => {
         form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
       }, 500);
     }
+  }
+});
+
+// ─── Ask AI Listener ──────────────────────────────────────────────
+// This listener is always active, works before or after an audit.
+document.addEventListener('DOMContentLoaded', () => {
+  const askBtn = document.getElementById('ask-ai-btn');
+  const askInput = document.getElementById('ai-question-input');
+  const answerContainer = document.getElementById('ai-answer-container');
+  const answerContent = document.getElementById('ai-answer-content');
+
+  if (askBtn) {
+    askBtn.addEventListener('click', async () => {
+      // ─── Check quota first ──────────────────────────────────────
+      const { canRunTool } = await import('/main-v1.1.js');
+      const canProceed = await canRunTool('limit-audit-id');
+      if (!canProceed) {
+        const upgradeModal = document.getElementById('upgradeModal');
+        if (upgradeModal) upgradeModal.classList.remove('hidden');
+        return;
+      }
+
+      const question = askInput?.value?.trim();
+      if (!question) {
+        alert('Please enter a question.');
+        return;
+      }
+
+      askBtn.disabled = true;
+      askBtn.textContent = 'Thinking...';
+      answerContainer.classList.remove('hidden');
+      answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+      try {
+        // ─── Gather current audit data from the DOM ──────────────
+        const summaries = window._homepageSummaries || [];
+
+        let uxData = { score: 0, modules: [] };
+        let seoData = { score: 0, modules: [] };
+        let aiData = { score: 0, modules: [] };
+
+        summaries.forEach(s => {
+          if (s.toolName === 'UX Health') uxData = { score: s.score, modules: s.modules };
+          else if (s.toolName === 'SEO Intent') seoData = { score: s.score, modules: s.modules };
+          else if (s.toolName === 'AI Search') aiData = { score: s.score, modules: s.modules };
+        });
+
+        // Gather all failed metrics
+        const failedMetrics = [];
+        summaries.forEach(s => {
+          (s.modules || []).forEach(mod => {
+            (mod.metrics || []).forEach(m => {
+              if (m.status === 'fail') failedMetrics.push(`${s.toolName}: ${m.name}`);
+            });
+          });
+        });
+
+        const auditPayload = {
+          question: question,
+          auditData: {
+            url: window._homepageUrl || '',
+            overallScore: Math.round((uxData.score + seoData.score + aiData.score) / 3),
+            ux: { score: uxData.score, modules: uxData.modules },
+            seo: { score: seoData.score, modules: seoData.modules },
+            aeo: { score: aiData.score, modules: aiData.modules },
+            failedItems: failedMetrics.slice(0, 15),
+          },
+        };
+
+        const response = await fetch('https://ask-traffic-torch-ai.traffictorch.workers.dev/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(auditPayload),
+        });
+
+        if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+        const data = await response.json();
+
+        if (data.success) {
+          answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+        } else {
+          answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+        }
+      } catch (err) {
+        answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+      } finally {
+        askBtn.disabled = false;
+        askBtn.textContent = 'Ask Traffic Torch AI';
+      }
+    });
   }
 });

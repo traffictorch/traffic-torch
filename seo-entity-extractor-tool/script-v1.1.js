@@ -685,4 +685,89 @@ document.addEventListener('DOMContentLoaded', () => {
       hasCheckedLimit = false;
     });
   }
+  
+  // ─── Ask AI Listener ──────────────────────────────────────────────
+const askBtn = document.getElementById('ask-ai-btn');
+const askInput = document.getElementById('ai-question-input');
+const answerContainer = document.getElementById('ai-answer-container');
+const answerContent = document.getElementById('ai-answer-content');
+
+if (askBtn) {
+  askBtn.addEventListener('click', async () => {
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
+
+    const question = askInput?.value?.trim();
+    if (!question) {
+      alert('Please enter a question.');
+      return;
+    }
+
+    askBtn.disabled = true;
+    askBtn.textContent = 'Thinking...';
+    answerContainer.classList.remove('hidden');
+    answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+    try {
+      // Gather current audit data from the DOM
+      const scoreElement = document.querySelector('#results .text-6xl.md\\:text-7xl.font-black');
+      const overallScore = scoreElement ? parseInt(scoreElement.textContent) : 0;
+
+      // Extract module scores from the radar chart data or cards
+      const moduleCards = document.querySelectorAll('#results .score-card');
+      const modules = [];
+      moduleCards.forEach(card => {
+        const name = card.querySelector('p.text-center.text-2xl.font-bold')?.textContent?.trim() || '';
+        const scoreText = card.querySelector('.text-4xl.font-black')?.textContent?.trim() || '';
+        const score = parseInt(scoreText) || 0;
+        if (name) {
+          modules.push({ name, score });
+        }
+      });
+
+      // Extract entities from the entities grid
+      const entityItems = document.querySelectorAll('#results .grid .p-4 .font-bold');
+      const entities = Array.from(entityItems).map(el => el.textContent.trim()).filter(Boolean);
+
+      // Extract any failed metrics from fix panels
+      const failedItems = [];
+      document.querySelectorAll('#results .fixes-panel .text-red-700, #results .fixes-panel .text-orange-600').forEach(el => {
+        const text = el.textContent.trim();
+        if (text) failedItems.push(text);
+      });
+
+      const auditPayload = {
+        question: question,
+        auditData: {
+          overallScore: overallScore,
+          modules: modules.slice(0, 5),
+          entities: entities.slice(0, 20),
+          entityCount: entities.length,
+          failedItems: failedItems.slice(0, 10),
+        },
+      };
+
+      const response = await fetch('https://ask-ai-entity.traffictorch.workers.dev/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(auditPayload),
+      });
+
+      if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+      const data = await response.json();
+
+      if (data.success) {
+        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+      } else {
+        answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+      }
+    } catch (err) {
+      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+    } finally {
+      askBtn.disabled = false;
+      askBtn.textContent = 'Ask Traffic Torch AI';
+    }
+  });
+}
 });

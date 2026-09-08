@@ -1,7 +1,6 @@
 // Keyword Competition Tool Script v1.0
 
 import { canRunTool } from '/main-v1.1.js';
-// ✅ Fixed import – absolute path from root
 import { initShareModule } from '/share-module.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
@@ -13,7 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const compInput = document.getElementById('competitor-url');
   const phraseInput = document.getElementById('target-phrase');
   const results = document.getElementById('results');
-    // Auto-fill from shared report link (?your-url=...&comp-url=...&keyword=...)
+
+  // Auto-fill from shared report link
   const urlParams = new URLSearchParams(window.location.search);
 
   const sharedYourUrl = urlParams.get('your-url');
@@ -24,9 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         decoded = 'https://' + decoded;
       }
       yourInput.value = decoded;
-    } catch (e) {
-      // no console in production
-    }
+    } catch (e) {}
   }
 
   const sharedCompUrl = urlParams.get('comp-url');
@@ -37,9 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         decoded = 'https://' + decoded;
       }
       compInput.value = decoded;
-    } catch (e) {
-      // no console in production
-    }
+    } catch (e) {}
   }
 
   const sharedKeyword = urlParams.get('keyword');
@@ -49,16 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (decoded) {
         phraseInput.value = decoded;
       }
-    } catch (e) {
-      // no console in production
-    }
+    } catch (e) {}
   }
-  
-  // Optional: auto-analyze if all three fields are filled from share link
-     if (sharedYourUrl && sharedCompUrl && sharedKeyword) {
-     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-   }
-   
+
+  if (sharedYourUrl && sharedCompUrl && sharedKeyword) {
+    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  }
+
   const PROXY = 'https://full-render.traffictorch.workers.dev/';
 
   const fetchPage = async (url) => {
@@ -72,42 +65,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-const countPhrase = (text = '', phrase = '', isUrl = false) => {
-  if (!text || !phrase) return 0;
-  const lower = text.toLowerCase();
-  const p = phrase.toLowerCase().trim();
+  const countPhrase = (text = '', phrase = '', isUrl = false) => {
+    if (!text || !phrase) return 0;
+    const lower = text.toLowerCase();
+    const p = phrase.toLowerCase().trim();
 
-  // Normal exact + cleaned matching
-  let matches = (lower.match(new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
-  const cleanP = p.replace(/\b(in|the|a|an|of|at|on|for|and|&|near|best|top|great)\b/gi, '').trim();
-  if (cleanP.length > 4) {
-    matches += (lower.match(new RegExp(cleanP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
-  }
-
-  // Special forgiving mode for URLs only
-  if (isUrl) {
-    const urlWords = lower
-      .replace(/https?:\/\//gi, '')
-      .replace(/[^a-z0-9- ]/gi, ' ')
-      .replace(/-/g, ' ')
-      .split(/\s+/)
-      .filter(w => w.trim().length > 0);
-
-    const phraseWords = p.split(/\s+/).filter(w => w.trim().length > 0);
-    const cleanPhraseWords = cleanP.split(/\s+/).filter(w => w.trim().length > 0);
-
-    const matchedWords = new Set();
-    phraseWords.forEach(word => { if (urlWords.includes(word)) matchedWords.add(word); });
-    cleanPhraseWords.forEach(word => { if (urlWords.includes(word)) matchedWords.add(word); });
-
-    const required = Math.ceil(phraseWords.length / 2);
-    if (matchedWords.size >= required) {
-      matches += 1;  // count as meaningful match
+    let matches = (lower.match(new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+    const cleanP = p.replace(/\b(in|the|a|an|of|at|on|for|and|&|near|best|top|great)\b/gi, '').trim();
+    if (cleanP.length > 4) {
+      matches += (lower.match(new RegExp(cleanP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
     }
-  }
 
-  return matches;
-};
+    if (isUrl) {
+      const urlWords = lower
+        .replace(/https?:\/\//gi, '')
+        .replace(/[^a-z0-9- ]/gi, ' ')
+        .replace(/-/g, ' ')
+        .split(/\s+/)
+        .filter(w => w.trim().length > 0);
+
+      const phraseWords = p.split(/\s+/).filter(w => w.trim().length > 0);
+      const cleanPhraseWords = cleanP.split(/\s+/).filter(w => w.trim().length > 0);
+
+      const matchedWords = new Set();
+      phraseWords.forEach(word => { if (urlWords.includes(word)) matchedWords.add(word); });
+      cleanPhraseWords.forEach(word => { if (urlWords.includes(word)) matchedWords.add(word); });
+
+      const required = Math.ceil(phraseWords.length / 2);
+      if (matchedWords.size >= required) {
+        matches += 1;
+      }
+    }
+
+    return matches;
+  };
 
   const getCleanContent = (doc) => {
     if (!doc?.body) return '';
@@ -117,22 +108,22 @@ const countPhrase = (text = '', phrase = '', isUrl = false) => {
   };
 
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
-  
+
   const calculateContentScore = (words, density) => {
-  let wordScore = 0;
-  if (words > 0) {
-    wordScore = Math.min(50, (words / 800) * 50);
-  }
-  let densityScore = 0;
-  if (density >= 1 && density <= 2) {
-    densityScore = 50;
-  } else if (density >= 0.5 && density < 1) {
-    densityScore = 50 * ((density - 0.5) / 0.5);
-  } else if (density > 2 && density <= 3) {
-    densityScore = 50 * ((3 - density) / 1);
-  }
-  return Math.round(wordScore + densityScore);
-};
+    let wordScore = 0;
+    if (words > 0) {
+      wordScore = Math.min(50, (words / 800) * 50);
+    }
+    let densityScore = 0;
+    if (density >= 1 && density <= 2) {
+      densityScore = 50;
+    } else if (density >= 0.5 && density < 1) {
+      densityScore = 50 * ((density - 0.5) / 0.5);
+    } else if (density > 2 && density <= 3) {
+      densityScore = 50 * ((3 - density) / 1);
+    }
+    return Math.round(wordScore + densityScore);
+  };
 
   const getCircleColor = (score) => score < 60 ? '#ef4444' : score < 80 ? '#fb923c' : '#22c55e';
   const getTextColorClass = (score) => score < 60 ? 'text-red-600 dark:text-red-400' : score < 80 ? 'text-orange-500 dark:text-orange-400' : 'text-green-600 dark:text-green-400';
@@ -156,10 +147,10 @@ const countPhrase = (text = '', phrase = '', isUrl = false) => {
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
-    
-  const canProceed = await canRunTool('limit-audit-id');
-  if (!canProceed) return;
-  
+
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
+
     let yourUrl = yourInput.value.trim();
     let compUrl = compInput.value.trim();
     const phrase = phraseInput.value.trim();
@@ -167,7 +158,7 @@ const countPhrase = (text = '', phrase = '', isUrl = false) => {
     if (compUrl && !compUrl.startsWith('http')) compUrl = 'https://' + compUrl;
     if (!yourUrl || !compUrl || !phrase) return;
 
-    // === Dual-page progress loader ===
+    // Progress loader
     const progressContainer = document.createElement('div');
     progressContainer.id = 'analysis-progress';
     progressContainer.className = 'mt-12 max-w-4xl mx-auto px-6';
@@ -189,7 +180,6 @@ const countPhrase = (text = '', phrase = '', isUrl = false) => {
     }
     results.classList.add('hidden');
 
-    // Fetch both pages
     let yourDoc, compDoc;
     try {
       [yourDoc, compDoc] = await Promise.all([fetchPage(yourUrl), fetchPage(compUrl)]);
@@ -209,11 +199,11 @@ const countPhrase = (text = '', phrase = '', isUrl = false) => {
       `;
       return;
     }
-    
-      const yourTitle = yourDoc.querySelector('title')?.textContent.trim() || '';
-      const compTitle = compDoc.querySelector('title')?.textContent.trim() || '';
 
-    // Dual-analysis progress steps
+    const yourTitle = yourDoc.querySelector('title')?.textContent.trim() || '';
+    const compTitle = compDoc.querySelector('title')?.textContent.trim() || '';
+
+    // Progress steps
     const steps = [
       "Fetching both pages...",
       "Parsing titles, meta & headings on both pages",
@@ -285,12 +275,12 @@ const countPhrase = (text = '', phrase = '', isUrl = false) => {
       compScore += compAnchors > 0 ? 10 : 0;
       const yourSchema = !!yourDoc.querySelector('script[type="application/ld+json"]');
       const compSchema = !!compDoc.querySelector('script[type="application/ld+json"]');
-data.urlSchema = {
-  yourUrlMatch: countPhrase(yourUrl, phrase, true),
-  compUrlMatch: countPhrase(compUrl, phrase, true),
-  yourSchema,
-  compSchema
-};
+      data.urlSchema = {
+        yourUrlMatch: countPhrase(yourUrl, phrase, true),
+        compUrlMatch: countPhrase(compUrl, phrase, true),
+        yourSchema,
+        compSchema
+      };
       yourScore += (data.urlSchema.yourUrlMatch > 0 ? 10 : 0) + (data.urlSchema.yourSchema ? 5 : 0);
       compScore += (data.urlSchema.compUrlMatch > 0 ? 10 : 0) + (data.urlSchema.compSchema ? 5 : 0);
       yourScore = Math.min(100, Math.round(yourScore));
@@ -299,7 +289,7 @@ data.urlSchema = {
       const yourGrade = getGrade(yourScore);
       const compGrade = getGrade(compScore);
 
-      // === Top Priority Fixes ===
+      // Top Priority Fixes
       const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'Image Alts', 'Anchor Text', 'URL & Schema'];
       const failedModules = [];
       if (data.meta.yourMatches === 0) failedModules.push({ id: 'meta', name: 'Meta Title & Desc' });
@@ -358,16 +348,13 @@ data.urlSchema = {
       }
       const finalFixes = topFixes.slice(0, 3);
       results.classList.remove('hidden');
-      
-// Scroll to results
-const offset = 320;
-const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-window.scrollTo({ top: targetY, behavior: 'smooth' });
+
+      const offset = 320;
+      const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
 
       results.innerHTML = `
-      
-      
-<!-- Big Score Cards - Your Page vs Competitor -->
+<!-- Big Score Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12 px-4 max-w-5xl mx-auto">
   <!-- Your Page -->
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full mx-auto border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
@@ -446,8 +433,6 @@ window.scrollTo({ top: targetY, behavior: 'smooth' });
   </div>
 </div>
 
-
-
 <!-- Competitive Gap Verdict -->
 <div class="text-center my-12">
   <p class="text-4xl font-bold text-gray-800 dark:text-gray-200">
@@ -458,14 +443,13 @@ window.scrollTo({ top: targetY, behavior: 'smooth' });
   </p>
   <p class="text-xl text-gray-600 dark:text-gray-400 mt-4">Target phrase: "${phrase}"</p>
 </div>
+
 <!-- Small Metric Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 my-16">
   ${[
     { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0 },
     { name: 'H1 & Headings', you: data.headings.yourH1Match > 0 ? 100 : 0, comp: data.headings.compH1Match > 0 ? 100 : 0 },
-    { name: 'Content Density', 
-  you: calculateContentScore(data.content.yourWords, data.content.yourDensity), 
-  comp: calculateContentScore(data.content.compWords, data.content.compDensity) },
+    { name: 'Content Density', you: calculateContentScore(data.content.yourWords, data.content.yourDensity), comp: calculateContentScore(data.content.compWords, data.content.compDensity) },
     { name: 'Image Alts', you: data.alts.yourPhrase > 0 ? 100 : 0, comp: data.alts.compPhrase > 0 ? 100 : 0 },
     { name: 'Anchor Text', you: data.anchors.your > 0 ? 100 : 0, comp: data.anchors.comp > 0 ? 100 : 0 },
     { name: 'URL & Schema', you: Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0)), comp: Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0)) }
@@ -568,6 +552,7 @@ window.scrollTo({ top: targetY, behavior: 'smooth' });
     `;
   }).join('')}
 </div>
+
 <!-- Top Priority Fixes & Competitive Gaps -->
 <div class="my-20 max-w-5xl mx-auto">
   <h3 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
@@ -598,6 +583,7 @@ window.scrollTo({ top: targetY, behavior: 'smooth' });
     </div>
   `}
 </div>
+
 <!-- Closing the Relevance Gap & Projected Gains -->
 <div class="grid md:grid-cols-2 gap-12 my-20 max-w-6xl mx-auto">
   <!-- Left: Relevance Improvement -->
@@ -716,11 +702,12 @@ window.scrollTo({ top: targetY, behavior: 'smooth' });
     `}
   </div>
 </div>
+
 <!-- Share Dashboard Container -->
 <div id="share-dashboard-container" class="mt-16"></div>
-      `;
+`;
 
-      // ─── FALLBACK: Create container if missing ─────────────────────
+      // ─── Ensure share dashboard container exists ─────────────────────
       let shareContainer = document.getElementById('share-dashboard-container');
       if (!shareContainer) {
         shareContainer = document.createElement('div');
@@ -728,6 +715,25 @@ window.scrollTo({ top: targetY, behavior: 'smooth' });
         shareContainer.className = 'mt-16';
         results.appendChild(shareContainer);
       }
+
+      // ─── Insert Ask AI section before the share container ────────────
+      const aiSectionHTML = `
+<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+  <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About This Audit</h2>
+  <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+    Get tailored answers about competitive gaps, keyword placement, and specific improvement steps to outrank your competitor.
+  </p>
+  <div class="flex flex-col sm:flex-row gap-4">
+    <textarea id="ai-question-input" placeholder="e.g., Why am I losing in content density? How do I close the gap in meta tags?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
+    <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask Traffic Torch AI</button>
+  </div>
+  <div id="ai-answer-container" class="mt-6 hidden">
+    <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+  </div>
+</div>
+`;
+
+      shareContainer.insertAdjacentHTML('beforebegin', aiSectionHTML);
 
       // ─── Prepare share data ────────────────────────────────────────
       const moduleNames = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'Image Alts', 'Anchor Text', 'URL & Schema'];
@@ -786,6 +792,128 @@ window.scrollTo({ top: targetY, behavior: 'smooth' });
         initShareModule(shareContainer, shareData);
       } else {
         console.error('initShareModule not loaded – check import path');
+      }
+
+      // ─── Ask AI Listener ──────────────────────────────────────────
+      const askBtn = document.getElementById('ask-ai-btn');
+      const askInput = document.getElementById('ai-question-input');
+      const answerContainer = document.getElementById('ai-answer-container');
+      const answerContent = document.getElementById('ai-answer-content');
+
+      if (askBtn) {
+        const newAskBtn = askBtn.cloneNode(true);
+        askBtn.parentNode.replaceChild(newAskBtn, askBtn);
+
+        newAskBtn.addEventListener('click', async () => {
+          const canProceed = await canRunTool('limit-audit-id');
+          if (!canProceed) return;
+
+          const question = askInput?.value?.trim();
+          if (!question) {
+            alert('Please enter a question.');
+            return;
+          }
+
+          newAskBtn.disabled = true;
+          newAskBtn.textContent = 'Thinking...';
+          answerContainer.classList.remove('hidden');
+          answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+          try {
+            // Build module scores for the payload
+            const moduleNames = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'Image Alts', 'Anchor Text', 'URL & Schema'];
+            const yourScores = [
+              data.meta.yourMatches > 0 ? 100 : 0,
+              data.headings.yourH1Match > 0 ? 100 : 0,
+              calculateContentScore(data.content.yourWords, data.content.yourDensity),
+              data.alts.yourPhrase > 0 ? 100 : 0,
+              data.anchors.your > 0 ? 100 : 0,
+              Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0))
+            ];
+            const compScores = [
+              data.meta.compMatches > 0 ? 100 : 0,
+              data.headings.compH1Match > 0 ? 100 : 0,
+              calculateContentScore(data.content.compWords, data.content.compDensity),
+              data.alts.compPhrase > 0 ? 100 : 0,
+              data.anchors.comp > 0 ? 100 : 0,
+              Math.min(100, (data.urlSchema.compUrlMatch > 0 ? 50 : 0) + (data.urlSchema.compSchema ? 50 : 0))
+            ];
+
+            const moduleScoresMap = {};
+            moduleNames.forEach((name, i) => {
+              const key = name.toLowerCase().replace(/[&\s]+/g, '');
+              moduleScoresMap[key + 'Your'] = yourScores[i];
+              moduleScoresMap[key + 'Comp'] = compScores[i];
+            });
+
+            const auditPayload = {
+              question: question,
+              auditData: {
+                yourUrl: yourUrl,
+                competitorUrl: compUrl,
+                targetKeyword: phrase,
+                yourScore: yourScore,
+                competitorScore: compScore,
+                scores: {
+                  metaTitleDescYour: moduleScoresMap['metatitledescyour'] || 0,
+                  metaTitleDescComp: moduleScoresMap['metatitledesccomp'] || 0,
+                  h1HeadingsYour: moduleScoresMap['h1headingsyour'] || 0,
+                  h1HeadingsComp: moduleScoresMap['h1headingscomp'] || 0,
+                  contentDensityYour: moduleScoresMap['contentdensityyour'] || 0,
+                  contentDensityComp: moduleScoresMap['contentdensitycomp'] || 0,
+                  imageAltsYour: moduleScoresMap['imagealtsyour'] || 0,
+                  imageAltsComp: moduleScoresMap['imagealtscomp'] || 0,
+                  anchorTextYour: moduleScoresMap['anchortextyour'] || 0,
+                  anchorTextComp: moduleScoresMap['anchortextcomp'] || 0,
+                  urlSchemaYour: moduleScoresMap['urlschemayour'] || 0,
+                  urlSchemaComp: moduleScoresMap['urlschemacomp'] || 0
+                },
+                flags: {
+                  yourTitleMatch: data.meta.yourMatches > 0,
+                  compTitleMatch: data.meta.compMatches > 0,
+                  yourH1Match: data.headings.yourH1Match > 0,
+                  compH1Match: data.headings.compH1Match > 0,
+                  yourKeywordInUrl: data.urlSchema.yourUrlMatch > 0,
+                  compKeywordInUrl: data.urlSchema.compUrlMatch > 0,
+                  yourSchema: data.urlSchema.yourSchema,
+                  compSchema: data.urlSchema.compSchema
+                },
+                metrics: {
+                  yourWordCount: data.content.yourWords,
+                  compWordCount: data.content.compWords,
+                  yourDensity: data.content.yourDensity,
+                  compDensity: data.content.compDensity,
+                  yourKeywordMentions: data.content.yourContentMatches,
+                  compKeywordMentions: data.content.compContentMatches
+                },
+                failedItems: failedMetrics.slice(0, 10),
+                priorityFixes: finalFixes.map(f => f.module + ': ' + f.text.split('\n')[0])
+              }
+            };
+
+            const response = await fetch('https://keyword-competition-ai.traffictorch.workers.dev/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(auditPayload)
+            });
+
+            if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+            const aiResponse = await response.json();
+
+            if (aiResponse.success) {
+              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${aiResponse.answer}`;
+            } else {
+              answerContent.innerHTML = `❌ Error: ${aiResponse.error || 'Unknown error'}`;
+            }
+
+          } catch (err) {
+            answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+          } finally {
+            newAskBtn.disabled = false;
+            newAskBtn.textContent = 'Ask Traffic Torch AI';
+          }
+        });
       }
 
     };
