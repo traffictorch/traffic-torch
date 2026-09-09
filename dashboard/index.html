@@ -1134,6 +1134,20 @@
               <p class="text-sm text-gray-500 mb-3">We'll send a password reset link to your email address.</p>
               <button @click="sendPasswordReset()" class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" :disabled="!isAuthenticated">Send Reset Email</button>
             </div>
+            
+             <!-- Delete Account -->
+            <div class="mt-8 text-center p-4 border border-red-500 rounded-lg">
+              <h4 class="font-semibold text-red-500 mb-2">⚠️</h4>
+              <button @click="openDeleteModal()" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition" :disabled="!isAuthenticated">Delete Account</button>
+            </div>
+            
+                        
+<div class="text-center mt-8">
+  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#settings" 
+     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
+    📖 Read the Settings Help Guide →
+  </a>
+</div>
 
             <!-- Logout -->
             <template x-if="isAuthenticated">
@@ -1144,19 +1158,6 @@
             </template>
           </div>
         </div>
-        
-        <div class="text-center mt-8">
-  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#settings" 
-     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
-    📖 Read the Settings Help Guide →
-  </a>
-</div>
-            
-             <!-- Delete Account -->
-            <div class="mt-8 text-center p-4 border border-red-500 rounded-lg">
-              <h4 class="font-semibold text-red-500 mb-2">⚠️</h4>
-              <button @click="openDeleteModal()" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition" :disabled="!isAuthenticated">Delete Account</button>
-            </div>
 
         <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">Privacy-first • Traffic Torch</p>
       </main>
