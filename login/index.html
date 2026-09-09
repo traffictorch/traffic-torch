@@ -9,7 +9,7 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="canonical" href="https://traffictorch.net/login/">
 
-  <!-- Schema.org markup -->
+  <!-- Schema.org markup (optional but good for rich snippets) -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -27,7 +27,7 @@
   <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
   <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
 
-  <!-- Theme detection -->
+  <!-- Theme detection (dark/light) -->
   <script>
     (function() {
       const saved = localStorage.getItem('theme');
@@ -95,8 +95,7 @@
   <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
     <button @click="activeTab='magic'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='magic' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Magic Link</button>
     <button @click="activeTab='login'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='login' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Login</button>
-    <!-- Register tab button: switch tab + re‑init AddToAny -->
-    <button @click="activeTab='register'; initShareButtons()" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='register' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Register</button>
+    <button @click="activeTab='register'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='register' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Register</button>
   </div>
 
   <!-- Message -->
@@ -144,15 +143,12 @@
     </div>
   </div>
 
-  <!-- Register Tab – with AddToAny share buttons (same as pro page) -->
+  <!-- Register Tab – with promo code + share buttons -->
   <div x-show="activeTab==='register'" x-cloak>
-    <!-- Email -->
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Email</label>
       <input type="email" x-model="registerEmail" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
     </div>
-
-    <!-- Password -->
     <div class="mb-4 relative">
       <label class="block text-sm font-medium mb-1">Password</label>
       <input :type="registerPasswordVisible ? 'text' : 'password'" x-model="registerPassword" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none pr-12">
@@ -167,8 +163,6 @@
         </svg>
       </button>
     </div>
-
-    <!-- Confirm Password -->
     <div class="mb-4 relative">
       <label class="block text-sm font-medium mb-1">Confirm Password</label>
       <input :type="registerConfirmVisible ? 'text' : 'password'" x-model="registerConfirm" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none pr-12">
@@ -212,7 +206,7 @@
     <!-- Register Button -->
     <button @click="register()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition" :disabled="loading">Register</button>
   </div>
-  
+
   <!-- Password Reset Form (shown when reset_token is in URL) -->
   <div x-show="resetToken" x-cloak class="mt-4 p-4 border border-blue-300 rounded-lg">
     <h3 class="font-bold text-lg">Set new password</h3>
@@ -248,7 +242,7 @@
 
 <script>
 // ============================================================
-// TRAFFIC TORCH – LOGIN SCRIPT (AddToAny re‑init)
+// TRAFFIC TORCH – LOGIN SCRIPT (FIXED ENDPOINTS)
 // ============================================================
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
@@ -258,46 +252,40 @@ function authApp() {
     loading: false,
     message: '',
     messageType: 'error',
-
-    // Magic link
     magicEmail: '',
-
-    // Login
     loginEmail: '',
     loginPassword: '',
     loginPasswordVisible: false,
     showForgot: false,
-
-    // Register
     registerEmail: '',
     registerPassword: '',
     registerPasswordVisible: false,
     registerConfirm: '',
     registerConfirmVisible: false,
-    registerPromoCode: '',
-
-    // Reset
+    registerPromoCode: '', // <-- added for promo code
     resetEmail: '',
     resetToken: new URLSearchParams(window.location.search).get('reset_token') || '',
     resetNewPassword: '',
     resetPasswordVisible: false,
     resetConfirmPassword: '',
     resetConfirmVisible: false,
-
     msgTimeout: null,
 
     initAuth() {
+      // If reset token is present, show the reset form and switch to login tab
       if (this.resetToken) {
         this.activeTab = 'login';
         this.showForgot = false;
       }
 
+      // Magic link token: store and redirect
       const magicToken = new URLSearchParams(window.location.search).get('magic_token');
       if (magicToken) {
         localStorage.setItem('authToken', magicToken);
         window.location.href = '/dashboard/';
       }
 
+      // Already logged in? Redirect to dashboard
       const token = localStorage.getItem('authToken');
       if (token) {
         window.location.href = '/dashboard/';
@@ -370,10 +358,10 @@ function authApp() {
         const res = await fetch(API_BASE + '/api/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: this.registerEmail,
+          body: JSON.stringify({ 
+            email: this.registerEmail, 
             password: this.registerPassword,
-            promo_code: this.registerPromoCode
+            promo_code: this.registerPromoCode // <-- send promo code
           })
         });
         const data = await res.json();
@@ -389,7 +377,7 @@ function authApp() {
       this.loading = false;
     },
 
-    // ---- Send Reset Link ----
+    // ---- Send Reset Link (Forgot Password) ----
     async sendResetLink() {
       this.loading = true;
       try {
@@ -412,7 +400,7 @@ function authApp() {
       this.loading = false;
     },
 
-    // ---- Reset Password ----
+    // ---- Confirm Reset Password (using token from URL) ----
     async resetPassword() {
       if (this.resetNewPassword !== this.resetConfirmPassword) {
         this.setMessage('Passwords do not match');
@@ -432,11 +420,13 @@ function authApp() {
         const data = await res.json();
         if (res.ok) {
           this.setMessage('Password reset successfully!', 'success');
+          // Clear the form and token
           this.resetToken = '';
           this.resetNewPassword = '';
           this.resetConfirmPassword = '';
           this.showForgot = false;
           this.activeTab = 'login';
+          // Remove token from URL
           window.history.replaceState({}, '', '/login/');
         } else {
           this.setMessage(data.error || 'Reset failed');
@@ -445,16 +435,6 @@ function authApp() {
         this.setMessage('Network error');
       }
       this.loading = false;
-    },
-
-    // ---- Force AddToAny to re‑scan when Register tab is shown ----
-    initShareButtons() {
-      if (window.a2a) {
-        // Small delay to ensure the DOM is fully visible
-        setTimeout(() => {
-          window.a2a.init('page');
-        }, 100);
-      }
     }
   };
 }
