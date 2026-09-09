@@ -45,6 +45,9 @@
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
+  <!-- AddToAny (sharing) – same as pro page -->
+  <script defer src="https://static.addtoany.com/menu/page.js"></script>
+
   <style>
     [x-cloak] { display: none !important; }
     .glass {
@@ -92,7 +95,8 @@
   <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
     <button @click="activeTab='magic'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='magic' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Magic Link</button>
     <button @click="activeTab='login'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='login' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Login</button>
-    <button @click="activeTab='register'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='register' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Register</button>
+    <!-- Register tab button: switch tab + re‑init AddToAny -->
+    <button @click="activeTab='register'; initShareButtons()" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='register' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Register</button>
   </div>
 
   <!-- Message -->
@@ -140,7 +144,7 @@
     </div>
   </div>
 
-  <!-- Register Tab (Native Share – No external scripts, never blocked) -->
+  <!-- Register Tab – with AddToAny share buttons (same as pro page) -->
   <div x-show="activeTab==='register'" x-cloak>
     <!-- Email -->
     <div class="mb-4">
@@ -194,13 +198,15 @@
       <p class="text-xs text-gray-400 mt-3">🐞 Found a bug? Submit feedback via the tool results.</p>
     </div>
 
-    <!-- ===== NATIVE SHARE BUTTONS (Works everywhere, no blocking, no tracking) ===== -->
-    <div class="flex items-center justify-center gap-2 mb-4">
-      <span class="text-sm text-gray-600 dark:text-gray-400">Share:</span>
-      <button @click="shareVia('whatsapp')" class="w-8 h-8 rounded-full bg-green-500 hover:bg-green-600 text-white text-xs font-bold flex items-center justify-center transition">WA</button>
-      <button @click="shareVia('sms')" class="w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold flex items-center justify-center transition">SMS</button>
-      <button @click="shareVia('messenger')" class="w-8 h-8 rounded-full bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold flex items-center justify-center transition">M</button>
-      <button @click="shareVia('more')" class="w-8 h-8 rounded-full bg-gray-500 hover:bg-gray-600 text-white text-xs font-bold flex items-center justify-center transition">+</button>
+    <!-- ===== SHARE BUTTONS – exactly like pro page ===== -->
+    <div class="flex flex-col items-center gap-4 mb-4">
+      <strong class="text-lg font-semibold text-gray-800 dark:text-gray-200">Share?</strong>
+      <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+        <a class="a2a_button_whatsapp"></a>
+        <a class="a2a_button_sms"></a>
+        <a class="a2a_button_facebook_messenger"></a>
+        <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      </div>
     </div>
 
     <!-- Register Button -->
@@ -242,7 +248,7 @@
 
 <script>
 // ============================================================
-// TRAFFIC TORCH – LOGIN SCRIPT (Final – Native Share)
+// TRAFFIC TORCH – LOGIN SCRIPT (AddToAny re‑init)
 // ============================================================
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
@@ -441,42 +447,14 @@ function authApp() {
       this.loading = false;
     },
 
-    // ---- Native Share (Never blocked by ETP) ----
-    shareVia(method) {
-      const url = 'https://traffictorch.net/register/';
-      const text = '🎉 Get Lifetime Pro for free at Traffic Torch! Use code traffictorchpro during Beta.';
-      const fullMessage = text + ' ' + url;
-
-      // Direct links for WhatsApp and SMS
-      if (method === 'whatsapp') {
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(fullMessage)}`, '_blank');
-        return;
+    // ---- Force AddToAny to re‑scan when Register tab is shown ----
+    initShareButtons() {
+      if (window.a2a) {
+        // Small delay to ensure the DOM is fully visible
+        setTimeout(() => {
+          window.a2a.init('page');
+        }, 100);
       }
-      if (method === 'sms') {
-        window.open(`sms:?body=${encodeURIComponent(fullMessage)}`, '_blank');
-        return;
-      }
-
-      // Use native share for Messenger and "More"
-      if (navigator.share) {
-        navigator.share({
-          title: 'Traffic Torch',
-          text: text,
-          url: url
-        }).catch(() => {});
-        return;
-      }
-
-      // Fallback: copy to clipboard
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(fullMessage).then(() => {
-          alert('Link copied to clipboard! You can now paste it anywhere.');
-        });
-        return;
-      }
-
-      // Last resort: mailto
-      window.open(`mailto:?subject=Traffic Torch&body=${encodeURIComponent(fullMessage)}`, '_blank');
     }
   };
 }
