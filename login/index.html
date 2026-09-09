@@ -4,21 +4,81 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login – Traffic Torch</title>
+  <meta name="description" content="Log in, register, or use a magic link to access your Traffic Torch account. Get Free Pro Lifetime during Beta with code traffictorchpro.">
 
-  <!-- SEO & Crawling -->
-  <meta name="robots" content="noindex, nofollow">
+  <!-- SEO & Crawling - Indexed -->
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://traffictorch.net/login/">
 
-  <!-- Schema.org markup (optional but good for rich snippets) -->
+  <!-- Open Graph -->
+  <meta property="og:title" content="Login – Traffic Torch">
+  <meta property="og:description" content="Log in, register, or use a magic link to access your Traffic Torch account. Get Free Pro Lifetime during Beta with code traffictorchpro.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/login/">
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Login – Traffic Torch">
+  <meta name="twitter:description" content="Log in, register, or use a magic link to access your Traffic Torch account. Get Free Pro Lifetime during Beta with code traffictorchpro.">
+  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <!-- Schema.org -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
       "name": "Login – Traffic Torch",
-      "description": "Log in, register, or use a magic link to access your Traffic Torch account.",
+      "description": "Log in, register, or use a magic link to access your Traffic Torch account. Get Free Pro Lifetime during Beta with code traffictorchpro.",
       "url": "https://traffictorch.net/login/"
     }
   </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Traffic Torch",
+      "url": "https://traffictorch.net/",
+      "logo": "https://traffictorch.net/logo-512.webp",
+      "description": "Creators of free & pro privacy-first AI-powered SEO and UX analysis tools. Client-side processing – no tracking.",
+      "sameAs": [
+        "https://g.dev/traffictorch",
+        "https://github.com/traffictorch/",
+        "https://orcid.org/0009-0006-4084-0241",
+        "https://www.wikidata.org/wiki/Q139815165",
+        "https://zenodo.org/records/20149616",
+        "https://github.com/traffictorch/traffic-torch",
+        "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+        "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+        "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+        "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+        "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+        "https://www.framer.com/marketplace/plugins/traffic-torch/",
+        "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+        "https://github.com/marketplace/actions/traffic-torch-audit",
+        "https://www.linkedin.com/in/ylia-callan-8b889976/",
+        "https://x.com/Guitaralize"
+      ]
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" },
+        { "@type": "ListItem", "position": 2, "name": "Login", "item": "https://traffictorch.net/login/" }
+      ]
+    }
+  </script>
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
 
   <!-- Preload critical CSS -->
   <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
@@ -27,7 +87,7 @@
   <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
   <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
 
-  <!-- Theme detection (dark/light) -->
+  <!-- Theme detection -->
   <script>
     (function() {
       const saved = localStorage.getItem('theme');
@@ -45,7 +105,7 @@
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
-  <!-- AddToAny (sharing) – same as pro page -->
+  <!-- AddToAny (sharing) -->
   <script defer src="https://static.addtoany.com/menu/page.js"></script>
 
   <style>
@@ -144,7 +204,7 @@
   </div>
 
   <!-- Register Tab – with promo code + share buttons -->
-  <div x-show="activeTab==='register'" x-cloak>
+  <div x-show="activeTab==='register'" x-cloak x-init="$nextTick(() => { if (window.a2a) window.a2a.init('page'); })">
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Email</label>
       <input type="email" x-model="registerEmail" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
@@ -192,7 +252,7 @@
       <p class="text-xs text-gray-400 mt-3">🐞 Found a bug? Submit feedback via the tool results.</p>
     </div>
 
-    <!-- ===== SHARE BUTTONS – exactly like pro page ===== -->
+    <!-- ===== SHARE BUTTONS ===== -->
     <div class="flex flex-col items-center gap-4 mb-4">
       <strong class="text-lg font-semibold text-gray-800 dark:text-gray-200">Share?</strong>
       <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
@@ -262,7 +322,7 @@ function authApp() {
     registerPasswordVisible: false,
     registerConfirm: '',
     registerConfirmVisible: false,
-    registerPromoCode: '', // <-- added for promo code
+    registerPromoCode: '',
     resetEmail: '',
     resetToken: new URLSearchParams(window.location.search).get('reset_token') || '',
     resetNewPassword: '',
@@ -272,20 +332,17 @@ function authApp() {
     msgTimeout: null,
 
     initAuth() {
-      // If reset token is present, show the reset form and switch to login tab
       if (this.resetToken) {
         this.activeTab = 'login';
         this.showForgot = false;
       }
 
-      // Magic link token: store and redirect
       const magicToken = new URLSearchParams(window.location.search).get('magic_token');
       if (magicToken) {
         localStorage.setItem('authToken', magicToken);
         window.location.href = '/dashboard/';
       }
 
-      // Already logged in? Redirect to dashboard
       const token = localStorage.getItem('authToken');
       if (token) {
         window.location.href = '/dashboard/';
@@ -361,7 +418,7 @@ function authApp() {
           body: JSON.stringify({ 
             email: this.registerEmail, 
             password: this.registerPassword,
-            promo_code: this.registerPromoCode // <-- send promo code
+            promo_code: this.registerPromoCode
           })
         });
         const data = await res.json();
@@ -377,7 +434,7 @@ function authApp() {
       this.loading = false;
     },
 
-    // ---- Send Reset Link (Forgot Password) ----
+    // ---- Send Reset Link ----
     async sendResetLink() {
       this.loading = true;
       try {
@@ -400,7 +457,7 @@ function authApp() {
       this.loading = false;
     },
 
-    // ---- Confirm Reset Password (using token from URL) ----
+    // ---- Reset Password ----
     async resetPassword() {
       if (this.resetNewPassword !== this.resetConfirmPassword) {
         this.setMessage('Passwords do not match');
@@ -420,13 +477,11 @@ function authApp() {
         const data = await res.json();
         if (res.ok) {
           this.setMessage('Password reset successfully!', 'success');
-          // Clear the form and token
           this.resetToken = '';
           this.resetNewPassword = '';
           this.resetConfirmPassword = '';
           this.showForgot = false;
           this.activeTab = 'login';
-          // Remove token from URL
           window.history.replaceState({}, '', '/login/');
         } else {
           this.setMessage(data.error || 'Reset failed');
