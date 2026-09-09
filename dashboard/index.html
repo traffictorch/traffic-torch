@@ -1219,34 +1219,21 @@
 </div>
 
 <!-- ===== FIXED RESET PASSWORD MODAL ===== -->
-<div x-show="showResetModal"
-     x-init="$el.parentNode.removeChild($el); document.body.appendChild($el)"
-     x-cloak
-     class="fixed inset-0 z-[10003] flex items-center justify-center modal-overlay overflow-hidden">
+<div x-show="showResetModal" x-cloak class="fixed inset-0 z-[10003] flex items-center justify-center modal-overlay min-h-screen">
   <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-    <button @click="showResetModal = false; resetToken = null"
-            class="absolute top-3 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-      &times;
-    </button>
-    <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white pr-10">Reset Your Password</h3>
+    <button @click="showResetModal = false; resetToken = null" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
+    <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Reset Your Password</h3>
     <p class="text-gray-600 dark:text-gray-300 mb-4">Enter a new password (min 8 characters).</p>
 
     <!-- New password with SVG toggle -->
     <div class="relative mb-4">
-      <input type="password"
-             x-bind:type="showPassword ? 'text' : 'password'"
-             x-model="newPassword"
-             placeholder="New password"
-             class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none pr-12">
-      <button type="button"
-              @click="showPassword = !showPassword"
-              class="password-toggle"
-              aria-label="Toggle password visibility">
-        <svg viewBox="0 0 24 24" x-show="!showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+      <input type="password" x-bind:type="showPassword ? 'text' : 'password'" x-model="newPassword" placeholder="New password" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none pr-12">
+      <button type="button" @click="showPassword = !showPassword" class="password-toggle" aria-label="Toggle password visibility">
+        <svg viewBox="0 0 24 24" x-show="!showPassword">
           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
           <circle cx="12" cy="12" r="3"/>
         </svg>
-        <svg viewBox="0 0 24 24" x-show="showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+        <svg viewBox="0 0 24 24" x-show="showPassword">
           <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
           <line x1="1" y1="1" x2="23" y2="23"/>
         </svg>
@@ -1255,20 +1242,13 @@
 
     <!-- Confirm password with SVG toggle -->
     <div class="relative mb-4">
-      <input type="password"
-             x-bind:type="showPassword ? 'text' : 'password'"
-             x-model="confirmPassword"
-             placeholder="Confirm password"
-             class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none pr-12">
-      <button type="button"
-              @click="showPassword = !showPassword"
-              class="password-toggle"
-              aria-label="Toggle password visibility">
-        <svg viewBox="0 0 24 24" x-show="!showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+      <input type="password" x-bind:type="showPassword ? 'text' : 'password'" x-model="confirmPassword" placeholder="Confirm password" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none pr-12">
+      <button type="button" @click="showPassword = !showPassword" class="password-toggle" aria-label="Toggle password visibility">
+        <svg viewBox="0 0 24 24" x-show="!showPassword">
           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
           <circle cx="12" cy="12" r="3"/>
         </svg>
-        <svg viewBox="0 0 24 24" x-show="showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+        <svg viewBox="0 0 24 24" x-show="showPassword">
           <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
           <line x1="1" y1="1" x2="23" y2="23"/>
         </svg>
@@ -1278,9 +1258,7 @@
     <div x-show="resetError" class="text-red-500 text-sm mb-2" x-text="resetError"></div>
     <div x-show="resetSuccess" class="text-green-500 text-sm mb-2" x-text="resetSuccess"></div>
 
-    <button @click="submitResetPassword()"
-            class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition"
-            :disabled="loadingReset">
+    <button @click="submitResetPassword()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition" :disabled="loadingReset">
       <span x-show="!loadingReset">Reset Password</span>
       <span x-show="loadingReset">Processing...</span>
     </button>
