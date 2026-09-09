@@ -315,6 +315,32 @@
       opacity: 0.4;
       cursor: not-allowed;
     }
+
+    /* ===== BETA DISCOUNT SECTION STYLES ===== */
+    .discount-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .discount-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -8px rgba(0,0,0,0.15);
+    }
+    .dark .discount-card:hover {
+      box-shadow: 0 12px 30px -8px rgba(0,0,0,0.4);
+    }
+    .code-block {
+      background: rgba(0,0,0,0.05);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-family: monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+    .dark .code-block {
+      background: rgba(255,255,255,0.08);
+    }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -358,7 +384,7 @@
       </div>
     </header>
 
-    <!-- MAIN CONTENT – REPLACED WITH PRICING -->
+    <!-- MAIN CONTENT – PRICING + BETA DISCOUNT SECTION -->
     <main class="flex-1 container mx-auto px-4 py-12 md:py-20">
 
       <div class="text-center max-w-3xl mx-auto mb-16">
@@ -433,9 +459,105 @@
   </div>
 </div>
 
+      </div><!-- end grid -->
+
       <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12 max-w-2xl mx-auto">
         All plans include full access to every Traffic Torch tool. Upgrade anytime.
       </p>
+
+ <!-- ===== BETA DISCOUNTS + SHARE + FEEDBACK ===== -->
+<section id="beta-discounts" class="mt-16 max-w-4xl mx-auto">
+  <div class="border-2 border-red-500 rounded-3xl p-6 md:p-10 bg-white/5 dark:bg-black/20 backdrop-blur-sm shadow-xl">
+    
+    <h2 class="text-3xl font-black text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-2">
+      🎉 Beta Discounts &amp; Features
+    </h2>
+    <p class="text-center text-gray-600 dark:text-gray-400 text-sm mb-6">
+      Infinite-time offers – grab them before they loop.
+    </p>
+
+    <!-- Two discounts side-by-side on desktop -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <!-- Pro Lifetime -->
+      <div class="text-center p-4 rounded-xl bg-white/10 dark:bg-black/20">
+        <div class="text-3xl mb-1">🚀</div>
+        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">Pro – Lifetime</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">One payment – forever</p>
+        <div class="mt-2 flex items-center justify-center gap-3">
+          <span class="text-xl font-bold text-gray-400 line-through">$198</span>
+          <span class="text-2xl font-black text-green-600 dark:text-green-400">$0</span>
+        </div>
+        <div class="mt-2 inline-block bg-gray-200 dark:bg-gray-700 px-4 py-1.5 rounded-lg">
+          <code class="text-orange-600 dark:text-orange-400 font-bold">traffictorchpro</code>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+          Enter at <a href="/login/?tab=register" class="text-orange-500 hover:underline">registration</a>
+        </p>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="text-center p-4 rounded-xl bg-white/10 dark:bg-black/20">
+        <div class="text-3xl mb-1">🏢</div>
+        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">Enterprise – 29% Off</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">Monthly &amp; yearly</p>
+        <div class="mt-2 flex flex-col items-center gap-0.5">
+          <div class="flex items-center gap-3">
+            <span class="text-lg font-bold text-gray-400 line-through">$68</span>
+            <span class="text-2xl font-black text-purple-600 dark:text-purple-400">$48</span>
+            <span class="text-sm text-gray-500">/mo</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-lg font-bold text-gray-400 line-through">$680</span>
+            <span class="text-2xl font-black text-purple-600 dark:text-purple-400">$480</span>
+            <span class="text-sm text-gray-500">/yr</span>
+          </div>
+        </div>
+        <div class="mt-2 inline-block bg-gray-200 dark:bg-gray-700 px-4 py-1.5 rounded-lg">
+          <code class="text-purple-600 dark:text-purple-400 font-bold">TRAFFICTORCH</code>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+          Enter at <a href="/upgrade/" class="text-purple-500 hover:underline">checkout</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <hr class="border-gray-300 dark:border-gray-700 my-6">
+
+    <!-- Share Buttons -->
+    <div class="py-2 text-center">
+      <div class="flex flex-col items-center gap-4">
+        <strong class="text-lg font-semibold text-gray-800 dark:text-gray-200">Sharing is appreciated...</strong>
+        <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5 flex-wrap">
+          <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+          <a class="a2a_button_whatsapp"></a>
+          <a class="a2a_button_sms"></a>
+          <a class="a2a_button_facebook_messenger"></a>
+          <a class="a2a_button_email"></a>
+          <a class="a2a_button_copy_link"></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <hr class="border-gray-300 dark:border-gray-700 my-6">
+
+    <!-- Submit Feedback -->
+    <div class="text-center">
+      <p class="text-gray-700 dark:text-gray-300">
+        🐞 Found a bug or have a suggestion?
+        <a href="/contact/" class="text-orange-500 hover:underline font-medium">Submit feedback</a>
+        via the tool results or dashboard.
+      </p>
+    </div>
+
+    <p class="text-xs text-gray-400 text-center mt-4">⏳ Beta period ends soon – codes valid for a infinity times zero.</p>
+  </div>
+</section>
+
+<!-- AddToAny script (if not already present) -->
+<script defer src="https://static.addtoany.com/menu/page.js"></script>
+
 
     </main>
 
