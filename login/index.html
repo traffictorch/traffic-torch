@@ -9,7 +9,7 @@
   <meta name="robots" content="noindex, nofollow">
   <link rel="canonical" href="https://traffictorch.net/login/">
 
-  <!-- Schema.org markup (optional but good for rich snippets) -->
+  <!-- Schema.org markup -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -27,7 +27,7 @@
   <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
   <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
 
-  <!-- Theme detection (dark/light) -->
+  <!-- Theme detection -->
   <script>
     (function() {
       const saved = localStorage.getItem('theme');
@@ -44,6 +44,9 @@
   <script src="https://js.stripe.com/v3/"></script>
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+
+  <!-- AddToAny (sharing) -->
+  <script defer src="https://static.addtoany.com/menu/page.js"></script>
 
   <style>
     [x-cloak] { display: none !important; }
@@ -77,6 +80,17 @@
       stroke-linejoin: round;
     }
     .dark .password-toggle { color: #9ca3af; }
+
+    /* Custom share button style override (optional) */
+    .a2a_kit .a2a_button_whatsapp,
+    .a2a_kit .a2a_button_sms,
+    .a2a_kit .a2a_button_facebook_messenger,
+    .a2a_kit .a2a_dd {
+      font-size: 0 !important; /* hide default text, just show icons */
+    }
+    .a2a_kit .a2a_svg {
+      border-radius: 9999px;
+    }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex items-center justify-center p-4">
@@ -92,7 +106,8 @@
   <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
     <button @click="activeTab='magic'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='magic' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Magic Link</button>
     <button @click="activeTab='login'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='login' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Login</button>
-    <button @click="activeTab='register'" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='register' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Register</button>
+    <!-- UPDATED: Register button now calls initShareButtons() -->
+    <button @click="activeTab='register'; initShareButtons()" class="flex-1 py-2 text-sm font-medium" :class="activeTab==='register' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'">Register</button>
   </div>
 
   <!-- Message -->
@@ -140,12 +155,15 @@
     </div>
   </div>
 
-  <!-- Register Tab -->
+  <!-- Register Tab – REMOVED x-init, now triggered by button -->
   <div x-show="activeTab==='register'" x-cloak>
+    <!-- Email -->
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Email</label>
       <input type="email" x-model="registerEmail" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
     </div>
+
+    <!-- Password -->
     <div class="mb-4 relative">
       <label class="block text-sm font-medium mb-1">Password</label>
       <input :type="registerPasswordVisible ? 'text' : 'password'" x-model="registerPassword" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none pr-12">
@@ -160,6 +178,8 @@
         </svg>
       </button>
     </div>
+
+    <!-- Confirm Password -->
     <div class="mb-4 relative">
       <label class="block text-sm font-medium mb-1">Confirm Password</label>
       <input :type="registerConfirmVisible ? 'text' : 'password'" x-model="registerConfirm" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none pr-12">
@@ -174,9 +194,36 @@
         </svg>
       </button>
     </div>
+
+    <!-- ===== PROMO CODE SECTION ===== -->
+    <div class="mb-5 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+      <p class="text-sm text-gray-700 dark:text-gray-300 mb-3 leading-relaxed">
+        🎉 Use promo code <strong class="font-mono bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded text-orange-600 dark:text-orange-400">traffictorchpro</strong> during Beta to get <strong>Lifetime Pro</strong> for free!
+        <br><span class="text-xs text-gray-500">Sharing is optional but appreciated.</span>
+      </p>
+
+      <!-- Promo code input -->
+      <input type="text" x-model="registerPromoCode" placeholder="Enter promo code (optional)" class="w-full p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none text-sm">
+
+      <!-- Feedback note (inside the box) -->
+      <p class="text-xs text-gray-400 mt-3">🐞 Found a bug? Submit feedback via the tool results.</p>
+    </div>
+
+    <!-- ===== SHARE BUTTONS (AddToAny – exactly as screenshot) ===== -->
+    <div class="flex items-center justify-center gap-2 mb-4">
+      <span class="text-sm text-gray-600 dark:text-gray-400">Share:</span>
+      <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
+        <a class="a2a_button_whatsapp"></a>
+        <a class="a2a_button_sms"></a>
+        <a class="a2a_button_facebook_messenger"></a>
+        <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+      </div>
+    </div>
+
+    <!-- Register Button -->
     <button @click="register()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition" :disabled="loading">Register</button>
   </div>
-
+  
   <!-- Password Reset Form (shown when reset_token is in URL) -->
   <div x-show="resetToken" x-cloak class="mt-4 p-4 border border-blue-300 rounded-lg">
     <h3 class="font-bold text-lg">Set new password</h3>
@@ -212,7 +259,7 @@
 
 <script>
 // ============================================================
-// TRAFFIC TORCH – LOGIN SCRIPT (FIXED ENDPOINTS)
+// TRAFFIC TORCH – LOGIN SCRIPT (FINAL)
 // ============================================================
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
@@ -222,39 +269,46 @@ function authApp() {
     loading: false,
     message: '',
     messageType: 'error',
+
+    // Magic link
     magicEmail: '',
+
+    // Login
     loginEmail: '',
     loginPassword: '',
     loginPasswordVisible: false,
     showForgot: false,
+
+    // Register
     registerEmail: '',
     registerPassword: '',
     registerPasswordVisible: false,
     registerConfirm: '',
     registerConfirmVisible: false,
+    registerPromoCode: '',
+
+    // Reset
     resetEmail: '',
     resetToken: new URLSearchParams(window.location.search).get('reset_token') || '',
     resetNewPassword: '',
     resetPasswordVisible: false,
     resetConfirmPassword: '',
     resetConfirmVisible: false,
+
     msgTimeout: null,
 
     initAuth() {
-      // If reset token is present, show the reset form and switch to login tab
       if (this.resetToken) {
         this.activeTab = 'login';
         this.showForgot = false;
       }
 
-      // Magic link token: store and redirect
       const magicToken = new URLSearchParams(window.location.search).get('magic_token');
       if (magicToken) {
         localStorage.setItem('authToken', magicToken);
         window.location.href = '/dashboard/';
       }
 
-      // Already logged in? Redirect to dashboard
       const token = localStorage.getItem('authToken');
       if (token) {
         window.location.href = '/dashboard/';
@@ -327,7 +381,11 @@ function authApp() {
         const res = await fetch(API_BASE + '/api/register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.registerEmail, password: this.registerPassword })
+          body: JSON.stringify({
+            email: this.registerEmail,
+            password: this.registerPassword,
+            promo_code: this.registerPromoCode
+          })
         });
         const data = await res.json();
         if (res.ok) {
@@ -342,7 +400,7 @@ function authApp() {
       this.loading = false;
     },
 
-    // ---- Send Reset Link (Forgot Password) ----
+    // ---- Send Reset Link ----
     async sendResetLink() {
       this.loading = true;
       try {
@@ -365,7 +423,7 @@ function authApp() {
       this.loading = false;
     },
 
-    // ---- Confirm Reset Password (using token from URL) ----
+    // ---- Reset Password ----
     async resetPassword() {
       if (this.resetNewPassword !== this.resetConfirmPassword) {
         this.setMessage('Passwords do not match');
@@ -385,13 +443,11 @@ function authApp() {
         const data = await res.json();
         if (res.ok) {
           this.setMessage('Password reset successfully!', 'success');
-          // Clear the form and token
           this.resetToken = '';
           this.resetNewPassword = '';
           this.resetConfirmPassword = '';
           this.showForgot = false;
           this.activeTab = 'login';
-          // Remove token from URL
           window.history.replaceState({}, '', '/login/');
         } else {
           this.setMessage(data.error || 'Reset failed');
@@ -400,6 +456,16 @@ function authApp() {
         this.setMessage('Network error');
       }
       this.loading = false;
+    },
+
+    // ---- Force AddToAny to re-scan (called when Register tab is clicked) ----
+    initShareButtons() {
+      if (window.a2a) {
+        // Wait 100ms for the DOM to fully render before re-initializing
+        setTimeout(() => {
+          window.a2a.init('page');
+        }, 100);
+      }
     }
   };
 }
