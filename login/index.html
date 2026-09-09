@@ -45,9 +45,6 @@
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
-  <!-- AddToAny (sharing) – correct script -->
-  <script defer src="https://static.addtoany.com/menu/page.js"></script>
-
   <style>
     [x-cloak] { display: none !important; }
     .glass {
@@ -143,8 +140,8 @@
     </div>
   </div>
 
-  <!-- Register Tab (with AddToAny share buttons, exactly as screenshot) -->
-  <div x-show="activeTab==='register'" x-cloak x-init="$nextTick(() => { if (window.a2a) window.a2a.init('page'); })">
+  <!-- Register Tab (Native Share – No external scripts, never blocked) -->
+  <div x-show="activeTab==='register'" x-cloak>
     <!-- Email -->
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Email</label>
@@ -197,15 +194,13 @@
       <p class="text-xs text-gray-400 mt-3">🐞 Found a bug? Submit feedback via the tool results.</p>
     </div>
 
-    <!-- ===== SHARE BUTTONS (AddToAny) – exactly as your screenshot ===== -->
+    <!-- ===== NATIVE SHARE BUTTONS (Works everywhere, no blocking, no tracking) ===== -->
     <div class="flex items-center justify-center gap-2 mb-4">
       <span class="text-sm text-gray-600 dark:text-gray-400">Share:</span>
-      <div class="a2a_kit a2a_kit_size_32 a2a_default_style">
-        <a class="a2a_button_whatsapp"></a>
-        <a class="a2a_button_sms"></a>
-        <a class="a2a_button_facebook_messenger"></a>
-        <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      </div>
+      <button @click="shareVia('whatsapp')" class="w-8 h-8 rounded-full bg-green-500 hover:bg-green-600 text-white text-xs font-bold flex items-center justify-center transition">WA</button>
+      <button @click="shareVia('sms')" class="w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold flex items-center justify-center transition">SMS</button>
+      <button @click="shareVia('messenger')" class="w-8 h-8 rounded-full bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold flex items-center justify-center transition">M</button>
+      <button @click="shareVia('more')" class="w-8 h-8 rounded-full bg-gray-500 hover:bg-gray-600 text-white text-xs font-bold flex items-center justify-center transition">+</button>
     </div>
 
     <!-- Register Button -->
@@ -247,7 +242,7 @@
 
 <script>
 // ============================================================
-// TRAFFIC TORCH – LOGIN SCRIPT (Original with AddToAny)
+// TRAFFIC TORCH – LOGIN SCRIPT (Final – Native Share)
 // ============================================================
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
@@ -444,6 +439,44 @@ function authApp() {
         this.setMessage('Network error');
       }
       this.loading = false;
+    },
+
+    // ---- Native Share (Never blocked by ETP) ----
+    shareVia(method) {
+      const url = 'https://traffictorch.net/register/';
+      const text = '🎉 Get Lifetime Pro for free at Traffic Torch! Use code traffictorchpro during Beta.';
+      const fullMessage = text + ' ' + url;
+
+      // Direct links for WhatsApp and SMS
+      if (method === 'whatsapp') {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(fullMessage)}`, '_blank');
+        return;
+      }
+      if (method === 'sms') {
+        window.open(`sms:?body=${encodeURIComponent(fullMessage)}`, '_blank');
+        return;
+      }
+
+      // Use native share for Messenger and "More"
+      if (navigator.share) {
+        navigator.share({
+          title: 'Traffic Torch',
+          text: text,
+          url: url
+        }).catch(() => {});
+        return;
+      }
+
+      // Fallback: copy to clipboard
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(fullMessage).then(() => {
+          alert('Link copied to clipboard! You can now paste it anywhere.');
+        });
+        return;
+      }
+
+      // Last resort: mailto
+      window.open(`mailto:?subject=Traffic Torch&body=${encodeURIComponent(fullMessage)}`, '_blank');
     }
   };
 }
