@@ -404,6 +404,12 @@ await env.MY_BINDING.prepare(
   )`
 ).run();
 
+// Ensure all columns exist (for existing tables)
+try { await env.MY_BINDING.prepare(`ALTER TABLE api_keys ADD COLUMN key_prefix TEXT`).run(); } catch (e) {}
+try { await env.MY_BINDING.prepare(`ALTER TABLE api_keys ADD COLUMN name TEXT`).run(); } catch (e) {}
+try { await env.MY_BINDING.prepare(`ALTER TABLE api_keys ADD COLUMN last_used_at TIMESTAMP`).run(); } catch (e) {}
+try { await env.MY_BINDING.prepare(`ALTER TABLE api_keys ADD COLUMN is_active INTEGER DEFAULT 1`).run(); } catch (e) {}
+
 await env.MY_BINDING.prepare(
   `CREATE TABLE IF NOT EXISTS api_usage (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -414,6 +420,18 @@ await env.MY_BINDING.prepare(
     FOREIGN KEY (api_key_id) REFERENCES api_keys(id) ON DELETE CASCADE
   )`
 ).run();
+
+ await env.MY_BINDING.prepare(
+    `CREATE TABLE IF NOT EXISTS webhooks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      url TEXT NOT NULL,
+      events TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`
+  ).run();
+
 }
 
 async function getCachedReport(userId, reportType, days, startDate, endDate, env) {
@@ -1095,10 +1113,16 @@ if (url.pathname === '/api/keys/generate' && method === 'POST') {
   const rawKey = 'tt_' + crypto.randomUUID().replace(/-/g, '').substring(0, 32);
   const keyHash = await sha256(rawKey);
   const keyPrefix = rawKey.substring(0, 8);
-  const result = await env.MY_BINDING.prepare(
-    'INSERT INTO api_keys (user_id, key_hash, key_prefix, name) VALUES (?, ?, ?, ?) RETURNING id'
-  ).bind(decoded.id, keyHash, keyPrefix, name || null).first();
-  return corsResponse(JSON.stringify({ key: rawKey, id: result.id }));
+  try {
+    const result = await env.MY_BINDING.prepare(
+      'INSERT INTO api_keys (user_id, key_hash, key_prefix, name) VALUES (?, ?, ?, ?) RETURNING id'
+    ).bind(decoded.id, keyHash, keyPrefix, name || null).first();
+    if (!result) throw new Error('No row returned from INSERT');
+    return corsResponse(JSON.stringify({ key: rawKey, id: result.id }));
+  } catch (dbErr) {
+    console.error('DB error:', dbErr.message);
+    return corsResponse(JSON.stringify({ error: 'Database error: ' + dbErr.message }), 500);
+  }
 }
 
 if (url.pathname.startsWith('/api/keys/revoke/') && method === 'DELETE') {
@@ -1116,7 +1140,7 @@ if (url.pathname.startsWith('/api/keys/revoke/') && method === 'DELETE') {
   return corsResponse(JSON.stringify({ success: true }));
 }
 
-// ---- TOOL API (proxy to existing tool logic) ----
+// ---- TOOL API ----
 if (url.pathname.startsWith('/api/tools/') && method === 'POST') {
   const apiKey = request.headers.get('X-API-Key');
   if (!apiKey) return corsResponse(JSON.stringify({ error: 'Missing X-API-Key header' }), 401);
@@ -1126,11 +1150,9 @@ if (url.pathname.startsWith('/api/tools/') && method === 'POST') {
   ).bind(keyHash).first();
   if (!keyRecord) return corsResponse(JSON.stringify({ error: 'Invalid or revoked API key' }), 401);
 
-  // Get user tier
   const user = await env.MY_BINDING.prepare('SELECT tier FROM users WHERE id = ?').bind(keyRecord.user_id).first();
   const tier = user?.tier || 'free';
   const limit = getTierLimit(tier);
-  // Check daily usage for this key
   const today = new Date().toISOString().split('T')[0];
   const usage = await env.MY_BINDING.prepare(
     'SELECT COUNT(*) as count FROM api_usage WHERE api_key_id = ? AND DATE(request_at) = ?'
@@ -1140,22 +1162,85 @@ if (url.pathname.startsWith('/api/tools/') && method === 'POST') {
     return corsResponse(JSON.stringify({ error: 'Daily rate limit exceeded' }), 429);
   }
 
-  // Extract tool from path
   const tool = url.pathname.split('/').pop();
-  // Map tool name to the actual audit logic (reuse existing functions)
-  // For now, we'll return a placeholder – you need to plug your audit functions here.
-  // Example: const result = await runAudit(tool, { url: body.url });
   const body = await request.json().catch(() => ({}));
-  // Replace this with actual audit logic.
-  const result = { message: `Audit for ${tool} with URL ${body.url} – not fully implemented yet` };
+  const targetUrl = body.url;
+  if (!targetUrl) {
+    return corsResponse(JSON.stringify({ error: 'Missing url in request body' }), 400);
+  }
 
-  // Log usage
-  await env.MY_BINDING.prepare(
-    'INSERT INTO api_usage (api_key_id, endpoint, response_status) VALUES (?, ?, ?)'
-  ).bind(keyRecord.id, url.pathname, 200).run();
+  // Map tool name to audit function (you need to replace these stubs with real implementations)
+  const toolMap = {
+    'seo-intent': runSeoIntent,
+    'seo-ux': runSeoUx,
+    'local-seo': runLocalSeo,
+    'product-seo': runProductSeo,
+    'entity': runEntityExtractor,
+    'topical': runTopicalAuthority,
+    'schema-generator': runSchemaGenerator,
+    'ai-search': runAiSearch,
+    'ai-voice': runAiVoice,
+    'ai-audit': runAiAudit,
+    'quit-risk': runQuitRisk,
+    'keyword-research': runKeywordResearch,
+    'keyword-placement': runKeywordPlacement,
+  };
+  const auditFn = toolMap[tool];
+  if (!auditFn) {
+    return corsResponse(JSON.stringify({ error: 'Unknown tool' }), 400);
+  }
 
-  return corsResponse(JSON.stringify({ success: true, data: result }));
+  try {
+    const result = await auditFn(targetUrl, body);
+    // Log usage
+    await env.MY_BINDING.prepare(
+      'INSERT INTO api_usage (api_key_id, endpoint, response_status) VALUES (?, ?, ?)'
+    ).bind(keyRecord.id, url.pathname, 200).run();
+
+    // Trigger webhooks (async)
+    const webhooks = await env.MY_BINDING.prepare(
+      'SELECT url FROM webhooks WHERE user_id = ? AND events LIKE ?'
+    ).bind(keyRecord.user_id, '%audit.completed%').all();
+    for (const wh of webhooks.results) {
+      fetch(wh.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event: 'audit.completed',
+          tool,
+          url: targetUrl,
+          result,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(() => {});
+    }
+
+    return corsResponse(JSON.stringify({ success: true, data: result }));
+  } catch (err) {
+    await env.MY_BINDING.prepare(
+      'INSERT INTO api_usage (api_key_id, endpoint, response_status) VALUES (?, ?, ?)'
+    ).bind(keyRecord.id, url.pathname, 500).run();
+    return corsResponse(JSON.stringify({ error: err.message }), 500);
+  }
 }
+
+// ---- Stub audit functions (replace these with real logic) ----
+async function runSeoIntent(url, params) {
+  // TODO: implement real audit
+  return { tool: 'seo-intent', url, score: 85, summary: 'Stub – replace with real logic' };
+}
+async function runSeoUx(url, params) { return { tool: 'seo-ux', url, score: 80, summary: 'Stub' }; }
+async function runLocalSeo(url, params) { return { tool: 'local-seo', url, score: 75, summary: 'Stub' }; }
+async function runProductSeo(url, params) { return { tool: 'product-seo', url, score: 70, summary: 'Stub' }; }
+async function runEntityExtractor(url, params) { return { tool: 'entity', url, entities: ['Stub'], summary: 'Stub' }; }
+async function runTopicalAuthority(url, params) { return { tool: 'topical', url, score: 82, summary: 'Stub' }; }
+async function runSchemaGenerator(url, params) { return { tool: 'schema-generator', url, schema: {}, summary: 'Stub' }; }
+async function runAiSearch(url, params) { return { tool: 'ai-search', url, score: 78, summary: 'Stub' }; }
+async function runAiVoice(url, params) { return { tool: 'ai-voice', url, score: 72, summary: 'Stub' }; }
+async function runAiAudit(url, params) { return { tool: 'ai-audit', url, issues: [], summary: 'Stub' }; }
+async function runQuitRisk(url, params) { return { tool: 'quit-risk', url, risk: 'low', summary: 'Stub' }; }
+async function runKeywordResearch(url, params) { return { tool: 'keyword-research', url, keywords: ['stub'], summary: 'Stub' }; }
+async function runKeywordPlacement(url, params) { return { tool: 'keyword-placement', url, placements: [], summary: 'Stub' }; }
 
       // ---- GA4 Realtime (Pro/Enterprise only) ----
       if (url.pathname === '/api/ga4/realtime' && method === 'GET') {
@@ -1195,6 +1280,55 @@ if (url.pathname.startsWith('/api/tools/') && method === 'POST') {
         } catch (err) {
           return corsResponse(JSON.stringify({ error: err.message }), 500);
         }
+      }
+
+            // ---- WEBHOOK endpoints ----
+      if (url.pathname === '/api/webhooks' && method === 'GET') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        const token = auth.split(' ')[1];
+        let decoded;
+        try { decoded = await verifyJWT(token, env.JWT_SECRET); } catch { return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401); }
+        const rows = await env.MY_BINDING.prepare(
+          'SELECT id, url, events, created_at FROM webhooks WHERE user_id = ? ORDER BY created_at DESC'
+        ).bind(decoded.id).all();
+        const webhooks = rows.results.map(w => ({
+          ...w,
+          events: JSON.parse(w.events || '[]')
+        }));
+        return corsResponse(JSON.stringify({ webhooks }));
+      }
+
+      if (url.pathname === '/api/webhooks' && method === 'POST') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        const token = auth.split(' ')[1];
+        let decoded;
+        try { decoded = await verifyJWT(token, env.JWT_SECRET); } catch { return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401); }
+        const { url, events } = await request.json().catch(() => ({}));
+        if (!url || !events || !Array.isArray(events)) {
+          return corsResponse(JSON.stringify({ error: 'url and events array required' }), 400);
+        }
+        const eventsJson = JSON.stringify(events);
+        const result = await env.MY_BINDING.prepare(
+          'INSERT INTO webhooks (user_id, url, events) VALUES (?, ?, ?) RETURNING id'
+        ).bind(decoded.id, url, eventsJson).first();
+        return corsResponse(JSON.stringify({ id: result.id, success: true }));
+      }
+
+      if (url.pathname.startsWith('/api/webhooks/') && method === 'DELETE') {
+        const auth = request.headers.get('Authorization');
+        if (!auth || !auth.startsWith('Bearer ')) return corsResponse(JSON.stringify({ error: 'Unauthorized' }), 401);
+        const token = auth.split(' ')[1];
+        let decoded;
+        try { decoded = await verifyJWT(token, env.JWT_SECRET); } catch { return corsResponse(JSON.stringify({ error: 'Invalid token' }), 401); }
+        const id = parseInt(url.pathname.split('/').pop());
+        if (isNaN(id)) return corsResponse(JSON.stringify({ error: 'Invalid ID' }), 400);
+        const webhook = await env.MY_BINDING.prepare('SELECT user_id FROM webhooks WHERE id = ?').bind(id).first();
+        if (!webhook) return corsResponse(JSON.stringify({ error: 'Webhook not found' }), 404);
+        if (webhook.user_id !== decoded.id) return corsResponse(JSON.stringify({ error: 'Forbidden' }), 403);
+        await env.MY_BINDING.prepare('DELETE FROM webhooks WHERE id = ?').bind(id).run();
+        return corsResponse(JSON.stringify({ success: true }));
       }
 
       // ---- AUDIT HISTORY endpoints ----
@@ -1514,6 +1648,38 @@ if (url.pathname === '/api/user' && method === 'DELETE') {
   await env.MY_BINDING.prepare('DELETE FROM users WHERE id = ?').bind(userId).run();
 
   return corsResponse(JSON.stringify({ success: true, message: 'Account permanently deleted' }));
+}
+
+// ---- Contact / Email (Resend) ----
+if (url.pathname === '/api/contact' && method === 'POST') {
+  const formData = await request.formData();
+  const name = formData.get('name') || 'Anonymous';
+  const email = formData.get('email') || 'support@traffictorch.net';
+  const message = formData.get('message') || 'No message';
+  const subject = message.split('\n')[0].replace('Subject: ', '') || 'Feedback from Traffic Torch';
+
+  const resendRes = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${env.RESEND_API_KEY}`
+    },
+    body: JSON.stringify({
+      from: 'support@traffictorch.net',
+      to: 'support@traffictorch.net',
+      reply_to: email,
+      subject: subject,
+      html: `<p><strong>Name:</strong> ${name}</p>
+             <p><strong>Email:</strong> ${email}</p>
+             <p><strong>Message:</strong><br>${message.replace(/Subject: .+\n/, '')}</p>`
+    })
+  });
+
+  if (!resendRes.ok) {
+    const err = await resendRes.text();
+    return corsResponse(JSON.stringify({ success: false, error: err }), 500);
+  }
+  return corsResponse(JSON.stringify({ success: true }));
 }
 
       // ---- 404 ----

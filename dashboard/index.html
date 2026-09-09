@@ -1333,22 +1333,6 @@ function dashboardApp() {
 
     get displayedAudits() { return this.recentAudits.slice(0, this.displayCount); },
 
-    get dailyUsed() {
-      const today = new Date().toISOString().split('T')[0];
-      const stored = localStorage.getItem('tt_daily_usage');
-      if (stored) {
-        try {
-          const data = JSON.parse(stored);
-          if (data.date === today) return data.count;
-        } catch (e) {}
-      }
-      return 0;
-    },
-    set dailyUsed(val) {
-      const today = new Date().toISOString().split('T')[0];
-      localStorage.setItem('tt_daily_usage', JSON.stringify({ date: today, count: val }));
-    },
-
     // ---- GA4 State ----
     ga4: {
       connected: false,
@@ -1416,7 +1400,7 @@ function dashboardApp() {
       const token = localStorage.getItem('authToken');
       if (token) {
         await this.fetchAccountInfo();
-        this.dailyUsedCount = this.dailyUsed;
+        this.dailyUsedCount = this.user.dailyUsed || 0;
         this.checkGA4Connection();
        if (this.user.gscConnected) {
   this.gsc.connected = true;
@@ -1594,38 +1578,41 @@ if (magicToken) {
     },
 
     // ---- Auth ----
-    async fetchAccountInfo() {
-      const token = localStorage.getItem('authToken');
-      if (!token) return;
-      try {
-        const res = await fetch(`${API_BASE}/api/account-info`, {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          this.user = data;
-          this.isAuthenticated = true;
-          this.user.tier = data.tier || (data.isPro ? 'pro' : 'free');
-          this.ga4.connected = data.ga4Connected || false;
-          this.user.gscConnected = data.gscConnected || false;
-          this.user.gscSiteUrl = data.gscSiteUrl || null;
-          this.dailyLimit = data.dailyLimit || 3;
-          this.updateDisplayLimit();
-        } else {
-          localStorage.removeItem('authToken');
-          this.isAuthenticated = false;
-          this.displayCount = 5;
-          this.loadDemoData();
-          this.loadGSCDemoData();
-        }
-      } catch {
-        localStorage.removeItem('authToken');
-        this.isAuthenticated = false;
-        this.displayCount = 5;
-        this.loadDemoData();
-        this.loadGSCDemoData();
-      }
-    },
+async fetchAccountInfo() {
+  const token = localStorage.getItem('authToken');
+  if (!token) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/account-info`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      this.user = data;
+      this.isAuthenticated = true;
+      this.user.tier = data.tier || (data.isPro ? 'pro' : 'free');
+      // 👇 Store daily usage from server
+      this.user.dailyUsed = data.dailyUsed || 0;
+      this.dailyUsedCount = this.user.dailyUsed;
+      this.ga4.connected = data.ga4Connected || false;
+      this.user.gscConnected = data.gscConnected || false;
+      this.user.gscSiteUrl = data.gscSiteUrl || null;
+      this.dailyLimit = data.dailyLimit || 3;
+      this.updateDisplayLimit();
+    } else {
+      localStorage.removeItem('authToken');
+      this.isAuthenticated = false;
+      this.displayCount = 5;
+      this.loadDemoData();
+      this.loadGSCDemoData();
+    }
+  } catch {
+    localStorage.removeItem('authToken');
+    this.isAuthenticated = false;
+    this.displayCount = 5;
+    this.loadDemoData();
+    this.loadGSCDemoData();
+  }
+},
 
     updateDisplayLimit() {
       const tier = this.user.tier || 'free';
@@ -2479,11 +2466,11 @@ if (magicToken) {
       if (!this.requireAuth()) return;
       const url = this.quickUrl.trim();
       if (!url) { alert('Please enter a valid URL'); return; }
-      if (this.dailyUsed >= this.dailyLimit) {
-        alert(`Daily audit limit reached (${this.dailyLimit} runs). Upgrade to Pro for more.`);
-        this.showUpgradeModal();
-        return;
-      }
+if ((this.user.dailyUsed || 0) >= this.dailyLimit) {
+  alert(`Daily audit limit reached (${this.dailyLimit} runs). Upgrade to Pro for more.`);
+  this.showUpgradeModal();
+  return;
+}
       const tool = this.selectedTool;
       const toolMap = {
         'seo-intent-tool': '/seo-intent-tool/',
@@ -2519,15 +2506,40 @@ if (magicToken) {
       };
       const toolName = toolNames[tool] || tool;
       await this.saveAudit({ url, tool: toolName, score: null });
-      this.incrementDailyUsage();
+      await this.incrementDailyUsage();
       window.location.href = toolPath + '?url=' + encodeURIComponent(url);
     },
 
-incrementDailyUsage() {
-  let used = this.dailyUsed;
-  used++;
-  this.dailyUsed = used;
-  this.dailyUsedCount = used; // update the reactive property
+async incrementDailyUsage() {
+  const token = localStorage.getItem('authToken');
+  const fingerprint = await getOrCreateFingerprint(); // you need to expose this from main.js
+  try {
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else {
+      headers['x-fingerprint'] = fingerprint;
+    }
+    const res = await fetch(`${API_BASE}/api/check-rate`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ toolName: 'run-audit' })
+    });
+    const data = await res.json();
+    if (data.allowed) {
+      // Update from server response
+      this.dailyUsedCount = (this.dailyLimit - data.remaining) || 0;
+      this.user.dailyUsed = this.dailyUsedCount;
+    } else {
+      this.showUpgradeModal();
+    }
+  } catch (e) {
+    // Offline fallback (won't sync, but prevents total breakage)
+    this.dailyUsedCount = (this.dailyUsedCount || 0) + 1;
+    this.user.dailyUsed = this.dailyUsedCount;
+  }
 },
 
     // ---- Settings: Billing portal ----

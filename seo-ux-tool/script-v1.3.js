@@ -1016,7 +1016,7 @@ document.addEventListener('click', function(event) {
 
         // Gather priority fixes from the priority cards
         const priorityFixes = [];
-        document.querySelectorAll('#priority-cards-container .p-8 .text-2xl.font-bold').forEach(el => {
+        document.querySelectorAll('#priority-cards-container .p-2 .text-2xl.font-bold').forEach(el => {
           const title = el.textContent.trim();
           const fixEl = el.closest('.p-8')?.querySelector('.text-gray-800.dark\\:text-gray-200');
           if (fixEl) {

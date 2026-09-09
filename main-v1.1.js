@@ -718,3 +718,5 @@ document.addEventListener('click', function(e) {
 
 window.showUpgradeModal = showUpgradeModal;
 window.closeUpgradeModal = closeUpgradeModal;
+
+window.getOrCreateFingerprint = getOrCreateFingerprint;
