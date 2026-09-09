@@ -248,7 +248,7 @@
       </div>
     </div>
 
-    <!-- Register Tab – with promo code + share buttons -->
+    <!-- Register Tab -->
     <div x-show="activeTab==='register'" x-cloak x-init="$nextTick(() => { if (window.a2a) window.a2a.init('page'); })">
       <div class="mb-4">
         <label class="block text-sm font-medium mb-1">Email</label>
@@ -309,11 +309,11 @@
   <!-- END NORMAL CONTENT -->
 
 </div>
-<!-- END MAIN CARD -->
+<!-- END CARD -->
 
 <script>
 // ============================================================
-// TRAFFIC TORCH – LOGIN SCRIPT
+// TRAFFIC TORCH – LOGIN SCRIPT (ORIGINAL, WORKING)
 // ============================================================
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
