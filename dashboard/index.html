@@ -23,9 +23,6 @@
   <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
   <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
 
-  <!-- config.js before Stripe -->
-  <script src="/config.js"></script>
-
   <script>
     (function() {
       const saved = localStorage.getItem('theme');
@@ -38,7 +35,6 @@
     })();
   </script>
 
-  <script src="https://js.stripe.com/v3/"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
@@ -654,7 +650,7 @@
   <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
 </div>
             <div x-show="user.tier !== 'enterprise'" class="text-center py-8 text-gray-500">
-              Real‑time is available for Enterprise users. <a href="#" @click.prevent="showUpgradeModal()" class="text-orange-500 hover:underline">Upgrade here</a>.
+              Real‑time is available for Enterprise users. <a href="/upgrade/" class="text-orange-500 hover:underline">Upgrade here</a>.
             </div>
             <template x-if="user.tier === 'enterprise'">
               <div>
@@ -1035,94 +1031,70 @@
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                <!-- ===== FREE ===== -->
-        <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col border border-white/10 dark:border-white/5">
-            <h3 class="text-2xl font-bold">Free</h3>
-            <p class="text-4xl font-black mt-2">$0</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Forever free</p>
-
-            <ul class="mt-6 space-y-2.5 text-left text-sm flex-1">
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> 3 audits per day</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> All 15 tools</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> 7‑day GA4 &amp; GSC data</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> Basic dashboard</li>
-                <li class="flex items-start gap-2"><span class="text-red-400 font-bold">✗</span> Real‑time analytics</li>
-                <li class="flex items-start gap-2"><span class="text-red-400 font-bold">✗</span> Custom date ranges</li>
-                <li class="flex items-start gap-2"><span class="text-red-400 font-bold">✗</span> CSV exports</li>
-                <li class="flex items-start gap-2"><span class="text-red-400 font-bold">✗</span> Priority support</li>
-            </ul>
-
-            <!-- ✅ "Create Account" button – links to login page register tab -->
-            <a href="/login/?tab=register"
-               class="mt-8 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition text-center">
-                Create Account →
-            </a>
-        </div>
-
-        <!-- ===== PRO ===== -->
-        <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col border-2 border-orange-500/50 shadow-lg shadow-orange-500/20 relative">
-            <h3 class="text-2xl font-bold mt-2">Pro</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Best for professionals</p>
-
-            <ul class="mt-6 space-y-2.5 text-left text-sm flex-1">
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> 25 audits per day</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> All 15 tools</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> 30‑day GA4 data</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> 28‑day GSC data</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> CSV exports</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> Priority support</li>
-                <li class="flex items-start gap-2"><span class="text-red-400 font-bold">✗</span> Real‑time analytics</li>
-                <li class="flex items-start gap-2"><span class="text-red-400 font-bold">✗</span> Custom date ranges</li>
-            </ul>
-
-            <div class="mt-6 space-y-3 w-full">
-                <button onclick="window.upgradeToPlan('pro_6month')"
-                        class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-xl transition hover:opacity-90 text-sm">
-                    $6 / month
-                </button>
-                <button onclick="window.upgradeToPlan('pro_yearly')"
-                        class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-xl transition hover:opacity-90 text-sm">
-                    $48 / year
-                </button>
-                <button onclick="window.upgradeToPlan('pro_lifetime')"
-                        class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-semibold rounded-xl transition hover:opacity-90 text-sm">
-                    $198 / lifetime
-                </button>
-            </div>
-        </div>
-
-        <!-- ===== ENTERPRISE ===== -->
-        <div class="plan-card glass rounded-2xl p-8 text-center flex flex-col border border-white/10 dark:border-white/5">
-            <h3 class="text-2xl font-bold">Enterprise</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">For teams &amp; agencies</p>
-
-            <ul class="mt-6 space-y-2.5 text-left text-sm flex-1">
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> 300 audits per day</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> All 15 tools</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> 365‑day GA4 &amp; GSC data</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> Real‑time analytics</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> Custom date ranges</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> CSV exports</li>
-                <li class="flex items-start gap-2"><span class="text-green-400 font-bold">✓</span> Dedicated support</li>
-            </ul>
-
-            <div class="mt-6 space-y-3 w-full">
-                <button onclick="window.upgradeToPlan('enterprise_monthly')"
-                        class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition text-sm">
-                    $68 / month
-                </button>
-                <button onclick="window.upgradeToPlan('enterprise_yearly')"
-                        class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition text-sm">
-                    $680 / year
-                </button>
-            </div>
-        </div>
-
+         <!-- ===== FREE ===== -->
+    <div class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
+      <h3 class="text-xl font-bold">Free</h3>
+      <p class="text-3xl font-black mt-2">$0</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">Forever free</p>
+      <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
+        <li>✓ 3 audits per day</li>
+        <li>✓ All 15 tools</li>
+        <li>✓ 7‑day GA4 &amp; GSC data</li>
+        <li>✓ Basic dashboard</li>
+        <li>✗ Real‑time analytics</li>
+        <li>✗ Custom date ranges</li>
+        <li>✗ CSV exports</li>
+        <li>✗ Priority support</li>
+      </ul>
+      <a href="/login/?tab=register" class="mt-6 inline-block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">
+        Create Account →
+      </a>
     </div>
 
-    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-10 max-w-2xl mx-auto">
-        All plans include full access to every Traffic Torch tool. Upgrade anytime.
-    </p>
+    <!-- ===== PRO ===== -->
+    <div class="glass rounded-2xl p-6 text-center border-2 border-orange-500/50 shadow-lg shadow-orange-500/20 flex flex-col relative">
+      <h3 class="text-xl font-bold mt-4">Pro</h3>
+      <p class="text-3xl font-black mt-2">$6</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">per month</p>
+      <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
+        <li>✓ 25 audits per day</li>
+        <li>✓ All 15 tools</li>
+        <li>✓ 30‑day GA4 data</li>
+        <li>✓ 28‑day GSC data</li>
+        <li>✓ CSV exports</li>
+        <li>✓ Priority support</li>
+        <li>✗ Real‑time analytics</li>
+        <li>✗ Custom date ranges</li>
+      </ul>
+      <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">
+        Upgrade →
+      </a>
+    </div>
+
+    <!-- ===== ENTERPRISE ===== -->
+    <div class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
+      <h3 class="text-xl font-bold">Enterprise</h3>
+      <p class="text-3xl font-black mt-2">$68</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400">per month</p>
+      <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
+        <li>✓ 300 audits per day</li>
+        <li>✓ All 15 tools</li>
+        <li>✓ 365‑day GA4 &amp; GSC data</li>
+        <li>✓ Real‑time analytics</li>
+        <li>✓ Custom date ranges</li>
+        <li>✓ CSV exports</li>
+        <li>✓ Dedicated support</li>
+      </ul>
+      <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">
+        Upgrade →
+      </a>
+    </div>
+
+  </div>
+
+  <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+    All plans include all 15 tools. <a href="/pro/" class="text-orange-500 hover:underline">See full details →</a>
+  </p>
 </div>
 <div class="text-center mt-8">
   <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#conclusion" 
@@ -1208,7 +1180,7 @@
       <p class="text-gray-600 dark:text-gray-300 mb-6">Log in or upgrade to Traffic Torch Pro for unlimited audits, analytics, and more.</p>
       <div class="flex flex-col gap-3">
         <a href="/login/" class="px-6 py-3 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition">Login / Register</a>
-        <button @click="upgradeToPro()" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg font-bold hover:opacity-90 transition">Upgrade to Pro</button>
+<a href="/upgrade/" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg font-bold hover:opacity-90 transition text-center block">See Plans</a>
         <button @click="closeUpgradeModal()" class="text-sm text-gray-500 hover:underline">Close</button>
       </div>
     </div>
@@ -1276,14 +1248,6 @@
   </div>
 </div>
 
-<!-- Checkout container (kept outside x-data) -->
-<div id="checkout-container" class="fixed inset-0 z-[10002] bg-black bg-opacity-80 flex items-center justify-center hidden">
-  <div class="bg-white dark:bg-gray-900 p-6 rounded-2xl max-w-lg w-full relative">
-    <button onclick="document.getElementById('checkout-container').classList.add('hidden')" class="absolute top-2 right-4 text-3xl text-gray-500">&times;</button>
-    <div id="checkout-embedded"></div>
-  </div>  
-</div>
-
 <!-- ========================================================== -->
 <!-- SCRIPTS -->
 <!-- ========================================================== -->
@@ -1291,107 +1255,6 @@
 
 <script>
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
-
-// ---- Unified upgrade function (handles all plans + cleanup) ----
-window.upgradeToPlan = async function upgradeToPlan(plan = 'pro') {
-  // Destroy any existing checkout instance
-  if (window.currentCheckout) {
-    try {
-      window.currentCheckout.destroy();
-    } catch (e) {}
-    window.currentCheckout = null;
-  }
-
-  const token = localStorage.getItem('authToken');
-  if (!token) {
-    window.location.href = '/login/';
-    return;
-  }
-  try {
-    const container = document.getElementById('checkout-container');
-    if (!container) {
-      alert('Checkout not available – please try again later.');
-      return;
-    }
-    container.classList.remove('hidden');
-
-    // Clear the mount element before mounting
-    const mountEl = document.getElementById('checkout-embedded');
-    if (mountEl) mountEl.innerHTML = '';
-
-    const stripe = Stripe(window.STRIPE_PUBLISHABLE_KEY);
-    const fetchClientSecret = async () => {
-      const response = await fetch(`${API_BASE}/api/upgrade`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ plan })
-      });
-      if (!response.ok) {
-        const errText = await response.text();
-        throw new Error(errText || 'Failed to create checkout session');
-      }
-      const data = await response.json();
-      if (!data.clientSecret) throw new Error('No clientSecret returned from server');
-      return data.clientSecret;
-    };
-    const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
-    window.currentCheckout = checkout; // store reference
-    checkout.mount('#checkout-embedded');
-    localStorage.setItem('just_upgraded', 'true');
-    setTimeout(() => {
-      window.location.href = '/dashboard/';
-    }, 15000);
-  } catch (err) {
-    alert('Upgrade error: ' + err.message);
-    document.getElementById('checkout-container')?.classList.add('hidden');
-    if (window.currentCheckout) {
-      try { window.currentCheckout.destroy(); } catch(e) {}
-      window.currentCheckout = null;
-    }
-  }
-};
-
-// Keep the old upgradeToPro for compatibility (calls upgradeToPlan)
-window.upgradeToPro = function() {
-  window.upgradeToPlan('pro');
-};
-
-window.contactSales = function contactSales() {
-  window.location.href = 'mailto:support@traffictorch.net?subject=Enterprise%20Traffic%20Torch';
-};
-
-// ---- Cleanup on modal close ----
-document.addEventListener('DOMContentLoaded', function() {
-  // When the close button inside the modal is clicked
-  const closeBtn = document.querySelector('#checkout-container .checkout-close');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', function() {
-      const container = document.getElementById('checkout-container');
-      container?.classList.add('hidden');
-      if (window.currentCheckout) {
-        try { window.currentCheckout.destroy(); } catch(e) {}
-        window.currentCheckout = null;
-      }
-    });
-  }
-
-  // Click on backdrop
-  const container = document.getElementById('checkout-container');
-  if (container) {
-    container.addEventListener('click', function(e) {
-      if (e.target === this) {
-        this.classList.add('hidden');
-        if (window.currentCheckout) {
-          try { window.currentCheckout.destroy(); } catch(e) {}
-          window.currentCheckout = null;
-        }
-      }
-    });
-  }
-});
 
 // ----- Alpine Component -----
 function dashboardApp() {
