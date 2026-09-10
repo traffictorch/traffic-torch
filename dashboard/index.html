@@ -439,7 +439,7 @@
 
         <!-- ===== ANALYTICS TAB ===== -->
         <div x-show="activeDashboardTab === 'analytics'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-6xl mx-auto">
+          <div class="glass rounded-2xl p-2 max-w-6xl mx-auto">
             <!-- Header -->
             <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
               <h3 class="text-xl font-bold">📊 Google Analytics 4</h3>
@@ -513,8 +513,9 @@
               <div><canvas id="analyticsChart" height="150"></canvas></div>
 
               <!-- New vs Returning Users – Doughnut -->
-              <div class="max-w-sm mx-auto mt-6"><canvas id="newVsReturningChart" height="120"></canvas></div>
-
+<div class="w-full max-w-[320px] mx-auto mt-6 h-72">
+  <canvas id="newVsReturningChart"></canvas>
+</div>
               <!-- CTA for guests / not connected -->
               <div x-show="!isAuthenticated" class="mt-6 text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <p class="text-sm text-gray-700 dark:text-gray-300">Sign up to connect your own GA4 property and see real data.</p>
@@ -565,23 +566,23 @@
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">📊 Traffic Sources</h4>
                 <div x-show="ga4.sources.length > 0">
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><canvas id="sourcesPieChart" height="150"></canvas></div>
-                    <div><canvas id="sourcesBarChart" height="150"></canvas></div>
-                  </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <!-- Pie: centred, capped width, real height -->
+  <div class="flex justify-center">
+    <div class="w-full max-w-[320px] h-72">
+      <canvas id="sourcesPieChart"></canvas>
+    </div>
+  </div>
+  <!-- Bar: only shows when there are key events to plot -->
+  <div x-show="ga4.hasKeyEvents" class="h-72">
+    <canvas id="sourcesBarChart"></canvas>
+  </div>
+    </div>
                 </div>
                 <div x-show="ga4.sources.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No traffic source data available.</div>
               </div>
-
-              <!-- ======== DEVICE BREAKDOWN ======== -->
-              <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
-                   class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <h4 class="text-lg font-semibold mb-3">📱 Device Breakdown</h4>
-                <div x-show="ga4.devices.length > 0" class="max-w-sm mx-auto"><canvas id="devicePieChart" height="120"></canvas></div>
-                <div x-show="ga4.devices.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No device data available.</div>
-              </div>
-
-              <!-- ======== GEOGRAPHIC ======== -->
+              
+             <!-- ======== GEOGRAPHIC ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">🌍 Geographic Breakdown</h4>
@@ -590,6 +591,14 @@
                   <div class="max-h-64 overflow-hidden"><canvas id="countriesBarChart" height="150"></canvas></div>
                 </div>
                 <div x-show="ga4.countries.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No geographic data available.</div>
+              </div>
+
+              <!-- ======== DEVICE BREAKDOWN ======== -->
+              <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
+                   class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-semibold mb-3">📱 Device Breakdown</h4>
+                <div x-show="ga4.devices.length > 0" class="max-w-sm mx-auto"><canvas id="devicePieChart" height="120"></canvas></div>
+                <div x-show="ga4.devices.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No device data available.</div>
               </div>
 
 <!-- ======== TOP CONVERTING PAGES ======== -->
@@ -639,11 +648,11 @@
 
         <!-- ===== REAL‑TIME TAB (Enterprise only) ===== -->
         <div x-show="activeDashboardTab === 'realtime'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-6xl mx-auto">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-xl font-bold">🔴 Real‑time <span class="text-sm font-normal text-gray-500">(last 30 min, auto‑updates every 15s)</span></h3>
-              <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
-            </div>
+          <div class="glass rounded-2xl p-2 max-w-6xl mx-auto">
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 mb-4">
+  <h3 class="text-xl font-bold">🔴 Real‑time <span class="text-sm font-normal text-gray-500">(last 30 min, auto‑updates every 15s)</span></h3>
+  <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
+</div>
             <div x-show="user.tier !== 'enterprise'" class="text-center py-8 text-gray-500">
               Real‑time is available for Enterprise users. <a href="#" @click.prevent="showUpgradeModal()" class="text-orange-500 hover:underline">Upgrade here</a>.
             </div>
@@ -673,7 +682,7 @@
 
         <!-- ===== SEARCH CONSOLE TAB (GSC) – WITH DEMO DATA ===== -->
         <div x-show="activeDashboardTab === 'gsc'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-6xl mx-auto">
+          <div class="glass rounded-2xl p-2 max-w-6xl mx-auto">
             <!-- Header -->
             <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
               <h3 class="text-xl font-bold">🔍 Search Console</h3>
@@ -794,9 +803,11 @@
                 </div>
                 <div>
                   <h4 class="text-lg font-semibold mb-3 text-center">📱 Devices</h4>
-                  <div x-show="gsc.devices.length > 0" class="flex justify-center items-center h-64">
-                    <div class="w-[200px] h-[200px]"><canvas id="gscDevicesChart"></canvas></div>
-                  </div>
+<div x-show="gsc.devices.length > 0" class="flex justify-center items-center">
+  <div class="w-full max-w-[300px] h-72">
+    <canvas id="gscDevicesChart"></canvas>
+  </div>
+</div>
                   <div x-show="gsc.devices.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No device data.</div>
                 </div>
               </div>
@@ -1560,16 +1571,33 @@ if (magicToken) {
         this.showResetModal = true;
       }
 
-      this.$watch('activeDashboardTab', (newTab) => {
-        if (newTab === 'realtime' && this.user.tier === 'enterprise' && this.ga4.connected) {
-          this.startRealtimeInterval();
-        } else {
-          this.stopRealtimeInterval();
-        }
-        if (newTab === 'gsc' && this.gsc.connected && this.gsc.data.length === 0) {
-          this.fetchGSCReport();
-        }
-      });
+this.$watch('activeDashboardTab', (newTab) => {
+  if (newTab === 'realtime' && this.user.tier === 'enterprise' && this.ga4.connected) {
+    this.startRealtimeInterval();
+  } else {
+    this.stopRealtimeInterval();
+  }
+  if (newTab === 'gsc' && this.gsc.connected && this.gsc.data.length === 0) {
+    this.fetchGSCReport();
+  }
+
+  // 👇 Re-render charts that were created while their tab was hidden.
+  // Wait one frame so the tab panel is actually painted before we measure.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      if (newTab === 'analytics') {
+        // Only GA4 charts that live on the analytics tab
+        this.updateCharts();
+      }
+      if (newTab === 'gsc') {
+        this.updateGSCCharts();
+      }
+      if (newTab === 'realtime' && this.user.tier === 'enterprise') {
+        this.updateRealtimeCharts();
+      }
+    });
+  });
+});
     },
 
     // ---- Demo data for guests ----
@@ -2025,8 +2053,12 @@ async fetchAccountInfo() {
 
         const pieCtx = document.getElementById('sourcesPieChart');
         if (pieCtx && this.ga4.sources.length) {
-          const labels = this.ga4.sources.map(r => r.dimensions.join(' / '));
-          const values = this.ga4.sources.map(r => r.metrics[0] || 0);
+const fullLabels = this.ga4.sources.map(r => r.dimensions.join(' / '));
+const labels = fullLabels.map(l => {
+  const src = l.split(' / ')[0] || '';
+  return src.length > 20 ? src.slice(0, 18) + '…' : l;
+});
+const values = this.ga4.sources.map(r => r.metrics[0] || 0);
           window.sourcesPie = new Chart(pieCtx, {
             type: 'doughnut',
             data: {
@@ -2035,11 +2067,16 @@ async fetchAccountInfo() {
             },
             options: {
               responsive: true,
-              maintainAspectRatio: true,
-              plugins: {
-                legend: { position: 'bottom' },
-                title: { display: true, text: 'Sessions by Source', color: '#6b7280', font: { size: 12 } }
-              }
+              maintainAspectRatio: false,
+plugins: {
+  tooltip: {
+    callbacks: {
+      title: (items) => fullLabels[items[0].dataIndex]
+    }
+  },
+  legend: { position: 'bottom' },
+  title: { display: true, text: 'Sessions by Source', color: '#6b7280', font: { size: 12 } }
+}
             }
           });
         }
@@ -2381,7 +2418,7 @@ async fetchAccountInfo() {
         }
 
         const deviceCtx = document.getElementById('gscDevicesChart');
-        if (deviceCtx && this.gsc.devices.length) {
+        if (deviceCtx && this.gsc.devices.length && deviceCtx.offsetWidth > 0) {
           const labels = this.gsc.devices.map(r => r.keys[0] || 'Other');
           const values = this.gsc.devices.map(r => r.clicks);
           window.gscDevicesChart = new Chart(deviceCtx, {
@@ -2390,14 +2427,25 @@ async fetchAccountInfo() {
               labels,
               datasets: [{ data: values, backgroundColor: ['#3b82f6','#f97316','#10b981'] }]
             },
-            options: {
-              responsive: true,
-              maintainAspectRatio: true,
-              plugins: {
-                legend: { position: 'bottom' },
-                title: { display: true, text: 'Clicks by Device', color: '#6b7280', font: { size: 12 } }
-              }
-            }
+options: {
+  responsive: true,
+  maintainAspectRatio: false,
+  layout: { padding: { top: 4, right: 8, bottom: 4, left: 8 } },
+  plugins: {
+    legend: {
+      position: 'bottom',
+      labels: { boxWidth: 12, padding: 10, font: { size: 12 } }
+    },
+    title: {
+      display: true,
+      text: 'Clicks by Device',
+      color: '#6b7280',
+      font: { size: 12 },
+      padding: { top: 2, bottom: 10 }
+    }
+  },
+  cutout: '60%'
+}
           });
         }
       });
