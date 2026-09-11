@@ -18,6 +18,7 @@ import { calculateNavigation } from './modules/navigation.js';
 import { calculateAccessibility } from './modules/accessibility.js';
 import { calculateMobile } from './modules/mobile.js';
 import { calculatePerformance } from './modules/performance.js';
+import { detectCMS } from '/cms-detect.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
@@ -560,6 +561,7 @@ analyzeCodeBtn.addEventListener('click', async () => {
       }
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const uxData = getUXContent(doc);
+      const cmsInfo = detectCMS({ doc, html, url });
       const ux = analyzeUX(uxData);
       const factorDetails = {
         readability: calculateReadability(uxData).details,
@@ -861,6 +863,59 @@ analyzeCodeBtn.addEventListener('click', async () => {
 <!-- Enhanced Quit Risk Reduction & Engagement Impact -->
 ${impactHTML}
 
+<!-- CMS Fixes -->
+<div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-4">
+  <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
+  <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+    Get step-by-step instructions tailored to your CMS for the top priority fixes.
+  </p>
+
+  <div class="flex items-center justify-center gap-3 mb-4 flex-wrap">
+    <span class="text-sm text-gray-600 dark:text-gray-400">Detected:</span>
+    <span id="cms-detected-badge" class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm font-medium border border-gray-300 dark:border-gray-700">
+      <span id="cms-badge-dot" class="inline-block w-2.5 h-2.5 rounded-full bg-gray-400 mr-2"></span>
+      <span id="cms-badge-name">Custom / Unknown</span>
+    </span>
+    <button id="cms-override-toggle" class="text-sm text-purple-600 dark:text-purple-400 underline hover:no-underline bg-transparent border-none cursor-pointer">
+      Change
+    </button>
+  </div>
+
+  <div id="cms-override-panel" class="hidden max-w-md mx-auto mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CMS</label>
+    <select id="cms-override-select" class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+      <option value="Custom / Unknown">Custom / Unknown</option>
+      <option value="WordPress">WordPress</option>
+      <option value="Shopify">Shopify</option>
+      <option value="Wix">Wix</option>
+      <option value="Squarespace">Squarespace</option>
+      <option value="Webflow">Webflow</option>
+      <option value="Drupal">Drupal</option>
+      <option value="Joomla">Joomla</option>
+      <option value="Ghost">Ghost</option>
+      <option value="HubSpot CMS">HubSpot CMS</option>
+      <option value="Magento">Magento</option>
+      <option value="BigCommerce">BigCommerce</option>
+      <option value="PrestaShop">PrestaShop</option>
+    </select>
+    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Version (optional)</label>
+    <input id="cms-override-version" type="text" placeholder="e.g. 6.4.2" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
+  </div>
+
+  <div class="text-center">
+    <button id="cms-fixes-btn" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">
+      Generate CMS Fixes
+    </button>
+    <p id="cms-fixes-no-fixes" class="hidden mt-4 text-lg text-green-600 dark:text-green-400 font-medium">
+      No fixes needed — your page is healthy. 🎉
+    </p>
+  </div>
+
+  <div id="cms-fixes-answer-container" class="mt-6 hidden">
+    <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+  </div>
+</div>
+
         <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
           <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About This Audit</h2>
           <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
@@ -1094,6 +1149,136 @@ if (shareContainer) {
           }
         });
       }
+      
+            // ─── CMS Fixes Logic ──────────────────────────────────────────
+      const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
+      const cmsBadgeDot        = document.getElementById('cms-badge-dot');
+      const cmsBadgeName       = document.getElementById('cms-badge-name');
+      const cmsOverrideToggle  = document.getElementById('cms-override-toggle');
+      const cmsOverridePanel   = document.getElementById('cms-override-panel');
+      const cmsOverrideSelect  = document.getElementById('cms-override-select');
+      const cmsOverrideVersion = document.getElementById('cms-override-version');
+      const cmsNoFixes         = document.getElementById('cms-fixes-no-fixes');
+      const cmsAnswerContainer = document.getElementById('cms-fixes-answer-container');
+      const cmsAnswerContent   = document.getElementById('cms-fixes-answer-content');
+
+      // Render detected-CMS badge
+      if (cmsBadgeName) {
+        let label = cmsInfo.name || 'Custom / Unknown';
+        if (cmsInfo.version) label += ' ' + cmsInfo.version;
+        cmsBadgeName.textContent = label;
+      }
+      if (cmsBadgeDot) {
+        let dotClass = 'bg-gray-400';
+        if (cmsInfo.confidence === 'high')        dotClass = 'bg-green-500';
+        else if (cmsInfo.confidence === 'medium') dotClass = 'bg-yellow-500';
+        else if (cmsInfo.confidence === 'low')    dotClass = 'bg-orange-500';
+        cmsBadgeDot.className = 'inline-block w-2.5 h-2.5 rounded-full mr-2 ' + dotClass;
+      }
+
+      // Prefill override fields with detected values
+      if (cmsOverrideSelect) {
+        const known = Array.from(cmsOverrideSelect.options).map(o => o.value);
+        cmsOverrideSelect.value = known.includes(cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown';
+      }
+      if (cmsOverrideVersion && cmsInfo.version) {
+        cmsOverrideVersion.value = cmsInfo.version;
+      }
+
+      // Toggle override panel
+      cmsOverrideToggle?.addEventListener('click', () => {
+        cmsOverridePanel?.classList.toggle('hidden');
+      });
+
+      // If nothing to fix, disable button
+      if (priorityFixes.length === 0) {
+        if (cmsFixesBtn) {
+          cmsFixesBtn.disabled = true;
+          cmsFixesBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+        cmsNoFixes?.classList.remove('hidden');
+      }
+
+      cmsFixesBtn?.addEventListener('click', async () => {
+        if (priorityFixes.length === 0) return;
+
+        // Quota — same bucket as audits; swap to 'limit-cms-fix-id' if you
+        // want CMS fixes to have their own daily allowance on the backend.
+        const canProceed = await canRunTool('limit-audit-id');
+        if (!canProceed) return;
+
+        const selectedCms     = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';
+        const selectedVersion = cmsOverrideVersion?.value?.trim() || cmsInfo.version || null;
+
+        cmsFixesBtn.disabled = true;
+        const originalLabel = cmsFixesBtn.textContent;
+        cmsFixesBtn.textContent = 'Generating...';
+        cmsAnswerContainer?.classList.remove('hidden');
+        if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Building CMS-specific instructions...';
+
+        try {
+          const payload = {
+            cms: selectedCms,
+            cmsVersion: selectedVersion,
+            cmsConfidence: cmsInfo.confidence,
+            cmsSignals: cmsInfo.signals,
+            url: url || null,
+            pageTitle: doc?.title || null,
+            overallScore: ux.score,
+            scores: {
+              readability: ux.readability,
+              navigation: ux.nav,
+              accessibility: ux.accessibility,
+              mobile: ux.mobile,
+              performance: ux.speed
+            },
+            priorityFixes: priorityFixes.slice(0, 3).map(f => ({
+              module: f.module,
+              name: f.name,
+              howToFix: f.howToFix
+            })),
+            mode: htmlCode ? 'pasted-code' : 'live-url'
+          };
+
+          const response = await fetch('https://quit-risk-cms-fixes.traffictorch.workers.dev/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+          const data = await response.json();
+
+          if (data.success && cmsAnswerContent) {
+            // XSS-safe: textContent only, no innerHTML for model output
+            cmsAnswerContent.textContent = '';
+
+            const header = document.createElement('div');
+            header.style.fontWeight = 'bold';
+            header.style.marginBottom = '0.75rem';
+            header.textContent = '🛠️ CMS Fixes for ' +
+              (data.cms || selectedCms) +
+              (data.cmsVersion ? ' ' + data.cmsVersion : '');
+
+            const body = document.createElement('div');
+            body.textContent = data.answer || '';
+
+            cmsAnswerContent.appendChild(header);
+            cmsAnswerContent.appendChild(body);
+          } else if (cmsAnswerContent) {
+            cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+          }
+
+        } catch (err) {
+          if (cmsAnswerContent) {
+            cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+          }
+        } finally {
+          cmsFixesBtn.disabled = false;
+          cmsFixesBtn.textContent = originalLabel;
+        }
+      });
 
     } catch (err) {
       document.getElementById('loading').classList.add('hidden');
