@@ -10,6 +10,7 @@ import('./plugin-solutions-v1.0.js')
 import { canRunTool } from '/main-v1.1.js';
 // Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
+import { detectCMS } from '/cms-detect.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -564,6 +565,7 @@ async function performAnalysis(source, isCode = false) {
     }
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
+      const cmsInfo = detectCMS({ doc, url: inputUrl !== 'Pasted HTML Code' ? inputUrl : '' });
       const seoData = getProductPageContent(doc, inputUrl);
       const seo = analyzeProductSEO(doc, inputUrl === 'HTML Code Analysis' ? 'https://example.com/pasted-html' : inputUrl);
       const failedFactors = [];
@@ -638,7 +640,7 @@ async function performAnalysis(source, isCode = false) {
       }
       const failedCount = failedModules.length;
       let impactHTML = `
-        <div class="max-w-5xl mx-auto my-20 px-4">
+        <div class="max-w-4xl mx-auto my-20 px-2">
           <div class="p-2 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
             <h3 class="text-3xl md:text-4xl font-black mb-10 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent text-center">
               Potential Gains After Fixes
@@ -802,6 +804,62 @@ async function performAnalysis(source, isCode = false) {
       pluginSection.id = 'plugin-solutions-section';
       pluginSection.className = 'mt-16 px-1';
       wrapper.appendChild(pluginSection);
+            // ─── CMS Fixes ──────────────────────────────────────────────
+      const cmsSection = document.createElement('div');
+      cmsSection.id = 'cms-fixes-section';
+      cmsSection.className = 'mt-20 max-w-4xl mx-auto px-4';
+      cmsSection.innerHTML = `
+        <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
+        <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+          Get step-by-step product SEO fix instructions tailored to your CMS.
+        </p>
+
+        <div class="flex items-center justify-center gap-3 mb-4 flex-wrap">
+          <span class="text-sm text-gray-600 dark:text-gray-400">Detected:</span>
+          <span id="cms-detected-badge" class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm font-medium border border-gray-300 dark:border-gray-700">
+            <span id="cms-badge-dot" class="inline-block w-2.5 h-2.5 rounded-full bg-gray-400 mr-2"></span>
+            <span id="cms-badge-name">Custom / Unknown</span>
+          </span>
+          <button id="cms-override-toggle" class="text-sm text-purple-600 dark:text-purple-400 underline hover:no-underline bg-transparent border-none cursor-pointer">
+            Change
+          </button>
+        </div>
+
+        <div id="cms-override-panel" class="hidden max-w-md mx-auto mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CMS</label>
+          <select id="cms-override-select" class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <option value="Custom / Unknown">Custom / Unknown</option>
+            <option value="WordPress">WordPress</option>
+            <option value="Shopify">Shopify</option>
+            <option value="Wix">Wix</option>
+            <option value="Squarespace">Squarespace</option>
+            <option value="Webflow">Webflow</option>
+            <option value="Drupal">Drupal</option>
+            <option value="Joomla">Joomla</option>
+            <option value="Ghost">Ghost</option>
+            <option value="HubSpot CMS">HubSpot CMS</option>
+            <option value="Magento">Magento</option>
+            <option value="BigCommerce">BigCommerce</option>
+            <option value="PrestaShop">PrestaShop</option>
+          </select>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Version (optional)</label>
+          <input id="cms-override-version" type="text" placeholder="e.g. 6.4.2" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
+        </div>
+
+        <div class="text-center">
+          <button id="cms-fixes-btn" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">
+            Generate CMS Fixes
+          </button>
+          <p id="cms-fixes-no-fixes" class="hidden mt-4 text-lg text-green-600 dark:text-green-400 font-medium">
+            No fixes needed — your product page is well-optimized. 🎉
+          </p>
+        </div>
+
+        <div id="cms-fixes-answer-container" class="mt-6 hidden">
+          <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+        </div>
+      `;
+      wrapper.appendChild(cmsSection);
       const askAISection = document.createElement('div');
       askAISection.id = 'ask-ai-section';
       askAISection.className = 'mt-20 max-w-4xl mx-auto px-4';
@@ -1020,6 +1078,128 @@ async function performAnalysis(source, isCode = false) {
           }
         });
       }
+      
+            // ─── CMS Fixes Logic ──────────────────────────────────────────
+      const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
+      const cmsBadgeDot        = document.getElementById('cms-badge-dot');
+      const cmsBadgeName       = document.getElementById('cms-badge-name');
+      const cmsOverrideToggle  = document.getElementById('cms-override-toggle');
+      const cmsOverridePanel   = document.getElementById('cms-override-panel');
+      const cmsOverrideSelect  = document.getElementById('cms-override-select');
+      const cmsOverrideVersion = document.getElementById('cms-override-version');
+      const cmsNoFixes         = document.getElementById('cms-fixes-no-fixes');
+      const cmsAnswerContainer = document.getElementById('cms-fixes-answer-container');
+      const cmsAnswerContent   = document.getElementById('cms-fixes-answer-content');
+
+      if (cmsBadgeName) {
+        let label = cmsInfo.name || 'Custom / Unknown';
+        if (cmsInfo.version) label += ' ' + cmsInfo.version;
+        cmsBadgeName.textContent = label;
+      }
+      if (cmsBadgeDot) {
+        let dotClass = 'bg-gray-400';
+        if (cmsInfo.confidence === 'high')        dotClass = 'bg-green-500';
+        else if (cmsInfo.confidence === 'medium') dotClass = 'bg-yellow-500';
+        else if (cmsInfo.confidence === 'low')    dotClass = 'bg-orange-500';
+        cmsBadgeDot.className = 'inline-block w-2.5 h-2.5 rounded-full mr-2 ' + dotClass;
+      }
+
+      if (cmsOverrideSelect) {
+        const known = Array.from(cmsOverrideSelect.options).map(o => o.value);
+        cmsOverrideSelect.value = known.includes(cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown';
+      }
+      if (cmsOverrideVersion && cmsInfo.version) {
+        cmsOverrideVersion.value = cmsInfo.version;
+      }
+
+      cmsOverrideToggle?.addEventListener('click', () => {
+        cmsOverridePanel?.classList.toggle('hidden');
+      });
+
+      if (priorityFixes.length === 0) {
+        if (cmsFixesBtn) {
+          cmsFixesBtn.disabled = true;
+          cmsFixesBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+        cmsNoFixes?.classList.remove('hidden');
+      }
+
+      cmsFixesBtn?.addEventListener('click', async () => {
+        if (priorityFixes.length === 0) return;
+
+        const canProceed = await canRunTool('limit-audit-id');
+        if (!canProceed) return;
+
+        const selectedCms     = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';
+        const selectedVersion = cmsOverrideVersion?.value?.trim() || cmsInfo.version || null;
+
+        cmsFixesBtn.disabled = true;
+        const originalLabel = cmsFixesBtn.textContent;
+        cmsFixesBtn.textContent = 'Generating...';
+        cmsAnswerContainer?.classList.remove('hidden');
+        if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Building CMS-specific product SEO instructions...';
+
+        try {
+          const payload = {
+            cms: selectedCms,
+            cmsVersion: selectedVersion,
+            cmsConfidence: cmsInfo.confidence,
+            cmsSignals: cmsInfo.signals,
+            url: (inputUrl && inputUrl !== 'Pasted HTML Code' && inputUrl !== 'HTML Code Analysis') ? inputUrl : null,
+            pageTitle: doc?.title || null,
+            overallScore: safeScore,
+            scores: {
+              onPage: seo.onPage.score,
+              technical: seo.technical.score,
+              contentMedia: seo.contentMedia.score,
+              ecommerce: seo.ecommerce.score
+            },
+            priorityFixes: priorityFixes.slice(0, 3).map(f => ({
+              module: f.module,
+              name: f.name,
+              howToFix: f.howToFix
+            })),
+            mode: isCode ? 'pasted-code' : 'live-url'
+          };
+
+          const response = await fetch('https://product-seo-cms-fixes.traffictorch.workers.dev/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+          const data = await response.json();
+
+          if (data.success && cmsAnswerContent) {
+            cmsAnswerContent.textContent = '';
+
+            const header = document.createElement('div');
+            header.style.fontWeight = 'bold';
+            header.style.marginBottom = '0.75rem';
+            header.textContent = '🛠️ CMS Fixes for ' +
+              (data.cms || selectedCms) +
+              (data.cmsVersion ? ' ' + data.cmsVersion : '');
+
+            const body = document.createElement('div');
+            body.textContent = data.answer || '';
+
+            cmsAnswerContent.appendChild(header);
+            cmsAnswerContent.appendChild(body);
+          } else if (cmsAnswerContent) {
+            cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+          }
+
+        } catch (err) {
+          if (cmsAnswerContent) {
+            cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+          }
+        } finally {
+          cmsFixesBtn.disabled = false;
+          cmsFixesBtn.textContent = originalLabel;
+        }
+      });
 
       // ─── Scroll to results ──────────────────────────────────────────────
       const offset = 140;

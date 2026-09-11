@@ -13,6 +13,7 @@ import { computeAntiAiSafety } from './modules/antiAiSafety.js';
 import { canRunTool } from '/main-v1.1.js';
 // Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
+import { detectCMS } from '/cms-detect.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -154,6 +155,7 @@ const initTool = (form, results, progressContainer) => {
       await new Promise(r => setTimeout(r, 800));
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
+      const cmsInfo = detectCMS({ doc, url: analyzedUrl !== 'Pasted HTML Code' ? analyzedUrl : '' });
       let mainText = '';
       const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
       const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
@@ -254,22 +256,26 @@ const initTool = (form, results, progressContainer) => {
       ];
 
       const topLowScoring = lowScoring.slice(0, 3);
-      const prioritisedFixes = [];
-      if (topLowScoring.some(m => m.name === "Answerability")) {
-        prioritisedFixes.push({ title: "Add Direct Answer in Opening", emoji: "💡", gradient: "from-red-500/10 border-red-500", color: "text-red-600", what: "A clear, bold, quotable answer AI engines can cite directly", how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.", why: "Answerability is the #1 factor for AI citation and source selection" });
-      }
-      if (topLowScoring.some(m => m.name === "EEAT Signals")) {
-        prioritisedFixes.push({ title: "Add Author Bio & Photo", emoji: "👤", gradient: "from-red-500/10 border-red-500", color: "text-red-600", what: "Visible byline proving who wrote this", how: "Headshot + name + bio + credentials + social links", why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal" });
-      }
-      if (topLowScoring.some(m => m.name === "Structured Data")) {
-        prioritisedFixes.push({ title: "Add Article + Person Schema", emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600", what: "Structured data that AI engines read directly", how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.", why: "Triggers rich answers and massive citation boost" });
-      }
-      if (topLowScoring.some(m => m.name === "Scannability")) {
-        prioritisedFixes.push({ title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600", what: "Easy-to-extract facts via structured formatting", how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs", why: "AI prioritizes instantly extractable content" });
-      }
-      if (topLowScoring.some(m => m.name === "Unique Insights")) {
-        prioritisedFixes.push({ title: "Add First-Hand Experience", emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600", what: "Original insights that stand out from generic content", how: "Include “I tested”, case studies, personal results, dated experiences", why: "Prevents de-duplication and boosts originality" });
-      }
+
+      // One fix template per module — every low-scoring module now produces a fix
+      const fixTemplates = {
+        "Answerability":      { title: "Add Direct Answer in Opening",        emoji: "💡", gradient: "from-red-500/10 border-red-500",       color: "text-red-600",    what: "A clear, bold, quotable answer AI engines can cite directly", how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.", why: "Answerability is the #1 factor for AI citation and source selection" },
+        "EEAT Signals":       { title: "Add Author Bio & Photo",              emoji: "👤", gradient: "from-red-500/10 border-red-500",       color: "text-red-600",    what: "Visible byline proving who wrote this", how: "Headshot + name + bio + credentials + social links", why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal" },
+        "Structured Data":    { title: "Add Article + Person Schema",         emoji: "✨", gradient: "from-purple-500/10 border-purple-500", color: "text-purple-600", what: "Structured data that AI engines read directly", how: "JSON-LD with @type Article + Person + author link. Add FAQPage if relevant.", why: "Triggers rich answers and massive citation boost" },
+        "Scannability":       { title: "Boost Scannability with Lists & Tables", emoji: "📋", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600", what: "Easy-to-extract facts via structured formatting", how: "Add bullet/numbered lists, data tables, H2/H3 headings, short paragraphs", why: "AI prioritizes instantly extractable content" },
+        "Unique Insights":    { title: "Add First-Hand Experience",           emoji: "🧠", gradient: "from-orange-500/10 border-orange-500", color: "text-orange-600", what: "Original insights that stand out from generic content", how: "Include 'I tested', case studies, personal results, dated experiences", why: "Prevents de-duplication and boosts originality" },
+        "Conversational Tone":{ title: "Use a Conversational Tone",           emoji: "💬", gradient: "from-blue-500/10 border-blue-500",     color: "text-blue-600",   what: "Natural, human-first writing that mirrors how people search", how: "Address the reader as 'you'. Share 'I/we' insights. Ask rhetorical questions. Acknowledge pain points.", why: "Conversational phrasing matches real queries and improves AI match quality" },
+        "Readability":        { title: "Improve Readability",                 emoji: "📖", gradient: "from-teal-500/10 border-teal-500",     color: "text-teal-600",   what: "Simple, clear writing AI can parse and summarize accurately", how: "Target Flesch >60. Mix short and medium sentences. Prefer active voice. Replace complex words.", why: "Clear writing improves AI summarization accuracy and citation quality" },
+        "Anti-AI Safety":     { title: "Avoid AI-Flag Patterns",              emoji: "🛡️", gradient: "from-indigo-500/10 border-indigo-500", color: "text-indigo-600", what: "Human-like variation that reduces AI-detection risk", how: "Vary sentence length and structure. Use synonyms. Avoid repeating sentence-openers.", why: "Natural variation prevents accidental low-quality classification" }
+      };
+
+      const prioritisedFixes = topLowScoring
+        .map(m => {
+          const t = fixTemplates[m.name];
+          if (!t) return null;
+          return { ...t, module: m.name };
+        })
+        .filter(Boolean);
 
       await new Promise(resolve => setTimeout(resolve, 1500));
       clearInterval(interval);
@@ -682,9 +688,59 @@ const initTool = (form, results, progressContainer) => {
             </div>
           </div>
         </div>
-        
+                <div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-4">
+          <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
+          <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+            Get step-by-step AEO/GEO fix instructions tailored to your CMS.
+          </p>
+
+          <div class="flex items-center justify-center gap-3 mb-4 flex-wrap">
+            <span class="text-sm text-gray-600 dark:text-gray-400">Detected:</span>
+            <span id="cms-detected-badge" class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm font-medium border border-gray-300 dark:border-gray-700">
+              <span id="cms-badge-dot" class="inline-block w-2.5 h-2.5 rounded-full bg-gray-400 mr-2"></span>
+              <span id="cms-badge-name">Custom / Unknown</span>
+            </span>
+            <button id="cms-override-toggle" class="text-sm text-purple-600 dark:text-purple-400 underline hover:no-underline bg-transparent border-none cursor-pointer">
+              Change
+            </button>
+          </div>
+
+          <div id="cms-override-panel" class="hidden max-w-md mx-auto mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CMS</label>
+            <select id="cms-override-select" class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <option value="Custom / Unknown">Custom / Unknown</option>
+              <option value="WordPress">WordPress</option>
+              <option value="Shopify">Shopify</option>
+              <option value="Wix">Wix</option>
+              <option value="Squarespace">Squarespace</option>
+              <option value="Webflow">Webflow</option>
+              <option value="Drupal">Drupal</option>
+              <option value="Joomla">Joomla</option>
+              <option value="Ghost">Ghost</option>
+              <option value="HubSpot CMS">HubSpot CMS</option>
+              <option value="Magento">Magento</option>
+              <option value="BigCommerce">BigCommerce</option>
+              <option value="PrestaShop">PrestaShop</option>
+            </select>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Version (optional)</label>
+            <input id="cms-override-version" type="text" placeholder="e.g. 6.4.2" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
+          </div>
+
+          <div class="text-center">
+            <button id="cms-fixes-btn" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">
+              Generate CMS Fixes
+            </button>
+            <p id="cms-fixes-no-fixes" class="hidden mt-4 text-lg text-green-600 dark:text-green-400 font-medium">
+              No fixes needed — your page is AI-search ready. 🎉
+            </p>
+          </div>
+
+          <div id="cms-fixes-answer-container" class="mt-6 hidden">
+            <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+          </div>
+        </div>
         <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
-          <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About AEO/GEO/h2>
+          <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About AEO/GEO</h2>
           <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
             Get tailored answers about AI search optimization, answerability, EEAT, and specific improvement steps.
           </p>
@@ -909,6 +965,131 @@ const initTool = (form, results, progressContainer) => {
           }
         });
       }
+
+      const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
+      const cmsBadgeDot        = document.getElementById('cms-badge-dot');
+      const cmsBadgeName       = document.getElementById('cms-badge-name');
+      const cmsOverrideToggle  = document.getElementById('cms-override-toggle');
+      const cmsOverridePanel   = document.getElementById('cms-override-panel');
+      const cmsOverrideSelect  = document.getElementById('cms-override-select');
+      const cmsOverrideVersion = document.getElementById('cms-override-version');
+      const cmsNoFixes         = document.getElementById('cms-fixes-no-fixes');
+      const cmsAnswerContainer = document.getElementById('cms-fixes-answer-container');
+      const cmsAnswerContent   = document.getElementById('cms-fixes-answer-content');
+
+      if (cmsBadgeName) {
+        let label = cmsInfo.name || 'Custom / Unknown';
+        if (cmsInfo.version) label += ' ' + cmsInfo.version;
+        cmsBadgeName.textContent = label;
+      }
+      if (cmsBadgeDot) {
+        let dotClass = 'bg-gray-400';
+        if (cmsInfo.confidence === 'high')        dotClass = 'bg-green-500';
+        else if (cmsInfo.confidence === 'medium') dotClass = 'bg-yellow-500';
+        else if (cmsInfo.confidence === 'low')    dotClass = 'bg-orange-500';
+        cmsBadgeDot.className = 'inline-block w-2.5 h-2.5 rounded-full mr-2 ' + dotClass;
+      }
+
+      if (cmsOverrideSelect) {
+        const known = Array.from(cmsOverrideSelect.options).map(o => o.value);
+        cmsOverrideSelect.value = known.includes(cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown';
+      }
+      if (cmsOverrideVersion && cmsInfo.version) {
+        cmsOverrideVersion.value = cmsInfo.version;
+      }
+
+      cmsOverrideToggle?.addEventListener('click', () => {
+        cmsOverridePanel?.classList.toggle('hidden');
+      });
+
+      if (prioritisedFixes.length === 0) {
+        if (cmsFixesBtn) {
+          cmsFixesBtn.disabled = true;
+          cmsFixesBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+        cmsNoFixes?.classList.remove('hidden');
+      }
+
+      cmsFixesBtn?.addEventListener('click', async () => {
+        if (prioritisedFixes.length === 0) return;
+
+        const canProceed = await canRunTool('limit-audit-id');
+        if (!canProceed) return;
+
+        const selectedCms     = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';
+        const selectedVersion = cmsOverrideVersion?.value?.trim() || cmsInfo.version || null;
+
+        cmsFixesBtn.disabled = true;
+        const originalLabel = cmsFixesBtn.textContent;
+        cmsFixesBtn.textContent = 'Generating...';
+        cmsAnswerContainer?.classList.remove('hidden');
+        if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Building CMS-specific AEO/GEO instructions...';
+
+        try {
+          const payload = {
+            cms: selectedCms,
+            cmsVersion: selectedVersion,
+            cmsConfidence: cmsInfo.confidence,
+            cmsSignals: cmsInfo.signals,
+            url: analyzedUrl !== 'Pasted HTML Code' ? analyzedUrl : null,
+            pageTitle: doc?.title || null,
+            overallScore: yourScore,
+            scores: {
+              answerability: answerability,
+              structuredData: structuredData,
+              eeat: eeat,
+              scannability: scannability,
+              conversational: conversational,
+              readability: readability,
+              uniqueInsights: uniqueInsights,
+              antiAiSafety: antiAiSafety
+            },
+            priorityFixes: prioritisedFixes.slice(0, 3).map(f => ({
+              module: f.module || 'AI Search',
+              name: f.title,
+              howToFix: f.how
+            })),
+            mode: analyzedUrl === 'Pasted HTML Code' ? 'pasted-code' : 'live-url'
+          };
+
+          const response = await fetch('https://ai-search-cms-fixes.traffictorch.workers.dev/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+          const data = await response.json();
+
+          if (data.success && cmsAnswerContent) {
+            cmsAnswerContent.textContent = '';
+
+            const header = document.createElement('div');
+            header.style.fontWeight = 'bold';
+            header.style.marginBottom = '0.75rem';
+            header.textContent = '🛠️ CMS Fixes for ' +
+              (data.cms || selectedCms) +
+              (data.cmsVersion ? ' ' + data.cmsVersion : '');
+
+            const body = document.createElement('div');
+            body.textContent = data.answer || '';
+
+            cmsAnswerContent.appendChild(header);
+            cmsAnswerContent.appendChild(body);
+          } else if (cmsAnswerContent) {
+            cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+          }
+
+        } catch (err) {
+          if (cmsAnswerContent) {
+            cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+          }
+        } finally {
+          cmsFixesBtn.disabled = false;
+          cmsFixesBtn.textContent = originalLabel;
+        }
+      });
 
       document.addEventListener('click', (e) => {
         const card = e.target.closest('.score-card');
