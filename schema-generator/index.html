@@ -105,7 +105,7 @@
         }
       },
       "datePublished": "2026-03-09T10:40:00+11:00",
-      "dateModified": "2026-09-08T13:11:00+11:00"
+      "dateModified": "2026-09-11T13:11:00+11:00"
     },
     {
       "@type": "Person",
@@ -343,6 +343,30 @@
           </button>
         </div>
       </form>
+      
+            <div class="max-w-2xl mx-auto mt-4">
+        <details class="group">
+          <summary class="cursor-pointer text-center text-base font-semibold text-blue-600 dark:text-blue-400 hover:underline list-none">
+            Or paste JSON-LD code directly →
+          </summary>
+          <div class="mt-4 space-y-3">
+            <label for="schema-code-input" class="sr-only">Paste JSON-LD code to validate</label>
+            <textarea
+              id="schema-code-input"
+              rows="6"
+              placeholder='Paste your JSON-LD here, e.g. {"@context":"https://schema.org","@type":"Article","headline":"..."}'
+              class="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-y"
+            ></textarea>
+            <button
+              id="validate-code-btn"
+              type="button"
+              class="w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition"
+            >
+              Validate This Code
+            </button>
+          </div>
+        </details>
+      </div>
 
       <div id="analysis-progress" class="hidden mt-10 flex flex-col items-center justify-center py-8">
         <div class="relative w-20 h-20">
@@ -1791,7 +1815,7 @@
         </p>
         <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-03-09</p>
-          <p>Last updated: 2026-09-08</p>
+          <p>Last updated: 2026-09-11</p>
         </div>
       </div>
     </div>
