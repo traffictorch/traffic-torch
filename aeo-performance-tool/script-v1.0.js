@@ -410,6 +410,11 @@ document.addEventListener('DOMContentLoaded', () => {
               url: url || 'Custom HTML',
               pageTitle,
               overallScore: overall,
+                cms: {
+                name: cmsInfo?.name || 'Custom / Unknown',
+                version: cmsInfo?.version || null,
+                confidence: cmsInfo?.confidence || 'unknown'
+              },
               modules: modules.map(m => ({ name: m.name, score: m.score, failed: m.failed })),
               priorityFixes: priorityFixes.map(f => f.name),
               browserMetrics: browserMetrics ? {

@@ -17,6 +17,11 @@
   </url>
   
   <url>
+    <loc>https://traffictorch.net/lighthouse-plus-tool/</loc>
+    <lastmod>2026-09-11</lastmod>
+  </url>
+  
+  <url>
     <loc>https://traffictorch.net/topical-authority-audit-tool/</loc>
     <lastmod>2026-09-11</lastmod>
   </url>
@@ -153,6 +158,23 @@
   </url>
 
   <!-- Blog posts -->
+  
+  lighthouse-plus-tool
+  
+    <url>
+    <loc>https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/</loc>
+    <lastmod>2026-09-12</lastmod>
+    </url>
+  
+    <url>
+    <loc>https://traffictorch.net/blog/posts/aeo-performance-help-guide/</loc>
+    <lastmod>2026-09-12</lastmod>
+    </url>
+  
+    <url>
+    <loc>https://traffictorch.net/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/</loc>
+    <lastmod>2026-09-09</lastmod>
+    </url>
 
     <url>
     <loc>https://traffictorch.net/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/</loc>

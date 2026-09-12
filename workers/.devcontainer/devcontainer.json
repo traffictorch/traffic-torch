@@ -1,0 +1,17 @@
+{
+  "name": "Cloudflare Workers Dev",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "forwardPorts": [8787, 9229],
+  "postCreateCommand": "npm install -g wrangler@latest",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "cloudflare.cloudflare-workers"
+      ]
+    }
+  },
+  "remoteUser": "node"
+}

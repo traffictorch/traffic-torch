@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <title>Lighthouse Plus Help Guide 2026 – Traffic Torch</title>
+  <meta name="description" content="Complete 2026 guide to Lighthouse Plus: the 10 modules that decide whether a page performs for humans and is ready for AI agents. Core Web Vitals, Accessibility, PWA, Agentic Browsing and more.">
+
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/">
+
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/">
+
+  <meta property="og:title" content="Lighthouse Plus Help Guide 2026 – Traffic Torch">
+  <meta property="og:description" content="The 10 Lighthouse Plus modules that decide whether a page performs for humans and is ready for AI agents.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/">
+  <meta property="og:image" content="https://traffictorch.net/blog/images/lighthouse-plus/lighthouse-plus-help-guide-1200w.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lighthouse Plus Help Guide 2026 – Traffic Torch">
+  <meta name="twitter:description" content="The 10 Lighthouse Plus modules that decide whether a page performs for humans and is ready for AI agents.">
+  <meta name="twitter:image" content="https://traffictorch.net/blog/images/lighthouse-plus/lighthouse-plus-help-guide-1200w.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://traffictorch.net/#organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/",
+        "logo": "https://traffictorch.net/logo-512.webp",
+        "sameAs": [
+          "https://g.dev/traffictorch",
+          "https://github.com/traffictorch/",
+          "https://orcid.org/0009-0006-4084-0241",
+          "https://www.wikidata.org/wiki/Q139815165",
+          "https://zenodo.org/records/20149616",
+          "https://github.com/traffictorch/traffic-torch",
+          "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+          "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+          "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+          "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+          "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+          "https://www.framer.com/marketplace/plugins/traffic-torch/",
+          "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+          "https://github.com/marketplace/actions/traffic-torch-audit",
+          "https://www.linkedin.com/in/ylia-callan-8b889976/",
+          "https://x.com/Guitaralize"
+        ]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://traffictorch.net/#author",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net",
+        "sameAs": [
+          "https://g.dev/traffictorch",
+          "https://github.com/traffictorch/",
+          "https://orcid.org/0009-0006-4084-0241",
+          "https://www.wikidata.org/wiki/Q139815165",
+          "https://zenodo.org/records/20149616",
+          "https://github.com/traffictorch/traffic-torch"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://traffictorch.net/#website",
+        "url": "https://traffictorch.net/",
+        "name": "Traffic Torch",
+        "publisher": { "@id": "https://traffictorch.net/#organization" }
+      },
+      {
+        "@type": ["WebPage", "FAQPage"],
+        "@id": "https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/#webpage",
+        "url": "https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/",
+        "name": "Lighthouse Plus Help Guide 2026",
+        "description": "Complete 2026 guide to Lighthouse Plus: the 10 modules that decide whether a page performs for humans and is ready for AI agents.",
+        "isPartOf": { "@id": "https://traffictorch.net/#website" },
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/blog/images/lighthouse-plus/lighthouse-plus-help-guide-1200w.webp",
+          "width": 1200,
+          "height": 630
+        },
+        "datePublished": "2026-09-12T10:00:00+11:00",
+        "dateModified": "2026-09-12T10:00:00+11:00",
+        "author": { "@id": "https://traffictorch.net/#author" },
+        "publisher": { "@id": "https://traffictorch.net/#organization" },
+        "breadcrumb": { "@id": "https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/#breadcrumb" },
+        "about": { "@id": "https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/#article" },
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is Lighthouse Plus?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Lighthouse Plus is a human-first performance, accessibility, and agent-readiness audit. It runs 10 modules — Core Web Vitals, Performance, Accessibility, Best Practices, SEO On-Page, PWA Readiness, Resource Optimisation, Third-Party Impact, Mobile UX, and Agentic Browsing — then explains the What, How and Why of every score, with CMS-specific fix instructions."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How is Lighthouse Plus different from Google Lighthouse?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Lighthouse Plus runs the same underlying headless Chrome checks, but adds three layers Google Lighthouse does not: a What/How/Why explanation for every module, CMS-aware step-by-step fix instructions generated by AI, and an Ask AI assistant that can answer follow-up questions about your specific audit."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What are Core Web Vitals?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Core Web Vitals are LCP (Largest Contentful Paint), INP (Interaction to Next Paint), and CLS (Cumulative Layout Shift). Google uses them as a ranking signal. Lighthouse Plus also measures FCP and TTFB because they directly influence how fast content becomes visible and interactive."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does Lighthouse Plus check accessibility?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Lighthouse Plus injects axe-core into a real headless Chrome session and runs the full WCAG 2.2 A and AA ruleset against the live DOM. It captures every violation with impact level and node count, then shows fixes at the file or CMS level."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is Agentic Browsing?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Agentic Browsing is how ready the page is for AI agents that browse, fill forms, and complete tasks on behalf of a user. It checks WebMCP integration, semantic landmarks, form labels, focus order, overlay traps, and whether llms.txt and AI-friendly robots.txt are present. It is a beta module."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Lighthouse Plus use the PageSpeed Insights API?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Lighthouse Plus runs all checks itself using Puppeteer and Cloudflare Browser Run. No external API is called. Every score comes from your live page."
+            }
+          }
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://traffictorch.net/news/" },
+          { "@type": "ListItem", "position": 3, "name": "Lighthouse Plus Help Guide 2026", "item": "https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/" }
+        ]
+      },
+      {
+        "@type": "BlogPosting",
+        "@id": "https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/#article",
+        "headline": "Lighthouse Plus Help Guide 2026",
+        "description": "Complete 2026 guide to Lighthouse Plus: the 10 modules that decide whether a page performs for humans and is ready for AI agents.",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/blog/images/lighthouse-plus/lighthouse-plus-help-guide-1200w.webp",
+          "width": 1200,
+          "height": 630
+        },
+        "datePublished": "2026-09-12T10:00:00+11:00",
+        "dateModified": "2026-09-12T10:00:00+11:00",
+        "author": { "@id": "https://traffictorch.net/#author" },
+        "publisher": { "@id": "https://traffictorch.net/#organization" },
+        "mainEntityOfPage": { "@id": "https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/#webpage" },
+        "isPartOf": {
+          "@type": "Blog",
+          "@id": "https://traffictorch.net/news/#blog",
+          "name": "Traffic Torch Blog",
+          "url": "https://traffictorch.net/news/"
+        },
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": ["#faq", "h1", "p:first-of-type", "nav#table-of-contents h2"]
+        },
+        "keywords": [
+          "Lighthouse Plus",
+          "Core Web Vitals",
+          "WCAG 2.2 AA accessibility",
+          "PWA readiness",
+          "resource optimisation",
+          "third-party impact",
+          "mobile UX",
+          "agentic browsing",
+          "WebMCP",
+          "page performance audit"
+        ],
+        "articleSection": "Lighthouse Plus",
+        "wordCount": 6000
+      }
+    ]
+  }
+  </script>
+
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/blog/style-v1.0.css">
+  </noscript>
+
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  </noscript>
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <div class="flex flex-1 min-h-screen">
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
+      </div>
+    </aside>
+    <div class="flex-1 flex flex-col">
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+        <article class="max-w-7xl mx-auto px-2">
+          <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-2 md:p-4 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+
+            <picture class="mb-12 block">
+              <source media="(max-width: 640px)" srcset="/blog/images/lighthouse-plus/lighthouse-plus-help-guide-640w.webp">
+              <source media="(min-width: 641px)" srcset="/blog/images/lighthouse-plus/lighthouse-plus-help-guide-1200w.webp">
+              <img src="/blog/images/lighthouse-plus/lighthouse-plus-help-guide-1200w.webp" alt="2026 Lighthouse Plus Guide – Core Web Vitals, Accessibility, PWA, Agentic Browsing – Traffic Torch" class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/720] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto" loading="eager" decoding="async" fetchpriority="high" width="1200" height="630">
+            </picture>
+
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-black mb-5 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+              Lighthouse Plus Help Guide 2026
+            </h1>
+
+            <p class="text-xl md:text-2xl font-medium text-gray-700 dark:text-gray-300 mb-10 leading-relaxed max-w-3xl">
+              The 10 modules that decide whether your page performs for humans and is ready for AI agents — and how Traffic Torch scores each one.
+            </p>
+
+            <div class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12">
+              <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg">
+                <strong>Lighthouse Plus is the human-facing half of modern web performance.</strong> Where the AEO Performance Tool measures how well AI crawlers can read your page, Lighthouse Plus measures how well real people can use it — and how ready it is for the next wave of AI agents that browse on a user's behalf.
+              </p>
+              <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-6">
+                Traffic Torch runs 10 modules against a real headless Chrome session at a mobile viewport, then explains the What, How and Why of every score. It also generates CMS-aware fix instructions so you know exactly what to change and where.
+              </p>
+              <ul class="list-disc pl-6 mt-4 space-y-3 text-lg">
+                <li><strong>Core Web Vitals</strong> — LCP, INP, CLS, FCP, TTFB</li>
+                <li><strong>Performance Score</strong> — what delays the first paint</li>
+                <li><strong>Accessibility</strong> — WCAG 2.2 AA, contrast, ARIA, keyboard</li>
+                <li><strong>Best Practices</strong> — HTTPS, console errors, deprecated APIs</li>
+                <li><strong>SEO On-Page</strong> — title, meta, canonical, robots, indexability</li>
+                <li><strong>PWA Readiness</strong> — manifest, service worker, installable</li>
+                <li><strong>Resource Optimisation</strong> — images, JS, CSS, fonts</li>
+                <li><strong>Third-Party Impact</strong> — which scripts hurt performance</li>
+                <li><strong>Mobile UX</strong> — tap targets, viewport, font sizes, safe-area</li>
+                <li><strong>Agentic Browsing</strong> — WebMCP, landmarks, form labels (beta)</li>
+              </ul>
+              <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-8">
+                Each module below includes a What, How, and Why section. The same structure powers the module explanation cards inside the Lighthouse Plus Tool, so you can jump straight to any module for a deeper understanding.
+              </p>
+            </div>
+
+            <nav id="table-of-contents" class="bg-white dark:bg-gray-900 p-4 md:p-6 mt-10 rounded-2xl shadow-lg mb-12 border border-gray-200 dark:border-gray-700 sticky top-4 z-10">
+              <h2 class="text-2xl md:text-3xl font-black text-center text-gray-800 dark:text-gray-100 mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+                Table of Contents
+              </h2>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[800px]">
+                  <thead>
+                    <tr class="bg-gray-100 dark:bg-gray-800/80">
+                      <th class="p-4 font-semibold text-gray-700 dark:text-gray-600 border-b border-gray-200 dark:border-gray-700">Module</th>
+                      <th class="p-4 font-semibold text-gray-700 dark:text-gray-600 border-b border-gray-200 dark:border-gray-700 text-center">What is it?</th>
+                      <th class="p-4 font-semibold text-gray-700 dark:text-gray-600 border-b border-gray-200 dark:border-gray-700 text-center">How it's Tested?</th>
+                      <th class="p-4 font-semibold text-gray-700 dark:text-gray-600 border-b border-gray-200 dark:border-gray-700 text-center">Why it Matters?</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-gray-800 dark:text-gray-200">
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700"><a href="#core-web-vitals" class="text-red-600 dark:text-red-400 hover:underline">Core Web Vitals</a></td>
+                      <td class="p-4 text-center"><a href="#core-web-vitals-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+                      <td class="p-4 text-center"><a href="#core-web-vitals-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a></td>
+                      <td class="p-4 text-center"><a href="#core-web-vitals-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700"><a href="#performance-score" class="text-red-600 dark:text-red-400 hover:underline">Performance Score</a></td>
+                      <td class="p-4 text-center"><a href="#performance-score-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+                      <td class="p-4 text-center"><a href="#performance-score-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a></td>
+                      <td class="p-4 text-center"><a href="#performance-score-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700"><a href="#accessibility" class="text-red-600 dark:text-red-400 hover:underline">Accessibility</a></td>
+                      <td class="p-4 text-center"><a href="#accessibility-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+                      <td class="p-4 text-center"><a href="#accessibility-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a></td>
+                      <td class="p-4 text-center"><a href="#accessibility-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700"><a href="#best-practices" class="text-red-600 dark:text-red-400 hover:underline">Best Practices</a></td>
+                      <td class="p-4 text-center"><a href="#best-practices-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+                      <td class="p-4 text-center"><a href="#best-practices-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a></td>
+                      <td class="p-4 text-center"><a href="#best-practices-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700"><a href="#seo-on-page" class="text-red-600 dark:text-red-400 hover:underline">SEO On-Page</a></td>
+                      <td class="p-4 text-center"><a href="#seo-on-page-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+                      <td class="p-4 text-center"><a href="#seo-on-page-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a></td>
+                      <td class="p-4 text-center"><a href="#seo-on-page-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700"><a href="#pwa-readiness" class="text-red-600 dark:text-red-400 hover:underline">PWA Readiness</a></td>
+                      <td class="p-4 text-center"><a href="#pwa-readiness-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+                      <td class="p-4 text-center"><a href="#pwa-readiness-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a></td>
+                      <td class="p-4 text-center"><a href="#pwa-readiness-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700"><a href="#resource-optimisation" class="text-red-600 dark:text-red-400 hover:underline">Resource Optimisation</a></td>
+                      <td class="p-4 text-center"><a href="#resource-optimisation-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+                      <td class="p-4 text-center"><a href="#resource-optimisation-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a></td>
+                      <td class="p-4 text-center"><a href="#resource-optimisation-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700"><a href="#third-party-impact" class="text-red-600 dark:text-red-400 hover:underline">Third-Party Impact</a></td>
+                      <td class="p-4 text-center"><a href="#third-party-impact-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+                      <td class="p-4 text-center"><a href="#third-party-impact-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a></td>
+                      <td class="p-4 text-center"><a href="#third-party-impact-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700"><a href="#mobile-ux" class="text-red-600 dark:text-red-400 hover:underline">Mobile UX</a></td>
+                      <td class="p-4 text-center"><a href="#mobile-ux-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+                      <td class="p-4 text-center"><a href="#mobile-ux-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a></td>
+                      <td class="p-4 text-center"><a href="#mobile-ux-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700"><a href="#agentic-browsing" class="text-red-600 dark:text-red-400 hover:underline">Agentic Browsing (beta)</a></td>
+                      <td class="p-4 text-center"><a href="#agentic-browsing-what" class="text-blue-600 dark:text-blue-400 hover:underline">What</a></td>
+                      <td class="p-4 text-center"><a href="#agentic-browsing-how" class="text-blue-600 dark:text-blue-400 hover:underline">How</a></td>
+                      <td class="p-4 text-center"><a href="#agentic-browsing-why" class="text-blue-600 dark:text-blue-400 hover:underline">Why</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="mt-6 text-center text-sm md:text-base text-gray-600 dark:text-gray-400 flex flex-wrap justify-center gap-4 md:gap-6">
+                <a href="#conclusion" class="text-red-600 dark:text-red-400 hover:underline">Conclusion & Next Steps</a>
+                <a href="#faq" class="text-red-600 dark:text-red-400 hover:underline">Frequently Asked Questions</a>
+                <a href="https://traffictorch.net/lighthouse-plus-tool/" class="text-red-600 dark:text-red-400 hover:underline">Try Lighthouse Plus Tool</a>
+              </div>
+            </nav>
+
+            <div class="mt-12 p-4 md:p-6 rounded-2xl border border-orange-200 dark:border-orange-800 bg-white/5 dark:bg-black/20 backdrop-blur-sm text-center">
+              <p class="text-xl md:text-2xl font-black mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Ready to see your Lighthouse Plus score?</p>
+              <p class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-6 leading-relaxed max-w-2xl mx-auto">
+                Get your instant 10-module Lighthouse Plus report + priority fixes + CMS-specific guidance.<br class="hidden sm:block">
+                <span class="text-red-600 dark:text-red-400 font-semibold">No login • No tracking • 100% client-side</span>
+              </p>
+              <a href="https://traffictorch.net/lighthouse-plus-tool/" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">
+                Lighthouse Plus Audit Tool →
+              </a>
+              <p class="mt-4 text-sm text-gray-600 dark:text-gray-400">Powered by Traffic Torch – human-first UX, performance, and agent readiness.</p>
+            </div>
+
+            <div class="py-8 text-center">
+              <div class="flex flex-col items-center gap-4">
+                <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">Share?</strong>
+                <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+                  <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+                  <a class="a2a_button_email"></a>
+                  <a class="a2a_button_x"></a>
+                  <a class="a2a_button_reddit"></a>
+                  <a class="a2a_button_linkedin"></a>
+                  <a class="a2a_button_copy_link"></a>
+                </div>
+              </div>
+            </div>
+            <script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+            <section id="faq" class="mb-20 scroll-mt-24">
+              <h2 class="text-3xl md:text-4xl font-black mt-16 mb-12 text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Frequently Asked Questions – Lighthouse Plus</h2>
+              <div class="max-w-4xl mx-auto space-y-4">
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    What is Lighthouse Plus?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>Lighthouse Plus is a human-first performance, accessibility, and agent-readiness audit. It runs 10 modules — Core Web Vitals, Performance, Accessibility, Best Practices, SEO On-Page, PWA Readiness, Resource Optimisation, Third-Party Impact, Mobile UX, and Agentic Browsing — then explains the What, How and Why of every score, with CMS-specific fix instructions.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    How is Lighthouse Plus different from Google Lighthouse?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>Lighthouse Plus runs the same underlying headless Chrome checks, but adds three layers Google Lighthouse does not: a What/How/Why explanation for every module, CMS-aware step-by-step fix instructions generated by AI, and an Ask AI assistant that can answer follow-up questions about your specific audit.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    What are Core Web Vitals?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>Core Web Vitals are LCP (Largest Contentful Paint), INP (Interaction to Next Paint), and CLS (Cumulative Layout Shift). Google uses them as a ranking signal. Lighthouse Plus also measures FCP and TTFB because they directly influence how fast content becomes visible and interactive.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    How does Lighthouse Plus check accessibility?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>Lighthouse Plus injects axe-core into a real headless Chrome session and runs the full WCAG 2.2 A and AA ruleset against the live DOM. It captures every violation with impact level and node count, then shows fixes at the file or CMS level.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    What is Agentic Browsing?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>Agentic Browsing is how ready the page is for AI agents that browse, fill forms, and complete tasks on behalf of a user. It checks WebMCP integration, semantic landmarks, form labels, focus order, overlay traps, and whether llms.txt and AI-friendly robots.txt are present. It is a beta module.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    Does Lighthouse Plus use the PageSpeed Insights API?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>No. Lighthouse Plus runs all checks itself using Puppeteer and Cloudflare Browser Run. No external API is called. Every score comes from your live page.</p>
+                    <p class="mt-4">
+                      <a href="https://traffictorch.net/lighthouse-plus-tool/" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition">Run Free Lighthouse Plus Audit →</a>
+                    </p>
+                  </div>
+                </details>
+
+              </div>
+            </section>
+
+            <!-- Module 1: Core Web Vitals -->
+            <section id="core-web-vitals" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">Core Web Vitals</h2>
+
+              <div class="mb-16">
+                <h3 id="core-web-vitals-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Core Web Vitals are the five page-experience metrics Google uses to grade real user experience: LCP, INP, CLS, FCP, and TTFB.</strong> They measure how fast content appears, how stable it stays, and how quickly the page responds to input.</p>
+                  <p>Every modern browser reports these metrics through the PerformanceObserver API. Google collects them in the field from real users through the Chrome User Experience Report, and uses them as a documented ranking signal.</p>
+                  <p>Lighthouse Plus measures them in the lab at a mobile viewport, which gives you a repeatable score you can improve against. Lab and field numbers differ, but lab is the right target for engineering work — you control it directly.</p>
+                  <p>Common failure patterns:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Large unoptimised hero images that delay LCP past 4 seconds.</li>
+                    <li>Long JavaScript tasks that push INP past 500ms on interaction.</li>
+                    <li>Ads, banners, or late-loaded fonts that shift layout after first paint.</li>
+                    <li>Slow server response times that push TTFB past 800ms.</li>
+                    <li>Render-blocking CSS or fonts that delay FCP.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="core-web-vitals-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Traffic Torch renders your page in a real headless Chrome instance via Cloudflare Browser Run at a mobile viewport, injects PerformanceObservers before any script runs, then captures the metrics live.</strong></p>
+                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+                    <li><strong>LCP:</strong> Captured from largest-contentful-paint entries during the full load plus a 3.5-second settle window.</li>
+                    <li><strong>INP:</strong> Proxied by Total Blocking Time when no user interaction occurs — the accepted lab approximation.</li>
+                    <li><strong>CLS:</strong> Sum of layout-shift entries excluding shifts within 500ms of user input.</li>
+                    <li><strong>FCP:</strong> Captured from paint entries where name is first-contentful-paint.</li>
+                    <li><strong>TTFB:</strong> Read from the browser's navigation timing API (responseStart).</li>
+                  </ol>
+                  <p class="mt-6">Scoring thresholds (Good / Needs Improvement / Poor):</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>LCP: ≤ 2500ms / ≤ 4000ms / &gt; 4000ms</li>
+                    <li>INP: ≤ 200ms / ≤ 500ms / &gt; 500ms</li>
+                    <li>CLS: ≤ 0.10 / ≤ 0.25 / &gt; 0.25</li>
+                    <li>FCP: ≤ 1800ms / ≤ 3000ms / &gt; 3000ms</li>
+                    <li>TTFB: ≤ 800ms / ≤ 1800ms / &gt; 1800ms</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="core-web-vitals-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p>Google uses Core Web Vitals as a documented ranking signal. Sites that fail them consistently lose ground in competitive SERPs and lose engagement from real users.</p>
+                  <p>The business impact is larger than rankings. Studies from Google, Deloitte, and others consistently show that every 100ms improvement in load time raises conversion rates by 1-2%. A failing LCP costs you money long before it costs you rankings.</p>
+                  <p>Core Web Vitals are also the foundation every other module builds on. Fixing LCP usually improves Performance Score and Resource Optimisation. Fixing CLS usually improves Mobile UX. Fixing INP usually improves Performance and Third-Party Impact. It is the module where a single fix often lifts several scores.</p>
+                  <p class="mt-8 font-semibold text-xl">Core Web Vitals are the entry ticket to modern web performance. If you only fix one module, fix this one.</p>
+                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to see your Core Web Vitals score?</p>
+                    <a href="https://traffictorch.net/lighthouse-plus-tool/#core-web-vitals" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check Core Web Vitals on Traffic Torch →</a>
+                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Module 2: Performance Score -->
+            <section id="performance-score" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">Performance Score</h2>
+
+              <div class="mb-16">
+                <h3 id="performance-score-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Performance Score measures what blocks the browser from showing content quickly.</strong> It covers render-blocking resources, unused JavaScript and CSS, image delivery, main-thread work, and long tasks that freeze the page.</p>
+                  <p>Where Core Web Vitals are the outcomes, Performance Score is the cause. It tells you why LCP is 3.4s or why TBT is 800ms — because a script is blocking the parser, because an image is 2MB, because the main thread is executing JS for 2 seconds before paint.</p>
+                  <p>The bundle of checks mirrors Google Lighthouse's performance category, with adjustments for mobile-first rendering. Every item is something a developer can act on.</p>
+                  <p>Common failure patterns:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Synchronous scripts in &lt;head&gt; without defer or async.</li>
+                    <li>Large inline scripts and styles that inflate the initial HTML.</li>
+                    <li>Too many stylesheet links that block text rendering.</li>
+                    <li>Images without width/height that cause layout shift on load.</li>
+                    <li>Long tasks over 50ms that freeze the main thread.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="performance-score-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Traffic Torch scans the raw HTML head for blocking scripts and combines that with live Puppeteer measurements of total blocking time and long tasks.</strong></p>
+                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+                    <li><strong>Head script scan:</strong> Counts &lt;script&gt; tags in &lt;head&gt; without defer, async, or type="module".</li>
+                    <li><strong>Stylesheet count:</strong> Counts &lt;link rel="stylesheet"&gt; tags.</li>
+                    <li><strong>Inline script size:</strong> Counts inline &lt;script&gt; blocks over 500 characters.</li>
+                    <li><strong>Inline style size:</strong> Counts inline &lt;style&gt; blocks over 2000 characters.</li>
+                    <li><strong>Image attribute audit:</strong> Flags &lt;img&gt; without width/height or without loading="lazy" or fetchpriority="high".</li>
+                    <li><strong>TBT and long tasks:</strong> Read live from the browser via PerformanceObserver.</li>
+                  </ol>
+                  <p class="mt-6">Scoring:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Blocking head script: -8 points per script (capped at -30)</li>
+                    <li>Large inline script: -10 if more than 3</li>
+                    <li>Large inline style: -5</li>
+                    <li>TBT over 600ms: -12</li>
+                    <li>Long tasks over 5: -1 each</li>
+                    <li>Images missing dimensions: -2 each (capped at -12)</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="performance-score-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p>Performance Score is where the most fixes live. It is the module that catches the everyday waste: 15 unused plugin scripts, an oversized hero image, a 200KB inline JSON blob in the HTML.</p>
+                  <p>Fixing Performance Score almost always lifts Core Web Vitals, Resource Optimisation, and Third-Party Impact at the same time. It is the highest-leverage module in the entire audit because the fixes compound across modules.</p>
+                  <p>The cost of ignoring it is cumulative. Every new plugin, every new ad tag, every new analytics integration adds weight that the original developer never anticipated. Performance Score is the friction gauge that catches this drift.</p>
+                  <p class="mt-8 font-semibold text-xl">Performance Score is where the easy wins live. Most sites can move 15-25 points with a focused afternoon of work.</p>
+                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to see what's slowing your page down?</p>
+                    <a href="https://traffictorch.net/lighthouse-plus-tool/#performance-score" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check Performance Score on Traffic Torch →</a>
+                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Module 3: Accessibility -->
+            <section id="accessibility" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">Accessibility</h2>
+
+              <div class="mb-16">
+                <h3 id="accessibility-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Accessibility measures WCAG 2.2 AA compliance: colour contrast, ARIA correctness, keyboard navigation, focus visibility, alt text, form labels, heading order, and landmark regions.</strong> It is the module that asks whether real people with assistive technology can actually use your page.</p>
+                  <p>Roughly 15% of the world's population lives with some form of disability. That is 1.3 billion people. Many are your potential customers. Accessibility is also a legal requirement in the EU, UK, US, Canada, Australia, and increasingly everywhere else.</p>
+                  <p>WCAG 2.2 AA is the international standard. It has 55 success criteria across perceivable, operable, understandable, and robust categories. Lighthouse Plus focuses on the ones automated tools can reliably check, plus a few human-judgment items that commonly slip through.</p>
+                  <p>Common failure patterns:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Low-contrast text on coloured backgrounds.</li>
+                    <li>Buttons or links with no visible focus outline.</li>
+                    <li>Images missing alt attributes or with meaningless alt text.</li>
+                    <li>Form fields without associated labels.</li>
+                    <li>Custom widgets missing ARIA roles and states.</li>
+                    <li>Heading levels that skip (H1 to H3 with no H2).</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="accessibility-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Traffic Torch injects axe-core into the live page inside Browser Run and runs the full WCAG 2.2 A + AA ruleset against the rendered DOM.</strong></p>
+                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+                    <li><strong>axe-core injection:</strong> Loads axe.min.js from CDN and runs it against the rendered document.</li>
+                    <li><strong>Rule tags:</strong> Runs wcag2a, wcag2aa, wcag21a, wcag21aa, and wcag22aa rule groups.</li>
+                    <li><strong>Violation capture:</strong> Records every violation with id, impact level, description, help text, and affected node count.</li>
+                    <li><strong>Fallback HTML checks:</strong> If axe fails to load, static checks for alt attributes, form field labels, and tabindex usage.</li>
+                  </ol>
+                  <p class="mt-6">Scoring:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Critical violation: -12 points each</li>
+                    <li>Serious violation: -8 points each</li>
+                    <li>Moderate violation: -4 points each</li>
+                    <li>Minor violation: -2 points each</li>
+                    <li>Maximum deduction capped at 100 (score floors at 0)</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="accessibility-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p>Accessibility is a legal requirement in most developed markets. Websites that fail WCAG 2.2 AA have been successfully sued under the ADA in the US, the Equality Act in the UK, and the European Accessibility Act. Fines and settlements are routinely in the six figures.</p>
+                  <p>It is also a Google ranking signal. Google has confirmed that accessible sites tend to rank better because accessible pages are easier for their crawlers to understand. Alt text, semantic HTML, heading order, and landmark regions all help Google parse your content correctly.</p>
+                  <p>The UX benefit is universal. High-contrast text, clear focus states, and labelled inputs help every user, not just those with assistive tech. Designers who build for accessibility consistently ship cleaner, faster, better-looking interfaces.</p>
+                  <p class="mt-8 font-semibold text-xl">Accessibility is not a compliance checkbox. It is a UX quality signal that also happens to be the law.</p>
+                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to check your WCAG 2.2 AA compliance?</p>
+                    <a href="https://traffictorch.net/lighthouse-plus-tool/#accessibility" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check Accessibility on Traffic Torch →</a>
+                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Module 4: Best Practices -->
+            <section id="best-practices" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">Best Practices</h2>
+
+              <div class="mb-16">
+                <h3 id="best-practices-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Best Practices measures the safe, correct, modern web fundamentals: HTTPS, no console errors, no deprecated APIs, correctly proportioned images, and no exposed framework versions.</strong> These are the checks that determine whether your page is secure, stable, and future-proof.</p>
+                  <p>These are not glamorous checks. But failing them breaks things — a mixed-content request blocks images, a console error hides a broken feature, an exposed server version invites attackers, a deprecated API warns users in the browser.</p>
+                  <p>Best Practices is the quality floor. Pages that fail it are visibly broken to anyone who opens DevTools, and often visibly broken to users too, even if the symptoms are subtle at first.</p>
+                  <p>Common failure patterns:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Serving over HTTP or mixed content.</li>
+                    <li>JavaScript console errors during load.</li>
+                    <li>Failed network requests for missing images or fonts.</li>
+                    <li>Use of deprecated APIs like document.write or attachEvent.</li>
+                    <li>Distorted image aspect ratios from hardcoded dimensions.</li>
+                    <li>X-Powered-By headers exposing the server stack.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="best-practices-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Traffic Torch captures every console error and failed request during the headless render, then scans the raw HTML and response headers for the rest.</strong></p>
+                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+                    <li><strong>HTTPS check:</strong> Confirms the final URL uses https://.</li>
+                    <li><strong>Console and page error capture:</strong> Listens for console and pageerror events during render.</li>
+                    <li><strong>Failed request capture:</strong> Records every request that fails, including the error text.</li>
+                    <li><strong>Deprecated API scan:</strong> Grep for document.write, attachEvent, ActiveXObject, document.all.</li>
+                    <li><strong>Image aspect ratio:</strong> Checks width/height attributes for ratio distortion (over 3:1 or under 1:3).</li>
+                    <li><strong>Security headers:</strong> Reads response headers for HSTS, X-Content-Type-Options, and X-Powered-By.</li>
+                  </ol>
+                  <p class="mt-6">Scoring:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>No HTTPS: -25</li>
+                    <li>Each console error: -5 (capped at -25)</li>
+                    <li>Each failed request: -3 (capped at -15)</li>
+                    <li>Each deprecated API use: -4 (capped at -15)</li>
+                    <li>Distorted images: -3 each (capped at -12)</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="best-practices-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p>Best Practices is the fastest way to lose user trust. A page that shows a browser security warning, blocks content with mixed-content errors, or silently fails to load a critical feature feels broken even when the content is fine.</p>
+                  <p>Console errors are especially damaging because they compound. A single JavaScript error can prevent entire features from running — form validation, analytics tracking, animation, or a shopping cart. Users see a frozen button. You see nothing in analytics. The bug goes unnoticed for weeks.</p>
+                  <p>Security headers are the quiet defence layer. HSTS forces HTTPS on every subsequent visit. X-Content-Type-Options prevents MIME sniffing attacks. Removing X-Powered-By denies attackers an easy fingerprint. None of these are visible to users, and all of them matter when something goes wrong.</p>
+                  <p class="mt-8 font-semibold text-xl">Best Practices is the silent module. Nothing dramatic happens when it passes, and everything breaks when it fails.</p>
+                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to catch what's silently breaking?</p>
+                    <a href="https://traffictorch.net/lighthouse-plus-tool/#best-practices" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check Best Practices on Traffic Torch →</a>
+                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Module 5: SEO On-Page -->
+            <section id="seo-on-page" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">SEO On-Page</h2>
+
+              <div class="mb-16">
+                <h3 id="seo-on-page-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>SEO On-Page covers the classic user-facing SEO checks: a unique title, a compelling meta description, a canonical link, hreflang when multilingual, correct robots directives, one H1, and a mobile viewport.</strong> These are the signals users and search engines see first, before anyone reads a word of your content.</p>
+                  <p>This is not the AEO crawler layer. It is the SEO layer that affects how your page appears in SERPs, whether it can be indexed at all, and whether it will be crawled correctly across devices and languages.</p>
+                  <p>Most of these checks take minutes to fix. Most sites still fail at least one. The most common by far is a noindex tag accidentally left over from staging, which quietly kills all organic traffic for the page.</p>
+                  <p>Common failure patterns:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Title under 20 or over 65 characters.</li>
+                    <li>Missing or duplicate meta description.</li>
+                    <li>No canonical link, or a canonical pointing elsewhere.</li>
+                    <li>Leftover noindex or nofollow from staging.</li>
+                    <li>Multiple H1s or no H1 at all.</li>
+                    <li>Missing viewport meta on mobile pages.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="seo-on-page-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Traffic Torch parses the rendered HTML and validates each SEO on-page element against Google's documented guidelines.</strong></p>
+                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+                    <li><strong>Title:</strong> Extracts &lt;title&gt;, checks length 50-60 chars, penalises under 20 or over 65.</li>
+                    <li><strong>Meta description:</strong> Extracts name="description", checks length 120-160 chars.</li>
+                    <li><strong>Canonical:</strong> Looks for &lt;link rel="canonical"&gt; and validates presence.</li>
+                    <li><strong>hreflang:</strong> Counts hreflang links, notes single-locale as fine.</li>
+                    <li><strong>Robots meta:</strong> Checks for noindex and nofollow in name="robots".</li>
+                    <li><strong>H1 count:</strong> Counts &lt;h1&gt; tags, flags 0 or &gt; 1.</li>
+                    <li><strong>Viewport:</strong> Confirms viewport meta exists.</li>
+                  </ol>
+                  <p class="mt-6">Scoring:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>No title: -20; too short: -8; too long: -6</li>
+                    <li>No meta description: -10; too short: -5; too long: -4</li>
+                    <li>No canonical: -10</li>
+                    <li>noindex: -30; nofollow: -10</li>
+                    <li>No H1: -12; multiple H1s: -6</li>
+                    <li>No viewport: -10</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="seo-on-page-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p>These are the visible signals in search results. A well-written title and meta description can double your click-through rate from the same ranking position. A noindex tag costs you 100% of your organic traffic for that page.</p>
+                  <p>Canonical correctness decides which URL Google shows and which one it indexes. Get this wrong and you can lose all the ranking signals you have built up over years to a duplicate URL.</p>
+                  <p>hreflang manages multilingual and multi-region traffic. Get this wrong and Google will show your Australian page to Canadian searchers, or serve the wrong language entirely. For international sites, this is one of the highest-impact fixes available.</p>
+                  <p class="mt-8 font-semibold text-xl">SEO On-Page is the cheapest, fastest, highest-impact fix in the entire audit. Most sites can move 10-20 points in an afternoon.</p>
+                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to check your on-page SEO?</p>
+                    <a href="https://traffictorch.net/lighthouse-plus-tool/#seo-on-page" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check SEO On-Page on Traffic Torch →</a>
+                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Module 6: PWA Readiness -->
+            <section id="pwa-readiness" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">PWA Readiness</h2>
+
+              <div class="mb-16">
+                <h3 id="pwa-readiness-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>PWA Readiness measures how ready your site is to be installed as a Progressive Web App: valid manifest, registered service worker, offline fallback, correct theme colour and icon set, and HTTPS.</strong> It is the difference between a website that feels like a website and one that feels like a native app.</p>
+                  <p>PWAs launch from the home screen, work offline, receive push notifications, and re-engage users without an app store. For sites that rely on repeat visits, a PWA is often a 20-40% lift in returning-user engagement.</p>
+                  <p>The requirements are well defined and enforced by browsers. Chrome, Edge, and Safari all require a manifest, a service worker, and HTTPS for installability. Missing any one of them means the "Install" prompt never appears.</p>
+                  <p>Common failure patterns:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>No web app manifest linked.</li>
+                    <li>Manifest missing required fields (name, icons, start_url, display).</li>
+                    <li>No service worker registration.</li>
+                    <li>Icons missing at 192px or 512px sizes.</li>
+                    <li>No theme-color meta tag.</li>
+                    <li>No apple-touch-icon for iOS installability.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="pwa-readiness-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Traffic Torch scans the HTML for the manifest link, service worker registration, theme-color, and icon links, then confirms the site is served over HTTPS.</strong></p>
+                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+                    <li><strong>Manifest check:</strong> Looks for &lt;link rel="manifest"&gt; and confirms href is set.</li>
+                    <li><strong>Service worker:</strong> Greps for serviceWorker.register or navigator.serviceWorker.</li>
+                    <li><strong>Theme colour:</strong> Looks for name="theme-color" meta.</li>
+                    <li><strong>Apple meta:</strong> Checks for apple-mobile-web-app-capable and apple-touch-icon links.</li>
+                    <li><strong>Mask icon:</strong> Looks for mask-icon link (Safari pinned tab).</li>
+                    <li><strong>HTTPS:</strong> Confirms final URL uses https://.</li>
+                  </ol>
+                  <p class="mt-6">Scoring:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>No manifest: -25</li>
+                    <li>No service worker: -25</li>
+                    <li>No theme-colour: -8</li>
+                    <li>No apple-touch-icon: -10</li>
+                    <li>No HTTPS: -25</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="pwa-readiness-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p>PWAs are the closest thing to a native app experience you can ship on the open web. They install in one tap, launch without a browser chrome, work offline, and re-engage users with push notifications. For sites with repeat visitors — news, e-commerce, SaaS dashboards — they consistently outperform regular tabs on retention.</p>
+                  <p>The user-perceived speed benefit is dramatic. An installed PWA opens in under a second because the shell is cached. Compare that to a website that opens in 2-3 seconds every visit. Users feel the difference immediately.</p>
+                  <p>PWAs also protect against browser-based distribution changes. When a user installs your PWA, they have a durable shortcut that survives cookie clearing, cache clearing, and browser updates. It is the most stable re-engagement channel available on the open web.</p>
+                  <p class="mt-8 font-semibold text-xl">A PWA is not a nice-to-have. For repeat-visit sites, it is the highest-ROI engagement channel still available for free.</p>
+                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to make your site installable?</p>
+                    <a href="https://traffictorch.net/lighthouse-plus-tool/#pwa-readiness" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check PWA Readiness on Traffic Torch →</a>
+                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Module 7: Resource Optimisation -->
+            <section id="resource-optimisation" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">Resource Optimisation</h2>
+
+              <div class="mb-16">
+                <h3 id="resource-optimisation-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Resource Optimisation measures how efficiently your page ships images, JavaScript, CSS, and fonts.</strong> It tracks file sizes, modern format adoption, lazy loading, font-display strategy, and total transfer weight.</p>
+                  <p>Resources dominate load time on mobile. A single 2MB hero image on a 4G connection takes 4 seconds just to download. A 500KB JavaScript bundle takes another 1-2 seconds to parse and execute. These two items alone account for most LCP failures on modern sites.</p>
+                  <p>The good news is that the fixes are well understood and dramatic. Converting a PNG to WebP saves 40-60%. Enabling lazy loading on below-fold images saves another 30-50% of initial bytes. Font subsetting saves 70-90% of font payload.</p>
+                  <p>Common failure patterns:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Images over 200KB served as PNG or JPG.</li>
+                    <li>No WebP or AVIF anywhere on the page.</li>
+                    <li>Below-fold images without loading="lazy".</li>
+                    <li>Unsubsetted web fonts.</li>
+                    <li>Fonts without font-display: swap.</li>
+                    <li>Total transfer over 3MB.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="resource-optimisation-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Traffic Torch reads the browser's resource timing API for every asset the page fetched, groups them by type, and analyses each category against optimisation thresholds.</strong></p>
+                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+                    <li><strong>Image audit:</strong> Groups by type, flags images over 200KB, checks for WebP/AVIF adoption.</li>
+                    <li><strong>Script audit:</strong> Sums script transfer size, flags totals over 800KB.</li>
+                    <li><strong>CSS audit:</strong> Sums stylesheet transfer size, flags totals over 150KB.</li>
+                    <li><strong>Font audit:</strong> Counts web fonts, checks for font-display: swap in @font-face rules.</li>
+                    <li><strong>Total transfer:</strong> Sums everything, flags over 3MB.</li>
+                  </ol>
+                  <p class="mt-6">Scoring:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Images over 200KB: -4 each (capped at -20)</li>
+                    <li>No modern formats with images present: -12</li>
+                    <li>Scripts over 800KB: -15</li>
+                    <li>CSS over 150KB: -10</li>
+                    <li>Fonts without font-display: -10</li>
+                    <li>Total transfer over 3MB: -12</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="resource-optimisation-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p>Resource Optimisation is where the biggest performance gains live. A single image conversion can move LCP by a full second. A script reduction can move TBT by 300ms. Font subsetting can shave 100KB off the critical path.</p>
+                  <p>The compounding effect matters too. Every byte you strip from the critical path shows up in FCP, LCP, INP, and TBT. Fixing resources is often the same work as fixing Core Web Vitals, just described from the asset side rather than the metric side.</p>
+                  <p>It is also the module that benefits most from automation. Modern build tools convert images, subset fonts, and split bundles by default. If your build pipeline does not, adding it takes an afternoon and pays back forever.</p>
+                  <p class="mt-8 font-semibold text-xl">Every byte counts. Every image converted is a millisecond earned. Resource Optimisation is where good performance actually begins.</p>
+                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to see your resource weight?</p>
+                    <a href="https://traffictorch.net/lighthouse-plus-tool/#resource-optimisation" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check Resource Optimisation on Traffic Torch →</a>
+                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Module 8: Third-Party Impact -->
+            <section id="third-party-impact" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">Third-Party Impact</h2>
+
+              <div class="mb-16">
+                <h3 id="third-party-impact-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Third-Party Impact measures which third-party scripts and domains hurt performance, and by how much.</strong> Tag managers, analytics, chat widgets, ads, and embeds all add CPU cost, network requests, and blocking time.</p>
+                  <p>Third-party scripts are usually the largest uncontrolled cost in a page's performance budget. A single chat widget can add 200KB of JavaScript and 500ms of main-thread time. A tag manager with 15 tags can add another second. Ads can add more than everything else combined.</p>
+                  <p>Most sites never measure this. The scripts get added one at a time by different departments — marketing adds analytics, sales adds chat, product adds A/B testing — and nobody audits the total cost.</p>
+                  <p>Common failure patterns:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Google Tag Manager with unused tags.</li>
+                    <li>Multiple analytics packages (GA4 + Facebook Pixel + LinkedIn + Hotjar).</li>
+                    <li>Chat widgets loaded on every page (even where nobody chats).</li>
+                    <li>A/B testing scripts running on production traffic for a finished test.</li>
+                    <li>Heavyweight embed scripts (YouTube, Vimeo, Instagram).</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="third-party-impact-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Traffic Torch groups every network request by origin, counts unique third-party domains, sums their transfer size and script weight, and flags known heavyweights.</strong></p>
+                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+                    <li><strong>Origin grouping:</strong> Every resource is grouped by hostname; requests whose hostname differs from the page origin are marked third-party.</li>
+                    <li><strong>Domain count:</strong> Unique third-party hosts are counted.</li>
+                    <li><strong>Size aggregation:</strong> Total transfer and total script size from third-party origins.</li>
+                    <li><strong>Heavyweight detection:</strong> Flags known heavy domains: googletagmanager.com, google-analytics.com, facebook.net, hotjar.com, clarity.ms, doubleclick.net, youtube.com, intercom.io, hubspot.com.</li>
+                  </ol>
+                  <p class="mt-6">Scoring:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Over 12 third-party domains: -30</li>
+                    <li>Over 6 domains: -18</li>
+                    <li>Over 3 domains: -8</li>
+                    <li>Third-party scripts over 500KB: -15</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="third-party-impact-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p>Third-party scripts are usually the largest uncontrolled cost in a page's performance budget. Cutting three heavy scripts often recovers more performance than weeks of internal optimisation. It is the fastest way to improve LCP, TBT, and INP at once.</p>
+                  <p>The compounding risk is worse than the current cost. Third-party scripts run their own code on your page. When they have a bad deploy, your page slows down. When they are compromised, your users are at risk. When they close, the scripts break and take your page down with them.</p>
+                  <p>The best practice is to load third-party scripts on interaction, not on page load. Chat widgets only need to load when the user clicks "Chat". A/B testing scripts only need to load for users in the test. Trackers can load on requestIdleCallback. This one pattern typically saves 1-2 seconds of main-thread time per page.</p>
+                  <p class="mt-8 font-semibold text-xl">Every third-party script is a debt. Audit them quarterly and pay the debt down.</p>
+                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to see which third-parties are costing you?</p>
+                    <a href="https://traffictorch.net/lighthouse-plus-tool/#third-party-impact" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check Third-Party Impact on Traffic Torch →</a>
+                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Module 9: Mobile UX -->
+            <section id="mobile-ux" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">Mobile UX</h2>
+
+              <div class="mb-16">
+                <h3 id="mobile-ux-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Mobile UX measures how usable the page is on a real phone: correct viewport, readable font sizes, tap targets at least 44-48px, no forced horizontal scroll, no blocked pinch-zoom, and safe-area insets for notched devices.</strong></p>
+                  <p>Mobile is the majority of web traffic worldwide. On many sites it is 70-85% of visitors. When mobile UX fails, most of your audience feels it immediately.</p>
+                  <p>These checks are the difference between a page that feels like a mobile site and one that feels like a desktop site awkwardly crammed into a small screen. Users notice tap targets that miss, text that requires pinch-zoom, and horizontal scroll that traps the viewport.</p>
+                  <p>Common failure patterns:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Viewport meta with user-scalable=no or maximum-scale=1, blocking pinch-zoom.</li>
+                    <li>Font sizes under 14px on body text.</li>
+                    <li>Buttons and links under 44px on the touch axis.</li>
+                    <li>Horizontal scroll containers users can trigger accidentally.</li>
+                    <li>Content hidden behind notches or home indicators.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="mobile-ux-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Traffic Torch renders the page at a mobile viewport (390x844, deviceScaleFactor 3, touch enabled) and combines visual checks with HTML analysis.</strong></p>
+                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+                    <li><strong>Viewport meta:</strong> Checks for width=device-width and absence of user-scalable=no or maximum-scale=1.</li>
+                    <li><strong>Font size scan:</strong> Parses inline styles for font-size declarations under 14px.</li>
+                    <li><strong>Tap target scan:</strong> Flags clickable elements with fixed width or height under 44px.</li>
+                    <li><strong>Horizontal scroll detection:</strong> Looks for overflow-x: auto or scroll without a matching hidden parent.</li>
+                    <li><strong>Safe-area handling:</strong> Checks for env(safe-area-inset-*) or viewport-fit=cover.</li>
+                    <li><strong>CLS check:</strong> Flags layout shift above 0.15 as a mobile UX problem.</li>
+                  </ol>
+                  <p class="mt-6">Scoring:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>No viewport meta: -25</li>
+                    <li>Blocks user zoom: -15 to -25</li>
+                    <li>Small fonts: -1 each (capped at -10)</li>
+                    <li>Small tap targets: -3 each (capped at -12)</li>
+                    <li>Horizontal scroll container: -8</li>
+                    <li>CLS over 0.15: -12</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="mobile-ux-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p>Mobile UX problems are the ones users complain about most, and they are the ones that hurt conversions most directly. A 40px tap target that misses costs you a sale. Font under 14px that requires zoom costs you a bounce. Horizontal scroll that traps a user costs you a session.</p>
+                  <p>Google uses mobile-first indexing for almost every site now. This means the mobile version of your page is the version Google evaluates. If mobile UX is broken, your rankings reflect that even on desktop searches.</p>
+                  <p>The fixes are cheap. Most mobile UX issues are one CSS change or one attribute fix. A 20-minute pass can move this module from 60 to 95 in most cases.</p>
+                  <p class="mt-8 font-semibold text-xl">Mobile UX is where the user experience lives. Google sees it, users feel it, and every fix is a direct conversion win.</p>
+                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to see how your page feels on mobile?</p>
+                    <a href="https://traffictorch.net/lighthouse-plus-tool/#mobile-ux" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check Mobile UX on Traffic Torch →</a>
+                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Module 10: Agentic Browsing -->
+            <section id="agentic-browsing" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">Agentic Browsing <span class="text-lg font-normal align-middle text-gray-500 dark:text-gray-400">(beta)</span></h2>
+
+              <div class="mb-16">
+                <h3 id="agentic-browsing-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Agentic Browsing measures how ready the page is for AI agents that browse, fill forms, and complete tasks on behalf of a user.</strong> Browser copilots, task agents, and WebMCP clients need clean structure, labelled forms, and no bot walls to complete real tasks on your site.</p>
+                  <p>This module is in beta because the standards are still evolving. WebMCP is a new spec for exposing tasks to AI agents. llms.txt is a new file format that describes your site to language models. The signals that matter will evolve, but the direction is clear.</p>
+                  <p>What we can check today: semantic landmarks, form labels, focus order, overlay traps, stable DOM, and whether you have published the files that agents look for.</p>
+                  <p>Common failure patterns:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>No llms.txt file at the root.</li>
+                    <li>robots.txt blocking GPTBot, ClaudeBot, or PerplexityBot.</li>
+                    <li>Form fields without labels or aria-label attributes.</li>
+                    <li>Missing skip-to-content link (focus order trap).</li>
+                    <li>Multiple modal overlays that could trap an agent.</li>
+                    <li>No WebMCP integration (early adopters only).</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="agentic-browsing-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p><strong>Traffic Torch checks structural signals, files agents look for, and WebMCP markers, all in the rendered DOM and the root directory of the site.</strong></p>
+                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+                    <li><strong>llms.txt check:</strong> Fetches /llms.txt at the site root.</li>
+                    <li><strong>AI crawler robot rules:</strong> Parses robots.txt for GPTBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot.</li>
+                    <li><strong>Semantic landmarks:</strong> Counts main, nav, header, footer, article, aside elements.</li>
+                    <li><strong>Form field labels:</strong> Checks for id, aria-label, or aria-labelledby on inputs.</li>
+                    <li><strong>Skip-to-content link:</strong> Greps for &lt;a href="#main"&gt; or similar.</li>
+                    <li><strong>Modal/dialog density:</strong> Counts role="dialog" and modal class occurrences.</li>
+                    <li><strong>WebMCP detection:</strong> Greps for window.__webmcp, navigator.modelContext, or webmcp markers.</li>
+                  </ol>
+                  <p class="mt-6">Scoring:</p>
+                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+                    <li>Fewer than 3 semantic landmarks: -15</li>
+                    <li>Unlabelled form fields over 30%: -12</li>
+                    <li>No skip-to-content link: -8</li>
+                    <li>Heavy modal density: -5 to -10</li>
+                    <li>No llms.txt: soft signal (no penalty but noted)</li>
+                    <li>AI bots blocked: -8 per bot</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-16">
+                <h3 id="agentic-browsing-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+                  <p>Agentic browsing is the next layer of the web. ChatGPT's Operator, Claude's Computer Use, Gemini's Project Mariner, and every browser copilot in development browse pages on behalf of users. When those agents can complete a task on your site, the user is one step closer to a conversion. When they cannot, they go elsewhere.</p>
+                  <p>The structural requirements for agents are the same as the requirements for accessibility. Labelled forms, semantic landmarks, focus order — these are what screen readers use and what agents use. Getting agentic-ready is often the same work as getting accessible, just framed for a different audience.</p>
+                  <p>This module is a bet on where the web is heading. Whether you invest now or wait depends on your audience. If you serve a younger, tech-savvy demographic, they are already using agents. If you serve an enterprise audience, you have another year before it matters.</p>
+                  <p class="mt-8 font-semibold text-xl">The pages that pass Agentic Browsing today will be the ones agents can use tomorrow. This is a strategic bet on the next wave of the web.</p>
+                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to see how agent-ready your page is?</p>
+                    <a href="https://traffictorch.net/lighthouse-plus-tool/#agentic-browsing" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check Agentic Browsing on Traffic Torch →</a>
+                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Conclusion -->
+            <section id="conclusion" class="mb-24 scroll-mt-24">
+              <h2 class="text-4xl md:text-5xl font-black mb-10 text-center bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">Conclusion & Next Steps – Master Lighthouse Plus in 2026</h2>
+
+              <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-8 max-w-4xl mx-auto">
+                <p>The 10 modules covered in this guide — Core Web Vitals, Performance Score, Accessibility, Best Practices, SEO On-Page, PWA Readiness, Resource Optimisation, Third-Party Impact, Mobile UX, and Agentic Browsing — form the complete framework Traffic Torch uses to evaluate human-facing page performance and agent readiness.</p>
+
+                <p>These modules are different from AEO Performance. AEO measures how well AI crawlers can crawl, render, parse, and extract your content. Lighthouse Plus measures how well real people can use your page, and how ready it is for the next generation of AI agents that browse on their behalf. Run both for a full picture — they cover different audiences and different signals.</p>
+
+                <p>Most of these modules correlate. Fixing Core Web Vitals improves Performance Score. Fixing Resource Optimisation improves both. Fixing Accessibility improves Agentic Browsing. The highest-ROI improvements tend to lift several modules at once, and a focused pass over these 10 areas can move an overall score by 20-30 points.</p>
+
+                <p>The Lighthouse Plus Tool gives you the diagnostic. What you do next is a matter of prioritisation: start with the lowest-scoring module, apply the recommended fix, re-audit, and watch the score move. The tool also provides CMS-specific and file-level fix instructions through the AI guidance workers, so the fix is never "figure out what to change" — it's "here is exactly what to change and where."</p>
+
+                <p class="font-semibold text-xl mt-10">The sites that win the next five years will not be the ones with the most content. They will be the ones whose content is fast, accessible, and agent-ready — because that is what both humans and their AI assistants will reward.</p>
+
+                <div class="mt-12 p-8 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-3xl border border-orange-500/30 text-center shadow-xl">
+                  <p class="text-2xl md:text-3xl font-black mb-6 text-gray-800 dark:text-gray-200">Ready to run your full Lighthouse Plus audit?</p>
+                  <p class="text-lg mb-8 text-gray-700 dark:text-gray-300">Get your instant 10-module score + priority fixes + CMS-specific guidance. No login. No tracking. 100% client-side.</p>
+                  <a href="https://traffictorch.net/lighthouse-plus-tool/" class="inline-block px-10 py-6 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-xl rounded-2xl hover:brightness-110 hover:scale-[1.04] transition-all duration-300 shadow-2xl shadow-orange-500/40">Start Free Lighthouse Plus Audit Now →</a>
+                  <p class="mt-8 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Back to Table of Contents</a></p>
+                </div>
+
+                <p class="mt-12 text-center text-base text-gray-600 dark:text-gray-400 italic">Updated September 2026 – based on ongoing correlation research, headless render testing, and real-time analysis across Core Web Vitals, WCAG 2.2, PWA standards, and emerging agentic browsing specs.</p>
+              </div>
+            </section>
+
+          </div>
+        </article>
+
+        <h2 class="text-3xl md:text-3xl font-black text-center mt-10 mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">SEO - UX - AEO Tools</h2>
+        <div class="tools-grid max-w-7xl mx-auto px-2">
+          <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+            <a href="/lighthouse-plus-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+                  <h2 class="text-orange-400 text-2xl font-bold mb-3">Lighthouse Plus Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">10-module UX, performance, accessibility & agent-readiness audit.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Try Now →</span>
+              </div>
+            </a>
+
+            <a href="/aeo-performance-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+                  <h2 class="text-cyan-400 text-2xl font-bold mb-3">AEO Performance Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">9-module AI crawler audit + priority fixes + CMS guidance.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Try Now →</span>
+              </div>
+            </a>
+
+            <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+                  <h2 class="text-cyan-400 text-2xl font-bold mb-3">SEO Intent Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Intent matching + E-E-A-T audit + fixes.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Try Now →</span>
+              </div>
+            </a>
+
+            <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-blue-500/30 group-hover:border-blue-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-blue-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
+                  <h2 class="text-blue-400 text-2xl font-bold mb-3">Topical Authority Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Detect main topics, subtopics & subtopic suggestions.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Try Now →</span>
+              </div>
+            </a>
+
+            <a href="/seo-entity-extractor-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🧬</div>
+                  <h2 class="text-pink-400 text-2xl font-bold mb-3">SEO Entity Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Semantic entity extractor + audit + fixes.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Try Now →</span>
+              </div>
+            </a>
+
+            <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">🧰</div>
+                  <h2 class="text-indigo-400 text-2xl font-bold mb-3">All Tools</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Complete suite - instant audits, gaps, fixes & forecasts.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Explore All →</span>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <section class="max-w-5xl mx-auto my-24 px-4 sm:px-6 lg:px-8">
+          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
+            <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-6 sm:px-10 text-center">
+              <img src="/logo.webp" alt="Traffic Torch – Instant 360° SEO, UX & Lighthouse Plus" class="w-32 h-32 sm:w-40 sm:h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white/90 shadow-xl">
+              <h3 class="text-3xl sm:text-4xl font-black text-white mb-3 tracking-tight">Traffic Torch</h3>
+              <p class="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto font-medium">Instant 360° SEO • UX • Lighthouse Plus Toolkit</p>
+            </div>
+            <div class="p-6 sm:p-8 lg:p-10 text-center space-y-8">
+              <p class="text-lg sm:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">Traffic Torch turns real-time correlation research, algorithm update tracking, and practical page testing into transparent 360° diagnostics, AI-powered fixes, and educational insights. We empower creators, agencies, and businesses to win in traditional search, AI answer engines, and generative AI ecosystems — with privacy-first, client-side tools that never track or store your data.</p>
+              <div class="pt-6 space-y-4">
+                <p class="text-base sm:text-lg text-gray-800 dark:text-gray-200 font-medium">Core Expertise: Core Web Vitals • WCAG 2.2 AA Accessibility • PWA Readiness • Resource Optimisation • Third-Party Audit • Mobile UX • Agentic Browsing • Privacy-First Web Auditing.</p>
+                <p class="text-base text-gray-800 dark:text-gray-200 italic">Continuously updated with the latest Google guidelines, WCAG success criteria, browser APIs, and emerging agentic browsing specs — as of September 2026.</p>
+                <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6 space-y-1">
+                  <p>Guide originally published: 2026-09-12</p>
+                  <p>Last updated: 2026-09-12</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="py-8 text-center">
+          <div class="flex flex-col items-center gap-4">
+            <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">Share?</strong>
+            <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
+              <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+              <a class="a2a_button_email"></a>
+              <a class="a2a_button_x"></a>
+              <a class="a2a_button_reddit"></a>
+              <a class="a2a_button_linkedin"></a>
+              <a class="a2a_button_copy_link"></a>
+            </div>
+          </div>
+        </div>
+        <script defer src="https://static.addtoany.com/menu/page.js"></script>
+
+        <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+          <div class="inline-block">
+            <p class="font-medium text-orange-500 hover:text-red-600 dark:text-red-400 dark:hover:text-orange-300 transition text-sm"><a href="/">Traffic Torch</a></p>
+            <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1"><span id="page-name"></span></p>
+          </div>
+        </nav>
+
+        <script>
+          document.getElementById('page-name').textContent = document.title
+            .replace('Traffic Torch – ', '')
+            .replace(' | Traffic Torch', '')
+            .replace(' Tool', '')
+            .trim();
+        </script>
+
+      </main>
+
+      <div id="footer-placeholder"></div>
+    </div>
+  </div>
+
+  <script src="/main-v1.1.js" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "create-cloudflare": "^2.72.7"
+  }
+}
