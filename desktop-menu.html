@@ -1,4 +1,4 @@
-<!-- desktop-menu.html – Pro Portal dropdown (toggle) + Login at bottom -->
+<!-- desktop-menu.html – Pro Portal dropdown (toggle) + Extras dropdown + Login at bottom -->
 <nav class="p-2 space-y-4 flex-1">
 
   <!-- Pro Portal – dropdown (collapsible) -->
@@ -50,8 +50,8 @@
       </a>
     </div>
   </div>
-  
-    <!-- Group 3: UX Tools -->
+
+  <!-- UX Tools -->
   <button
     type="button"
     class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
@@ -65,7 +65,7 @@
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="ux">
-   <a href="/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+    <a href="/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
        title="Predict user quit risk – identify friction points & retention fixes"
        data-tooltip="Predict user quit risk – identify friction points & retention fixes">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🏆</span>
@@ -85,7 +85,7 @@
     </a>
   </div>
 
-  <!-- Group 1: SEO Tools -->
+  <!-- SEO Tools -->
   <button
     type="button"
     class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
@@ -122,7 +122,7 @@
        data-tooltip="Analyze search intent EEAT tool – match content to user needs">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🎯</span>
       <span class="sidebar-text hidden md:block">SEO Intent</span>
-    </a>    
+    </a>
     <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
        title="Google Maps & local pack analysis tool + optimization guide"
        data-tooltip="Google Maps & local pack analysis tool + optimization guide">
@@ -137,13 +137,13 @@
     </a>
     <a href="/schema-generator/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
        title="Generate JSON-LD structured data tool – for rich results and better for click through rates"
-       data-tooltip="Generate JSON-LD structured data tool – for rich results and better click through rates">
+       data-tooltip="Generate JSON-LD structured data tool – for rich results and better for click through rates">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
       <span class="sidebar-text hidden md:block">Schema Generator</span>
     </a>
   </div>
 
-  <!-- Group 2: AEO Tools -->
+  <!-- AEO Tools -->
   <button
     type="button"
     class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
@@ -182,8 +182,8 @@
       <span class="sidebar-text hidden md:block">AI Content</span>
     </a>
   </div>
-  
-  <!-- Group 4: Keyword Tools -->
+
+  <!-- Keywords -->
   <button
     type="button"
     class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
@@ -217,6 +217,40 @@
     </a>
   </div>
 
+  <!-- Extras -->
+  <button
+    type="button"
+    class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
+    aria-expanded="false"
+    data-category="extras"
+    title="Extras – Browser extensions, plugins & developer API"
+    data-tooltip="Extras – Browser extensions, plugins & developer API"
+  >
+    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">➕</span>
+    <span class="sidebar-text font-semibold flex-1">Extras</span>
+    <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
+  </button>
+  <div class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="extras">
+    <a href="/#extensions" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Traffic Torch Browser Extensions – Chrome, Firefox & Edge"
+       data-tooltip="Traffic Torch Browser Extensions – Chrome, Firefox & Edge">
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🦊</span>
+      <span class="sidebar-text hidden md:block">Extensions</span>
+    </a>
+    <a href="/#ai-seo-plugins" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Traffic Torch AI SEO Plugins – WordPress, Figma & Framer"
+       data-tooltip="Traffic Torch AI SEO Plugins – WordPress, Figma & Framer">
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">💠</span>
+      <span class="sidebar-text hidden md:block">Plugins</span>
+    </a>
+    <a href="/developer/api/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Traffic Torch Developer API Set up"
+       data-tooltip="Traffic Torch Developer API Set up">
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🧑‍💻</span>
+      <span class="sidebar-text hidden md:block">Developer</span>
+    </a>
+  </div>
+
   <!-- Help Guides -->
   <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
      title="Free guides & tutorials – master SEO, UX, AI content & optimization"
@@ -224,32 +258,8 @@
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📋</span>
     <span class="sidebar-text hidden md:block">Help Guides</span>
   </a>
-  
-  <!-- Extensions -->
-  <a href="/#extensions" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-     title="Traffic Torch Browser Extensions – Chrome, Firefox & Edge"
-     data-tooltip="Traffic Torch Browser Extensions – Chrome, Firefox & Edge">
-    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🦊</span>
-    <span class="sidebar-text hidden md:block">Extensions</span>
-  </a>
-  
-  <!-- Plugins -->
-  <a href="/#ai-seo-plugins" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-     title="Traffic Torch AI SEO Plugins – WordPress, Figma & Framer"
-     data-tooltip="Traffic Torch AI SEO Plugins – WordPress, Figma & Framer">
-    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">💠</span>
-    <span class="sidebar-text hidden md:block">Plugins</span>
-  </a>
-  
-    <!-- Developer -->
-  <a href="/developer/api/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-     title="Traffic Torch Developer API Set up"
-     data-tooltip="Traffic Torch Developer API Set up">
-    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🧑‍💻</span>
-    <span class="sidebar-text hidden md:block">Developer</span>
-  </a>
-  
-    <!-- Upgrade -->
+
+  <!-- Upgrade -->
   <a href="/upgrade/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
      title="Traffic Torch Upgrade to Free, PRO or Enterprise"
      data-tooltip="Traffic Torch Upgrade to Free, PRO or Enterprise">
@@ -257,7 +267,7 @@
     <span class="sidebar-text hidden md:block">Upgrade</span>
   </a>
 
-  <!-- Login link at bottom (separate from dropdown) -->
+  <!-- Login link at bottom -->
   <div class="mt-8 border-t border-white/10 dark:border-white/5 pt-4">
     <a href="/login/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition px-3 py-2 rounded-lg">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔑</span>

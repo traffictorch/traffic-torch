@@ -1,30 +1,30 @@
-<!-- mobile-menu.html – Pro Portal dropdown (collapsible) + Login at bottom -->
+<!-- mobile-menu.html – Pro Portal dropdown (collapsible) + Extras dropdown + Login at bottom -->
 <nav class="flex flex-col gap-6 py-20 px-4 text-xl">
 
-<!-- Pro Portal – mobile (collapsible) -->
-<div>
-  <button
-    type="button"
-    class="pro-menu-link group flex items-center justify-between w-full text-black dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    data-category="proportal-mobile"
-  >
-    🚥 Pro Portal
-    <span class="text-sm transition-transform">▼</span>
-  </button>
-  <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="proportal-mobile">
-    <a href="/dashboard/#dashboard" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="dashboard">📊 Dashboard</a>
-    <a href="/dashboard/#audits" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="audits">📋 Audits</a>
-    <a href="/dashboard/#analytics" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="analytics">📈 Analytics</a>
-    <a href="/dashboard/#realtime" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="realtime">🔴 Real‑time</a>
-    <a href="/dashboard/#gsc" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="gsc">🔍 Search Console</a>
-    <a href="/dashboard/#integrations" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="integrations">🔗 Integrations</a>
-    <a href="/dashboard/#upgrade" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="upgrade">🚀 Upgrade</a>
-    <a href="/dashboard/#settings" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="settings">⚙️ Settings</a>
+  <!-- Pro Portal – mobile (collapsible) -->
+  <div>
+    <button
+      type="button"
+      class="pro-menu-link group flex items-center justify-between w-full text-black dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
+      aria-expanded="false"
+      data-category="proportal-mobile"
+    >
+      🚥 Pro Portal
+      <span class="text-sm transition-transform">▼</span>
+    </button>
+    <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="proportal-mobile">
+      <a href="/dashboard/#dashboard" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="dashboard">📊 Dashboard</a>
+      <a href="/dashboard/#audits" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="audits">📋 Audits</a>
+      <a href="/dashboard/#analytics" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="analytics">📈 Analytics</a>
+      <a href="/dashboard/#realtime" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="realtime">🔴 Real‑time</a>
+      <a href="/dashboard/#gsc" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="gsc">🔍 Search Console</a>
+      <a href="/dashboard/#integrations" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="integrations">🔗 Integrations</a>
+      <a href="/dashboard/#upgrade" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="upgrade">🚀 Upgrade</a>
+      <a href="/dashboard/#settings" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="settings">⚙️ Settings</a>
+    </div>
   </div>
-</div>
-  
-    <!-- UX Tools group -->
+
+  <!-- UX Tools group -->
   <button
     type="button"
     class="group flex items-center justify-between w-full text-black dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
@@ -35,7 +35,7 @@
     <span class="text-sm transition-transform">▼</span>
   </button>
   <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="ux-mobile">
-      <a href="/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🏆 OFUX Tool</a>
+    <a href="/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🏆 OFUX Tool</a>
     <a href="/quit-risk-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚠️ Quit Risk</a>
     <a href="/seo-ux-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚖️ SEO + UX</a>
   </div>
@@ -54,7 +54,7 @@
     <a href="/lighthouse-plus-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🗼 Lighthouse Plus</a>
     <a href="/topical-authority-audit-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚜️ Topical Authority</a>
     <a href="/seo-entity-extractor-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🧬 Entity Extractor</a>
-    <a href="/seo-intent-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🎯 SEO Intent</a>  
+    <a href="/seo-intent-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🎯 SEO Intent</a>
     <a href="/local-seo-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📍 Local SEO</a>
     <a href="/product-seo-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🛒 Product SEO</a>
     <a href="/schema-generator/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚙️ Schema Generator</a>
@@ -71,12 +71,12 @@
     <span class="text-sm transition-transform">▼</span>
   </button>
   <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="ai-mobile">
-    <a href="/aeo-performance-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🚀 AEO Performance</a>   
+    <a href="/aeo-performance-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🚀 AEO Performance</a>
     <a href="/ai-search-optimization-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🔍 AEO Audit</a>
     <a href="/ai-voice-search-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🎙️ AI Voice Search</a>
     <a href="/ai-audit-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🤖 AI Content</a>
   </div>
-  
+
   <!-- Keyword Tools group -->
   <button
     type="button"
@@ -93,27 +93,28 @@
     <a href="/keyword-vs-tool/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🆚 Competition</a>
   </div>
 
+  <!-- Extras group -->
+  <button
+    type="button"
+    class="group flex items-center justify-between w-full text-black dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
+    aria-expanded="false"
+    data-category="extras-mobile"
+  >
+    ➕ Extras
+    <span class="text-sm transition-transform">▼</span>
+  </button>
+  <div class="pl-8 flex flex-col gap-3 hidden" data-category-content="extras-mobile">
+    <a href="/#extensions" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🦊 Extensions</a>
+    <a href="/#ai-seo-plugins" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">💠 Plugins</a>
+    <a href="/developer/api/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🧑‍💻 Developer</a>
+  </div>
+
   <!-- Help Guides -->
   <a href="/ai-ux-seo-help-guides/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">
     📋 Help Guides
   </a>
-  
-  <!-- Extensions -->
-  <a href="/#extensions" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">
-    🦊 Extensions
-  </a>
 
-  <!-- Plugins -->
-  <a href="/#ai-seo-plugins" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">
-    💠 Plugins
-  </a>
-  
-    <!-- Developer -->
-  <a href="/developer/api/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">
-    🧑‍💻 Developer
-  </a>
-  
-      <!-- Upgrade -->
+  <!-- Upgrade -->
   <a href="/upgrade/" class="text-gray-100 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">
     🚦 Upgrade
   </a>
