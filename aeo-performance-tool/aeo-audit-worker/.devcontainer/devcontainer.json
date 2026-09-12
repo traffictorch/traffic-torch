@@ -1,0 +1,15 @@
+{
+  "name": "AEO Audit Worker",
+  "build": { "dockerfile": "Dockerfile" },
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "forwardPorts": [8787],
+  "postCreateCommand": "npm install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "cloudflare.cloudflare-workers-bindings-extension"
+      ]
+    }
+  }
+}

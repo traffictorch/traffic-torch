@@ -1,0 +1,168 @@
+/* /aeo-performance-tool/print-v1.1.css */
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 11pt;
+    line-height: 1.5;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ──────── COVER PAGE ──────── */
+  body::before {
+    content: "TrafficTorch.net 🔥\A\A AEO Performance Audit 🤖\A\A Report:\A " attr(data-url);
+    display: block;
+    height: 100vh;
+    min-height: 100vh;
+    page-break-after: always;
+    color: #4b5563;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    padding-top: 20vh;
+    line-height: 1.4;
+    white-space: pre;
+    font-size: 2rem;
+    text-shadow:
+      -2px -2px 0 #fb923c,
+      2px -2px 0 #fb923c,
+      -2px 2px 0 #fb923c,
+      2px 2px 0 #fb923c,
+      -2px 0 0 #fb923c,
+      2px 0 0 #fb923c,
+      0 -2px 0 #fb923c,
+      0 2px 0 #fb923c,
+      0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  /* Start real report on new page */
+  #results {
+    page-break-before: always;
+    margin-top: 0 !important;
+    display: block !important;
+  }
+
+  /* Full width for print */
+  #results,
+  #results .container,
+  #results .max-w-7xl,
+  #results .max-w-6xl,
+  #results .max-w-5xl,
+  #results .max-w-4xl {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm 1.2cm !important;
+    box-sizing: border-box;
+  }
+
+  /* ──────── FORCE SHOW REPORT CONTENT ──────── */
+  #results .score-card,
+  #results .fixes-panel,
+  #results .full-details,
+  #results details,
+  #results details > div,
+  #results .bg-white.dark\:bg-gray-900,
+  #results .bg-white.dark\:bg-gray-800,
+  #plugin-solutions-section,
+  #cms-fixes-section,
+  #ask-ai-section,
+  #share-dashboard-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Open all <details> so full content prints */
+  #results details {
+    display: block !important;
+  }
+  #results details > summary {
+    display: none !important;
+  }
+  #results details > *:not(summary) {
+    display: block !important;
+  }
+
+  /* ──────── PREVENT BREAKS INSIDE MODULES ──────── */
+  #results .score-card,
+  #results .metric-card,
+  #results .fixes-panel,
+  #results .bg-white.dark\:bg-gray-900,
+  #results .bg-white.dark\:bg-gray-800 {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ──────── HIDE NON-REPORT UI ──────── */
+  .no-print,
+  header,
+  footer,
+  nav,
+  aside,
+  button,
+  .a2a_kit,
+  #homepage-tool,
+  #epic-cards,
+  #share-buttons,
+  #deep-dive,
+  #module-cards-container,
+  #tools-grid,
+  .tools-grid,
+  #extensions-tools-integrations,
+  #ai-seo-plugins,
+  #dev-tools,
+  #author-bio,
+  #eeat-faq,
+  #promo-high-impact-cards,
+  #promo-old-vs-modern-seo,
+  #seo-ux-checklist,
+  #upgradeModal,
+  #audit-form,
+  #loading,
+  .bottom-banner,
+  .copy-link-btn,
+  .center-btn-container,
+  .fixes-toggle {
+    display: none !important;
+  }
+
+  /* ──────── CLEANUP ──────── */
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl,
+  [class*="shadow"] {
+    box-shadow: none !important;
+  }
+
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  table {
+    page-break-inside: auto;
+    width: 100% !important;
+  }
+
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .grid {
+    display: block !important;
+  }
+}

@@ -1,0 +1,14 @@
+name = "aeo-audit"
+main = "src/index.js"
+compatibility_date = "2026-09-11"
+compatibility_flags = ["nodejs_compat"]
+preview_urls = false
+
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+
+[browser]
+binding = "BROWSER"
