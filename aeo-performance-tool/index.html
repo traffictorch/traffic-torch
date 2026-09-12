@@ -36,62 +36,237 @@
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
 
-  <!-- Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebPage",
-        "name": "AEO Performance Tool",
-        "description": "Audit AEO/GEO performance across 9 technical modules.",
-        "url": "https://traffictorch.net/aeo-performance-tool/",
-        "publisher": { "@type": "Organization", "name": "Traffic Torch" }
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://traffictorch.net/#organization",
+      "name": "Traffic Torch",
+      "url": "https://traffictorch.net/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://traffictorch.net/logo-512.webp",
+        "width": 512,
+        "height": 512
       },
-      {
-        "@type": "SoftwareApplication",
-        "name": "Traffic Torch AEO Performance Tool",
-        "applicationCategory": "BusinessApplication, UtilitiesApplication, SEO Tool",
-        "operatingSystem": "Web",
-        "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" },
-        "description": "Free AEO/GEO performance audit tool. Checks render fidelity, DOM stability, content extractability, schema parse, crawler accessibility, text density, semantic structure, render blocking, and content stability.",
-        "url": "https://traffictorch.net/aeo-performance-tool/",
-        "image": "https://traffictorch.net/aeo-performance-tool/images/aeo-performance-tool.webp"
+      "description": "Traffic Torch builds privacy-first, client-side SEO, UX, and AEO audit tools for the modern web.",
+      "sameAs": [
+        "https://g.dev/traffictorch",
+        "https://github.com/traffictorch/",
+        "https://orcid.org/0009-0006-4084-0241",
+        "https://www.wikidata.org/wiki/Q139815165",
+        "https://zenodo.org/records/20149616",
+        "https://github.com/traffictorch/traffic-torch",
+        "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+        "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+        "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+        "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+        "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+        "https://www.framer.com/marketplace/plugins/traffic-torch/",
+        "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+        "https://github.com/marketplace/actions/traffic-torch-audit",
+        "https://www.linkedin.com/in/ylia-callan-8b889976/",
+        "https://x.com/Guitaralize"
+      ],
+      "founder": { "@id": "https://traffictorch.net/#author" }
+    },
+
+    {
+      "@type": "Person",
+      "@id": "https://traffictorch.net/#author",
+      "name": "Ylia Callan",
+      "url": "https://yliacallan.github.io/",
+      "image": "https://traffictorch.net/images/ylia-callan-320w.webp",
+      "jobTitle": "Founder & Builder",
+      "description": "Musician, Author, Web Designer, and Creator of open-source SEO, UX, and AEO web tools.",
+      "sameAs": [
+        "https://g.dev/traffictorch",
+        "https://github.com/traffictorch/",
+        "https://orcid.org/0009-0006-4084-0241",
+        "https://www.wikidata.org/wiki/Q139815165",
+        "https://zenodo.org/records/20149616",
+        "https://www.linkedin.com/in/ylia-callan-8b889976/",
+        "https://x.com/Guitaralize",
+        "https://yliacallan.github.io/"
+      ],
+      "worksFor": { "@id": "https://traffictorch.net/#organization" }
+    },
+
+    {
+      "@type": "WebSite",
+      "@id": "https://traffictorch.net/#website",
+      "url": "https://traffictorch.net/",
+      "name": "Traffic Torch",
+      "publisher": { "@id": "https://traffictorch.net/#organization" }
+    },
+
+    {
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/aeo-performance-tool/#webpage",
+      "url": "https://traffictorch.net/aeo-performance-tool/",
+      "name": "AEO Performance Tool – 9-Module AI Crawler Audit | Traffic Torch",
+      "description": "Free AEO/GEO performance audit. Runs a real headless Chrome render and scores 9 modules that decide whether AI crawlers and answer engines can crawl, render, parse, and extract your content.",
+      "isPartOf": { "@id": "https://traffictorch.net/#website" },
+      "about": { "@id": "https://traffictorch.net/aeo-performance-tool/#software" },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://traffictorch.net/aeo-performance-tool/images/aeo-performance-tool.webp",
+        "width": 1200,
+        "height": 630
       },
-      {
-        "@type": "Article",
-        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://traffictorch.net/aeo-performance-tool/" },
-        "headline": "AEO Performance Audit Tool",
-        "description": "Audit AEO/GEO performance. Fix crawl, render, schema, and extractability issues.",
-        "url": "https://traffictorch.net/aeo-performance-tool/",
-        "author": { "@type": "Person", "name": "Traffic Torch Team", "url": "https://traffictorch.net" },
-        "publisher": { "@type": "Organization", "name": "Traffic Torch", "logo": { "@type": "ImageObject", "url": "https://traffictorch.net/logo-512.webp" } },
-        "datePublished": "2025-11-27T14:56:00+11:00",
-        "dateModified": "2026-09-11T19:32:00+11:00"
-      },
-      {
-        "@type": "Person",
-        "name": "Ylia Callan",
-        "url": "https://yliacallan.github.io/",
-        "sameAs": [
-          "https://g.dev/traffictorch",
-          "https://github.com/traffictorch/",
-          "https://orcid.org/0009-0006-4084-0241",
-          "https://www.wikidata.org/wiki/Q139815165"
-        ],
-        "jobTitle": "Founder & Builder",
-        "worksFor": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" }
-      },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" },
-          { "@type": "ListItem", "position": 2, "name": "AEO Performance Tool", "item": "https://traffictorch.net/aeo-performance-tool/" }
+      "datePublished": "2025-11-27T14:56:00+11:00",
+      "dateModified": "2026-09-12T10:00:00+11:00",
+      "author": { "@id": "https://traffictorch.net/#author" },
+      "publisher": { "@id": "https://traffictorch.net/#organization" },
+      "breadcrumb": { "@id": "https://traffictorch.net/aeo-performance-tool/#breadcrumb" },
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [
+          "h1",
+          "p.text-xl.text-gray-500",
+          "#eeat-faq",
+          ".max-w-4xl.mx-auto.my-16 details div"
         ]
       }
-    ]
-  }
-  </script>
+    },
+
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://traffictorch.net/aeo-performance-tool/#software",
+      "name": "Traffic Torch AEO Performance Tool",
+      "alternateName": "AEO Performance Audit Tool",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "SEO Tool",
+      "operatingSystem": "Web",
+      "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Edge, Safari.",
+      "softwareVersion": "1.0",
+      "url": "https://traffictorch.net/aeo-performance-tool/",
+      "image": "https://traffictorch.net/aeo-performance-tool/images/aeo-performance-tool.webp",
+      "description": "Free AEO/GEO performance audit tool. Runs a real headless Chrome render via Cloudflare Browser Run and scores 9 modules: Render Fidelity, DOM Stability, Content Extractability, Schema Parse Performance, Crawler Accessibility, Text Density, Semantic Structure Integrity, Render Blocking, and Content Stability. Includes priority fixes, CMS-specific AI guidance, and an AI assistant.",
+      "featureList": [
+        "9-module AEO/GEO performance audit",
+        "Real headless Chrome render via Cloudflare Browser Run",
+        "Puppeteer-based Core Web Vitals (CLS, LCP, FCP, TTFB)",
+        "Live DOM mutation measurement",
+        "Console error and failed request capture",
+        "JSON-LD schema validation and parse analysis",
+        "Robots.txt and AI crawler accessibility check",
+        "Text-to-code density analysis",
+        "Semantic HTML ratio scoring",
+        "Render blocking and content stability detection",
+        "Prioritised fixes with impact estimates",
+        "CMS-specific step-by-step fix instructions",
+        "Ask Traffic Torch AI assistant",
+        "100% client-side processing – no data stored"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "author": { "@id": "https://traffictorch.net/#author" },
+      "publisher": { "@id": "https://traffictorch.net/#organization" },
+      "isAccessibleForFree": true,
+      "permissions": "public"
+    },
+
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://traffictorch.net/aeo-performance-tool/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "AEO Performance Tool",
+          "item": "https://traffictorch.net/aeo-performance-tool/"
+        }
+      ]
+    },
+
+    {
+      "@type": "FAQPage",
+      "@id": "https://traffictorch.net/aeo-performance-tool/#faq",
+      "mainEntityOfPage": { "@id": "https://traffictorch.net/aeo-performance-tool/#webpage" },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is AEO performance?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AEO performance is how well a page can be crawled, rendered, parsed, and extracted by AI crawlers and answer engines. It covers 9 technical modules: Render Fidelity, DOM Stability, Content Extractability, Schema Parse Performance, Crawler Accessibility, Text Density, Semantic Structure Integrity, Render Blocking, and Content Stability."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is AEO different from SEO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "SEO focuses on ranking in traditional search results. AEO focuses on whether AI crawlers and answer engines can access, understand, and cite your content. SEO still matters — AEO is an additional layer that determines visibility in AI-powered search and generative answer engines."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do AI crawlers need different optimization than Googlebot?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AI crawlers are more fragile than Googlebot. They often rely on headless browsers, capture the DOM once, and struggle with late-injected content, cookie walls, infinite scroll, and JS-gated routes. What works for traditional SEO can fail for AEO because the crawler may never see the content in the first place."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does Traffic Torch's AEO Performance Tool test?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It tests 9 modules using a real Puppeteer headless render via Cloudflare Browser Run plus static HTML analysis. It measures render fidelity, live DOM mutations, semantic HTML ratio, schema parse success, robots.txt rules, text-to-code ratio, heading structure, render-blocking resources, and content stability. Results include prioritised fixes with impact estimates and CMS-specific guidance."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the AEO Performance Tool free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The AEO Performance Tool is free to use. All processing happens client-side and no data is stored. Free users get 3 audits per day, Pro users get 25 per day, and Enterprise users get 300 per day with additional dashboard features."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the AEO Performance Tool work with WordPress, Shopify, Wix, or custom sites?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The tool auto-detects the CMS and provides step-by-step fix instructions tailored to WordPress, Shopify, Wix, Squarespace, Webflow, and Custom / Unknown sites. For custom or unknown sites, it gives file-level and code-level instructions without mentioning CMS-specific UI."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the most important AEO performance fixes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The highest-impact fixes are usually: allow AI crawlers in robots.txt, ensure primary content renders in headless browsers, add valid JSON-LD schema, use semantic HTML instead of div-soup, reduce render-blocking scripts, and stabilise content after initial load. The tool prioritises fixes based on your specific scores and shows impact estimates for each."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the AEO Performance Tool measure Core Web Vitals?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The tool launches a real headless Chrome instance through Cloudflare Browser Run and injects PerformanceObservers before page navigation. It captures real Cumulative Layout Shift (CLS), Largest Contentful Paint (LCP), First Contentful Paint (FCP), Time to First Byte (TTFB), long tasks, and live DOM mutation counts as they happen during page load."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 
   <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
