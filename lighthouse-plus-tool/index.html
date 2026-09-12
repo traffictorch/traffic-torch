@@ -332,16 +332,38 @@
           </p>
         </div>
 
-        <div class="max-w-3xl mx-auto space-y-4 px-4 py-2">
-          <form id="audit-form" novalidate class="space-y-4">
-            <div class="space-y-3">
-              <div class="flex flex-col md:flex-row gap-4 items-center">
-                <input type="text" id="url-input" name="url" placeholder="https://example.com" aria-label="Enter website URL" required class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500/30 focus:border-orange-500 text-lg shadow-sm" autocomplete="url" inputmode="url" spellcheck="false" data-lpignore="true">
-                <p id="url-help" class="sr-only">Enter the full URL to analyse Lighthouse Plus performance.</p>
-                <button type="button" id="analyze-url-btn" class="px-10 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 hover:brightness-110 active:scale-95 text-white font-semibold rounded-2xl transition-all shadow-lg flex-shrink-0 text-base min-w-[180px]">
-                  Analyze URL <span class="text-xl">🎯</span>
-                </button>
-              </div>
+<div class="max-w-3xl mx-auto space-y-4 px-4 py-2">
+  <form id="audit-form" novalidate class="space-y-4">
+    <div class="space-y-3">
+
+      <!-- flex-col on mobile (stretch), row on md+ -->
+      <div class="flex flex-col md:flex-row gap-4 items-stretch w-full">
+
+        <input
+          type="text"
+          id="lighthouse-url-input"
+          name="url"
+          placeholder="https://example.com"
+          aria-label="Enter website URL"
+          aria-describedby="lighthouse-url-help"
+          required
+          class="w-full min-w-0 flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+          autocomplete="url"
+          inputmode="url"
+          spellcheck="false"
+          data-lpignore="true"
+        >
+
+        <button
+          type="button"
+          id="analyze-url-btn"
+          class="w-full md:w-auto md:flex-shrink-0 px-10 py-4 bg-gradient-to-r from-orange-500 via-red-500 to-pink-600 hover:brightness-110 active:scale-95 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2 justify-center"
+        >
+          Analyze URL <span class="text-xl">🎯</span>
+        </button>
+
+      </div>
+      
             </div>
             <div class="space-y-4">
               <h2 class="text-3xl text-center font-semibold text-orange-600 dark:text-orange-400">Or use Code Analysis 📄</h2>
