@@ -1,4 +1,4 @@
-// Module explanations for Lighthouse Plus Tool
+// Module explanations + fix hints for Lighthouse Plus Tool
 export const moduleExplanations = {
   "Core Web Vitals": {
     slug: "core-web-vitals",
@@ -61,3 +61,101 @@ export const moduleExplanations = {
     why: "Agentic browsing is the next layer of the web. Agents need clean structure, labelled forms, and no bot walls to complete real tasks. Pages that pass today will be the ones agents can actually use tomorrow. This module is a strategic bet on where the web is heading."
   }
 };
+
+// Per-failed-item fix hints — matched against failed item text, first match wins.
+export const fixHints = [
+  // ─── Core Web Vitals ───
+  { pattern: /^LCP .*poor/i, fix: 'Optimise the Largest Contentful Paint element — usually the hero image or main heading. Compress to WebP/AVIF, add fetchpriority="high" and a preload link, and cut server response time.' },
+  { pattern: /^LCP .*needs improvement/i, fix: 'Shave a few hundred milliseconds off LCP by preloading the hero image, deferring non-critical scripts, and serving assets through a CDN.' },
+  { pattern: /^LCP not captured/i, fix: 'LCP could not be measured. Ensure the page loads without blocking errors and the hero element renders in the initial viewport.' },
+  { pattern: /INP .*poor/i, fix: 'Reduce INP by breaking up long JavaScript tasks, deferring non-critical scripts, and moving heavy computation to a web worker.' },
+  { pattern: /INP .*needs improvement/i, fix: 'Trim INP by yielding to the browser between tasks with scheduler.yield() or requestIdleCallback, and lazy-loading third-party scripts.' },
+  { pattern: /^CLS .*poor/i, fix: 'Fix layout shift by adding explicit width and height to every image, reserving space for ads and embeds, and loading fonts with font-display: optional.' },
+  { pattern: /^CLS .*needs improvement/i, fix: 'Reduce CLS by setting aspect-ratio on media, avoiding late-inserted banners, and reserving space for anything that appears after first paint.' },
+  { pattern: /^FCP .*poor/i, fix: 'Improve FCP by eliminating render-blocking CSS and JS, inlining critical CSS, and reducing server response time.' },
+  { pattern: /^FCP .*needs improvement/i, fix: 'Speed up FCP by preloading fonts, deferring non-critical scripts, and trimming the critical CSS path.' },
+  { pattern: /^TTFB .*poor/i, fix: 'Reduce TTFB by enabling CDN caching, optimising database queries, and checking for cold starts or slow origin responses.' },
+  { pattern: /^TTFB .*needs improvement/i, fix: 'Improve TTFB with edge caching, HTTP/2 or HTTP/3, and cutting backend processing before the first byte is sent.' },
+
+  // ─── Performance Score ───
+  { pattern: /render-blocking script/i, fix: 'Add defer or async to <head> scripts, or move them to the end of <body>. This stops them from blocking HTML parsing.' },
+  { pattern: /stylesheets — reduce|stylesheets —/i, fix: 'Combine stylesheets into fewer files, load only what each page needs, and defer non-critical CSS with media queries or preload.' },
+  { pattern: /large inline scripts/i, fix: 'Move large inline scripts into external .js files loaded with defer so they download without blocking the parser.' },
+  { pattern: /large inline style/i, fix: 'Inline only the critical above-the-fold CSS. Move the rest into an external stylesheet and load it asynchronously.' },
+  { pattern: /image\(s\) missing width\/height/i, fix: 'Add explicit width and height attributes to every <img> so the browser reserves space and prevents layout shift.' },
+  { pattern: /without lazy loading/i, fix: 'Add loading="lazy" to below-fold images and fetchpriority="high" to the hero image so it loads first.' },
+  { pattern: /Total Blocking Time/i, fix: 'Reduce TBT by splitting long JavaScript tasks, deferring non-critical scripts, and moving heavy work off the main thread.' },
+  { pattern: /long tasks/i, fix: 'Break up JavaScript tasks longer than 50ms using setTimeout, requestIdleCallback, or a web worker.' },
+
+  // ─── Accessibility (axe-core) ───
+  { pattern: /color-contrast/i, fix: 'Increase text-to-background contrast to at least 4.5:1 for body text and 3:1 for large text. Test with the WebAIM contrast checker.' },
+  { pattern: /image-alt/i, fix: 'Add descriptive alt text to every meaningful image. Use alt="" (empty) for purely decorative images.' },
+  { pattern: /link-name/i, fix: 'Give every link descriptive text. Avoid "click here" or bare URLs. Use aria-label if the visible text cannot describe the destination.' },
+  { pattern: /button-name/i, fix: 'Give every button an accessible name via visible text or aria-label. Icon-only buttons need an aria-label.' },
+  { pattern: /label/i, fix: 'Give every form field a visible <label for="..."> or an aria-label attribute. Screen readers depend on these.' },
+  { pattern: /landmark/i, fix: 'Wrap page regions in semantic elements: <main>, <nav>, <header>, <footer>. One main per page.' },
+  { pattern: /heading-order/i, fix: 'Use headings in sequential order (H1 → H2 → H3) and never skip levels.' },
+  { pattern: /image\(s\) without alt/i, fix: 'Add alt text to every <img>. Descriptive for content images, empty for decorative ones.' },
+  { pattern: /form field\(s\) may lack labels/i, fix: 'Associate every input with a <label for="id"> or add an aria-label attribute.' },
+
+  // ─── Best Practices ───
+  { pattern: /HTTP — not HTTPS/i, fix: 'Serve the site over HTTPS. Enable a free certificate through Let\'s Encrypt, Cloudflare, or your host\'s SSL settings.' },
+  { pattern: /console error\(s\)/i, fix: 'Open DevTools → Console, reproduce each error, and fix the failing scripts. Common causes: missing files, wrong MIME types, CORS blocks.' },
+  { pattern: /failed network request/i, fix: 'Check the Network tab to identify which requests fail and why. Fix broken URLs, CORS headers, or missing assets.' },
+  { pattern: /deprecated API/i, fix: 'Replace document.write, attachEvent, ActiveXObject and document.all with modern equivalents like insertAdjacentHTML and addEventListener.' },
+  { pattern: /distorted aspect ratio/i, fix: 'Match the width/height attributes on <img> to the image\'s natural aspect ratio, or use CSS aspect-ratio to preserve it.' },
+
+  // ─── SEO On-Page ───
+  { pattern: /Missing <title>/i, fix: 'Add a unique 50-60 character <title> that includes the primary keyword near the front.' },
+  { pattern: /Title too short/i, fix: 'Lengthen the title to 50-60 characters. Add a modifier or brand name if needed.' },
+  { pattern: /Title too long/i, fix: 'Shorten the title to 50-60 characters so it does not truncate in search results.' },
+  { pattern: /Missing meta description/i, fix: 'Write a 120-160 character meta description that summarises the page and includes a call to action.' },
+  { pattern: /Meta description short/i, fix: 'Expand the meta description to 120-160 characters — enough to sell the click from the SERP.' },
+  { pattern: /Meta description long/i, fix: 'Trim the meta description to 160 characters or fewer so it does not get cut off in SERPs.' },
+  { pattern: /Missing canonical/i, fix: 'Add <link rel="canonical" href="https://..."> to tell search engines which URL is the canonical version.' },
+  { pattern: /noindex/i, fix: 'Remove noindex from the robots meta tag or X-Robots-Tag header. This is usually leftover from a staging site.' },
+  { pattern: /nofollow/i, fix: 'Remove nofollow from the robots meta tag unless you have a specific reason to block link equity.' },
+  { pattern: /No H1/i, fix: 'Add exactly one <h1> to the page. It should describe the primary topic using the main keyword.' },
+  { pattern: /H1 tags/i, fix: 'Keep a single <h1> per page. Demote the others to <h2> or <h3> depending on structure.' },
+  { pattern: /Missing viewport meta/i, fix: 'Add <meta name="viewport" content="width=device-width, initial-scale=1"> to the <head>.' },
+
+  // ─── PWA Readiness ───
+  { pattern: /No web app manifest/i, fix: 'Create manifest.json with name, short_name, icons (192 and 512px), theme_color, background_color, start_url, and display: standalone. Link it with <link rel="manifest">.' },
+  { pattern: /No service worker/i, fix: 'Create a service worker and register it with navigator.serviceWorker.register(\'/sw.js\') after load. Workbox handles the caching strategies for you.' },
+  { pattern: /Missing theme-color/i, fix: 'Add <meta name="theme-color" content="#ffffff"> to match your brand colour.' },
+  { pattern: /No apple-touch-icon/i, fix: 'Add <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png"> for iOS home-screen installs.' },
+  { pattern: /PWA requires HTTPS/i, fix: 'PWAs require HTTPS. Enable an SSL certificate on your host — Cloudflare, Let\'s Encrypt, and most hosts provide them free.' },
+
+  // ─── Resource Optimisation ───
+  { pattern: /image\(s\) over 200KB/i, fix: 'Compress images and serve WebP or AVIF. Aim for under 200KB per image on mobile.' },
+  { pattern: /No WebP\/AVIF/i, fix: 'Convert JPG and PNG to WebP or AVIF in your build pipeline. Typical savings are 40-70% per image.' },
+  { pattern: /Script total/i, fix: 'Split and lazy-load JavaScript. Ship only what each page uses — audit bundles for unused libraries.' },
+  { pattern: /CSS total/i, fix: 'Purge unused CSS with PurgeCSS, Tailwind\'s JIT, or similar. Aim for under 100KB per page.' },
+  { pattern: /font-display/i, fix: 'Add font-display: swap to every @font-face so text renders immediately with a fallback while fonts load.' },
+  { pattern: /Total transfer/i, fix: 'Reduce total transfer by compressing images, deferring scripts, subsetting fonts, and removing unused assets.' },
+
+  // ─── Third-Party Impact ───
+  { pattern: /third-party domain/i, fix: 'Audit every third-party domain. Remove unused analytics, chat widgets, and tag manager tags. Load what remains on idle or interaction.' },
+  { pattern: /Third-party scripts/i, fix: 'Defer third-party scripts to load after content. Use Partytown to move the heaviest ones to a web worker.' },
+
+  // ─── Mobile UX ───
+  { pattern: /user-scalable=no/i, fix: 'Remove user-scalable=no from the viewport meta — it blocks pinch-zoom and fails WCAG.' },
+  { pattern: /maximum-scale=1/i, fix: 'Remove maximum-scale=1 from the viewport meta — it blocks user zoom and fails WCAG.' },
+  { pattern: /font sizes under 14px/i, fix: 'Raise base font size to 16px minimum. Body text below 14px is hard to read on phones.' },
+  { pattern: /clickable element\(s\) under 44px/i, fix: 'Make every clickable element at least 44x44 CSS pixels. Add padding rather than increasing font size.' },
+  { pattern: /Viewport missing width=device-width/i, fix: 'Change the viewport meta to width=device-width so the page scales correctly on phones.' },
+  { pattern: /safe-area/i, fix: 'Add viewport-fit=cover to the viewport meta and use env(safe-area-inset-*) padding on sticky headers and footers.' },
+
+  // ─── Agentic Browsing ───
+  { pattern: /robots.txt blocks AI agents/i, fix: 'Remove Disallow rules for AI user agents (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot) from robots.txt.' },
+  { pattern: /semantic landmarks/i, fix: 'Wrap page sections in semantic elements: <main>, <nav>, <header>, <footer>, <article>, <aside>.' },
+  { pattern: /form field\(s\) without labels/i, fix: 'Give every form field a <label for="id"> or aria-label. Agents and screen readers rely on these to fill forms.' }
+];
+
+export function fixFor(text) {
+  if (!text) return '';
+  for (const hint of fixHints) {
+    if (hint.pattern.test(text)) return hint.fix;
+  }
+  return 'See the full module guide for detailed fix guidance.';
+}

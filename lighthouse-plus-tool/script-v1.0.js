@@ -1,7 +1,7 @@
 // Lighthouse Plus Tool – client controller
 import { renderModuleCards } from './module-cards-v1.0.js';
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
-import { moduleExplanations } from './module-explanations-v1.0.js';
+import { moduleExplanations, fixFor } from './module-explanations-v1.0.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
@@ -9,6 +9,57 @@ import { detectCMS } from '/cms-detect.js';
 const LH_AUDIT_API = 'https://lighthouse-audit.traffictorch.workers.dev/';
 const LH_CMS_API   = 'https://lighthouse-cms-fixes.traffictorch.workers.dev/';
 const LH_AI_API    = 'https://lighthouse-ai.traffictorch.workers.dev/';
+
+// ─── Module weights (must match the worker) ───
+const MODULE_WEIGHTS = {
+  'Core Web Vitals': 15,
+  'Performance Score': 10,
+  'Accessibility': 12,
+  'Best Practices': 10,
+  'SEO On-Page': 10,
+  'PWA Readiness': 8,
+  'Resource Optimisation': 10,
+  'Third-Party Impact': 8,
+  'Mobile UX': 10,
+  'Agentic Browsing': 7,
+};
+
+// ─── Client-side cap: modules with too many issues cannot score high ───
+function applyIssueCap(mod) {
+  const failedCount  = (mod.failed  || []).length;
+  const warningCount = (mod.signals || []).filter((s) => !s.pass).length;
+  const issues = failedCount + warningCount;
+
+  let capped = mod.score;
+  if (issues >= 5)      capped = Math.min(capped, 40);
+  else if (issues >= 4) capped = Math.min(capped, 50);
+  else if (issues >= 3) capped = Math.min(capped, 65);
+  else if (issues >= 2) capped = Math.min(capped, 80);
+
+  return capped;
+}
+
+function gradeFromScore(score) {
+  return score >= 80 ? 'Excellent' : score >= 60 ? 'Good' : 'Needs Work';
+}
+
+function recomputeOverall(mods) {
+  let weightedSum = 0;
+  let weightTotal = 0;
+  for (const m of mods) {
+    const w = MODULE_WEIGHTS[m.name] ?? 10;
+    weightedSum += m.score * w;
+    weightTotal += w;
+  }
+  let overall = Math.round(weightedSum / weightTotal);
+
+  const lowest = Math.min(...mods.map((m) => m.score));
+  if (lowest < 25)      overall = Math.min(overall, 60);
+  else if (lowest < 40) overall = Math.min(overall, 72);
+  else if (lowest < 60) overall = Math.min(overall, 85);
+
+  return overall;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   const results     = document.getElementById('results');
@@ -29,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return /^https?:\/\//i.test(t) ? t : 'https://' + t;
   };
 
+  // ─── One-time event delegation ───
   document.addEventListener('click', (e) => {
     const toggle = e.target.closest('.fixes-toggle');
     if (toggle) {
@@ -37,11 +89,24 @@ document.addEventListener('DOMContentLoaded', () => {
       if (panel) {
         panel.classList.toggle('hidden');
         const isOpen = !panel.classList.contains('hidden');
-        const failedCount = panel.querySelectorAll('.failed-item').length;
+        const failedCount = parseInt(toggle.dataset.failedCount || '0', 10);
         if (isOpen && failedCount > 0) toggle.textContent = `Hide Fixes (${failedCount})`;
         else if (isOpen) toggle.textContent = 'Hide Details';
         else toggle.textContent = failedCount > 0 ? `Show Fixes (${failedCount})` : 'Details';
       }
+      return;
+    }
+
+    const askLink = e.target.closest('.ask-ai-link');
+    if (askLink) {
+      e.preventDefault();
+      const q = askLink.dataset.aiQuestion || '';
+      const aiSection = document.getElementById('ask-ai-section');
+      const aiInput = document.getElementById('ai-question-input');
+      if (aiInput && q) aiInput.value = q;
+      if (aiSection) aiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => aiInput?.focus(), 700);
+      return;
     }
   });
 
@@ -100,9 +165,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderReport(data, payload) {
     const {
-      url, pageTitle, overall, grade, modules, priorityFixes,
+      url, pageTitle, overall: rawOverall, grade, modules: rawModules, priorityFixes,
       rawHtml, renderedHtml, browserMetrics, meta,
     } = data;
+
+    // ─── Apply issue cap to every module, then recompute the overall ───
+    const modules = rawModules.map((m) => {
+      const cappedScore = applyIssueCap(m);
+      return {
+        ...m,
+        score: cappedScore,
+        grade: gradeFromScore(cappedScore),
+      };
+    });
+    const overall = recomputeOverall(modules);
 
     let cmsInfo = { name: 'Custom / Unknown', version: null, confidence: 'unknown', signals: [] };
     try {
@@ -162,68 +238,66 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-8 my-16 max-w-6xl mx-auto px-4">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 my-16 max-w-7xl mx-auto px-4">
         ${modules.map((m) => {
           const failedCount = (m.failed || []).length;
           const expl = moduleExplanations[m.name] || {};
           const slug = expl.slug || m.name.toLowerCase().replace(/\s+/g, '-');
+          const failedItems = m.failed || [];
+          const warningSignals = (m.signals || []).filter((s) => !s.pass);
+          const passingSignals = (m.signals || []).filter((s) => s.pass);
+
           return `
-            <div class="score-card text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)}">
-              <div class="relative mx-auto w-24 h-24">
-                <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
-                  <circle cx="48" cy="48" r="40" stroke="#e5e7eb" stroke-width="10" fill="none"/>
-                  <circle cx="48" cy="48" r="40" stroke="${gradeColor(m.score)}" stroke-width="10" fill="none"
-                          stroke-dasharray="${(m.score / 100) * 251} 251" stroke-linecap="round"/>
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center text-3xl font-black" style="color:${gradeColor(m.score)}">${m.score}</div>
+            <div class="score-card p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)} flex flex-col">
+              <div class="text-center">
+                <div class="relative mx-auto w-24 h-24">
+                  <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
+                    <circle cx="48" cy="48" r="40" stroke="#e5e7eb" stroke-width="10" fill="none"/>
+                    <circle cx="48" cy="48" r="40" stroke="${gradeColor(m.score)}" stroke-width="10" fill="none"
+                            stroke-dasharray="${(m.score / 100) * 251} 251" stroke-linecap="round"/>
+                  </svg>
+                  <div class="absolute inset-0 flex items-center justify-center text-3xl font-black" style="color:${gradeColor(m.score)}">${m.score}</div>
+                </div>
+                <p class="mt-3 text-lg font-bold ${m.score >= 80 ? 'text-green-600' : m.score >= 60 ? 'text-orange-400' : 'text-red-600'}">${gradeText(m.score)}</p>
+                <p class="mt-2 text-lg font-medium text-gray-800 dark:text-gray-200">${escapeHtml(m.name)}</p>
               </div>
-              <p class="mt-3 text-lg font-bold ${m.score >= 80 ? 'text-green-600' : m.score >= 60 ? 'text-orange-400' : 'text-red-600'}">${gradeText(m.score)}</p>
-              <p class="mt-2 text-lg font-medium text-gray-800 dark:text-gray-200">${escapeHtml(m.name)}</p>
-              <div class="mt-3 space-y-1 text-sm text-left max-w-xs mx-auto">
-                ${(m.signals || []).slice(0, 5).map((s) => `
-                  <p class="${s.pass ? 'text-green-600' : 'text-orange-400'} font-medium">${s.pass ? '✅' : '⚠️'} ${escapeHtml(s.label)}</p>
+
+              <div class="mt-4 space-y-1 text-sm text-left">
+                ${failedItems.map((f) => `
+                  <p class="text-red-600 dark:text-red-400 font-medium leading-snug">❌ ${escapeHtml(f)}</p>
+                `).join('')}
+                ${warningSignals.map((s) => `
+                  <p class="text-orange-500 dark:text-orange-400 font-medium leading-snug">⚠️ ${escapeHtml(s.label)}</p>
+                `).join('')}
+                ${passingSignals.map((s) => `
+                  <p class="text-green-600 dark:text-green-400 font-medium leading-snug">✅ ${escapeHtml(s.label)}</p>
                 `).join('')}
               </div>
-              <button class="fixes-toggle mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-                ${failedCount ? `Show Fixes (${failedCount})` : 'Details'}
-              </button>
-              <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-4">
-                <div>
-                  <p class="font-bold text-gray-800 dark:text-gray-200">What it measures:</p>
-                  <p class="text-gray-700 dark:text-gray-300">${expl.what || ''}</p>
-                  <a href="/blog/posts/lighthouse-plus-help-guide/#${slug}-what"
-                     class="inline-block mt-1 text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline text-xs font-medium">
-                    Learn more about what →
-                  </a>
-                </div>
-                <div>
-                  <p class="font-bold text-gray-800 dark:text-gray-200">How it is tested:</p>
-                  <p class="text-gray-700 dark:text-gray-300">${expl.how || ''}</p>
-                  <a href="/blog/posts/lighthouse-plus-help-guide/#${slug}-how"
-                     class="inline-block mt-1 text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline text-xs font-medium">
-                    Learn more about how →
-                  </a>
-                </div>
-                <div>
-                  <p class="font-bold text-gray-800 dark:text-gray-200">Why it matters:</p>
-                  <p class="text-gray-700 dark:text-gray-300">${expl.why || ''}</p>
-                  <a href="/blog/posts/lighthouse-plus-help-guide/#${slug}-why"
-                     class="inline-block mt-1 text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline text-xs font-medium">
-                    Learn more about why →
-                  </a>
-                </div>
-                ${failedCount ? `
-                  <div>
-                    <p class="font-bold text-red-600 mb-1">Fix these:</p>
-                    <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
-                      ${m.failed.map((f) => `<li class="failed-item">${escapeHtml(f)}</li>`).join('')}
-                    </ul>
+
+              <div class="mt-auto pt-5">
+                <button class="fixes-toggle w-full px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm font-semibold"
+                        data-failed-count="${failedCount}">
+                  ${failedCount ? `Show Fixes (${failedCount})` : 'Details'}
+                </button>
+              </div>
+
+              <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-4">
+                ${failedCount ? failedItems.map((f, idx) => `
+                  <div class="${idx > 0 ? 'pt-3 border-t border-gray-300 dark:border-gray-700' : ''}">
+                    <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${escapeHtml(f)}</p>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(f))}</p>
                   </div>
-                ` : '<p class="text-green-600 font-medium">All checks passed.</p>'}
-                <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+                `).join('') : '<p class="text-green-600 font-medium">All checks passed — nothing to fix.</p>'}
+
+                <div class="pt-3 border-t border-gray-300 dark:border-gray-700 flex flex-col gap-2 text-sm">
+                  <a href="#ask-ai-section"
+                     class="ask-ai-link inline-block text-purple-600 dark:text-purple-400 hover:underline font-semibold"
+                     data-ai-question="How do I improve my ${escapeHtml(m.name)} score?${failedCount ? ' Failed checks: ' + escapeHtml(failedItems.join('; ')) : ''}">
+                    🤖 Ask AI about this module →
+                  </a>
                   <a href="/blog/posts/lighthouse-plus-help-guide/#${slug}"
-                     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline text-xs font-semibold">
-                    Read the full ${escapeHtml(m.name)} guide →
+                     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline font-semibold">
+                    📖 Read the full ${escapeHtml(m.name)} guide →
                   </a>
                 </div>
               </div>
@@ -258,8 +332,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div id="plugin-solutions-section" class="mt-20"></div>
 
-          ${priorityFixes.length > 0 ? `
-      <div class="mt-20 max-w-4xl mx-auto px-4">
+      ${priorityFixes.length > 0 ? `
+      <div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-4 scroll-mt-24">
         <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">Get step-by-step Lighthouse Plus fix instructions tailored to your CMS.</p>
         <div class="flex items-center justify-center gap-3 mb-4 flex-wrap">
@@ -278,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       ` : ''}
 
-      <div class="mt-20 max-w-4xl mx-auto px-4">
+      <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4 scroll-mt-24">
         <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">Ask about any failing metric, how to fix it, or what to prioritise.</p>
         <div class="flex flex-col sm:flex-row gap-4">
