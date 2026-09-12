@@ -1,4 +1,4 @@
-# Logs
+# ─── Logs ─────────────────────────────────────────────
 logs
 *.log
 npm-debug.log*
@@ -7,12 +7,13 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# ─── Dependencies ─────────────────────────────────────
 node_modules
 dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# ─── Editor directories and files ─────────────────────
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -23,3 +24,44 @@ dist-ssr
 *.sln
 *.sw?
 
+# ─── Cloudflare / Wrangler / DevContainer caches ──────
+# These were the cause of the Pages 25 MiB per-file build failure.
+# Never ship them. Never commit them.
+.wrangler/
+.cache/
+.config/
+.npm-cache/
+.devcontainer/
+
+# Only ignore cache folders inside workers/, keep worker source tracked
+workers/.cache/
+workers/.config/
+workers/.wrangler/
+workers/*/node_modules/
+workers/*/.wrangler/
+workers/*/.cache/
+
+# ─── Cloudflare Pages Functions build artifacts ───────
+functions/**/node_modules/
+functions/**/.wrangler/
+
+# ─── Framework cache artifacts (accidental 64-char hash files) ───
+# These landed in the repo root previously and inflated the build.
+[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]
+
+# ─── Operating system ─────────────────────────────────
+Thumbs.db
+Desktop.ini
+.AppleDouble
+.LSOverride
+
+# Build/dev caches — never ship these
+.wrangler/
+.cache/
+.config/
+.npm-cache/
+.devcontainer/
+workers/.cache/
+workers/.config/
+workers/.npm-cache/
+workers/.wrangler/
