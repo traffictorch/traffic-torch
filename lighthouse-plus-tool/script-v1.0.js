@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', (e) => {
     const toggle = e.target.closest('.fixes-toggle');
     if (toggle) {
+      e.preventDefault();
       const card = toggle.closest('.score-card');
       const panel = card?.querySelector('.fixes-panel');
       if (panel) {
@@ -275,7 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
 
               <div class="mt-auto pt-5">
-                <button class="fixes-toggle w-full px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm font-semibold"
+                <button type="button"
+                        class="fixes-toggle w-full px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm font-semibold"
                         data-failed-count="${failedCount}">
                   ${failedCount ? `Show Fixes (${failedCount})` : 'Details'}
                 </button>

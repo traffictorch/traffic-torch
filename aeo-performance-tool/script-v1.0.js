@@ -1,7 +1,7 @@
 // AEO Performance Tool – client controller
 import { renderModuleCards } from './module-cards-v1.0.js';
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
-import { moduleExplanations } from './module-explanations-v1.0.js';
+import { moduleExplanations, fixFor } from './module-explanations-v1.0.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (panel) {
         panel.classList.toggle('hidden');
         const isOpen = !panel.classList.contains('hidden');
-        const failedCount = panel.querySelectorAll('.failed-item').length;
+        const failedCount = parseInt(toggle.dataset.failedCount || '0', 10);
         if (isOpen && failedCount > 0) {
           toggle.textContent = `Hide Fixes (${failedCount})`;
         } else if (isOpen) {
@@ -48,6 +48,22 @@ document.addEventListener('DOMContentLoaded', () => {
           toggle.textContent = failedCount > 0 ? `Show Fixes (${failedCount})` : 'Details';
         }
       }
+      return;
+    }
+
+    const askLink = e.target.closest('.ask-ai-link');
+    if (askLink) {
+      e.preventDefault();
+      const question = askLink.dataset.aiQuestion || '';
+      const section = document.getElementById('ask-ai-section');
+      const textarea = document.getElementById('ai-question-input');
+      if (textarea) textarea.value = question;
+      if (section) {
+        const offset = 100;
+        const targetY = section.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+      }
+      setTimeout(() => textarea?.focus(), 700);
     }
   });
   
@@ -178,9 +194,15 @@ document.addEventListener('DOMContentLoaded', () => {
       <!-- Module cards -->
       <div class="grid md:grid-cols-3 gap-8 my-16 max-w-6xl mx-auto px-4">
         ${modules.map(m => {
-          const failedCount = (m.failed || []).length;
+          const failed = m.failed || [];
+          const warnings = (m.signals || []).filter(s => !s.pass).map(s => s.label);
+          const passes = (m.signals || []).filter(s => s.pass);
+          const allIssues = [...failed, ...warnings];
+          const slug = moduleExplanations[m.name]?.slug || '';
+          const aiQuestion = `How do I improve my ${m.name} score?` +
+            (failed.length ? ` Failed checks: ${failed.join('; ')}.` : '');
           return `
-            <div class="score-card text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)}">
+            <div class="score-card flex flex-col text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)}">
               <div class="relative mx-auto w-24 h-24">
                 <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
                   <circle cx="48" cy="48" r="40" stroke="#e5e7eb" stroke-width="10" fill="none"/>
@@ -191,51 +213,37 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <p class="mt-3 text-lg font-bold ${m.score >= 80 ? 'text-green-600' : m.score >= 60 ? 'text-orange-400' : 'text-red-600'}">${gradeText(m.score)}</p>
               <p class="mt-2 text-lg font-medium text-gray-800 dark:text-gray-200">${escapeHtml(m.name)}</p>
-              <div class="mt-3 space-y-1 text-sm text-left max-w-xs mx-auto">
-                ${(m.signals || []).slice(0, 5).map(s => `
-                  <p class="${s.pass ? 'text-green-600' : 'text-orange-400'} font-medium">${s.pass ? '✅' : '⚠️'} ${escapeHtml(s.label)}</p>
-                `).join('')}
+
+              <div class="mt-3 space-y-1 text-sm text-left max-w-xs mx-auto w-full">
+                ${failed.map(f => `<p class="text-red-600 dark:text-red-400 font-medium">❌ ${escapeHtml(f)}</p>`).join('')}
+                ${warnings.map(w => `<p class="text-orange-500 font-medium">⚠️ ${escapeHtml(w)}</p>`).join('')}
+                ${passes.map(s => `<p class="text-green-600 font-medium">✅ ${escapeHtml(s.label)}</p>`).join('')}
               </div>
-              <button class="fixes-toggle mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-                ${failedCount ? `Show Fixes (${failedCount})` : 'Details'}
-              </button>
-              <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-4">
-                <div>
-                  <p class="font-bold text-gray-800 dark:text-gray-200">What it measures:</p>
-                  <p class="text-gray-700 dark:text-gray-300">${moduleExplanations[m.name]?.what || ''}</p>
-                  <a href="/blog/posts/aeo-performance-help-guide/#${moduleExplanations[m.name]?.slug || ''}-what"
-                     class="inline-block mt-1 text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline text-xs font-medium">
-                    Learn more about what →
-                  </a>
-                </div>
-                <div>
-                  <p class="font-bold text-gray-800 dark:text-gray-200">How it is tested:</p>
-                  <p class="text-gray-700 dark:text-gray-300">${moduleExplanations[m.name]?.how || ''}</p>
-                  <a href="/blog/posts/aeo-performance-help-guide/#${moduleExplanations[m.name]?.slug || ''}-how"
-                     class="inline-block mt-1 text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline text-xs font-medium">
-                    Learn more about how →
-                  </a>
-                </div>
-                <div>
-                  <p class="font-bold text-gray-800 dark:text-gray-200">Why it matters:</p>
-                  <p class="text-gray-700 dark:text-gray-300">${moduleExplanations[m.name]?.why || ''}</p>
-                  <a href="/blog/posts/aeo-performance-help-guide/#${moduleExplanations[m.name]?.slug || ''}-why"
-                     class="inline-block mt-1 text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline text-xs font-medium">
-                    Learn more about why →
-                  </a>
-                </div>
-                ${failedCount ? `
-                  <div>
-                    <p class="font-bold text-red-600 mb-1">Fix these:</p>
-                    <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
-                      ${m.failed.map(f => `<li class="failed-item">${escapeHtml(f)}</li>`).join('')}
-                    </ul>
+
+              <div class="mt-auto pt-5">
+                <button class="fixes-toggle w-full px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm"
+                        data-failed-count="${allIssues.length}">
+                  ${allIssues.length ? `Show Fixes (${allIssues.length})` : 'Details'}
+                </button>
+              </div>
+
+              <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-4 w-full">
+                ${allIssues.length ? allIssues.map((item, i) => `
+                  <div class="${i > 0 ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}">
+                    <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${escapeHtml(item)}</p>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(item))}</p>
                   </div>
-                ` : '<p class="text-green-600 font-medium">All checks passed.</p>'}
-                <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
-                  <a href="/blog/posts/aeo-performance-help-guide/#${moduleExplanations[m.name]?.slug || ''}"
-                     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline text-xs font-semibold">
-                    Read the full ${escapeHtml(m.name)} guide →
+                `).join('') : '<p class="text-green-600 font-medium">All checks passed.</p>'}
+
+                <div class="pt-3 border-t border-gray-200 dark:border-gray-700 flex flex-col gap-2">
+                  <a href="#ask-ai-section"
+                     class="ask-ai-link text-purple-600 dark:text-purple-400 hover:underline text-xs font-semibold"
+                     data-ai-question="${escapeHtml(aiQuestion)}">
+                    🤖 Ask AI about this module →
+                  </a>
+                  <a href="/blog/posts/aeo-performance-help-guide/#${slug}"
+                     class="text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline text-xs font-semibold">
+                    📖 Read the full ${escapeHtml(m.name)} guide →
                   </a>
                 </div>
               </div>
@@ -293,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <!-- Ask AI -->
-      <div class="mt-20 max-w-4xl mx-auto px-4">
+      <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
         <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">Ask about any failing metric, how to fix it, or what to prioritise.</p>
         <div class="flex flex-col sm:flex-row gap-4">

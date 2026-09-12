@@ -55,3 +55,99 @@ export const moduleExplanations = {
     why: "AI crawlers capture content once. If your content is unstable at capture time — being replaced by hydration, waiting on an API response, or shifting due to layout changes — the crawler gets a coin flip instead of a reliable snapshot. Inconsistent visibility is worse than no visibility."
   }
 };
+
+export const fixHints = [
+  // ─── Render Fidelity ───
+  { pattern: /% of rendered words are JS-injected/i, fix: "Move primary content into the server-rendered HTML. Avoid injecting H1, body copy, or product details via JavaScript — AI crawlers capture the DOM once and miss anything that appears later." },
+  { pattern: /% of raw words removed after render/i, fix: "Check for hydration mismatches where the client replaces server markup. Use framework SSR correctly so the rendered state matches the raw HTML." },
+  { pattern: /JavaScript error\(s\) during render/i, fix: "Fix the JavaScript errors flagged in Live Browser Metrics. Even non-blocking errors can interrupt hydration and leave content unrendered for AI crawlers." },
+  { pattern: /H1 injected by JS/i, fix: "Move the H1 into the server-rendered HTML so AI crawlers see the primary topic without waiting for JavaScript." },
+  { pattern: /No <noscript> fallback and significant JS-injected content/i, fix: "Add a <noscript> block that contains a summary of the primary content. Crawlers that do not execute JavaScript will still see something useful." },
+  { pattern: /hydration marker/i, fix: "Reduce reliance on client-side hydration. Server-render the critical content so it exists before hydration runs." },
+
+  // ─── DOM Stability ───
+  { pattern: /live DOM mutations during load/i, fix: "Reduce script-driven DOM mutation. Defer non-critical scripts, avoid document.write, and mount primary content before running heavy client-side logic." },
+  { pattern: /nodes added\/removed during load/i, fix: "Consolidate DOM operations. Batch appends and use a framework that renders complete trees rather than mutating piecewise." },
+  { pattern: /shadow DOM root/i, fix: "Content inside shadow DOM is invisible to many extractors. Render primary text in the light DOM, or provide a light-DOM mirror for critical content." },
+  { pattern: /document\.write\(\)/i, fix: "Replace document.write with DOM APIs (appendChild, insertBefore). document.write blocks the parser and confuses crawlers that snapshot early." },
+  { pattern: /SPA: /i, fix: "For SPA frameworks, ensure primary content is server-rendered (SSR or SSG) so the initial HTML contains the DOM crawlers need." },
+
+  // ─── Content Extractability ───
+  { pattern: /Low semantic HTML usage/i, fix: "Replace layout divs with semantic tags: <header>, <main>, <article>, <section>, <nav>, <aside>, <footer>. Aim for a 15%+ semantic element ratio." },
+  { pattern: /div count/i, fix: "Reduce wrapper divs. Most framework layouts add extra divs you can consolidate or replace with semantic tags." },
+  { pattern: /Multiple H1 tags/i, fix: "Keep exactly one H1 per page. Convert extra H1s to H2 or H3 based on hierarchy." },
+  { pattern: /No H1 found/i, fix: "Add a single H1 that states the primary topic of the page. Place it inside <main> or the first <article>." },
+  { pattern: /Only \d+ <p> tags/i, fix: "Wrap body copy in <p> tags. Extractor engines look for paragraph elements to segment content." },
+  { pattern: /large inline scripts may hide content/i, fix: "Move large inline scripts into external .js files loaded with defer. This reduces HTML size and lets extractors see content sooner." },
+
+  // ─── Schema Parse Performance ───
+  { pattern: /No JSON-LD structured data found/i, fix: "Add JSON-LD to <head> with @context, @type, and relevant properties. Start with WebPage, Article, or SoftwareApplication based on page type." },
+  { pattern: /schema block\(s\) failed to parse/i, fix: "Validate your JSON-LD with the Schema.org validator. Common issues: trailing commas, unescaped quotes, or missing braces." },
+  { pattern: /missing @context/i, fix: "Every JSON-LD block must include \"@context\": \"https://schema.org\". Without it, parsers cannot resolve @type values." },
+  { pattern: /No @type extracted/i, fix: "Add a top-level \"@type\" property to every schema object so parsers know what entity you are describing." },
+  { pattern: /Only 1 schema type/i, fix: "Add complementary schema types. A blog post often benefits from Article + Person + BreadcrumbList + FAQPage." },
+  { pattern: /Deeply nested schema/i, fix: "Flatten deeply nested schema by using @id references instead of inline objects. Simplifies parsing and improves reliability." },
+
+  // ─── Crawler Accessibility ───
+  { pattern: /robots\.txt blocks AI crawlers/i, fix: "Remove Disallow rules targeting GPTBot, ClaudeBot, PerplexityBot, CCBot, Google-Extended, and Bytespider. These crawlers power AI answer engines." },
+  { pattern: /robots\.txt blocks all crawlers at root/i, fix: "The wildcard Disallow rule blocks every bot including AI. Remove it or scope it to specific paths." },
+  { pattern: /No robots\.txt found/i, fix: "Serve a robots.txt at the root. Without one, crawlers have no guidance and may skip parts of your site." },
+  { pattern: /Meta robots has "noindex"/i, fix: "Remove the noindex directive from your meta robots tag. This page will not appear in any index while noindex is active." },
+  { pattern: /Meta robots has "nofollow"/i, fix: "Remove nofollow if you want link equity to flow. Keep it only for pages where outbound links should be blocked." },
+  { pattern: /Possible infinite scroll/i, fix: "Add pagination or a load more fallback so AI crawlers can reach content that infinite scroll hides from static fetches." },
+  { pattern: /Hash-based routing detected/i, fix: "Switch from hash routing (#/page) to path-based routing (/page) so crawlers can address each page separately." },
+  { pattern: /Very little text and no <noscript> fallback/i, fix: "Add server-rendered text and a <noscript> fallback so the page is useful even when JavaScript does not run." },
+  { pattern: /Cookie consent UI detected/i, fix: "Ensure your cookie wall does not block AI crawlers. Most consent managers let you allow-list known bot user agents." },
+
+  // ─── Text Density Performance ───
+  { pattern: /Very low text-to-code ratio/i, fix: "Reduce HTML bloat. Unload unused CSS/JS per page, minify markup, and remove wrapper divs that add no content." },
+  { pattern: /Text-to-code ratio is .* below the 15% minimum/i, fix: "Aim for 15%+ text-to-code. Remove unused scripts, inline critical CSS only, and trim boilerplate." },
+  { pattern: /Text-to-code ratio is .* acceptable but below the 22%/i, fix: "You are close. Reducing unused third-party scripts and consolidating markup will push you into the Excellent band." },
+  { pattern: /Scripts \(.+\) far exceed text/i, fix: "Move heavy scripts off the initial page. Load analytics, ads, and trackers after content renders." },
+  { pattern: /ad\/sponsor\/promo markers/i, fix: "Consolidate ad slots. Each ad wrapper adds markup without content, dragging the density ratio down." },
+  { pattern: /Very little extractable text/i, fix: "Add more visible text content. Pages with under 800 characters of readable text struggle in AI extraction." },
+
+  // ─── Semantic Structure Integrity ───
+  { pattern: /heading order violation/i, fix: "Fix heading order: do not skip levels. H1 → H2 → H3 is valid. H1 → H3 is a violation that AI engines flag." },
+  { pattern: /Average paragraph .* words — too long/i, fix: "Break long paragraphs into 40–120 word blocks. Short paragraphs are easier for AI engines to quote cleanly." },
+  { pattern: /Average paragraph .* words — too short/i, fix: "Combine very short fragments into coherent paragraphs. Single-sentence paragraphs rarely survive AI extraction." },
+  { pattern: /Tables without <th> headers/i, fix: "Add <th> header cells to every table. AI engines rely on headers to understand table structure." },
+  { pattern: /No lists found/i, fix: "Add bulleted or numbered lists where you enumerate items. Lists are high-signal for AI extraction." },
+  { pattern: /ALL-CAPS headings/i, fix: "Use sentence case or title case for headings. ALL-CAPS text is harder for parsers to normalise." },
+
+  // ─── Render Blocking Performance ───
+  { pattern: /render-blocking script\(s\) in <head>/i, fix: "Add defer or async to <head> scripts, or move them to the end of <body>. This stops them from blocking HTML parsing." },
+  { pattern: /large inline scripts in <head>/i, fix: "Extract large inline scripts into external files loaded with defer. Keeps the initial HTML small and parsing fast." },
+  { pattern: /^\d+ stylesheets$/i, fix: "Consolidate stylesheets. Inline critical CSS and defer the rest so text renders before full CSS loads." },
+  { pattern: /CSS @import/i, fix: "Replace @import with <link rel=\"stylesheet\"> tags. @import adds blocking round-trips." },
+  { pattern: /Web fonts without font-display: swap/i, fix: "Add font-display: swap to every @font-face rule so text renders immediately with a fallback font." },
+  { pattern: /TTFB .* — server response is slow/i, fix: "Move to edge caching (Cloudflare, Fastly) or a faster origin. TTFB over 1.8s delays every downstream metric." },
+  { pattern: /TTFB .* — above the 800ms/i, fix: "Enable CDN caching and check origin response time. Target TTFB under 800ms." },
+  { pattern: /TTFB .* — slightly above/i, fix: "Small TTFB improvement needed. Check server response headers and database query time." },
+  { pattern: /FCP: /i, fix: "Improve First Contentful Paint by deferring non-critical CSS, preloading key fonts, and reducing HTML size." },
+  { pattern: /FCP slow/i, fix: "FCP is over 1.8s. Inline critical CSS, defer non-critical JS, and consider SSR for the hero content." },
+  { pattern: /third-party script domains/i, fix: "Consolidate or remove third-party scripts. Each domain adds DNS lookup, connection, and execution time." },
+  { pattern: /render-blocking requests observed live/i, fix: "Audit the render-blocking resources in Live Browser Metrics. Defer or async-load anything not required for first paint." },
+
+  // ─── Content Stability Performance ───
+  { pattern: /CLS: .* — poor/i, fix: "Set explicit width/height on images, reserve space for ads and embeds, and avoid injecting content above existing elements." },
+  { pattern: /CLS: .* — needs improvement/i, fix: "Reduce layout shifts by reserving space for late-loading elements and using font-display: optional or swap." },
+  { pattern: /CLS: .* — borderline/i, fix: "Small layout shifts. Check for images without dimensions and banners that load after initial paint." },
+  { pattern: /LCP: /i, fix: "Improve Largest Contentful Paint by preloading the hero image, using fetchpriority=\"high\", and serving correctly-sized images." },
+  { pattern: /long task\(s\)/i, fix: "Break up JavaScript tasks over 50ms using setTimeout, requestIdleCallback, or a web worker." },
+  { pattern: /client-side routing calls/i, fix: "Ensure client-side routes render complete content on first paint. SPA route changes can leave crawlers seeing the previous page." },
+  { pattern: /async fetch calls/i, fix: "Pre-render content that depends on fetch() calls. AI crawlers do not wait for client-side data to arrive." },
+  { pattern: /innerHTML assignments/i, fix: "Replace innerHTML writes with server-rendered content where possible. innerHTML often replaces content after initial capture." },
+  { pattern: /Service worker registered/i, fix: "Verify your service worker does not serve stale or different content to crawlers. Add a bypass for non-browser user agents." },
+
+  // ─── Fallback ───
+  { pattern: /.*/, fix: "Review the module explanation and apply the recommended fix. Re-run the audit after each change to confirm improvement." }
+];
+
+export function fixFor(text) {
+  const t = String(text || '');
+  for (const h of fixHints) {
+    if (h.pattern.test(t)) return h.fix;
+  }
+  return fixHints[fixHints.length - 1].fix;
+}
