@@ -192,6 +192,40 @@ export function fixFor(text) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// METRIC POINTS — estimated overall-score lift per failed metric.
+// Same ordering rule as fixHints: first match wins. Fallback = +5.
+// ─────────────────────────────────────────────────────────────────────────────
+const pointsHints = [
+  { pattern: /author byline|visible author|author name|byline present/i,                       points: 18 },
+  { pattern: /author bio|bio section/i,                                                        points: 14 },
+  { pattern: /under 1,?500|expand content|content depth|word count|too short|thin content/i,   points: 14 },
+  { pattern: /schema markup|schema detected|structured data|no schema|add.*schema|json-?ld/i,  points: 12 },
+  { pattern: /credentials?|qualifications?|certifications?|years? of experience/i,              points: 10 },
+  { pattern: /citations?|references?|supporting sources?/i,                                    points: 9  },
+  { pattern: /first[- ]person|first person language/i,                                         points: 8  },
+  { pattern: /personal anecdote|real[- ]world example/i,                                       points: 8  },
+  { pattern: /timeline|specific dates?/i,                                                      points: 6  },
+  { pattern: /personal (media|caption|photos?|videos?)|original (photo|video|image)/i,         points: 6  },
+  { pattern: /update date|last updated|published date/i,                                       points: 6  },
+  { pattern: /contact (page|info|details)|get in touch/i,                                      points: 5  },
+  { pattern: /privacy.*terms|privacy\/terms links?|policy links?|terms of service/i,           points: 5  },
+  { pattern: /flesch|reading ease|readability/i,                                               points: 5  },
+  { pattern: /about\/team links?|about or team (page|links?)|about page|team page/i,           points: 4  },
+  { pattern: /awards?|endorsements?|media (features?|mentions?)|press coverage/i,              points: 4  },
+  { pattern: /https|ssl certificate/i,                                                         points: 3  }
+];
+
+const FALLBACK_POINTS = 5;
+
+export function metricPoints(text) {
+  if (!text) return FALLBACK_POINTS;
+  for (const { pattern, points } of pointsHints) {
+    if (pattern.test(text)) return points;
+  }
+  return FALLBACK_POINTS;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Existing DOM wiring for the "Deep Dive" section — unchanged.
 // ─────────────────────────────────────────────────────────────────────────────
 function openDetailsFromHash() {

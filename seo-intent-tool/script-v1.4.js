@@ -9,6 +9,7 @@ import { analyzeDepth } from './modules/depth.js';
 import { analyzeReadability } from './modules/readability.js';
 import { analyzeSchema } from './modules/schema.js';
 import { renderModuleCards } from './module-cards-v1.0.js';
+import { fixFor, metricPoints } from './module-explanations-v1.0.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
@@ -302,15 +303,55 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const scoreDelta = Math.round(projectedScore - currentScore);
       const isOptimal = scoreDelta <= 5;
-      const priorityFixes = [];
-      if (!hasAuthorByline) priorityFixes.push({text: "Add visible author byline & bio", impact: "+15–25 points"});
-      if (words < 1500) priorityFixes.push({text: "Expand content depth (>1,500 words)", impact: "+12–20 points"});
-      if (schemaTypes.length < 2) priorityFixes.push({text: "Add relevant schema markup", impact: "+10–18 points"});
-      if (totalFailed > 0) {
-        if (failedExperience.length > 0) priorityFixes.push({text: "Strengthen first-person experience signals", impact: "+8–15 points"});
-        else if (failedExpertise.length > 0) priorityFixes.push({text: "Add credentials & citations", impact: "+10–18 points"});
+               
+      // ─── Priority fixes — one candidate per FAILED METRIC, ranked by points
+      const priorityCandidates = [];
+
+      function addCandidate(metricTitle, moduleLabel) {
+        if (!metricTitle) return;
+        const pts = metricPoints(metricTitle);
+        priorityCandidates.push({
+          text:   metricTitle,
+          name:   metricTitle,
+          points: pts,
+          impact: `+${pts} points`,
+          desc:   fixFor(metricTitle),
+          module: moduleLabel
+        });
       }
-      const topFixes = priorityFixes.slice(0, 3);
+
+      // E-E-A-T modules — one candidate per failed metric string
+      (failedExpertise         || []).forEach(t => addCandidate(t, 'Expertise'));
+      (failedExperience        || []).forEach(t => addCandidate(t, 'Experience'));
+      (failedTrustworthiness   || []).forEach(t => addCandidate(t, 'Trustworthiness'));
+      (failedAuthoritativeness || []).forEach(t => addCandidate(t, 'Authoritativeness'));
+
+      // Non-E-E-A-T metric failures
+      if (words < 1500) {
+        addCandidate(
+          `Content is under 1,500 words (currently ${words.toLocaleString()})`,
+          'Content Depth'
+        );
+      }
+      if (schemaTypes.length < 2) {
+        addCandidate(
+          schemaTypes.length === 0
+            ? 'No schema markup detected (target 2+ types)'
+            : 'Only 1 schema type detected (target 2+)',
+          'Schema'
+        );
+      }
+      if (readability < 50 || readability > 80) {
+        addCandidate(
+          `Flesch Reading Ease is ${readability} (target 60–70)`,
+          'Readability'
+        );
+      }
+
+      // Rank by points desc, take top 3
+      priorityCandidates.sort((a, b) => b.points - a.points);
+      const topFixes = priorityCandidates.slice(0, 3);
+      const priorityFixes = topFixes.map(({ text, impact }) => ({ text, impact }));    
       progressText.textContent = "Generating Report";
       await sleep(600);
       function getGrade(score, type = 'eeat') {
@@ -449,24 +490,15 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Priority Fixes -->
         <div class="mt-20 space-y-8">
           <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top Priority Fixes</h2>
-          ${(() => {
-            const priority = [
-              !hasAuthorByline ? { name: 'Add Author Byline & Bio', impact: '+15–25 points', desc: 'Visible author name and detailed bio with photo establish credibility and E-E-A-T signals.' } : null,
-              words < 1500 ? { name: 'Expand Content Depth', impact: '+12–20 points', desc: 'Aim for >1,500 words with examples, stats, case studies, and deeper coverage to fully satisfy search intent.' } : null,
-              schemaTypes.length < 2 ? { name: 'Add Relevant Schema Markup', impact: '+10–18 points', desc: 'Implement JSON-LD for Article, Person, FAQPage, etc. to unlock rich results and boost authority.' } : null
-            ].filter(Boolean);
-            const remaining = topFixes.filter(f =>
-              !priority.some(p => p && f.text.includes(p.name.split(' ')[1] ?? p.name))
-            ).slice(0, 3 - priority.length);
-            const finalPriority = [...priority, ...remaining.map(f => ({ name: f.text, impact: f.impact, desc: 'Strong on-page improvement with high ranking impact.' }))].slice(0, 3);
-            if (finalPriority.length === 0) {
+                      ${(() => {
+            if (topFixes.length === 0) {
               return `
                 <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-3xl p-10 md:p-14 shadow-2xl border-l-8 border-green-500">
                   <h3 class="text-4xl font-black text-green-600 dark:text-green-400 mb-6 text-center">🎉 No Major Fixes Needed!</h3>
                   <p class="text-xl text-center text-gray-800 dark:text-gray-200 leading-relaxed">Your page is exceptionally optimized. All key on-page signals are strong.<br>Focus next on building high-authority backlinks and fresh content.</p>
                 </div>`;
             }
-            return finalPriority.map((fix, i) => `
+            return topFixes.map((fix, i) => `
               <div class="group relative bg-white dark:bg-gray-900 rounded-3xl p-8 md:p-10 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-pink-600/5 dark:from-orange-500/10 dark:to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div class="relative flex items-start gap-6">
