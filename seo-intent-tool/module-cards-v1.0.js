@@ -137,7 +137,7 @@ function renderCard(mod, getGrade) {
     ? `Show Fixes (${failedItems.length})`
     : 'All Clear';
 
-  return `<div class="score-card flex flex-col text-center p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
+  return `<div class="score-card flex flex-col text-center p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
     <div class="relative mx-auto w-32 h-32">
       <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
         <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -163,7 +163,7 @@ function renderCard(mod, getGrade) {
 
     <div class="mt-auto pt-5">
       <button type="button"
-              class="fixes-toggle w-full px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-semibold transition-colors"
+              class="fixes-toggle w-full mt-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-semibold transition-colors"
               data-failed-count="${failedItems.length}">
         ${btnLabel}
       </button>

@@ -1,4 +1,4 @@
-// quit-risk-tool/script-v1.2.js
+// quit-risk-tool/script-v1.3.js
 // Dynamic import for plugin solutions
 let renderPluginSolutions;
 import('/quit-risk-tool/plugin-solutions-v1.0.js')
@@ -10,6 +10,7 @@ import('/quit-risk-tool/plugin-solutions-v1.0.js')
   });
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
+import { fixFor } from './module-explanations-v1.0.js';
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 // Import the new modular analysis functions
@@ -27,17 +28,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   const results = document.getElementById('results');
-  
-    // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
+
+  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
-    
+
     if (inputData) {
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-        
+
         // Optional: Auto-click the Analyze button after a tiny delay
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // silent fail
     }
   }
-  
+
   const PROXY = 'https://full-render-v2.traffictorch.workers.dev/';
 
   const factorDefinitions = {
@@ -315,7 +316,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
     return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   }
-  function buildModuleHTML(moduleName, value, moduleData, factorScores = null) {
+
+  // ────────────────────────────────────────────────────────────────
+  // buildModuleHTML
+  //   • Card header shows EVERY metric inline, sorted ❌ → ⚠️ → ✅
+  //   • No More Details panel (removed)
+  //   • Show Fixes panel lists FAILED + WARNING metrics
+  //   • Ask-AI / guide links live inside the fixes panel
+  //   • Show Fixes button: green, rounded-full, w-full, anchored bottom
+  // ────────────────────────────────────────────────────────────────
+  function buildModuleHTML(moduleName, value, moduleData, factorScores = null, cmsInfo = null) {
     const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
     const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
     const gradeInfo = getGradeInfo(value);
@@ -324,11 +334,9 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (value >= 75) { statusMessage = "Very good"; statusEmoji = "✅"; }
     else if (value >= 60) { statusMessage = "Needs improvement"; statusEmoji = "⚠️"; }
     else { statusMessage = "Needs work"; statusEmoji = "❌"; }
-    let metricsHTML = '';
-    let fixesHTML = '';
-    let failedOnlyHTML = '';
-    let failedCount = 0;
-    moduleData.factors.forEach(f => {
+
+    // ── Grade each factor once ─────────────────────────────────────
+    const graded = moduleData.factors.map(f => {
       let passed = value >= f.threshold;
       if (factorScores) {
         const fs = factorScores;
@@ -366,80 +374,103 @@ document.addEventListener('DOMContentLoaded', () => {
           else if (f.name === "Script Optimization") passed = fs.renderBlocking >= 70;
         }
       }
-      let metricGrade = passed
-        ? { color: "text-green-600", emoji: "✅" }
-        : (value >= f.threshold - 10)
-          ? { color: "text-orange-600", emoji: "⚠️" }
-          : { color: "text-red-600", emoji: "❌" };
-      metricsHTML += `
-        <div class="mb-6">
-          <p class="font-medium text-xl">
-            <span class="${metricGrade.color} text-2xl mr-3">${metricGrade.emoji}</span>
-            <span class="${metricGrade.color} font-bold">${f.name}</span>
-          </p>
-        </div>`;
-      fixesHTML += `
-        <div class="mb-6 p-5 bg-gray-50 dark:bg-gray-800 rounded-xl border-l-4 ${passed ? 'border-green-500' : 'border-red-500'}">
-          <p class="font-bold text-xl ${metricGrade.color} mb-3">
-            <span class="text-3xl mr-3">${metricGrade.emoji}</span>
-            ${f.name}
-          </p>
-          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-            ${passed ? '✓ This metric meets or exceeds best practices.' : f.howToFix}
-          </p>
-        </div>`;
-      if (!passed) {
-        failedOnlyHTML += `
-          <div class="mb-8 p-2 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
-            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-              <span class="text-4xl">${metricGrade.emoji}</span>
-            </p>
-            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-              ${f.name}
-            </p>
-            <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-              ${f.howToFix}
-            </p>
-          </div>`;
-        failedCount++;
-      }
+      const isWarning = !passed && value >= f.threshold - 10;
+      return { ...f, passed, isWarning };
     });
-    const moreDetailsHTML = `
-      <div class="text-left px-4 py-6">
-        <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
-          <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
-            How ${moduleName} is tested?
-          </button>
-        </h4>
-        <div class="space-y-6">
-          <div>
-            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">What it is:</strong>
-            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhat}</p>
-          </div>
-          <div>
-            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">How to Improve:</strong>
-            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleHow}</p>
-          </div>
-          <div>
-            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">Why it matters:</strong>
-            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhy}</p>
-          </div>
-        </div>
+
+    const failedItems  = graded.filter(g => !g.passed && !g.isWarning);
+    const warningItems = graded.filter(g => g.isWarning);
+    const passedItems  = graded.filter(g => g.passed);
+
+    // Metrics that need attention (fixes panel + button count)
+    const fixItems    = [...failedItems, ...warningItems];
+    const fixCount    = fixItems.length;
+
+    // ── Card header: every metric inline, sorted ❌ → ⚠️ → ✅ ──────
+    const metricsHTML = `
+      <div class="space-y-2">
+        ${failedItems.map(f => `
+          <p class="font-medium text-lg">
+            <span class="text-red-600 text-2xl mr-2">❌</span>
+            <span class="text-red-600 font-bold">${f.name}</span>
+          </p>`).join('')}
+        ${warningItems.map(f => `
+          <p class="font-medium text-lg">
+            <span class="text-orange-500 text-2xl mr-2">⚠️</span>
+            <span class="text-orange-500 font-bold">${f.name}</span>
+          </p>`).join('')}
+        ${passedItems.map(f => `
+          <p class="font-medium text-lg">
+            <span class="text-green-600 text-2xl mr-2">✅</span>
+            <span class="text-green-600 font-bold">${f.name}</span>
+          </p>`).join('')}
       </div>`;
-    const fixesPanelHTML = failedCount > 0
+
+    // ── Fixes panel: paired {title + fix}; failed first, warnings after ──
+    const fixesOnlyHTML = fixItems.map((f, i) => {
+      const fixText =
+        f.howToFix ||
+        (typeof fixFor === 'function' ? fixFor(f.name) : '') ||
+        'Review this check against current best practices and apply the relevant fix.';
+      const isWarn = f.isWarning;
+      const titleClass = isWarn
+        ? 'text-orange-500 dark:text-orange-400'
+        : 'text-red-600 dark:text-red-400';
+      const prefix = isWarn ? '⚠️ ' : '❌ ';
+      return `
+        <div class="${i === 0 ? '' : 'border-t border-gray-200 dark:border-gray-700 pt-5 mt-5'}">
+          <p class="font-bold ${titleClass} mb-2 leading-snug">${prefix}${f.name}</p>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${fixText}</p>
+        </div>`;
+    }).join('');
+
+    // ── Ask-AI prefill + guide link metadata ───────────────────────
+    const MODULE_SLUGS = {
+      'Readability': 'readability',
+      'Navigation': 'navigation',
+      'Accessibility': 'accessibility',
+      'Mobile': 'mobile',
+      'Speed': 'performance'
+    };
+    const slug = MODULE_SLUGS[moduleName] || moduleName.toLowerCase();
+    const guidePath = `https://traffictorch.net/blog/posts/user-experience-help-guide/#${slug}`;
+
+    const cmsLabel = cmsInfo
+      ? `${cmsInfo.name || 'Custom / Unknown'}${cmsInfo.version ? ' ' + cmsInfo.version : ''}`
+      : 'an unknown CMS';
+    const issueNames = fixItems.map(f => `${f.isWarning ? '⚠️ ' : ''}${f.name}`).join(', ');
+    const aiQuestion = `How do I improve my ${moduleName} score? Failing and warning checks: ${issueNames || 'none'}. My site runs on ${cmsLabel}. Please tailor the fixes to this CMS.`;
+
+    const linksHTML = `
+      <div class="mt-6 pt-5 border-t border-gray-200 dark:border-gray-700 space-y-3">
+        <a href="#ask-ai-section"
+           class="ask-ai-link block w-full text-center px-4 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold transition"
+           data-ai-question="${aiQuestion.replace(/"/g, '&quot;')}"
+           data-module="${slug}"
+           data-cms="${cmsLabel.replace(/"/g, '&quot;')}">
+          🤖 Ask AI about this module
+        </a>
+        <a href="${guidePath}"
+           target="_blank" rel="noopener"
+           class="block w-full text-center px-4 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold transition">
+          📖 Read the full ${moduleName} guide
+        </a>
+      </div>`;
+
+    const fixesPanelHTML = fixCount > 0
       ? `
-        <div class="space-y-6">
-          ${failedOnlyHTML}
+        <div class="space-y-0">
+          ${fixesOnlyHTML}
         </div>
-        <p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
-          <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase()}';">
-            Learn more about ${moduleName}?
-          </button>
-        </p>
+        ${linksHTML}
       `
-      : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
+      : `
+        <p class="text-center text-gray-700 dark:text-gray-300 text-lg py-8 font-medium">All checks passed — no fixes needed!</p>
+        ${linksHTML}
+      `;
+
     return `
-      <div class="module-card text-center p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+      <div class="module-card flex flex-col text-center p-4 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
         <div class="relative mx-auto w-32 h-32">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -458,68 +489,63 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="mt-6 text-center metrics-list px-2 sm:px-0">
           ${metricsHTML}
         </div>
-        <div class="more-details-panel hidden mt-8 text-left px-2 sm:px-4">
-          ${moreDetailsHTML}
-        </div>
-        <div class="mt-6 flex gap-4 justify-center flex-wrap">
-          <button class="more-details px-6 py-3 sm:px-8 sm:py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
-            More Details
-          </button>
-          <button class="show-fixes px-6 py-3 sm:px-8 sm:py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
-            Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
-          </button>
-        </div>
         <div class="fixes-panel hidden mt-8 text-left px-2 sm:px-4">
           ${fixesPanelHTML}
+        </div>
+        <div class="mt-auto pt-5">
+          <button class="fixes-toggle show-fixes w-full px-6 py-3 rounded-full bg-green-600 hover:bg-green-700 text-white font-medium transition"
+                  data-failed-count="${fixCount}">
+            Show Fixes${fixCount > 0 ? ` (${fixCount})` : ''}
+          </button>
         </div>
       </div>`;
   }
 
   // Analyze URL button
-analyzeUrlBtn.addEventListener('click', async () => {
-  const canProceed = await canRunTool('limit-audit-id');
-  if (!canProceed) return;
-  
-  // Clear HTML code input to prevent state leakage
-  codeInput.value = '';
-  
-  let url = urlInput.value.trim();
-  if (!url) {
-    urlInput.focus();
-    urlInput.classList.add('!border-red-500');
-    setTimeout(() => urlInput.classList.remove('!border-red-500'), 2000);
-    return;
-  }
-  if (!/^https?:\/\//i.test(url)) {
-    url = 'https://' + url;
-    urlInput.value = url;
-  }
-  results.classList.remove('hidden');
-  document.getElementById('loading').classList.remove('hidden');
-  document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  triggerAnalysis(url, null);
-});
+  analyzeUrlBtn.addEventListener('click', async () => {
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
+
+    // Clear HTML code input to prevent state leakage
+    codeInput.value = '';
+
+    let url = urlInput.value.trim();
+    if (!url) {
+      urlInput.focus();
+      urlInput.classList.add('!border-red-500');
+      setTimeout(() => urlInput.classList.remove('!border-red-500'), 2000);
+      return;
+    }
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+      urlInput.value = url;
+    }
+    results.classList.remove('hidden');
+    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    triggerAnalysis(url, null);
+  });
 
   // Analyze Code button
-analyzeCodeBtn.addEventListener('click', async () => {
-  const canProceed = await canRunTool('limit-audit-id');
-  if (!canProceed) return;
-  
-  // Clear URL input to prevent state leakage
-  urlInput.value = '';
-  
-  const htmlCode = codeInput.value.trim();
-  if (!htmlCode) {
-    codeInput.focus();
-    codeInput.classList.add('!border-red-500');
-    setTimeout(() => codeInput.classList.remove('!border-red-500'), 2000);
-    return;
-  }
-  results.classList.remove('hidden');
-  document.getElementById('loading').classList.remove('hidden');
-  document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  triggerAnalysis(null, htmlCode);
-});
+  analyzeCodeBtn.addEventListener('click', async () => {
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
+
+    // Clear URL input to prevent state leakage
+    urlInput.value = '';
+
+    const htmlCode = codeInput.value.trim();
+    if (!htmlCode) {
+      codeInput.focus();
+      codeInput.classList.add('!border-red-500');
+      setTimeout(() => codeInput.classList.remove('!border-red-500'), 2000);
+      return;
+    }
+    results.classList.remove('hidden');
+    document.getElementById('loading').classList.remove('hidden');
+    document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    triggerAnalysis(null, htmlCode);
+  });
 
   // Shared trigger function (supports both URL via proxy and direct HTML code)
   async function triggerAnalysis(url, htmlCode) {
@@ -597,11 +623,13 @@ analyzeCodeBtn.addEventListener('click', async () => {
       document.getElementById('loading').classList.add('hidden');
       const safeScore = isNaN(ux.score) ? 60 : ux.score;
       const overallGrade = getGradeInfo(safeScore);
-      const readabilityHTML = buildModuleHTML('Readability', ux.readability, factorDefinitions.readability, factorDetails.readability);
-      const navHTML = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation, factorDetails.navigation);
-      const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility, factorDetails.accessibility);
-      const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile, factorDetails.mobile);
-      const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance, factorDetails.performance);
+
+      const readabilityHTML = buildModuleHTML('Readability', ux.readability, factorDefinitions.readability, factorDetails.readability, cmsInfo);
+      const navHTML = buildModuleHTML('Navigation', ux.nav, factorDefinitions.navigation, factorDetails.navigation, cmsInfo);
+      const accessHTML = buildModuleHTML('Accessibility', ux.accessibility, factorDefinitions.accessibility, factorDetails.accessibility, cmsInfo);
+      const mobileHTML = buildModuleHTML('Mobile', ux.mobile, factorDefinitions.mobile, factorDetails.mobile, cmsInfo);
+      const speedHTML = buildModuleHTML('Speed', ux.speed, factorDefinitions.performance, factorDetails.performance, cmsInfo);
+
       const modulePriority = [
         { name: 'Readability', score: ux.readability, threshold: 65, data: factorDefinitions.readability },
         { name: 'Navigation', score: ux.nav, threshold: 70, data: factorDefinitions.navigation },
@@ -761,10 +789,12 @@ analyzeCodeBtn.addEventListener('click', async () => {
         { name: 'Performance', score: ux.speed }
       ];
       const scores = modules.map(m => m.score);
+
       // Smooth scroll to results
       const offset = 240;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
+
       results.innerHTML = `
 <!-- Big Overall Score Card -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -922,7 +952,7 @@ ${impactHTML}
             Get tailored answers about usability, quit risk, and specific improvement steps.
           </p>
           <div class="flex flex-col sm:flex-row gap-4">
-            <textarea id="ai-question-input" placeholder="e.g., Why is readability low? How do I fix navigation?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>                        
+            <textarea id="ai-question-input" placeholder="e.g., Why is readability low? How do I fix navigation?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
             <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask AI</button>
           </div>
           <div id="ai-answer-container" class="mt-6 hidden">
@@ -1012,60 +1042,60 @@ ${impactHTML}
         }
       }, 150);
 
-// ─── Share Dashboard ──────────────────────────────────────────────
-const moduleThresholds = {
-  readability: 65,
-  nav: 70,
-  speed: 85,
-  accessibility: 75,
-  mobile: 90
-};
-const passedMetrics = [];
-const failedMetricsShare = [];
-const moduleScores = modules.map(m => {
-  const keyMap = {
-    'Readability': 'readability',
-    'Navigation': 'nav',
-    'Accessibility': 'accessibility',
-    'Mobile & PWA': 'mobile',
-    'Performance': 'speed'
-  };
-  const key = keyMap[m.name] || m.name.toLowerCase();
-  const threshold = moduleThresholds[key] || 70;
-  if (m.score >= threshold) {
-    passedMetrics.push(m.name);
-  } else {
-    failedMetricsShare.push(m.name);
-  }
-  return { name: m.name, score: m.score };
-});
+      // ─── Share Dashboard ──────────────────────────────────────────────
+      const moduleThresholds = {
+        readability: 65,
+        nav: 70,
+        speed: 85,
+        accessibility: 75,
+        mobile: 90
+      };
+      const passedMetrics = [];
+      const failedMetricsShare = [];
+      const moduleScores = modules.map(m => {
+        const keyMap = {
+          'Readability': 'readability',
+          'Navigation': 'nav',
+          'Accessibility': 'accessibility',
+          'Mobile & PWA': 'mobile',
+          'Performance': 'speed'
+        };
+        const key = keyMap[m.name] || m.name.toLowerCase();
+        const threshold = moduleThresholds[key] || 70;
+        if (m.score >= threshold) {
+          passedMetrics.push(m.name);
+        } else {
+          failedMetricsShare.push(m.name);
+        }
+        return { name: m.name, score: m.score };
+      });
 
-// Build the analyzed URL for the share link
-const analyzedUrl = url || document.getElementById('url-input').value.trim() || window.location.href;
+      // Build the analyzed URL for the share link
+      const analyzedUrl = url || document.getElementById('url-input').value.trim() || window.location.href;
 
-const shareData = {
-  toolName: 'Quit Risk Tool',
-  url: analyzedUrl,                      // the page being audited
-  pageTitle: doc?.title || document.title || 'Page',
-  overallScore: ux.score,
-  moduleScores,
-  passedMetrics,
-  failedMetrics: failedMetricsShare,
-  aiFixes: [],
-  rawData: { ux: uxData, modules },
-  // Custom share link that points back to the Quit Risk Tool with the audited URL
-  shareLink: `${window.location.origin}/quit-risk-tool/?url=${encodeURIComponent(analyzedUrl)}`
-};
+      const shareData = {
+        toolName: 'Quit Risk Tool',
+        url: analyzedUrl,                      // the page being audited
+        pageTitle: doc?.title || document.title || 'Page',
+        overallScore: ux.score,
+        moduleScores,
+        passedMetrics,
+        failedMetrics: failedMetricsShare,
+        aiFixes: [],
+        rawData: { ux: uxData, modules },
+        // Custom share link that points back to the Quit Risk Tool with the audited URL
+        shareLink: `${window.location.origin}/quit-risk-tool/?url=${encodeURIComponent(analyzedUrl)}`
+      };
 
-const shareContainer = document.getElementById('share-dashboard-container');
-if (shareContainer) {
-  initShareModule(shareContainer, shareData);
-}
+      const shareContainer = document.getElementById('share-dashboard-container');
+      if (shareContainer) {
+        initShareModule(shareContainer, shareData);
+      }
 
       // ─── Set data-url ────────────────────────────────────────────────
       document.body.setAttribute('data-url', displayUrl);
-      
-     // ─── Ask AI Logic ──────────────────────────────────────────────
+
+      // ─── Ask AI Logic ──────────────────────────────────────────────
       const askBtn = document.getElementById('ask-ai-btn');
       const askInput = document.getElementById('ai-question-input');
       const modelSelect = document.getElementById('ai-model-select');
@@ -1120,6 +1150,9 @@ if (shareContainer) {
                   hasWebpOrAvif: uxData.hasWebpOrAvif,
                   hasManifest: uxData.hasManifest,
                 },
+                cms: cmsInfo?.name || 'Custom / Unknown',
+                cmsVersion: cmsInfo?.version || null,
+                cmsConfidence: cmsInfo?.confidence || null,
                 failedItems: failedMetricsShare, // built earlier
                 priorityFixes: priorityFixes.map(f => f.name + ' (' + f.module + ')')
               }
@@ -1149,7 +1182,7 @@ if (shareContainer) {
           }
         });
       }
-      
+
             // ─── CMS Fixes Logic ──────────────────────────────────────────
       const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
       const cmsBadgeDot        = document.getElementById('cms-badge-dot');
@@ -1291,20 +1324,38 @@ if (shareContainer) {
     }
   }
 
+  // ─── Delegated click handler ────────────────────────────────────
   document.addEventListener('click', e => {
-    const moreBtn = e.target.closest('.more-details');
-    if (moreBtn) {
-      const card = moreBtn.closest('.module-card');
-      if (card) {
-        card.querySelector('.more-details-panel').classList.toggle('hidden');
-      }
-    }
-    const fixesBtn = e.target.closest('.show-fixes');
+    // Show / Hide Fixes toggle
+    const fixesBtn = e.target.closest('.fixes-toggle, .show-fixes');
     if (fixesBtn) {
       const card = fixesBtn.closest('.module-card');
       if (card) {
-        card.querySelector('.fixes-panel').classList.toggle('hidden');
+        const panel = card.querySelector('.fixes-panel');
+        if (panel) {
+          panel.classList.toggle('hidden');
+          const count = parseInt(fixesBtn.dataset.failedCount || '0', 10);
+          if (panel.classList.contains('hidden')) {
+            fixesBtn.textContent = count > 0 ? `Show Fixes (${count})` : 'Show Fixes';
+          } else {
+            fixesBtn.textContent = 'Hide Fixes';
+          }
+        }
       }
+      return;
+    }
+
+    // Ask AI about this module
+    const askLink = e.target.closest('.ask-ai-link');
+    if (askLink) {
+      e.preventDefault();
+      const question = askLink.dataset.aiQuestion || '';
+      const section = document.getElementById('ask-ai-section');
+      if (!section) return;
+      const textarea = document.getElementById('ai-question-input') || section.querySelector('textarea');
+      if (textarea) textarea.value = question;
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => { textarea?.focus(); }, 700);
     }
   });
 });

@@ -36,57 +36,6 @@ function autoFillFromUrl() {
 
 window.addEventListener('load', autoFillFromUrl);
 
-const moduleInfo = {
-  seo: {
-    what: 'On-Page SEO evaluates the core elements search engines read directly to understand your page topic and relevance.',
-    how: 'Write a unique title (50–60 characters) with your main keyword near the start. Add a compelling meta description (120–158 characters). Use proper heading hierarchy and include structured data where applicable.',
-    whyUx: 'Clear titles and descriptions set accurate user expectations in search results.',
-    whySeo: 'These are the strongest direct ranking factors Google uses.'
-  },
-  mobile: {
-    what: 'Mobile & PWA checks if your site is fully mobile-friendly and ready to be installed as a progressive web app.',
-    how: 'Add the viewport meta tag, create and link a manifest.json file, provide multiple icon sizes, and register a service worker.',
-    whyUx: 'Ensures flawless experience on phones and allows users to add your site to their home screen.',
-    whySeo: 'Google uses mobile-first indexing – non-mobile-friendly sites are penalized.'
-  },
-  perf: {
-    what: 'Performance analyzes page weight, requests, fonts, and render-blocking resources.',
-    how: 'Compress images to WebP format and use lazy-loading. Minify HTML, CSS, and JS. Limit custom fonts and defer non-critical scripts.',
-    whyUx: 'Fast loading keeps users engaged and reduces bounce rates.',
-    whySeo: 'Core Web Vitals are direct ranking factors.'
-  },
-  access: {
-    what: 'Accessibility ensures your site is usable by everyone, including people with disabilities.',
-    how: 'Add meaningful alt text to all images. Use proper heading order and landmarks. Label form fields and declare the page language.',
-    whyUx: 'Makes content available to screen readers and keyboard users.',
-    whySeo: 'Google treats accessibility as a quality signal.'
-  },
-  content: {
-    what: 'Content Quality assesses depth, readability, structure, and scannability.',
-    how: 'Write comprehensive content with short sentences and paragraphs. Use frequent H2/H3 headings and bullet lists. Include tables where helpful.',
-    whyUx: 'Helps users quickly find and understand information.',
-    whySeo: 'In-depth, structured content ranks higher.'
-  },
-  ux: {
-    what: 'UX Design reviews clarity of actions and navigation flow.',
-    how: 'Highlight 1–3 primary CTAs with contrasting buttons. Reduce excessive links. Add breadcrumbs on deep pages.',
-    whyUx: 'Reduces confusion and helps users complete goals faster.',
-    whySeo: 'Better engagement signals improve rankings.'
-  },
-  security: {
-    what: 'Security confirms HTTPS and no mixed content.',
-    how: 'Install a valid SSL certificate. Update all resources to HTTPS. Regularly scan for insecure links.',
-    whyUx: 'Prevents browser warnings that scare users away.',
-    whySeo: 'Google marks HTTP sites as Not Secure and downgrades them.'
-  },
-  indexability: {
-    what: 'Indexability ensures the page can appear in search results.',
-    how: 'Remove noindex tags unless intentional. Add a canonical link to the preferred URL.',
-    whyUx: 'No direct user impact.',
-    whySeo: 'Without indexability the page is invisible in search.'
-  }
-};
-
 // Map short module IDs to deep-dive card IDs
 const deepDiveIdMap = {
   seo: 'on-page-seo',
@@ -102,7 +51,7 @@ const deepDiveIdMap = {
 let currentAnalysisMode = null;
 let currentAnalysisHtml = '';
 let healthRadarChart = null;
-let resultsWrapper = null; // Define in outer scope
+let resultsWrapper = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
@@ -116,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressText = document.getElementById('progress-text');
   const copyBadgeBtn = document.getElementById('copy-badge');
 
-  resultsWrapper = document.getElementById('results-wrapper'); // Assign here
+  resultsWrapper = document.getElementById('results-wrapper');
 
   function cleanUrl(u) {
     const trimmed = u.trim();
@@ -328,25 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
       progressText.textContent = `Analyzing ${mod.name}...`;
       const analysisUrl = mod.id === 'security' && originalInput ? originalInput : url;
       const result = mod.fn(html, doc, analysisUrl);
-      const info = moduleInfo[mod.id];
-      if (info) {
-        const infoDiv = document.querySelector(`#${mod.id}-score .module-info`);
-        if (infoDiv) {
-          const howTested = document.createElement('p');
-          howTested.className = 'mb-8 text-center';
-          howTested.innerHTML =
-            '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
-            'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
-            'How ' + mod.name + ' is tested?' +
-            '</a>';
-          infoDiv.prepend(howTested);
-          infoDiv.querySelector('.what').innerHTML = `<strong class="text-cyan-400">What is it?</strong><br>${info.what}`;
-          infoDiv.querySelector('.how').innerHTML = `<strong class="text-blue-400">How to improve overall:</strong><br>${info.how}`;
-          infoDiv.querySelector('.why').innerHTML = `<strong class="text-purple-400">Why it matters:</strong><br>
-            <strong>UX:</strong> ${info.whyUx}<br>
-            <strong>SEO:</strong> ${info.whySeo}`;
-        }
-      }
       scores.push(result.score);
       updateScore(`${mod.id}-score`, result.score);
 
@@ -525,13 +455,13 @@ document.addEventListener('DOMContentLoaded', () => {
       let expand = card.querySelector('.expand-content');
       if (!expand) {
         expand = document.createElement('div');
-        expand.className = 'expand-content hidden mt-6 px-2 space-y-8 pb-6';
+        expand.className = 'expand-content hidden mt-6 px-2 py-4 space-y-6 pb-6 rounded-2xl bg-gray-100/70 dark:bg-gray-900/40 break-words min-w-0';
         card.appendChild(expand);
       }
       expand.innerHTML = '';
       modIssues.forEach(iss => {
         const block = document.createElement('div');
-        block.className = 'p-2 bg-white/5 backdrop-blur rounded-xl border border-white/10';
+        block.className = 'p-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 break-words min-w-0';
         block.innerHTML = `
           <strong class="text-xl block mb-4 text-orange-500">${iss.issue}</strong>
           <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
@@ -542,14 +472,27 @@ document.addEventListener('DOMContentLoaded', () => {
         expand.appendChild(block);
       });
 
-      const learnMore = document.createElement('p');
-      learnMore.className = 'mt-10 text-center';
-      learnMore.innerHTML =
-        '<a href="#' + deepDiveIdMap[mod.id] + '" ' +
-        'class="inline-block text-blue-600 dark:text-blue-400 font-bold text-xl hover:underline">' +
-        'Learn more about ' + mod.name + '?' +
-        '</a>';
-      expand.appendChild(learnMore);
+      // ── Footer links inside each module's "Show Fixes" panel ──
+      const footerLinks = document.createElement('div');
+      footerLinks.className = 'mt-10 pt-6 border-t border-white/10 dark:border-white/10 space-y-4 text-center';
+
+      const failedText = modIssues.map(i => i.issue).join('; ').replace(/'/g, '&#39;');
+      footerLinks.innerHTML = `
+        <a href="#ask-ai-section"
+           class="ask-ai-module-link inline-block text-purple-600 dark:text-purple-400 font-bold text-lg hover:underline"
+           data-module="${mod.name}"
+           data-failed="${failedText}">
+          🤖 Ask AI about ${mod.name} →
+        </a>
+        <br>
+        <a href="https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#${deepDiveIdMap[mod.id]}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="inline-block text-orange-600 dark:text-orange-400 font-bold text-lg hover:underline">
+          📖 Read the full ${mod.name} guide →
+        </a>
+      `;
+      expand.appendChild(footerLinks);
 
       expandBtn.className = 'expand mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-full transition';
       expandBtn.textContent = 'Show Fixes';
@@ -643,24 +586,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // More Details toggle
-    document.querySelectorAll('.more-details').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const card = btn.closest('.score-card');
-        const infoDiv = card.querySelector('.module-info');
-        const isHidden = infoDiv.classList.contains('hidden');
-        infoDiv.classList.toggle('hidden');
-        btn.textContent = isHidden ? 'Hide Details' : 'More Details';
-        if (isHidden) {
-          infoDiv.style.opacity = '0';
-          infoDiv.classList.remove('hidden');
-          requestAnimationFrame(() => {
-            infoDiv.style.opacity = '1';
-          });
-        }
-      });
-    });
-
     // Scroll to results
     const offset = 240;
     if (resultsWrapper) {
@@ -670,7 +595,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── Radar Chart ─────────────────────────────────────────────────────
     try {
-      // Wait for Chart.js to be loaded
       if (typeof Chart === 'undefined') {
         console.warn('Chart.js not loaded, waiting...');
         await new Promise((resolve) => {
@@ -688,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (window.innerWidth >= 768 && document.getElementById('health-radar') && typeof Chart !== 'undefined') {
         const radarCanvas = document.getElementById('health-radar');
-        
+
         if (healthRadarChart) {
           healthRadarChart.destroy();
           healthRadarChart = null;
@@ -917,8 +841,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (progressContainer) {
       progressContainer.classList.add('hidden');
     }
-    
-        // ─── CMS Fixes Section (built dynamically) ──────────────────
+
+    // ─── CMS Fixes Section (built dynamically) ──────────────────
     const askAiSection = document.getElementById('ask-ai-section');
     let cmsSection = document.getElementById('cms-fixes-section');
 
@@ -1161,6 +1085,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('hashchange', handleDeepDiveHash);
 
 document.addEventListener('click', function(event) {
+  if (event.target.closest('.ask-ai-module-link')) return;
   const clickedLink = event.target.closest('a[href^="#"]');
   if (clickedLink && clickedLink.getAttribute('href') !== '#') {
     event.preventDefault();
@@ -1170,92 +1095,121 @@ document.addEventListener('click', function(event) {
   }
 }, { passive: false });
 
-  // ─── Ask AI Listener ──────────────────────────────────────────────
-  const askBtn = document.getElementById('ask-ai-btn');
-  const askInput = document.getElementById('ai-question-input');
-  const answerContainer = document.getElementById('ai-answer-container');
-  const answerContent = document.getElementById('ai-answer-content');
+// ── Per-module "Ask AI" prefill + scroll ──
+document.addEventListener('click', (e) => {
+  const askLink = e.target.closest('.ask-ai-module-link');
+  if (!askLink) return;
 
-  if (askBtn) {
-    askBtn.addEventListener('click', async () => {
-      const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) return;
+  e.preventDefault();
+  e.stopPropagation();
 
-      const question = askInput?.value?.trim();
-      if (!question) {
-        alert('Please enter a question.');
-        return;
-      }
+  const moduleName = askLink.dataset.module || 'this module';
+  const failedList = (askLink.dataset.failed || '')
+    .split(';')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .slice(0, 5);
 
-      askBtn.disabled = true;
-      askBtn.textContent = 'Thinking...';
-      answerContainer.classList.remove('hidden');
-      answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+  const question =
+    `How do I improve my ${moduleName} score?\n` +
+    (failedList.length ? `Failed checks:\n- ${failedList.join('\n- ')}` : '');
 
-      try {
-        // Gather current audit data from the DOM
-        const overallScoreEl = document.querySelector('#overall-score .number');
-        const overallScore = overallScoreEl ? parseInt(overallScoreEl.textContent) : 0;
+  const textarea = document.getElementById('ai-question-input');
+  if (textarea) textarea.value = question;
 
-        const moduleNames = ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'];
-        const moduleIds = ['seo', 'mobile', 'perf', 'access', 'content', 'ux', 'security', 'indexability'];
-        const modules = [];
-
-        moduleIds.forEach((id, index) => {
-          const scoreEl = document.querySelector(`#${id}-score .number`);
-          const score = scoreEl ? parseInt(scoreEl.textContent) : 0;
-          modules.push({ name: moduleNames[index], score: score });
-        });
-
-        // Gather failed checklist items
-        const failedItems = [];
-        document.querySelectorAll('.checklist p').forEach(item => {
-          const text = item.textContent.trim();
-          if (text.startsWith('❌')) {
-            failedItems.push(text.replace(/^❌\s*/, '').trim());
-          }
-        });
-
-        // Gather priority fixes from the priority cards
-        const priorityFixes = [];
-        document.querySelectorAll('#priority-cards-container .p-2 .text-2xl.font-bold').forEach(el => {
-          const title = el.textContent.trim();
-          const fixEl = el.closest('.p-8')?.querySelector('.text-gray-800.dark\\:text-gray-200');
-          if (fixEl) {
-            priorityFixes.push(title + ': ' + fixEl.textContent.trim());
-          }
-        });
-
-        const auditPayload = {
-          question: question,
-          auditData: {
-            overallScore: overallScore,
-            modules: modules,
-            failedItems: failedItems.slice(0, 10),
-            priorityFixes: priorityFixes.slice(0, 5),
-          },
-        };
-
-        const response = await fetch('https://ask-ai-seo-ux.traffictorch.workers.dev/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(auditPayload),
-        });
-
-        if (!response.ok) throw new Error(`Server error (${response.status})`);
-
-        const data = await response.json();
-
-        if (data.success) {
-          answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
-        } else {
-          answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
-        }
-      } catch (err) {
-        answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
-      } finally {
-        askBtn.disabled = false;
-        askBtn.textContent = 'Ask Traffic Torch AI';
-      }
-    });
+  const askSection = document.getElementById('ask-ai-section');
+  if (askSection) {
+    askSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => textarea?.focus(), 700);
   }
+}, { passive: false });
+
+// ─── Ask AI Listener ──────────────────────────────────────────────
+const askBtn = document.getElementById('ask-ai-btn');
+const askInput = document.getElementById('ai-question-input');
+const answerContainer = document.getElementById('ai-answer-container');
+const answerContent = document.getElementById('ai-answer-content');
+
+if (askBtn) {
+  askBtn.addEventListener('click', async () => {
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) return;
+
+    const question = askInput?.value?.trim();
+    if (!question) {
+      alert('Please enter a question.');
+      return;
+    }
+
+    askBtn.disabled = true;
+    askBtn.textContent = 'Thinking...';
+    answerContainer.classList.remove('hidden');
+    answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+    try {
+      // Gather current audit data from the DOM
+      const overallScoreEl = document.querySelector('#overall-score .number');
+      const overallScore = overallScoreEl ? parseInt(overallScoreEl.textContent) : 0;
+
+      const moduleNames = ['On-Page SEO', 'Mobile & PWA', 'Performance', 'Accessibility', 'Content Quality', 'UX Design', 'Security', 'Indexability'];
+      const moduleIds = ['seo', 'mobile', 'perf', 'access', 'content', 'ux', 'security', 'indexability'];
+      const modules = [];
+
+      moduleIds.forEach((id, index) => {
+        const scoreEl = document.querySelector(`#${id}-score .number`);
+        const score = scoreEl ? parseInt(scoreEl.textContent) : 0;
+        modules.push({ name: moduleNames[index], score: score });
+      });
+
+      // Gather failed checklist items
+      const failedItems = [];
+      document.querySelectorAll('.checklist p').forEach(item => {
+        const text = item.textContent.trim();
+        if (text.startsWith('❌')) {
+          failedItems.push(text.replace(/^❌\s*/, '').trim());
+        }
+      });
+
+      // Gather priority fixes from the priority cards
+      const priorityFixes = [];
+      document.querySelectorAll('#priority-cards-container .p-2 .text-2xl.font-bold').forEach(el => {
+        const title = el.textContent.trim();
+        const fixEl = el.closest('.p-8')?.querySelector('.text-gray-800.dark\\:text-gray-200');
+        if (fixEl) {
+          priorityFixes.push(title + ': ' + fixEl.textContent.trim());
+        }
+      });
+
+      const auditPayload = {
+        question: question,
+        auditData: {
+          overallScore: overallScore,
+          modules: modules,
+          failedItems: failedItems.slice(0, 10),
+          priorityFixes: priorityFixes.slice(0, 5),
+        },
+      };
+
+      const response = await fetch('https://ask-ai-seo-ux.traffictorch.workers.dev/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(auditPayload),
+      });
+
+      if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+      const data = await response.json();
+
+      if (data.success) {
+        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+      } else {
+        answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+      }
+    } catch (err) {
+      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+    } finally {
+      askBtn.disabled = false;
+      askBtn.textContent = 'Ask Traffic Torch AI';
+    }
+  });
+}

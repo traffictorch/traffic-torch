@@ -232,3 +232,18 @@
   border: none;
   background: #fff;
 }
+
+/* Prevent long code tokens / URLs from blowing out score-card grid columns */
+.score-card {
+  min-width: 0;
+}
+.score-card .expand-content,
+.score-card .expand-content * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+/* Stop vertical border stripes if checklist <p> inherits any global p styling */
+.score-card .checklist p {
+  border-left: 0 !important;
+}
