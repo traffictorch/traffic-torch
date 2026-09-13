@@ -14,7 +14,7 @@ export function initShareModule(container, results) {
   const ringColorHex = (s) => s >= 80 ? '#22c55e' : s >= 60 ? '#f59e0b' : '#ef4444';
 
   container.innerHTML = `
-    <div class="share-dashboard glass-card" style="padding:2rem; border-radius:2rem; background:rgba(255,255,255,0.06); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.12); margin-top:2rem;">
+    <div class="share-dashboard glass-card" style="padding:1rem; border-radius:2rem; background:rgba(255,255,255,0.06); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.12); margin-top:2rem;">
       
       <!-- Header (hidden in print) -->
       <div class="share-dashboard-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;">

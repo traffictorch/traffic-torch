@@ -160,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Render the full report ───
     results.innerHTML = `
       <!-- Overall score -->
-      <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
+      <div class="flex justify-center my-8 sm:my-12 px-2 sm:px-2">
         <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${gradeBorder(overall)}">
           <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall AEO Performance Score</p>
           <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const aiQuestion = `How do I improve my ${m.name} score?` +
             (failed.length ? ` Failed checks: ${failed.join('; ')}.` : '');
           return `
-            <div class="score-card flex flex-col text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)}">
+            <div class="score-card flex flex-col text-center p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)}">
               <div class="relative mx-auto w-24 h-24">
                 <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
                   <circle cx="48" cy="48" r="40" stroke="#e5e7eb" stroke-width="10" fill="none"/>
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-xl text-center text-gray-800 dark:text-gray-200">Your page passes all AEO performance checks.</p>
           </div>
         ` : priorityFixes.map((fix, i) => `
-          <div class="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-xl border border-gray-200 dark:border-gray-700">
+          <div class="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-xl border border-gray-200 dark:border-gray-700">
             <div class="flex items-start gap-6">
               <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white text-2xl font-black shadow-xl">${i + 1}</div>
               <div class="flex-1">

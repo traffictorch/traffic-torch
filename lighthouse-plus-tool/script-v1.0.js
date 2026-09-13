@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     stroke-dasharray="283" stroke-dashoffset="100" class="origin-center -rotate-90"/>
           </svg>
         </div>
-        <p class="mt-6 text-xl font-medium text-orange-500">Running Lighthouse Plus audit…</p>
+        <p class="mt-6 text-xl font-medium text-orange-500">Running Lighthouse Plus…</p>
       </div>`;
 
     try {
@@ -210,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     results.innerHTML = `
       <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
-        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${gradeBorder(overall)}">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-2 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${gradeBorder(overall)}">
           <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Lighthouse Plus Score</p>
           <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
             <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const passingSignals = (m.signals || []).filter((s) => s.pass);
 
           return `
-            <div class="score-card p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)} flex flex-col">
+            <div class="score-card p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)} flex flex-col">
               <div class="text-center">
                 <div class="relative mx-auto w-24 h-24">
                   <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
@@ -318,8 +318,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="text-xl text-center text-gray-800 dark:text-gray-200">Your page passes all Lighthouse Plus checks.</p>
           </div>
         ` : priorityFixes.map((fix, i) => `
-          <div class="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-xl border border-gray-200 dark:border-gray-700">
-            <div class="flex items-start gap-6">
+          <div class="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-xl border border-gray-200 dark:border-gray-700">
+            <div class="flex items-start gap-2">
               <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white text-2xl font-black shadow-xl">${i + 1}</div>
               <div class="flex-1">
                 <h3 class="text-xl md:text-2xl font-black text-gray-900 dark:text-gray-100 mb-2">${escapeHtml(fix.name)}</h3>
@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <button id="cms-fixes-btn" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg disabled:opacity-50">Generate CMS Fixes</button>
         </div>
         <div id="cms-fixes-answer-container" class="mt-6 hidden">
-          <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+          <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-2 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
         </div>
       </div>
       ` : ''}
@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg whitespace-nowrap">Ask AI</button>
         </div>
         <div id="ai-answer-container" class="mt-6 hidden">
-          <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+          <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-2 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
         </div>
       </div>
 
@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <span>🔬 Live Browser Metrics</span>
           <span class="text-sm font-normal opacity-80">Puppeteer + Browser Run</span>
         </summary>
-        <div class="mt-8 p-6 md:p-8 bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl space-y-8">
+        <div class="mt-8 p-2 md:p-8 bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl space-y-8">
           <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div class="text-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">LCP</p>
