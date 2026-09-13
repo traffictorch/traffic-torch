@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </span>
         </div>
         <div class="text-center">
-          <button id="cms-fixes-btn" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg disabled:opacity-50">Generate CMS Fixes</button>
+          <button type="button" id="cms-fixes-btn" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg disabled:opacity-50">Generate CMS Fixes</button>
         </div>
         <div id="cms-fixes-answer-container" class="mt-6 hidden">
           <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-2 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">Ask about any failing metric, how to fix it, or what to prioritise.</p>
         <div class="flex flex-col sm:flex-row gap-4">
           <textarea id="ai-question-input" rows="3" placeholder="e.g., How do I fix my Core Web Vitals LCP?" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
-          <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg whitespace-nowrap">Ask AI</button>
+          <button type="button" id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg whitespace-nowrap">Ask AI</button>
         </div>
         <div id="ai-answer-container" class="mt-6 hidden">
           <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-2 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
