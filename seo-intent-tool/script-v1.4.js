@@ -8,6 +8,7 @@ import { analyzeTrustworthiness } from './modules/trustworthiness.js';
 import { analyzeDepth } from './modules/depth.js';
 import { analyzeReadability } from './modules/readability.js';
 import { analyzeSchema } from './modules/schema.js';
+import { renderModuleCards } from './module-cards-v1.0.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
@@ -35,6 +36,53 @@ function autoFillFromUrl() {
 }
 
 window.addEventListener('load', autoFillFromUrl);
+
+// ─── Document-level delegated click handler ────────────────────────────────
+// Handles .fixes-toggle and .ask-ai-link for every score card.
+// Lives at document level so it survives results.innerHTML re-renders.
+document.addEventListener('click', (e) => {
+  // Show / Hide Fixes toggle
+  const toggle = e.target.closest('.fixes-toggle');
+  if (toggle) {
+    e.preventDefault();                                   // stops implicit submit / reload
+    const card = toggle.closest('.score-card');
+    if (!card) return;
+
+    const panel = card.querySelector('.fixes-panel');
+    if (!panel) return;
+
+    const isHidden    = panel.classList.toggle('hidden');
+    const failedCount = toggle.dataset.failedCount || '0';
+    const baseLabel   = failedCount === '0'
+      ? 'All Clear'
+      : `Show Fixes (${failedCount})`;
+
+    toggle.textContent = isHidden ? baseLabel : 'Hide Fixes';
+    return;
+  }
+
+  // Ask AI prefill link
+  const askLink = e.target.closest('.ask-ai-link');
+  if (askLink) {
+    e.preventDefault();
+    const section  = document.getElementById('ask-ai-section');
+    const textarea = document.getElementById('ai-question-input');
+    const question = askLink.dataset.aiQuestion || '';
+
+    if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    if (textarea) {
+      textarea.value = question;
+      setTimeout(() => {
+        textarea.focus();
+        // Move caret to end so the user can immediately extend the question
+        const len = textarea.value.length;
+        try { textarea.setSelectionRange(len, len); } catch (_) {}
+      }, 700);
+    }
+    return;
+  }
+});
 
 // Minimal Prefill + Auto Submit for SEO Intent Tool
 function simpleIntentPrefillAndRun() {
@@ -386,281 +434,18 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-        <!-- E-E-A-T Breakdown with ✅/❌ signals -->
-        <div class="grid md:grid-cols-4 gap-6 my-16">
-          ${[
-            { key: 'Experience', score: experienceScore, metrics: experienceMetrics, failed: failedExperience },
-            { key: 'Expertise', score: expertiseScore, metrics: expertiseMetrics, failed: failedExpertise },
-            { key: 'Authoritativeness', score: authoritativenessScore, metrics: authoritativenessMetrics, failed: failedAuthoritativeness },
-            { key: 'Trustworthiness', score: trustworthinessScore, metrics: trustworthinessMetrics, failed: failedTrustworthiness }
-          ].map(({key, score, metrics, failed}) => {
-            const color = score >= 80 ? '#22c55e' : score >= 60 ? '#f97316' : '#ef4444';
-            const border = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-orange-400' : 'border-red-500';
-            const signals = key === 'Experience' ? [
-              { name: 'Strong first-person language', value: metrics.firstPerson,
-                fix: 'Add more first-person language ("I/we/my/our") throughout the content. Use it naturally in intros, examples, and conclusions to show personal involvement.',
-                how: 'The tool counts occurrences of first-person pronouns (I, we, my, our, me, us) and related forms. Strong = 15+ mentions across the page.',
-                why: 'First-person writing signals genuine hands-on experience to Google and readers. It increases trust, engagement, and dwell time — all positive ranking factors. Pages with strong personal voice often outperform third-party corporate content.' },
-              { name: 'Personal anecdotes included', value: metrics.anecdotes,
-                fix: 'Include personal anecdotes or real-world examples. Share specific stories like "I tested this method on 5 client sites and saw…" or "In my experience working with…" to make advice relatable.',
-                how: 'Scans for phrases like "I tested", "in my experience", "we found that", "hands-on", "real-world". Strong = 3+ detections.',
-                why: 'Anecdotes prove you\'ve actually done what you\'re teaching. They build emotional connection with readers and reduce bounce rates. Google favors content that demonstrates real application over theoretical advice.' },
-              { name: 'Timeline/date mentions', value: metrics.timelines,
-                fix: 'Mention specific timelines or dates from your experience, e.g., "Last year I tried…", "Since 2020 we\'ve used this approach…", "Over the past 18 months our team has…"',
-                how: 'Looks for date/year references tied to first-person context. Strong = 2+ personal timeline mentions.',
-                why: 'Timelines show recency and depth of experience. They help Google assess content freshness and real-world testing. Dated personal experience outperforms generic evergreen claims.' },
-              { name: 'Personal media/captions', value: metrics.personalMedia,
-                fix: 'Add original photos, screenshots, or videos with personal captions like "My setup for testing…", "Our results after 3 months", or "Client dashboard I managed".',
-                how: 'Checks image alt text, captions, and figures for personal context ("my", "our", "I took this"). Strong = at least one detected.',
-                why: 'Original media with personal context proves you actually did the work. It boosts credibility, reduces perceived AI content risk, and increases user trust and time on page.' }
-            ] : key === 'Expertise' ? [
-              { name: 'Author byline present', value: metrics.byline,
-                fix: 'Add a clear, visible author name linked to the content. Place it above or below the article with proper markup.',
-                how: 'Searches common byline selectors and meta tags across platforms. Strong = author name clearly detected.',
-                why: 'Google increasingly ties content quality to identifiable authors. Bylines help establish who is responsible for the advice. Pages with named authors often rank higher in E-E-A-T sensitive topics.' },
-              { name: 'Author bio section', value: metrics.bio,
-                fix: 'Create a dedicated author box with professional photo, background, qualifications, and links to social/other work.',
-                how: 'Looks for bio containers and structured sections. Strong = dedicated bio area found.',
-                why: 'Bios provide proof of expertise and background. They help Google and readers assess whether the author is qualified. Strong author profiles correlate with higher rankings.' },
-              { name: 'Credentials mentioned', value: metrics.credentials,
-                fix: 'Mention relevant qualifications, certifications, years of experience, publications, or awards directly in content or bio.',
-                how: 'Counts credential keywords (PhD, certified, licensed, years of experience, published in, etc.). Strong = 3+ mentions.',
-                why: 'Explicit credentials demonstrate specialized knowledge. They reduce perceived risk of inaccurate advice. Google rewards content from demonstrably qualified sources.' },
-              { name: 'Citations/references', value: metrics.citations,
-                fix: 'Include links to supporting studies, sources, tools, or references. Add a references section if appropriate.',
-                how: 'Detects citation links and reference sections. Strong = references or source links found.',
-                why: 'Citations show research depth and respect for original sources. They increase perceived reliability. Well-cited content performs better in competitive SERPs.' }
-            ] : key === 'Authoritativeness' ? [
-              { name: 'Awards/endorsements mentioned', value: metrics.awards,
-                fix: 'Mention any awards, media features, client testimonials, or industry recognition earned by you or your site.',
-                how: 'Scans text for award-related keywords and phrases. Strong = mentions detected.',
-                why: 'External recognition signals leadership in the niche. It builds trust with both users and search engines. Award mentions correlate with higher topical authority.' },
-              { name: 'About/Team links', value: metrics.aboutLinks,
-                fix: 'Add clear links to About, Team, or Company pages in navigation or footer.',
-                how: 'Checks navigation and footer for About/Team links. Strong = link found.',
-                why: 'Established entities with About pages are seen as more authoritative. They show transparency and longevity. Google favors known entities over anonymous sites.' }
-            ] : [
-              { name: 'Secure HTTPS', value: metrics.https,
-                fix: 'Switch your site to HTTPS with a valid SSL certificate.',
-                how: 'Checks page URL protocol. Strong = loads via https://.',
-                why: 'HTTPS is a direct ranking factor and basic security requirement. It protects user data and builds trust. All modern sites must use HTTPS to avoid warnings and penalties.' },
-              { name: 'Contact info present', value: metrics.contact,
-                fix: 'Add a dedicated Contact page with email, phone, or form. Include contact details in footer.',
-                how: 'Scans for contact links and footer text. Strong = contact method detected.',
-                why: 'Contactability shows legitimacy and accountability. It reduces perceived scam risk. Google favors sites users can actually reach.' },
-              { name: 'Privacy/Terms links', value: metrics.policies,
-                fix: 'Add links to Privacy Policy and Terms of Service pages, especially in footer.',
-                how: 'Looks for policy links across common locations. Strong = at least one found.',
-                why: 'Policy pages demonstrate legal compliance and transparency. They are expected on professional sites. Missing policies can trigger trust issues.' },
-              { name: 'Update date shown', value: metrics.updateDate,
-                fix: 'Display a visible "Last updated" or "Published" date on the page.',
-                how: 'Searches common date selectors and visible text. Strong = date detected.',
-                why: 'Update dates signal content freshness and maintenance. Google prioritizes current information. Dated content builds confidence in accuracy.' }
-            ];
-            const needsFixSignals = signals.filter(s => getGrade(s.value).text !== 'Excellent');
-            return `
-            <div class="score-card text-center p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${border}">
-              <div class="relative mx-auto w-32 h-32">
-                <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-                  <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
-                  <circle cx="64" cy="64" r="56"
-                          stroke="${color}"
-                          stroke-width="12" fill="none"
-                          stroke-dasharray="${(score/100)*352} 352"
-                          stroke-linecap="round"/>
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${color};">
-                  ${score}
-                </div>
-              </div>
-              ${(() => {
-                const g = getGrade(score);
-                return `<p class="${g.color} text-xl font-bold mt-4">${g.emoji} ${g.text}</p>`;
-              })()}
-              <p class="mt-3 text-lg font-medium text-gray-800 dark:text-gray-200">${key}</p>
-              <div class="mt-3 space-y-2 text-sm text-left max-w-xs mx-auto">
-                ${signals.map(s => {
-                  const g = getGrade(s.value);
-                  return `<p class="${g.color} font-medium">${g.emoji} ${s.name}</p>`;
-                }).join('')}
-              </div>
-              <button class="fixes-toggle mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-                ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
-              </button>
-              <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-6">
-                ${needsFixSignals.length ? `
-                  <div class="text-center mb-6">
-                    <a href="/seo-intent-tool/#${key.toLowerCase()}" class="text-orange-500 font-bold hover:underline">
-                      How ${key} is tested?
-                    </a>
-                  </div>
-                ` + needsFixSignals.map(s => {
-                  const g = getGrade(s.value);
-                  const titleColor = g.text === 'Good' ? 'text-orange-400' : 'text-red-600';
-                  return `
-                  <div>
-                    <p class="font-bold ${titleColor} text-base">${g.emoji} ${s.name}</p>
-                    <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
-                    <p class="mt-1 text-gray-800 dark:text-gray-200">${s.fix}</p>
-                    <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
-                    <p class="mt-1 text-gray-700 dark:text-gray-300">${s.how}</p>
-                    <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
-                    <p class="mt-1 text-gray-700 dark:text-gray-300">${s.why}</p>
-                  </div>`;
-                }).join('') + `
-                  <div class="mt-8 space-y-4 text-center">
-                    <a href="/seo-intent-tool/#${key.toLowerCase()}" class="block text-orange-500 font-bold hover:underline">
-                      Learn more about ${key}
-                    </a>
-                    <button class="more-details-toggle px-6 py-2 border border-orange-500 text-orange-500 rounded-full hover:bg-orange-50 dark:hover:bg-orange-900/30 text-sm">
-                      More Details →
-                    </button>
-                  </div>
-                ` : '<p class="text-green-600 font-medium text-base mb-4">All signals strong — excellent work!</p>' + signals.map(s => `
-                  <div>
-                    <p class="font-bold text-green-600 text-base">✅ ${s.name}</p>
-                    <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
-                    <p class="mt-1 text-gray-700 dark:text-gray-300">${s.how}</p>
-                    <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
-                    <p class="mt-1 text-gray-700 dark:text-gray-300">${s.why}</p>
-                  </div>
-                `).join('')}
-              </div>
-              <div class="full-details hidden mt-6 space-y-3 text-left text-sm">
-                <p class="text-blue-500 font-bold">What it is?</p>
-                <p>${key === 'Experience' ? 'Proof that the content creator has first-hand involvement in the topic, such as personal anecdotes, real-world applications, or direct participation, making the advice more relatable and credible.'
-                  : key === 'Expertise' ? 'Demonstrated deep knowledge and skill in the subject area, backed by qualifications, achievements, or specialized training, showing the author is a reliable source.'
-                  : key === 'Authoritativeness' ? 'Recognition of the site or author as a leading voice in the niche, often through citations, references from reputable sources, or industry accolades.'
-                  : 'Indicators that the site and content are reliable, secure, and transparent, fostering user confidence through clear policies and ethical practices.'}</p>
-                <p class="text-green-500 font-bold">How to improve?</p>
-                <p>${key === 'Experience' ? 'Incorporate first-person language like "I" or "we," add personal photos or videos, include detailed case studies with outcomes, mention specific dates or timelines, and share lessons learned from your own trials and errors to make it authentic.'
-                  : key === 'Expertise' ? 'Add an author bio box with a professional photo, detailed biography highlighting relevant education or experience, list certifications, degrees, or publications, and link to other works or speaking engagements to build proof.'
-                  : key === 'Authoritativeness' ? 'Earn high-quality backlinks from trusted sites, get featured in press or media mentions, implement relevant schema markup like Organization or Person, display awards or endorsements, and contribute to industry forums or publications.'
-                  : 'Switch to HTTPS if not already, create a dedicated contact page with real details, add a privacy policy and terms of service, include content update dates, and ensure no misleading claims or ads to maintain transparency.'}</p>
-                <p class="text-orange-500 font-bold">Why it matters?</p>
-                <p>${key === 'Experience' ? 'Search engines favor content with genuine experience because it reduces misinformation, improves user satisfaction, and leads to longer dwell times, all of which boost rankings and traffic.'
-                  : key === 'Expertise' ? 'Proven expertise helps search engines identify high-quality content, reducing the risk of penalties and increasing visibility, as users trust and engage more with authoritative sources.'
-                  : key === 'Authoritativeness' ? 'It establishes your site as a go-to resource, enhancing link-building opportunities and search engine trust, which directly impacts long-term visibility and competitive edge.'
-                  : 'High trustworthiness signals prevent user bounces, build loyalty, and align with search engine guidelines, avoiding downgrades and ensuring steady organic traffic growth.'}</p>
-              </div>
-            </div>`;
-          }).join('')}
-        </div>
-        <!-- Content Depth + Readability + Schema Detected -->
-        <div class="grid md:grid-cols-3 gap-8 my-16">
-          <!-- Content Depth Card -->
-          <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${words >= 1500 ? 'border-green-500' : words >= 800 ? 'border-orange-400' : 'border-red-500'}">
-            <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Content Depth</h3>
-            <p class="text-5xl font-black mb-2 text-gray-800 dark:text-gray-200">${words.toLocaleString()}</p>
-            <p class="text-gray-800 dark:text-gray-200 mb-4">words</p>
-            ${(() => {
-              const g = getGrade(words, 'depth');
-              return `<p class="${g.color} text-3xl font-bold mb-4">${g.emoji} ${g.text}</p>`;
-            })()}
-            <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-              ${words >= 1500 ? 'All Clear' : 'Show Fixes'}
-            </button>
-            <div class="hidden mt-6 text-left text-xs space-y-6">
-              ${(() => {
-                const g = getGrade(words, 'depth');
-                const titleColor = g.text === 'Good' ? 'text-orange-400' : g.text === 'Excellent' ? 'text-green-600' : 'text-red-600';
-                return `
-                <div>
-                  <p class="font-bold ${titleColor} text-base">${g.emoji} Content Depth</p>
-                  ${g.text !== 'Excellent' ? `
-                  <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
-                  <p class="mt-1 text-gray-800 dark:text-gray-200">Expand with real-world examples, statistics, screenshots, step-by-step breakdowns, comparisons, templates, expert quotes, case studies, and deeper FAQs. Aim for the most comprehensive resource on the topic without fluff.</p>` : ''}
-                  <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
-                  <p class="mt-1 text-gray-700 dark:text-gray-300">Counts visible words in the rendered page body. Excellent = 1,500+ words, Good = 800–1,499 words, Needs Work = <800 words.</p>
-                  <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
-                  <p class="mt-1 text-gray-700 dark:text-gray-300">Depth is the strongest on-page ranking factor. Search engines reward the most thorough, helpful answer with top positions. Comprehensive content satisfies user intent fully, reduces bounces, and drives longer dwell time and higher traffic.</p>
-                  ${g.text === 'Excellent' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
-                  <div class="mt-8 text-center">
-                    <a href="/seo-intent-tool/#depth" class="text-blue-500 font-bold hover:underline">
-                      How Content Depth is tested?
-                    </a>
-                  </div>
-                </div>`;
-              })()}
-            </div>
-          </div>
-          <!-- Readability Card -->
-          <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${readability >= 60 && readability <= 70 ? 'border-green-500' : (readability >= 50 && readability <= 80) ? 'border-orange-400' : 'border-red-500'}">
-            <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Readability</h3>
-            <p class="text-5xl font-black mb-2 text-gray-800 dark:text-gray-200">${readability}</p>
-            <p class="text-gray-800 dark:text-gray-200 mb-4">Flesch score</p>
-            ${(() => {
-              const g = getGrade(readability, 'readability');
-              return `<p class="${g.color} text-3xl font-bold mb-4">${g.emoji} ${g.text}</p>`;
-            })()}
-            <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-              ${readability >= 60 && readability <= 70 ? 'All Clear' : 'Show Fixes'}
-            </button>
-            <div class="hidden mt-6 text-left text-xs space-y-6">
-              ${(() => {
-                const g = getGrade(readability, 'readability');
-                const titleColor = g.text === 'Good' ? 'text-orange-400' : g.text === 'Excellent' ? 'text-green-600' : 'text-red-600';
-                return `
-                <div>
-                  <p class="font-bold ${titleColor} text-base">${g.emoji} Readability</p>
-                  ${g.text !== 'Excellent' ? `
-                  <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
-                  <p class="mt-1 text-gray-800 dark:text-gray-200">Use short sentences (under 20 words), simple words, active voice, clear subheadings, bullet points, short paragraphs (3–4 lines), and transitional phrases. Avoid jargon and complex structures.</p>` : ''}
-                  <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
-                  <p class="mt-1 text-gray-700 dark:text-gray-300">Flesch Reading Ease score (higher = easier). Excellent = 60–70 (plain English). Good = 50–80. Needs Work = outside this range.</p>
-                  <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
-                  <p class="mt-1 text-gray-700 dark:text-gray-300">Readable content reduces bounce rates and increases time on page. Search engines track user satisfaction signals. Easy-to-read pages engage more visitors, improve conversions, and rank higher.</p>
-                  ${g.text === 'Excellent' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
-                  <div class="mt-8 text-center">
-                    <a href="/seo-intent-tool/#readability" class="text-blue-500 font-bold hover:underline">
-                      How Readability is tested?
-                    </a>
-                  </div>
-                </div>`;
-              })()}
-            </div>
-          </div>
-          <!-- Schema Detected Card -->
-          <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 text-center ${schemaTypes.length >= 2 ? 'border-green-500' : schemaTypes.length === 1 ? 'border-orange-400' : 'border-red-500'}">
-            <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">Schema Detected</h3>
-            ${schemaTypes.length ? `
-              <select class="px-6 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-black dark:text-white mb-4">
-                ${schemaTypes.map(t => `<option>${t}</option>`).join('')}
-              </select>
-              <p class="text-gray-800 dark:text-gray-200 mb-4">${schemaTypes.length} type${schemaTypes.length > 1 ? 's' : ''} found</p>
-            ` : '<p class="text-2xl text-red-600 mb-4">No schema detected</p>'}
-            ${(() => {
-              const g = getGrade(schemaTypes.length, 'schema');
-              return `<p class="${g.color} text-3xl font-bold mb-4">${g.emoji} ${g.text}</p>`;
-            })()}
-            <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-              ${schemaTypes.length >= 2 ? 'All Clear' : 'Show Fixes'}
-            </button>
-            <div class="hidden mt-6 text-left text-xs space-y-6">
-              ${(() => {
-                const g = getGrade(schemaTypes.length, 'schema');
-                const titleColor = g.text === 'Good' ? 'text-orange-400' : g.text === 'Excellent' ? 'text-green-600' : 'text-red-600';
-                return `
-                <div>
-                  <p class="font-bold ${titleColor} text-base">${g.emoji} Schema Markup</p>
-                  ${g.text !== 'Excellent' ? `
-                  <p class="mt-2 font-semibold text-gray-800 dark:text-gray-200">How to fix?</p>
-                  <p class="mt-1 text-gray-800 dark:text-gray-200">Add JSON-LD script blocks for relevant types (Article + Person author, FAQPage, HowTo, Product, BreadcrumbList). Use at least two matching your content type. Validate with Google\'s testing tool.</p>` : ''}
-                  <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">How the metric works:</p>
-                  <p class="mt-1 text-gray-700 dark:text-gray-300">Detects valid schema types in script[type="application/ld+json"]. Excellent = 2+ relevant types, Good = 1 type, Needs Work = none found.</p>
-                  <p class="mt-3 font-semibold text-gray-800 dark:text-gray-200">Why it matters:</p>
-                  <p class="mt-1 text-gray-700 dark:text-gray-300">Schema unlocks rich snippets (stars, FAQs, carousels), dramatically increases click-through rates, strengthens E-E-A-T signals, and helps search engines feature your content prominently in results.</p>
-                  ${g.text === 'Excellent' ? '<p class="text-green-600 font-medium text-base mt-6">All signals strong — excellent work!</p>' : ''}
-                  <div class="mt-8 text-center">
-                    <a href="/seo-intent-tool/#schema" class="text-blue-500 font-bold hover:underline">
-                      How Schema Markup is tested?
-                    </a>
-                  </div>
-                </div>`;
-              })()}
-            </div>
-          </div>
-        </div>
+
+        <!-- Score Card Grid (rendered by module-cards-v1.0.js) -->
+        ${renderModuleCards({
+          experience:        { score: experienceScore,        metrics: experienceMetrics,        failed: failedExperience },
+          expertise:         { score: expertiseScore,         metrics: expertiseMetrics,         failed: failedExpertise },
+          authoritativeness: { score: authoritativenessScore, metrics: authoritativenessMetrics, failed: failedAuthoritativeness },
+          trustworthiness:   { score: trustworthinessScore,   metrics: trustworthinessMetrics,   failed: failedTrustworthiness },
+          depth:             { words, normalized: normalizeDepth },
+          readability:       { raw: readability, normalized: normalizeReadability },
+          schema:            { types: schemaTypes, normalized: normalizeSchema }
+        }, getGrade)}
+
         <!-- Priority Fixes -->
         <div class="mt-20 space-y-8">
           <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top Priority Fixes</h2>
@@ -885,20 +670,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (shareContainer) {
         initShareModule(shareContainer, shareData);
       }
-
-      // ─── Toggle Listeners ──────────────────────────────────────────
-      results.addEventListener('click', (e) => {
-        if (e.target.matches('.fixes-toggle')) {
-          const card = e.target.closest('.score-card');
-          const fixesPanel = card.querySelector('.fixes-panel');
-          const fullDetails = card.querySelector('.full-details');
-          fixesPanel.classList.toggle('hidden');
-          if (fixesPanel.classList.contains('hidden')) fullDetails.classList.add('hidden');
-        }
-        if (e.target.matches('.more-details-toggle')) {
-          e.target.closest('.score-card').querySelector('.full-details').classList.toggle('hidden');
-        }
-      });
 
       // ─── Ask AI Logic ──────────────────────────────────────────────
       const askBtn = document.getElementById('ask-ai-btn');

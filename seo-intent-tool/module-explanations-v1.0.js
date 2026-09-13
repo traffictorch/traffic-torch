@@ -1,5 +1,12 @@
-// seo-intent-tool/module-explanations.js
+// seo-intent-tool/module-explanations-v1.0.js
+//
+// Two exports:
+//   • moduleExplanations — static "Deep Dive" cards lower on the page (UNCHANGED)
+//   • fixHints + fixFor() — regex-matched fix explanations for the score-card panels
 
+// ─────────────────────────────────────────────────────────────────────────────
+// STATIC MODULE EXPLANATIONS (existing content — unchanged)
+// ─────────────────────────────────────────────────────────────────────────────
 const moduleExplanations = [
   {
     id: "experience",
@@ -75,6 +82,118 @@ const moduleExplanations = [
   }
 ];
 
+// ─────────────────────────────────────────────────────────────────────────────
+// FIX HINTS — ordered regex → fix string. First match wins.
+// Grouped by module. 45 patterns covering every failed-item string currently
+// emitted by the modules in /seo-intent-tool/modules/*.js plus the priority-fix
+// strings generated in script-v1.4.js.
+// ─────────────────────────────────────────────────────────────────────────────
+export const fixHints = [
+  // ─── EXPERIENCE ────────────────────────────────────────────────────────────
+  { pattern: /first[- ]person|first person language|\bI\/we\/my\/our\b/i,
+    fix: 'Sprinkle natural first-person voice ("I tested", "we found", "my experience") through intros, examples, and conclusions. Aim for 15+ mentions so readers hear a real person, not a brand.' },
+  { pattern: /personal anecdote|real[- ]world example/i,
+    fix: 'Add at least 3 concrete anecdotes — e.g. "I tested this on 5 client sites and saw…". Specific stories outperform generic claims for both readers and Google.' },
+  { pattern: /timeline|specific dates?|mention.*dates?/i,
+    fix: 'Anchor experience in time: "Last year we…", "Since 2022 our team has…". Dated personal context signals recency and hands-on testing.' },
+  { pattern: /personal (media|caption|photos?|videos?)|original (photo|video|image)/i,
+    fix: 'Add original photos, screenshots, or video with personal captions like "My testing setup" or "Our results after 3 months". Original media is a strong E-E-A-T signal.' },
+  { pattern: /strengthen.*experience|experience signals?|low experience/i,
+    fix: 'Combine three moves: (1) first-person voice, (2) dated anecdotes, (3) original media with personal alt text. Google rewards pages that clearly show real-world involvement.' },
+
+  // ─── EXPERTISE ─────────────────────────────────────────────────────────────
+  { pattern: /author byline present|add (a )?visible author|author byline\/name|author name/i,
+    fix: 'Add a clear byline directly under the H1: "By [Name] · Updated [date]". Link the name to an author page, and mark it up with rel="author" for entity clarity.' },
+  { pattern: /author bio section|create (an )?author bio|author bio\b/i,
+    fix: 'Create a 60–100 word author box below the article with photo, role, and one concrete credibility marker (years of experience, book, certification, or notable client).' },
+  { pattern: /credentials?|qualifications?|certifications?|years? of experience|expert in/i,
+    fix: 'State credentials explicitly — "Jane is a licensed CPA with 12 years at Deloitte" — and mention certifications, degrees, or publications directly in the bio or opening paragraphs.' },
+  { pattern: /citation|reference|supporting sources?/i,
+    fix: 'Link to primary sources (studies, government data, official docs) inline, and add a "References" section at the bottom. Use descriptive anchor text, never "click here".' },
+  { pattern: /credentials & citations|add credentials.*citations?/i,
+    fix: 'Do both: add named credentials in the author bio AND link out to 3–5 authoritative sources. Together these raise expertise from "claimed" to "proven".' },
+
+  // ─── AUTHORITATIVENESS ─────────────────────────────────────────────────────
+  { pattern: /awards?|endorsements?|media (features?|mentions?)|press coverage/i,
+    fix: 'Add a trust bar or "As featured in" row with recognizable logos, or weave mentions into copy ("Winner of the 2024 X Award"). External recognition is a strong authority signal.' },
+  { pattern: /about\/team links?|about or team (page|links?)|about page|team page/i,
+    fix: 'Link "About" and "Team" from the main navigation and footer. About pages help Google verify the entity behind the site and build topical authority.' },
+  { pattern: /low authorit|weak authorit/i,
+    fix: 'Earn authority signals: get featured in industry media, collect client testimonials, add Organization schema, and clearly link About/Team pages from the main nav.' },
+
+  // ─── TRUSTWORTHINESS ───────────────────────────────────────────────────────
+  { pattern: /https|ssl certificate/i,
+    fix: 'Migrate to HTTPS with a valid SSL certificate (free via Let\'s Encrypt). Update internal links and add a 301 redirect from http:// to https:// so nothing breaks.' },
+  { pattern: /contact info present|contact (page|info|details)|get in touch/i,
+    fix: 'Add a dedicated /contact page with a working form, plus at least one direct channel (email or phone). Surface it in the footer on every page.' },
+  { pattern: /privacy & terms links|privacy\/terms links?|privacy.*terms|policy links?|terms of service/i,
+    fix: 'Publish and link both a Privacy Policy and a Terms of Service page from the footer. Required in most jurisdictions and expected by Google for trust.' },
+  { pattern: /update date shown|display.*last updated|last updated|published date/i,
+    fix: 'Show a visible "Last updated: [date]" near the top of the article using <time datetime="YYYY-MM-DD">. Freshness is both a ranking and a trust signal.' },
+  { pattern: /low trust|weak trust/i,
+    fix: 'Address the basics: HTTPS, visible contact, Privacy + Terms, and a visible update date. These four together are the strongest trust foundation Google checks.' },
+
+  // ─── CONTENT DEPTH ─────────────────────────────────────────────────────────
+  { pattern: /content is under|under 1,?500|expand content|content depth|word count|increase (length|depth)|thin content|too short/i,
+    fix: 'Expand to 1,500+ words of substantive content — real examples, data, step-by-step breakdowns, comparison tables, and a focused FAQ. Prioritise usefulness over filler.' },
+  { pattern: /shallow coverage|missing sections?|cover.*topic/i,
+    fix: 'Add the sections competitors cover: definitions, use cases, common mistakes, troubleshooting, and a targeted FAQ. Aim to be the most comprehensive answer on the topic.' },
+
+  // ─── READABILITY ───────────────────────────────────────────────────────────
+  { pattern: /flesch|reading ease|readability/i,
+    fix: 'Target Flesch Reading Ease 60–70: keep sentences under 20 words, prefer active voice, break paragraphs to 3–4 lines, add subheadings every 200–300 words, and use bullet lists.' },
+  { pattern: /long sentences?|complex sentences?|passive voice/i,
+    fix: 'Split any sentence over 25 words into two. Read aloud — if you run out of breath, cut it. Aim for 15–18 words per sentence on average.' },
+
+  // ─── SCHEMA ────────────────────────────────────────────────────────────────
+  { pattern: /schema markup|schema detected|structured data|no schema/i,
+    fix: 'Add JSON-LD for the types matching your content. Article + Person (author) as a base, plus FAQPage, HowTo, Product, or BreadcrumbList as relevant. Validate with Google\'s Rich Results Test.' },
+  { pattern: /add.*schema|json-?ld|add relevant schema/i,
+    fix: 'Insert JSON-LD inside <script type="application/ld+json">…</script> in the <head> or before </body>. Start with Article + Person, then add a secondary type. Test at search.google.com/test/rich-results.' },
+  { pattern: /missing schema|fewer than.*types?/i,
+    fix: 'Add at minimum: (1) Article with author, datePublished, dateModified; (2) Person for the author; (3) BreadcrumbList. This alone unlocks most rich-result eligibility.' },
+
+  // ─── INTENT / OVERALL ──────────────────────────────────────────────────────
+  { pattern: /intent (match|mismatch|alignment)|search intent/i,
+    fix: 'Match the dominant SERP format for your target query — if top results are lists, use a list; if they\'re guides, go deeper. Lead with the direct answer in the first 150 words.' },
+  { pattern: /title tag|meta description|h1/i,
+    fix: 'Align title, H1, and meta description with the query\'s intent. Keep the primary phrase near the front of the title and under 60 characters.' },
+
+  // ─── COMBINED PRIORITY-FIX STRINGS (from topFixes in script-v1.4.js) ──────
+  { pattern: /add author byline & bio/i,
+    fix: 'Add a visible byline near the H1 and a 60–100 word author box below the article with photo and credentials. This typically lifts Expertise by 15–25 points.' },
+  { pattern: /expand content depth/i,
+    fix: 'Grow the article to 1,500+ words with original examples, screenshots, and a targeted FAQ. Aim to be the most complete answer on the topic.' },
+  { pattern: /add relevant schema markup/i,
+    fix: 'Insert Article + Person JSON-LD at minimum, then add FAQPage or HowTo if the content supports it. Validate with Google\'s Rich Results Test before publishing.' },
+
+  // ─── GENERIC / CATCH-ALL (must stay last) ─────────────────────────────────
+  { pattern: /weak (trust|authority|experience|expertise)/i,
+    fix: 'Address the weakest E-E-A-T pillar first — usually author identity and firsthand experience. Add a named author, credentials, and one concrete anecdote.' },
+  { pattern: /missing (author|contact|policy|date|schema)/i,
+    fix: 'Fill the specific gap directly: add the missing author block, contact link, policy page, publish/update date, or JSON-LD. Each is a quick, isolated win.' },
+  { pattern: /no (author|contact|policy|schema)/i,
+    fix: 'Add the missing element — Google treats these as basic quality signals. Start with the highest-impact one: author byline and bio.' },
+  { pattern: /low (experience|expertise|authority|trust|readability|depth|schema) score/i,
+    fix: 'Strengthen this module by adding both a "who" (named, credentialed author) and a "how" (dated firsthand example or cited source) — the two strongest E-E-A-T reinforcements.' },
+  { pattern: /improve.*score/i,
+    fix: 'Work through the failed checks above in order. Each maps to a specific on-page element — fixing the top two usually produces the largest score gain.' }
+];
+
+const FALLBACK_FIX =
+  'Review this metric and add the missing on-page element — a visible author, credential, dated example, or supporting source. See the module guide for the exact implementation.';
+
+export function fixFor(text) {
+  if (!text) return FALLBACK_FIX;
+  for (const { pattern, fix } of fixHints) {
+    if (pattern.test(text)) return fix;
+  }
+  return FALLBACK_FIX;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Existing DOM wiring for the "Deep Dive" section — unchanged.
+// ─────────────────────────────────────────────────────────────────────────────
 function openDetailsFromHash() {
   if (window.location.hash) {
     const hash = window.location.hash.substring(1);
@@ -93,7 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('module-cards-container');
   if (!container) return;
 
-  // Responsive 3×3 grid for 9 cards
   container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center max-w-7xl mx-auto px-6';
 
   container.innerHTML = moduleExplanations.map(m => `

@@ -1524,47 +1524,23 @@
   })();
 </script>
   
-<!-- ===== UPGRADE MODAL – LINKS TO /upgrade/ ===== -->
-<div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
-  <div class="relative w-full max-w-md bg-white/10 dark:bg-gray-900/80 backdrop-blur-2xl rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto" id="upgradeModalContent" style="-webkit-overflow-scrolling: touch;">
-    
-    <!-- Sticky close button – stays at top-right of popup -->
-    <div class="sticky top-0 z-10 flex justify-end" style="margin-bottom: -3rem; pointer-events: none;">
-      <button onclick="window.closeUpgradeModal()" class="w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 text-white dark:text-gray-200 text-2xl font-bold transition" style="border: none; outline: none; pointer-events: auto; backdrop-filter: blur(4px);">
-        &times;
-      </button>
+<!-- ===== UPGRADE MODAL ===== -->
+  <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+    <div class="relative w-full max-w-md bg-white/10 dark:bg-gray-900/80 backdrop-blur-2xl rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto" id="upgradeModalContent" style="-webkit-overflow-scrolling: touch;">
+      <div class="sticky top-0 z-10 flex justify-end" style="margin-bottom: -3rem; pointer-events: none;">
+        <button onclick="window.closeUpgradeModal()" class="w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 text-white dark:text-gray-200 text-2xl font-bold transition" style="border: none; outline: none; pointer-events: auto; backdrop-filter: blur(4px);">&times;</button>
+      </div>
+      <div class="text-5xl mb-4">🚀</div>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Daily Limit Reached</h2>
+      <p class="mt-2 text-gray-600 dark:text-gray-300">You’ve used all your free audits today.<br>Choose a plan to continue:</p>
+      <div class="mt-6 space-y-4">
+        <a href="/upgrade/" class="block w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg text-center">Upgrade to Pro <br> $6/month or $48/year or $198/lifetime</a>
+        <a href="/upgrade/" class="block w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow-lg text-center">Upgrade to Enterprise <br> $68/month or $680/year</a>
+      </div>
+      <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">Pro: 25 audits/day • Enterprise: 300 audits/day + real‑time analytics</p>
+      <button onclick="window.closeUpgradeModal()" class="mt-4 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 underline">Maybe later</button>
     </div>
-
-    <!-- Icon -->
-    <div class="text-5xl mb-4">🚀</div>
-
-    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Daily Limit Reached</h2>
-    <p class="mt-2 text-gray-600 dark:text-gray-300">
-      You’ve used all your free audits today.<br>
-      Choose a plan to continue:
-    </p>
-
-    <div class="mt-6 space-y-4">
-      <!-- Pro link -->
-      <a href="/upgrade/" class="block w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg text-center">
-        Upgrade to Pro – $6/month or $48/year
-      </a>
-
-      <!-- Enterprise link -->
-      <a href="/upgrade/" class="block w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow-lg text-center">
-        Upgrade to Enterprise – $68/month
-      </a>
-    </div>
-
-    <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">
-      Pro: 25 audits/day • Enterprise: 300 audits/day + real‑time analytics
-    </p>
-
-    <button onclick="window.closeUpgradeModal()" class="mt-4 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 underline">
-      Maybe later
-    </button>
   </div>
-</div>
   
   <noscript>
   <div class="noscript-content max-w-7xl mx-auto px-6 py-12 prose prose-lg dark:prose-invert">

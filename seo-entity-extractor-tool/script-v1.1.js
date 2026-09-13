@@ -343,9 +343,22 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           ` : `
             <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
           `}
-          <p class="text-center mt-6">
-            <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more about ${mod.name}? →</a>
-          </p>
+          <div class="mt-6 pt-5 border-t border-gray-200 dark:border-gray-700 space-y-3 text-sm">
+            <a href="#ask-ai-section"
+               class="ask-ai-link flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline font-medium"
+               data-ai-question="${(() => {
+                 const q = `How do I improve my ${mod.name} score? Failed checks: ${failed.length ? failed.map(f => f.text).join(' | ') : 'None — all checks passed.'}`;
+                 return q.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+               })()}">
+              🤖 Ask AI about this module →
+            </a>
+            <a href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/#${mod.name.toLowerCase()}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 hover:underline font-medium">
+              📖 Read the full ${mod.name} guide →
+            </a>
+          </div>
         </div>
       </div>
       `;
@@ -411,9 +424,22 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           ` : `
             <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
           `}
-          <p class="text-center mt-6">
-            <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more about ${mod.name}? →</a>
-          </p>
+          <div class="mt-6 pt-5 border-t border-gray-200 dark:border-gray-700 space-y-3 text-sm">
+            <a href="#ask-ai-section"
+               class="ask-ai-link flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline font-medium"
+               data-ai-question="${(() => {
+                 const q = `How do I improve my ${mod.name} score? Failed checks: ${failed.length ? failed.map(f => f.text).join(' | ') : 'None — all checks passed.'}`;
+                 return q.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+               })()}">
+              🤖 Ask AI about this module →
+            </a>
+            <a href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/#${mod.name.toLowerCase()}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 hover:underline font-medium">
+              📖 Read the full ${mod.name} guide →
+            </a>
+          </div>
         </div>
       </div>
       `;
@@ -552,6 +578,20 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     // ─── Toggle listeners (unchanged) ───────────────────────────────
     if (!document.body.dataset.toggleListenersAttached) {
       document.body.addEventListener('click', function(e) {
+        // ── Ask AI link inside fixes panel ──────────────────────
+        const askLink = e.target.closest('.ask-ai-link');
+        if (askLink) {
+          e.preventDefault();
+          const question = askLink.getAttribute('data-ai-question') || '';
+          const textarea = document.getElementById('ai-question-input');
+          const aiSection = document.getElementById('ask-ai-section');
+          if (textarea) textarea.value = question;
+          if (aiSection) aiSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => { if (textarea) textarea.focus(); }, 700);
+          return;
+        }
+
+        // ── Existing toggle behavior (unchanged) ────────────────
         const button = e.target.closest('.fixes-toggle, .details-toggle');
         if (!button) return;
         e.preventDefault();
