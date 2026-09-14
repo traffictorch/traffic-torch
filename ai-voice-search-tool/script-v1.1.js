@@ -318,9 +318,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
     const details = analysis.details?.[detailsKey] || {};
     const subMetrics = details.subMetrics || [];
-    const failedCount = Array.isArray(subMetrics) ? subMetrics.filter(s => s.score < 60).length : 0;
+    const sortedSubMetrics = Array.isArray(subMetrics) ? [...subMetrics].sort((a, b) => a.score - b.score) : [];
+    const fixable = sortedSubMetrics.filter(s => s.score < 80);
+    const failedCount = fixable.length;
+    const failedList = fixable.map(s => s.name).join(', ');
+    const cmsName = (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown';
+    const escAttr = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    const aiQuestion = escAttr(`How do I improve my ${m.name} score on ${cmsName}? Failed checks: ${failedList || 'none'}`);
     return `
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4 w-full" style="border-left-color: ${gradeColor}">
+    <div class="score-card bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4 w-full flex flex-col" style="border-left-color: ${gradeColor}">
       <div class="relative w-40 h-40 mx-auto">
         <svg viewBox="0 0 160 160" class="-rotate-90">
           <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -335,41 +341,37 @@ document.addEventListener('DOMContentLoaded', () => {
       <p class="mt-6 text-2xl font-bold" style="color: ${gradeColor}">${m.name}</p>
       <p class="mt-2 text-xl flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
       <div class="mt-4 space-y-3 text-base">
-        ${Array.isArray(subMetrics) && subMetrics.length > 0 ? subMetrics.map(s => `
-          <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
-            ${s.score >= 60 ? '✅' : '❌'} ${s.name} (${s.score})
+        ${sortedSubMetrics.length > 0 ? sortedSubMetrics.map(s => `
+          <p class="font-medium" style="color: ${s.score >= 80 ? '#10b981' : s.score >= 60 ? '#f97316' : '#ef4444'}">
+            ${s.score >= 80 ? '✅' : s.score >= 60 ? '⚠️' : '❌'} ${s.name} (${s.score})
           </p>
         `).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics loading...</p>'}
       </div>
-      <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
-        More Details
-      </button>
-      <div class="hidden mt-6 space-y-6 text-base text-gray-700 dark:text-gray-300 leading-relaxed">
-        <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info || 'Analyzing module...'}</p>
-        <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve:</span> Implement suggested fixes below to boost this module.</p>
-        <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Impacts AI voice visibility, synthesis quality, and rankings.</p>
-        <a href="#${m.id}" class="block text-center mt-4 text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
-          Learn more about ${m.name} →
-        </a>
-      </div>
-      <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
-        Show Fixes (${failedCount})
-      </button>
-      <div class="hidden mt-6 space-y-8">
-        ${m.score >= 60 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics strong! ✅ Optimize further for top voice rankings.</p>` : ''}
-        ${m.score < 60 ? `<p class="text-center text-red-600 dark:text-red-400 font-bold text-lg">Low score – apply fixes below to boost voice performance.</p>` : ''}
-        ${subMetrics.filter(s => s.score < 60).map(s => `
-          <div class="text-center">
-            <div class="text-5xl mb-3" style="color: #ef4444">❌</div>
-            <p class="font-bold text-xl mb-3" style="color: #ef4444">${s.name}</p>
-            <p class="text-gray-700 dark:text-gray-300 max-w-lg mx-auto">
-              Fix suggestion: ${s.fix || 'Improve this metric for better voice SEO performance.'}
-            </p>
+      <div class="mt-auto pt-5">
+        <button class="fixes-toggle mt-2 w-full px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition" data-failed-count="${failedCount}">
+          Show Fixes (${failedCount})
+        </button>
+        <div class="fixes-panel hidden mt-6 space-y-8">
+          ${m.score >= 80 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics strong! ✅ Optimize further for top voice rankings.</p>` : ''}
+          ${fixable.map((s, idx) => `
+            <div class="text-center ${idx > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-6' : ''}">
+              <div class="text-5xl mb-3" style="color: ${s.score >= 60 ? '#f97316' : '#ef4444'}">${s.score >= 60 ? '⚠️' : '❌'}</div>
+              <p class="font-bold text-xl mb-3" style="color: ${s.score >= 60 ? '#f97316' : '#ef4444'}">${s.name}</p>
+              <p class="text-gray-700 dark:text-gray-300 max-w-lg mx-auto">
+                ${s.fix || 'Improve this metric for better voice SEO performance.'}
+              </p>
+            </div>
+          `).join('')}
+          <div class="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+            <a href="#" class="ask-ai-link block text-center text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-medium transition"
+               data-ai-question="${aiQuestion}">
+              🤖 Ask AI about this module →
+            </a>
+            <a href="https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#${m.id}" class="block text-center text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
+              📖 Read the full ${m.name} guide →
+            </a>
           </div>
-        `).join('')}
-        <a href="#${m.id}" class="block text-center mt-6 text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
-          How ${m.name} is tested? →
-        </a>
+        </div>
       </div>
     </div>`;
   })()}
@@ -380,9 +382,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
       const details = analysis.details?.[detailsKey] || {};
       const subMetrics = details.subMetrics || [];
-      const failedCount = Array.isArray(subMetrics) ? subMetrics.filter(s => s.score < 60).length : 0;
+      const sortedSubMetrics = Array.isArray(subMetrics) ? [...subMetrics].sort((a, b) => a.score - b.score) : [];
+      const fixable = sortedSubMetrics.filter(s => s.score < 80);
+      const failedCount = fixable.length;
+      const failedList = fixable.map(s => s.name).join(', ');
+      const cmsName = (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown';
+      const escAttr = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      const aiQuestion = escAttr(`How do I improve my ${m.name} score on ${cmsName}? Failed checks: ${failedList || 'none'}`);
       return `
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4" style="border-left-color: ${gradeColor}">
+      <div class="score-card bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4 flex flex-col" style="border-left-color: ${gradeColor}">
         <div class="relative w-40 h-40 mx-auto">
           <svg viewBox="0 0 160 160" class="-rotate-90">
             <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -397,41 +405,37 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="mt-6 text-2xl font-bold" style="color: ${gradeColor}">${m.name}</p>
         <p class="mt-2 text-xl flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
         <div class="mt-4 space-y-3 text-base">
-          ${Array.isArray(subMetrics) && subMetrics.length > 0 ? subMetrics.map(s => `
-            <p class="font-medium" style="color: ${s.score >= 60 ? '#10b981' : '#ef4444'}">
-              ${s.score >= 60 ? '✅' : '❌'} ${s.name} (${s.score})
+          ${sortedSubMetrics.length > 0 ? sortedSubMetrics.map(s => `
+            <p class="font-medium" style="color: ${s.score >= 80 ? '#10b981' : s.score >= 60 ? '#f97316' : '#ef4444'}">
+              ${s.score >= 80 ? '✅' : s.score >= 60 ? '⚠️' : '❌'} ${s.name} (${s.score})
             </p>
           `).join('') : '<p class="text-gray-500 dark:text-gray-400">Sub-metrics loading...</p>'}
         </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
-          More Details
-        </button>
-        <div class="hidden mt-6 space-y-6 text-base text-gray-700 dark:text-gray-300 leading-relaxed">
-          <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info || 'Analyzing module...'}</p>
-          <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve:</span> Implement suggested fixes below to boost this module.</p>
-          <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Impacts AI voice visibility, synthesis quality, and rankings.</p>
-          <a href="#${m.id}" class="block text-center mt-4 text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
-            Learn more about ${m.name} →
-          </a>
-        </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">
-          Show Fixes (${failedCount})
-        </button>
-        <div class="hidden mt-6 space-y-8">
-          ${m.score >= 60 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics strong! ✅ Optimize further for top voice rankings.</p>` : ''}
-          ${m.score < 60 ? `<p class="text-center text-red-600 dark:text-red-400 font-bold text-lg">Low score – apply fixes below to boost voice performance.</p>` : ''}
-          ${subMetrics.filter(s => s.score < 60).map(s => `
-            <div class="text-center">
-              <div class="text-5xl mb-3" style="color: #ef4444">❌</div>
-              <p class="font-bold text-xl mb-3" style="color: #ef4444">${s.name}</p>
-              <p class="text-gray-700 dark:text-gray-300 max-w-lg mx-auto">
-                Fix suggestion: ${s.fix || 'Improve this metric for better voice SEO performance.'}
-              </p>
+        <div class="mt-auto pt-5">
+          <button class="fixes-toggle mt-2 w-full px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition" data-failed-count="${failedCount}">
+            Show Fixes (${failedCount})
+          </button>
+          <div class="fixes-panel hidden mt-6 space-y-8">
+            ${m.score >= 80 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics strong! ✅ Optimize further for top voice rankings.</p>` : ''}
+            ${fixable.map((s, idx) => `
+              <div class="text-center ${idx > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-6' : ''}">
+                <div class="text-5xl mb-3" style="color: ${s.score >= 60 ? '#f97316' : '#ef4444'}">${s.score >= 60 ? '⚠️' : '❌'}</div>
+                <p class="font-bold text-xl mb-3" style="color: ${s.score >= 60 ? '#f97316' : '#ef4444'}">${s.name}</p>
+                <p class="text-gray-700 dark:text-gray-300 max-w-lg mx-auto">
+                  ${s.fix || 'Improve this metric for better voice SEO performance.'}
+                </p>
+              </div>
+            `).join('')}
+            <div class="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+              <a href="#" class="ask-ai-link block text-center text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-medium transition"
+                 data-ai-question="${aiQuestion}">
+                🤖 Ask AI about this module →
+              </a>
+              <a href="https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#${m.id}" class="block text-center text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
+                📖 Read the full ${m.name} guide →
+              </a>
             </div>
-          `).join('')}
-          <a href="#${m.id}" class="block text-center mt-6 text-orange-600 dark:text-orange-400 hover:text-orange-500 dark:hover:text-orange-300 font-medium transition">
-            How ${m.name} is tested? →
-          </a>
+          </div>
         </div>
       </div>`;
     }).join('')}
@@ -597,10 +601,6 @@ ${topFailed.length === 0 ? `
           } catch (e) {}
         }, 150);
 
-        // ─── Remove old initShareReport / initSubmitFeedback ──────────
-        // initShareReport(results);   // removed
-        // initSubmitFeedback(results); // removed
-
         // ─── Set data-url ──────────────────────────────────────────────
         let displayUrl = 'traffictorch.net';
         if (pageUrl) {
@@ -721,7 +721,11 @@ ${topFailed.length === 0 ? `
                     hasHighReadability: analysis.details?.contentQuality?.readabilityScore >= 60 || false
                   },
                   failedItems: failedMetrics.slice(0, 10),
-                  priorityFixes: topFailed.map(f => f.subName + ': ' + f.fix)
+                  priorityFixes: topFailed.map(f => f.subName + ': ' + f.fix),
+                  cms: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown',
+                  cmsVersion: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.version) ? cmsInfo.version : null,
+                  cmsConfidence: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.confidence) ? cmsInfo.confidence : null,
+                  cmsSignals: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.signals) ? cmsInfo.signals : null
                 }
               };
 
@@ -951,4 +955,35 @@ form.addEventListener('submit', async (e) => {
     `;
   }
 });
+
+  // Delegated handler: fixes toggle + ask AI prefill
+  document.addEventListener('click', (e) => {
+    const toggle = e.target.closest('.fixes-toggle');
+    if (toggle) {
+      e.preventDefault();
+      const card = toggle.closest('.score-card');
+      const panel = card?.querySelector('.fixes-panel');
+      if (panel) panel.classList.toggle('hidden');
+      const count = toggle.dataset.failedCount || '0';
+      const isOpen = panel && !panel.classList.contains('hidden');
+      toggle.textContent = isOpen ? `Hide Fixes (${count})` : `Show Fixes (${count})`;
+      return;
+    }
+
+    const askLink = e.target.closest('.ask-ai-link');
+    if (askLink) {
+      e.preventDefault();
+      const section = document.getElementById('ask-ai-section');
+      const input = document.getElementById('ai-question-input');
+      if (input && askLink.dataset.aiQuestion) {
+        input.value = askLink.dataset.aiQuestion;
+      }
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      if (input) {
+        setTimeout(() => input.focus(), 700);
+      }
+    }
+  });
 });

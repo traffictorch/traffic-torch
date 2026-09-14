@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ${fixesPanelHTML}
         </div>
         <div class="mt-auto pt-5">
-          <button class="fixes-toggle show-fixes w-full px-6 py-3 rounded-full bg-green-600 hover:bg-green-700 text-white font-medium transition"
+          <button class="fixes-toggle show-fixes w-full mt-2 px-6 py-3 rounded-full bg-green-600 hover:bg-green-700 text-white font-medium transition"
                   data-failed-count="${fixCount}">
             Show Fixes${fixCount > 0 ? ` (${fixCount})` : ''}
           </button>

@@ -9,6 +9,7 @@ import { canRunTool } from '/main-v1.1.js';
 // Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
+import { fixFor } from './module-explanations-v1.2.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -23,17 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let analyzedText = '';
   let wordCount = 0;
-  
-    // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
+
+  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
-    
+
     if (inputData) {
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-        
+
         // Optional: Auto-click the Analyze button after a tiny delay
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
@@ -134,8 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function getSubColor(score) {
     return score === 10 ? '#10b981' : '#ef4444';
   }
-  
-    // ==================== UNIFIED ANALYSIS + FULL REPORT (ONE SOURCE OF TRUTH) ====================
+
+  // ==================== UNIFIED ANALYSIS + FULL REPORT (ONE SOURCE OF TRUTH) ====================
   async function runAnalysis(isUrlMode) {
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) return;
@@ -279,21 +280,22 @@ document.addEventListener('DOMContentLoaded', () => {
     ${(() => {
       const m = {
         name: 'Perplexity',
+        id: 'perplexity',
         score: analysis.moduleScores[0],
         details: analysis.details.perplexity,
-        info: 'Measures how unpredictable your text is through bigram and trigram entropy calculations. High entropy indicates varied and surprising word sequences, which are hallmarks of human writing. AI-generated text often has lower entropy due to its reliance on common patterns.',
-        fixes: {
-          trigram: analysis.details.perplexity.scores.trigram < 10 ? 'To improve trigram entropy, deliberately introduce unexpected word combinations and personal anecdotes that don’t follow common patterns. This breaks predictable flows and makes your writing feel more spontaneous and human. Avoid sticking to safe, formulaic phrasing—edit specifically for surprise in every few sentences.' : '',
-          bigram: analysis.details.perplexity.scores.bigram < 10 ? 'Boost bigram entropy by actively swapping overused two-word pairs with creative alternatives or rephrased expressions. Incorporate transitional phrases that aren’t common and sprinkle in idiomatic expressions unique to your voice. These small changes create a less robotic rhythm and significantly increase overall unpredictability.' : ''
-        }
       };
       const grade = getModuleGrade(m.score);
       const gradeColor = grade.color;
-      const failedCount = Object.values(m.fixes).filter(f => f).length;
       const sub1Score = m.details.scores.trigram;
       const sub2Score = m.details.scores.bigram;
+      const failedItems = [];
+      if (sub1Score < 10) failedItems.push({ name: 'Trigram Entropy', fix: fixFor('Trigram Entropy') });
+      if (sub2Score < 10) failedItems.push({ name: 'Bigram Entropy',  fix: fixFor('Bigram Entropy') });
+      const failedCount = failedItems.length;
+      const failedNames = failedItems.map(f => f.name).join(', ') || 'none';
+      const cmsName = (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'Unknown';
       return `
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4" style="border-left-color: ${gradeColor}">
+      <div class="score-card bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4 flex flex-col" style="border-left-color: ${gradeColor}">
         <div class="relative w-40 h-40 mx-auto">
           <svg viewBox="0 0 160 160" class="-rotate-90">
             <circle cx="80" cy="80" r="70" stroke="#e5e7eb" stroke-width="16" fill="none"/>
@@ -310,29 +312,35 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} Trigram Entropy</p>
           <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} Bigram Entropy</p>
         </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-6 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">More Details</button>
-        <div class="hidden mt-6 space-y-6 text-base text-gray-700 dark:text-gray-300 leading-relaxed">
-          <p class="text-center mb-8"><a href="#perplexity" class="text-orange-500 font-bold hover:underline">How Perplexity is tested? →</a></p>
-          <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is:</span> ${m.info}</p>
-          <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve Overall:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
-          <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
+
+        <p class="mt-4 text-sm">
+          <a href="/blog/posts/ai-content-detection-guide/#perplexity" class="text-orange-500 font-bold hover:underline">How Perplexity is tested? →</a>
+        </p>
+
+        <div class="mt-auto pt-5">
+          <button type="button" class="fixes-toggle w-full mt-2 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow-md transition" data-failed-count="${failedCount}">
+            Show Fixes (${failedCount})
+          </button>
         </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">Show Fixes (${failedCount})</button>
-        <div class="hidden mt-6 space-y-8">
-          ${failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All tests passed! ✅</p>` : ''}
-          ${sub1Score < 10 ? `
-            <div class="text-center">
-              <div class="text-5xl mb-3" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</div>
-              <p class="font-bold text-xl mb-3" style="color: ${getSubColor(sub1Score)}">Trigram Entropy</p>
-              <p class="text-gray-700 dark:text-gray-300 max-w-lg mx-auto">${m.fixes.trigram}</p>
-            </div>` : ''}
-          ${sub2Score < 10 ? `
-            <div class="text-center mt-8">
-              <div class="text-5xl mb-3" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</div>
-              <p class="font-bold text-xl mb-3" style="color: ${getSubColor(sub2Score)}">Bigram Entropy</p>
-              <p class="text-gray-700 dark:text-gray-300 max-w-lg mx-auto">${m.fixes.bigram}</p>
-            </div>` : ''}
-          <p class="mt-8 text-center"><a href="#perplexity" class="text-orange-500 font-bold hover:underline">← More details about Perplexity</a></p>
+
+        <div class="fixes-panel hidden mt-6 space-y-6 text-left">
+          ${failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold">All tests passed! ✅</p>` : ''}
+          ${failedItems.map((f, i) => `
+            <div class="${i > 0 ? 'pt-4 border-t border-gray-200 dark:border-gray-700' : ''}">
+              <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${f.name}</p>
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${f.fix}</p>
+            </div>
+          `).join('')}
+
+          <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+            <a href="#ask-ai-section" class="ask-ai-link block text-purple-600 dark:text-purple-400 font-bold hover:underline"
+               data-ai-question="How do I improve my Perplexity score? Failed checks: ${failedNames}. Detected CMS: ${cmsName}. Module score: ${m.score}/20. Please give me ${cmsName}-specific fixes.">
+              🤖 Ask AI about this module →
+            </a>
+            <a href="/blog/posts/ai-content-detection-guide/#perplexity" class="block text-orange-500 font-bold hover:underline">
+              📖 Read the full Perplexity guide →
+            </a>
+          </div>
         </div>
       </div>`;
     })()}
@@ -341,18 +349,23 @@ document.addEventListener('DOMContentLoaded', () => {
   <!-- Remaining 4 metrics -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
     ${[
-      {name: 'Burstiness', id: 'burstiness', score: analysis.moduleScores[1], details: analysis.details.burstiness, info: 'Evaluates the variation in sentence and word lengths to ensure natural rhythm in your content. Human writing typically mixes short, punchy sentences with longer, descriptive ones for engagement. Consistent lengths can signal AI generation, as it often prioritizes uniformity over dynamic flow.', fixes: {sentence: analysis.details.burstiness.scores.sentence < 10 ? 'To address low sentence burstiness, alternate between short, impactful sentences and longer, explanatory ones throughout your text. This creates a more engaging rhythm that mimics human speech patterns. Review paragraphs for uniformity and split or combine sentences to add variety.' : '', word: analysis.details.burstiness.scores.word < 10 ? 'Fix word length burstiness by mixing short, simple words with longer, more descriptive ones to avoid monotony. Incorporate varied vocabulary that includes both everyday terms and specialized jargon where appropriate. This enhances readability and makes the content feel more authentic and less machine-like.' : ''}, subNames: ['Sentence Length Variation', 'Word Length Burstiness'], fixTexts: ['To address low sentence burstiness, alternate between short, impactful sentences and longer, explanatory ones throughout your text. This creates a more engaging rhythm that mimics human speech patterns. Review paragraphs for uniformity and split or combine sentences to add variety.', 'Fix word length burstiness by mixing short, simple words with longer, more descriptive ones to avoid monotony. Incorporate varied vocabulary that includes both everyday terms and specialized jargon where appropriate. This enhances readability and makes the content feel more authentic and less machine-like.']},
-      {name: 'Repetition', id: 'repetition', score: analysis.moduleScores[2], details: analysis.details.repetition, info: 'Detects overuse of bigram and trigram phrases, which can make text feel redundant and AI-like. Human writers naturally vary expressions to maintain interest and flow. High repetition scores indicate a need for more diverse phrasing to improve originality and engagement.', fixes: {bigram: analysis.details.repetition.scores.bigram < 10 ? 'Reduce bigram repetition by identifying common two-word phrases and replacing them with synonyms or restructured sentences. Use a thesaurus to find fresh alternatives and ensure no phrase dominates. This will make your writing more dynamic and less predictable.' : '', trigram: analysis.details.repetition.scores.trigram < 10 ? 'To fix trigram repetition, scan for recurring three-word sequences and rewrite them with varied structures or vocabulary. Introduce new ideas or transitions to break patterns. Editing for diversity here will elevate the text’s natural feel and reduce AI flags.' : ''}, subNames: ['Bigram Repetition', 'Trigram Repetition'], fixTexts: ['Reduce bigram repetition by identifying common two-word phrases and replacing them with synonyms or restructured sentences. Use a thesaurus to find fresh alternatives and ensure no phrase dominates. This will make your writing more dynamic and less predictable.', 'To fix trigram repetition, scan for recurring three-word sequences and rewrite them with varied structures or vocabulary. Introduce new ideas or transitions to break patterns. Editing for diversity here will elevate the text’s natural feel and reduce AI flags.']},
-      {name: 'Sentence Length', id: 'sentence-length', score: analysis.moduleScores[3], details: analysis.details.sentenceLength, info: 'Combines average sentence length with complexity measures like comma usage to assess structural depth. Ideal human writing balances lengths between 15-23 words while incorporating clauses for nuance. Deviations can suggest overly simplistic or convoluted AI output, impacting readability.', fixes: {avg: analysis.details.sentenceLength.scores.avg < 10 ? 'Adjust average sentence length by breaking up long run-ons or combining short fragments to hit the 15-23 word sweet spot. This improves flow and readability for users. Regularly count words per sentence during edits to achieve balance.' : '', complexity: analysis.details.sentenceLength.scores.complexity < 10 ? 'Increase sentence complexity by adding clauses with commas, semicolons, or conjunctions to layer ideas. This adds depth without overwhelming the reader. Aim for 1-2 clauses per sentence in key sections to mimic human thought processes.' : ''}, subNames: ['Average Length', 'Sentence Complexity'], fixTexts: ['Adjust average sentence length by breaking up long run-ons or combining short fragments to hit the 15-23 word sweet spot. This improves flow and readability for users. Regularly count words per sentence during final edits to achieve balance.', 'Increase sentence complexity by adding clauses with commas, semicolons, or conjunctions to layer ideas. This adds depth without overwhelming the reader. Aim for 1-2 clauses per sentence in key sections to mimic human thought processes.']},
-      {name: 'Vocabulary', id: 'vocabulary', score: analysis.moduleScores[4], details: analysis.details.vocabulary, info: 'Assesses unique word diversity and the frequency of rare words to gauge lexical richness. Human content often includes a broad, context-specific vocabulary with unique terms. Low scores here point to limited word choice, common in AI for efficiency, reducing perceived expertise.', fixes: {diversity: analysis.details.vocabulary.scores.diversity < 10 ? 'Boost vocabulary diversity by incorporating synonyms and avoiding word repetition through active editing. Draw from broader themes or analogies to introduce new terms. This enriches the text and signals deeper knowledge to search engines.' : '', rare: analysis.details.vocabulary.scores.rare < 10 ? 'Enhance rare word frequency by adding unique, context-specific terms that appear only once or twice in the text. Research niche vocabulary related to your topic and weave it in naturally. This creates a more authentic, expert tone and improves SEO signals.' : ''}, subNames: ['Diversity', 'Rare Word Frequency'], fixTexts: ['Boost vocabulary diversity by incorporating synonyms and avoiding word repetition through active editing. Draw from broader themes or analogies to introduce new terms. This enriches the text and signals deeper knowledge to search engines.', 'Enhance rare word frequency by adding unique, context-specific terms that appear only once or twice. Research specialized vocabulary relevant to your topic and weave it in naturally. This creates a more authentic, authoritative tone that stands out as genuinely human-written.']}
+      {name: 'Burstiness', id: 'burstiness', score: analysis.moduleScores[1], details: analysis.details.burstiness, subNames: ['Sentence Length Variation', 'Word Length Burstiness'], subKeys: ['sentence', 'word']},
+      {name: 'Repetition', id: 'repetition', score: analysis.moduleScores[2], details: analysis.details.repetition, subNames: ['Bigram Repetition', 'Trigram Repetition'], subKeys: ['bigram', 'trigram']},
+      {name: 'Sentence Length', id: 'sentence-length', score: analysis.moduleScores[3], details: analysis.details.sentenceLength, subNames: ['Average Length', 'Sentence Complexity'], subKeys: ['avg', 'complexity']},
+      {name: 'Vocabulary', id: 'vocabulary', score: analysis.moduleScores[4], details: analysis.details.vocabulary, subNames: ['Diversity', 'Rare Word Frequency'], subKeys: ['diversity', 'rare']}
     ].map(m => {
       const grade = getModuleGrade(m.score);
       const gradeColor = grade.color;
-      const sub1Score = m.name === 'Burstiness' ? m.details.scores.sentence : m.name === 'Repetition' ? m.details.scores.bigram : m.name === 'Sentence Length' ? m.details.scores.avg : m.details.scores.diversity;
-      const sub2Score = m.name === 'Burstiness' ? m.details.scores.word : m.name === 'Repetition' ? m.details.scores.trigram : m.name === 'Sentence Length' ? m.details.scores.complexity : m.details.scores.rare;
-      const failedCount = (sub1Score < 10 ? 1 : 0) + (sub2Score < 10 ? 1 : 0);
+      const sub1Score = m.details.scores[m.subKeys[0]];
+      const sub2Score = m.details.scores[m.subKeys[1]];
+      const failedItems = [];
+      if (sub1Score < 10) failedItems.push({ name: m.subNames[0], fix: fixFor(m.subNames[0]) });
+      if (sub2Score < 10) failedItems.push({ name: m.subNames[1], fix: fixFor(m.subNames[1]) });
+      const failedCount = failedItems.length;
+      const failedNames = failedItems.map(f => f.name).join(', ') || 'none';
+      const cmsName = (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'Unknown';
       return `
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center border-l-4" style="border-left-color: ${gradeColor}">
+      <div class="score-card bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center border-l-4 flex flex-col" style="border-left-color: ${gradeColor}">
         <div class="relative w-32 h-32 mx-auto">
           <svg viewBox="0 0 128 128" class="-rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -369,29 +382,35 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} ${m.subNames[0]}</p>
           <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} ${m.subNames[1]}</p>
         </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">More Details</button>
-        <div class="hidden mt-4 space-y-6 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-          <p class="text-center mb-8"><a href="#${m.id}" class="text-orange-500 font-bold hover:underline">How ${m.name} is tested? →</a></p>
-          <p><span class="font-bold text-blue-600 dark:text-blue-400">What it is?:</span> ${m.info}</p>
-          <p><span class="font-bold text-green-600 dark:text-green-400">How to Improve?:</span> Use varied phrasing, personal anecdotes, and unexpected ideas to boost scores. Mix short and long elements for rhythm, and incorporate synonyms or rarer words. Always edit with readability in mind to align with human patterns.</p>
-          <p><span class="font-bold text-orange-600 dark:text-orange-400">Why it matters?:</span> Search engines prioritize human-like content for higher rankings and user trust. Strong scores here reduce AI penalties and improve engagement metrics. Ultimately, this leads to better organic traffic and authority signals.</p>
+
+        <p class="mt-3 text-sm">
+          <a href="/blog/posts/ai-content-detection-guide/#${m.id}" class="text-orange-500 font-bold hover:underline">How ${m.name} is tested? →</a>
+        </p>
+
+        <div class="mt-auto pt-5">
+          <button type="button" class="fixes-toggle w-full mt-2 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow-md transition" data-failed-count="${failedCount}">
+            Show Fixes (${failedCount})
+          </button>
         </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full shadow-md transition">Show Fixes (${failedCount})</button>
-        <div class="hidden mt-4 space-y-8">
+
+        <div class="fixes-panel hidden mt-4 space-y-4 text-left">
           ${failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold">All tests passed! ✅</p>` : ''}
-          ${sub1Score < 10 ? `
-            <div class="text-center">
-              <div class="text-4xl mb-2" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</div>
-              <p class="font-bold mb-2" style="color: ${getSubColor(sub1Score)}">${m.subNames[0]}</p>
-              <p class="text-gray-700 dark:text-gray-300 max-w-md mx-auto">${m.fixTexts[0]}</p>
-            </div>` : ''}
-          ${sub2Score < 10 ? `
-            <div class="text-center mt-8">
-              <div class="text-4xl mb-2" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</div>
-              <p class="font-bold mb-2" style="color: ${getSubColor(sub2Score)}">${m.subNames[1]}</p>
-              <p class="text-gray-700 dark:text-gray-300 max-w-md mx-auto">${m.fixTexts[1]}</p>
-            </div>` : ''}
-          <p class="mt-8 text-center"><a href="#${m.id}" class="text-orange-500 font-bold hover:underline">← More details about ${m.name}</a></p>
+          ${failedItems.map((f, i) => `
+            <div class="${i > 0 ? 'pt-4 border-t border-gray-200 dark:border-gray-700' : ''}">
+              <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${f.name}</p>
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${f.fix}</p>
+            </div>
+          `).join('')}
+
+          <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+            <a href="#ask-ai-section" class="ask-ai-link block text-purple-600 dark:text-purple-400 font-bold hover:underline"
+               data-ai-question="How do I improve my ${m.name} score? Failed checks: ${failedNames}. Detected CMS: ${cmsName}. Module score: ${m.score}/20. Please give me ${cmsName}-specific fixes.">
+              🤖 Ask AI about this module →
+            </a>
+            <a href="/blog/posts/ai-content-detection-guide/#${m.id}" class="block text-orange-500 font-bold hover:underline">
+              📖 Read the full ${m.name} guide →
+            </a>
+          </div>
         </div>
       </div>`;
     }).join('')}
@@ -839,8 +858,8 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
           }
         }
-        
-                const askBtn = document.getElementById('ask-ai-btn');
+
+        const askBtn = document.getElementById('ask-ai-btn');
         const askInput = document.getElementById('ai-question-input');
         const modelSelect = document.getElementById('ai-model-select');
         const answerContainer = document.getElementById('ai-answer-container');
@@ -929,8 +948,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           });
         }
-        
-                // ─── CMS Fixes Logic ──────────────────────────────────────────
+
+        // ─── CMS Fixes Logic ──────────────────────────────────────────
         const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
         const cmsBadgeDot        = document.getElementById('cms-badge-dot');
         const cmsBadgeName       = document.getElementById('cms-badge-name');
@@ -1078,5 +1097,38 @@ document.addEventListener('DOMContentLoaded', () => {
   codeForm.addEventListener('submit', (e) => {
     e.preventDefault();
     runAnalysis(false);
+  });
+
+  // ── Delegated handler for score-card toggles + Ask-AI links ──
+  document.addEventListener('click', (e) => {
+    // Fixes toggle
+    const toggle = e.target.closest('.fixes-toggle');
+    if (toggle) {
+      const card = toggle.closest('.score-card');
+      const panel = card?.querySelector('.fixes-panel');
+      if (panel) {
+        const isHidden = panel.classList.contains('hidden');
+        panel.classList.toggle('hidden');
+        const failedCount = toggle.dataset.failedCount || '0';
+        toggle.textContent = isHidden
+          ? `Hide Fixes (${failedCount})`
+          : `Show Fixes (${failedCount})`;
+      }
+      return;
+    }
+
+    // Ask AI about this module
+    const askLink = e.target.closest('.ask-ai-link');
+    if (askLink) {
+      e.preventDefault();
+      const section = document.getElementById('ask-ai-section');
+      const textarea = document.getElementById('ai-question-input');
+      if (section && textarea) {
+        textarea.value = askLink.dataset.aiQuestion || '';
+        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => textarea.focus(), 700);
+      }
+      return;
+    }
   });
 });

@@ -11,6 +11,7 @@ import { canRunTool } from '/main-v1.1.js';
 // Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
+import { fixFor } from './module-explanations-v1.0.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -352,114 +353,92 @@ document.addEventListener('DOMContentLoaded', () => {
     return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   }
 
-  function buildModuleHTML(moduleName, value, moduleData, factorScores = null) {
+  function buildModuleHTML(moduleName, value, moduleData, factorScores = null, cmsInfo = null) {
     const ringColor = value < 50 ? '#ef4444' : value < 70 ? '#fb923c' : value < 85 ? '#22c55e' : '#10b981';
     const borderClass = value < 50 ? 'border-red-500' : value < 70 ? 'border-orange-500' : value < 85 ? 'border-green-500' : 'border-emerald-500';
     const gradeInfo = getGradeInfo(value);
+
     let statusMessage, statusEmoji;
-    if (value >= 85) {
-      statusMessage = "Excellent";
-      statusEmoji = "🏆";
-    } else if (value >= 70) {
-      statusMessage = "Very Good";
-      statusEmoji = "✅";
-    } else if (value >= 50) {
-      statusMessage = "Needs Improvement";
-      statusEmoji = "⚠️";
-    } else {
-      statusMessage = "Needs Work";
-      statusEmoji = "❌";
-    }
-    let metricsHTML = '';
-    let failedOnlyHTML = '';
-    let failedCount = 0;
+    if (value >= 85)      { statusMessage = 'Excellent';         statusEmoji = '🏆'; }
+    else if (value >= 70) { statusMessage = 'Very Good';         statusEmoji = '✅'; }
+    else if (value >= 50) { statusMessage = 'Needs Improvement'; statusEmoji = '⚠️'; }
+    else                  { statusMessage = 'Needs Work';        statusEmoji = '❌'; }
+
+    // ── Categorise each factor: failed ❌ / warning ⚠️ / passed ✅ ──
+    const failed = [];
+    const warnings = [];
+    const passed = [];
+
     moduleData.factors.forEach(f => {
-      let individualScore = (factorScores && f.key && factorScores[f.key] && factorScores[f.key].score !== undefined)
+      const individualScore = (factorScores && f.key && factorScores[f.key] && factorScores[f.key].score !== undefined)
         ? factorScores[f.key].score
         : value;
-      let passed = individualScore >= f.threshold;
-      let metricGrade = passed
-        ? { color: "text-green-600 dark:text-green-400", emoji: "✅" }
-        : (individualScore >= f.threshold - 20)
-          ? { color: "text-orange-600 dark:text-orange-400", emoji: "⚠️" }
-          : { color: "text-red-600 dark:text-red-400", emoji: "❌" };
-      if (f.key === 'keywords') {
-        const kDetails = factorScores?.keywords || {};
-        metricsHTML += `
-          <div class="mb-6">
-            <p class="font-medium text-xl">
-              <span class="${metricGrade.color} text-2xl mr-3">${metricGrade.emoji}</span>
-              <span class="${metricGrade.color} font-bold">${f.name}</span>
-            </p>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
-              Primary: "${kDetails.primaryKeyword || '—'}"
-              <br>• Count: ${kDetails.count || 0} • Density: ${kDetails.density || 0}%
-              <br>• In Title/H1/Intro: ${kDetails.inTitle ? '✅' : '❌'} / ${kDetails.inH1 ? '✅' : '❌'} / ${kDetails.inIntro ? '✅' : '❌'}
-              <br>• Related terms: ${kDetails.hasRelatedTerms ? 'Yes' : 'No'}
-            </p>
-          </div>`;
-      } else {
-        metricsHTML += `
-          <div class="mb-6">
-            <p class="font-medium text-xl">
-              <span class="${metricGrade.color} text-2xl mr-3">${metricGrade.emoji}</span>
-              <span class="${metricGrade.color} font-bold">${f.name}</span>
-            </p>
-          </div>`;
-      }
-      if (!passed) {
-        failedOnlyHTML += `
-          <div class="mb-8 p-2 bg-gray-50 dark:bg-gray-800 rounded-xl text-center">
-            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-              <span class="text-4xl">${metricGrade.emoji}</span>
-            </p>
-            <p class="font-bold text-2xl ${metricGrade.color} mb-4">
-              ${f.name}
-            </p>
-            <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-              ${f.howToFix}
-            </p>
-          </div>`;
-        failedCount++;
-      }
+
+      const isPass = individualScore >= f.threshold;
+      const isWarning = !isPass && individualScore >= f.threshold - 20;
+
+      const item = {
+        name: f.name,
+        score: individualScore,
+        threshold: f.threshold,
+        emoji: isPass ? '✅' : (isWarning ? '⚠️' : '❌'),
+        color: isPass
+          ? 'text-green-600 dark:text-green-400'
+          : (isWarning ? 'text-orange-500 dark:text-orange-400' : 'text-red-600 dark:text-red-400'),
+        fix: (() => {
+          const found = fixFor(f.name + ' ' + (f.shortDesc || ''));
+          return found && !found.startsWith('Review this metric') ? found : f.howToFix;
+        })()
+      };
+
+      if (isPass) passed.push(item);
+      else if (isWarning) warnings.push(item);
+      else failed.push(item);
     });
-    const moreDetailsHTML = `
-      <div class="text-left px-4 py-6">
-        <h4 class="text-2xl font-bold mb-8 text-gray-900 dark:text-gray-100 text-center">
-          <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase().replace(/\s+/g, '-')}';">
-            How ${moduleName} is tested?
-          </button>
-        </h4>
-        <div class="space-y-6">
-          <div>
-            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">What it is:</strong>
-            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhat}</p>
+
+    // Header order: ❌ failed → ⚠️ warning → ✅ passed
+    const headerItems = [...failed, ...warnings, ...passed];
+
+    const headerHTML = headerItems.map(item => `
+      <p class="${item.color} font-semibold text-sm sm:text-base mb-1.5 leading-snug text-left">
+        ${item.emoji} ${item.name}
+      </p>
+    `).join('');
+
+    // Fixes panel = failed + warnings (failed first)
+    const fixableItems = [...failed, ...warnings];
+
+    const fixesPanelHTML = fixableItems.length > 0
+      ? fixableItems.map((item, i) => `
+          <div class="${i > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-5 mt-5' : ''}">
+            <p class="font-bold ${item.color} mb-2 leading-snug">${item.emoji} ${item.name}</p>
+            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${item.fix}</p>
           </div>
-          <div>
-            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">How to Improve:</strong>
-            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleHow}</p>
-          </div>
-          <div>
-            <strong class="text-gray-900 dark:text-gray-100 block mb-2 text-lg">Why it matters:</strong>
-            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${moduleData.moduleWhy}</p>
-          </div>
-        </div>
-      </div>`;
-    const fixesPanelHTML = failedCount > 0
-      ? `
-        <div class="space-y-6">
-          ${failedOnlyHTML}
-        </div>
-        <p class="text-center text-gray-600 dark:text-gray-400 mt-10 text-sm italic">
-          <button class="underline hover:text-purple-600 dark:hover:text-purple-400 bg-transparent border-none cursor-pointer" onclick="window.location.hash = '${moduleName.toLowerCase().replace(/\s+/g, '-')}';">
-            Learn more about ${moduleName}?
-          </button>
-        </p>
-      `
-      : '<p class="text-center text-gray-700 dark:text-gray-300 text-lg py-12 font-medium">All checks passed — no fixes needed!</p>';
+        `).join('')
+      : '<p class="text-center text-gray-700 dark:text-gray-300 text-base py-6 font-medium">All checks passed — no fixes needed!</p>';
+
+    // ── Ask AI prefill (includes detected CMS) ─────────────────────
+    const failedNames = fixableItems.map(i => i.name).join(', ') || 'none';
+    const cmsLabel = cmsInfo?.name && cmsInfo.name !== 'Custom / Unknown'
+      ? ` (CMS: ${cmsInfo.name}${cmsInfo.version ? ' ' + cmsInfo.version : ''})`
+      : '';
+    const askQuestion = `How do I improve my ${moduleName} score? Failed checks: ${failedNames}${cmsLabel}`;
+
+    // ── Help guide deep link ───────────────────────────────────────
+    const moduleSlugMap = {
+      'On-Page SEO': 'on-page-seo',
+      'Technical SEO': 'technical-seo',
+      'Content & Media': 'content--media',
+      'E-Commerce Signals': 'e-commerce-signals'
+    };
+    const moduleSlug = moduleSlugMap[moduleName] || moduleName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const helpGuideUrl = `https://traffictorch.net/blog/posts/product-seo-help-guide/#${moduleSlug}`;
+
+    const hasFixes = fixableItems.length > 0;
+
     return `
-      <div class="module-card text-center p-0 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
-        <div class="relative mx-auto w-32 h-32">
+      <div class="module-card score-card flex flex-col text-center p-2 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+        <div class="relative mx-auto w-32 h-32 flex-shrink-0">
           <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
             <circle cx="64" cy="64" r="56" stroke="#f3f4f6" stroke-width="12" fill="none"/>
             <circle cx="64" cy="64" r="56"
@@ -472,29 +451,52 @@ document.addEventListener('DOMContentLoaded', () => {
             ${value}
           </div>
         </div>
+
         <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
+
         <div class="mt-4 text-center">
           <p class="text-4xl ${gradeInfo.color}">${statusEmoji}</p>
-          <p class="text-3xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
+          <p class="text-2xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
         </div>
-        <div class="mt-6 text-center metrics-list px-2 sm:px-0">
-          ${metricsHTML}
+
+        <div class="mt-6 text-left metrics-list px-1">
+          ${headerHTML}
         </div>
-        <div class="more-details-panel hidden mt-8 text-left px-2 sm:px-4">
-          ${moreDetailsHTML}
+
+        <div class="mt-auto pt-5">
+          <button type="button"
+        class="fixes-toggle w-full mt-2 px-5 py-3 rounded-xl
+               bg-green-600 dark:bg-green-700
+               text-white
+               font-semibold
+               hover:bg-green-700 dark:hover:bg-green-600
+               transition shadow-md
+               disabled:bg-gray-400 dark:disabled:bg-gray-600
+               disabled:text-white
+               disabled:cursor-not-allowed"
+        data-failed-count="${fixableItems.length}"
+        ${hasFixes ? '' : 'disabled'}>
+  ${hasFixes ? `Show Fixes (${fixableItems.length})` : 'All Checks Passed ✅'}
+</button>
         </div>
-        <div class="mt-6 flex gap-4 justify-center flex-wrap">
-          <button class="more-details px-6 py-3 sm:px-8 sm:py-3 rounded-full text-white font-medium hover:opacity-90 transition" style="background-color: ${ringColor};">
-            More Details
-          </button>
-          <button class="show-fixes px-6 py-3 sm:px-8 sm:py-3 rounded-full bg-gray-600 text-white font-medium hover:opacity-90 transition">
-            Show Fixes${failedCount > 0 ? ` (${failedCount})` : ''}
-          </button>
-        </div>
-        <div class="fixes-panel hidden mt-8 text-left px-2 sm:px-4">
+
+        <div class="fixes-panel hidden mt-6 text-left px-2 sm:px-4 w-full">
           ${fixesPanelHTML}
+
+          <div class="mt-6 pt-5 border-t-2 border-gray-200 dark:border-gray-700 space-y-3">
+            <a href="#ask-ai-section"
+               class="ask-ai-link block text-purple-600 dark:text-purple-400 hover:underline font-semibold text-base"
+               data-ai-question="${askQuestion.replace(/"/g, '&quot;')}">
+              🤖 Ask AI about this module
+            </a>
+            <a href="${helpGuideUrl}"
+               class="block text-orange-600 dark:text-orange-400 hover:underline font-semibold text-base">
+              📖 Read the full ${moduleName} guide
+            </a>
+          </div>
         </div>
-      </div>`;
+      </div>
+    `;
   }
 
   // UI Elements
@@ -602,10 +604,10 @@ async function performAnalysis(source, isCode = false) {
       const safeScore = isNaN(seo.score) ? 60 : seo.score;
       const overallGrade = getGradeInfo(safeScore);
       const ringColor = safeScore < 50 ? '#ef4444' : safeScore < 70 ? '#fb923c' : safeScore < 85 ? '#22c55e' : '#10b981';
-      const onPageHTML = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details);
-      const technicalHTML = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details);
-      const contentMediaHTML = buildModuleHTML('Content & Media', seo.contentMedia.score, factorDefinitions.contentMedia, seo.contentMedia.details);
-      const ecommerceHTML = buildModuleHTML('E-Commerce Signals', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details);
+      const onPageHTML = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details, cmsInfo);
+      const technicalHTML = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details, cmsInfo);
+      const contentMediaHTML = buildModuleHTML('Content & Media', seo.contentMedia.score, factorDefinitions.contentMedia, seo.contentMedia.details, cmsInfo);
+      const ecommerceHTML = buildModuleHTML('E-Commerce Signals', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details, cmsInfo);
       const modulePriority = [
         { name: 'On-Page SEO', score: seo.onPage.score, threshold: 70, data: factorDefinitions.onPage },
         { name: 'Technical SEO', score: seo.technical.score, threshold: 80, data: factorDefinitions.technical },
@@ -940,19 +942,13 @@ async function performAnalysis(source, isCode = false) {
         } catch (e) {}
       }, 150);
 
-      // ─── Remove old share/feedback calls ──────────────────────────
-      // initShareReport(results);   // removed
-      // initSubmitFeedback(results); // removed
-
       // ─── Set data-url for the analyzed page ──────────────────────────
       const analyzedUrl = inputUrl === 'Pasted HTML Code' ? 'HTML Code Analysis' : inputUrl;
       document.body.setAttribute('data-url', analyzedUrl);
 
       // ─── Prepare and initialise share dashboard ──────────────────────
-      // Build module scores from the 'modules' array
       const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
 
-      // Build passed/failed metrics
       const passedMetrics = [];
       const failedMetrics = [];
       modules.forEach(mod => {
@@ -962,14 +958,12 @@ async function performAnalysis(source, isCode = false) {
           failedMetrics.push(mod.name);
         }
       });
-      // Also add individual factor names from priorityFixes
       failedFactors.forEach(fix => {
         if (!failedMetrics.includes(fix.name)) {
           failedMetrics.push(fix.name);
         }
       });
 
-      // Only create shareLink for real URLs (skip for pasted HTML)
       let shareLink = '';
       if (inputUrl !== 'Pasted HTML Code' && inputUrl !== 'HTML Code Analysis') {
         shareLink = `${window.location.origin}/product-seo-tool/?url=${encodeURIComponent(inputUrl)}`;
@@ -992,7 +986,6 @@ async function performAnalysis(source, isCode = false) {
       if (shareContainer && inputUrl !== 'Pasted HTML Code' && inputUrl !== 'HTML Code Analysis') {
         initShareModule(shareContainer, shareData);
       } else if (shareContainer) {
-        // For pasted HTML, show a message or just leave empty
         shareContainer.innerHTML = `
           <div class="text-center text-gray-500 dark:text-gray-400 p-4 border border-gray-300 dark:border-gray-600 rounded-xl">
             <p>Sharing is available for live URLs only. Please run the analysis with a URL to share this report.</p>
@@ -1040,6 +1033,9 @@ async function performAnalysis(source, isCode = false) {
                   contentMedia: seo.contentMedia.score,
                   ecommerce: seo.ecommerce.score
                 },
+                cms: cmsInfo?.name || 'Custom / Unknown',
+                cmsVersion: cmsInfo?.version || null,
+                cmsConfidence: cmsInfo?.confidence || 'low',
                 flags: {
                   hasViewport: seoData.hasViewport,
                   hasCanonical: seo.technical.details?.canonical?.score >= 50 || false,
@@ -1254,4 +1250,41 @@ if (sharedUrl && urlInput) {
     }, 100);
   }
 }
+
+  // ─── Delegated click handler for dynamic module cards + Ask AI ──
+  document.addEventListener('click', (e) => {
+    // 1) Fixes toggle
+    const toggle = e.target.closest('.fixes-toggle');
+    if (toggle) {
+      const card = toggle.closest('.score-card') || toggle.closest('.module-card');
+      if (!card) return;
+      const panel = card.querySelector('.fixes-panel');
+      if (!panel) return;
+
+      const nowHidden = panel.classList.toggle('hidden');
+      const count = toggle.dataset.failedCount || '0';
+      toggle.textContent = nowHidden
+        ? `Show Fixes (${count})`
+        : `Hide Fixes (${count})`;
+      return;
+    }
+
+    // 2) Ask AI link
+    const askLink = e.target.closest('.ask-ai-link');
+    if (askLink) {
+      e.preventDefault();
+      const question = askLink.dataset.aiQuestion || '';
+      const section = document.getElementById('ask-ai-section');
+      const textarea = document.getElementById('ai-question-input');
+
+      if (textarea && question) textarea.value = question;
+
+      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      setTimeout(() => {
+        if (textarea) textarea.focus();
+      }, 700);
+      return;
+    }
+  });
 });

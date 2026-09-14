@@ -221,13 +221,13 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
 
               <div class="mt-auto pt-5">
-                <button class="fixes-toggle w-full px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm"
+                <button class="fixes-toggle w-full mt-2 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm"
                         data-failed-count="${allIssues.length}">
                   ${allIssues.length ? `Show Fixes (${allIssues.length})` : 'Details'}
                 </button>
               </div>
 
-              <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-4 w-full">
+              <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded-lg space-y-4 w-full">
                 ${allIssues.length ? allIssues.map((item, i) => `
                   <div class="${i > 0 ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}">
                     <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${escapeHtml(item)}</p>

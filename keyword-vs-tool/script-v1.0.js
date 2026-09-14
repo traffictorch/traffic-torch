@@ -136,6 +136,27 @@ document.addEventListener('DOMContentLoaded', () => {
     return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   };
 
+  // ── CMS detection helper ─────────────────────────────────────────
+  const detectCMS = (doc) => {
+    if (!doc?.documentElement) return 'unknown';
+    const html = doc.documentElement.outerHTML.toLowerCase();
+    if (html.includes('wp-content') || html.includes('wp-includes') || html.includes('wordpress')) return 'WordPress';
+    if (html.includes('cdn.shopify.com') || html.includes('shopify')) return 'Shopify';
+    if (html.includes('wixstatic') || html.includes('wix.com')) return 'Wix';
+    if (html.includes('squarespace')) return 'Squarespace';
+    if (html.includes('webflow')) return 'Webflow';
+    if (html.includes('framerusercontent') || html.includes('framer.com')) return 'Framer';
+    if (html.includes('joomla')) return 'Joomla';
+    if (html.includes('drupal')) return 'Drupal';
+    if (html.includes('ghost.io') || html.includes('ghost-')) return 'Ghost';
+    if (html.includes('hubspot')) return 'HubSpot';
+    if (html.includes('duda')) return 'Duda';
+    if (html.includes('/_next/')) return 'Next.js';
+    if (html.includes('nuxt')) return 'Nuxt';
+    if (html.includes('gatsby')) return 'Gatsby';
+    return 'unknown';
+  };
+
   const moduleHashes = {
     'Meta Title & Desc': 'meta-title-desc',
     'H1 & Headings': 'h1-headings',
@@ -202,6 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const yourTitle = yourDoc.querySelector('title')?.textContent.trim() || '';
     const compTitle = compDoc.querySelector('title')?.textContent.trim() || '';
+    const yourCMS = detectCMS(yourDoc);
+    const compCMS = detectCMS(compDoc);
 
     // Progress steps
     const steps = [
@@ -457,17 +480,120 @@ document.addEventListener('DOMContentLoaded', () => {
     const yourScore = m.you;
     const compScore = m.comp;
     const yourGrade = getGrade(Math.round(yourScore));
-    const compGrade = getGrade(Math.round(compScore));
     const borderColor = yourScore >= compScore ? 'border-green-500' : 'border-red-500';
     const hashId = moduleHashes[m.name] || '';
-    const educ = window.metricExplanations?.find(e => e.name === m.name) || { what: '', how: '', why: '' };
-    const diagnostics = [
-      { status: yourScore >= compScore ? '✅' : '❌', issue: 'Your page', how: yourScore >= compScore ? 'Stronger than competitor' : 'Needs improvement' },
-      { status: compScore > yourScore ? '✅' : '❌', issue: 'Competitor page', how: compScore > yourScore ? 'Outperforms you' : 'Weaker than your page' }
-    ];
-    const hasIssues = yourScore < compScore;
+    const helpUrl = `/blog/posts/seo-keyword-competition-help-guide/#how-${hashId}`;
+
+    // Collect issues for failed AND average metrics (yourScore < 80)
+    const moduleIssues = [];
+    if (yourScore < 80) {
+      if (m.name === 'Meta Title & Desc') {
+        if (data.meta.yourMatches === 0) moduleIssues.push({
+          title: 'Target phrase missing from title or meta description',
+          fix: 'Add the keyword naturally near the beginning of the title (under 60 chars) and once in the meta description (under 155 chars). This can lift rankings and CTR by 20–30%.'
+        });
+      } else if (m.name === 'H1 & Headings') {
+        if (data.headings.yourH1Match === 0) moduleIssues.push({
+          title: 'Target phrase missing from H1 heading',
+          fix: 'Rewrite the H1 to include the exact or close variant of the target keyword while keeping it compelling and reader-focused.'
+        });
+      } else if (m.name === 'Content Density') {
+        if (data.content.yourWords < 800) moduleIssues.push({
+          title: `Low word count (${data.content.yourWords} words)`,
+          fix: 'Expand with FAQs, examples, step-by-step guides, data, or comparisons. Aim for 800–1500+ words of in-depth content.'
+        });
+        if (data.content.yourContentMatches === 0) moduleIssues.push({
+          title: 'Target phrase not found in content',
+          fix: 'Incorporate the keyword naturally in the introduction, subheadings, body, and conclusion without stuffing.'
+        });
+        if (data.content.yourContentMatches > 0 && data.content.yourDensity < 1) moduleIssues.push({
+          title: `Keyword density too low (${data.content.yourDensity}%)`,
+          fix: 'Add the phrase in a few more natural spots to reach the ideal 1–2% density range.'
+        });
+        if (data.content.yourDensity > 2) moduleIssues.push({
+          title: `Keyword density too high (${data.content.yourDensity}%)`,
+          fix: 'Reduce direct keyword usage and swap in semantic variations to avoid over-optimization penalties.'
+        });
+      } else if (m.name === 'Image Alts') {
+        if (data.alts.yourPhrase === 0) moduleIssues.push({
+          title: 'No image alt text contains the target phrase',
+          fix: 'Update hero/featured images with descriptive alt text that naturally includes the phrase. Boosts accessibility and image search traffic.'
+        });
+      } else if (m.name === 'Anchor Text') {
+        if (data.anchors.your === 0) moduleIssues.push({
+          title: 'No internal links use the target phrase as anchor text',
+          fix: 'Add 2–4 relevant internal links using the phrase or natural variations to strengthen site-wide topical relevance.'
+        });
+      } else if (m.name === 'URL & Schema') {
+        if (data.urlSchema.yourUrlMatch === 0) moduleIssues.push({
+          title: 'Target phrase missing from URL slug',
+          fix: 'If possible, restructure the URL to include the main keywords (e.g. /keyword-phrase) for clearer relevance signals.'
+        });
+        if (!data.urlSchema.yourSchema) moduleIssues.push({
+          title: 'No structured data (JSON-LD schema) detected',
+          fix: 'Add appropriate schema markup (Article, FAQPage, HowTo, etc.) in a <script type="application/ld+json"> block to unlock rich snippets.'
+        });
+      }
+    }
+
+    // ── Status items for this module: failed / warning / passed ────
+    const statusItems = { failed: [], warning: [], passed: [] };
+    if (m.name === 'Meta Title & Desc') {
+      if (data.meta.yourMatches > 0) statusItems.passed.push('Keyword in title/meta');
+      else statusItems.failed.push('Keyword missing from title/meta');
+      if (data.meta.yourMatches > 0 && data.meta.compMatches > data.meta.yourMatches)
+        statusItems.warning.push('Competitor uses keyword more often');
+      if (data.meta.yourMatches > 0 && data.meta.yourMatches >= data.meta.compMatches)
+        statusItems.passed.push('Matches or beats competitor');
+    } else if (m.name === 'H1 & Headings') {
+      if (data.headings.yourH1Match > 0) statusItems.passed.push('Keyword in H1');
+      else statusItems.failed.push('Keyword missing from H1');
+    } else if (m.name === 'Content Density') {
+      if (data.content.yourWords >= 800) statusItems.passed.push(`Word count: ${data.content.yourWords}`);
+      else statusItems.warning.push(`Low word count: ${data.content.yourWords}`);
+      if (data.content.yourContentMatches === 0) statusItems.failed.push('Keyword not in content');
+      else if (data.content.yourDensity >= 1 && data.content.yourDensity <= 2)
+        statusItems.passed.push(`Density optimal (${data.content.yourDensity}%)`);
+      else if (data.content.yourDensity >= 0.5 && data.content.yourDensity < 1)
+        statusItems.warning.push(`Density low (${data.content.yourDensity}%)`);
+      else if (data.content.yourDensity > 2)
+        statusItems.warning.push(`Density high (${data.content.yourDensity}%)`);
+      else statusItems.failed.push(`Density too low (${data.content.yourDensity}%)`);
+    } else if (m.name === 'Image Alts') {
+      if (data.alts.yourPhrase > 0) statusItems.passed.push(`${data.alts.yourPhrase} image alt(s) with keyword`);
+      else statusItems.failed.push('No image alts with keyword');
+    } else if (m.name === 'Anchor Text') {
+      if (data.anchors.your > 0) statusItems.passed.push(`${data.anchors.your} internal anchor(s) with keyword`);
+      else statusItems.failed.push('No keyword-rich internal anchors');
+    } else if (m.name === 'URL & Schema') {
+      if (data.urlSchema.yourUrlMatch > 0) statusItems.passed.push('Keyword in URL');
+      else statusItems.failed.push('Keyword missing from URL');
+      if (data.urlSchema.yourSchema) statusItems.passed.push('Schema markup present');
+      else statusItems.failed.push('No schema markup');
+    }
+
+    const statusListHTML = [
+      ...statusItems.failed.map(t => `<p class="text-red-600 dark:text-red-400 text-sm font-medium text-left">❌ ${t}</p>`),
+      ...statusItems.warning.map(t => `<p class="text-orange-500 dark:text-orange-400 text-sm font-medium text-left">⚠️ ${t}</p>`),
+      ...statusItems.passed.map(t => `<p class="text-green-600 dark:text-green-400 text-sm font-medium text-left">✅ ${t}</p>`)
+    ].join('');
+
+    const failedCount = moduleIssues.length;
+    const failedTitles = moduleIssues.map(i => i.title).join('; ') || 'none';
+    const cmsLabel = yourCMS && yourCMS !== 'unknown' ? yourCMS : 'unknown';
+    const aiQuestionText = `How do I improve my ${m.name} score? Failed checks: ${failedTitles}. Detected CMS: ${cmsLabel}. Please give ${cmsLabel !== 'unknown' ? cmsLabel + '-specific' : 'platform-agnostic'} advice.`;
+
+    const issuesHTML = moduleIssues.length > 0
+      ? moduleIssues.map((issue, idx) => `
+        <div class="${idx > 0 ? 'mt-6 pt-6 border-t border-red-200 dark:border-red-800' : ''}">
+          <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${issue.title}</p>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${issue.fix}</p>
+        </div>
+      `).join('')
+      : '<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg py-4">🎉 You outperform the competitor here!</p>';
+
     return `
-      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
+      <div class="score-card flex flex-col text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
         <h4 class="text-xl font-medium mb-4">${m.name}</h4>
         <div class="grid grid-cols-2 gap-8 mb-8">
           <div>
@@ -497,54 +623,37 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="mt-3 text-sm font-medium">Comp</p>
           </div>
         </div>
-        <div class="space-y-2 mb-6">
-          <div class="text-xl font-bold ${yourGrade.color}">${yourGrade.emoji} ${yourGrade.grade}</div>
-          <div class="text-xl font-bold ${compGrade.color}">${compGrade.emoji} ${compGrade.grade}</div>
+        <div class="mb-6">
+          <div class="text-xl font-bold ${yourGrade.color} text-center">${yourGrade.emoji} ${yourGrade.grade}</div>
+          <div class="mt-4 space-y-2">
+            ${statusListHTML || '<p class="text-gray-500 dark:text-gray-400 text-sm text-center">No signals detected</p>'}
+          </div>
         </div>
-        <button onclick="this.parentElement.querySelector('.fixes-panel').classList.toggle('hidden')" class="w-full py-3 bg-red-600 text-white rounded-full hover:bg-red-700 text-sm font-bold">
-          Show Fixes
-        </button>
+        <div class="mt-auto pt-5">
+          <button type="button"
+                  class="fixes-toggle mt-2 w-full py-3 bg-red-600 text-white rounded-full hover:bg-red-700 text-sm font-bold"
+                  data-failed-count="${failedCount}">
+            ${failedCount > 0 ? `Show ${failedCount} Fix${failedCount > 1 ? 'es' : ''}` : 'Show Fixes'}
+          </button>
+        </div>
         <div class="fixes-panel hidden mt-6 p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800">
           <div class="text-center mb-6">
-            <div class="text-3xl">${yourScore < compScore ? '🔴' : '🟢'}</div>
-            <div class="text-2xl font-black ${yourScore < compScore ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}">${m.name}</div>
-            <div class="text-xl font-bold ${yourScore < compScore ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'} mt-2">
-              ${yourScore < compScore ? 'Competitor Wins' : 'You Win'}
+            <div class="text-3xl">${failedCount > 0 ? '🔴' : '🟢'}</div>
+            <div class="text-2xl font-black ${failedCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}">${m.name}</div>
+            <div class="text-xl font-bold ${failedCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'} mt-2">
+              ${failedCount > 0 ? `${failedCount} Issue${failedCount > 1 ? 's' : ''} Found` : 'All Checks Passed'}
             </div>
           </div>
-          <div class="space-y-4 text-left">
-            ${diagnostics.map(d => `
-              <div class="flex items-start gap-3">
-                <span class="text-xl mt-1">${d.status}</span>
-                <div>
-                  <p class="font-medium text-gray-800 dark:text-gray-200">${d.issue}</p>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${d.how}</p>
-                </div>
-              </div>
-            `).join('')}
-            ${!hasIssues ? '<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg mt-6">🎉 You outperform the competitor here!</p>' : ''}
-          </div>
-          <div class="text-center mt-8 pt-6 border-t border-red-200 dark:border-red-700">
-            <a href="#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
-              Learn more about ${m.name}
+          <div class="text-left">${issuesHTML}</div>
+          <div class="mt-8 pt-6 border-t border-red-200 dark:border-red-800 space-y-3 text-center">
+            <a href="#ask-ai-section"
+               class="ask-ai-link block text-purple-600 dark:text-purple-400 font-bold hover:underline"
+               data-ai-question="${aiQuestionText.replace(/"/g, '&quot;')}">
+              🤖 Ask AI about this module →
             </a>
-          </div>
-        </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="w-full mt-3 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm font-bold">
-          More Details
-        </button>
-        <div class="hidden mt-6 space-y-6 text-left text-sm">
-          <div class="text-center mb-4">
-            <a href="#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
-              How ${m.name} is compared?
-            </a>
-          </div>
-          <p class="text-blue-600 dark:text-blue-400 font-bold">What is it?</p><p class="text-gray-800 dark:text-gray-200">${educ.what}</p>
-          <p class="text-green-600 dark:text-green-400 font-bold mt-3">How to improve?</p><p class="text-gray-800 dark:text-gray-200">${educ.how}</p>
-          <p class="text-orange-600 dark:text-orange-400 font-bold mt-3">Why it matters?</p><p class="text-gray-800 dark:text-gray-200">${educ.why}</p>
-          <div class="text-center mt-8 pt-6 border-t border-gray-300 dark:border-gray-700">
-            <a href="#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
-              Learn more about ${m.name}
+            <a href="${helpUrl}"
+               class="block text-orange-600 dark:text-orange-400 font-bold hover:underline">
+              📖 Read the full ${m.name} guide →
             </a>
           </div>
         </div>
@@ -846,12 +955,18 @@ document.addEventListener('DOMContentLoaded', () => {
               moduleScoresMap[key + 'Comp'] = compScores[i];
             });
 
+            const cmsContext = yourCMS && yourCMS !== 'unknown'
+              ? `[Detected CMS: ${yourCMS}] `
+              : '';
+
             const auditPayload = {
-              question: question,
+              question: cmsContext + question,
               auditData: {
                 yourUrl: yourUrl,
                 competitorUrl: compUrl,
                 targetKeyword: phrase,
+                yourCMS: yourCMS,
+                competitorCMS: compCMS,
                 yourScore: yourScore,
                 competitorScore: compScore,
                 scores: {
@@ -917,5 +1032,40 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
     };
+  });
+
+  // ── Delegated handler for score-card toggles + Ask AI links ─────
+  document.addEventListener('click', (e) => {
+    const fixBtn = e.target.closest('.fixes-toggle');
+    if (fixBtn) {
+      const card = fixBtn.closest('.score-card');
+      if (!card) return;
+      const panel = card.querySelector('.fixes-panel');
+      if (!panel) return;
+      const count = parseInt(fixBtn.dataset.failedCount || '0', 10);
+      panel.classList.toggle('hidden');
+      const isOpen = !panel.classList.contains('hidden');
+      if (count > 0) {
+        fixBtn.textContent = isOpen
+          ? `Hide ${count} Fix${count > 1 ? 'es' : ''}`
+          : `Show ${count} Fix${count > 1 ? 'es' : ''}`;
+      } else {
+        fixBtn.textContent = isOpen ? 'Hide Fixes' : 'Show Fixes';
+      }
+      return;
+    }
+
+    const aiLink = e.target.closest('.ask-ai-link');
+    if (aiLink) {
+      e.preventDefault();
+      const section = document.getElementById('ask-ai-section');
+      if (!section) return;
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const textarea = document.getElementById('ai-question-input');
+      if (textarea) {
+        textarea.value = aiLink.dataset.aiQuestion || '';
+        setTimeout(() => textarea.focus(), 700);
+      }
+    }
   });
 });

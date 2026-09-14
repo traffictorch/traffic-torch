@@ -414,12 +414,9 @@ const initTool = (form, results, progressContainer) => {
         let content = fixes || '<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>';
         return `
           <div class="text-center mb-4">
-            <a href="#${anchorId}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">How ${displayName} is tested? →</a>
+            <a href="/blog/posts/ai-search-optimization-help-guide/#${anchorId}-how" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">How ${displayName} is tested? →</a>
           </div>
           ${content}
-          <div class="text-center mt-6">
-            <a href="#${anchorId}" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">← More details about ${displayName}</a>
-          </div>
         `;
       }
 
@@ -496,13 +493,28 @@ const initTool = (form, results, progressContainer) => {
             </p>
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 my-12 px-0 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-12 px-0 max-w-7xl mx-auto">
           ${modules.map(m => {
             const grade = getGradeInfo(m.score);
             const moduleTests = tests.filter(t => moduleKeywords[m.name].some(kw => t.text.includes(kw)));
             const hasIssues = moduleTests.some(t => !t.passed);
             const allClear = !hasIssues;
             const needsFixSignals = moduleTests.filter(t => !t.passed);
+            const moduleSlugMap = {
+              "Answerability": "answerability",
+              "Structured Data": "structured-data",
+              "EEAT Signals": "eeat-signals",
+              "Scannability": "scannability",
+              "Conversational Tone": "conversational-tone",
+              "Readability": "readability",
+              "Unique Insights": "unique-insights",
+              "Anti-AI Safety": "anti-ai-safety"
+            };
+            const moduleSlug = moduleSlugMap[m.name] || m.name.toLowerCase().replace(/\s+/g, '-');
+            const failedList = needsFixSignals.map(t => t.text).join(', ') || 'None';
+            const cmsLabel = (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Unknown';
+            const aiQuestion = `How do I improve my ${m.name} score? Failed checks: ${failedList}. Detected CMS: ${cmsLabel}`.replace(/"/g, '&quot;');
+            const showAskAI = needsFixSignals.length > 0 || m.score < 80;
             return `
               <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 border-${grade.color} p-2 flex flex-col">
                 <div class="relative mx-auto w-32 h-32">
@@ -522,27 +534,6 @@ const initTool = (form, results, progressContainer) => {
                   </span>
                 </div>
                 <p class="text-sm opacity-70 mt-2 text-center text-gray-800 dark:text-gray-200 px-4">${m.desc}</p>
-                <div class="mt-6">
-                  <button class="more-details-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition">
-                    More Details
-                  </button>
-                </div>
-                <div class="full-details hidden mt-4 overflow-hidden transition-all duration-300 ease-in-out">
-                  <div class="p-4 space-y-6 bg-blue-50 dark:bg-blue-900/20 rounded-b-2xl">
-                    <div>
-                      <p class="font-bold text-blue-600 dark:text-blue-400">What:</p>
-                      <p>${getWhat(m.name)}</p>
-                    </div>
-                    <div>
-                      <p class="font-bold text-green-600 dark:text-green-400">How:</p>
-                      <p>${getHow(m.name)}</p>
-                    </div>
-                    <div>
-                      <p class="font-bold text-orange-600 dark:text-orange-400">Why:</p>
-                      <p>${getWhy(m.name)}</p>
-                    </div>
-                  </div>
-                </div>
                 <div class="mt-6 space-y-2 text-left text-sm">
                   ${moduleTests.map(t => {
                     let textColor = t.passed ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
@@ -559,8 +550,8 @@ const initTool = (form, results, progressContainer) => {
                     `;
                   }).join('')}
                 </div>
-                <div class="mt-8">
-                  <button class="fixes-toggle w-full h-12 px-6 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition">
+                <div class="mt-auto pt-5">
+                  <button class="fixes-toggle w-full h-12 px-6 mt-2 rounded-full text-white font-medium text-sm ${grade.bg} flex items-center justify-center hover:opacity-90 transition" data-failed-count="${needsFixSignals.length}">
                     ${needsFixSignals.length ? 'Show Fixes (' + needsFixSignals.length + ')' : 'All Clear'}
                   </button>
                 </div>
@@ -570,6 +561,16 @@ const initTool = (form, results, progressContainer) => {
                       `<p class="text-green-600 dark:text-green-400 text-center py-6 font-medium">All signals strong — excellent work! ✅</p>` :
                       `<div class="space-y-4">${getFixes(m.name)}</div>`
                     }
+                    ${showAskAI ? `
+                      <div class="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                        <a href="#ask-ai-section"
+                           class="ask-ai-link block w-full text-center px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium text-sm transition"
+                           data-ai-question="${aiQuestion}">🤖 Ask AI about this module →</a>
+                        <a href="/blog/posts/ai-search-optimization-help-guide/#${moduleSlug}"
+                           target="_blank" rel="noopener noreferrer"
+                           class="block w-full text-center px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm transition">📖 Read the full ${m.name} guide →</a>
+                      </div>
+                    ` : ''}
                   </div>
                 </div>
               </div>
@@ -803,10 +804,6 @@ const initTool = (form, results, progressContainer) => {
         } catch (e) {}
       }, 150);
 
-      // ─── Remove old share/feedback calls ──────────────────────────
-      // initShareReport(results);   // removed
-      // initSubmitFeedback(results); // removed
-
       // ─── Set data-url ──────────────────────────────────────────────
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net';
@@ -937,7 +934,11 @@ const initTool = (form, results, progressContainer) => {
                   hasPerson: structData.flags.hasPerson || false
                 },
                 failedItems: failedMetrics.slice(0, 10),
-                priorityFixes: prioritisedFixes.map(f => f.title + ': ' + f.how)
+                priorityFixes: prioritisedFixes.map(f => f.title + ': ' + f.how),
+                cms: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Unknown',
+                cmsVersion: (typeof cmsInfo !== 'undefined' && cmsInfo) ? (cmsInfo.version || null) : null,
+                cmsConfidence: (typeof cmsInfo !== 'undefined' && cmsInfo) ? (cmsInfo.confidence || 'low') : 'low',
+                cmsSignals: (typeof cmsInfo !== 'undefined' && cmsInfo) ? (cmsInfo.signals || []) : []
               }
             };
 
@@ -1092,23 +1093,36 @@ const initTool = (form, results, progressContainer) => {
       });
 
       document.addEventListener('click', (e) => {
+        // Ask AI link → scroll to #ask-ai-section, prefill, focus
+        const askLink = e.target.closest('.ask-ai-link');
+        if (askLink) {
+          e.preventDefault();
+          const question = askLink.getAttribute('data-ai-question') || '';
+          const askSection = document.getElementById('ask-ai-section');
+          const askTextarea = document.getElementById('ai-question-input');
+          if (askTextarea) askTextarea.value = question;
+          if (askSection) {
+            askSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => askTextarea?.focus(), 700);
+          }
+          return;
+        }
+
+        // Show Fixes toggle
         const card = e.target.closest('.score-card');
         if (card) {
-          const detailsPanel = card.querySelector('.full-details');
           const fixesPanel = card.querySelector('.fixes-panel');
-          if (e.target.matches('.more-details-toggle')) {
-            document.querySelectorAll('.full-details').forEach(p => {
-              if (p !== detailsPanel) p.classList.add('hidden');
-            });
-            if (fixesPanel) fixesPanel.classList.add('hidden');
-            if (detailsPanel) detailsPanel.classList.toggle('hidden');
-          }
-          if (e.target.matches('.fixes-toggle')) {
+          const toggleBtn = e.target.closest('.fixes-toggle');
+          if (toggleBtn) {
             document.querySelectorAll('.fixes-panel').forEach(p => {
               if (p !== fixesPanel) p.classList.add('hidden');
             });
-            if (detailsPanel) detailsPanel.classList.add('hidden');
             if (fixesPanel) fixesPanel.classList.toggle('hidden');
+            const failedCount = parseInt(toggleBtn.getAttribute('data-failed-count') || '0', 10);
+            if (failedCount > 0 && fixesPanel) {
+              const isHidden = fixesPanel.classList.contains('hidden');
+              toggleBtn.textContent = isHidden ? `Show Fixes (${failedCount})` : `Hide Fixes (${failedCount})`;
+            }
           }
         }
       });

@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const passingSignals = (m.signals || []).filter((s) => s.pass);
 
           return `
-            <div class="score-card p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)} flex flex-col">
+            <div class="score-card p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)} flex flex-col">
               <div class="text-center">
                 <div class="relative mx-auto w-24 h-24">
                   <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
@@ -277,13 +277,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
               <div class="mt-auto pt-5">
                 <button type="button"
-                        class="fixes-toggle w-full px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm font-semibold"
+                        class="fixes-toggle w-full mt-2 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm font-semibold"
                         data-failed-count="${failedCount}">
                   ${failedCount ? `Show Fixes (${failedCount})` : 'Details'}
                 </button>
               </div>
 
-              <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-4">
+              <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded-lg space-y-4">
                 ${failedCount ? failedItems.map((f, idx) => `
                   <div class="${idx > 0 ? 'pt-3 border-t border-gray-300 dark:border-gray-700' : ''}">
                     <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${escapeHtml(f)}</p>

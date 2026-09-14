@@ -1,6 +1,7 @@
 // Local SEO Tool script-v1.3.js
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { moduleFixes } from './fixes-v1.0.js';
+import { fixFor } from './module-explanations-v1.0.js';
 import { analyzeNapContact } from './modules/nap-contact.js';
 import { analyzeKeywordsTitles } from './modules/keywords-titles.js';
 import { analyzeContentRelevance } from './modules/content-relevance.js';
@@ -20,22 +21,52 @@ document.addEventListener('DOMContentLoaded', () => {
   const pageUrlInput = document.getElementById('page-url');
   const locationInput = document.getElementById('location');
   const results = document.getElementById('results');
-  
-// New elements for HTML input + separate buttons
+
+  // New elements for HTML input + separate buttons
   const pageHtmlTextarea = document.getElementById('code-input');
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
-  
-    // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
+
+  // ── Delegated click handler: fixes toggle + Ask AI link ──────────────
+  document.addEventListener('click', (e) => {
+    // Fixes panel toggle
+    const toggle = e.target.closest('.fixes-toggle');
+    if (toggle) {
+      const card = toggle.closest('.score-card');
+      const panel = card?.querySelector('.fixes-panel');
+      if (!panel) return;
+      const nowHidden = panel.classList.toggle('hidden');
+      const count = toggle.dataset.failedCount || '0';
+      toggle.textContent = nowHidden
+        ? (count === '0' ? 'Show Fixes' : `Show Fixes (${count})`)
+        : (count === '0' ? 'Hide Fixes' : `Hide Fixes (${count})`);
+      return;
+    }
+
+    // Ask AI prefill + smooth scroll
+    const askLink = e.target.closest('.ask-ai-link');
+    if (askLink) {
+      e.preventDefault();
+      const question = askLink.dataset.aiQuestion || '';
+      const askSection = document.getElementById('ask-ai-section');
+      const textarea = document.getElementById('ai-question-input');
+      if (!askSection || !textarea) return;
+      textarea.value = question;
+      askSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => textarea.focus(), 700);
+    }
+  });
+
+  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
-    
+
     if (inputData) {
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-        
+
         // Optional: Auto-click the Analyze button after a tiny delay
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
@@ -49,41 +80,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Run when page loads
   window.addEventListener('load', autoFillFromUrl);
-  
-// Auto-fill from shared report link (?url=...&location=...)
-const urlParams = new URLSearchParams(window.location.search);
-const sharedUrl = urlParams.get('url');
-if (sharedUrl) {
-  try {
-    let decodedUrl = decodeURIComponent(sharedUrl);
-    if (!/^https?:\/\//i.test(decodedUrl)) {
-      decodedUrl = 'https://' + decodedUrl;
-    }
-    pageUrlInput.value = decodedUrl;
-  } catch (err) {}
-}
 
-// Auto-fill shared location from URL parameter (?location=...)
-const sharedLocation = urlParams.get('location');
-if (sharedLocation) {
-  try {
-    const decodedLocation = decodeURIComponent(sharedLocation).trim();
-    if (decodedLocation) {
-      locationInput.value = decodedLocation;
-    }
-  } catch (err) {}
-}
+  // Auto-fill from shared report link (?url=...&location=...)
+  const urlParams = new URLSearchParams(window.location.search);
+  const sharedUrl = urlParams.get('url');
+  if (sharedUrl) {
+    try {
+      let decodedUrl = decodeURIComponent(sharedUrl);
+      if (!/^https?:\/\//i.test(decodedUrl)) {
+        decodedUrl = 'https://' + decodedUrl;
+      }
+      pageUrlInput.value = decodedUrl;
+    } catch (err) {}
+  }
 
-// Minimal auto-run - click the button instead of form submit (prevents reload loop)
-if (sharedUrl && sharedLocation) {
-  setTimeout(() => {
-    const analyzeBtn = document.getElementById('analyze-url-btn');
-    if (analyzeBtn) {
-      analyzeBtn.click();
-    }
-  }, 500);
-}
-  
+  // Auto-fill shared location from URL parameter (?location=...)
+  const sharedLocation = urlParams.get('location');
+  if (sharedLocation) {
+    try {
+      const decodedLocation = decodeURIComponent(sharedLocation).trim();
+      if (decodedLocation) {
+        locationInput.value = decodedLocation;
+      }
+    } catch (err) {}
+  }
+
+  // Minimal auto-run - click the button instead of form submit (prevents reload loop)
+  if (sharedUrl && sharedLocation) {
+    setTimeout(() => {
+      const analyzeBtn = document.getElementById('analyze-url-btn');
+      if (analyzeBtn) {
+        analyzeBtn.click();
+      }
+    }, 500);
+  }
+
   const PROXY = 'https://full-render-v2.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",
@@ -170,7 +201,7 @@ if (sharedUrl && sharedLocation) {
     `;
     results.classList.remove('hidden');
     document.getElementById('module-text').textContent = progressModules[0];
-        let currentModuleIndex = 0;
+    let currentModuleIndex = 0;
     document.getElementById('module-text').textContent = progressModules[currentModuleIndex];
 
     moduleInterval = setInterval(() => {
@@ -185,10 +216,10 @@ if (sharedUrl && sharedLocation) {
   }
 
   function stopSpinnerLoader() {
-  clearInterval(moduleInterval);
-  const loader = document.getElementById('loader');
-  if (loader) loader.remove(); 
-}
+    clearInterval(moduleInterval);
+    const loader = document.getElementById('loader');
+    if (loader) loader.remove();
+  }
 
   const fetchPage = async (url) => {
     try {
@@ -236,10 +267,10 @@ if (sharedUrl && sharedLocation) {
       const yourUrl = pageUrlInput.value.trim();
       const location = locationInput.value.trim();
 
-if (!yourUrl || !location) {
-  alert("Please enter both location and url.");
-  return;
-}
+      if (!yourUrl || !location) {
+        alert("Please enter both location and url.");
+        return;
+      }
 
       let fullUrl = yourUrl;
       if (!/^https?:\/\//i.test(yourUrl)) {
@@ -292,15 +323,14 @@ if (!yourUrl || !location) {
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) return;
       pageUrlInput.value = '';
-      
 
       const htmlCode = pageHtmlTextarea.value.trim();
       const location = locationInput.value.trim();
 
-if (!htmlCode || !location) {
-  alert("Please enter a location and HTML code.");
-  return;
-}
+      if (!htmlCode || !location) {
+        alert("Please enter a location and HTML code.");
+        return;
+      }
 
       const city = location.split(',')[0].trim().toLowerCase();
 
@@ -335,7 +365,7 @@ if (!htmlCode || !location) {
     const mapsResult      = analyzeMapsVisuals(doc, city, hasLocalIntent);
     const schemaResult    = analyzeStructuredData(doc);
     const reviewsResult   = analyzeReviewsStructure(doc, fullUrl, city, schemaResult.data);
-	// const aiResult = await analyzeLocalIntent(doc, city, fullUrl, getCleanContent(doc));
+    // const aiResult = await analyzeLocalIntent(doc, city, fullUrl, getCleanContent(doc));
 
     // Collect all fixes from modules
     allFixes.push(
@@ -370,7 +400,7 @@ if (!htmlCode || !location) {
 
     Object.keys(moduleWeights).forEach(mod => {
       const result = moduleResults[mod];
-      
+
       // FIXED: Proper maxRaw per module + correct percentage for Keywords & Titles
       let maxRaw = result.maxRaw || 100;
       let rawScore = result.score || 0;
@@ -382,14 +412,14 @@ if (!htmlCode || !location) {
 
       const percentage = maxRaw > 0 ? Math.round((rawScore / maxRaw) * 100) : 0;
       const weighted = (percentage / 100) * moduleWeights[mod];
-      
+
       normalizedModuleScores[mod] = percentage;   // now correctly 0-100
       overallScore += weighted;
     });
 
     overallScore = Math.min(100, Math.round(overallScore));
     const yourScore = overallScore;
-    
+
     // ── Potential improvement & fixes logic ───────────────────────────────────────
     // Build topPriorityFixes first so we can sum gains ONLY from the 3 displayed fixes
     const moduleOrder = [
@@ -441,9 +471,9 @@ if (!htmlCode || !location) {
     const scoreDelta = projectedScore - yourScore;
 
     const pageTitle = doc.querySelector('title')?.textContent?.trim() || 'Your Page';
-        const truncatedTitle = pageTitle.length > 65 ? pageTitle.substring(0, 62) + '...' : pageTitle;
+    const truncatedTitle = pageTitle.length > 65 ? pageTitle.substring(0, 62) + '...' : pageTitle;
 
-    const analysisStartForMin = Date.now();  
+    const analysisStartForMin = Date.now();
     const minVisibleMs = 5800;
 
     await new Promise(resolve => {
@@ -570,16 +600,49 @@ if (!htmlCode || !location) {
           </p>
         </div>
       </div>
-      <!-- AI Detected Local Search Intents - Full width module (Disabled)--> 
+      <!-- AI Detected Local Search Intents - Full width module (Disabled)-->
       <!-- Modern Scoring Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
         ${modules.map((m, index) => {
           const grade = getGrade(m.score);
-          const explanation = window.metricExplanations?.find(e => e.id === moduleHashes[m.name]) || { what: 'Local check' };
-          const shortDesc = explanation.what ? explanation.what.split('.')[0] + '.' : 'Local SEO metric';
           const deepDiveId = moduleHashes[m.name];
+
+          // Non-passing sub-metrics (failed + average module → warnings)
+          const isAverage = m.score >= 50 && m.score < 70;
+
+          const displaySubs = m.sub.map(s => {
+            if (s.status === '✅') {
+              return { label: s.label, displayStatus: '✅', color: 'text-green-600 dark:text-green-400' };
+            }
+            if (isAverage) {
+              return { label: s.label, displayStatus: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
+            }
+            return { label: s.label, displayStatus: '❌', color: 'text-red-600 dark:text-red-400' };
+          });
+
+          const order = { '❌': 0, '⚠️': 1, '✅': 2 };
+          displaySubs.sort((a, b) => order[a.displayStatus] - order[b.displayStatus]);
+
+          const failedSubs = displaySubs.filter(s => s.displayStatus !== '✅');
+          const failedCount = failedSubs.length;
+
+          // Build the fix list for the expanded panel (failed + average sub-metrics only)
+          const moduleFixesList = allFixes.filter(
+            f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()
+          );
+          const fixesForCard = failedSubs.map(s => {
+            const match = moduleFixesList.find(f => f.sub === s.label);
+            const fixText = match?.how || fixFor(s.label);
+            return { label: s.label, fixText };
+          });
+
+          const cmsName = (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'my CMS';
+          const failedLabels = failedSubs.map(s => s.label).join(', ');
+          const aiQuestion = `How do I improve my ${m.name} score on ${cmsName}? Failed checks: ${failedLabels}`;
+          const helpUrl = `https://traffictorch.net/blog/posts/local-seo-help-guide/#${deepDiveId}`;
+
           return `
-            <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-xl overflow-hidden border-2 ${grade.border} border-opacity-50 flex flex-col transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
+            <div class="score-card bg-white dark:bg-gray-950 rounded-3xl shadow-xl overflow-hidden border-2 ${grade.border} border-opacity-50 flex flex-col transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
               <div class="p-6 md:p-8 text-center border-b ${grade.bgLight} border-opacity-40">
                 <div class="relative w-32 h-32 md:w-36 md:h-36 mx-auto">
                   <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
@@ -591,51 +654,56 @@ if (!htmlCode || !location) {
                   </div>
                 </div>
               </div>
+
               <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mt-6 mb-2 px-6">
                 ${m.name}
               </h3>
               <p class="text-xl md:text-2xl font-bold text-center ${grade.text} mb-4 px-6">
                 ${grade.emoji} ${grade.grade}
               </p>
-              <p class="text-sm text-gray-600 dark:text-gray-400 text-center leading-relaxed px-6 mb-6">
-                ${shortDesc}
-              </p>
-              <div class="px-6 pb-4">
-                <button onclick="openModuleDetails('${deepDiveId}')" class="block w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl font-medium transition text-gray-900 dark:text-gray-100 shadow-sm text-center cursor-pointer">
-                  More Details
-                </button>
-              </div>
-              <div class="px-6 py-6 space-y-4 border-t border-gray-200 dark:border-gray-700">
-                ${m.sub.map(s => `
-                  <div class="flex items-center gap-3">
-                    <span class="text-2xl ${s.color}">${s.status}</span>
-                    <span class="text-gray-800 dark:text-gray-200">${s.label}</span>
+
+              <!-- Sub-metric header: failed → warning → pass -->
+              <div class="px-6 pb-4 space-y-2 flex-grow">
+                ${displaySubs.map(s => `
+                  <div class="flex items-start gap-2 text-sm">
+                    <span class="text-lg flex-shrink-0 ${s.color}">${s.displayStatus}</span>
+                    <span class="${s.color} font-medium leading-snug">${s.label}</span>
                   </div>
                 `).join('')}
               </div>
-              <div class="px-6 pt-2 pb-6">
-                <button class="w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm" onclick="document.getElementById('fixes-${index}').classList.toggle('hidden')">
-                  Show Fixes
+
+              <!-- Toggle button pinned to bottom of card -->
+              <div class="mt-auto pt-5 px-6 pb-6">
+                <button type="button"
+                        class="fixes-toggle w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm"
+                        data-failed-count="${failedCount}">
+                  ${failedCount > 0 ? `Show Fixes (${failedCount})` : 'Show Fixes'}
                 </button>
               </div>
-              <div id="fixes-${index}" class="hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
-                ${allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()).length > 0 ?
-                  allFixes.filter(f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()).map(f => `
-                    <div class="mb-5 pb-5 border-b border-gray-200 dark:border-gray-700 last:border-0 last:pb-0">
-                      <div class="flex items-center gap-2 mb-2">
-                        <span class="font-semibold text-orange-600">${f.sub}</span>
-                        ${f.priority === 'very-high' ? '<span class="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">URGENT</span>' :
-                          f.priority === 'high' ? '<span class="text-xs bg-orange-600 text-white px-2 py-0.5 rounded-full">HIGH</span>' : ''}
+
+              <!-- Expanded fixes panel -->
+              <div class="fixes-panel hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
+                ${fixesForCard.length > 0
+                  ? fixesForCard.map((f, i) => `
+                      <div class="${i > 0 ? 'pt-5 mt-5 border-t border-gray-200 dark:border-gray-700' : ''}">
+                        <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${f.label}</p>
+                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${f.fixText}</p>
                       </div>
-                      <p class="font-medium text-gray-900 dark:text-gray-100 mb-1">${f.issue}</p>
-                      <p class="text-gray-700 dark:text-gray-300">${f.how}</p>
-                    </div>
-                  `).join('')
-                : '<p class="text-green-600 dark:text-green-400 font-medium text-center">All checks passed – excellent!</p>'}
-                <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
-                  <button onclick="openModuleDetails('${moduleHashes[m.name]}')" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline font-medium cursor-pointer">
-                    How ${m.name} is tested? <span class="text-xl">→</span>
-                  </button>
+                    `).join('')
+                  : '<p class="text-green-600 dark:text-green-400 font-medium text-center py-4">All checks passed – excellent!</p>'}
+
+                <!-- Ask AI + Read guide -->
+                <div class="mt-6 pt-5 border-t border-gray-200 dark:border-gray-700 flex flex-col gap-3">
+                  <a href="#ask-ai-section"
+                     class="ask-ai-link inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:underline font-medium"
+                     data-ai-question="${aiQuestion.replace(/"/g, '&quot;')}">
+                    🤖 Ask AI about this module →
+                  </a>
+                  <a href="${helpUrl}"
+                     target="_blank" rel="noopener noreferrer"
+                     class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:underline font-medium">
+                    📖 Read the full ${m.name} guide →
+                  </a>
                 </div>
               </div>
             </div>
@@ -739,8 +807,8 @@ if (!htmlCode || !location) {
       </div>
       <!-- Plugin Solutions -->
       <div id="plugin-solutions-section" class="mt-20"></div>
-      
-            <!-- CMS Fixes -->
+
+      <!-- CMS Fixes -->
       <div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-4">
         <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
@@ -792,7 +860,7 @@ if (!htmlCode || !location) {
           <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
         </div>
       </div>
-      
+
       <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
         <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Local SEO</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
@@ -806,7 +874,7 @@ if (!htmlCode || !location) {
           <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
         </div>
       </div>
-      
+
       <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
       <div id="share-dashboard-container" class="mt-16"></div>
     `;
@@ -947,9 +1015,12 @@ if (!htmlCode || !location) {
         answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
 
         try {
-          // Build the audit snapshot
+          // Build the audit snapshot (includes detected CMS for CMS-specific answers)
           const auditPayload = {
             question: question,
+            cms: (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'Custom / Unknown',
+            cmsVersion: cmsInfo?.version || null,
+            cmsConfidence: cmsInfo?.confidence || null,
             auditData: {
               url: fullUrl || document.getElementById('page-url')?.value?.trim() || 'Custom HTML',
               pageTitle: pageTitle || 'Analyzed Page',
@@ -999,8 +1070,8 @@ if (!htmlCode || !location) {
         }
       });
     }
-    
-        // ─── CMS Fixes Logic ──────────────────────────────────────────
+
+    // ─── CMS Fixes Logic ──────────────────────────────────────────
     const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
     const cmsBadgeDot        = document.getElementById('cms-badge-dot');
     const cmsBadgeName       = document.getElementById('cms-badge-name');

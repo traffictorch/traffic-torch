@@ -482,7 +482,7 @@ export default {
     try {
       // ---- Register ----
       if (url.pathname === '/api/register' && method === 'POST') {
-        const { name, email, password } = await request.json().catch(() => ({}));
+        const { name, email, password, promo_code } = await request.json().catch(() => ({}));
         if (!email || !password || password.length < 8) {
           return corsResponse(JSON.stringify({ error: 'Valid email and password (min 8 chars) required' }), 400);
         }
@@ -495,7 +495,19 @@ export default {
           `INSERT INTO users (email, password_hash, name, subscription_status, tier)
            VALUES (?, ?, ?, 'free', 'free') RETURNING id`
         ).bind(email, hash, name || email.split('@')[0]).first();
-        const token = await signJWT({ id: result.id, status: 'free', tier: 'free' }, env.JWT_SECRET, '7d');
+        
+        // Handle Free Lifetime Pro promo code
+        let status = 'free';
+        let tier = 'free';
+        if (promo_code === 'traffictorchpro') {
+          status = 'pro';
+          tier = 'pro';
+          await env.MY_BINDING.prepare(
+            'UPDATE users SET subscription_status = ?, tier = ?, pro_since = CURRENT_TIMESTAMP WHERE id = ?'
+          ).bind(status, tier, result.id).run();
+        }
+
+        const token = await signJWT({ id: result.id, status: status, tier: tier }, env.JWT_SECRET, '7d');
         return corsResponse(JSON.stringify({ token }));
       }
 

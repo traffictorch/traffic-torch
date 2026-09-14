@@ -2,9 +2,9 @@
 
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { canRunTool } from '/main-v1.1.js';
-// Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
+import { fixFor } from './module-explanations-v1.0.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -17,34 +17,67 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.getElementById('code-input');
   const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
   const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
-  
-    // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
+
+  // ============================================================
+  // Delegated click handler — Show Fixes toggle + Ask AI links
+  // ============================================================
+  document.addEventListener('click', (e) => {
+    // --- Show / Hide Fixes toggle ---
+    const toggle = e.target.closest('.fixes-toggle');
+    if (toggle) {
+      const card = toggle.closest('.score-card');
+      if (!card) return;
+      const panel = card.querySelector('.fixes-panel');
+      if (!panel) return;
+      const nowHidden = panel.classList.toggle('hidden');
+      const failedCount = toggle.dataset.failedCount || '0';
+      toggle.textContent = nowHidden
+        ? `Show Fixes (${failedCount})`
+        : `Hide Fixes (${failedCount})`;
+      return;
+    }
+
+    // --- Ask AI about this module ---
+    const aiLink = e.target.closest('.ask-ai-link');
+    if (aiLink) {
+      e.preventDefault();
+      const textarea = document.getElementById('ai-question-input');
+      if (textarea && aiLink.dataset.aiQuestion) {
+        textarea.value = aiLink.dataset.aiQuestion;
+      }
+      const section = document.getElementById('ask-ai-section');
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      setTimeout(() => { textarea?.focus(); }, 700);
+    }
+  });
+
+  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
-    
+
     if (inputData) {
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-        
-        // Optional: Auto-click the Analyze button after a tiny delay
+
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
           setTimeout(() => {
             analyzeBtn.click();
-          }, 800);   // Give the page time to render
+          }, 800);
         }
       }
     }
   }
 
-  // Run when page loads
   window.addEventListener('load', autoFillFromUrl);
 
   // Auto-fill from shared report link (?url=...&keyword=...)
   const urlParams = new URLSearchParams(window.location.search);
- 
+
   const sharedUrl = urlParams.get('url');
   if (sharedUrl) {
     try {
@@ -68,12 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // no console in production
     }
   }
- 
-  // Optional: auto-submit form to run analysis immediately on shared link load
+
   if (sharedUrl && sharedKeyword) {
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   }
- 
+
   const PROXY = 'https://full-render-v2.traffictorch.workers.dev/';
   const progressModules = [
     "Fetching page...",
@@ -145,10 +177,9 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     results.classList.remove('hidden');
 
-    // Auto scroll to spinner when loader starts (works for both URL and Code buttons)
-    results.scrollIntoView({ 
-      behavior: 'smooth', 
-      block: 'center' 
+    results.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
     });
 
     document.getElementById('module-text').textContent = progressModules[0];
@@ -226,8 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return Math.round(wordScore + densityScore);
   };
 
-  // ====================== NEW BUTTON HANDLERS ======================
-  // URL Analyze Button
+  // ====================== BUTTON HANDLERS ======================
   urlAnalyzeBtn.addEventListener('click', async () => {
     const yourUrl = pageUrlInput.value.trim();
     const phrase = targetKeywordInput.value.trim();
@@ -260,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
     await runAnalysis(yourDoc, phrase, fullUrl, 'url');
   });
 
-  // Code Analyze Button
   codeAnalyzeBtn.addEventListener('click', async () => {
     const phrase = targetKeywordInput.value.trim();
     const rawCode = codeInput.value.trim();
@@ -298,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
       stopSpinnerLoader();
       return;
     }
-    
+
     const cmsInfo = detectCMS({ doc: yourDoc, url: analysisType === 'url' ? fullUrl : '' });
 
     let yourScore = 0;
@@ -316,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (descMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta description', how: 'Include the keyword once naturally in the description (under 155 characters) to boost click-through rates.'});
 
     // H1 & Headings
-    const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6')).slice(0, 5);
+    const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6'));
     const headingsData = headings.map(h => ({ tag: h.tagName, text: h.textContent.trim(), match: countPhrase(h.textContent, phrase) > 0 }));
     const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
     data.h1 = { match: countPhrase(yourH1, phrase) };
@@ -338,7 +367,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const yourImgs = yourDoc.querySelectorAll('img');
     const matchingAlts = Array.from(yourImgs)
       .filter(img => countPhrase(img.alt || '', phrase) > 0)
-      .slice(0, 5)
       .map(img => img.alt?.trim() || '(empty alt)');
     data.alts = { total: yourImgs.length, phrase: matchingAlts.length, matchingAlts };
     yourScore += matchingAlts.length > 0 ? 15 : 0;
@@ -347,7 +375,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Anchor Text
     const matchingAnchors = Array.from(yourDoc.querySelectorAll('a'))
       .filter(a => countPhrase(a.textContent || '', phrase) > 0)
-      .slice(0, 5)
       .map(a => ({ text: (a.textContent || '').trim(), href: a.href }));
     data.anchors = { count: matchingAnchors.length, matchingAnchors };
     yourScore += matchingAnchors.length > 0 ? 10 : 0;
@@ -409,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo({ top: targetY, behavior: 'smooth' });
 
     results.innerHTML = `
-<!-- Overall Score Card (Keyword Tool / Your Page) -->
+<!-- Overall Score Card -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
     <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Your Page</p>
@@ -463,99 +490,104 @@ document.addEventListener('DOMContentLoaded', () => {
     </p>
   </div>
 </div>
-<!-- Small Metric Circles -->
+<!-- Module Score Cards -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
-  ${[
-    {name: 'Meta Title & Desc', what: 'Checks if your target keyword appears naturally in the page title and meta description. These are the first elements Google reads and displays in search results. Optimized titles and descriptions directly impact visibility and user clicks.', how: 'Place the keyword near the beginning of the title (keep total under 60 characters). Include it once naturally in the meta description (under 155 characters). Make both compelling and relevant to the user\'s search intent.', why: 'Pages with the exact keyword in title and description often rank higher and achieve 20-30% better click-through rates. These elements signal strong relevance to search engines. They also build trust and expectation before the user even visits your page.'},
-    {name: 'H1 & Headings', what: 'Evaluates whether your main H1 heading contains the target keyword. Headings structure content and help search engines understand hierarchy and topic relevance. The H1 carries the strongest weight.', how: 'Rewrite your H1 to include the exact keyword or a close natural variant while keeping it engaging for readers. Avoid stuffing — only use it if it fits naturally. Support with keyword-rich H2/H3 where relevant.', why: 'A keyword-optimized H1 is one of the strongest on-page signals for topical relevance. It helps both search engines and users quickly grasp what the page is about. Well-structured headings also improve readability and dwell time.'},
-    {name: 'Content Density', what: 'Measures how often the target keyword appears relative to total word count. Also evaluates overall content length. Ideal density is 1-2% with substantial depth.', how: 'Expand content with valuable sections like examples, FAQs, data, or comparisons to reach 800+ words. Include the keyword naturally in introduction, subheadings, body, and conclusion. Reduce repetitions if density exceeds 3%.', why: 'Longer, well-optimized content consistently outranks shorter pages on the same topic. Proper density signals relevance without stuffing. Comprehensive content satisfies user intent better, leading to higher engagement and rankings.'},
-    {name: 'Image Alts', what: 'Scans image alt texts for the presence of your target keyword in relevant images. Alt text describes images for screen readers and search engines. It\'s crucial for accessibility and SEO.', how: 'Write descriptive alt text for important images that naturally includes the keyword where appropriate. Avoid stuffing — only use it if it accurately describes the image. Leave decorative images with empty alt="".', why: 'Optimized alt text improves accessibility compliance and user experience. It enables ranking in Google Images, driving extra traffic. It also provides another contextual relevance signal to search engines.'},
-    {name: 'Anchor Text', what: 'Looks for internal links using the target keyword or variations in their visible anchor text. Anchor text helps search engines understand linked page topics. It distributes authority within your site.', how: 'When linking to related content on your site, use the keyword naturally as part or all of the clickable text. Vary with close variants to avoid over-optimization. Link contextually from relevant sections.', why: 'Keyword-rich internal anchors reinforce site structure and topical clusters. They help search engines crawl and understand relationships between pages. Natural internal linking improves user navigation and time on site.'},
-    {name: 'URL & Schema', what: 'Checks if the keyword appears in the page URL and if structured data (JSON-LD schema) is present. Both are important direct relevance and enhancement signals.', how: 'Create clean, descriptive URLs with hyphens including the keyword. Add JSON-LD script in the head for relevant schema types (Article, FAQ, Product, etc.). Use Google\'s structured data guidelines.', why: 'Keyword in URL reinforces topic relevance and improves click rates from search results. Schema markup enables rich snippets that stand out and increase visibility. Both contribute to higher perceived authority and CTR.'}
-  ].map(m => {
-    let score, details, fixEdu;
+  ${modules.map((m, idx) => {
+    const score = m.score;
+    const borderColor = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-yellow-500' : 'border-red-500';
+    const textColor   = score >= 80 ? 'text-green-600'   : score >= 60 ? 'text-yellow-600'   : 'text-red-600';
+    const grade       = getGrade(Math.round(score));
+    const diagnostics = getModuleDiagnostics({ name: m.name }, data, phrase, fullUrl);
+    const hashId      = moduleHashes[m.name] || '';
+    const roundedScore = Math.round(score);
+
+    // Split diagnostics — fails first, then passes. No truncation.
+    const failItems = diagnostics.filter(d => d.status === '❌');
+    const passItems = diagnostics.filter(d => d.status === '✅');
+    const failedCount = failItems.length;
+
+    // Signal list (un-truncated)
+    const signalsHtml = [
+      ...failItems.map(d => `<li class="flex items-start gap-2 text-red-600 dark:text-red-400"><span class="flex-shrink-0">❌</span><span>${d.issue}</span></li>`),
+      ...passItems.map(d => `<li class="flex items-start gap-2 text-green-600 dark:text-green-400"><span class="flex-shrink-0">✅</span><span>${d.issue}</span></li>`)
+    ].join('');
+
+    // Detected CMS label (cmsInfo is in scope from runAnalysis)
+    const cmsLabel = cmsInfo?.name
+      ? `${cmsInfo.name}${cmsInfo.version ? ' ' + cmsInfo.version : ''}`
+      : 'Unknown';
+
+    // Prefill text for the Ask AI link
+    const failedList = failItems.map(d => d.issue).join('; ');
+    const aiQuestion = `How do I improve my ${m.name} score? Failed checks: ${failedList || 'none'}. Detected CMS: ${cmsLabel}. Please give CMS-specific answers.`;
+
+    // Fixes panel — one pair (failed title + fix) per failure. Uses fixFor() to look up a fix.
+    let fixesHtml;
+    if (failedCount > 0) {
+      fixesHtml = failItems.map((d, i) => {
+        const fixText = d.how || fixFor(d.issue);
+        return `
+          ${i > 0 ? '<div class="mt-6 pt-6 border-t border-red-200 dark:border-red-700"></div>' : ''}
+          <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${d.issue}</p>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${fixText}</p>
+        `;
+      }).join('');
+    } else if (roundedScore < 80) {
+      fixesHtml = `
+        <p class="font-bold text-orange-600 dark:text-orange-400 mb-2 leading-snug">Module scored average (${roundedScore}/100)</p>
+        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">Review the checklist items and optimize the weakest sub-metric first. Re-run the audit after changes to confirm improvement.</p>
+      `;
+    } else {
+      fixesHtml = '<p class="text-center text-green-600 dark:text-green-400 font-bold py-4">🎉 This module is fully optimized!</p>';
+    }
+
+    // Detail rows (shown above the button inside the card)
+    let details = '';
     if (m.name === 'Meta Title & Desc') {
-      score = data.meta.yourMatches > 0 ? 100 : 0;
       details = `
         <div class="mt-4 text-left space-y-2 text-sm">
           ${data.meta.titleMatch > 0 ? '✅' : '❌'} <span class="font-bold">Meta Title:</span><br>
-          <span class="text-gray-800 dark:text-gray-200">${truncate(data.meta.titleText || '(none)', 80)}</span><br>
+          <span class="text-gray-800 dark:text-gray-200 break-words">${data.meta.titleText || '(none)'}</span><br>
           ${data.meta.descMatch > 0 ? '✅' : '❌'} <span class="font-bold">Meta Description:</span><br>
-          <span class="text-gray-800 dark:text-gray-200">${truncate(data.meta.descText || '(none)', 80)}</span>
+          <span class="text-gray-800 dark:text-gray-200 break-words">${data.meta.descText || '(none)'}</span>
         </div>`;
-      fixEdu = data.meta.yourMatches === 0 ?
-        `The target keyword "${phrase}" is missing from both your title and meta description. This is a critical missed opportunity because search engines heavily weigh these elements when determining relevance. Adding the keyword naturally improves visibility and click-through rates significantly.` :
-        data.meta.titleMatch === 0 ?
-        `Your meta title is missing the target keyword. The title tag is the strongest on-page ranking factor and appears prominently in search results. Including the keyword early in the title helps Google match user queries better.` :
-        data.meta.descMatch === 0 ?
-        `Your meta description lacks the keyword. While it doesn't directly affect rankings, it influences click-through rates from search results. A compelling description with the keyword encourages more clicks.` : '';
     } else if (m.name === 'H1 & Headings') {
-      score = data.h1.match > 0 ? 100 : 0;
       details = `
         <div class="mt-4 text-left space-y-2 text-sm">
           ${data.headingsData.length > 0 ? data.headingsData.map(h =>
-            `${h.match ? '✅' : ''} <span class="font-bold">${h.tag}:</span> <span class="text-gray-800 dark:text-gray-200">${truncate(h.text, 60)}</span>`
+            `${h.match ? '✅' : ''} <span class="font-bold">${h.tag}:</span> <span class="text-gray-800 dark:text-gray-200 break-words">${h.text}</span>`
           ).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">No headings found</span>'}
         </div>`;
-      fixEdu = data.h1.match === 0 ?
-        `Your main H1 heading does not contain the target keyword. The H1 is the most important heading and tells search engines the primary topic of the page. Without the keyword here, Google may struggle to understand your page focus clearly.` : '';
     } else if (m.name === 'Content Density') {
-      score = calculateContentScore(data.content);
       details = `
         <div class="mt-4 text-center space-y-2 text-sm">
           <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Word count:</span> ${data.content.words}</p>
           <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Keyword mentions:</span> ${data.content.matches}</p>
           <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Density:</span> ${data.content.density}% (ideal 1-2%)</p>
         </div>`;
-      fixEdu = (() => {
-        let edu = '';
-        if (data.content.words < 800) edu += `Your page has only ${data.content.words} words — well below the recommended 800+ for in-depth coverage. Thin content struggles to rank against comprehensive competitors. `;
-        if (data.content.density < 0.5) edu += `The keyword appears only ${data.content.matches} times, resulting in very low density. Search engines may not recognize strong topical relevance. `;
-        if (data.content.density > 3) edu += `Density is too high at ${data.content.density}%. Over-repetition can appear unnatural and risk penalties. `;
-        edu += 'Density is calculated as (keyword mentions ÷ total words) × 100.';
-        return edu;
-      })();
     } else if (m.name === 'Image Alts') {
-      score = data.alts.phrase > 0 ? 100 : 0;
       details = `
         <div class="mt-4 text-left space-y-2 text-sm">
           <p class="text-gray-800 dark:text-gray-200 font-bold">Matching alts (${data.alts.phrase}/${data.alts.total} images):</p>
-          ${data.alts.matchingAlts.length > 0 ? data.alts.matchingAlts.map(alt => `✅ <span class="text-gray-800 dark:text-gray-200">${truncate(alt, 60)}</span>`).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">None found</span>'}
+          ${data.alts.matchingAlts.length > 0 ? data.alts.matchingAlts.map(alt => `✅ <span class="text-gray-800 dark:text-gray-200 break-words">${alt}</span>`).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">None found</span>'}
         </div>`;
-      fixEdu = data.alts.phrase === 0 && data.alts.total > 0 ?
-        `None of your ${data.alts.total} images have the target keyword in alt text. This misses opportunities for accessibility, image search traffic, and additional relevance signals. Focus on key images like hero or product photos first.` : '';
     } else if (m.name === 'Anchor Text') {
-      score = data.anchors.count > 0 ? 100 : 0;
       details = `
         <div class="mt-4 text-left space-y-2 text-sm">
           <p class="text-gray-800 dark:text-gray-200 font-bold">Matching anchors (${data.anchors.count} found):</p>
-          ${data.anchors.matchingAnchors.length > 0 ? data.anchors.matchingAnchors.map(a => `✅ <span class="text-gray-800 dark:text-gray-200">${truncate(a.text, 50)}</span> → ${truncate(a.href, 40)}`).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">None found</span>'}
+          ${data.anchors.matchingAnchors.length > 0 ? data.anchors.matchingAnchors.map(a => `✅ <span class="text-gray-800 dark:text-gray-200 break-words">${a.text}</span> → <span class="break-all">${a.href}</span>`).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">None found</span>'}
         </div>`;
-      fixEdu = data.anchors.count === 0 ?
-        `No internal links use the target keyword in anchor text. This misses a chance to strengthen topical authority flow across your site. Aim for 1-3 natural keyword anchors linking to relevant internal pages.` : '';
     } else if (m.name === 'URL & Schema') {
-      score = Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0));
       details = `
         <div class="mt-4 text-left space-y-2 text-sm">
           ${data.urlSchema.urlMatch > 0 ? '✅' : '❌'} <span class="font-bold">Keyword in URL</span><br>
-          <span class="text-gray-800 dark:text-gray-200">${truncate(fullUrl, 80)}</span><br>
+          <span class="text-gray-800 dark:text-gray-200 break-all">${fullUrl}</span><br>
           ${data.urlSchema.schema ? '✅' : '❌'} <span class="font-bold">Structured Data (Schema)</span>
         </div>`;
-      fixEdu = (() => {
-        let edu = '';
-        if (!data.urlSchema.urlMatch) edu += `Your URL does not contain the target keyword. This is a clear missed relevance signal that both users and search engines expect. `;
-        if (!data.urlSchema.schema) edu += `No structured data (schema markup) detected. This prevents eligibility for rich results like stars, FAQs, or enhanced snippets in search.`;
-        return edu;
-      })();
     }
-    const borderColor = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-yellow-500' : 'border-red-500';
-    const textColor = score >= 80 ? 'text-green-600' : score >= 60 ? 'text-yellow-600' : 'text-red-600';
-    const grade = getGrade(Math.round(score));
-    const diagnostics = getModuleDiagnostics({name: m.name}, data, phrase, fullUrl);
-    const hasIssues = diagnostics.some(d => d.status === '❌');
-    const hashId = moduleHashes[m.name] || '';
+
     return `
-      <div class="text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
+      <div class="score-card flex flex-col text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
         <h4 class="text-xl font-medium mb-4">${m.name}</h4>
         <div class="relative w-28 h-28 mx-auto">
           <svg width="112" height="112" viewBox="0 0 112 112" class="transform -rotate-90">
@@ -564,7 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 301} 301" stroke-linecap="round"/>
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
-            <div class="text-4xl font-black ${textColor}">${Math.round(score)}</div>
+            <div class="text-4xl font-black ${textColor}">${roundedScore}</div>
           </div>
         </div>
         <div class="mt-4">
@@ -572,50 +604,28 @@ document.addEventListener('DOMContentLoaded', () => {
             ${grade.emoji} ${grade.grade}
           </div>
         </div>
+        <ul class="mt-4 text-left text-sm space-y-2">
+          ${signalsHtml}
+        </ul>
         ${details}
-        <button onclick="this.parentElement.querySelector('.fixes-panel').classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 text-sm">
-          Show Fixes
-        </button>
-        <div class="fixes-panel hidden mt-6 p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800">
-          <div class="text-center mb-6">
-            <div class="text-3xl">${grade.emoji}</div>
-            <div class="text-2xl font-black ${grade.color}">${m.name}</div>
-            <div class="text-xl font-bold ${grade.color} mt-2">${grade.grade}</div>
-          </div>
-          <div class="space-y-4 text-left">
-            ${diagnostics.map(d => `
-              <div class="flex items-start gap-3">
-                <span class="text-xl mt-1">${d.status}</span>
-                <div>
-                  <p class="font-medium text-gray-800 dark:text-gray-200">${d.issue}</p>
-                  ${d.how ? `<p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${d.how}</p>` : ''}
-                </div>
-              </div>
-            `).join('')}
-            ${!hasIssues ? '<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">🎉 This module is fully optimized!</p>' : ''}
-          </div>
-          <div class="text-center mt-8 pt-6 border-t border-red-200 dark:border-red-700">
-            <a href="/keyword-tool/#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
-              Learn more about ${m.name}
-            </a>
-          </div>
+        <div class="mt-auto pt-5">
+          <button
+            class="fixes-toggle w-full mt-2 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 text-sm font-bold transition"
+            data-failed-count="${failedCount}">
+            Show Fixes (${failedCount})
+          </button>
         </div>
-        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="mt-4 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm">
-          More Details
-        </button>
-        <div class="hidden mt-6 space-y-6 text-left text-sm">
-          <div class="text-center mb-4">
-            <a href="/keyword-tool/#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
-              How ${m.name} is tested?
+        <div class="fixes-panel hidden mt-6 p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800 text-left">
+          ${fixesHtml}
+          <div class="mt-6 pt-6 border-t border-red-200 dark:border-red-700 space-y-3">
+            <a href="#ask-ai-section"
+               class="ask-ai-link block text-purple-600 dark:text-purple-400 font-bold hover:underline"
+               data-ai-question="${aiQuestion.replace(/"/g, '&quot;')}">
+              🤖 Ask AI about this module
             </a>
-          </div>
-          ${fixEdu ? `<h5 class="text-lg font-bold text-orange-600 dark:text-orange-400 mb-3">Recommended Fixes</h5><p class="text-gray-800 dark:text-gray-200">${fixEdu}</p>` : ''}
-          <p class="text-blue-600 dark:text-blue-400 font-bold">What is it?</p><p class="text-gray-800 dark:text-gray-200">${m.what}</p>
-          <p class="text-green-600 dark:text-green-400 font-bold mt-3">How to fix?</p><p class="text-gray-800 dark:text-gray-200">${m.how}</p>
-          <p class="text-orange-600 dark:text-orange-400 font-bold mt-3">Why it matters?</p><p class="text-gray-800 dark:text-gray-200">${m.why}</p>
-          <div class="text-center mt-8 pt-6 border-t border-gray-300 dark:border-gray-700">
-            <a href="/keyword-tool/#${hashId}" class="text-orange-600 dark:text-orange-400 font-bold hover:underline">
-              Learn more about ${m.name}
+            <a href="/blog/posts/seo-keyword-help-guide/#${hashId}"
+               class="block text-orange-600 dark:text-orange-400 font-bold hover:underline">
+              📖 Read the full ${m.name} guide
             </a>
           </div>
         </div>
@@ -649,7 +659,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 <!-- Score Improvement & Potential Gains -->
 <div class="max-w-6xl mx-auto my-20 grid md:grid-cols-2 gap-8">
-  <!-- Left: Ranking Potential Improvement -->
   <div class="p-4 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4 border-orange-500/20">
     <h3 class="text-4xl font-black text-center mb-10 text-orange-600 dark:text-orange-400">Ranking Potential Improvement</h3>
     <div class="flex justify-center items-baseline gap-8 mb-10">
@@ -703,7 +712,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </details>
   </div>
-  <!-- Right: Expected Performance Gains -->
   <div class="p-4 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-3xl shadow-2xl">
     <h3 class="text-4xl font-black text-center mb-10">Expected Performance Gains</h3>
     <div class="space-y-8">
@@ -827,7 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
   </div>
 </div>
-<!-- Share Dashboard Container (replaces old share/feedback buttons) -->
+<!-- Share Dashboard Container -->
 <div id="share-dashboard-container" class="mt-16"></div>
     `;
 
@@ -901,10 +909,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
     }, 150);
 
-    // ─── Remove old initShareReport / initSubmitFeedback ──────────
-    // initShareReport(results);   // removed
-    // initSubmitFeedback(results); // removed
-
     // ─── Set data-url ──────────────────────────────────────────────
     let displayUrl = 'traffictorch.net';
     if (analysisType === 'url' && fullUrl) {
@@ -925,7 +929,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Prepare and initialise share dashboard ──────────────────
     const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
 
-    // Build passed/failed metrics from module scores and sub-checks
     const passedMetrics = [];
     const failedMetricsShare = [];
     modules.forEach(m => {
@@ -935,8 +938,6 @@ document.addEventListener('DOMContentLoaded', () => {
         failedMetricsShare.push(m.name);
       }
     });
-    // Also add individual checks from diagnostics
-    const allDiagnostics = [];
     moduleOrder.forEach(mod => {
       const diags = getModuleDiagnostics({name: mod}, data, phrase, fullUrl);
       diags.forEach(d => {
@@ -948,10 +949,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Build aiFixes from top priority fixes
     const aiFixes = topPriorityFixes.map(f => f.issue + ': ' + f.how);
 
-    // Build share link with URL and keyword
     const shareLink = analysisType === 'url' && fullUrl
       ? `${window.location.origin}/keyword-tool/?url=${encodeURIComponent(fullUrl)}&keyword=${encodeURIComponent(phrase)}`
       : '';
@@ -981,99 +980,99 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
     }
-    
-const askBtn = document.getElementById('ask-ai-btn');
-const askInput = document.getElementById('ai-question-input');
-const answerContainer = document.getElementById('ai-answer-container');
-const answerContent = document.getElementById('ai-answer-content');
 
-if (askBtn) {
-  const newAskBtn = askBtn.cloneNode(true);
-  askBtn.parentNode.replaceChild(newAskBtn, askBtn);
+    const askBtn = document.getElementById('ask-ai-btn');
+    const askInput = document.getElementById('ai-question-input');
+    const answerContainer = document.getElementById('ai-answer-container');
+    const answerContent = document.getElementById('ai-answer-content');
 
-  newAskBtn.addEventListener('click', async () => {
-    const canProceed = await canRunTool('limit-audit-id');
-    if (!canProceed) return;
+    if (askBtn) {
+      const newAskBtn = askBtn.cloneNode(true);
+      askBtn.parentNode.replaceChild(newAskBtn, askBtn);
 
-    const question = askInput?.value?.trim();
-    if (!question) {
-      alert('Please enter a question.');
-      return;
-    }
+      newAskBtn.addEventListener('click', async () => {
+        const canProceed = await canRunTool('limit-audit-id');
+        if (!canProceed) return;
 
-    newAskBtn.disabled = true;
-    newAskBtn.textContent = 'Thinking...';
-    answerContainer.classList.remove('hidden');
-    answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
-
-    try {
-      const moduleScoresMap = {};
-      modules.forEach(m => {
-        const key = m.name.toLowerCase().replace(/[&\s]+/g, '');
-        moduleScoresMap[key] = m.score;
-      });
-
-      const auditPayload = {
-        question: question,
-        auditData: {
-          url: analysisType === 'url' ? fullUrl : 'Pasted HTML',
-          pageTitle: yourDoc?.title || 'Keyword Analysis',
-          targetKeyword: phrase,
-          overallScore: yourScore,
-          scores: {
-            metaTitleDesc: moduleScoresMap['metatitledesc'] || 0,
-            h1Headings: moduleScoresMap['h1headings'] || 0,
-            contentDensity: moduleScoresMap['contentdensity'] || 0,
-            imageAlts: moduleScoresMap['imagealts'] || 0,
-            anchorText: moduleScoresMap['anchortext'] || 0,
-            urlSchema: moduleScoresMap['urlschema'] || 0
-          },
-          flags: {
-            titleMatch: data.meta.titleMatch > 0,
-            descMatch: data.meta.descMatch > 0,
-            h1Match: data.h1.match > 0,
-            keywordInUrl: data.urlSchema.urlMatch > 0,
-            hasSchema: data.urlSchema.schema > 0,
-            hasKeywordInAlts: data.alts.phrase > 0,
-            hasKeywordInAnchors: data.anchors.count > 0
-          },
-          metrics: {
-            wordCount: data.content.words,
-            keywordMentions: data.content.matches,
-            density: data.content.density,
-            totalImages: data.alts.total,
-            matchingAlts: data.alts.phrase,
-            matchingAnchors: data.anchors.count
-          },
-          failedItems: failedMetricsShare.slice(0, 10),
-          priorityFixes: topPriorityFixes.map(f => f.issue + ': ' + f.how)
+        const question = askInput?.value?.trim();
+        if (!question) {
+          alert('Please enter a question.');
+          return;
         }
-      };
 
-      const response = await fetch('https://keyword-placement-ai.traffictorch.workers.dev/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(auditPayload)
+        newAskBtn.disabled = true;
+        newAskBtn.textContent = 'Thinking...';
+        answerContainer.classList.remove('hidden');
+        answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+
+        try {
+          const moduleScoresMap = {};
+          modules.forEach(m => {
+            const key = m.name.toLowerCase().replace(/[&\s]+/g, '');
+            moduleScoresMap[key] = m.score;
+          });
+
+          const auditPayload = {
+            question: question,
+            auditData: {
+              url: analysisType === 'url' ? fullUrl : 'Pasted HTML',
+              pageTitle: yourDoc?.title || 'Keyword Analysis',
+              targetKeyword: phrase,
+              overallScore: yourScore,
+              scores: {
+                metaTitleDesc: moduleScoresMap['metatitledesc'] || 0,
+                h1Headings: moduleScoresMap['h1headings'] || 0,
+                contentDensity: moduleScoresMap['contentdensity'] || 0,
+                imageAlts: moduleScoresMap['imagealts'] || 0,
+                anchorText: moduleScoresMap['anchortext'] || 0,
+                urlSchema: moduleScoresMap['urlschema'] || 0
+              },
+              flags: {
+                titleMatch: data.meta.titleMatch > 0,
+                descMatch: data.meta.descMatch > 0,
+                h1Match: data.h1.match > 0,
+                keywordInUrl: data.urlSchema.urlMatch > 0,
+                hasSchema: data.urlSchema.schema > 0,
+                hasKeywordInAlts: data.alts.phrase > 0,
+                hasKeywordInAnchors: data.anchors.count > 0
+              },
+              metrics: {
+                wordCount: data.content.words,
+                keywordMentions: data.content.matches,
+                density: data.content.density,
+                totalImages: data.alts.total,
+                matchingAlts: data.alts.phrase,
+                matchingAnchors: data.anchors.count
+              },
+              failedItems: failedMetricsShare.slice(0, 10),
+              priorityFixes: topPriorityFixes.map(f => f.issue + ': ' + f.how)
+            }
+          };
+
+          const response = await fetch('https://keyword-placement-ai.traffictorch.workers.dev/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(auditPayload)
+          });
+
+          if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+          const aiResponse = await response.json();
+
+          if (aiResponse.success) {
+            answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${aiResponse.answer}`;
+          } else {
+            answerContent.innerHTML = `❌ Error: ${aiResponse.error || 'Unknown error'}`;
+          }
+
+        } catch (err) {
+          answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+        } finally {
+          newAskBtn.disabled = false;
+          newAskBtn.textContent = 'Ask Traffic Torch AI';
+        }
       });
-
-      if (!response.ok) throw new Error(`Server error (${response.status})`);
-
-      const aiResponse = await response.json();   // ← renamed from 'data'
-
-      if (aiResponse.success) {
-        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${aiResponse.answer}`;
-      } else {
-        answerContent.innerHTML = `❌ Error: ${aiResponse.error || 'Unknown error'}`;
-      }
-
-    } catch (err) {
-      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
-    } finally {
-      newAskBtn.disabled = false;
-      newAskBtn.textContent = 'Ask Traffic Torch AI';
     }
-  });
-}
 
     // ─── CMS Fixes Logic ──────────────────────────────────────────
     const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
@@ -1199,6 +1198,5 @@ if (askBtn) {
         cmsFixesBtn.textContent = originalLabel;
       }
     });
-
   }
 });
