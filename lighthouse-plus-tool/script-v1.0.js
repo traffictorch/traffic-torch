@@ -10,7 +10,6 @@ const LH_AUDIT_API = 'https://lighthouse-audit.traffictorch.workers.dev/';
 const LH_CMS_API   = 'https://lighthouse-cms-fixes.traffictorch.workers.dev/';
 const LH_AI_API    = 'https://lighthouse-ai.traffictorch.workers.dev/';
 
-// ─── Module weights (must match the worker) ───
 const MODULE_WEIGHTS = {
   'Core Web Vitals': 15,
   'Performance Score': 10,
@@ -24,7 +23,6 @@ const MODULE_WEIGHTS = {
   'Agentic Browsing': 7,
 };
 
-// ─── Client-side cap: modules with too many issues cannot score high ───
 function applyIssueCap(mod) {
   const failedCount  = (mod.failed  || []).length;
   const warningCount = (mod.signals || []).filter((s) => !s.pass).length;
@@ -61,6 +59,26 @@ function recomputeOverall(mods) {
   return overall;
 }
 
+// ─── Compute passes / warnings / fails for a module ───
+// Priority: explicit worker counts on mod.passes / mod.incomplete if present,
+// otherwise derive from signals. Fails come from mod.failed.
+function computeCheckCounts(mod) {
+  const signals        = mod.signals || [];
+  const signalPasses   = signals.filter((s) => s.pass).length;
+  const signalWarnings = signals.filter((s) => !s.pass).length;
+  const fails          = (mod.failed || []).length;
+
+  // Accessibility sends an explicit axe pass count; everyone else uses signals.
+  const passes = Number.isFinite(mod.passes) ? mod.passes : signalPasses;
+
+  return {
+    passes,
+    warnings: signalWarnings,
+    fails,
+    total: passes + signalWarnings + fails,
+  };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const results     = document.getElementById('results');
   const urlInput    = document.getElementById('url-input');
@@ -80,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return /^https?:\/\//i.test(t) ? t : 'https://' + t;
   };
 
-  // ─── One-time event delegation ───
   document.addEventListener('click', (e) => {
     const toggle = e.target.closest('.fixes-toggle');
     if (toggle) {
@@ -166,20 +183,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderReport(data, payload) {
     const {
-      url, pageTitle, overall: rawOverall, grade, modules: rawModules, priorityFixes,
+      url, pageTitle, modules: rawModules,
       rawHtml, renderedHtml, browserMetrics, meta,
     } = data;
 
-    // ─── Apply issue cap to every module, then recompute the overall ───
     const modules = rawModules.map((m) => {
       const cappedScore = applyIssueCap(m);
-      return {
-        ...m,
-        score: cappedScore,
-        grade: gradeFromScore(cappedScore),
-      };
+      return { ...m, score: cappedScore, grade: gradeFromScore(cappedScore) };
     });
     const overall = recomputeOverall(modules);
+
+    const priorityFixes = modules
+      .filter((m) => m.score < 80 && (m.failed || []).length)
+      .sort((a, b) => a.score - b.score)
+      .flatMap((m) => (m.failed || []).map((f) => ({
+        name: f,
+        module: m.name,
+        score: m.score,
+        desc: fixFor(f),
+        impact: m.score < 50 ? '🚨 Critical — fix now'
+              : m.score < 70 ? '⚡ High impact'
+              :                '📌 Medium impact',
+      })))
+      .slice(0, 6);
 
     let cmsInfo = { name: 'Custom / Unknown', version: null, confidence: 'unknown', signals: [] };
     try {
@@ -241,15 +267,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 my-16 max-w-7xl mx-auto px-4">
         ${modules.map((m) => {
-          const failedCount = (m.failed || []).length;
-          const expl = moduleExplanations[m.name] || {};
-          const slug = expl.slug || m.name.toLowerCase().replace(/\s+/g, '-');
-          const failedItems = m.failed || [];
+          const failedItems    = m.failed || [];
           const warningSignals = (m.signals || []).filter((s) => !s.pass);
           const passingSignals = (m.signals || []).filter((s) => s.pass);
+          const isA11y         = m.name === 'Accessibility';
+          const issueCount     = failedItems.length + warningSignals.length;
+          const expl           = moduleExplanations[m.name] || {};
+          const slug           = expl.slug || m.name.toLowerCase().replace(/\s+/g, '-');
+
+          const { passes, total } = computeCheckCounts(m);
+          const showSummary = isA11y && total >= 3;
+          const allPass     = showSummary && passes === total;
 
           return `
-            <div class="score-card p-2 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)} flex flex-col">
+            <div class="score-card p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${gradeBorder(m.score)} flex flex-col">
               <div class="text-center">
                 <div class="relative mx-auto w-24 h-24">
                   <svg width="96" height="96" viewBox="0 0 96 96" class="transform -rotate-90">
@@ -263,38 +294,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="mt-2 text-lg font-medium text-gray-800 dark:text-gray-200">${escapeHtml(m.name)}</p>
               </div>
 
-              <div class="mt-4 space-y-1 text-sm text-left">
+              ${showSummary ? `
+                <p class="mt-4 text-sm text-center font-semibold ${allPass ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-300'}">
+                  ✅ ${passes}/${total} checks passed
+                </p>
+              ` : ''}
+
+              <div class="mt-3 space-y-1 text-sm text-left">
                 ${failedItems.map((f) => `
                   <p class="text-red-600 dark:text-red-400 font-medium leading-snug">❌ ${escapeHtml(f)}</p>
                 `).join('')}
                 ${warningSignals.map((s) => `
                   <p class="text-orange-500 dark:text-orange-400 font-medium leading-snug">⚠️ ${escapeHtml(s.label)}</p>
                 `).join('')}
-                ${passingSignals.map((s) => `
+                ${!isA11y ? passingSignals.map((s) => `
                   <p class="text-green-600 dark:text-green-400 font-medium leading-snug">✅ ${escapeHtml(s.label)}</p>
-                `).join('')}
+                `).join('') : ''}
               </div>
 
               <div class="mt-auto pt-5">
                 <button type="button"
                         class="fixes-toggle w-full mt-2 px-6 py-2 bg-orange-500 text-white rounded-full hover:bg-orange-600 text-sm font-semibold"
-                        data-failed-count="${failedCount}">
-                  ${failedCount ? `Show Fixes (${failedCount})` : 'Details'}
+                        data-failed-count="${issueCount}">
+                  ${issueCount ? `Show Fixes (${issueCount})` : 'Details'}
                 </button>
               </div>
 
-              <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded-lg space-y-4">
-                ${failedCount ? failedItems.map((f, idx) => `
+              <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-4">
+                ${failedItems.map((f, idx) => `
                   <div class="${idx > 0 ? 'pt-3 border-t border-gray-300 dark:border-gray-700' : ''}">
-                    <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${escapeHtml(f)}</p>
+                    <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${escapeHtml(f)}</p>
                     <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(f))}</p>
                   </div>
-                `).join('') : '<p class="text-green-600 font-medium">All checks passed — nothing to fix.</p>'}
+                `).join('')}
+
+                ${warningSignals.map((s, idx) => {
+                  const needsTop = failedItems.length > 0 || idx > 0;
+                  return `
+                    <div class="${needsTop ? 'pt-3 border-t border-gray-300 dark:border-gray-700' : ''}">
+                      <p class="font-bold text-orange-500 dark:text-orange-400 mb-2 leading-snug">⚠️ ${escapeHtml(s.label)}</p>
+                      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(s.label))}</p>
+                    </div>
+                  `;
+                }).join('')}
+
+                ${(!failedItems.length && warningSignals.length === 0)
+                  ? '<p class="text-green-600 font-medium">All checks passed — nothing to fix.</p>'
+                  : ''}
 
                 <div class="pt-3 border-t border-gray-300 dark:border-gray-700 flex flex-col gap-2 text-sm">
                   <a href="#ask-ai-section"
                      class="ask-ai-link inline-block text-purple-600 dark:text-purple-400 hover:underline font-semibold"
-                     data-ai-question="How do I improve my ${escapeHtml(m.name)} score?${failedCount ? ' Failed checks: ' + escapeHtml(failedItems.join('; ')) : ''}">
+                     data-ai-question="How do I improve my ${escapeHtml(m.name)} score?${failedItems.length ? ' Failed checks: ' + escapeHtml(failedItems.join('; ')) : ''}">
                     🤖 Ask AI about this module →
                   </a>
                   <a href="/blog/posts/lighthouse-plus-help-guide/#${slug}"
@@ -515,13 +566,22 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderBrowserMetricsPanel(bm) {
     if (!bm || !bm.capturedAt) return '';
 
-    const clsColor = bm.cls < 0.10 ? 'text-green-600' : bm.cls < 0.25 ? 'text-orange-400' : 'text-red-600';
-    const lcpColor = bm.lcp > 0 && bm.lcp < 2500 ? 'text-green-600' : bm.lcp < 4000 ? 'text-orange-400' : 'text-red-600';
-    const fcpColor = bm.fcp > 0 && bm.fcp < 1800 ? 'text-green-600' : bm.fcp < 3000 ? 'text-orange-400' : 'text-red-600';
+    const clsColor  = bm.cls < 0.10 ? 'text-green-600' : bm.cls < 0.25 ? 'text-orange-400' : 'text-red-600';
+    const lcpColor  = bm.lcp > 0 && bm.lcp < 2500 ? 'text-green-600' : bm.lcp < 4000 ? 'text-orange-400' : 'text-red-600';
+    const fcpColor  = bm.fcp > 0 && bm.fcp < 1800 ? 'text-green-600' : bm.fcp < 3000 ? 'text-orange-400' : 'text-red-600';
     const ttfbColor = bm.ttfb > 0 && bm.ttfb < 800 ? 'text-green-600' : bm.ttfb < 1800 ? 'text-orange-400' : 'text-red-600';
-    const tbtColor = bm.tbt > 0 && bm.tbt < 200 ? 'text-green-600' : bm.tbt < 600 ? 'text-orange-400' : 'text-red-600';
+    const tbtColor  = bm.tbt > 0 && bm.tbt < 200 ? 'text-green-600' : bm.tbt < 600 ? 'text-orange-400' : 'text-red-600';
 
     const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString();
+
+    const failedRequests = Array.isArray(bm.failedRequests) ? bm.failedRequests : [];
+    const normaliseFailedRequest = (r) => {
+      if (r == null) return { label: 'Unknown request', status: '' };
+      if (typeof r === 'string') return { label: r, status: '' };
+      const label = r.url || r.name || r.requestUrl || r.resourceUrl || JSON.stringify(r);
+      const status = r.status || r.statusCode || r.errorText || r.error || '';
+      return { label, status: status ? `[${status}]` : '' };
+    };
 
     return `
       <details class="max-w-5xl mx-auto my-16 px-4">
@@ -587,6 +647,19 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="text-green-700 dark:text-green-300 font-medium">✅ No console or page errors during render</p>
             </div>
           `}
+
+          ${failedRequests.length ? `
+            <div>
+              <h4 class="font-bold text-red-600 mb-3">🚫 ${failedRequests.length} Failed Network Request(s)</h4>
+              <ul class="space-y-1 text-xs font-mono bg-red-50 dark:bg-red-900/20 p-4 rounded-xl max-h-60 overflow-y-auto">
+                ${failedRequests.slice(0, 15).map((r) => {
+                  const { label, status } = normaliseFailedRequest(r);
+                  return `<li class="text-red-700 dark:text-red-300 break-all">❌ ${escapeHtml(label)}${status ? ' ' + escapeHtml(status) : ''}</li>`;
+                }).join('')}
+              </ul>
+              ${failedRequests.length > 15 ? `<p class="text-xs text-gray-500 mt-2 text-center">…and ${failedRequests.length - 15} more</p>` : ''}
+            </div>
+          ` : ''}
 
           ${bm.renderBlockingRequests?.length ? `
             <div>
