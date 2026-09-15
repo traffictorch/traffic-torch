@@ -4,6 +4,7 @@
 // Share Dashboard
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
+import { saveAudit } from '/audit-history.js';
 
 // ─── Quit Risk imports ────────────────────────────────────────────────────
 import { calculateReadability } from '/quit-risk-tool/modules/readability.js';
@@ -850,6 +851,16 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     ];
 
     renderCards(container, summaries, url);
+
+    // ─── Persist to shared audit history (visible in dashboard) ─────
+    const overallScoreForSave = Math.round(
+      (uxSummary.score + seoSummary.score + aiSummary.score) / 3
+    );
+    try {
+      await saveAudit({ url, tool: 'OFUX', score: overallScoreForSave });
+    } catch (e) {
+      console.warn('Failed to save OFUX audit:', e);
+    }
 
     window._homepageSummaries = summaries;
     window._homepageUrl = url;

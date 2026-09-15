@@ -290,6 +290,9 @@
               <div>
                 <label class="block text-sm text-gray-500 dark:text-gray-400 mb-1">Select Tool</label>
                 <select x-model="selectedTool" id="tool-selector" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                  <option value="/">OFUX</option>
+                  <option value="lighthouse-plus-tool">Lighthouse Plus</option>
+                  <option value="aeo-performance-tool">AEO Performance</option>
                   <option value="seo-intent-tool">SEO Intent</option>
                   <option value="seo-ux-tool">Full SEO + UX</option>
                   <option value="local-seo-tool">Local SEO</option>
@@ -315,7 +318,9 @@
           <!-- Tool Cards Grid -->
           <h3 class="text-lg font-bold mt-12 mb-4">🔧 All Tools</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
-            <a href="/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🏠</span><span class="text-sm font-medium">Homepage Tool</span></a>
+            <a href="/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🏠</span><span class="text-sm font-medium">OFUX Tool</span></a>
+            <a href="/lighthouse-plus-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🎯</span><span class="text-sm font-medium">Lighthouse PLus</span></a>
+            <a href="/aeo-performance-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🎯</span><span class="text-sm font-medium">AEO Performance</span></a>
             <a href="/seo-intent-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🎯</span><span class="text-sm font-medium">SEO Intent</span></a>
             <a href="/seo-ux-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">⚖️</span><span class="text-sm font-medium">SEO + UX</span></a>
             <a href="/local-seo-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">📍</span><span class="text-sm font-medium">Local SEO</span></a>
@@ -1272,7 +1277,7 @@ function dashboardApp() {
     activeDashboardTab: 'dashboard',
     dailyLimit: 3, // will be updated from account-info
     dailyUsedCount: 0,
-    selectedTool: 'seo-intent-tool',
+    selectedTool: '/',
     quickUrl: '',
     recentAudits: [],
     analytics: { clicks: 0, impressions: 0, ctr: 0, position: 0, daily: [] },
@@ -2432,6 +2437,9 @@ options: {
 
     scanAgain(audit) {
       const toolMap = {
+        'OFUX': '/',    
+        'Lighthouse Plus': '/lighthouse-plus-tool/',
+        'AEO Performance': '/aeo-performance-tool/',
         'SEO Intent': '/seo-intent-tool/',
         'Full SEO + UX': '/seo-ux-tool/',
         'Local SEO': '/local-seo-tool/',
@@ -2472,6 +2480,9 @@ if ((this.user.dailyUsed || 0) >= this.dailyLimit) {
 }
       const tool = this.selectedTool;
       const toolMap = {
+        '/': '/',                                 // OFUX (homepage)
+        'lighthouse-plus-tool': '/lighthouse-plus-tool/',
+        'aeo-performance-tool': '/aeo-performance-tool/',
         'seo-intent-tool': '/seo-intent-tool/',
         'seo-ux-tool': '/seo-ux-tool/',
         'local-seo-tool': '/local-seo-tool/',
@@ -2489,6 +2500,9 @@ if ((this.user.dailyUsed || 0) >= this.dailyLimit) {
       const toolPath = toolMap[tool];
       if (!toolPath) { alert('Tool not found'); return; }
       const toolNames = {
+        '/': 'OFUX',
+        'lighthouse-plus-tool': 'Lighthouse Plus',
+        'aeo-performance-tool': 'AEO Performance',
         'seo-intent-tool': 'SEO Intent',
         'seo-ux-tool': 'Full SEO + UX',
         'local-seo-tool': 'Local SEO',

@@ -92,6 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (urlParam)   urlInput.value = decodeURIComponent(urlParam);
   if (inputParam) codeInput.value = decodeURIComponent(inputParam);
 
+  // ─── Auto-run when opened with ?url= or ?input= (dashboard Quick Audit / share links) ───
+  if (urlParam) {
+    setTimeout(() => analyzeUrl.click(), 500);
+  } else if (inputParam) {
+    setTimeout(() => analyzeCode.click(), 500);
+  }
+
   const cleanUrl = (u) => {
     const t = (u || '').trim();
     if (!t) return '';
