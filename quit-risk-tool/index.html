@@ -426,7 +426,18 @@
 
     <!-- Loading indicator - modern thick orange ring spinner matching other tools -->
     <div id="loading" class="hidden flex flex-col items-center justify-center py-0 space-y-12">
-      <div class="w-20 h-20 rounded-full border-8 border-gray-300/50 dark:border-gray-700/50 border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
+<svg viewBox="0 0 60 60" width="80" height="80" role="status" aria-label="Loading">
+  <defs>
+    <linearGradient id="ttg-green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#4ade80"/>
+    </linearGradient>
+  </defs>
+  <circle cx="30" cy="30" r="24" fill="none" stroke="rgba(156,163,175,.3)" stroke-width="7"/>
+  <circle cx="30" cy="30" r="24" fill="none" stroke="url(#ttg-green)" stroke-width="7" stroke-linecap="round" stroke-dasharray="40 200">
+    <animateTransform attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="0.9s" repeatCount="indefinite"/>
+  </circle>
+</svg>
       <div class="text-center space-y-4">
         <p class="text-2xl font-black text-orange-500 dark:text-orange-400">Analyzing Quit Risk...</p>
         <p id="progressText" class="text-xl font-medium text-orange-500 dark:text-orange-400 max-w-2xl px-8"></p>
