@@ -18,16 +18,37 @@ import { detectCMS } from '/cms-detect.js';
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
+// ─── Score weights (single source of truth) ──────────────────────────
+const WEIGHTS = {
+  answerability: 0.25,
+  structuredData: 0.15,
+  eeat: 0.15,
+  scannability: 0.10,
+  conversational: 0.12,
+  readability: 0.10,
+  uniqueInsights: 0.08,
+  antiAiSafety: 0.05
+};
+// Sanity check — warn if the weights don't sum to 1.0
+(() => {
+  const sum = Object.values(WEIGHTS).reduce((a, b) => a + b, 0);
+  if (Math.abs(sum - 1) > 0.0001) {
+    console.warn(`[TrafficTorch] Score weights sum to ${sum}, expected 1.0`);
+  }
+})();
+
+const clampScore = (n) => Math.max(0, Math.min(100, Math.round(n)));
+
   // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
-    
+
     if (inputData) {
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-        
+
         // Optional: Auto-click the Analyze button after a tiny delay
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
@@ -162,48 +183,58 @@ const initTool = (form, results, progressContainer) => {
       mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
       const first300 = mainText.slice(0, 1200);
+      // ✅ FIX 5: Build an HTML snippet from the cleaned main element for bold detection
+      const first300Html = mainEl.innerHTML.slice(0, 2000);
 
-      const ansData = computeAnswerability(doc, first300);
-      const answerability = ansData.score;
+      const ansData = computeAnswerability(doc, first300, first300Html);
+      const answerability = clampScore(ansData.score);
       await new Promise(r => setTimeout(r, 1200));
       updateProgress();
 
       const structData = computeStructuredData(doc);
-      const structuredData = structData.score;
+      const structuredData = clampScore(structData.score);
 
       const eeatData = computeEEAT(doc, codeInput ? 'https://pasted-html.traffictorch.net' : analyzedUrl);
-      const eeat = eeatData.score;
+      const eeat = clampScore(eeatData.score);
 
       const scanData = computeScannability(doc, mainEl);
-      const scannability = scanData.score;
+      const scannability = clampScore(scanData.score);
 
       const convData = computeConversational(mainText);
-      const conversational = convData.score;
+      const conversational = clampScore(convData.score);
 
       const readData = computeReadability(mainText);
-      const readability = readData.score;
+      const readability = clampScore(readData.score);
 
       const uniqueData = computeUniqueInsights(mainText, readData.words);
-      const uniqueInsights = uniqueData.score;
+      const uniqueInsights = clampScore(uniqueData.score);
 
       const antiData = computeAntiAiSafety(mainText, readData.variationScore);
-      const antiAiSafety = antiData.score;
+      const antiAiSafety = clampScore(antiData.score);
 
-      const overall = Math.round(
-        answerability * 0.25 + structuredData * 0.15 + eeat * 0.15 + scannability * 0.10 +
-        conversational * 0.12 + readability * 0.10 + uniqueInsights * 0.08 + antiAiSafety * 0.05
-      );
-      const yourScore = overall;
+      // ✅ FIX 7: Weighted overall using WEIGHTS, then clamped 0–100
+      const rawOverall =
+        answerability  * WEIGHTS.answerability +
+        structuredData * WEIGHTS.structuredData +
+        eeat           * WEIGHTS.eeat +
+        scannability   * WEIGHTS.scannability +
+        conversational * WEIGHTS.conversational +
+        readability    * WEIGHTS.readability +
+        uniqueInsights * WEIGHTS.uniqueInsights +
+        antiAiSafety   * WEIGHTS.antiAiSafety;
 
+      const yourScore = clampScore(rawOverall);
+
+      // ✅ FIX 8: Clamp module scores at render for defense-in-depth
       const modules = [
-        { name: "Answerability", score: answerability, desc: "Direct answers in first 300 words, FAQ schema, step-by-step structure" },
-        { name: "Structured Data", score: structuredData, desc: "JSON-LD presence and relevant types" },
-        { name: "EEAT Signals", score: eeat, desc: "Author, dates, trusted links, HTTPS" },
-        { name: "Scannability", score: scannability, desc: "Headings, lists, tables, short paragraphs" },
-        { name: "Conversational Tone", score: conversational, desc: "You/I/we, questions, pain point acknowledgment" },
-        { name: "Readability", score: readability, desc: "Flesch ease, variation, low passive/complex words" },
-        { name: "Unique Insights", score: uniqueInsights, desc: "First-hand markers, dated results, interviews" },
-        { name: "Anti-AI Safety", score: antiAiSafety, desc: "Variation, low repetition, no predictable patterns" }
+        { name: "Answerability", score: clampScore(answerability), desc: "Direct answers in first 300 words, FAQ schema, step-by-step structure" },
+        { name: "Structured Data", score: clampScore(structuredData), desc: "JSON-LD presence and relevant types" },
+        { name: "EEAT Signals", score: clampScore(eeat), desc: "Author, dates, trusted links, HTTPS" },
+        { name: "Scannability", score: clampScore(scannability), desc: "Headings, lists, tables, short paragraphs" },
+        { name: "Conversational Tone", score: clampScore(conversational), desc: "You/I/we, questions, pain point acknowledgment" },
+        { name: "Readability", score: clampScore(readability), desc: "Flesch ease, variation, low passive/complex words" },
+        { name: "Unique Insights", score: clampScore(uniqueInsights), desc: "First-hand markers, dated results, interviews" },
+        { name: "Anti-AI Safety", score: clampScore(antiAiSafety), desc: "Variation, low repetition, no predictable patterns" }
       ];
 
       function getGradeInfo(score) {
@@ -379,7 +410,7 @@ const initTool = (form, results, progressContainer) => {
         }
         if (name === "Conversational Tone") {
           if (!convData.flags.directYou) addFix('Direct "you" address (>5)', 'Address the reader directly with “you” more than 5 times.');
-          if (!convData.flags.personalIWe) addFix('Personal "I/we" sharing', 'Include personal insights using “I” or “we” at least 4 times.');
+          if (!convData.flags.personalIWe) addFix('Personal "I/we" sharing', 'Include personal insights using “I” or “we” more than 5 times.');
           if (!convData.flags.engagingQuestions) addFix('Engaging questions asked', 'Add rhetorical questions that mirror what readers are thinking.');
           if (!convData.flags.painPoints) addFix('Reader pain points acknowledged', 'Mention common struggles or frustrations to build empathy.');
         }
@@ -428,7 +459,8 @@ const initTool = (form, results, progressContainer) => {
         "Conversational Tone": ["Direct \"you\" address (>5)", "Personal \"I/we\" sharing", "Engaging questions asked", "Reader pain points acknowledged"],
         "Readability": ["Good Flesch score (>60)", "Natural sentence variation", "Low passive voice", "Low complex words (<15%)"],
         "Unique Insights": ["First-hand experience markers", "Dated/timely results mentioned", "Interviews/quotes included", "Deep content (1500+ words)"],
-        "Anti-AI Safety": ["Low word repetition", "No predictable sentence starts"]
+        // ✅ FIX 6: Added "High sentence burstiness" so it displays under Anti-AI Safety
+        "Anti-AI Safety": ["Low word repetition", "No predictable sentence starts", "High sentence burstiness"]
       };
 
       const scores = modules.map(m => m.score);
@@ -753,7 +785,7 @@ const initTool = (form, results, progressContainer) => {
             <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
           </div>
         </div>
-        
+
         <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
         <div id="share-dashboard-container" class="mt-16"></div>
       `;
@@ -873,7 +905,7 @@ const initTool = (form, results, progressContainer) => {
           `;
         }
       }
-      
+
             const askBtn = document.getElementById('ask-ai-btn');
       const askInput = document.getElementById('ai-question-input');
       const modelSelect = document.getElementById('ai-model-select');
