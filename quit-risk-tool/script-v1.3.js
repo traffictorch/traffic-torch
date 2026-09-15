@@ -21,6 +21,13 @@ import { calculateMobile } from './modules/mobile.js';
 import { calculatePerformance } from './modules/performance.js';
 import { detectCMS } from '/cms-detect.js';
 
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure,
+  escapeHtml
+} from './code-snippet-v1.0.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const urlInput = document.getElementById('url-input');
@@ -28,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   const results = document.getElementById('results');
+  
+  initCodeSnippetModal();
 
   // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
@@ -417,10 +426,18 @@ document.addEventListener('DOMContentLoaded', () => {
         ? 'text-orange-500 dark:text-orange-400'
         : 'text-red-600 dark:text-red-400';
       const prefix = isWarn ? '⚠️ ' : '❌ ';
+      const rule = deriveSelectorsForFailure(f.name);
       return `
         <div class="${i === 0 ? '' : 'border-t border-gray-200 dark:border-gray-700 pt-5 mt-5'}">
-          <p class="font-bold ${titleClass} mb-2 leading-snug">${prefix}${f.name}</p>
+          <p class="font-bold ${titleClass} mb-2 leading-snug">${prefix}${escapeHtml(f.name)}</p>
           <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${fixText}</p>
+          ${rule ? `
+            <button type="button"
+                    class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                    data-failure="${escapeHtml(f.name)}">
+              🔍 Show the code
+            </button>
+          ` : ''}
         </div>`;
     }).join('');
 
@@ -794,6 +811,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const offset = 240;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
+      
+      results.dataset.renderedHtml = html || '';
 
       results.innerHTML = `
 <!-- Big Overall Score Card -->
@@ -1356,6 +1375,16 @@ ${impactHTML}
       if (textarea) textarea.value = question;
       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setTimeout(() => { textarea?.focus(); }, 700);
+    }
+
+   // Show the code (Lighthouse-style) for a failure
+    const showCodeBtn = e.target.closest('.show-code-btn');
+    if (showCodeBtn) {
+      e.preventDefault();
+      const failureText = showCodeBtn.dataset.failure || '';
+      const html = results.dataset.renderedHtml || '';
+      showCodeForFailure(failureText, html, { title: 'Affected code' });
+      return;
     }
   });
 });
