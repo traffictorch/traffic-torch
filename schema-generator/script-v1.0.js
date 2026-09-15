@@ -535,7 +535,7 @@ const initTool = (form, results, progressContainer) => {
       askBtn.disabled = true;
       askBtn.textContent = 'Thinking...';
       answerContainer.classList.remove('hidden');
-      answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+      answerContent.innerHTML = '⏳ Traffic Torching...';
 
       try {
         const resultsDiv = document.getElementById('results');

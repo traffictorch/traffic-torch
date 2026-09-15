@@ -884,7 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newAskBtn.disabled = true;
             newAskBtn.textContent = 'Thinking...';
             answerContainer.classList.remove('hidden');
-            answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+            answerContent.innerHTML = '⏳ Traffic Torching...';
 
             try {
               // Build module scores for the payload

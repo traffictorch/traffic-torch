@@ -1143,7 +1143,7 @@ ${impactHTML}
           newAskBtn.disabled = true;
           newAskBtn.textContent = 'Thinking...';
           answerContainer.classList.remove('hidden');
-          answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+          answerContent.innerHTML = '⏳ Traffic Torching...';
 
           try {
             // Build the audit snapshot (same structure as SEO Intent)

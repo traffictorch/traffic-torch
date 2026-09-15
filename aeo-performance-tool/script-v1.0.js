@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const label = aiBtn.textContent;
       aiBtn.textContent = 'Thinking…';
       aiWrap.classList.remove('hidden');
-      aiOut.textContent = '⏳ Consulting Traffic Torch AI…';
+      aiOut.textContent = '⏳ Traffic Torching…';
       try {
         const r = await fetch(AEO_AI_API, {
           method: 'POST',

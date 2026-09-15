@@ -7,6 +7,12 @@ import { analyzeSalience } from './modules/salience.js';
 import { analyzeRelationships } from './modules/relationships.js';
 import { analyzePractices } from './modules/practices.js';
 import { analyzeReadiness } from './modules/readiness.js';
+// ── Show-the-code modal module (shared UI helper, lives in tool folder) ──
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure
+} from './code-snippet-v1.0.js';
 
 // Minimal URL Prefill + Auto Submit
 function simplePrefillAndRun() {
@@ -47,12 +53,22 @@ function simplePrefillAndRun() {
   }
 }
 
-// Run it
-document.addEventListener('DOMContentLoaded', simplePrefillAndRun);
+// Run it — init the modal once, then prefill/auto-submit
+document.addEventListener('DOMContentLoaded', () => {
+  initCodeSnippetModal();
+  simplePrefillAndRun();
+});
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 const ANALYZE_ENDPOINT = 'https://entity-ai-proxy.traffictorch.workers.dev/entity-analyze';
+
+// ── Small HTML escaper (used by the fixes template for safe rendering) ──
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
 
 function isShortContent(wordCount) {
   return wordCount < 400;
@@ -212,6 +228,12 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           </div>
         `).join('')
       : '<p class="text-gray-600 dark:text-gray-400 text-center py-6">No entities detected.</p>';
+
+    // ── Cache the HTML for the "Show the code" modal ────────────────
+    // Prefer the worker's renderedHtml (URL analyses), fall back to rawCode
+    // (pasted-code analyses).
+    results.dataset.renderedHtml = data.renderedHtml || rawCode || '';
+
     results.innerHTML = `
 <div class="max-w-5xl mx-auto px-4 py-8">
   <!-- Big Overall Readiness Score Card -->
@@ -334,10 +356,26 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
           ${failed.length > 0 ? `
             <ul class="space-y-4 text-sm">
-              ${failed.map(f => {
-                let emoji = f.grade === 'bad' ? '❌' : '⚠️';
-                let color = f.grade === 'bad' ? 'text-red-700 dark:text-red-300' : 'text-orange-600 dark:text-orange-400';
-                return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
+              ${failed.map((f, idx) => {
+                const rule = deriveSelectorsForFailure(f.text);
+                const emoji = f.grade === 'bad' ? '❌' : '⚠️';
+                const color = f.grade === 'bad'
+                  ? 'text-red-700 dark:text-red-300'
+                  : 'text-orange-600 dark:text-orange-400';
+                return `
+                  <li class="${color} flex items-start gap-3 ${idx > 0 ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}">
+                    <span class="flex-1">
+                      ${emoji} <span class="font-bold">${escapeHtml(f.text)}</span>
+                      ${rule ? `
+                        <button type="button"
+                                class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                                data-failure="${escapeHtml(f.text)}">
+                          🔍 Show the code
+                        </button>
+                      ` : ''}
+                    </span>
+                  </li>
+                `;
               }).join('')}
             </ul>
           ` : `
@@ -415,10 +453,26 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
           ${failed.length > 0 ? `
             <ul class="space-y-4 text-sm">
-              ${failed.map(f => {
-                let emoji = f.grade === 'bad' ? '❌' : '⚠️';
-                let color = f.grade === 'bad' ? 'text-red-700 dark:text-red-300' : 'text-orange-600 dark:text-orange-400';
-                return `<li class="${color} flex items-start gap-3">${emoji} <span>${f.text}</span></li>`;
+              ${failed.map((f, idx) => {
+                const rule = deriveSelectorsForFailure(f.text);
+                const emoji = f.grade === 'bad' ? '❌' : '⚠️';
+                const color = f.grade === 'bad'
+                  ? 'text-red-700 dark:text-red-300'
+                  : 'text-orange-600 dark:text-orange-400';
+                return `
+                  <li class="${color} flex items-start gap-3 ${idx > 0 ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}">
+                    <span class="flex-1">
+                      ${emoji} <span class="font-bold">${escapeHtml(f.text)}</span>
+                      ${rule ? `
+                        <button type="button"
+                                class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                                data-failure="${escapeHtml(f.text)}">
+                          🔍 Show the code
+                        </button>
+                      ` : ''}
+                    </span>
+                  </li>
+                `;
               }).join('')}
             </ul>
           ` : `
@@ -578,6 +632,16 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     // ─── Toggle listeners (unchanged) ───────────────────────────────
     if (!document.body.dataset.toggleListenersAttached) {
       document.body.addEventListener('click', function(e) {
+        // ── Show-the-code button inside fixes panel ─────────────
+        const showCodeBtn = e.target.closest('.show-code-btn');
+        if (showCodeBtn) {
+          e.preventDefault();
+          const failureText = showCodeBtn.dataset.failure || '';
+          const html = results.dataset.renderedHtml || '';
+          showCodeForFailure(failureText, html, { title: 'Affected code' });
+          return;
+        }
+
         // ── Ask AI link inside fixes panel ──────────────────────
         const askLink = e.target.closest('.ask-ai-link');
         if (askLink) {
@@ -746,7 +810,7 @@ if (askBtn) {
     askBtn.disabled = true;
     askBtn.textContent = 'Thinking...';
     answerContainer.classList.remove('hidden');
-    answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+    answerContent.innerHTML = '⏳ Traffic Torching...';
 
     try {
       // Gather current audit data from the DOM

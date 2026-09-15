@@ -3,149 +3,148 @@ const SNIPPET_MAX = 800;
 const HEAD_MAX    = 2000;
 
 const RULES = [
-  /* ── SEO module ───────────────────────────────────────────── */
+  // ─── E-E-A-T / SEO Intent additions ───
+  { test: /awards, endorsements, or media features/i,
+    rawSearch: [
+      { pattern: /\b(award|winner|awarded|featured in|as seen on|recognized by|endorsed by|best|top|honored|accolade|prize|nominee|finalist|ranked|trusted by|partnered with|collaborated with|official|certified by|accredited by|recommended by|highly rated|testimonials?|case study|media mention|press coverage)\b/gi,
+        label: 'Awards/endorsements text' }
+    ] },
+
+  { test: /About or Team page/i,
+    selectors: ['a[href*="/about" i]', 'a[href*="/team" i]', 'nav a'] },
+
+  { test: /first-person language/i,
+    selectors: ['p', 'li', 'article'], limit: 5 },
+
+  { test: /personal anecdotes|real-world examples/i,
+    rawSearch: [
+      { pattern: /\b(in my experience|I tested|we found that|from my trials|I tried|we tried|my results|our case study|in practice|hands-on|real-world|based on my|after testing|client case|personal review)\b/gi,
+        label: 'Anecdote phrase' }
+    ] },
+
+  { test: /timelines or dates from your experience/i,
+    rawSearch: [
+      { pattern: /\b(last year|in 20\d{2}|this year|over the past \d+|since \d{4}|in \d{4}|during \d{4}|recently|within the last|for \d+ years?|after \d+ months?|as of \d{4}|updated (on|in) \d{4}|published (on|in) \d{4}|20\d{2}|202\d)\b/gi,
+        label: 'Timeline/date phrase' }
+    ] },
+
+  { test: /original photos\/videos|personal captions/i,
+    selectors: ['img[alt]', 'video', 'figure figcaption'] },
+
+  { test: /visible author byline\/name/i,
+    selectors: [
+      'meta[name="author" i]', 'meta[property="article:author"]', '[rel="author"]',
+      '.author', '.byline', '.written-by', '[class*="author" i]', '[itemprop="author"]',
+      '[class*="byline" i]', '.post-author', '.entry-author', '.writer-name',
+      '.blog-author', '.h-card .p-name', '.author-name'
+    ] },
+
+  { test: /author bio section/i,
+    selectors: [
+      '.author-bio', '.bio', '[class*="bio" i]', '.about-author', '.author-description',
+      '.author-box', '.author-info', '.author-details', '.writer-bio', '.contributor-bio',
+      '.author-profile', '.about-the-author'
+    ] },
+
+  { test: /qualifications, certifications, or years of experience/i,
+    rawSearch: [
+      { pattern: /\b(PhD|MD|doctor|Dr\.?|certified|licensed|years? of experience|expert in|specialist|award-winning|published in|fellow|board-certified|certificate|diploma|qualification|accredited|professional membership|industry leader|renowned|distinguished|master'?s degree|bachelor'?s degree|MBA|CPA|CFA|PMP|JD|LLB|engineer|architect|scientist|professor|consultant|coach|trainer|instructor|15\+ years?|10\+ years?|veteran|authority|thought leader)\b/gi,
+        label: 'Credential keyword' }
+    ] },
+
+  { test: /citations or links to supporting sources/i,
+    selectors: ['cite', '.references', '.sources', 'a[href*="doi.org"]', 'a[href*="pubmed"]', 'a[href*="researchgate"]', 'footer a[href*="/references"]'] },
+
+  { test: /Switch to HTTPS/i,
+    selectors: ['link[rel="canonical"]', 'meta[property="og:url"]', 'a[href^="http://"]'], limit: 5 },
+
+  { test: /visible Contact page or contact details/i,
+    selectors: ['a[href*="/contact" i]', 'a[href*="mailto:" i]', 'a[href*="tel:" i]', '[class*="contact" i]', '[id*="contact" i]', 'footer'] },
+
+  { test: /Privacy Policy and\/or Terms/i,
+    selectors: ['a[href*="/privacy" i]', 'a[href*="/terms" i]', 'a[href*="/legal" i]', 'a[href*="/cookie" i]', 'a[href*="/gdpr" i]', 'footer a'] },
+
+  { test: /last updated date/i,
+    selectors: ['time[datetime]', '.updated', '.last-modified', '.date-updated', '.published', '.post-date', '.entry-date', 'meta[name="date" i]', 'meta[name="last-modified" i]', 'meta[property="article:modified_time"]', 'meta[property="og:updated_time"]', 'meta[name="revised"]', '[class*="update" i]', '[class*="date" i]', '.modified-date', '.publish-date'] },
+
+  { test: /Content is under 1,500 words/i,
+    selectors: ['article', 'main', 'body'], limit: 1, maxLen: HEAD_MAX },
+
+  { test: /schema markup detected|schema type detected/i,
+    selectors: ['script[type="application/ld+json"]'], limit: 5 },
+
+  { test: /Flesch Reading Ease/i,
+    selectors: ['p'], limit: 5, maxLen: SNIPPET_MAX },
+  { test: /render-blocking script/i,
+    selectors: ['head script[src]:not([defer]):not([async]):not([type="module"])'] },
+  { test: /stylesheets/i, selectors: ['link[rel="stylesheet"]'], limit: 10 },
+  { test: /large inline scripts/i, selectors: ['script:not([src])'] },
+  { test: /large inline style/i, selectors: ['style'] },
+  { test: /image\(s\) missing width\/height/i,
+    selectors: ['img:not([width])', 'img:not([height])'] },
+  { test: /without lazy loading/i,
+    selectors: ['img:not([loading="lazy"]):not([fetchpriority="high"])'] },
+  { test: /\bimage-alt\b/i, selectors: ['img:not([alt])'] },
+  { test: /\blabel\b/i,
+    selectors: [
+      'input:not([type="hidden"]):not([aria-label]):not([aria-labelledby])',
+      'select:not([aria-label]):not([aria-labelledby])',
+      'textarea:not([aria-label]):not([aria-labelledby])'
+    ] },
+  { test: /\blink-name\b/i,   selectors: ['a:not([aria-label]):empty'] },
+  { test: /\bbutton-name\b/i, selectors: ['button:not([aria-label]):empty'] },
+  { test: /\bheading-order\b|\bpage-has-heading-one\b/i,
+    selectors: ['h1, h2, h3, h4, h5, h6'], limit: 12 },
+  { test: /\blandmark-one-main\b|\bregion\b/i, selectors: ['main, [role="main"]'] },
+  { test: /\bhtml-has-lang\b/i,   selectors: ['html'] },
+  { test: /\bdocument-title\b/i,  selectors: ['title'] },
+  { test: /image\(s\) without alt/i, selectors: ['img:not([alt])'] },
+  { test: /form field\(s\) may lack labels/i,
+    selectors: [
+      'input:not([type="hidden"]):not([id]):not([aria-label])',
+      'select:not([id]):not([aria-label])',
+      'textarea:not([id]):not([aria-label])'
+    ] },
+  { test: /deprecated API/i,
+    rawSearch: [
+      { pattern: /document\.write\s*\(/g,   label: 'document.write()' },
+      { pattern: /\.attachEvent\s*\(/g,     label: '.attachEvent()' },
+      { pattern: /new\s+ActiveXObject\s*\(/g, label: 'new ActiveXObject()' },
+      { pattern: /\bdocument\.all\b/g,      label: 'document.all' }
+    ] },
+  { test: /distorted aspect ratio/i, selectors: ['img[width][height]'], limit: 10 },
   { test: /Missing <title> tag/i,
     selectors: ['head'], limit: 1, maxLen: HEAD_MAX },
-  { test: /Title (?:is )?too (?:short|long)/i,
-    selectors: ['title'] },
+  { test: /Title too short|Title too long/i, selectors: ['title'] },
   { test: /Missing meta description/i,
     selectors: ['head'], limit: 1, maxLen: HEAD_MAX,
     note: 'No <meta name="description"> found — this is your <head> where it belongs.' },
-  { test: /Meta description (?:is )?(?:too )?(?:short|long)/i,
+  { test: /Meta description short|Meta description long/i,
     selectors: ['meta[name="description"]'] },
-  { test: /Main heading could better align/i,
-    selectors: ['h1, h2, h3'], limit: 3 },
-  { test: /No main heading/i,
-    selectors: ['h1', 'h2', 'h3'], limit: 1,
-    note: 'No <h1> or <h2> found. Showing the first heading on the page for context.' },
-  { test: /Meta keywords tag found/i,
-    selectors: ['meta[name="keywords"]'] },
-  { test: /Missing Open Graph|Twitter cards?/i,
-    selectors: [
-      'meta[property^="og:"]',
-      'meta[name^="twitter:"]',
-      'head'
-    ], limit: 6,
-    note: 'No Open Graph / Twitter card meta tags found — showing <head> and any partial meta tags.' },
-  { test: /Page blocked from Google|noindex/i,
-    selectors: ['meta[name="robots"]'] },
-  { test: /No structured data|schema/i,
-    selectors: ['script[type="application/ld+json"]'], limit: 6,
-    note: 'No JSON-LD or microdata found on the page.' },
-  { test: /images? missing alt text/i,
-    selectors: ['img:not([alt])', 'img[alt=""]'], limit: 10 },
-
-  /* ── Mobile / PWA module ──────────────────────────────────── */
-  { test: /Viewport missing or incorrect|Missing viewport meta/i,
-    selectors: ['meta[name="viewport"]', 'head'], limit: 2 },
-  { test: /web app manifest|manifest\.json/i,
-    selectors: ['link[rel="manifest"]', 'head'], limit: 2,
-    note: 'No <link rel="manifest"> found — this is your <head> where it belongs.' },
-  { test: /homescreen icon|apple-touch-icon/i,
-    selectors: ['link[rel="apple-touch-icon"]', 'link[rel="icon"]'], limit: 6 },
-  { test: /service worker/i,
-    selectors: ['script[src]', 'script:not([src])'], limit: 8,
-    note: 'Scanned inline and external scripts for navigator.serviceWorker.register().' },
-
-  /* ── Performance module ───────────────────────────────────── */
-  { test: /HTML payload|Page weight/i,
+  { test: /Missing canonical link/i,
     selectors: ['head'], limit: 1, maxLen: HEAD_MAX,
-    note: 'This is a network metric — showing <head> for context.' },
-  { test: /render-blocking resource/i,
-    selectors: [
-      'head link[rel="stylesheet"][href]',
-      'head script[src]:not([async]):not([defer]):not([type="module"])'
-    ], limit: 12 },
-  { test: /external font request|Web fonts?|font-display/i,
-    selectors: [
-      'link[href*="fonts.googleapis.com"]',
-      'link[href*="fonts.gstatic.com"]',
-      'link[href*="font"][rel="stylesheet"]',
-      'link[rel="preload"][as="font"]'
-    ], limit: 8 },
-
-  /* ── Accessibility module ─────────────────────────────────── */
-  { test: /Missing lang attribute/i,
-    selectors: ['html'] },
-  { test: /Missing main landmark|landmark-one-main|region/i,
-    selectors: ['main', '[role="main"]'] },
-  { test: /Heading order skipped|heading structure|heading-order/i,
-    selectors: ['h1, h2, h3, h4, h5, h6'], limit: 12 },
-  { test: /form fields? (?:lack|without|may lack|missing) (?:accessible )?labels/i,
-    selectors: [
-      'input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not([aria-label]):not([aria-labelledby])',
-      'select:not([aria-label]):not([aria-labelledby])',
-      'textarea:not([aria-label]):not([aria-labelledby])'
-    ], limit: 10 },
-
-  /* ── Content module ───────────────────────────────────────── */
-  { test: /Thin content|Very long content|content depth/i,
-    selectors: ['main', 'article', 'body'], limit: 1,
-    note: 'Showing the primary content container so you can see its size.' },
-  { test: /Readability needs improvement/i,
-    selectors: ['main p', 'article p', 'p'], limit: 6 },
-  { test: /bullet or numbered lists/i,
-    selectors: ['p', 'div'], limit: 6,
-    note: 'No <ul> or <ol> found — showing sample text containers.' },
-
-  /* ── UX module ────────────────────────────────────────────── */
-  { test: /calls-to-action|clickable element/i,
-    selectors: ['a[href]:not([href^="#"])', 'button'], limit: 12 },
-  { test: /Breadcrumb/i,
-    selectors: [
-      'nav[aria-label*="breadcrumb" i]',
-      '[class*="breadcrumb" i]',
-      '[aria-label="breadcrumb"]'
-    ] },
-
-  /* ── Security module ──────────────────────────────────────── */
-  { test: /Not served over HTTPS/i,
-    selectors: ['head'], limit: 1, maxLen: HEAD_MAX,
-    note: 'HTTPS is a transport-level signal — this is the document <head> for reference.' },
-  { test: /mixed content/i,
-    selectors: [
-      'img[src^="http://"]',
-      'script[src^="http://"]',
-      'link[href^="http://"]'
-    ], limit: 10 },
-
-  /* ── Indexability module ──────────────────────────────────── */
-  { test: /Missing canonical (?:tag|link)/i,
-    selectors: ['link[rel="canonical"]', 'head'], limit: 2,
     note: 'No <link rel="canonical"> found — this is your <head> where it belongs.' },
-  { test: /noindex|nofollow/i,
-    selectors: ['meta[name="robots"]'] },
-
-  /* ── Legacy Lighthouse-ID tokens (in case the worker ever emits them) ── */
-  { test: /\bimage-alt\b/i,   selectors: ['img:not([alt])'] },
-  { test: /\blabel\b/i,       selectors: ['label'] },
-  { test: /\blink-name\b/i,   selectors: ['a:not([aria-label]):empty'] },
-  { test: /\bbutton-name\b/i, selectors: ['button:not([aria-label]):empty'] },
-  { test: /\bdocument-title\b/i, selectors: ['title'] },
-  { test: /\bhtml-has-lang\b/i,  selectors: ['html'] },
-
-  /* ── Legacy fallbacks ─────────────────────────────────────── */
-  { test: /stylesheets/i, selectors: ['link[rel="stylesheet"]'], limit: 10 },
-  { test: /large inline scripts/i, selectors: ['script:not([src])'] },
-  { test: /large inline style/i,   selectors: ['style'] },
-  { test: /without lazy loading/i,
-    selectors: ['img:not([loading="lazy"]):not([fetchpriority="high"])'] },
-  { test: /image\(s\) missing width\/height/i,
-    selectors: ['img:not([width])', 'img:not([height])'] },
-  { test: /deprecated API/i,
-    rawSearch: [
-      { pattern: /document\.write\s*\(/g,     label: 'document.write()' },
-      { pattern: /\.attachEvent\s*\(/g,       label: '.attachEvent()' },
-      { pattern: /new\s+ActiveXObject\s*\(/g, label: 'new ActiveXObject()' },
-      { pattern: /\bdocument\.all\b/g,        label: 'document.all' }
-    ] },
-  { test: /distorted aspect ratio/i, selectors: ['img[width][height]'], limit: 10 },
+  { test: /noindex|nofollow/i, selectors: ['meta[name="robots"]'] },
+  { test: /No H1 on page/i,
+    selectors: ['h1', 'h2'], limit: 1,
+    note: 'No <h1> found. Showing the first heading on the page for context.' },
+  { test: /\bH1 tags\b/i, selectors: ['h1'] },
+  { test: /Missing viewport meta/i,
+    selectors: ['head'], limit: 1, maxLen: HEAD_MAX },
+  { test: /No web app manifest/i,
+    selectors: ['head'], limit: 1, maxLen: HEAD_MAX,
+    note: 'No <link rel="manifest"> found — this is your <head> where it belongs.' },
+  { test: /Missing theme-color meta/i,
+    selectors: ['head'], limit: 1, maxLen: HEAD_MAX },
   { test: /No WebP\/AVIF/i,
     selectors: ['img[src$=".jpg"]', 'img[src$=".jpeg"]', 'img[src$=".png"]'], limit: 8 },
   { test: /Script total/i, selectors: ['script[src]'], limit: 10 },
   { test: /CSS total/i,    selectors: ['link[rel="stylesheet"]'], limit: 10 },
-  { test: /font sizes under 14px/i,
-    selectors: ['[style*="font-size"]'], limit: 10 },
+  { test: /font-display/i,
+    selectors: ['link[rel="preload"][as="font"]', 'link[href*="font"]'] },
+  { test: /Viewport missing width=device-width|user-scalable=no|maximum-scale=1/i,
+    selectors: ['meta[name="viewport"]'] },
+  { test: /font sizes under 14px/i, selectors: ['[style*="font-size"]'], limit: 10 },
   { test: /clickable element\(s\) under 44px/i,
     selectors: ['button[style]', 'a[style]'], limit: 10 },
   { test: /Horizontal scroll container/i,
@@ -153,10 +152,17 @@ const RULES = [
   { test: /safe-area/i, selectors: ['meta[name="viewport"]'] },
   { test: /semantic landmarks/i,
     selectors: ['main', 'nav', 'header', 'footer', 'article', 'aside'], limit: 12 },
+  { test: /form field\(s\) without labels/i,
+    selectors: [
+      'input:not([type="hidden"]):not([id]):not([aria-label])',
+      'select:not([id]):not([aria-label])',
+      'textarea:not([id]):not([aria-label])'
+    ] },
   { test: /skip-to-content link/i,
     selectors: ['a[href^="#main"]', 'a[href^="#content"]', 'a[href^="#skip"]'] },
   { test: /modal\/dialog elements/i, selectors: ['[role="dialog"]', '.modal'] }
 ];
+
 export function deriveSelectorsForFailure(text) {
   if (!text) return null;
   for (const rule of RULES) {
@@ -378,7 +384,7 @@ export function showCodeForFailure(failureText, html, { title } = {}) {
   });
 }
 
-export function escapeHtml(s) {
+function escapeHtml(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');

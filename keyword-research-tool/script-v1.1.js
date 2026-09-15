@@ -311,7 +311,7 @@ if (askBtn) {
     askBtn.disabled = true;
     askBtn.textContent = 'Thinking...';
     answerContainer.classList.remove('hidden');
-    answerContent.innerHTML = '⏳ Consulting Traffic Torch AI...';
+    answerContent.innerHTML = '⏳ Traffic Torching...';
 
     try {
       // Gather current data
