@@ -475,22 +475,21 @@
   </div>
 </div>
 
-    <div id="progress-container" class="text-center my-8 hidden">
-      <svg viewBox="0 0 60 60" width="80" height="80" role="status" aria-label="Loading">
-<svg viewBox="0 0 60 60" width="80" height="80" role="status" aria-label="Loading">
-  <defs>
-    <linearGradient id="ttg-green" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#22c55e"/>
-      <stop offset="100%" stop-color="#4ade80"/>
-    </linearGradient>
-  </defs>
-  <circle cx="30" cy="30" r="24" fill="none" stroke="rgba(156,163,175,.3)" stroke-width="7"/>
-  <circle cx="30" cy="30" r="24" fill="none" stroke="url(#ttg-green)" stroke-width="7" stroke-linecap="round" stroke-dasharray="40 200">
-    <animateTransform attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="0.9s" repeatCount="indefinite"/>
-  </circle>
-</svg>
-      <p id="progress-text" class="text-xl text-orange-500 font-medium">Initializing analysis...</p>
-    </div>
+<div id="progress-container" class="text-center my-8 hidden">
+  <svg viewBox="0 0 60 60" width="80" height="80" role="status" aria-label="Loading" class="mx-auto mb-4 block">
+    <defs>
+      <linearGradient id="ttg-green" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#22c55e"/>
+        <stop offset="100%" stop-color="#4ade80"/>
+      </linearGradient>
+    </defs>
+    <circle cx="30" cy="30" r="24" fill="none" stroke="rgba(156,163,175,.3)" stroke-width="7"/>
+    <circle cx="30" cy="30" r="24" fill="none" stroke="url(#ttg-green)" stroke-width="7" stroke-linecap="round" stroke-dasharray="40 200">
+      <animateTransform attributeName="transform" type="rotate" from="0 30 30" to="360 30 30" dur="0.9s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+  <p id="progress-text" class="text-xl text-orange-500 font-medium">Initializing analysis...</p>
+</div>
     
  <div id="results-wrapper" class="hidden">
    <div id="radar-container" class="hidden md:block my-24">
