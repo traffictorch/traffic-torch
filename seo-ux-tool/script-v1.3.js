@@ -13,6 +13,14 @@ import { analyzeIndexability } from './modules/analyze-indexability-v1.0.js';
 import { detectCMS } from '/cms-detect.js';
 import { canRunTool } from '/main-v1.1.js';
 
+// ── Edit 1: import the code-snippet modal helpers ──
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure,
+  escapeHtml
+} from './code-snippet-v1.0.js';
+
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
@@ -54,6 +62,9 @@ let healthRadarChart = null;
 let resultsWrapper = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+  // ── Edit 2a: init the code-snippet modal once ──
+  initCodeSnippetModal();
+
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
 
   const form = document.getElementById('url-form');
@@ -258,6 +269,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Shared analysis function
   async function runFullAnalysis(html, doc, url, originalInput) {
+    // ── Edit 2b: cache the audited HTML so the Show-the-code handler can reach it ──
+    const resultsEl = document.getElementById('results');
+    if (resultsEl) resultsEl.dataset.renderedHtml = html || '';
+
     const cmsInfo = detectCMS({ doc, url: url || '' });
     const modules = [
       { id: 'seo', name: 'On-Page SEO', fn: analyzeSEO },
@@ -459,15 +474,27 @@ document.addEventListener('DOMContentLoaded', () => {
         card.appendChild(expand);
       }
       expand.innerHTML = '';
+
+      // ── Edit 3: render each failure with an optional "Show the code" button ──
       modIssues.forEach(iss => {
         const block = document.createElement('div');
         block.className = 'p-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 break-words min-w-0';
+
+        const rule = deriveSelectorsForFailure(iss.issue);
+
         block.innerHTML = `
-          <strong class="text-xl block mb-4 text-orange-500">${iss.issue}</strong>
+          <strong class="text-xl block mb-4 text-orange-500">${escapeHtml(iss.issue)}</strong>
           <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
             <span class="font-bold text-green-400">How to fix:</span><br>
-            ${iss.fix}
+            ${escapeHtml(iss.fix)}
           </p>
+          ${rule ? `
+            <button type="button"
+                    class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                    data-failure="${escapeHtml(iss.issue)}">
+              🔍 Show the code
+            </button>
+          ` : ''}
         `;
         expand.appendChild(block);
       });
@@ -1086,6 +1113,18 @@ window.addEventListener('hashchange', handleDeepDiveHash);
 
 document.addEventListener('click', function(event) {
   if (event.target.closest('.ask-ai-module-link')) return;
+
+  // ── Edit 2c: "Show the code" branch ──
+  const showCodeBtn = event.target.closest('.show-code-btn');
+  if (showCodeBtn) {
+    event.preventDefault();
+    const failureText = showCodeBtn.dataset.failure || '';
+    const resultsEl = document.getElementById('results');
+    const html = resultsEl?.dataset.renderedHtml || '';
+    showCodeForFailure(failureText, html, { title: 'Affected code' });
+    return;
+  }
+
   const clickedLink = event.target.closest('a[href^="#"]');
   if (clickedLink && clickedLink.getAttribute('href') !== '#') {
     event.preventDefault();
