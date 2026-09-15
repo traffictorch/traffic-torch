@@ -1,45 +1,54 @@
 // PWA-ready service worker – network-only, no caching
-self.addEventListener('install', (event) => {
-  // Activate the new SW as soon as it installs
-  self.skipWaiting();
-});
+self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', (event) => {
-  // Take control of all open clients immediately + clean any leftover caches
-  event.waitUntil(
-    (async () => {
-      // Delete every cache this origin ever created (safe because we don't want any)
-      const keys = await caches.keys();
-      await Promise.all(keys.map(key => caches.delete(key)));
-      await self.clients.claim();
-    })()
-  );
+  event.waitUntil((async () => {
+    // Nuke any cache this origin ever created
+    const keys = await caches.keys();
+    await Promise.all(keys.map(k => caches.delete(k)));
+
+    // Take control immediately
+    await self.clients.claim();
+
+    // Best-effort: tell browser not to reuse the SW script from disk
+    // (only effective on supporting browsers, harmless elsewhere)
+  })());
 });
 
-// Optional: allow the page to force skipWaiting (useful for “Update available” UI)
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
+
+const BYPASS = [
+  'traffictorch.workers.dev',
+  'static.cloudflareinsights.com',
+  'static.addtoany.com',
+  'stripe.network',
+  'stripe.com',
+  'googletagmanager.com',
+  'google-analytics.com',
+  'googlesyndication.com',
+];
 
 self.addEventListener('fetch', (event) => {
-  const url = event.request.url;
+  const req = event.request;
 
-  // Bypass Service Worker completely for these (lets browser + Cloudflare handle them)
-  if (
-    url.includes('traffictorch.workers.dev') ||
-    url.includes('static.cloudflareinsights.com') ||
-    url.includes('static.addtoany.com') ||
-    url.includes('stripe.network') ||
-    url.includes('stripe.com') ||
-    url.includes('googletagmanager.com') ||
-    url.includes('google-analytics.com') ||
-    url.includes('googlesyndication.com')
-  ) {
-    return; // browser handles the request normally
-  }
+  // Only handle GETs; let POST/PUT/etc. go straight to network
+  if (req.method !== 'GET') return;
 
-  // Everything else: pure network (no Cache API involvement)
-  event.respondWith(fetch(event.request));
+  const url = req.url;
+  if (BYPASS.some(h => url.includes(h))) return; // browser handles it
+
+  // Force a real network round-trip, bypass HTTP cache
+  const fresh = new Request(req, {
+    cache: 'no-store',
+    // Keep credentials/headers; do NOT set mode (CORS stays as-is)
+  });
+
+  event.respondWith(
+    fetch(fresh).catch(() => {
+      // Offline: nothing cached, so just surface the error
+      return new Response('Offline', { status: 503, statusText: 'Offline' });
+    })
+  );
 });
