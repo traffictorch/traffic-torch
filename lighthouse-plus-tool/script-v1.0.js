@@ -5,6 +5,11 @@ import { moduleExplanations, fixFor } from './module-explanations-v1.0.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure
+} from './code-snippet-v1.0.js';
 
 const LH_AUDIT_API = 'https://lighthouse-audit.traffictorch.workers.dev/';
 const LH_CMS_API   = 'https://lighthouse-cms-fixes.traffictorch.workers.dev/';
@@ -121,7 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return;
     }
-
+    
+    const showCodeBtn = e.target.closest('.show-code-btn');
+    if (showCodeBtn) {
+      e.preventDefault();
+      const failureText = showCodeBtn.dataset.failure || '';
+      const html = results.dataset.renderedHtml || '';
+      showCodeForFailure(failureText, html, { title: 'Affected code' });
+      return;
+    }
     const askLink = e.target.closest('.ask-ai-link');
     if (askLink) {
       e.preventDefault();
@@ -135,7 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  renderModuleCards('module-cards-container');
+    renderModuleCards('module-cards-container');
+  	initCodeSnippetModal();
 
   analyzeUrl.addEventListener('click', async () => {
     if (!(await canRunTool('lighthouse-plus-tool'))) return;
@@ -239,7 +253,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
       }));
 
-    document.body.setAttribute('data-url', url || 'Custom HTML Analysis');
+        document.body.setAttribute('data-url', url || 'Custom HTML Analysis');
+    results.dataset.renderedHtml = renderedHtml || rawHtml || '';
 
     results.innerHTML = `
       <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -328,19 +343,37 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
 
               <div class="fixes-panel hidden mt-4 text-left text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-lg space-y-4">
-                ${failedItems.map((f, idx) => `
-                  <div class="${idx > 0 ? 'pt-3 border-t border-gray-300 dark:border-gray-700' : ''}">
-                    <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${escapeHtml(f)}</p>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(f))}</p>
-                  </div>
-                `).join('')}
+                ${failedItems.map((f, idx) => {
+                  const rule = deriveSelectorsForFailure(f);
+                  return `
+                    <div class="${idx > 0 ? 'pt-3 border-t border-gray-300 dark:border-gray-700' : ''}">
+                      <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${escapeHtml(f)}</p>
+                      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(f))}</p>
+                      ${rule ? `
+                        <button type="button"
+                                class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                                data-failure="${escapeHtml(f)}">
+                          🔍 Show the code
+                        </button>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('')}
 
                 ${warningSignals.map((s, idx) => {
                   const needsTop = failedItems.length > 0 || idx > 0;
+                  const rule = deriveSelectorsForFailure(s.label);
                   return `
                     <div class="${needsTop ? 'pt-3 border-t border-gray-300 dark:border-gray-700' : ''}">
                       <p class="font-bold text-orange-500 dark:text-orange-400 mb-2 leading-snug">⚠️ ${escapeHtml(s.label)}</p>
                       <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(s.label))}</p>
+                      ${rule ? `
+                        <button type="button"
+                                class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                                data-failure="${escapeHtml(s.label)}">
+                          🔍 Show the code
+                        </button>
+                      ` : ''}
                     </div>
                   `;
                 }).join('')}
