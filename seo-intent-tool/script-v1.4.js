@@ -13,6 +13,11 @@ import { fixFor, metricPoints } from './module-explanations-v1.0.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure
+} from './code-snippet-v1.0.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -59,6 +64,17 @@ document.addEventListener('click', (e) => {
       : `Show Fixes (${failedCount})`;
 
     toggle.textContent = isHidden ? baseLabel : 'Hide Fixes';
+    return;
+  }
+
+  // Show the code modal
+  const showCodeBtn = e.target.closest('.show-code-btn');
+  if (showCodeBtn) {
+    e.preventDefault();
+    const failureText = showCodeBtn.dataset.failure || '';
+    const resultsEl = document.getElementById('results');
+    const html = resultsEl?.dataset.renderedHtml || '';
+    showCodeForFailure(failureText, html, { title: 'Affected code' });
     return;
   }
 
@@ -142,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   simpleIntentPrefillAndRun();
+  initCodeSnippetModal();
   
   function deepMerge(target, source) {
     for (const key in source) {
@@ -400,6 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // ─── Determine displayUrl ───
       let displayUrl = url || "Custom HTML Analysis";
       
+      results.dataset.renderedHtml = html || customHtml || '';
       results.innerHTML = `
         <!-- Overall Score Card (SEO Intent) -->
         <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">

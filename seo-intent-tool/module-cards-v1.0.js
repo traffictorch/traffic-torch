@@ -5,6 +5,7 @@
 // No side-effects, no listeners — the delegated click handler lives in script-v1.4.js.
 
 import { fixFor } from './module-explanations-v1.0.js';
+import { deriveSelectorsForFailure } from './code-snippet-v1.0.js';
 
 const HELP_GUIDE_BASE = 'https://traffictorch.net/blog/posts/seo-intent-help-guide';
 
@@ -88,10 +89,18 @@ function renderFixesPanel(failedItems, modMeta) {
   }
 
   const blocks = failedItems.map((title, i) => {
-    const sep = i === 0 ? '' : 'border-t border-gray-200 dark:border-gray-700 pt-4 mt-4';
+    const sep  = i === 0 ? '' : 'border-t border-gray-200 dark:border-gray-700 pt-4 mt-4';
+    const rule = deriveSelectorsForFailure(title);
     return `<div class="${sep}">
       <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${escapeHtml(title)}</p>
       <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(title))}</p>
+      ${rule ? `
+        <button type="button"
+                class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                data-failure="${escapeHtml(title)}">
+          🔍 Show the code
+        </button>
+      ` : ''}
     </div>`;
   }).join('');
 
