@@ -25,4 +25,4 @@ export function computeUniqueInsights(mainText, words) {
       deepContent: words > 1500
     }
   };
-}
+} 
