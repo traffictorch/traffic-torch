@@ -12,6 +12,17 @@ import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import { fixFor } from './module-explanations-v1.0.js';
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure
+} from './code-snippet-v1.0.js';
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -70,6 +81,7 @@ import('./modules/ecommerce.js')
   .catch(() => {});
 
 document.addEventListener('DOMContentLoaded', () => {
+  initCodeSnippetModal();
   const factorDefinitions = {
     onPage: {
       factors: [
@@ -409,12 +421,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const fixableItems = [...failed, ...warnings];
 
     const fixesPanelHTML = fixableItems.length > 0
-      ? fixableItems.map((item, i) => `
-          <div class="${i > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-5 mt-5' : ''}">
-            <p class="font-bold ${item.color} mb-2 leading-snug">${item.emoji} ${item.name}</p>
-            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${item.fix}</p>
-          </div>
-        `).join('')
+      ? fixableItems.map((item, i) => {
+          const rule = deriveSelectorsForFailure(item.name);
+          return `
+            <div class="${i > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-5 mt-5' : ''}">
+              <p class="font-bold ${item.color} mb-2 leading-snug">${item.emoji} ${escapeHtml(item.name)}</p>
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${item.fix}</p>
+              ${rule ? `
+                <button type="button"
+                        class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                        data-failure="${escapeHtml(item.name)}">
+                  🔍 Show the code
+                </button>
+              ` : ''}
+            </div>
+          `;
+        }).join('')
       : '<p class="text-center text-gray-700 dark:text-gray-300 text-base py-6 font-medium">All checks passed — no fixes needed!</p>';
 
     // ── Ask AI prefill (includes detected CMS) ─────────────────────
@@ -516,6 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!canProceed) return;
 
     results.innerHTML = '';
+    delete results.dataset.renderedHtml;
     loading.classList.remove('hidden');
     loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -887,6 +910,8 @@ async function performAnalysis(source, isCode = false) {
       `;
       wrapper.appendChild(pdfSection);
       results.appendChild(wrapper);
+      // Cache the raw source HTML so the click handler can reach it
+      results.dataset.renderedHtml = html || '';
       if (typeof renderPluginSolutions === 'function') {
         renderPluginSolutions(failedFactors, 'plugin-solutions-section');
       } else {
@@ -1284,6 +1309,16 @@ if (sharedUrl && urlInput) {
       setTimeout(() => {
         if (textarea) textarea.focus();
       }, 700);
+      return;
+    }
+
+    // 3) Show the code button
+    const showCodeBtn = e.target.closest('.show-code-btn');
+    if (showCodeBtn) {
+      e.preventDefault();
+      const failureText = showCodeBtn.dataset.failure || '';
+      const html = results?.dataset.renderedHtml || '';
+      showCodeForFailure(failureText, html, { title: 'Affected code' });
       return;
     }
   });

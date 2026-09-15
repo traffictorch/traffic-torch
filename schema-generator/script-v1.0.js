@@ -29,7 +29,7 @@ const initTool = (form, results, progressContainer) => {
     const input = document.getElementById('url-input');
     if (input) {
       input.value = decodeURIComponent(sharedUrl);
-      setTimeout(() => form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })), 300);
+      setTimeout(() => document.getElementById('url-analyze-btn')?.click(), 300);
     }
   }
 
@@ -117,47 +117,44 @@ const initTool = (form, results, progressContainer) => {
     });
 
     document.getElementById('manual-validate-btn')?.addEventListener('click', () => {
-      const urlInput = document.getElementById('url-input');
-      const url = urlInput?.value.trim();
-      if (url && /^https?:\/\//.test(url)) {
-        window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(url)}`, '_blank');
-      } else if (confirm(
-        'No valid URL entered.\n\n' +
-        'To validate:\n' +
-        '1. Copy the JSON-LD from the preview\n' +
-        '2. Click OK to open Google Rich Results Test\n' +
-        '3. Switch to the "CODE" tab\n' +
-        '4. Paste and click "TEST"'
-      )) {
-        window.open('https://search.google.com/test/rich-results', '_blank');
+      const codeInput = document.getElementById('schema-code-input');
+      if (!codeInput) return;
+
+      const text = manualPreview?.textContent?.trim();
+      if (!text || text.startsWith('//')) {
+        alert('Nothing to validate yet — build your schema first.');
+        return;
       }
+
+      codeInput.value = text;
+      codeInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => codeInput.focus(), 400);
     });
   }
 
   // ──────────────────────────────────────────────
   // URL SCAN & SCHEMA DETECTION
   // ──────────────────────────────────────────────
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
+  const runAnalysis = async (mode) => {
     const canProceed = await canRunTool('limit-schema-scan');
     if (!canProceed) return;
-
-    const codeInput = document.getElementById('schema-code-input');
-    const codeValue = codeInput?.value?.trim() || '';
-    const useCodeMode = codeValue.length > 0 && codeInput.offsetParent !== null;
 
     let requestBody;
     let url = '';
     let isCodeMode = false;
 
-    if (useCodeMode) {
+    if (mode === 'code') {
+      const codeValue = document.getElementById('schema-code-input')?.value?.trim() || '';
+      if (!codeValue) {
+        alert('Please paste some JSON-LD code first.');
+        return;
+      }
       requestBody = { mode: 'code', code: codeValue };
       isCodeMode = true;
     } else {
       let inputUrl = document.getElementById('url-input').value.trim();
       if (!inputUrl) {
-        alert('Please enter a URL or paste JSON-LD code.');
+        alert('Please enter a URL.');
         return;
       }
       if (!/^https?:\/\//i.test(inputUrl)) {
@@ -176,6 +173,9 @@ const initTool = (form, results, progressContainer) => {
 
     progressContainer.classList.remove('hidden');
     results.classList.add('hidden');
+
+    // Scroll down to the spinner (matches Product SEO behavior)
+    progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     const progressMessages = [
       'Fetching page content...',
@@ -512,7 +512,15 @@ const initTool = (form, results, progressContainer) => {
           Please try again.
         </div>
       `;
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  document.getElementById('url-analyze-btn')?.addEventListener('click', () => runAnalysis('url'));
+  document.getElementById('validate-code-btn')?.addEventListener('click', () => runAnalysis('code'));
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    runAnalysis('url');
   });
 
   // ─── Ask AI Listener ──────
@@ -864,24 +872,5 @@ async function requestSchemaAiFix() {
 }
 
 window.requestSchemaAiFix = requestSchemaAiFix;
-
-// ──────────────────────────────────────────────
-// Code-paste: trigger main form submit
-// ──────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('validate-code-btn');
-  if (!btn) return;
-  btn.addEventListener('click', (e) => {
-    e.preventDefault();
-    const code = document.getElementById('schema-code-input')?.value?.trim();
-    if (!code) {
-      alert('Please paste some JSON-LD code first.');
-      return;
-    }
-    document.getElementById('audit-form').dispatchEvent(
-      new Event('submit', { bubbles: true, cancelable: true })
-    );
-  });
-});
 
 document.addEventListener('DOMContentLoaded', waitForElements);

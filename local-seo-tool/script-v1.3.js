@@ -12,6 +12,16 @@ import { analyzeReviewsStructure } from './modules/reviews-structure.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure
+} from './code-snippet-v1.0.js';
+
+// Small local HTML escaper for the fix-list template (Edit 3).
+const escapeHtml = (s) => String(s == null ? '' : s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -27,6 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
 
+  initCodeSnippetModal();
+
   // ── Delegated click handler: fixes toggle + Ask AI link ──────────────
   document.addEventListener('click', (e) => {
     // Fixes panel toggle
@@ -40,6 +52,16 @@ document.addEventListener('DOMContentLoaded', () => {
       toggle.textContent = nowHidden
         ? (count === '0' ? 'Show Fixes' : `Show Fixes (${count})`)
         : (count === '0' ? 'Hide Fixes' : `Hide Fixes (${count})`);
+      return;
+    }
+
+    // Show-the-code modal
+    const showCodeBtn = e.target.closest('.show-code-btn');
+    if (showCodeBtn) {
+      e.preventDefault();
+      const failureText = showCodeBtn.dataset.failure || '';
+      const html = results.dataset.renderedHtml || '';
+      showCodeForFailure(failureText, html, { title: 'Affected code' });
       return;
     }
 
@@ -554,6 +576,9 @@ document.addEventListener('DOMContentLoaded', () => {
       behavior: 'smooth'
     });
 
+    const renderedHtml = doc?.documentElement?.outerHTML || '';
+    results.dataset.renderedHtml = renderedHtml || rawHtml || '';
+
     results.innerHTML = `
       <!-- Overall Score Card -->
       <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -630,10 +655,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const moduleFixesList = allFixes.filter(
             f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()
           );
+          // Carry status (❌ vs ⚠️) through so the renderer can style each row.
           const fixesForCard = failedSubs.map(s => {
             const match = moduleFixesList.find(f => f.sub === s.label);
             const fixText = match?.how || fixFor(s.label);
-            return { label: s.label, fixText };
+            return { label: s.label, fixText, status: s.displayStatus };
           });
 
           const cmsName = (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'my CMS';
@@ -684,12 +710,27 @@ document.addEventListener('DOMContentLoaded', () => {
               <!-- Expanded fixes panel -->
               <div class="fixes-panel hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
                 ${fixesForCard.length > 0
-                  ? fixesForCard.map((f, i) => `
-                      <div class="${i > 0 ? 'pt-5 mt-5 border-t border-gray-200 dark:border-gray-700' : ''}">
-                        <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${f.label}</p>
-                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${f.fixText}</p>
-                      </div>
-                    `).join('')
+                  ? fixesForCard.map((f, i) => {
+                      const rule = deriveSelectorsForFailure(f.label);
+                      const isWarning = f.status === '⚠️';
+                      const icon     = isWarning ? '⚠️' : '❌';
+                      const labelCls = isWarning
+                        ? 'text-orange-600 dark:text-orange-400'
+                        : 'text-red-600 dark:text-red-400';
+                      return `
+                        <div class="${i > 0 ? 'pt-5 mt-5 border-t border-gray-200 dark:border-gray-700' : ''}">
+                          <p class="font-bold ${labelCls} mb-2 leading-snug">${icon} ${escapeHtml(f.label)}</p>
+                          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(f.fixText)}</p>
+                          ${rule ? `
+                            <button type="button"
+                                    class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                                    data-failure="${escapeHtml(f.label)}">
+                              🔍 Show the code
+                            </button>
+                          ` : ''}
+                        </div>
+                      `;
+                    }).join('')
                   : '<p class="text-green-600 dark:text-green-400 font-medium text-center py-4">All checks passed – excellent!</p>'}
 
                 <!-- Ask AI + Read guide -->

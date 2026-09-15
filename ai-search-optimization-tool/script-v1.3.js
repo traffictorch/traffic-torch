@@ -14,6 +14,11 @@ import { canRunTool } from '/main-v1.1.js';
 // Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure
+} from './code-snippet-v1.0.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -79,6 +84,7 @@ const waitForElements = () => {
 
 // Main initialization
 const initTool = (form, results, progressContainer) => {
+  initCodeSnippetModal();
   const progressText = document.getElementById('progress-text');
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -369,6 +375,10 @@ const initTool = (form, results, progressContainer) => {
             emoji = '⚠️';
             titleColor = 'text-orange-600 dark:text-orange-400';
           }
+
+          const rule = deriveSelectorsForFailure(metricText);
+          const safeFailure = metricText.replace(/"/g, '&quot;');
+
           fixes += `
             <div class="py-3 border-l-4 border-gray-200 dark:border-gray-700 pl-4 -ml-px">
               <div class="flex flex-col items-center gap-1">
@@ -376,6 +386,13 @@ const initTool = (form, results, progressContainer) => {
                 <div class="text-center w-full">
                   <p class="font-semibold ${titleColor} text-base leading-tight">${metricText}</p>
                   <p class="text-sm text-gray-700 dark:text-gray-300 mt-2 leading-relaxed px-2">${description}</p>
+                  ${rule ? `
+                    <button type="button"
+                            class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                            data-failure="${safeFailure}">
+                      🔍 Show the code
+                    </button>
+                  ` : ''}
                 </div>
               </div>
             </div>
@@ -469,6 +486,7 @@ const initTool = (form, results, progressContainer) => {
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
 
+      results.dataset.renderedHtml = html || '';
       results.innerHTML = `
         <!-- Overall Score Card (AI Search) -->
         <div class="flex justify-center my-8 sm:my-12 px-0 sm:px-6">
@@ -1125,6 +1143,15 @@ const initTool = (form, results, progressContainer) => {
       });
 
       document.addEventListener('click', (e) => {
+        const showCodeBtn = e.target.closest('.show-code-btn');
+        if (showCodeBtn) {
+          e.preventDefault();
+          const failureText = showCodeBtn.dataset.failure || '';
+          const html = results.dataset.renderedHtml || '';
+          showCodeForFailure(failureText, html, { title: 'Affected code' });
+          return;
+        }
+
         // Ask AI link → scroll to #ask-ai-section, prefill, focus
         const askLink = e.target.closest('.ask-ai-link');
         if (askLink) {

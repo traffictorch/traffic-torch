@@ -5,6 +5,11 @@ import { moduleExplanations, fixFor } from './module-explanations-v1.0.js';
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure
+} from './code-snippet-v1.0.js';
 
 const AEO_AUDIT_API = 'https://aeo-audit.traffictorch.workers.dev/';
 const AEO_CMS_API   = 'https://aeo-cms-fixes.traffictorch.workers.dev/';
@@ -23,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputParam = params.get('input');
   if (urlParam)   urlInput.value = decodeURIComponent(urlParam);
   if (inputParam) codeInput.value = decodeURIComponent(inputParam);
-  
+
     // ─── Auto-run when opened with ?url= or ?input= (dashboard Quick Audit / share links) ───
   if (urlParam) {
     setTimeout(() => analyzeUrl.click(), 500);
@@ -58,6 +63,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const showCodeBtn = e.target.closest('.show-code-btn');
+    if (showCodeBtn) {
+      e.preventDefault();
+      const failureText = showCodeBtn.dataset.failure || '';
+      const html = results.dataset.renderedHtml || '';
+      showCodeForFailure(failureText, html, { title: 'Affected code' });
+      return;
+    }
+
     const askLink = e.target.closest('.ask-ai-link');
     if (askLink) {
       e.preventDefault();
@@ -73,9 +87,12 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => textarea?.focus(), 700);
     }
   });
-  
+
   // These live in the #module-cards-container section and are always visible.
   renderModuleCards('module-cards-container');
+
+  // One-time init of the "Show the code" modal (native <dialog>, top-layer safe).
+  initCodeSnippetModal();
 
   analyzeUrl.addEventListener('click', async () => {
     if (!(await canRunTool('aeo-performance-tool'))) return;
@@ -161,8 +178,12 @@ document.addEventListener('DOMContentLoaded', () => {
           emoji: m.score >= 60 ? '⚠️' : '❌'
         }
       }));
-      
+
       document.body.setAttribute('data-url', url || 'Custom HTML Analysis');
+
+    // Cache the HTML that produced this report so the "Show the code"
+    // click handler can hand it to the snippet extractor without re-fetching.
+    results.dataset.renderedHtml = renderedHtml || rawHtml || payload?.html || '';
 
     // ─── Render the full report ───
     results.innerHTML = `
@@ -235,12 +256,22 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
 
               <div class="fixes-panel hidden mt-4 text-left text-xs bg-gray-100 dark:bg-gray-800 p-2 rounded-lg space-y-4 w-full">
-                ${allIssues.length ? allIssues.map((item, i) => `
-                  <div class="${i > 0 ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}">
-                    <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${escapeHtml(item)}</p>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(item))}</p>
-                  </div>
-                `).join('') : '<p class="text-green-600 font-medium">All checks passed.</p>'}
+                ${allIssues.length ? allIssues.map((item, i) => {
+                  const rule = deriveSelectorsForFailure(item);
+                  return `
+                    <div class="${i > 0 ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}">
+                      <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${escapeHtml(item)}</p>
+                      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(item))}</p>
+                      ${rule ? `
+                        <button type="button"
+                                class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                                data-failure="${escapeHtml(item)}">
+                          🔍 Show the code
+                        </button>
+                      ` : ''}
+                    </div>
+                  `;
+                }).join('') : '<p class="text-green-600 font-medium">All checks passed.</p>'}
 
                 <div class="pt-3 border-t border-gray-200 dark:border-gray-700 flex flex-col gap-2">
                   <a href="#ask-ai-section"
