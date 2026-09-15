@@ -1,65 +1,19 @@
-// code-snippet-v1.0.js
+// ai-voice-search-tool/code-snippet-v1.0.js
+// "Show the code" modal for Traffic Torch audit tools.
+// Uses a native <dialog> (top layer) so it is immune to contain:paint on ancestors.
+
 const SNIPPET_MAX = 800;
 const HEAD_MAX    = 2000;
 
+// ─── Failure-text → CSS-selector rules ────────────────────────────────
+// NOTE: This tool (AI Voice Search) emits sub-metric NAMES like
+// "Share of Voice %", "Readability Score", "AI Overview Appearances", etc.
+// The rules below cover BOTH:
+//   1. Lighthouse/axe-style raw-HTML audit failures (original set), AND
+//   2. This tool's sub-metric names (added at the bottom).
+// Rules are matched top-to-bottom; first match wins.
 const RULES = [
-  // ─── Local SEO Tool rules (added for code-snippet integration) ───
-  { test: /NAP Present/i,
-    selectors: ['address', '[itemprop="address"]', '[itemtype*="PostalAddress"]',
-                'a[href^="tel:"]', '[itemprop="telephone"]'] },
-
-  { test: /Footer NAP/i,
-    selectors: ['footer'], limit: 1, maxLen: 2000,
-    note: 'Showing the <footer> where NAP signals belong.' },
-
-  { test: /Contact Complete/i,
-    selectors: ['[itemprop="openingHours"]', '[itemprop="openingHoursSpecification"]',
-                '.hours', '.opening-hours', 'time[datetime]'],
-    note: 'No opening-hours markup found — here is where it belongs in your content.' },
-
-  { test: /Title Local/i,      selectors: ['title'] },
-  { test: /Meta Local/i,       selectors: ['meta[name="description"]'] },
-  { test: /Headings Local/i,   selectors: ['h1, h2, h3'], limit: 12 },
-
-  { test: /Body Keywords/i,
-    rawSearch: [
-      { pattern: /<p\b[^>]*>[^<]{40,}/gi, label: 'Body paragraphs (candidate copy to add the city to)' }
-    ] },
-
-  { test: /Intent Patterns/i,
-    rawSearch: [
-      { pattern: /near me|nearby|in the area|areas? we serve/gi, label: 'Existing intent phrasing' }
-    ] },
-
-  { test: /Location Mentions/i,
-    rawSearch: [
-      { pattern: /(?:in|near|around)\s+[A-Z][a-z]+/g, label: 'Candidate location mentions' }
-    ] },
-
-  { test: /Map Embedded/i,
-    selectors: ['iframe[src*="google.com/maps"]', 'iframe[src*="maps.google"]'],
-    note: 'No Google Maps <iframe> found — this is where it would live.' },
-
-  { test: /Local Alt Text/i,
-    selectors: ['img'], limit: 12,
-    note: 'No image with city-specific alt text found. Showing images to review.' },
-
-  { test: /Local Schema/i,   selectors: ['script[type="application/ld+json"]'] },
-  { test: /Geo Coords/i,     selectors: ['script[type="application/ld+json"]'] },
-  { test: /Opening Hours/i,  selectors: ['script[type="application/ld+json"]'] },
-  { test: /Review Schema/i,  selectors: ['script[type="application/ld+json"]'] },
-
-  { test: /Canonical Tag/i,
-    selectors: ['link[rel="canonical"]', 'head'], limit: 2, maxLen: 2000,
-    note: 'No <link rel="canonical"> found — here is your <head> where it belongs.' },
-
-  { test: /Internal Geo Links/i,
-    selectors: ['a[href*="contact"]', 'a[href*="location"]',
-                'a[href*="branch"]', 'a[href*="service-area"]'],
-    limit: 10,
-    note: 'No geo-intent internal links found. Showing candidate anchors to retarget.' },
-
-  // ─── Traffic Torch audit rules ───
+  // ── Raw-HTML / Lighthouse-style failures (original) ──────────────
   { test: /render-blocking script/i,
     selectors: ['head script[src]:not([defer]):not([async]):not([type="module"])'] },
   { test: /stylesheets/i, selectors: ['link[rel="stylesheet"]'], limit: 10 },
@@ -92,10 +46,10 @@ const RULES = [
     ] },
   { test: /deprecated API/i,
     rawSearch: [
-      { pattern: /document\.write\s*\(/g,   label: 'document.write()' },
-      { pattern: /\.attachEvent\s*\(/g,     label: '.attachEvent()' },
+      { pattern: /document\.write\s*\(/g,     label: 'document.write()' },
+      { pattern: /\.attachEvent\s*\(/g,       label: '.attachEvent()' },
       { pattern: /new\s+ActiveXObject\s*\(/g, label: 'new ActiveXObject()' },
-      { pattern: /\bdocument\.all\b/g,      label: 'document.all' }
+      { pattern: /\bdocument\.all\b/g,        label: 'document.all' }
     ] },
   { test: /distorted aspect ratio/i, selectors: ['img[width][height]'], limit: 10 },
   { test: /Missing <title> tag/i,
@@ -145,7 +99,46 @@ const RULES = [
     ] },
   { test: /skip-to-content link/i,
     selectors: ['a[href^="#main"]', 'a[href^="#content"]', 'a[href^="#skip"]'] },
-  { test: /modal\/dialog elements/i, selectors: ['[role="dialog"]', '.modal'] }
+  { test: /modal\/dialog elements/i, selectors: ['[role="dialog"]', '.modal'] },
+
+  // ── AI Voice Search sub-metric names (this tool's own failures) ──
+  // AI Visibility module
+  { test: /^Share of Voice/i,
+    selectors: ['script[type="application/ld+json"]'], limit: 5 },
+  { test: /^Citation Frequency/i,
+    selectors: ['blockquote', 'cite', 'q'], limit: 5 },
+  { test: /^Presence Rate/i,
+    selectors: ['p'], limit: 5 },
+  // Content Quality module
+  { test: /^Readability Score/i,
+    selectors: ['p'], limit: 5 },
+  { test: /^Answer Conciseness/i,
+    selectors: ['p'], limit: 5 },
+  { test: /^Pronoun Ratio/i,
+    selectors: ['p'], limit: 5 },
+  { test: /^Entity Coverage/i,
+    selectors: ['p'], limit: 5 },
+  // Sentiment & Quality module
+  { test: /^Sentiment Score/i,
+    selectors: ['p'], limit: 5 },
+  { test: /^Hallucination Risk/i,
+    selectors: ['p'], limit: 5 },
+  { test: /^Mention Sentiment/i,
+    selectors: ['p'], limit: 5 },
+  // Snippet & Visibility module
+  { test: /^Snippet Ownership/i,
+    selectors: ['h2', 'h3', 'ul', 'ol', 'table'], limit: 10 },
+  { test: /^Zero-Click Share/i,
+    selectors: ['p'], limit: 5 },
+  { test: /^AI Overview Appearances/i,
+    selectors: ['script[type="application/ld+json"]'], limit: 5 },
+  // Keywords module
+  { test: /^Conversational Rankings/i,
+    selectors: ['h1, h2, h3, h4, h5, h6'], limit: 12 },
+  { test: /^Long-Tail Density/i,
+    selectors: ['h1, h2, h3, h4, h5, h6'], limit: 12 },
+  { test: /^Query Volume\/Difficulty/i,
+    selectors: ['h1, h2, h3, h4, h5, h6'], limit: 12 }
 ];
 
 export function deriveSelectorsForFailure(text) {
@@ -156,6 +149,7 @@ export function deriveSelectorsForFailure(text) {
   return null;
 }
 
+// ─── DOMParser cache (one parse per HTML payload) ─────────────────────
 let _cachedDoc = null;
 let _cachedHtmlRef = null;
 
@@ -173,6 +167,7 @@ function getDoc(html) {
   }
 }
 
+// ─── Snippet extraction ───────────────────────────────────────────────
 export function extractSnippets(html, selectors, options = {}) {
   const { limit = 5, maxLen = SNIPPET_MAX } = options;
   if (!html || !selectors?.length) return [];
@@ -199,7 +194,10 @@ function searchRawHtml(html, patterns) {
   if (!html || !patterns?.length) return [];
   const out = [];
   for (const { pattern, label } of patterns) {
-    const re = new RegExp(pattern.source, pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g');
+    const re = new RegExp(
+      pattern.source,
+      pattern.flags.includes('g') ? pattern.flags : pattern.flags + 'g'
+    );
     let match, count = 0;
     while ((match = re.exec(html)) !== null && count < 3) {
       const start = Math.max(0, match.index - 60);
@@ -211,7 +209,7 @@ function searchRawHtml(html, patterns) {
   return out;
 }
 
-// ─── Modal (native <dialog> — always centers on screen) ───
+// ─── Modal (native <dialog> — always centers on screen) ──────────────
 const MODAL_ID = 'code-snippet-modal';
 
 export function initCodeSnippetModal() {
@@ -369,7 +367,8 @@ export function showCodeForFailure(failureText, html, { title } = {}) {
   });
 }
 
-function escapeHtml(s) {
+// ─── Utilities ────────────────────────────────────────────────────────
+export function escapeHtml(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');

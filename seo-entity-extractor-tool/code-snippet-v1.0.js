@@ -160,7 +160,7 @@ const RULES = [
     note: 'Group related entities in the same sections, paragraphs or lists.' },
 
   // (l) Cross-cutting summaries (readiness.js + practices.js)
-  { test: /Core entity signals|Overall semantic readiness|On-page semantic practices|weakest module/i,
+  { test: /Core entity signals|Overall semantic readiness|On-site semantic practices|On-page semantic practices|weakest module/i,
     selectors: ['title', 'meta[name="description"]', 'h1', 'script[type="application/ld+json"]'],
     limit: 6,
     note: 'The four highest-leverage places for entity signals on any page.' }

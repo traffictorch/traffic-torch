@@ -33,52 +33,86 @@ const RULES = [
   { test: /Product Description Quality/i,
     selectors: [
       '[itemprop="description"]',
-      '.product-description', '#product-description',
-      '.product-single__description', '.product__description',
+      '.product-description',
+      '#product-description',
+      '.product-single__description',
+      '.product__description',
       '.woocommerce-product-details__short-description',
-      '.rte', 'article', 'section'
+      '.rte',
+      'article',
+      'section'
     ], limit: 5 },
   { test: /Image Optimization/i,
     selectors: [
       'img:not([alt])',
       'img:not([loading="lazy"]):not([fetchpriority="high"])',
-      'img:not([width])', 'img:not([height])'
+      'img:not([width])',
+      'img:not([height])'
     ], limit: 8 },
   { test: /Video Embed Quality/i,
-    selectors: ['video', 'iframe[src*="youtube"]', 'iframe[src*="youtu.be"]', 'iframe[src*="vimeo"]'],
-    limit: 5 },
+    selectors: [
+      'video',
+      'iframe[src*="youtube"]',
+      'iframe[src*="youtu.be"]',
+      'iframe[src*="vimeo"]'
+    ], limit: 5 },
   { test: /User-Generated Content/i,
     selectors: [
-      '[itemprop="aggregateRating"]', '[itemprop="review"]',
-      '.reviews', '.product-reviews', '.review-widget',
-      '.rating', '[data-rating]', '.star-rating'
+      '[itemprop="aggregateRating"]',
+      '[itemprop="review"]',
+      '.reviews',
+      '.product-reviews',
+      '.review-widget',
+      '.rating',
+      '[data-rating]',
+      '.star-rating'
     ], limit: 6 },
   { test: /Internal Linking/i,
     selectors: ['a[href]'], limit: 12,
     note: 'Showing links found on the page. Filter visually for internal/contextual ones.' },
   { test: /Breadcrumb Navigation/i,
     selectors: [
-      '.breadcrumbs', '.breadcrumb', '.woocommerce-breadcrumb',
-      '.yoast-breadcrumb', '.site-breadcrumb', '.bread-crumb', '.crumbs',
-      '[aria-label*="breadcrumb" i]', '[itemprop="breadcrumb"]'
+      '.breadcrumbs',
+      '.breadcrumb',
+      '.woocommerce-breadcrumb',
+      '.yoast-breadcrumb',
+      '.site-breadcrumb',
+      '.bread-crumb',
+      '.crumbs',
+      '[aria-label*="breadcrumb" i]',
+      '[itemprop="breadcrumb"]'
     ] },
   { test: /Product Schema Markup/i,
     selectors: ['script[type="application/ld+json"]'], limit: 5, maxLen: 3000,
     note: 'Showing the JSON-LD blocks on the page. Look for @type: "Product".' },
-  { test: /Price & Availability Markup|Price &amp; Availability/i,
+  { test: /Price & Availability Markup/i,
     selectors: [
-      '[itemprop="price"]', '.price', '.product-price', '.money',
-      '.woocommerce-Price-amount', '[data-price]', '.price-amount',
-      '.current-price', '.sale-price', '.availability', '.stock-status'
+      '[itemprop="price"]',
+      '.price',
+      '.product-price',
+      '.money',
+      '.woocommerce-Price-amount',
+      '[data-price]',
+      '.price-amount',
+      '.current-price',
+      '.sale-price',
+      '.availability',
+      '.stock-status'
     ], limit: 6 },
   { test: /Review Schema & Aggregation/i,
     selectors: ['script[type="application/ld+json"]'], limit: 5, maxLen: 3000,
     note: 'Showing the JSON-LD blocks. Look for aggregateRating inside the Product schema.' },
   { test: /Variant Handling/i,
     selectors: [
-      'select[name*="variant"]', 'select[name*="size"]', 'select[name*="color"]',
-      'select[name*="option"]', 'input[type="radio"][name*="variant"]',
-      '.variant-select', '.swatch', '.product-variants', '[data-variant]'
+      'select[name*="variant"]',
+      'select[name*="size"]',
+      'select[name*="color"]',
+      'select[name*="option"]',
+      'input[type="radio"][name*="variant"]',
+      '.variant-select',
+      '.swatch',
+      '.product-variants',
+      '[data-variant]'
     ], limit: 6 },
   { test: /Social Sharing Integration/i,
     selectors: ['meta[property^="og:"]', 'meta[name^="twitter:"]'], limit: 12 },
@@ -400,5 +434,3 @@ function escapeHtml(s) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
-
-export { escapeHtml as escapeHtmlForSnippet };

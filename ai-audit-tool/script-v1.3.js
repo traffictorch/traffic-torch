@@ -10,6 +10,12 @@ import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import { fixFor } from './module-explanations-v1.2.js';
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure,
+  escapeHtml
+} from './code-snippet-v1.0.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -24,6 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let analyzedText = '';
   let wordCount = 0;
+
+  // One-time bootstrap for the "Show the code" modal
+  initCodeSnippetModal();
 
   // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
@@ -183,6 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const minLoadTime = 5500;
     const startTime = Date.now();
 
+    let rawPageHtml = '';   // captured for "Show the code" feature
+
     try {
       let doc;
       if (isUrlMode) {
@@ -192,10 +203,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await fetch(PROXY + encodeURIComponent(normalizedUrl));
         if (!res.ok) throw new Error('Page not reachable');
         const html = await res.text();
+        rawPageHtml = html;
         doc = new DOMParser().parseFromString(html, 'text/html');
       } else {
         const htmlCode = codeInput.value.trim();
         if (!htmlCode) return;
+        rawPageHtml = htmlCode;
         doc = new DOMParser().parseFromString(htmlCode, 'text/html');
       }
 
@@ -229,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
         // FULL COMPLETE REPORT - identical for both URL and HTML input
+        results.dataset.renderedHtml = rawPageHtml || '';
         results.innerHTML = `
 <!-- Overall Score Card (AI Audit) -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -325,12 +339,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="fixes-panel hidden mt-6 space-y-6 text-left">
           ${failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold">All tests passed! ✅</p>` : ''}
-          ${failedItems.map((f, i) => `
+          ${failedItems.map((f, i) => {
+            const rule = deriveSelectorsForFailure(f.name);
+            return `
             <div class="${i > 0 ? 'pt-4 border-t border-gray-200 dark:border-gray-700' : ''}">
-              <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${f.name}</p>
-              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${f.fix}</p>
+              <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${escapeHtml(f.name)}</p>
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(f.fix)}</p>
+              ${rule ? `
+                <button type="button"
+                        class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                        data-failure="${escapeHtml(f.name)}">
+                  🔍 Show the code
+                </button>
+              ` : ''}
             </div>
-          `).join('')}
+          `;
+          }).join('')}
 
           <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
             <a href="#ask-ai-section" class="ask-ai-link block text-purple-600 dark:text-purple-400 font-bold hover:underline"
@@ -395,12 +419,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="fixes-panel hidden mt-4 space-y-4 text-left">
           ${failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold">All tests passed! ✅</p>` : ''}
-          ${failedItems.map((f, i) => `
+          ${failedItems.map((f, i) => {
+            const rule = deriveSelectorsForFailure(f.name);
+            return `
             <div class="${i > 0 ? 'pt-4 border-t border-gray-200 dark:border-gray-700' : ''}">
-              <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${f.name}</p>
-              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${f.fix}</p>
+              <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${escapeHtml(f.name)}</p>
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(f.fix)}</p>
+              ${rule ? `
+                <button type="button"
+                        class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                        data-failure="${escapeHtml(f.name)}">
+                  🔍 Show the code
+                </button>
+              ` : ''}
             </div>
-          `).join('')}
+          `;
+          }).join('')}
 
           <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
             <a href="#ask-ai-section" class="ask-ai-link block text-purple-600 dark:text-purple-400 font-bold hover:underline"
@@ -1099,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     runAnalysis(false);
   });
 
-  // ── Delegated handler for score-card toggles + Ask-AI links ──
+  // ── Delegated handler for score-card toggles + Ask-AI links + Show-the-code ──
   document.addEventListener('click', (e) => {
     // Fixes toggle
     const toggle = e.target.closest('.fixes-toggle');
@@ -1114,6 +1148,16 @@ document.addEventListener('DOMContentLoaded', () => {
           ? `Hide Fixes (${failedCount})`
           : `Show Fixes (${failedCount})`;
       }
+      return;
+    }
+
+    // Show the code for a failure
+    const showCodeBtn = e.target.closest('.show-code-btn');
+    if (showCodeBtn) {
+      e.preventDefault();
+      const failureText = showCodeBtn.dataset.failure || '';
+      const html = results.dataset.renderedHtml || '';
+      showCodeForFailure(failureText, html, { title: 'Affected code' });
       return;
     }
 

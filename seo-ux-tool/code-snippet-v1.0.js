@@ -157,6 +157,7 @@ const RULES = [
     selectors: ['a[href^="#main"]', 'a[href^="#content"]', 'a[href^="#skip"]'] },
   { test: /modal\/dialog elements/i, selectors: ['[role="dialog"]', '.modal'] }
 ];
+
 export function deriveSelectorsForFailure(text) {
   if (!text) return null;
   for (const rule of RULES) {

@@ -5,6 +5,12 @@ import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import { fixFor } from './module-explanations-v1.0.js';
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure,
+  escapeHtml
+} from './code-snippet-v1.0.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -18,8 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
   const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
 
+  // One-time bootstrap: build the native <dialog> for code snippets
+  initCodeSnippetModal();
+
   // ============================================================
-  // Delegated click handler — Show Fixes toggle + Ask AI links
+  // Delegated click handler — Show Fixes toggle + Ask AI links + Show the code
   // ============================================================
   document.addEventListener('click', (e) => {
     // --- Show / Hide Fixes toggle ---
@@ -34,6 +43,16 @@ document.addEventListener('DOMContentLoaded', () => {
       toggle.textContent = nowHidden
         ? `Show Fixes (${failedCount})`
         : `Hide Fixes (${failedCount})`;
+      return;
+    }
+
+    // --- Show the code that caused a failure ---
+    const showCodeBtn = e.target.closest('.show-code-btn');
+    if (showCodeBtn) {
+      e.preventDefault();
+      const failureText = showCodeBtn.dataset.failure || '';
+      const html = results.dataset.renderedHtml || '';
+      showCodeForFailure(failureText, html, { title: 'Affected code' });
       return;
     }
 
@@ -202,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
       if (!res.ok) return null;
       const html = await res.text();
-      return new DOMParser().parseFromString(html, 'text/html');
+      return { doc: new DOMParser().parseFromString(html, 'text/html'), html };
     } catch {
       return null;
     }
@@ -280,14 +299,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     startSpinnerLoader();
-    const yourDoc = await fetchPage(fullUrl);
-    if (!yourDoc) {
+    const fetched = await fetchPage(fullUrl);
+    if (!fetched) {
       stopSpinnerLoader();
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Failed to analyze - Whitelist: full-render-v2.traffictorch.workers.dev or use Code Analysis.</p>`;
       return;
     }
+    const { doc: yourDoc, html: rawHtml } = fetched;
 
-    await runAnalysis(yourDoc, phrase, fullUrl, 'url');
+    await runAnalysis(yourDoc, phrase, fullUrl, 'url', rawHtml);
   });
 
   codeAnalyzeBtn.addEventListener('click', async () => {
@@ -317,11 +337,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const displayUrl = "https://code-analysis.traffictorch.net";
-    await runAnalysis(yourDoc, phrase, displayUrl, 'code');
+    await runAnalysis(yourDoc, phrase, displayUrl, 'code', rawCode);
   });
 
   // ====================== REUSABLE ANALYSIS FUNCTION ======================
-  async function runAnalysis(yourDoc, phrase, fullUrl, analysisType) {
+  async function runAnalysis(yourDoc, phrase, fullUrl, analysisType, rawHtml = '') {
     const canProceed = await canRunTool('limit-audit-id');
     if (!canProceed) {
       stopSpinnerLoader();
@@ -435,6 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
     window.scrollTo({ top: targetY, behavior: 'smooth' });
 
+    results.dataset.renderedHtml = rawHtml || '';
     results.innerHTML = `
 <!-- Overall Score Card -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -524,12 +545,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fixes panel — one pair (failed title + fix) per failure. Uses fixFor() to look up a fix.
     let fixesHtml;
     if (failedCount > 0) {
-      fixesHtml = failItems.map((d, i) => {
-        const fixText = d.how || fixFor(d.issue);
+      fixesHtml = failItems.map((d, idx) => {
+        const failureText = d.issue;
+        const fixText     = d.how || fixFor(failureText);
+        const rule        = deriveSelectorsForFailure(failureText);
         return `
-          ${i > 0 ? '<div class="mt-6 pt-6 border-t border-red-200 dark:border-red-700"></div>' : ''}
-          <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">${d.issue}</p>
-          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${fixText}</p>
+          ${idx > 0 ? '<div class="mt-6 pt-6 border-t border-red-200 dark:border-red-700"></div>' : ''}
+          <p class="font-bold text-red-600 dark:text-red-400 mb-2 leading-snug">❌ ${escapeHtml(failureText)}</p>
+          <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixText)}</p>
+          ${rule ? `
+            <button type="button"
+                    class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                    data-failure="${escapeHtml(failureText)}">
+              🔍 Show the code
+            </button>
+          ` : ''}
         `;
       }).join('');
     } else if (roundedScore < 80) {

@@ -3,63 +3,44 @@ const SNIPPET_MAX = 800;
 const HEAD_MAX    = 2000;
 
 const RULES = [
-  // ─── Local SEO Tool rules (added for code-snippet integration) ───
-  { test: /NAP Present/i,
-    selectors: ['address', '[itemprop="address"]', '[itemtype*="PostalAddress"]',
-                'a[href^="tel:"]', '[itemprop="telephone"]'] },
+  // ─── Keyword Placement Tool ──────────────────────────────────
+  { test: /keyword missing from meta title/i,
+    selectors: ['title'] },
 
-  { test: /Footer NAP/i,
-    selectors: ['footer'], limit: 1, maxLen: 2000,
-    note: 'Showing the <footer> where NAP signals belong.' },
+  { test: /keyword missing from meta description/i,
+    selectors: ['meta[name="description"]'],
+    note: 'No matching meta description — this is where it should appear.' },
 
-  { test: /Contact Complete/i,
-    selectors: ['[itemprop="openingHours"]', '[itemprop="openingHoursSpecification"]',
-                '.hours', '.opening-hours', 'time[datetime]'],
-    note: 'No opening-hours markup found — here is where it belongs in your content.' },
+  { test: /keyword missing from h1/i,
+    selectors: ['h1', 'h2', 'h3'], limit: 3,
+    note: 'No matching H1 — showing nearby headings for context.' },
 
-  { test: /Title Local/i,      selectors: ['title'] },
-  { test: /Meta Local/i,       selectors: ['meta[name="description"]'] },
-  { test: /Headings Local/i,   selectors: ['h1, h2, h3'], limit: 12 },
+  { test: /low word count/i,
+    selectors: ['body'], limit: 1, maxLen: 800,
+    note: 'Body shown trimmed — expand with more depth.' },
 
-  { test: /Body Keywords/i,
-    rawSearch: [
-      { pattern: /<p\b[^>]*>[^<]{40,}/gi, label: 'Body paragraphs (candidate copy to add the city to)' }
-    ] },
+  { test: /keyword density too (low|high)/i,
+    selectors: ['body'], limit: 1, maxLen: 800,
+    note: 'Showing a slice of body content where the keyword should appear.' },
 
-  { test: /Intent Patterns/i,
-    rawSearch: [
-      { pattern: /near me|nearby|in the area|areas? we serve/gi, label: 'Existing intent phrasing' }
-    ] },
+  { test: /no key images have keyword in alt text/i,
+    selectors: ['img'], limit: 6,
+    note: 'None of your image alts contain the keyword.' },
 
-  { test: /Location Mentions/i,
-    rawSearch: [
-      { pattern: /(?:in|near|around)\s+[A-Z][a-z]+/g, label: 'Candidate location mentions' }
-    ] },
+  { test: /no internal anchors use the keyword/i,
+    selectors: ['a[href]'], limit: 8,
+    note: 'Showing internal links — none use your keyword as anchor text.' },
 
-  { test: /Map Embedded/i,
-    selectors: ['iframe[src*="google.com/maps"]', 'iframe[src*="maps.google"]'],
-    note: 'No Google Maps <iframe> found — this is where it would live.' },
+  { test: /keyword missing from url/i,
+    selectors: ['link[rel="canonical"]', 'head'], limit: 1, maxLen: 2000,
+    note: 'URL itself isn\'t a DOM node — showing canonical/head for reference.' },
 
-  { test: /Local Alt Text/i,
-    selectors: ['img'], limit: 12,
-    note: 'No image with city-specific alt text found. Showing images to review.' },
+  { test: /no structured data detected/i,
+    selectors: ['script[type="application/ld+json"]', 'head'],
+    limit: 1, maxLen: 2000,
+    note: 'No JSON-LD found — showing <head> where it belongs.' },
 
-  { test: /Local Schema/i,   selectors: ['script[type="application/ld+json"]'] },
-  { test: /Geo Coords/i,     selectors: ['script[type="application/ld+json"]'] },
-  { test: /Opening Hours/i,  selectors: ['script[type="application/ld+json"]'] },
-  { test: /Review Schema/i,  selectors: ['script[type="application/ld+json"]'] },
-
-  { test: /Canonical Tag/i,
-    selectors: ['link[rel="canonical"]', 'head'], limit: 2, maxLen: 2000,
-    note: 'No <link rel="canonical"> found — here is your <head> where it belongs.' },
-
-  { test: /Internal Geo Links/i,
-    selectors: ['a[href*="contact"]', 'a[href*="location"]',
-                'a[href*="branch"]', 'a[href*="service-area"]'],
-    limit: 10,
-    note: 'No geo-intent internal links found. Showing candidate anchors to retarget.' },
-
-  // ─── Traffic Torch audit rules ───
+  // ─── Lighthouse-style rules (kept for other tools) ───────────
   { test: /render-blocking script/i,
     selectors: ['head script[src]:not([defer]):not([async]):not([type="module"])'] },
   { test: /stylesheets/i, selectors: ['link[rel="stylesheet"]'], limit: 10 },
@@ -369,7 +350,7 @@ export function showCodeForFailure(failureText, html, { title } = {}) {
   });
 }
 
-function escapeHtml(s) {
+export function escapeHtml(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');

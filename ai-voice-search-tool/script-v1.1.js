@@ -9,6 +9,12 @@ import { canRunTool } from '/main-v1.1.js';
 // Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure,
+  escapeHtml
+} from './code-snippet-v1.0.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -19,7 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.getElementById('code-input');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   const results = document.getElementById('results');
-  
+
+  // One-time bootstrap: create the native <dialog> for "Show the code"
+  initCodeSnippetModal();
+
   // === ADD THIS EVENT LISTENER RIGHT AFTER THE VARIABLE DECLARATIONS ===
   analyzeCodeBtn.addEventListener('click', async () => {
     const htmlContent = codeInput.value.trim();
@@ -31,17 +40,17 @@ document.addEventListener('DOMContentLoaded', () => {
     urlInput.value = ''; // clear URL field when using code analysis
     await runAnalysis(htmlContent);
   });
-  
-    // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
+
+  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
-    
+
     if (inputData) {
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-        
+
         // Optional: Auto-click the Analyze button after a tiny delay
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
@@ -253,6 +262,9 @@ document.addEventListener('DOMContentLoaded', () => {
           behavior: 'smooth'
         });
 
+        // Cache the rendered HTML so the "Show the code" handler can reach it.
+        results.dataset.renderedHtml = htmlContent || '';
+
         results.innerHTML = `
 <!-- Overall Score Card -->
 <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
@@ -353,15 +365,25 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
         <div class="fixes-panel hidden mt-6 space-y-8">
           ${m.score >= 80 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics strong! ✅ Optimize further for top voice rankings.</p>` : ''}
-          ${fixable.map((s, idx) => `
+          ${fixable.map((s, idx) => {
+            const rule = deriveSelectorsForFailure(s.name);
+            return `
             <div class="text-center ${idx > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-6' : ''}">
               <div class="text-5xl mb-3" style="color: ${s.score >= 60 ? '#f97316' : '#ef4444'}">${s.score >= 60 ? '⚠️' : '❌'}</div>
               <p class="font-bold text-xl mb-3" style="color: ${s.score >= 60 ? '#f97316' : '#ef4444'}">${s.name}</p>
               <p class="text-gray-700 dark:text-gray-300 max-w-lg mx-auto">
                 ${s.fix || 'Improve this metric for better voice SEO performance.'}
               </p>
+              ${rule ? `
+                <button type="button"
+                        class="show-code-btn mt-3 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                        data-failure="${escapeHtml(s.name)}">
+                  🔍 Show the code
+                </button>
+              ` : ''}
             </div>
-          `).join('')}
+          `;
+          }).join('')}
           <div class="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
             <a href="#" class="ask-ai-link block text-center text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-medium transition"
                data-ai-question="${aiQuestion}">
@@ -417,15 +439,25 @@ document.addEventListener('DOMContentLoaded', () => {
           </button>
           <div class="fixes-panel hidden mt-6 space-y-8">
             ${m.score >= 80 && failedCount === 0 ? `<p class="text-center text-green-600 dark:text-green-400 font-bold text-lg">All sub-metrics strong! ✅ Optimize further for top voice rankings.</p>` : ''}
-            ${fixable.map((s, idx) => `
+            ${fixable.map((s, idx) => {
+              const rule = deriveSelectorsForFailure(s.name);
+              return `
               <div class="text-center ${idx > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-6' : ''}">
                 <div class="text-5xl mb-3" style="color: ${s.score >= 60 ? '#f97316' : '#ef4444'}">${s.score >= 60 ? '⚠️' : '❌'}</div>
                 <p class="font-bold text-xl mb-3" style="color: ${s.score >= 60 ? '#f97316' : '#ef4444'}">${s.name}</p>
                 <p class="text-gray-700 dark:text-gray-300 max-w-lg mx-auto">
                   ${s.fix || 'Improve this metric for better voice SEO performance.'}
                 </p>
+                ${rule ? `
+                  <button type="button"
+                          class="show-code-btn mt-3 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                          data-failure="${escapeHtml(s.name)}">
+                    🔍 Show the code
+                  </button>
+                ` : ''}
               </div>
-            `).join('')}
+            `;
+            }).join('')}
             <div class="pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
               <a href="#" class="ask-ai-link block text-center text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-medium transition"
                  data-ai-question="${aiQuestion}">
@@ -665,8 +697,8 @@ ${topFailed.length === 0 ? `
             `;
           }
         }
-        
-                const askBtn = document.getElementById('ask-ai-btn');
+
+        const askBtn = document.getElementById('ask-ai-btn');
         const askInput = document.getElementById('ai-question-input');
         const modelSelect = document.getElementById('ai-model-select');
         const answerContainer = document.getElementById('ai-answer-container');
@@ -753,8 +785,8 @@ ${topFailed.length === 0 ? `
             }
           });
         }
-        
-                // ─── CMS Fixes Logic ──────────────────────────────────────────
+
+        // ─── CMS Fixes Logic ──────────────────────────────────────────
         const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
         const cmsBadgeDot        = document.getElementById('cms-badge-dot');
         const cmsBadgeName       = document.getElementById('cms-badge-name');
@@ -956,8 +988,18 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-  // Delegated handler: fixes toggle + ask AI prefill
+  // Delegated handler: fixes toggle + ask AI prefill + show the code
   document.addEventListener('click', (e) => {
+    // "Show the code" button
+    const showCodeBtn = e.target.closest('.show-code-btn');
+    if (showCodeBtn) {
+      e.preventDefault();
+      const failureText = showCodeBtn.dataset.failure || '';
+      const html = results.dataset.renderedHtml || '';
+      showCodeForFailure(failureText, html, { title: 'Affected code' });
+      return;
+    }
+
     const toggle = e.target.closest('.fixes-toggle');
     if (toggle) {
       e.preventDefault();

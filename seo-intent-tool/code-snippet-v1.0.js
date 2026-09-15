@@ -75,6 +75,8 @@ const RULES = [
 
   { test: /Flesch Reading Ease/i,
     selectors: ['p'], limit: 5, maxLen: SNIPPET_MAX },
+
+  // ─── General / Lighthouse-style rules ───
   { test: /render-blocking script/i,
     selectors: ['head script[src]:not([defer]):not([async]):not([type="module"])'] },
   { test: /stylesheets/i, selectors: ['link[rel="stylesheet"]'], limit: 10 },
