@@ -319,8 +319,8 @@
           <h3 class="text-lg font-bold mt-12 mb-4">🔧 All Tools</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
             <a href="/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🏠</span><span class="text-sm font-medium">OFUX Tool</span></a>
-            <a href="/lighthouse-plus-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🎯</span><span class="text-sm font-medium">Lighthouse PLus</span></a>
-            <a href="/aeo-performance-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🎯</span><span class="text-sm font-medium">AEO Performance</span></a>
+            <a href="/lighthouse-plus-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🗼</span><span class="text-sm font-medium">Lighthouse Plus</span></a>
+            <a href="/aeo-performance-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🚀</span><span class="text-sm font-medium">AEO Performance</span></a>
             <a href="/seo-intent-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🎯</span><span class="text-sm font-medium">SEO Intent</span></a>
             <a href="/seo-ux-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">⚖️</span><span class="text-sm font-medium">SEO + UX</span></a>
             <a href="/local-seo-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">📍</span><span class="text-sm font-medium">Local SEO</span></a>
@@ -383,7 +383,7 @@
 <!-- Daily Run Counter -->
 <div class="flex items-center justify-between mb-3 text-sm text-gray-600 dark:text-gray-400">
   <span>
-    Daily runs - Ask AI: <span class="font-bold text-orange-500" x-text="dailyUsedCount"></span> / 
+    Daily Audits - Ask AI: <span class="font-bold text-orange-500" x-text="dailyUsedCount"></span> / 
     <span class="font-bold" x-text="dailyLimit"></span>
     <span class="ml-1 inline-block px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-200 dark:bg-gray-700"
           x-text="user.tier === 'free' ? 'Free' : user.tier === 'pro' ? 'Pro' : user.tier === 'enterprise' ? 'Enterprise' : 'Guest'">
@@ -998,6 +998,9 @@
             <tr><th class="py-2 pr-4">Tool</th><th class="py-2 pr-4">Free</th><th class="py-2 pr-4">Pro</th><th class="py-2">Enterprise</th></tr>
           </thead>
           <tbody>
+			<tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">OFUX Tool</td><td>✅</td><td>✅</td><td>✅</td></tr>
+			<tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Lighthouse Plus</td><td>✅</td><td>✅</td><td>✅</td></tr>
+   			<tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">AEO Performance</td><td>✅</td><td>✅</td><td>✅</td></tr>
             <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">SEO Intent</td><td>✅</td><td>✅</td><td>✅</td></tr>
             <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Full SEO + UX</td><td>✅</td><td>✅</td><td>✅</td></tr>
             <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Local SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
@@ -1012,7 +1015,6 @@
             <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Research</td><td>✅</td><td>✅</td><td>✅</td></tr>
             <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Placement</td><td>✅</td><td>✅</td><td>✅</td></tr>
             <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword vs</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Homepage Tool</td><td>✅</td><td>✅</td><td>✅</td></tr>
           </tbody>
         </table>
       </div>
@@ -1043,7 +1045,7 @@
       <p class="text-sm text-gray-500 dark:text-gray-400">Forever free</p>
       <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
         <li>✓ 3 audits per day</li>
-        <li>✓ All 15 tools</li>
+        <li>✓ All 17 tools</li>
         <li>✓ 7‑day GA4 &amp; GSC data</li>
         <li>✓ Basic dashboard</li>
         <li>✗ Real‑time analytics</li>
@@ -1063,7 +1065,7 @@
       <p class="text-sm text-gray-500 dark:text-gray-400">per month</p>
       <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
         <li>✓ 25 audits per day</li>
-        <li>✓ All 15 tools</li>
+        <li>✓ All 17 tools</li>
         <li>✓ 30‑day GA4 data</li>
         <li>✓ 28‑day GSC data</li>
         <li>✓ CSV exports</li>
@@ -1083,7 +1085,7 @@
       <p class="text-sm text-gray-500 dark:text-gray-400">per month</p>
       <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
         <li>✓ 300 audits per day</li>
-        <li>✓ All 15 tools</li>
+        <li>✓ All 17 tools</li>
         <li>✓ 365‑day GA4 &amp; GSC data</li>
         <li>✓ Real‑time analytics</li>
         <li>✓ Custom date ranges</li>
@@ -1098,7 +1100,7 @@
   </div>
 
   <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
-    All plans include all 15 tools. <a href="/pro/" class="text-orange-500 hover:underline">See full details →</a>
+    All plans include all 17 tools. <a href="/pro/" class="text-orange-500 hover:underline">See full details →</a>
   </p>
 </div>
 <div class="text-center mt-8">
