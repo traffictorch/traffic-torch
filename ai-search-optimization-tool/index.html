@@ -447,12 +447,27 @@
   </form>
 </div>
 
-	<div id="analysis-progress" class="hidden mt-10 flex flex-col items-center justify-center py-8">
-  <div class="relative w-20 h-20">
-    <!-- Lazer spinner: thin orange partial ring -->
-    <div class="absolute inset-0 rounded-full border-4 border-gray-200"></div>
-    <div class="absolute inset-0 rounded-full border-4 border-t-orange-500 border-r-pink-500 border-b-purple-500 border-t-transparent animate-spin"></div>
-  </div>
+<div id="analysis-progress" class="hidden mt-10 flex flex-col items-center justify-center py-8">
+  <svg class="w-20 h-20 block" viewBox="0 0 100 100" role="status" aria-label="Loading">
+    <defs>
+      <linearGradient id="ttg-page-laser" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"   stop-color="#f97316"/>
+        <stop offset="50%"  stop-color="#ec4899"/>
+        <stop offset="100%" stop-color="#a855f7"/>
+      </linearGradient>
+    </defs>
+    <!-- Track ring -->
+    <circle cx="50" cy="50" r="44" fill="none" stroke="#e5e7eb" stroke-width="6"/>
+    <circle cx="50" cy="50" r="44" fill="none" stroke="#374151" stroke-width="6" class="hidden dark:block"/>
+    <!-- Spinning gradient arc — SMIL engine, iPhone-safe -->
+    <circle cx="50" cy="50" r="44" fill="none" stroke="url(#ttg-page-laser)" stroke-width="6"
+            stroke-linecap="round"
+            stroke-dasharray="70 210">
+      <animateTransform attributeName="transform" type="rotate"
+                        from="0 50 50" to="360 50 50"
+                        dur="1s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
   <p id="progress-text" class="text-2xl font-medium text-center text-orange-600 dark:text-orange-400 mt-6">
 	  Analyzing page...
 	</p>

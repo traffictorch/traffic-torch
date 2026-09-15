@@ -428,10 +428,22 @@
 
 <!-- In-place Epic Laser Spinner (hidden until submit) -->
 <div id="loader" class="hidden mt-4 flex flex-col items-center py-8">
-	<div class="relative">
-  <!-- Responsive spinning circle only (no text inside) -->
-  <div class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
-  <div class="absolute inset-0 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-8 border-transparent border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
+  <svg class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 block" viewBox="0 0 100 100" role="status" aria-label="Loading">
+    <defs>
+      <linearGradient id="ttg-loader-laser" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"   stop-color="#f97316"/>
+        <stop offset="50%"  stop-color="#ec4899"/>
+        <stop offset="100%" stop-color="#a855f7"/>
+      </linearGradient>
+    </defs>
+    <!-- Track ring -->
+    <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" stroke-width="10"/>
+    <circle cx="50" cy="50" r="40" fill="none" stroke="#374151" stroke-width="10" class="hidden dark:block"/>
+    <!-- Spinning gradient arc — SMIL engine, iPhone-safe -->
+    <circle cx="50" cy="50" r="40" fill="none" stroke="url(#ttg-loader-laser)" stroke-width="10" stroke-linecap="round" stroke-dasharray="80 200">
+      <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="0.9s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
 </div>
 
 <!-- Progress text now BELOW the circle -->
