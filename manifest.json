@@ -3,7 +3,7 @@
   "short_name": "Traffic Torch",
   "description": "Instant SEO + UX audit tools",
   "start_url": "/",
-  "display": "standalone",
+  "display": "minimal-ui",
   "background_color": "#0f172a",
   "theme_color": "#f97316",
   "icons": [

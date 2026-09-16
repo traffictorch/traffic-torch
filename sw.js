@@ -33,25 +33,22 @@ const BYPASS = [
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
+  // Only handle GETs; let POST/PUT/etc. go straight to network
   if (req.method !== 'GET') return;
 
   const url = req.url;
-  if (BYPASS.some(h => url.includes(h))) return;
+  if (BYPASS.some(h => url.includes(h))) return; // browser handles it
 
-  // Navigation requests must NOT be cloned with custom cache options
-  if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req).catch(() =>
-        new Response('Offline', { status: 503, statusText: 'Offline' })
-      )
-    );
-    return;
-  }
+  // Force a real network round-trip, bypass HTTP cache
+  const fresh = new Request(req, {
+    cache: 'no-store',
+    // Keep credentials/headers; do NOT set mode (CORS stays as-is)
+  });
 
-  // Non-navigation GETs: force a fresh network fetch
   event.respondWith(
-    fetch(req, { cache: 'no-store' }).catch(() =>
-      new Response('Offline', { status: 503, statusText: 'Offline' })
-    )
+    fetch(fresh).catch(() => {
+      // Offline: nothing cached, so just surface the error
+      return new Response('Offline', { status: 503, statusText: 'Offline' });
+    })
   );
 });
