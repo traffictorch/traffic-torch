@@ -504,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
     results.dataset.renderedHtml = rawHtml || '';
     results.innerHTML = `
 <!-- Overall Score Card -->
-<div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
+<div class="flex justify-center my-8 sm:my-12 px-2 sm:px-6">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
     <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Your Page</p>
     <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
@@ -847,7 +847,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-<div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-4">
+<div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-2">
   <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
   <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
     Get step-by-step keyword placement fix instructions tailored to your CMS.
@@ -898,7 +898,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
   </div>
 </div>
-<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-2">
   <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Keyword Placement</h2>
   <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
     Get tailored answers about keyword placement, meta tags, content density, and specific improvement steps.

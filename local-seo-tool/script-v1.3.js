@@ -628,7 +628,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     results.innerHTML = `
       <!-- Overall Score Card -->
-      <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
+      <div class="flex justify-center my-8 sm:my-12 px-2 sm:px-6">
         <div class="bg-white dark:bg-gray-950 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${bigGrade.border} border-opacity-60">
           <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
             <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
@@ -674,7 +674,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <!-- AI Detected Local Search Intents - Full width module (Disabled)-->
       <!-- Modern Scoring Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-4 w-full max-w-none mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-2 w-full max-w-none mx-auto">
         ${modules.map((m, index) => {
           const grade = getGrade(m.score);
           const deepDiveId = moduleHashes[m.name];
@@ -897,7 +897,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div id="plugin-solutions-section" class="mt-20"></div>
 
       <!-- CMS Fixes -->
-      <div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-4">
+      <div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-2">
         <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
           Get step-by-step local SEO fix instructions tailored to your CMS.
@@ -949,7 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+      <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-2">
         <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Local SEO</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
           Get tailored answers about local SEO, NAP, keywords, schema, and specific improvement steps.

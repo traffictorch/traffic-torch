@@ -73,7 +73,7 @@ const MODULE_WEIGHTS = {
 
 function applyIssueCap(mod) {
   const failedCount  = (mod.failed  || []).length;
-  const warningCount = (mod.signals || []).filter((s) => !s.pass).length;
+  const warningCount = (mod.signals || []).filter((s) => !s.pass && !s.informational).length;
   const issues = failedCount + warningCount;
 
   let capped = mod.score;

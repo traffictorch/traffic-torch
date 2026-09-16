@@ -879,7 +879,7 @@ async function performAnalysis(source, isCode = false) {
             // ─── CMS Fixes ──────────────────────────────────────────────
       const cmsSection = document.createElement('div');
       cmsSection.id = 'cms-fixes-section';
-      cmsSection.className = 'mt-20 max-w-4xl mx-auto px-4';
+      cmsSection.className = 'mt-20 max-w-4xl mx-auto px-2';
       cmsSection.innerHTML = `
         <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
@@ -934,7 +934,7 @@ async function performAnalysis(source, isCode = false) {
       wrapper.appendChild(cmsSection);
       const askAISection = document.createElement('div');
       askAISection.id = 'ask-ai-section';
-      askAISection.className = 'mt-20 max-w-4xl mx-auto px-4';
+      askAISection.className = 'mt-20 max-w-4xl mx-auto px-2';
       askAISection.innerHTML = `
         <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Product SEO</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">

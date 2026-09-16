@@ -281,7 +281,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     results.dataset.renderedHtml = data.renderedHtml || rawCode || '';
 
     results.innerHTML = `
-<div class="max-w-5xl mx-auto px-4 py-8">
+<div class="max-w-6xl mx-auto px-2 py-8">
   <!-- Big Overall Readiness Score Card -->
   <div class="flex justify-center my-10 px-4">
     <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-lg border-4 ${readiness.score >= 80 ? 'border-green-600' : readiness.score >= 40 ? 'border-orange-500' : 'border-red-500'}">

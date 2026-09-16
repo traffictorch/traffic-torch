@@ -138,7 +138,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function analyzeAIContent(text) {
     if (!text || text.length < 200) {
-      return { moduleScores: [10,10,10,10,10], totalScore: 50 };
+      // Not enough text to score reliably. Return a fully-formed neutral
+      // analysis so downstream renderers can safely read analysis.details.*
+      // without throwing (previously this returned no `details`, which crashed
+      // the report template with "Cannot read properties of undefined").
+      return {
+        moduleScores: [10, 10, 10, 10, 10],
+        totalScore: 50,
+        details: {
+          perplexity:     { trigram: '0.0', bigram: '0.0',
+                            scores: { trigram: 10, bigram: 10 } },
+          burstiness:     { sentence: '0.0', word: '0.0',
+                            scores: { sentence: 10, word: 10 } },
+          repetition:     { bigram: 0, trigram: 0,
+                            scores: { bigram: 10, trigram: 10 } },
+          sentenceLength: { avg: 0, complexity: '0.0',
+                            scores: { avg: 10, complexity: 10 } },
+          vocabulary:     { diversity: '0.0', rare: '0.0',
+                            scores: { diversity: 10, rare: 10 } }
+        }
+      };
     }
     text = text.replace(/\s+/g, ' ').trim().toLowerCase();
     const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
@@ -294,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         results.dataset.renderedHtml = rawPageHtml || '';
         results.innerHTML = `
 <!-- Overall Score Card (AI Audit) -->
-<div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
+<div class="flex justify-center my-8 sm:my-12 px-2 sm:px-6">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
     <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall AI Audit Score</p>
     <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
@@ -678,7 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 <!-- CMS Fixes -->
-<div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-4">
+<div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-2">
   <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
   <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
     Get step-by-step humanization fix instructions tailored to your CMS.
@@ -729,7 +748,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
   </div>
 </div>
-<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-2">
             <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About AI Content</h2>
             <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
               Get tailored answers about AI detection metrics, perplexity, burstiness, repetition, and specific improvement steps.

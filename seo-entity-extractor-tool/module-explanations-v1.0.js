@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('module-cards-container');
   if (!container) return;
 
-  container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 justify-items-center max-w-7xl mx-auto px-4 sm:px-6';
+  container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 justify-items-center max-w-7xl mx-auto px-2 sm:px-6';
 
   container.innerHTML = moduleExplanations.map(m => `
     <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border-l-4 border-orange-500 w-full max-w-md">

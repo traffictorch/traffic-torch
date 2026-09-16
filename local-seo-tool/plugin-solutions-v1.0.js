@@ -161,7 +161,7 @@ function renderPluginSolutions(failedModules, containerId = 'plugin-solutions-se
   if (!container) return;
 
   const section = document.createElement('section');
-  section.className = 'mt-16 max-w-5xl mx-auto px-4';
+  section.className = 'mt-16 max-w-5xl mx-auto px-2';
   section.innerHTML = `
     <h2 class="text-3xl md:text-4xl font-bold text-center text-orange-600 mb-8">
       Recommended Plugins

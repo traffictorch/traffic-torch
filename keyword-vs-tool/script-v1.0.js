@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       results.innerHTML = `
 <!-- Big Score Cards -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12 px-4 max-w-5xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12 px-2 max-w-5xl mx-auto">
   <!-- Your Page -->
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full mx-auto border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
     <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Your Page</p>
@@ -663,7 +663,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <!-- Top Priority Fixes & Competitive Gaps -->
-<div class="my-20 max-w-5xl mx-auto">
+<div class="my-20 max-w-6xl mx-auto">
   <h3 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
     Top Priority Fixes & Competitive Gaps
   </h3>
@@ -827,7 +827,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // ─── Insert Ask AI section before the share container ────────────
       const aiSectionHTML = `
-<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-2">
   <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Keyword Competition</h2>
   <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
     Get tailored answers about competitive gaps, keyword placement, and specific improvement steps to outrank your competitor.

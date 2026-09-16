@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="text-6xl mb-6">${m.emoji}</div>
       <div class="text-3xl font-black text-purple-600 dark:text-purple-400 mb-8">${m.name}</div>
       <a href="${HELP_BASE}#${m.id}"
-         class="mt-auto inline-block px-8 py-3 rounded-full bg-gradient-to-r from-purple-600 to-orange-500 text-white font-semibold hover:from-purple-700 hover:to-orange-600 transition">
+         class="mt-auto inline-block px-8 py-3 rounded-full bg-gradient-to-r from-purple-600 to-orange-600 text-white font-semibold hover:from-purple-700 hover:to-orange-600 transition">
         How ${m.name} is tested →
       </a>
     </div>
