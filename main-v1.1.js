@@ -726,12 +726,6 @@ window.getOrCreateFingerprint = getOrCreateFingerprint;
   if (window.__pwaChromeLoaded) return;
   window.__pwaChromeLoaded = true;
 
-  // 1. Inject CSS
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = '/pwa-chrome.css';
-  document.head.appendChild(link);
-
   // 2. Inject DOM + load logic once DOM is ready
   const mount = () => {
     if (document.getElementById('ptr')) return;
