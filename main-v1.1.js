@@ -725,12 +725,6 @@ window.closeUpgradeModal = closeUpgradeModal;
     const desc = document.querySelector('meta[name="description"]')?.content || title;
     const enc = encodeURIComponent;
 
-    // Email link
-    const emailUrl = `mailto:?subject=${enc(title)}&body=${enc(desc + '\n\n' + canonical)}`;
-    document.querySelectorAll('[data-share="email"]').forEach(a => {
-      a.href = emailUrl;
-    });
-
     // Native share (mobile)
     document.querySelectorAll('[data-native-share]').forEach(btn => {
       if (!navigator.share) return;
