@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const text = getVisibleText(doc.body) || '';
       const cleanedText = text.replace(/\s+/g, ' ').trim();
       progressText.textContent = "Analyzing E-E-A-T Signals...";
-      await sleep(2000);
+      await sleep(200);
       const expResult = analyzeExperience(cleanedText, doc);
       const experienceScore = expResult.score;
       const experienceMetrics = expResult.metrics;
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const schemaTypes = sch.schemaTypes;
       const normalizeSchema = typeof sch?.normalized === 'number' ? sch.normalized : 20;
       progressText.textContent = "Analyzing Search Intent";
-      await sleep(2000);
+      await sleep(400);
       const titleLower = (doc.title || '').toLowerCase();
       let intent = 'Informational';
       let confidence = 60;

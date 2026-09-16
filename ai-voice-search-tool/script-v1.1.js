@@ -232,15 +232,15 @@ document.addEventListener('DOMContentLoaded', () => {
       "Assessing Traditional Keywords",
       "Calculating final score..."
     ];
-    let delay = 600;
+    let delay = 300;
     messages.forEach(msg => {
       setTimeout(() => {
         if (progressText) progressText.textContent = msg;
       }, delay);
-      delay += 700;
+      delay += 300;
     });
 
-    const minLoadTime = 5500;
+    const minLoadTime = 500;
     const startTime = Date.now();
 
     try {

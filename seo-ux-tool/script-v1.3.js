@@ -78,7 +78,7 @@ function autoFillFromUrl() {
       if (analyzeBtn) {
         setTimeout(() => {
           analyzeBtn.click();
-        }, 800);
+        }, 400);
       }
     }
   }
@@ -368,12 +368,12 @@ document.addEventListener('DOMContentLoaded', () => {
         allIssues.push({ ...iss, module: mod.name, impact: 100 - result.score });
       });
 
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 200));
     }
 
     // Final report generation
     progressText.textContent = 'Generating report...';
-    await new Promise(r => setTimeout(r, 1400));
+    await new Promise(r => setTimeout(r, 500));
 
     const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
     updateScore('overall-score', overallScore);

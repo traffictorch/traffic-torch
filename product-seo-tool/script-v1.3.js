@@ -585,13 +585,13 @@ document.addEventListener('DOMContentLoaded', () => {
     loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     const steps = [
-      { text: "Fetching product page...", delay: 1200 },
-      { text: "Extracting content & metadata", delay: 1400 },
-      { text: "Analyzing on-page & technical SEO", delay: 1600 },
-      { text: "Evaluating content, media & schema", delay: 1400 },
-      { text: "Checking eCommerce signals", delay: 1200 },
-      { text: "Calculating health score", delay: 1000 },
-      { text: "Building report & fixes", delay: 1200 }
+      { text: "Fetching product page...", delay: 1000 },
+      { text: "Extracting content & metadata", delay: 400 },
+      { text: "Analyzing on-page & technical SEO", delay: 600 },
+      { text: "Evaluating content, media & schema", delay: 300 },
+      { text: "Checking eCommerce signals", delay: 200 },
+      { text: "Calculating health score", delay: 500 },
+      { text: "Building report & fixes", delay: 1000 }
     ];
 
     let currentStep = 0;

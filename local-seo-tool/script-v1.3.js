@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const truncatedTitle = pageTitle.length > 65 ? pageTitle.substring(0, 62) + '...' : pageTitle;
 
     const analysisStartForMin = Date.now();
-    const minVisibleMs = 5800;
+    const minVisibleMs = 800;
 
     await new Promise(resolve => {
       const elapsed = Date.now() - analysisStartForMin;

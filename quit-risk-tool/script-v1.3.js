@@ -613,12 +613,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const progressText = document.getElementById('progressText');
     const steps = [
       { text: "Fetching page...", delay: 1000 },
-      { text: "Extracting main content", delay: 1200 },
-      { text: "Evaluating links and menu", delay: 1000 },
-      { text: "Evaluating images", delay: 1200 },
-      { text: "Check mobile responsive", delay: 1000 },
-      { text: "Assessing performance optimization", delay: 1000 },
-      { text: "Calculating quit risk", delay: 1200 }
+      { text: "Extracting main content", delay: 200 },
+      { text: "Evaluating links and menu", delay: 500 },
+      { text: "Evaluating images", delay: 300 },
+      { text: "Check mobile responsive", delay: 400 },
+      { text: "Assessing performance optimization", delay: 200 },
+      { text: "Calculating quit risk", delay: 500 }
     ];
     let currentStep = 0;
     const runStep = () => {

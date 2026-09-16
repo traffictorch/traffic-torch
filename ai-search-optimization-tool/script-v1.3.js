@@ -202,7 +202,7 @@ const initTool = (form, results, progressContainer) => {
     const updateProgress = () => {
       if (step < progressMessages.length) progressText.textContent = progressMessages[step++];
     };
-    const interval = setInterval(updateProgress, 1800);
+    const interval = setInterval(updateProgress, 300);
 
     try {
       if (codeInput) {
@@ -225,7 +225,7 @@ const initTool = (form, results, progressContainer) => {
       const auditSaveUrl = analyzedUrl === 'Pasted HTML Code' ? 'Pasted HTML code' : analyzedUrl;
       await saveAuditHistory(auditSaveUrl, 'GEO / AI Search');
 
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r => setTimeout(r, 200));
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const cmsInfo = detectCMS({ doc, url: analyzedUrl !== 'Pasted HTML Code' ? analyzedUrl : '' });
@@ -240,7 +240,7 @@ const initTool = (form, results, progressContainer) => {
 
       const ansData = computeAnswerability(doc, first300, first300Html);
       const answerability = clampScore(ansData.score);
-      await new Promise(r => setTimeout(r, 1200));
+      await new Promise(r => setTimeout(r, 400));
       updateProgress();
 
       const structData = computeStructuredData(doc);
@@ -360,7 +360,7 @@ const initTool = (form, results, progressContainer) => {
         })
         .filter(Boolean);
 
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 150));
       clearInterval(interval);
       progressContainer.classList.add('hidden');
       results.classList.remove('hidden');
