@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
       results.dataset.renderedHtml = html || customHtml || '';
       results.innerHTML = `
         <!-- Overall Score Card (SEO Intent) -->
-        <div class="flex justify-center my-8 sm:my-12 px-4 sm:px-6">
+        <div class="flex justify-center my-8 sm:my-12 px-2 sm:px-6">
           <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${overall >= 80 ? 'border-green-500' : overall >= 60 ? 'border-orange-400' : 'border-red-500'}">
             <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall SEO Intent Score</p>
             <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div id="plugin-solutions-section" class="mt-20"></div>
         
                 <!-- CMS Fixes -->
-        <div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-4">
+        <div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-2">
           <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
           <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
             Get step-by-step SEO fix instructions tailored to your CMS.
@@ -639,7 +639,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
         
-        <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
+        <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-2">
           <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About SEO Intent</h2>
           <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
             Get tailored answers about the pass/fail metrics, E-E-A-T signals, and specific improvement steps.

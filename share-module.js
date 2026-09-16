@@ -14,7 +14,7 @@ export function initShareModule(container, results) {
   const ringColorHex = (s) => s >= 80 ? '#22c55e' : s >= 60 ? '#f59e0b' : '#ef4444';
 
   container.innerHTML = `
-    <div class="share-dashboard glass-card" style="padding:1rem; border-radius:2rem; background:rgba(255,255,255,0.06); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.12); margin-top:2rem;">
+    <div class="share-dashboard glass-card" style="padding:0rem; border-radius:2rem; background:rgba(255,255,255,0.06); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.12); margin-top:2rem;">
       
       <!-- Header (hidden in print) -->
       <div class="share-dashboard-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;">
@@ -77,7 +77,7 @@ export function initShareModule(container, results) {
       <div class="share-dashboard-actions grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-gray-200/50 dark:border-gray-700/50 pt-6">
         
         <!-- Share Card -->
-        <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:1rem; border:1px solid rgba(255,255,255,0.06);">
+        <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:0rem; border:1px solid rgba(255,255,255,0.06);">
           <h4 class="font-semibold text-gray-700 dark:text-gray-200 text-sm mb-3">📤 Share Report</h4>
           <div class="flex flex-wrap gap-2 items-center">
             <button class="share-btn px-4 py-2 text-sm rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition text-gray-700 dark:text-gray-200 shadow-sm" data-action="copyLink">🔗 Link</button>
@@ -88,7 +88,7 @@ export function initShareModule(container, results) {
         </div>
 
         <!-- Export Card -->
-        <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:1rem; border:1px solid rgba(255,255,255,0.06);">
+        <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:0rem; border:1px solid rgba(255,255,255,0.06);">
           <h4 class="font-semibold text-gray-700 dark:text-gray-200 text-sm mb-3">💾 Export</h4>
           <div class="flex flex-wrap gap-2 items-center">
             <button class="share-btn px-4 py-2 text-sm rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition text-gray-700 dark:text-gray-200 shadow-sm" data-action="exportCSV">📊 CSV</button>
@@ -98,7 +98,7 @@ export function initShareModule(container, results) {
         </div>
 
         <!-- Send / Invite Card -->
-        <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:1rem; border:1px solid rgba(255,255,255,0.06);">
+        <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:0rem; border:1px solid rgba(255,255,255,0.06);">
           <h4 class="font-semibold text-gray-700 dark:text-gray-200 text-sm mb-3">✉️ Send</h4>
           <div class="flex flex-wrap gap-2 items-center">
             <button class="share-btn px-4 py-2 text-sm rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 transition text-gray-700 dark:text-gray-200 shadow-sm" data-action="emailClient">📧 Client</button>
@@ -131,7 +131,7 @@ export function initShareModule(container, results) {
       </div>
 
       <div id="share-feedback-area" style="display:none; margin-top:1rem;">
-        <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:1rem; border:1px solid rgba(255,255,255,0.06);">
+        <div style="background:rgba(255,255,255,0.05); border-radius:1rem; padding:0rem; border:1px solid rgba(255,255,255,0.06);">
           <h4 class="font-semibold text-gray-700 dark:text-gray-200 text-sm mb-3">💬 Submit Feedback</h4>
           <div style="display:flex; gap:0.5rem; margin-bottom:0.8rem;">
             <button class="feedback-rating" data-rating="1" style="font-size:2rem; background:transparent; border:none; cursor:pointer; transition:0.2s;">😡</button>
