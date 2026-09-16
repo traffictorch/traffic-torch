@@ -27,6 +27,48 @@ function escapeHtml(s) {
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
+// ── Save audit to history (auth user → API, guest → localStorage) ──
+async function saveAuditHistory(url, toolName) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  const auditUrl = url || 'Pasted HTML code';
+
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/api/audit-history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: auditUrl,
+          tool_name: toolName,
+          score: null
+        })
+      });
+      return;
+    } catch (e) {
+      // fall through to guest storage
+    }
+  }
+
+  // Guest fallback – same key the dashboard uses
+  const stored = localStorage.getItem('audit_guest');
+  let entries = [];
+  if (stored) {
+    try { entries = JSON.parse(stored).entries || []; } catch {}
+  }
+  entries.unshift({
+    _localId: Date.now() + '_' + Math.random(),
+    url: auditUrl,
+    tool: toolName,
+    score: null,
+    timestamp: Date.now()
+  });
+  entries = entries.slice(0, 5);
+  localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
+}
+
   // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillAndRunFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -534,7 +576,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Shared analysis runner
   async function runProductSEOAnalysis(source, isCode = false) {
-    const canProceed = await canRunTool('limit-audit-id');
+    const canProceed = await canRunTool('product-seo-tool');
     if (!canProceed) return;
 
     results.innerHTML = '';
@@ -591,6 +633,11 @@ async function performAnalysis(source, isCode = false) {
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const cmsInfo = detectCMS({ doc, url: inputUrl !== 'Pasted HTML Code' ? inputUrl : '' });
+
+      // 👇 Save the audit to history so it shows in the dashboard
+      const auditSaveUrl = isCode ? 'Pasted HTML code' : (inputUrl || '');
+      await saveAuditHistory(auditSaveUrl, 'Product SEO');
+
       const seoData = getProductPageContent(doc, inputUrl);
       const seo = analyzeProductSEO(doc, inputUrl === 'HTML Code Analysis' ? 'https://example.com/pasted-html' : inputUrl);
       const failedFactors = [];
@@ -1029,7 +1076,7 @@ async function performAnalysis(source, isCode = false) {
         askBtn.parentNode.replaceChild(newAskBtn, askBtn);
 
         newAskBtn.addEventListener('click', async () => {
-          const canProceed = await canRunTool('limit-audit-id');
+          const canProceed = await canRunTool('product-seo-tool');
           if (!canProceed) return;
 
           const question = askInput?.value?.trim();
@@ -1148,7 +1195,7 @@ async function performAnalysis(source, isCode = false) {
       cmsFixesBtn?.addEventListener('click', async () => {
         if (priorityFixes.length === 0) return;
 
-        const canProceed = await canRunTool('limit-audit-id');
+        const canProceed = await canRunTool('product-seo-tool');
         if (!canProceed) return;
 
         const selectedCms     = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';

@@ -63,6 +63,48 @@ const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 const ANALYZE_ENDPOINT = 'https://entity-ai-proxy.traffictorch.workers.dev/entity-analyze';
 
+// ── Save audit to history (auth user → API, guest → localStorage) ──
+async function saveAuditHistory(url, toolName) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  const auditUrl = url || 'Pasted HTML code';
+
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/api/audit-history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: auditUrl,
+          tool_name: toolName,
+          score: null
+        })
+      });
+      return;
+    } catch (e) {
+      // fall through to guest storage
+    }
+  }
+
+  // Guest fallback – same key the dashboard uses
+  const stored = localStorage.getItem('audit_guest');
+  let entries = [];
+  if (stored) {
+    try { entries = JSON.parse(stored).entries || []; } catch {}
+  }
+  entries.unshift({
+    _localId: Date.now() + '_' + Math.random(),
+    url: auditUrl,
+    tool: toolName,
+    score: null,
+    timestamp: Date.now()
+  });
+  entries = entries.slice(0, 5);
+  localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
+}
+
 // ── Small HTML escaper (used by the fixes template for safe rendering) ──
 function escapeHtml(s) {
   return String(s == null ? '' : s)
@@ -183,6 +225,10 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     } catch (parseErr) {
       throw new Error('Invalid response format from server (not valid JSON)');
     }
+
+    // 👇 Save the audit to history so it shows in the dashboard
+    const auditSaveUrl = inputType === 'code' ? 'Pasted HTML code' : (url || '');
+    await saveAuditHistory(auditSaveUrl, 'Entity Extractor');
 
     // Hide the large spinner on success
     const loading = document.getElementById('loading');
@@ -724,7 +770,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (hasCheckedLimit) return;
       hasCheckedLimit = true;
 
-      const canProceed = await canRunTool('limit-audit-id');
+      const canProceed = await canRunTool('seo-entity-extractor-tool');
       if (!canProceed) {
         hasCheckedLimit = false;
         return;
@@ -763,7 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (hasCheckedLimit) return;
       hasCheckedLimit = true;
 
-      const canProceed = await canRunTool('limit-audit-id');
+      const canProceed = await canRunTool('seo-entity-extractor-tool');
       if (!canProceed) {
         hasCheckedLimit = false;
         return;
@@ -798,7 +844,7 @@ const answerContent = document.getElementById('ai-answer-content');
 
 if (askBtn) {
   askBtn.addEventListener('click', async () => {
-    const canProceed = await canRunTool('limit-audit-id');
+    const canProceed = await canRunTool('seo-entity-extractor-tool');
     if (!canProceed) return;
 
     const question = askInput?.value?.trim();

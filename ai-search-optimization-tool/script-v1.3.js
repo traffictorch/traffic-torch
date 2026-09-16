@@ -23,6 +23,48 @@ import {
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
+// ── Save audit to history (auth user → API, guest → localStorage) ──
+async function saveAuditHistory(url, toolName) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  const auditUrl = url || 'Pasted HTML code';
+
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/api/audit-history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: auditUrl,
+          tool_name: toolName,
+          score: null
+        })
+      });
+      return;
+    } catch (e) {
+      // fall through to guest storage
+    }
+  }
+
+  // Guest fallback – same key the dashboard uses
+  const stored = localStorage.getItem('audit_guest');
+  let entries = [];
+  if (stored) {
+    try { entries = JSON.parse(stored).entries || []; } catch {}
+  }
+  entries.unshift({
+    _localId: Date.now() + '_' + Math.random(),
+    url: auditUrl,
+    tool: toolName,
+    score: null,
+    timestamp: Date.now()
+  });
+  entries = entries.slice(0, 5);
+  localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
+}
+
 // ─── Score weights (single source of truth) ──────────────────────────
 const WEIGHTS = {
   answerability: 0.25,
@@ -136,7 +178,7 @@ const initTool = (form, results, progressContainer) => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const canProceed = await canRunTool('limit-audit-id');
+    const canProceed = await canRunTool('ai-search-optimization-tool');
     if (!canProceed) return;
 
     let urlInput = document.getElementById('url-input').value.trim();
@@ -178,6 +220,10 @@ const initTool = (form, results, progressContainer) => {
         if (!res.ok) throw new Error('Failed to analyze - Whitelist: full-render-v2.traffictorch.workers.dev or use Code Analysis.');
         html = await res.text();
       }
+
+      // 👇 Save the audit to history so it shows in the dashboard
+      const auditSaveUrl = analyzedUrl === 'Pasted HTML Code' ? 'Pasted HTML code' : analyzedUrl;
+      await saveAuditHistory(auditSaveUrl, 'GEO / AI Search');
 
       await new Promise(r => setTimeout(r, 800));
 
@@ -935,7 +981,7 @@ const initTool = (form, results, progressContainer) => {
         askBtn.parentNode.replaceChild(newAskBtn, askBtn);
 
         newAskBtn.addEventListener('click', async () => {
-          const canProceed = await canRunTool('limit-audit-id');
+          const canProceed = await canRunTool('ai-search-optimization-tool');
           if (!canProceed) return;
 
           const question = askInput?.value?.trim();
@@ -1064,7 +1110,7 @@ const initTool = (form, results, progressContainer) => {
       cmsFixesBtn?.addEventListener('click', async () => {
         if (prioritisedFixes.length === 0) return;
 
-        const canProceed = await canRunTool('limit-audit-id');
+        const canProceed = await canRunTool('ai-search-optimization-tool');
         if (!canProceed) return;
 
         const selectedCms     = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';

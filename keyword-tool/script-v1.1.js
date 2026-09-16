@@ -15,6 +15,48 @@ import {
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
+// ── Save audit to history (auth user → API, guest → localStorage) ──
+async function saveAuditHistory(url, toolName) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  const auditUrl = url || 'Pasted HTML code';
+
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/api/audit-history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: auditUrl,
+          tool_name: toolName,
+          score: null
+        })
+      });
+      return;
+    } catch (e) {
+      // fall through to guest storage
+    }
+  }
+
+  // Guest fallback – same key the dashboard uses
+  const stored = localStorage.getItem('audit_guest');
+  let entries = [];
+  if (stored) {
+    try { entries = JSON.parse(stored).entries || []; } catch {}
+  }
+  entries.unshift({
+    _localId: Date.now() + '_' + Math.random(),
+    url: auditUrl,
+    tool: toolName,
+    score: null,
+    timestamp: Date.now()
+  });
+  entries = entries.slice(0, 5);
+  localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const pageUrlInput = document.getElementById('page-url');
@@ -342,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ====================== REUSABLE ANALYSIS FUNCTION ======================
   async function runAnalysis(yourDoc, phrase, fullUrl, analysisType, rawHtml = '') {
-    const canProceed = await canRunTool('limit-audit-id');
+    const canProceed = await canRunTool('keyword-tool');
     if (!canProceed) {
       stopSpinnerLoader();
       return;
@@ -410,6 +452,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
 
     yourScore = Math.min(100, Math.round(yourScore));
+
+    // 👇 Save the audit to history so it shows in the dashboard
+    const auditSaveUrl = analysisType === 'code' ? 'Pasted HTML code' : fullUrl;
+    await saveAuditHistory(auditSaveUrl, 'Keyword Placement');
 
     await new Promise(resolve => setTimeout(resolve, 2800));
     stopSpinnerLoader();
@@ -1021,7 +1067,7 @@ document.addEventListener('DOMContentLoaded', () => {
       askBtn.parentNode.replaceChild(newAskBtn, askBtn);
 
       newAskBtn.addEventListener('click', async () => {
-        const canProceed = await canRunTool('limit-audit-id');
+        const canProceed = await canRunTool('keyword-tool');
         if (!canProceed) return;
 
         const question = askInput?.value?.trim();
@@ -1152,7 +1198,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cmsFixesBtn?.addEventListener('click', async () => {
       if (topPriorityFixes.length === 0) return;
 
-      const canProceed = await canRunTool('limit-audit-id');
+      const canProceed = await canRunTool('keyword-tool');
       if (!canProceed) return;
 
       const selectedCms     = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';

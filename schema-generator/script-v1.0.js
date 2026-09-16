@@ -6,6 +6,49 @@ import { prettyJsonLd } from './modules/schema-base.js';
 import { detectCMS } from '/cms-detect.js';
 
 const API_PROXY = 'https://full-render-v2.traffictorch.workers.dev/?url=';
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+// ── Save audit to history (auth user → API, guest → localStorage) ──
+async function saveAuditHistory(url, toolName) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  const auditUrl = url || 'Pasted JSON-LD';
+
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/api/audit-history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: auditUrl,
+          tool_name: toolName,
+          score: null
+        })
+      });
+      return;
+    } catch (e) {
+      // fall through to guest storage
+    }
+  }
+
+  // Guest fallback – same key the dashboard uses
+  const stored = localStorage.getItem('audit_guest');
+  let entries = [];
+  if (stored) {
+    try { entries = JSON.parse(stored).entries || []; } catch {}
+  }
+  entries.unshift({
+    _localId: Date.now() + '_' + Math.random(),
+    url: auditUrl,
+    tool: toolName,
+    score: null,
+    timestamp: Date.now()
+  });
+  entries = entries.slice(0, 5);
+  localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
+}
 
 const waitForElements = () => {
   const form = document.getElementById('audit-form');
@@ -136,7 +179,7 @@ const initTool = (form, results, progressContainer) => {
   // URL SCAN & SCHEMA DETECTION
   // ──────────────────────────────────────────────
   const runAnalysis = async (mode) => {
-    const canProceed = await canRunTool('limit-schema-scan');
+    const canProceed = await canRunTool('schema-generator');
     if (!canProceed) return;
 
     let requestBody;
@@ -210,6 +253,10 @@ const initTool = (form, results, progressContainer) => {
 
       // Fetch live page data (CMS + signals) once — used for both CASE 1 and CASE 2
       const { cmsInfo, pageSignals } = await fetchLivePageData(url, isCodeMode);
+
+      // 👇 Save the audit to history so it shows in the dashboard
+      const auditSaveUrl = isCodeMode ? 'Pasted JSON-LD' : url;
+      await saveAuditHistory(auditSaveUrl, 'Schema Generator');
 
       progressContainer.classList.add('hidden');
       results.classList.remove('hidden');
@@ -531,7 +578,7 @@ const initTool = (form, results, progressContainer) => {
 
   if (askBtn) {
     askBtn.addEventListener('click', async () => {
-      const canProceed = await canRunTool('limit-schema-scan');
+      const canProceed = await canRunTool('schema-generator');
       if (!canProceed) return;
 
       const question = askInput?.value?.trim();

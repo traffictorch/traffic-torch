@@ -7,6 +7,48 @@ const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 const ANALYZE_ENDPOINT = 'https://topical-authority-ai.traffictorch.workers.dev/';
 
+// ── Save audit to history (auth user → API, guest → localStorage) ──
+async function saveAuditHistory(url, toolName) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  const auditUrl = url || 'Pasted HTML code';
+
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/api/audit-history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: auditUrl,
+          tool_name: toolName,
+          score: null
+        })
+      });
+      return;
+    } catch (e) {
+      // fall through to guest storage
+    }
+  }
+
+  // Guest fallback – same key the dashboard uses
+  const stored = localStorage.getItem('audit_guest');
+  let entries = [];
+  if (stored) {
+    try { entries = JSON.parse(stored).entries || []; } catch {}
+  }
+  entries.unshift({
+    _localId: Date.now() + '_' + Math.random(),
+    url: auditUrl,
+    tool: toolName,
+    score: null,
+    timestamp: Date.now()
+  });
+  entries = entries.slice(0, 5);
+  localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
+}
+
 function getGrade(score) {
   if (score >= 70) return { text: 'Good', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
   if (score >= 40) return { text: 'Average', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
@@ -67,7 +109,7 @@ if (urlAnalyzeBtn) {
   urlAnalyzeBtn.addEventListener('click', async () => {
     if (hasCheckedLimit) return;
     hasCheckedLimit = true;
-    const canProceed = await canRunTool('limit-audit-id');
+    const canProceed = await canRunTool('topical-authority-tool');
     if (!canProceed) {
       hasCheckedLimit = false;
       return;
@@ -96,7 +138,7 @@ if (codeAnalyzeBtn) {
   codeAnalyzeBtn.addEventListener('click', async () => {
     if (hasCheckedLimit) return;
     hasCheckedLimit = true;
-    const canProceed = await canRunTool('limit-audit-id');
+    const canProceed = await canRunTool('topical-authority-tool');
     if (!canProceed) {
       hasCheckedLimit = false;
       return;
@@ -180,6 +222,10 @@ if (codeAnalyzeBtn) {
       if (!data || typeof data !== 'object') {
         throw new Error('Empty or invalid response from analysis server');
       }
+
+      // 👇 Save the audit to history so it shows in the dashboard
+      const auditSaveUrl = inputType === 'code' ? 'Pasted HTML code' : (url || '');
+      await saveAuditHistory(auditSaveUrl, 'Topical Authority');
 
       loading.classList.add('hidden');
       loading.style.display = 'none';
@@ -431,7 +477,7 @@ const answerContent = document.getElementById('ai-answer-content');
 
 if (askBtn) {
   askBtn.addEventListener('click', async () => {
-    const canProceed = await canRunTool('limit-audit-id');
+    const canProceed = await canRunTool('topical-authority-tool');
     if (!canProceed) return;
 
     const question = askInput?.value?.trim();

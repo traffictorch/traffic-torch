@@ -19,6 +19,48 @@ import {
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
+// ── Save audit to history (auth user → API, guest → localStorage) ──
+async function saveAuditHistory(url, toolName) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  const auditUrl = url || 'Pasted HTML code';
+
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/api/audit-history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: auditUrl,
+          tool_name: toolName,
+          score: null
+        })
+      });
+      return;
+    } catch (e) {
+      // fall through to guest storage
+    }
+  }
+
+  // Guest fallback – same key the dashboard uses
+  const stored = localStorage.getItem('audit_guest');
+  let entries = [];
+  if (stored) {
+    try { entries = JSON.parse(stored).entries || []; } catch {}
+  }
+  entries.unshift({
+    _localId: Date.now() + '_' + Math.random(),
+    url: auditUrl,
+    tool: toolName,
+    score: null,
+    timestamp: Date.now()
+  });
+  entries = entries.slice(0, 5);
+  localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const urlInput = document.getElementById('url-input');
@@ -153,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function runAnalysis(htmlContent, pageUrl = '') {
     analyzedText = '';
     wordCount = 0;
-    const canProceed = await canRunTool('limit-audit-id');
+    const canProceed = await canRunTool('ai-voice-search-tool');
     if (!canProceed) return;
 
     results.innerHTML = `
@@ -218,6 +260,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const mainGradeColor = mainGrade.color;
       const verdict = mainGrade.text;
       const verdictEmoji = mainGrade.emoji;
+
+      // 👇 Save the audit to history so it shows in the dashboard
+      const auditSaveUrl = pageUrl ? pageUrl : 'Pasted HTML code';
+      await saveAuditHistory(auditSaveUrl, 'Voice Search');
 
       const modules = [
         { name: 'AI Visibility', score: analysis.moduleScores[0], id: 'ai-visibility', info: 'Simulates citation/share of voice in AI assistants like Gemini/ChatGPT voice. High score = frequent brand mentions in spoken answers.' },
@@ -709,7 +755,7 @@ ${topFailed.length === 0 ? `
           askBtn.parentNode.replaceChild(newAskBtn, askBtn);
 
           newAskBtn.addEventListener('click', async () => {
-            const canProceed = await canRunTool('limit-audit-id');
+            const canProceed = await canRunTool('ai-voice-search-tool');
             if (!canProceed) return;
 
             const question = askInput?.value?.trim();
@@ -834,7 +880,7 @@ ${topFailed.length === 0 ? `
         cmsFixesBtn?.addEventListener('click', async () => {
           if (topFailed.length === 0) return;
 
-          const canProceed = await canRunTool('limit-audit-id');
+          const canProceed = await canRunTool('ai-voice-search-tool');
           if (!canProceed) return;
 
           const selectedCms     = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';
@@ -962,7 +1008,7 @@ form.addEventListener('submit', async (e) => {
   }, 50);
 
   try {
-    const canProceed = await canRunTool('limit-audit-id');
+    const canProceed = await canRunTool('ai-voice-search-tool');
     if (!canProceed) {
       results.innerHTML = `
         <div class="text-center py-20">
