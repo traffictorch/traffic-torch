@@ -720,3 +720,91 @@ window.showUpgradeModal = showUpgradeModal;
 window.closeUpgradeModal = closeUpgradeModal;
 
 window.getOrCreateFingerprint = getOrCreateFingerprint;
+
+/* ===== PWA Chrome Injector ===== */
+(() => {
+  if (window.__pwaChromeLoaded) return;
+  window.__pwaChromeLoaded = true;
+
+  // 1. Inject CSS
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = '/pwa-chrome.css';
+  document.head.appendChild(link);
+
+  // 2. Inject DOM + load logic once DOM is ready
+  const mount = () => {
+    if (document.getElementById('ptr')) return;
+
+    // PTR — first in body
+    const ptr = document.createElement('div');
+    ptr.id = 'ptr';
+    ptr.className = 'ptr';
+    ptr.setAttribute('aria-hidden', 'true');
+    ptr.innerHTML = `
+      <div class="ptr__inner">
+        <svg class="ptr__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/>
+          <polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+        <span class="ptr__label">Pull to refresh</span>
+      </div>`;
+    document.body.insertBefore(ptr, document.body.firstChild);
+
+    // Appbar + toast — end of body
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `
+      <nav id="appbar" class="appbar" hidden aria-label="Browser controls">
+        <button class="ab-btn" data-act="back" aria-label="Back" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="ab-btn" data-act="forward" aria-label="Forward" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="ab-url" id="abUrlWrap">
+          <svg class="ab-url__lock" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="10" width="16" height="11" rx="2"/>
+            <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+          </svg>
+          <span class="ab-url__text" id="abUrlText">/</span>
+          <input class="ab-url__input" id="abUrlInput" type="text" inputmode="url"
+                 autocomplete="off" autocapitalize="off" spellcheck="false"
+                 aria-label="Address" tabindex="-1">
+        </div>
+        <button class="ab-btn" data-act="refresh" aria-label="Reload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+        </button>
+        <button class="ab-btn" data-act="share" aria-label="Share">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 15V3"/><path d="M8 7l4-4 4 4"/>
+            <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>
+          </svg>
+        </button>
+      </nav>
+      <div id="tt-toast" class="tt-toast" role="status" aria-live="polite"></div>`;
+    while (wrap.firstChild) document.body.appendChild(wrap.firstChild);
+
+    // 3. Load gesture/bar logic
+    const s = document.createElement('script');
+    s.src = '/pwa-chrome.js';
+    s.defer = true;
+    document.body.appendChild(s);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mount);
+  } else {
+    mount();
+  }
+})();
