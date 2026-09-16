@@ -717,6 +717,7 @@ document.addEventListener('click', function(e) {
 window.showUpgradeModal = showUpgradeModal;
 window.closeUpgradeModal = closeUpgradeModal;
 
+// Share buttons
 (function initShare() {
   const run = () => {
     const canonical = document.querySelector('link[rel="canonical"]')?.href || location.href;
@@ -724,20 +725,13 @@ window.closeUpgradeModal = closeUpgradeModal;
     const desc = document.querySelector('meta[name="description"]')?.content || title;
     const enc = encodeURIComponent;
 
-    const targets = {
-      sms:   `sms:?&body=${enc(title + ' ' + canonical)}`,
-      email: `mailto:?subject=${enc(title)}&body=${enc(desc + '\n\n' + canonical)}`
-    };
-
-    document.querySelectorAll('[data-share]').forEach(a => {
-      const url = targets[a.dataset.share];
-      if (!url) return;
-      a.href = url;
-      if (url.startsWith('mailto:') || url.startsWith('sms:')) return;
-      a.rel = 'noopener noreferrer';
-      a.target = '_blank';
+    // Email link
+    const emailUrl = `mailto:?subject=${enc(title)}&body=${enc(desc + '\n\n' + canonical)}`;
+    document.querySelectorAll('[data-share="email"]').forEach(a => {
+      a.href = emailUrl;
     });
 
+    // Native share (mobile)
     document.querySelectorAll('[data-native-share]').forEach(btn => {
       if (!navigator.share) return;
       btn.hidden = false;
@@ -746,6 +740,7 @@ window.closeUpgradeModal = closeUpgradeModal;
       });
     });
 
+    // Copy link
     document.querySelectorAll('[data-copy]').forEach(btn => {
       btn.addEventListener('click', async () => {
         const status = btn.closest('.share-block')?.querySelector('.share-status');

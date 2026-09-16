@@ -16,7 +16,6 @@ self.addEventListener('message', (event) => {
 const BYPASS = [
   'traffictorch.workers.dev',
   'static.cloudflareinsights.com',
-  'static.addtoany.com',
   'stripe.network',
   'stripe.com',
   'googletagmanager.com',
