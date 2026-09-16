@@ -677,9 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => console.error('Mobile menu error:', err));
 });
 
-// ==========================================================
 // showUpgradeModal
-// ==========================================================
 function showUpgradeModal() {
   const modal = document.getElementById('upgradeModal');
   if (modal) {
@@ -719,4 +717,57 @@ document.addEventListener('click', function(e) {
 window.showUpgradeModal = showUpgradeModal;
 window.closeUpgradeModal = closeUpgradeModal;
 
+(function initShare() {
+  const run = () => {
+    const canonical = document.querySelector('link[rel="canonical"]')?.href || location.href;
+    const title = document.title;
+    const desc = document.querySelector('meta[name="description"]')?.content || title;
+    const enc = encodeURIComponent;
+
+    const targets = {
+      sms:   `sms:?&body=${enc(title + ' ' + canonical)}`,
+      email: `mailto:?subject=${enc(title)}&body=${enc(desc + '\n\n' + canonical)}`
+    };
+
+    document.querySelectorAll('[data-share]').forEach(a => {
+      const url = targets[a.dataset.share];
+      if (!url) return;
+      a.href = url;
+      if (url.startsWith('mailto:') || url.startsWith('sms:')) return;
+      a.rel = 'noopener noreferrer';
+      a.target = '_blank';
+    });
+
+    document.querySelectorAll('[data-native-share]').forEach(btn => {
+      if (!navigator.share) return;
+      btn.hidden = false;
+      btn.addEventListener('click', () => {
+        navigator.share({ title, text: desc, url: canonical }).catch(() => {});
+      });
+    });
+
+    document.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const status = btn.closest('.share-block')?.querySelector('.share-status');
+        try { await navigator.clipboard.writeText(canonical); }
+        catch {
+          const i = document.createElement('input');
+          i.value = canonical; document.body.appendChild(i);
+          i.select(); document.execCommand('copy'); i.remove();
+        }
+        const old = btn.textContent;
+        btn.textContent = 'Copied ✓';
+        if (status) status.textContent = 'Link copied to clipboard';
+        setTimeout(() => { btn.textContent = old; if (status) status.textContent = ''; }, 1600);
+      });
+    });
+  };
+  document.readyState === 'loading'
+    ? document.addEventListener('DOMContentLoaded', run, { once: true })
+    : run();
+})();
+
+// Create Fingerprint
 window.getOrCreateFingerprint = getOrCreateFingerprint;
+
+
