@@ -1,22 +1,22 @@
 {
   "name": "Traffic Torch",
   "short_name": "Traffic Torch",
-  "description": "Instant SEO + UX audit tools",
+  "description": "Profesional AEO, SEO + UX audit tools",
   "start_url": "/",
-  "display": "minimal-ui",
+  "display": "browser",
   "background_color": "#0f172a",
   "theme_color": "#f97316",
   "icons": [
   {
-    "src": "/logo-192.webp",
+    "src": "/logo-192.png",
     "sizes": "192x192",
-    "type": "image/webp",
+    "type": "image/png",
     "purpose": "any maskable"
   },
   {
-    "src": "/logo-512.webp",
+    "src": "/logo-512.png",
     "sizes": "512x512",
-    "type": "image/webp",
+    "type": "image/png",
     "purpose": "any maskable"
   }
 ]

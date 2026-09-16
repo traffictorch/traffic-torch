@@ -3,15 +3,9 @@ self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', (event) => {
   event.waitUntil((async () => {
-    // Nuke any cache this origin ever created
     const keys = await caches.keys();
     await Promise.all(keys.map(k => caches.delete(k)));
-
-    // Take control immediately
     await self.clients.claim();
-
-    // Best-effort: tell browser not to reuse the SW script from disk
-    // (only effective on supporting browsers, harmless elsewhere)
   })());
 });
 
@@ -33,22 +27,26 @@ const BYPASS = [
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
-  // Only handle GETs; let POST/PUT/etc. go straight to network
+  // Only handle GETs; let POST/PUT/etc. pass through
   if (req.method !== 'GET') return;
 
   const url = req.url;
-  if (BYPASS.some(h => url.includes(h))) return; // browser handles it
+  if (BYPASS.some(h => url.includes(h))) return;
 
-  // Force a real network round-trip, bypass HTTP cache
-  const fresh = new Request(req, {
-    cache: 'no-store',
-    // Keep credentials/headers; do NOT set mode (CORS stays as-is)
-  });
+  // Navigation: never clone with custom options – just fetch normally
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req).catch(() =>
+        new Response('Offline', { status: 503, statusText: 'Offline' })
+      )
+    );
+    return;
+  }
 
+  // Other GETs: force fresh network, bypass HTTP cache
   event.respondWith(
-    fetch(fresh).catch(() => {
-      // Offline: nothing cached, so just surface the error
-      return new Response('Offline', { status: 503, statusText: 'Offline' });
-    })
+    fetch(req, { cache: 'no-store' }).catch(() =>
+      new Response('Offline', { status: 503, statusText: 'Offline' })
+    )
   );
 });
