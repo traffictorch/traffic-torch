@@ -14,6 +14,32 @@ import {
   deriveSelectorsForFailure
 } from './code-snippet-v1.0.js';
 
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
+// Cache of the most recent successful audit so Ask AI has real page context
+let lastAuditData = null;
+
 // Minimal URL Prefill + Auto Submit
 function simplePrefillAndRun() {
   const params = new URLSearchParams(window.location.search);
@@ -254,6 +280,22 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       { name: 'Practices', result: practices, color: '#ec4899', desc: 'On-page SEO & semantic best practices compliance' },
       { name: 'Readiness', result: readiness, color: '#3b82f6', desc: 'Overall preparedness for semantic search & ranking' }
     ];
+
+    // ─── Cache audit data for Ask AI ───
+    lastAuditData = {
+      overallScore: readiness.score,
+      modules: modules.map(m => ({ name: m.name, score: m.result.score })),
+      entities: extracted.slice(0, 20).map(e => e.text),
+      entityCount: extracted.length,
+      failedItems: modules
+        .flatMap(m => (m.result.failed || []).map(f => f.text))
+        .slice(0, 10),
+      pageTitle: data.title || (url
+        ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
+        : 'Code Analysis'),
+      wordCount: data.wordCount || 0,
+      pageExcerpt: data.pageExcerpt || ''
+    };
     const typeCounts = extracted.reduce((acc, e) => {
       const t = e.type || 'OTHER';
       acc[t] = (acc[t] || 0) + 1;
@@ -859,42 +901,18 @@ if (askBtn) {
     answerContent.innerHTML = '⏳ Traffic Torching...';
 
     try {
-      // Gather current audit data from the DOM
-      const scoreElement = document.querySelector('#results .text-6xl.md\\:text-7xl.font-black');
-      const overallScore = scoreElement ? parseInt(scoreElement.textContent) : 0;
-
-      // Extract module scores from the radar chart data or cards
-      const moduleCards = document.querySelectorAll('#results .score-card');
-      const modules = [];
-      moduleCards.forEach(card => {
-        const name = card.querySelector('p.text-center.text-2xl.font-bold')?.textContent?.trim() || '';
-        const scoreText = card.querySelector('.text-4xl.font-black')?.textContent?.trim() || '';
-        const score = parseInt(scoreText) || 0;
-        if (name) {
-          modules.push({ name, score });
-        }
-      });
-
-      // Extract entities from the entities grid
-      const entityItems = document.querySelectorAll('#results .grid .p-4 .font-bold');
-      const entities = Array.from(entityItems).map(el => el.textContent.trim()).filter(Boolean);
-
-      // Extract any failed metrics from fix panels
-      const failedItems = [];
-      document.querySelectorAll('#results .fixes-panel .text-red-700, #results .fixes-panel .text-orange-600').forEach(el => {
-        const text = el.textContent.trim();
-        if (text) failedItems.push(text);
-      });
+      // Use cached audit data if an audit has been run; otherwise tell the
+      // worker no audit exists yet so it answers generically.
+      const auditData = lastAuditData
+        ? { ...lastAuditData, auditRun: true }
+        : {
+            auditRun: false,
+            note: 'No audit has been run yet on this page. The user is asking before running an audit. Answer with general semantic entity optimization best practices and invite them to run the audit for site-specific advice.'
+          };
 
       const auditPayload = {
         question: question,
-        auditData: {
-          overallScore: overallScore,
-          modules: modules.slice(0, 5),
-          entities: entities.slice(0, 20),
-          entityCount: entities.length,
-          failedItems: failedItems.slice(0, 10),
-        },
+        auditData
       };
 
       const response = await fetch('https://ask-ai-entity.traffictorch.workers.dev/', {
@@ -908,12 +926,12 @@ if (askBtn) {
       const data = await response.json();
 
       if (data.success) {
-        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
       } else {
-        answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+        answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
       }
     } catch (err) {
-      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
     } finally {
       askBtn.disabled = false;
       askBtn.textContent = 'Ask Traffic Torch AI';

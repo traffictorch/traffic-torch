@@ -1,5 +1,6 @@
 // script-v1.1.js — Topical Authority Audit Tool (refactored from entity extractor)
 // Single-file version — modules inlined/minimized; heavy logic in Worker AI
+
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';  // <-- new import
 
@@ -54,6 +55,32 @@ function getGrade(score) {
   if (score >= 40) return { text: 'Average', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
   return { text: 'Bad', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
 }
+
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
+// Cache of the most recent successful audit so Ask AI has real page context
+let lastAuditData = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('authority-form');
@@ -251,8 +278,32 @@ if (codeAnalyzeBtn) {
         coveragePercent = 25,
         clusters = [],
         suggestions = [],
-        predictedRankLift = ''
+        predictedRankLift = '',
+        wordCount = 0,
+        pageExcerpt = ''
       } = data;
+
+      // ─── Cache audit data for Ask AI ───
+      lastAuditData = {
+        overallScore,
+        pageTitle: pageTitle || (url
+          ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
+          : 'Code Analysis'),
+        coveragePercent,
+        predictedRankLift,
+        wordCount,
+        pageExcerpt,
+        clusters: clusters.slice(0, 10).map(c => ({
+          pillar: c.pillar || '',
+          coverage: c.coverage || 0,
+          subtopics: (c.subtopics || []).slice(0, 20)
+        })),
+        suggestions: (suggestions || []).slice(0, 10).map(s => ({
+          topic: s.topic || '',
+          why: s.why || '',
+          estimatedImpact: s.estimatedImpact || ''
+        }))
+      };
 
       const displayTitle = pageTitle?.trim()
         ? pageTitle.trim()
@@ -492,32 +543,18 @@ if (askBtn) {
     answerContent.innerHTML = '⏳ Traffic Torching...';
 
     try {
-      // Gather current audit data from the DOM
-      const scoreElement = document.querySelector('#results .text-7xl.font-black');
-      const overallScore = scoreElement ? parseInt(scoreElement.textContent) : 0;
-
-      const clusterCards = document.querySelectorAll('#results .bg-white.dark\\:bg-gray-900.rounded-3xl.shadow-2xl.p-2.border-4');
-      const clusters = [];
-      clusterCards.forEach(card => {
-        const pillar = card.querySelector('h3')?.textContent?.trim() || '';
-        const coverageText = card.querySelector('p.text-xl.font-semibold')?.textContent?.trim() || '';
-        const coverage = parseInt(coverageText) || 0;
-        const subtopics = Array.from(card.querySelectorAll('.flex.flex-wrap.gap-3 span')).map(el => el.textContent.trim());
-        if (pillar) {
-          clusters.push({ pillar, coverage, subtopics });
-        }
-      });
-
-      const suggestionItems = document.querySelectorAll('#results .bg-orange-50.dark\\:bg-orange-950 .font-semibold.text-lg');
-      const suggestions = Array.from(suggestionItems).map(el => el.textContent.trim());
+      // Use cached audit data if an audit has been run; otherwise tell the
+      // worker no audit exists yet so it answers generically.
+      const auditData = lastAuditData
+        ? { ...lastAuditData, auditRun: true }
+        : {
+            auditRun: false,
+            note: 'No audit has been run yet on this page. The user is asking before running an audit. Answer with general topical-authority best practices and invite them to run the audit for site-specific advice.'
+          };
 
       const auditPayload = {
         question: question,
-        auditData: {
-          overallScore: overallScore,
-          clusters: clusters.slice(0, 10),
-          suggestions: suggestions.slice(0, 10),
-        },
+        auditData
       };
 
       const response = await fetch('https://ask-ai-topical-authority.traffictorch.workers.dev/', {
@@ -531,12 +568,12 @@ if (askBtn) {
       const data = await response.json();
 
       if (data.success) {
-        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
       } else {
-        answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+        answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
       }
     } catch (err) {
-      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
     } finally {
       askBtn.disabled = false;
       askBtn.textContent = 'Ask Traffic Torch AI';
