@@ -1,6 +1,25 @@
 // homepage-analysis.js
 // Orchestrates the three tools on the homepage.
 
+const METRIC_LABEL_MAP = {
+  personalMedia: 'Author photo or first-hand media shown',
+  hasAuthor: 'Author byline visible',
+  hasDate: 'Publish/update date shown',
+  hasTrustedLinks: 'Trusted outbound links',
+  hasHttps: 'Secure HTTPS connection',
+  hasInsights: 'First-hand experience markers',
+  hasDated: 'Dated/timely results',
+  hasInterviews: 'Interviews/quotes included',
+  deepContent: 'Deep content (1500+ words)',
+};
+
+function labelFor(name) {
+  return METRIC_LABEL_MAP[name] || name
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, c => c.toUpperCase())
+    .trim();
+}
+
 // Share Dashboard
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
@@ -614,7 +633,7 @@ function buildHomepagePriorityFixes(summaries) {
     seen.add(metricName);
     fixes.push({
       module: `${summary.toolName} · ${modName}`,
-      name: metricName,
+      name: labelFor(metricName),
       howToFix: `Failing check from the ${summary.toolName} audit (module: ${modName}). Apply the CMS-specific fix to pass this metric.`
     });
   };
@@ -851,16 +870,21 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     const cmsInfo = detectCMS({ doc, url });
 
-    const uxData = getUXContent(doc);
-    const uxSummary = getQuitRiskSummary(uxData);
+    // ─── Persist CMS + page context for the Ask AI handler ───
+    window._homepageCmsInfo = cmsInfo;
 
-    // ─── Extract real page context for AI enrichment ───
-    const pageExcerpt = (doc.body?.textContent || '')
+    // Clone the doc so we can strip chrome without mutating the original
+    const excerptDoc = doc.cloneNode(true);
+    excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+
+    const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+    const pageExcerpt = (contentRoot?.textContent || '')
       .replace(/\s+/g, ' ')
       .trim()
       .slice(0, 300);
 
     window._homepagePageContext = {
+      pageTitle: doc.title || '',
       metaDescription: doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '',
       h1: doc.querySelector('h1')?.textContent?.trim() || '',
       pageExcerpt,
@@ -882,6 +906,9 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
       hasAuthorByline: !!doc.querySelector('[rel="author"], .author, .byline, [itemprop="author"]'),
       hasPublishDate: !!doc.querySelector('time[datetime], meta[property="article:published_time"]'),
     };
+
+    const uxData = getUXContent(doc);
+    const uxSummary = getQuitRiskSummary(uxData);
     
     const seoSummary = getSEOSummary(doc, url);
     const aiSummary = getAISearchSummary(doc, url);
@@ -1177,6 +1204,7 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         });
 
+        const cms = window._homepageCmsInfo || { name: 'Custom / Unknown', version: null, confidence: 'unknown' };
         const pageContext = window._homepagePageContext || {};
 
         const auditPayload = {
@@ -1184,6 +1212,11 @@ document.addEventListener('DOMContentLoaded', () => {
           auditData: {
             url: window._homepageUrl || '',
             ...pageContext,
+            cms: {
+              name: cms.name,
+              version: cms.version,
+              confidence: cms.confidence,
+            },
             overallScore: Math.round((uxData.score + seoData.score + aiData.score) / 3),
             ux: { score: uxData.score, modules: uxData.modules },
             seo: { score: seoData.score, modules: seoData.modules },
