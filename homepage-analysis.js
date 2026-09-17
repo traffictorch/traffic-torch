@@ -72,6 +72,11 @@ function renderCodeBlocks(text) {
     (_m, pre, nl) => (pre ? pre : '<br>')
   );
 
+  // Allow model-emitted <strong> tags through (they were escaped above)
+  escaped = escaped
+    .replace(/&lt;strong&gt;/g, '<strong>')
+    .replace(/&lt;\/strong&gt;/g, '</strong>');
+
   return escaped;
 }
 
@@ -877,11 +882,17 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     const excerptDoc = doc.cloneNode(true);
     excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
 
-    const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
-    const pageExcerpt = (contentRoot?.textContent || '')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .slice(0, 300);
+const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+
+// Prefer the first substantial paragraph, fall back to first text block
+const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+  .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+  .filter(t => t.length > 60 && !t.includes('Initializing'));
+
+const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '')
+  .replace(/\s+/g, ' ')
+  .trim()
+  .slice(0, 300);
 
     window._homepagePageContext = {
       pageTitle: doc.title || '',
