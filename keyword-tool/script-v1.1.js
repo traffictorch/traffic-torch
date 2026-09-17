@@ -15,6 +15,30 @@ import {
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
+// ── Render fenced code blocks from AI output ──────────────────────
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 // ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -1088,11 +1112,42 @@ document.addEventListener('DOMContentLoaded', () => {
             moduleScoresMap[key] = m.score;
           });
 
+          // ─── Page context excerpt (nav/header/footer stripped) ────
+          const excerptDoc = yourDoc.cloneNode(true);
+          excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+          const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+          const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+            .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+            .filter(t => t.length > 60);
+          const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+
+          const metaDescription = yourDoc.querySelector('meta[name="description"]')?.content?.trim() || '';
+          const h1Text = yourDoc.querySelector('h1')?.textContent?.trim() || '';
+          const pageTitleText = yourDoc?.title?.trim() || '';
+          const linkCount = yourDoc.querySelectorAll('a').length;
+          const imageCount = yourDoc.querySelectorAll('img').length;
+          const headingCount = yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
+          const ctaCount = yourDoc.querySelectorAll('button, [role="button"], input[type="submit"], a[href*="contact"], a[href*="signup"], a[href*="sign-up"], a[href*="demo"], a[href*="get-started"], a[href*="pricing"]').length;
+          const wordCount = data.content.words;
+
           const auditPayload = {
             question: question,
             auditData: {
               url: analysisType === 'url' ? fullUrl : 'Pasted HTML',
-              pageTitle: yourDoc?.title || 'Keyword Analysis',
+              pageTitle: pageTitleText || 'Keyword Analysis',
+              metaDescription,
+              h1: h1Text,
+              pageExcerpt,
+              linkCount,
+              imageCount,
+              headingCount,
+              ctaCount,
+              wordCount,
+              cms: {
+                name: cmsInfo?.name || 'Custom / Unknown',
+                version: cmsInfo?.version || null,
+                confidence: cmsInfo?.confidence || 'low'
+              },
               targetKeyword: phrase,
               overallScore: yourScore,
               scores: {
@@ -1136,7 +1191,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const aiResponse = await response.json();
 
           if (aiResponse.success) {
-            answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${aiResponse.answer}`;
+            answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(aiResponse.answer)}`;
           } else {
             answerContent.innerHTML = `❌ Error: ${aiResponse.error || 'Unknown error'}`;
           }
@@ -1247,7 +1302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
 
         if (data.success && cmsAnswerContent) {
-          cmsAnswerContent.textContent = '';
+          cmsAnswerContent.innerHTML = '';
 
           const header = document.createElement('div');
           header.style.fontWeight = 'bold';
@@ -1257,17 +1312,17 @@ document.addEventListener('DOMContentLoaded', () => {
             (data.cmsVersion ? ' ' + data.cmsVersion : '');
 
           const body = document.createElement('div');
-          body.textContent = data.answer || '';
+          body.innerHTML = renderCodeBlocks(data.answer || '');
 
           cmsAnswerContent.appendChild(header);
           cmsAnswerContent.appendChild(body);
         } else if (cmsAnswerContent) {
-          cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+          cmsAnswerContent.innerHTML = '❌ Error: ' + (data.error || 'Unknown error');
         }
 
       } catch (err) {
         if (cmsAnswerContent) {
-          cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+          cmsAnswerContent.innerHTML = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
         }
       } finally {
         cmsFixesBtn.disabled = false;

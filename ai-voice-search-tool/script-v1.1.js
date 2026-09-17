@@ -19,6 +19,30 @@ import {
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
+// ── Renders fenced code blocks in AI output as styled <pre class="code-block"> ──
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 // ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -744,6 +768,22 @@ ${topFailed.length === 0 ? `
           }
         }
 
+        // ─── Build page context for Ask AI payload ────────────────────
+        const metaDescription = (doc.querySelector('meta[name="description"]')?.getAttribute('content') || '').replace(/\s+/g, ' ').trim();
+        const h1Text = (doc.querySelector('h1')?.textContent || '').replace(/\s+/g, ' ').trim();
+        const linkCount = doc.querySelectorAll('a[href]').length;
+        const imageCount = doc.querySelectorAll('img').length;
+        const headingCount = doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
+        const ctaCount = doc.querySelectorAll('a[class*="cta" i], a[class*="button" i], button, input[type="submit"]').length;
+
+        const excerptDoc = doc.cloneNode(true);
+        excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+        const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+        const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+          .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+          .filter(t => t.length > 60);
+        const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+
         const askBtn = document.getElementById('ask-ai-btn');
         const askInput = document.getElementById('ai-question-input');
         const modelSelect = document.getElementById('ai-model-select');
@@ -784,6 +824,14 @@ ${topFailed.length === 0 ? `
                 auditData: {
                   url: pageUrl || '',
                   pageTitle: doc?.title || 'AI Voice Page',
+                  metaDescription,
+                  h1: h1Text,
+                  pageExcerpt,
+                  linkCount,
+                  imageCount,
+                  headingCount,
+                  ctaCount,
+                  wordCount,
                   overallScore: yourScore,
                   scores: {
                     aiVisibility: moduleScoresMap.aivisibility || 0,
@@ -800,10 +848,12 @@ ${topFailed.length === 0 ? `
                   },
                   failedItems: failedMetrics.slice(0, 10),
                   priorityFixes: topFailed.map(f => f.subName + ': ' + f.fix),
-                  cms: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown',
-                  cmsVersion: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.version) ? cmsInfo.version : null,
-                  cmsConfidence: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.confidence) ? cmsInfo.confidence : null,
-                  cmsSignals: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.signals) ? cmsInfo.signals : null
+                  cms: {
+                    name: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown',
+                    version: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.version) ? cmsInfo.version : null,
+                    confidence: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.confidence) ? cmsInfo.confidence : null,
+                    signals: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.signals) ? cmsInfo.signals : null
+                  }
                 }
               };
 
@@ -818,13 +868,13 @@ ${topFailed.length === 0 ? `
               const data = await response.json();
 
               if (data.success) {
-                answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+                answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
               } else {
-                answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+                answerContent.innerHTML = renderCodeBlocks(`❌ Error: ${data.error || 'Unknown error'}`);
               }
 
             } catch (err) {
-              answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+              answerContent.innerHTML = renderCodeBlocks(`❌ Failed to get AI response. Please try again later. (${err.message})`);
             } finally {
               newAskBtn.disabled = false;
               newAskBtn.textContent = 'Ask AI';
@@ -890,7 +940,7 @@ ${topFailed.length === 0 ? `
           const originalLabel = cmsFixesBtn.textContent;
           cmsFixesBtn.textContent = 'Generating...';
           cmsAnswerContainer?.classList.remove('hidden');
-          if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Traffic Torching...';
+          if (cmsAnswerContent) cmsAnswerContent.innerHTML = '⏳ Traffic Torching...';
 
           try {
             const payload = {
@@ -927,7 +977,7 @@ ${topFailed.length === 0 ? `
             const data = await response.json();
 
             if (data.success && cmsAnswerContent) {
-              cmsAnswerContent.textContent = '';
+              cmsAnswerContent.innerHTML = '';
 
               const header = document.createElement('div');
               header.style.fontWeight = 'bold';
@@ -937,17 +987,17 @@ ${topFailed.length === 0 ? `
                 (data.cmsVersion ? ' ' + data.cmsVersion : '');
 
               const body = document.createElement('div');
-              body.textContent = data.answer || '';
+              body.innerHTML = renderCodeBlocks(data.answer || '');
 
               cmsAnswerContent.appendChild(header);
               cmsAnswerContent.appendChild(body);
             } else if (cmsAnswerContent) {
-              cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+              cmsAnswerContent.innerHTML = renderCodeBlocks('❌ Error: ' + (data.error || 'Unknown error'));
             }
 
           } catch (err) {
             if (cmsAnswerContent) {
-              cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+              cmsAnswerContent.innerHTML = renderCodeBlocks('❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')');
             }
           } finally {
             cmsFixesBtn.disabled = false;

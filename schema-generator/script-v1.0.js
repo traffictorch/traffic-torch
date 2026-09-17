@@ -8,6 +8,31 @@ import { detectCMS } from '/cms-detect.js';
 const API_PROXY = 'https://full-render-v2.traffictorch.workers.dev/?url=';
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
+// ── PATTERN EDIT 1: renderCodeBlocks at module top ──────────────────
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+// ── END PATTERN EDIT 1 ─────────────────────────────────────────────
+
 // ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -33,7 +58,6 @@ async function saveAuditHistory(url, toolName) {
     }
   }
 
-  // Guest fallback – same key the dashboard uses
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
   if (stored) {
@@ -65,7 +89,6 @@ const waitForElements = () => {
 const initTool = (form, results, progressContainer) => {
   const progressText = document.getElementById('progress-text');
 
-  // Handle shared report URL param ?url=...
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
   if (sharedUrl) {
@@ -216,8 +239,6 @@ const initTool = (form, results, progressContainer) => {
 
     progressContainer.classList.remove('hidden');
     results.classList.add('hidden');
-
-    // Scroll down to the spinner (matches Product SEO behavior)
     progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     const progressMessages = [
@@ -251,10 +272,8 @@ const initTool = (form, results, progressContainer) => {
 
       const headerLabel = isCodeMode ? 'Pasted JSON-LD' : new URL(url).hostname;
 
-      // Fetch live page data (CMS + signals) once — used for both CASE 1 and CASE 2
-      const { cmsInfo, pageSignals } = await fetchLivePageData(url, isCodeMode);
+      const { cmsInfo, pageSignals, pageContext } = await fetchLivePageData(url, isCodeMode);
 
-      // 👇 Save the audit to history so it shows in the dashboard
       const auditSaveUrl = isCodeMode ? 'Pasted JSON-LD' : url;
       await saveAuditHistory(auditSaveUrl, 'Schema Generator');
 
@@ -319,7 +338,7 @@ const initTool = (form, results, progressContainer) => {
           </div>
         `;
 
-        window.__schemaValidatorData = { ...data, pageUrl: url, isCodeMode, cmsInfo, pageSignals };
+        window.__schemaValidatorData = { ...data, pageUrl: url, isCodeMode, cmsInfo, pageSignals, pageContext };
 
         const sjb = document.getElementById('schema-suggest-json-btn');
         const stb = document.getElementById('schema-suggest-text-btn');
@@ -380,7 +399,7 @@ const initTool = (form, results, progressContainer) => {
 
           ${(data.validationResults || []).map((r) => `
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-6 border border-gray-200 dark:border-gray-700">
-              <div class="flex items-center gap-3 mb-4">
+              <div class="flex items-center gap-5 mb-4">
                 <span class="text-2xl">${r.isValid ? '✅' : '❌'}</span>
                 <strong class="text-lg">${(r.types || []).join(', ') || 'Unknown Type'}</strong>
                 ${r.isValid
@@ -475,7 +494,7 @@ const initTool = (form, results, progressContainer) => {
               </div>
 
               <div id="schema-cms-answer-container" class="mt-6 hidden">
-                <div id="schema-cms-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+                <div id="schema-cms-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 leading-relaxed border border-gray-200 dark:border-gray-700"></div>
               </div>
             </div>
           ` : ''}
@@ -505,10 +524,8 @@ const initTool = (form, results, progressContainer) => {
         </div>
       `;
 
-      // Store everything
-      window.__schemaValidatorData = { ...data, pageUrl: url, isCodeMode, cmsInfo, pageSignals };
+      window.__schemaValidatorData = { ...data, pageUrl: url, isCodeMode, cmsInfo, pageSignals, pageContext };
 
-      // Wire up CMS override toggle
       const overrideToggle = document.getElementById('schema-cms-override-toggle');
       const overridePanel  = document.getElementById('schema-cms-override-panel');
       const overrideSelect = document.getElementById('schema-cms-override-select');
@@ -520,17 +537,14 @@ const initTool = (form, results, progressContainer) => {
         }
       }
 
-      // Wire up AI fix button
       const aiBtn = document.getElementById('ai-cms-fix-btn');
       if (aiBtn) aiBtn.addEventListener('click', requestSchemaAiFix);
 
-      // Wire up suggest buttons
       const sjb = document.getElementById('schema-suggest-json-btn');
       const stb = document.getElementById('schema-suggest-text-btn');
       if (sjb) sjb.addEventListener('click', () => requestSchemaSuggest('json'));
       if (stb) stb.addEventListener('click', () => requestSchemaSuggest('text'));
 
-      // Share data
       const shareContainer = document.getElementById('share-dashboard-container');
       if (shareContainer && typeof initShareModule === 'function') {
         initShareModule(shareContainer, {
@@ -590,39 +604,45 @@ const initTool = (form, results, progressContainer) => {
       askBtn.disabled = true;
       askBtn.textContent = 'Thinking...';
       answerContainer.classList.remove('hidden');
+      // ── PATTERN EDIT 2 (Ask AI loading) ──
       answerContent.innerHTML = '⏳ Traffic Torching...';
 
-      try {
-        const resultsDiv = document.getElementById('results');
-        const hasResults = resultsDiv && !resultsDiv.classList.contains('hidden');
+        try {
+        const stored = window.__schemaValidatorData || {};
+        const ctx = stored.pageContext || {};
 
-        let schemasDetected = 0;
-        let schemaTypes = [];
-
-        if (hasResults) {
-          const schemaItems = resultsDiv.querySelectorAll('ul li strong');
-          schemaItems.forEach(el => {
-            const text = el.textContent.trim();
-            if (text && text !== 'Unknown') {
-              schemaTypes.push(text);
-              schemasDetected++;
-            }
-          });
-          if (resultsDiv.querySelector('.text-orange-600')?.textContent.includes('No JSON-LD schema')) {
-            schemasDetected = 0;
-            schemaTypes = [];
-          }
-        }
+        const detectedTypes = Array.isArray(stored.detectedTypes) ? stored.detectedTypes : [];
+        const hasSchema = !!stored.hasSchema;
+        const schemasDetected = hasSchema ? (detectedTypes.length || stored.jsonLdCount || 1) : 0;
+        const schemaTypes = detectedTypes.slice(0, 30);
 
         const auditPayload = {
           question: question,
           auditData: {
-            url: document.getElementById('url-input')?.value?.trim() || '',
-            hasSchema: schemasDetected > 0,
-            schemasDetected: schemasDetected,
-            schemaTypes: schemaTypes.slice(0, 10),
+            url: stored.pageUrl || document.getElementById('url-input')?.value?.trim() || '',
+            pageTitle: ctx.pageTitle || document.title || null,
+            metaDescription: ctx.metaDescription || null,
+            h1: ctx.h1 || null,
+            pageExcerpt: ctx.pageExcerpt || null,
+            linkCount: ctx.linkCount ?? 0,
+            imageCount: ctx.imageCount ?? 0,
+            headingCount: ctx.headingCount ?? 0,
+            ctaCount: ctx.ctaCount ?? 0,
+            wordCount: ctx.wordCount ?? 0,
+            cms: {
+              name: stored.cmsInfo?.name || 'Custom / Unknown',
+              version: stored.cmsInfo?.version || null,
+              confidence: stored.cmsInfo?.confidence || 'low',
+            },
+            hasSchema,
+            schemasDetected,
+            schemaTypes,
+            jsonLdCount: stored.jsonLdCount ?? 0,
+            totalErrors: stored.totalErrors ?? 0,
+            totalWarnings: stored.totalWarnings ?? 0,
           },
         };
+// ── END PATTERN EDIT 3 (v2) ──
 
         const response = await fetch('https://schema-ai.traffictorch.workers.dev/', {
           method: 'POST',
@@ -634,13 +654,14 @@ const initTool = (form, results, progressContainer) => {
 
         const data = await response.json();
 
+        // ── PATTERN EDIT 2 (Ask AI success/error) ──
         if (data.success) {
-          answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+          answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
         } else {
-          answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+          answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
         }
       } catch (err) {
-        answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+        answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
       } finally {
         askBtn.disabled = false;
         askBtn.textContent = 'Ask Traffic Torch AI';
@@ -650,12 +671,13 @@ const initTool = (form, results, progressContainer) => {
 };
 
 // ──────────────────────────────────────────────
-// Fetch live page data (CMS + signals) in one call
+// Fetch live page data (CMS + signals + page context) in one call
 // ──────────────────────────────────────────────
 async function fetchLivePageData(url, isCodeMode) {
   const fallback = {
     cmsInfo: { name: 'Custom / Unknown', version: null, confidence: 'low', signals: [] },
     pageSignals: {},
+    pageContext: {},
   };
   if (isCodeMode || !url) return fallback;
 
@@ -678,12 +700,40 @@ async function fetchLivePageData(url, isCodeMode) {
       console.warn('CMS detect failed:', e);
     }
 
-    return { cmsInfo, pageSignals: extractPageSignals(doc) };
+    return {
+      cmsInfo,
+      pageSignals: extractPageSignals(doc),
+      pageContext: extractPageContext(doc),
+    };
   } catch (e) {
     console.warn('Live page data fetch failed:', e);
     return fallback;
   }
 }
+
+// ── PATTERN EDIT 3 helper: build page context block ──
+function extractPageContext(doc) {
+  if (!doc) return {};
+  const excerptDoc = doc.cloneNode(true);
+  excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+  const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+  const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+    .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+    .filter(t => t.length > 60);
+  const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+
+  const pageTitle = doc.querySelector('title')?.textContent?.trim() || null;
+  const metaDescription = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || null;
+  const h1 = doc.querySelector('h1')?.textContent?.trim() || null;
+  const linkCount = doc.querySelectorAll('a[href]').length;
+  const imageCount = doc.querySelectorAll('img').length;
+  const headingCount = doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
+  const ctaCount = doc.querySelectorAll('button, [role="button"], a[href][class*="btn"], a[href][class*="cta"]').length;
+  const wordCount = (doc.body?.textContent || '').split(/\s+/).filter(Boolean).length;
+
+  return { pageTitle, metaDescription, h1, pageExcerpt, linkCount, imageCount, headingCount, ctaCount, wordCount };
+}
+// ── END PATTERN EDIT 3 helper ──
 
 // ──────────────────────────────────────────────
 // Extract page signals for AI suggest worker
@@ -868,7 +918,8 @@ async function requestSchemaAiFix() {
   const answerContainer = document.getElementById('schema-cms-answer-container');
   const answerContent   = document.getElementById('schema-cms-answer-content');
   answerContainer?.classList.remove('hidden');
-  if (answerContent) answerContent.textContent = '⏳ Traffic Torching...';
+  // ── PATTERN EDIT 2 (CMS Fixes loading) ──
+  if (answerContent) answerContent.innerHTML = '⏳ Traffic Torching...';
 
   try {
     const res = await fetch('https://schema-cms-fixes.traffictorch.workers.dev/', {
@@ -891,14 +942,15 @@ async function requestSchemaAiFix() {
     if (!res.ok) throw new Error(`Server error (${res.status})`);
     const result = await res.json();
 
+    // ── PATTERN EDIT 2 (CMS Fixes success/error) ──
     if (result.success && result.answer && answerContent) {
-      answerContent.textContent = '';
+      answerContent.innerHTML = '';
       const header = document.createElement('div');
       header.style.fontWeight = 'bold';
       header.style.marginBottom = '0.75rem';
       header.textContent = '🛠️ CMS Fixes for ' + selectedCms + (selectedVersion ? ' ' + selectedVersion : '');
       const body = document.createElement('div');
-      body.textContent = result.answer;
+      body.innerHTML = renderCodeBlocks(result.answer);
       answerContent.appendChild(header);
       answerContent.appendChild(body);
       btn.textContent = '✅ Fixes Generated';
@@ -907,12 +959,12 @@ async function requestSchemaAiFix() {
       btn.disabled = true;
       answerContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (answerContent) {
-      answerContent.textContent = '❌ Error: ' + (result.error || 'Unknown error');
+      answerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(result.error || 'Unknown error');
       btn.disabled = false;
       btn.textContent = originalText;
     }
   } catch (err) {
-    if (answerContent) answerContent.textContent = '❌ Failed to generate CMS fixes. (' + err.message + ')';
+    if (answerContent) answerContent.innerHTML = '❌ Failed to generate CMS fixes. (' + renderCodeBlocks(err.message) + ')';
     btn.disabled = false;
     btn.textContent = originalText;
   }

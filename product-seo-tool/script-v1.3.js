@@ -24,6 +24,29 @@ function escapeHtml(s) {
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
@@ -1093,11 +1116,43 @@ async function performAnalysis(source, isCode = false) {
           answerContent.innerHTML = '⏳ Traffic Torching...';
 
           try {
+            // ── Extract page context for grounded AI answers ──────────
+            const excerptDoc = doc.cloneNode(true);
+            excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+            const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+            const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+              .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+              .filter(t => t.length > 60);
+            const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '')
+              .replace(/\s+/g, ' ').trim().slice(0, 300);
+
+            const metaDescription = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
+            const h1Text = doc.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim() || '';
+
+            const ctaCount = (() => {
+              const textPattern = /\b(buy|add to (cart|bag)|shop now|purchase|checkout|get started|subscribe|sign up|learn more|contact us|get a quote|book now|order now|request a demo)\b/i;
+              let n = 0;
+              doc.querySelectorAll('a, button').forEach(el => {
+                const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+                const cls = (el.className || '').toString().toLowerCase();
+                if (textPattern.test(t) || /\b(btn|cta|button|add-to-cart|buy-now|add_to_cart)\b/.test(cls)) n++;
+              });
+              return n;
+            })();
+
             const auditPayload = {
               question: question,
               auditData: {
                 url: inputUrl || document.getElementById('url-input')?.value?.trim() || 'Custom HTML',
                 pageTitle: doc?.title || 'Analyzed Product Page',
+                metaDescription,
+                h1: h1Text,
+                pageExcerpt,
+                linkCount: seoData.linkCount,
+                imageCount: seoData.imageCount,
+                headingCount: seoData.headingCount,
+                ctaCount,
+                wordCount: seoData.wordCount,
                 overallScore: safeScore,
                 scores: {
                   onPage: seo.onPage.score,
@@ -1105,9 +1160,11 @@ async function performAnalysis(source, isCode = false) {
                   contentMedia: seo.contentMedia.score,
                   ecommerce: seo.ecommerce.score
                 },
-                cms: cmsInfo?.name || 'Custom / Unknown',
-                cmsVersion: cmsInfo?.version || null,
-                cmsConfidence: cmsInfo?.confidence || 'low',
+                cms: {
+                  name: cmsInfo?.name || 'Custom / Unknown',
+                  version: cmsInfo?.version || null,
+                  confidence: cmsInfo?.confidence || 'low'
+                },
                 flags: {
                   hasViewport: seoData.hasViewport,
                   hasCanonical: seo.technical.details?.canonical?.score >= 50 || false,
@@ -1133,13 +1190,13 @@ async function performAnalysis(source, isCode = false) {
             const data = await response.json();
 
             if (data.success) {
-              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
             } else {
-              answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+              answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
             }
 
           } catch (err) {
-            answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+            answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
           } finally {
             newAskBtn.disabled = false;
             newAskBtn.textContent = 'Ask AI';
@@ -1241,7 +1298,7 @@ async function performAnalysis(source, isCode = false) {
           const data = await response.json();
 
           if (data.success && cmsAnswerContent) {
-            cmsAnswerContent.textContent = '';
+            cmsAnswerContent.innerHTML = '';
 
             const header = document.createElement('div');
             header.style.fontWeight = 'bold';
@@ -1251,17 +1308,17 @@ async function performAnalysis(source, isCode = false) {
               (data.cmsVersion ? ' ' + data.cmsVersion : '');
 
             const body = document.createElement('div');
-            body.textContent = data.answer || '';
+            body.innerHTML = renderCodeBlocks(data.answer || '');
 
             cmsAnswerContent.appendChild(header);
             cmsAnswerContent.appendChild(body);
           } else if (cmsAnswerContent) {
-            cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+            cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
           }
 
         } catch (err) {
           if (cmsAnswerContent) {
-            cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+            cmsAnswerContent.innerHTML = '❌ Failed to generate CMS fixes. Please try again. (' + renderCodeBlocks(err.message) + ')';
           }
         } finally {
           cmsFixesBtn.disabled = false;

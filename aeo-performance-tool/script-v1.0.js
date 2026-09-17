@@ -16,6 +16,30 @@ const AEO_CMS_API   = 'https://aeo-cms-fixes.traffictorch.workers.dev/';
 const AEO_AI_API    = 'https://aeo-ai.traffictorch.workers.dev/';
 const API_BASE      = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
+// ── Render fenced code blocks (```lang ... ```) from AI text ──
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 // ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -202,10 +226,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── Fresh CMS detection on every audit ───
     let cmsInfo = { name: 'Custom / Unknown', version: null, confidence: 'unknown', signals: [] };
+    let pageContext = {};
     try {
       const doc = new DOMParser().parseFromString(renderedHtml || rawHtml || '', 'text/html');
       const detected = detectCMS({ doc, html: rawHtml || renderedHtml || '', url: url || '' });
       if (detected && detected.name) cmsInfo = detected;
+
+      // ─── Page context for Ask AI (nav/header/footer stripped) ───
+      const excerptDoc = doc.cloneNode(true);
+      excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+      const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+      const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+        .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+        .filter(t => t.length > 60);
+      const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+
+      pageContext = {
+        metaDescription: doc.querySelector('meta[name="description"]')?.getAttribute('content') || '',
+        h1: doc.querySelector('h1')?.textContent?.trim() || '',
+        pageExcerpt,
+        linkCount: doc.querySelectorAll('a[href]').length,
+        imageCount: doc.querySelectorAll('img').length,
+        headingCount: doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length,
+        ctaCount: doc.querySelectorAll('button, [role="button"], a.cta, .cta, input[type="submit"]').length,
+        wordCount: (contentRoot?.textContent || '').trim().split(/\s+/).filter(Boolean).length
+      };
     } catch (err) {
       console.warn('CMS detection failed:', err);
     }
@@ -470,9 +515,11 @@ document.addEventListener('DOMContentLoaded', () => {
           })
         });
         const d = await r.json();
-        cmsOut.textContent = d.success ? (d.answer || '') : '❌ ' + (d.error || 'Unknown error');
+        cmsOut.innerHTML = d.success
+          ? renderCodeBlocks(d.answer || '')
+          : '❌ ' + renderCodeBlocks(d.error || 'Unknown error');
       } catch (err) {
-        cmsOut.textContent = '❌ ' + err.message;
+        cmsOut.innerHTML = '❌ ' + renderCodeBlocks(err.message);
       } finally {
         cmsBtn.disabled = false;
         cmsBtn.textContent = label;
@@ -502,8 +549,9 @@ document.addEventListener('DOMContentLoaded', () => {
             auditData: {
               url: url || 'Custom HTML',
               pageTitle,
+              ...pageContext,
               overallScore: overall,
-                cms: {
+              cms: {
                 name: cmsInfo?.name || 'Custom / Unknown',
                 version: cmsInfo?.version || null,
                 confidence: cmsInfo?.confidence || 'unknown'
@@ -522,9 +570,11 @@ document.addEventListener('DOMContentLoaded', () => {
           })
         });
         const d = await r.json();
-        aiOut.textContent = d.success ? d.answer : '❌ ' + (d.error || 'Unknown error');
+        aiOut.innerHTML = d.success
+          ? renderCodeBlocks(d.answer || '')
+          : '❌ ' + renderCodeBlocks(d.error || 'Unknown error');
       } catch (err) {
-        aiOut.textContent = '❌ ' + err.message;
+        aiOut.innerHTML = '❌ ' + renderCodeBlocks(err.message);
       } finally {
         aiBtn.disabled = false;
         aiBtn.textContent = label;

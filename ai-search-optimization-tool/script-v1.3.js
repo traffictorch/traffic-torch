@@ -23,6 +23,30 @@ import {
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
+// ─── Code block renderer (module-level) ──────────────────────────────
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 // ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -238,6 +262,22 @@ const initTool = (form, results, progressContainer) => {
       // ✅ FIX 5: Build an HTML snippet from the cleaned main element for bold detection
       const first300Html = mainEl.innerHTML.slice(0, 2000);
 
+      // ─── Page context for AI enrichment ─────────────────────────────
+      const excerptDoc = doc.cloneNode(true);
+      excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+      const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+      const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+        .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+        .filter(t => t.length > 60);
+      const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+
+      const metaDescription = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
+      const h1Text = doc.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim() || '';
+      const linkCount = doc.querySelectorAll('a[href]').length;
+      const imageCount = doc.querySelectorAll('img').length;
+      const headingCount = doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
+      const ctaCount = doc.querySelectorAll('a[href], button').length;
+
       const ansData = computeAnswerability(doc, first300, first300Html);
       const answerability = clampScore(ansData.score);
       await new Promise(r => setTimeout(r, 400));
@@ -257,6 +297,8 @@ const initTool = (form, results, progressContainer) => {
 
       const readData = computeReadability(mainText);
       const readability = clampScore(readData.score);
+
+      const wordCount = readData?.words || mainText.split(/\s+/).filter(Boolean).length;
 
       const uniqueData = computeUniqueInsights(mainText, readData.words);
       const uniqueInsights = clampScore(uniqueData.score);
@@ -1009,6 +1051,14 @@ const initTool = (form, results, progressContainer) => {
               auditData: {
                 url: analyzedUrl !== 'Pasted HTML Code' ? analyzedUrl : '',
                 pageTitle: doc?.title || 'AI Search Page',
+                metaDescription,
+                h1: h1Text,
+                pageExcerpt,
+                linkCount,
+                imageCount,
+                headingCount,
+                ctaCount,
+                wordCount,
                 overallScore: yourScore,
                 scores: {
                   answerability: moduleScoresMap.answerability || 0,
@@ -1031,10 +1081,11 @@ const initTool = (form, results, progressContainer) => {
                 },
                 failedItems: failedMetrics.slice(0, 10),
                 priorityFixes: prioritisedFixes.map(f => f.title + ': ' + f.how),
-                cms: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Unknown',
-                cmsVersion: (typeof cmsInfo !== 'undefined' && cmsInfo) ? (cmsInfo.version || null) : null,
-                cmsConfidence: (typeof cmsInfo !== 'undefined' && cmsInfo) ? (cmsInfo.confidence || 'low') : 'low',
-                cmsSignals: (typeof cmsInfo !== 'undefined' && cmsInfo) ? (cmsInfo.signals || []) : []
+                cms: {
+                  name: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown',
+                  version: (typeof cmsInfo !== 'undefined' && cmsInfo) ? (cmsInfo.version || null) : null,
+                  confidence: (typeof cmsInfo !== 'undefined' && cmsInfo) ? (cmsInfo.confidence || 'low') : 'low'
+                }
               }
             };
 
@@ -1049,13 +1100,13 @@ const initTool = (form, results, progressContainer) => {
             const data = await response.json();
 
             if (data.success) {
-              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
             } else {
-              answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+              answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
             }
 
           } catch (err) {
-            answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+            answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
           } finally {
             newAskBtn.disabled = false;
             newAskBtn.textContent = 'Ask AI';
@@ -1120,7 +1171,7 @@ const initTool = (form, results, progressContainer) => {
         const originalLabel = cmsFixesBtn.textContent;
         cmsFixesBtn.textContent = 'Generating...';
         cmsAnswerContainer?.classList.remove('hidden');
-        if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Traffic Torching...';
+        if (cmsAnswerContent) cmsAnswerContent.innerHTML = '⏳ Traffic Torching...';
 
         try {
           const payload = {
@@ -1130,6 +1181,14 @@ const initTool = (form, results, progressContainer) => {
             cmsSignals: cmsInfo.signals,
             url: analyzedUrl !== 'Pasted HTML Code' ? analyzedUrl : null,
             pageTitle: doc?.title || null,
+            metaDescription,
+            h1: h1Text,
+            pageExcerpt,
+            linkCount,
+            imageCount,
+            headingCount,
+            ctaCount,
+            wordCount,
             overallScore: yourScore,
             scores: {
               answerability: answerability,
@@ -1160,27 +1219,19 @@ const initTool = (form, results, progressContainer) => {
           const data = await response.json();
 
           if (data.success && cmsAnswerContent) {
-            cmsAnswerContent.textContent = '';
-
-            const header = document.createElement('div');
-            header.style.fontWeight = 'bold';
-            header.style.marginBottom = '0.75rem';
-            header.textContent = '🛠️ CMS Fixes for ' +
+            const headerText = '🛠️ CMS Fixes for ' +
               (data.cms || selectedCms) +
               (data.cmsVersion ? ' ' + data.cmsVersion : '');
-
-            const body = document.createElement('div');
-            body.textContent = data.answer || '';
-
-            cmsAnswerContent.appendChild(header);
-            cmsAnswerContent.appendChild(body);
+            cmsAnswerContent.innerHTML =
+              `<div style="font-weight:bold;margin-bottom:0.75rem">${headerText}</div>` +
+              `<div>${renderCodeBlocks(data.answer || '')}</div>`;
           } else if (cmsAnswerContent) {
-            cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+            cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
           }
 
         } catch (err) {
           if (cmsAnswerContent) {
-            cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+            cmsAnswerContent.innerHTML = '❌ Failed to generate CMS fixes. Please try again. (' + renderCodeBlocks(err.message) + ')';
           }
         } finally {
           cmsFixesBtn.disabled = false;

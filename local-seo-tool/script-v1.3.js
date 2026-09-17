@@ -18,6 +18,30 @@ import {
   deriveSelectorsForFailure
 } from './code-snippet-v1.0.js';
 
+// ── Edit 1: fenced-code-block renderer (module top) ────────────────────
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 // Small local HTML escaper for the fix-list template (Edit 3).
 const escapeHtml = (s) => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -541,6 +565,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const pageTitle = doc.querySelector('title')?.textContent?.trim() || 'Your Page';
     const truncatedTitle = pageTitle.length > 65 ? pageTitle.substring(0, 62) + '...' : pageTitle;
+
+    // ── Edit 3: Ask AI page context (extracted once, reused below) ──────
+    const excerptDoc = doc.cloneNode(true);
+    excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+    const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+    const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+      .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+      .filter(t => t.length > 60);
+    const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '')
+      .replace(/\s+/g, ' ').trim().slice(0, 300);
+    const metaDescription = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
+    const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
+    const linkCount = doc.querySelectorAll('a[href]').length;
+    const imageCount = doc.querySelectorAll('img').length;
+    const headingCount = doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
+    const ctaCount = doc.querySelectorAll('a.button, a.btn, button, [role="button"], input[type="submit"], input[type="button"]').length;
+    const wordCount = (contentRoot?.textContent || '')
+      .replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
 
     const analysisStartForMin = Date.now();
     const minVisibleMs = 800;
@@ -1103,7 +1145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         answerContent.innerHTML = '⏳ Traffic Torching...';
 
         try {
-          // Build the audit snapshot (includes detected CMS for CMS-specific answers)
+          // Build the audit snapshot (Edit 3: rich page context + CMS inside auditData)
           const auditPayload = {
             question: question,
             cms: (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'Custom / Unknown',
@@ -1112,6 +1154,19 @@ document.addEventListener('DOMContentLoaded', () => {
             auditData: {
               url: fullUrl || document.getElementById('page-url')?.value?.trim() || 'Custom HTML',
               pageTitle: pageTitle || 'Analyzed Page',
+              metaDescription,
+              h1,
+              pageExcerpt,
+              linkCount,
+              imageCount,
+              headingCount,
+              ctaCount,
+              wordCount,
+              cms: {
+                name: (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'Custom / Unknown',
+                version: cmsInfo?.version || null,
+                confidence: cmsInfo?.confidence || null
+              },
               overallScore: yourScore,
               scores: {
                 nap: normalizedModuleScores['NAP & Contact'],
@@ -1144,14 +1199,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const data = await response.json();
 
+          // Edit 2: innerHTML + renderCodeBlocks
           if (data.success) {
-            answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+            answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
           } else {
-            answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+            answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
           }
 
         } catch (err) {
-          answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+          answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
         } finally {
           newAskBtn.disabled = false;
           newAskBtn.textContent = 'Ask AI';
@@ -1221,7 +1277,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const originalLabel = cmsFixesBtn.textContent;
       cmsFixesBtn.textContent = 'Generating...';
       cmsAnswerContainer?.classList.remove('hidden');
-      if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Traffic Torching...';
+      if (cmsAnswerContent) cmsAnswerContent.innerHTML = '⏳ Traffic Torching...';
 
       try {
         const payload = {
@@ -1259,29 +1315,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = await response.json();
 
+        // Edit 2: innerHTML + renderCodeBlocks (CMS Fixes branch)
         if (data.success && cmsAnswerContent) {
-          // XSS-safe: textContent only, no innerHTML for model output
-          cmsAnswerContent.textContent = '';
-
-          const header = document.createElement('div');
-          header.style.fontWeight = 'bold';
-          header.style.marginBottom = '0.75rem';
-          header.textContent = '🛠️ CMS Fixes for ' +
-            (data.cms || selectedCms) +
-            (data.cmsVersion ? ' ' + data.cmsVersion : '');
-
-          const body = document.createElement('div');
-          body.textContent = data.answer || '';
-
-          cmsAnswerContent.appendChild(header);
-          cmsAnswerContent.appendChild(body);
+          const cmsLabel = (data.cms || selectedCms) + (data.cmsVersion ? ' ' + data.cmsVersion : '');
+          cmsAnswerContent.innerHTML =
+            `<div style="font-weight:bold;margin-bottom:0.75rem;">🛠️ CMS Fixes for ${escapeHtml(cmsLabel)}</div>` +
+            `<div>${renderCodeBlocks(data.answer || '')}</div>`;
         } else if (cmsAnswerContent) {
-          cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+          cmsAnswerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
         }
 
       } catch (err) {
         if (cmsAnswerContent) {
-          cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+          cmsAnswerContent.innerHTML =
+            `❌ Failed to generate CMS fixes. Please try again. (${renderCodeBlocks(err.message)})`;
         }
       } finally {
         cmsFixesBtn.disabled = false;

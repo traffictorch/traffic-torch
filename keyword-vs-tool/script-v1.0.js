@@ -6,6 +6,30 @@ import { initShareModule } from '/share-module.js';
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
+// ── Shared code-block renderer (used by Ask AI responses) ─────────
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const yourInput = document.getElementById('your-url');
@@ -155,6 +179,31 @@ document.addEventListener('DOMContentLoaded', () => {
     if (html.includes('nuxt')) return 'Nuxt';
     if (html.includes('gatsby')) return 'Gatsby';
     return 'unknown';
+  };
+
+  // ── Page-context extractor for Ask AI payload enrichment ─────────
+  const extractPageContext = (doc, url, cmsName) => {
+    if (!doc) return null;
+    const excerptDoc = doc.cloneNode(true);
+    excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+    const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+    const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+      .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+      .filter(t => t.length > 60);
+    const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+    return {
+      url,
+      pageTitle: doc.querySelector('title')?.textContent.trim() || '',
+      metaDescription: doc.querySelector('meta[name="description"]')?.content || '',
+      h1: doc.querySelector('h1')?.textContent.trim() || '',
+      pageExcerpt,
+      linkCount: doc.querySelectorAll('a').length,
+      imageCount: doc.querySelectorAll('img').length,
+      headingCount: doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length,
+      ctaCount: doc.querySelectorAll('a[href], button').length,
+      wordCount: getWordCount(doc),
+      cms: { name: cmsName || 'Custom / Unknown', version: '', confidence: '' }
+    };
   };
 
   const moduleHashes = {
@@ -969,6 +1018,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 competitorCMS: compCMS,
                 yourScore: yourScore,
                 competitorScore: compScore,
+                yourPageContext: extractPageContext(yourDoc, yourUrl, yourCMS),
+                compPageContext: extractPageContext(compDoc, compUrl, compCMS),
                 scores: {
                   metaTitleDescYour: moduleScoresMap['metatitledescyour'] || 0,
                   metaTitleDescComp: moduleScoresMap['metatitledesccomp'] || 0,
@@ -1017,13 +1068,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const aiResponse = await response.json();
 
             if (aiResponse.success) {
-              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${aiResponse.answer}`;
+              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(aiResponse.answer)}`;
             } else {
-              answerContent.innerHTML = `❌ Error: ${aiResponse.error || 'Unknown error'}`;
+              answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(aiResponse.error || 'Unknown error')}`;
             }
 
           } catch (err) {
-            answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+            answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
           } finally {
             newAskBtn.disabled = false;
             newAskBtn.textContent = 'Ask Traffic Torch AI';
