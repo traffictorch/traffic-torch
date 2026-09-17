@@ -28,6 +28,30 @@ import {
   escapeHtml
 } from './code-snippet-v1.0.js';
 
+// ─── Code block renderer ─────────────────────────────────────────
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const urlInput = document.getElementById('url-input');
@@ -1193,11 +1217,24 @@ ${impactHTML}
 
           try {
             // Build the audit snapshot (same structure as SEO Intent)
+            const pageExcerpt = (doc?.body?.textContent || '')
+              .replace(/\s+/g, ' ')
+              .trim()
+              .slice(0, 300);
+
             const auditPayload = {
               question: question,
               auditData: {
                 url: url || document.getElementById('url-input')?.value?.trim() || 'Custom HTML',
                 pageTitle: (doc?.title) || 'Analyzed Page',
+                metaDescription: doc?.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '',
+                h1: doc?.querySelector('h1')?.textContent?.trim() || '',
+                pageExcerpt: pageExcerpt,
+                linkCount: uxData.linkCount,
+                imageCount: uxData.imageCount,
+                headingCount: uxData.headingCount,
+                ctaCount: uxData.potentialCTAs,
+                wordCount: uxData.wordCount,
                 overallScore: ux.score,
                 scores: {
                   readability: ux.readability,
@@ -1205,6 +1242,13 @@ ${impactHTML}
                   accessibility: ux.accessibility,
                   mobile: ux.mobile,
                   performance: ux.speed
+                },
+                factorDetails: {
+                  readability: factorDetails.readability,
+                  navigation: factorDetails.navigation,
+                  accessibility: factorDetails.accessibility,
+                  mobile: factorDetails.mobile,
+                  performance: factorDetails.performance
                 },
                 flags: {
                   hasViewport: uxData.hasViewport,
@@ -1214,11 +1258,21 @@ ${impactHTML}
                   hasFontDisplaySwap: uxData.hasFontDisplaySwap,
                   hasWebpOrAvif: uxData.hasWebpOrAvif,
                   hasManifest: uxData.hasManifest,
+                  hasBreadcrumb: uxData.hasBreadcrumb,
+                  hasLandmarks: uxData.hasLandmarks,
+                  hasAriaLabels: uxData.hasAriaLabels,
+                  hasDropdowns: uxData.hasDropdowns,
+                  topLevelItems: uxData.topLevelItems,
+                  fontCount: uxData.fontCount,
+                  externalScripts: uxData.externalScripts,
+                  hasRenderBlocking: uxData.hasRenderBlocking,
+                  altMissing: uxData.altData?.missingCount || 0,
+                  altMeaningful: uxData.altData?.meaningfulCount || 0
                 },
                 cms: cmsInfo?.name || 'Custom / Unknown',
                 cmsVersion: cmsInfo?.version || null,
                 cmsConfidence: cmsInfo?.confidence || null,
-                failedItems: failedMetricsShare, // built earlier
+                failedItems: failedMetricsShare,
                 priorityFixes: priorityFixes.map(f => f.name + ' (' + f.module + ')')
               }
             };
@@ -1233,11 +1287,11 @@ ${impactHTML}
 
             const data = await response.json();
 
-            if (data.success) {
-              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
-            } else {
-              answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
-            }
+if (data.success) {
+  answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+} else {
+  answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
+}
 
           } catch (err) {
             answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
@@ -1312,7 +1366,7 @@ ${impactHTML}
         const originalLabel = cmsFixesBtn.textContent;
         cmsFixesBtn.textContent = 'Generating...';
         cmsAnswerContainer?.classList.remove('hidden');
-        if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Building CMS-specific instructions...';
+        if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Traffic Torching...';
 
         try {
           const payload = {
@@ -1348,29 +1402,16 @@ ${impactHTML}
 
           const data = await response.json();
 
-          if (data.success && cmsAnswerContent) {
-            // XSS-safe: textContent only, no innerHTML for model output
-            cmsAnswerContent.textContent = '';
-
-            const header = document.createElement('div');
-            header.style.fontWeight = 'bold';
-            header.style.marginBottom = '0.75rem';
-            header.textContent = '🛠️ CMS Fixes for ' +
-              (data.cms || selectedCms) +
-              (data.cmsVersion ? ' ' + data.cmsVersion : '');
-
-            const body = document.createElement('div');
-            body.textContent = data.answer || '';
-
-            cmsAnswerContent.appendChild(header);
-            cmsAnswerContent.appendChild(body);
-          } else if (cmsAnswerContent) {
-            cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+if (data.success && cmsAnswerContent) {
+  const headerHtml = `<div style="font-weight:bold; margin-bottom:0.75rem;">🛠️ CMS Fixes for ${data.cms || selectedCms}${data.cmsVersion ? ' ' + data.cmsVersion : ''}</div>`;
+  const bodyHtml = `<div>${renderCodeBlocks(data.answer || '')}</div>`;
+  cmsAnswerContent.innerHTML = headerHtml + bodyHtml;
+} else if (cmsAnswerContent) {
+            cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
           }
-
         } catch (err) {
           if (cmsAnswerContent) {
-            cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+            cmsAnswerContent.innerHTML = '❌ Failed to generate CMS fixes. Please try again. (' + renderCodeBlocks(err.message) + ')';
           }
         } finally {
           cmsFixesBtn.disabled = false;

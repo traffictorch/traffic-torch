@@ -11,6 +11,30 @@ import {
   deriveSelectorsForFailure
 } from './code-snippet-v1.0.js';
 
+// ─── Code block renderer ─────────────────────────────────────────
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 const LH_AUDIT_API = 'https://lighthouse-audit.traffictorch.workers.dev/';
 const LH_CMS_API   = 'https://lighthouse-cms-fixes.traffictorch.workers.dev/';
 const LH_AI_API    = 'https://lighthouse-ai.traffictorch.workers.dev/';
@@ -255,6 +279,32 @@ document.addEventListener('DOMContentLoaded', () => {
       url, pageTitle, modules: rawModules,
       rawHtml, renderedHtml, browserMetrics, meta,
     } = data;
+    
+        // Parse the rendered HTML once for context extraction
+    let ctxDoc = null;
+    try {
+      ctxDoc = new DOMParser().parseFromString(renderedHtml || rawHtml || '', 'text/html');
+    } catch {}
+
+    const pageExcerpt = (ctxDoc?.body?.textContent || '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 300);
+
+    const pageContext = {
+      metaDescription: ctxDoc?.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '',
+      h1: ctxDoc?.querySelector('h1')?.textContent?.trim() || '',
+      pageExcerpt,
+      linkCount: ctxDoc?.querySelectorAll('a[href]').length || 0,
+      imageCount: ctxDoc?.querySelectorAll('img').length || 0,
+      headingCount: ctxDoc?.querySelectorAll('h1,h2,h3,h4,h5,h6').length || 0,
+      ctaCount: ctxDoc?.querySelectorAll(
+        'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="buy"], button, [role="button"], .btn, .button'
+      ).length || 0,
+      wordCount: (ctxDoc?.body?.textContent || '').trim().split(/\s+/).filter(Boolean).length,
+      langAttribute: ctxDoc?.documentElement?.getAttribute('lang') || '',
+      viewportContent: ctxDoc?.querySelector('meta[name="viewport"]')?.getAttribute('content') || '',
+    };
 
     const modules = rawModules.map((m) => {
       const cappedScore = applyIssueCap(m);
@@ -556,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const label = cmsBtn.textContent;
       cmsBtn.textContent = 'Generating…';
       cmsWrap.classList.remove('hidden');
-      cmsOut.textContent = '⏳ Building CMS-specific Lighthouse Plus instructions…';
+      cmsOut.textContent = '⏳ Traffic Torching…';
       try {
         const r = await fetch(LH_CMS_API, {
           method: 'POST',
@@ -575,9 +625,11 @@ document.addEventListener('DOMContentLoaded', () => {
           }),
         });
         const d = await r.json();
-        cmsOut.textContent = d.success ? (d.answer || '') : '❌ ' + (d.error || 'Unknown error');
+        cmsOut.innerHTML = d.success
+          ? renderCodeBlocks(d.answer || '')
+          : '❌ ' + renderCodeBlocks(d.error || 'Unknown error');
       } catch (err) {
-        cmsOut.textContent = '❌ ' + err.message;
+        cmsOut.innerHTML = '❌ ' + renderCodeBlocks(err.message);
       } finally {
         cmsBtn.disabled = false;
         cmsBtn.textContent = label;
@@ -606,29 +658,53 @@ document.addEventListener('DOMContentLoaded', () => {
             auditData: {
               url: url || 'Custom HTML',
               pageTitle,
+              ...pageContext,
               overallScore: overall,
               cms: {
                 name: cmsInfo?.name || 'Custom / Unknown',
                 version: cmsInfo?.version || null,
                 confidence: cmsInfo?.confidence || 'unknown',
               },
-              modules: modules.map((m) => ({ name: m.name, score: m.score, failed: m.failed })),
-              priorityFixes: priorityFixes.map((f) => f.name),
+              modules: modules.map((m) => ({
+                name: m.name,
+                score: m.score,
+                failed: m.failed || [],
+                signals: (m.signals || []).map((s) => ({
+                  label: s.label,
+                  pass: s.pass,
+                  informational: s.informational || false,
+                })),
+              })),
+              priorityFixes: priorityFixes.map((f) => ({
+                name: f.name,
+                module: f.module,
+                score: f.score,
+                impact: f.impact,
+                desc: f.desc || '',
+              })),
               browserMetrics: browserMetrics ? {
                 cls: browserMetrics.cls,
                 lcp: browserMetrics.lcp,
                 fcp: browserMetrics.fcp,
+                ttfb: browserMetrics.ttfb,
                 tbt: browserMetrics.tbt,
                 longTasks: browserMetrics.longTasks,
+                totalResources: browserMetrics.totalResources,
+                totalTransferSize: browserMetrics.totalTransferSize,
                 consoleErrors: browserMetrics.consoleErrors?.length || 0,
+                pageErrors: browserMetrics.pageErrors?.length || 0,
+                failedRequests: (browserMetrics.failedRequests || []).length,
+                renderBlockingRequests: (browserMetrics.renderBlockingRequests || []).length,
               } : null,
             },
           }),
         });
         const d = await r.json();
-        aiOut.textContent = d.success ? d.answer : '❌ ' + (d.error || 'Unknown error');
+        aiOut.innerHTML = d.success
+          ? renderCodeBlocks(d.answer)
+          : '❌ ' + renderCodeBlocks(d.error || 'Unknown error');
       } catch (err) {
-        aiOut.textContent = '❌ ' + err.message;
+        aiOut.innerHTML = '❌ ' + renderCodeBlocks(err.message);
       } finally {
         aiBtn.disabled = false;
         aiBtn.textContent = label;

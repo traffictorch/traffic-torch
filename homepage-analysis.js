@@ -32,6 +32,30 @@ import { computeReadability as computeAIReadability } from '/ai-search-optimizat
 import { computeUniqueInsights } from '/ai-search-optimization-tool/modules/uniqueInsights.js';
 import { computeAntiAiSafety } from '/ai-search-optimization-tool/modules/antiAiSafety.js';
 
+// ─── Code block renderer ─────────────────────────────────────────
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 // ─── Helper to count pass/average/fail from modules ─────────────────────
 function countStatuses(modules) {
   let passed = 0, avg = 0, failed = 0;
@@ -755,7 +779,7 @@ function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overal
       const originalLabel = cmsFixesBtn.textContent;
       cmsFixesBtn.textContent = 'Generating...';
       cmsAnswerContainer?.classList.remove('hidden');
-      if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Building CMS-specific instructions...';
+      if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Traffic Torching...';
 
       try {
         const payload = {
@@ -782,27 +806,16 @@ function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overal
         const data = await response.json();
 
         if (data.success && cmsAnswerContent) {
-          cmsAnswerContent.textContent = '';
-
-          const header = document.createElement('div');
-          header.style.fontWeight = 'bold';
-          header.style.marginBottom = '0.75rem';
-          header.textContent = '🛠️ CMS Fixes for ' +
-            (data.cms || selectedCms) +
-            (data.cmsVersion ? ' ' + data.cmsVersion : '');
-
-          const body = document.createElement('div');
-          body.textContent = data.answer || '';
-
-          cmsAnswerContent.appendChild(header);
-          cmsAnswerContent.appendChild(body);
+          const headerHtml = `<div style="font-weight:bold; margin-bottom:0.75rem;">🛠️ CMS Fixes for ${data.cms || selectedCms}${data.cmsVersion ? ' ' + data.cmsVersion : ''}</div>`;
+          const bodyHtml = `<div>${renderCodeBlocks(data.answer || '')}</div>`;
+          cmsAnswerContent.innerHTML = headerHtml + bodyHtml;
         } else if (cmsAnswerContent) {
-          cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+          cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
         }
 
       } catch (err) {
         if (cmsAnswerContent) {
-          cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+          cmsAnswerContent.innerHTML = '❌ Failed to generate CMS fixes. Please try again. (' + renderCodeBlocks(err.message) + ')';
         }
       } finally {
         cmsFixesBtn.disabled = false;
@@ -841,6 +854,35 @@ export async function runHomepageAnalysis(url, containerId, aiContainerId) {
     const uxData = getUXContent(doc);
     const uxSummary = getQuitRiskSummary(uxData);
 
+    // ─── Extract real page context for AI enrichment ───
+    const pageExcerpt = (doc.body?.textContent || '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 300);
+
+    window._homepagePageContext = {
+      metaDescription: doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '',
+      h1: doc.querySelector('h1')?.textContent?.trim() || '',
+      pageExcerpt,
+      langAttribute: doc.documentElement?.getAttribute('lang') || '',
+      viewportContent: doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '',
+      linkCount: doc.querySelectorAll('a[href]').length,
+      imageCount: doc.querySelectorAll('img').length,
+      headingCount: doc.querySelectorAll('h1,h2,h3,h4,h5,h6').length,
+      ctaCount: doc.querySelectorAll(
+        'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="buy"], button, [role="button"], .btn, .button'
+      ).length,
+      wordCount: (doc.body?.textContent || '').trim().split(/\s+/).filter(Boolean).length,
+      hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]'),
+      hasManifest: !!doc.querySelector('link[rel="manifest"]'),
+      hasServiceWorker: doc.body.innerHTML.includes('serviceWorker') || doc.body.innerHTML.includes('register('),
+      hasJsonLd: !!doc.querySelector('script[type="application/ld+json"]'),
+      hasArticle: !!doc.querySelector('article'),
+      hasMain: !!doc.querySelector('main'),
+      hasAuthorByline: !!doc.querySelector('[rel="author"], .author, .byline, [itemprop="author"]'),
+      hasPublishDate: !!doc.querySelector('time[datetime], meta[property="article:published_time"]'),
+    };
+    
     const seoSummary = getSEOSummary(doc, url);
     const aiSummary = getAISearchSummary(doc, url);
 
@@ -1135,10 +1177,13 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         });
 
+        const pageContext = window._homepagePageContext || {};
+
         const auditPayload = {
           question: question,
           auditData: {
             url: window._homepageUrl || '',
+            ...pageContext,
             overallScore: Math.round((uxData.score + seoData.score + aiData.score) / 3),
             ux: { score: uxData.score, modules: uxData.modules },
             seo: { score: seoData.score, modules: seoData.modules },
@@ -1158,12 +1203,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
 
         if (data.success) {
-          answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
+          answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
         } else {
-          answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
+          answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
         }
       } catch (err) {
-        answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+        answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
       } finally {
         askBtn.disabled = false;
         askBtn.textContent = 'Ask Traffic Torch AI';

@@ -868,7 +868,7 @@ async function requestSchemaAiFix() {
   const answerContainer = document.getElementById('schema-cms-answer-container');
   const answerContent   = document.getElementById('schema-cms-answer-content');
   answerContainer?.classList.remove('hidden');
-  if (answerContent) answerContent.textContent = '⏳ Building CMS-specific fix instructions...';
+  if (answerContent) answerContent.textContent = '⏳ Traffic Torching...';
 
   try {
     const res = await fetch('https://schema-cms-fixes.traffictorch.workers.dev/', {

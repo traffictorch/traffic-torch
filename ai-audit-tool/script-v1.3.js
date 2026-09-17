@@ -1109,7 +1109,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const originalLabel = cmsFixesBtn.textContent;
           cmsFixesBtn.textContent = 'Generating...';
           cmsAnswerContainer?.classList.remove('hidden');
-          if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Building CMS-specific humanization instructions...';
+          if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Traffic Torching...';
 
           try {
             const payload = {

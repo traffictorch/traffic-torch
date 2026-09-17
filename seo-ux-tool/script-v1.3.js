@@ -21,6 +21,30 @@ import {
   escapeHtml
 } from './code-snippet-v1.0.js';
 
+// ─── Code block renderer ─────────────────────────────────────────
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
@@ -1044,7 +1068,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const originalLabel = newCmsBtn.textContent;
           newCmsBtn.textContent = 'Generating...';
           cmsAnswerContainer?.classList.remove('hidden');
-          if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Building CMS-specific SEO & UX instructions...';
+          if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Traffic Torching...';
 
           try {
             const payload = {
@@ -1083,30 +1107,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            if (data.success && cmsAnswerContent) {
-              cmsAnswerContent.textContent = '';
+if (data.success && cmsAnswerContent) {
+  const headerHtml = `<div style="font-weight:bold; margin-bottom:0.75rem;">🛠️ CMS Fixes for ${data.cms || selectedCms}${data.cmsVersion ? ' ' + data.cmsVersion : ''}</div>`;
+  const bodyHtml = `<div>${renderCodeBlocks(data.answer || '')}</div>`;
+  cmsAnswerContent.innerHTML = headerHtml + bodyHtml;
+} else if (cmsAnswerContent) {
+  cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
+}
 
-              const header = document.createElement('div');
-              header.style.fontWeight = 'bold';
-              header.style.marginBottom = '0.75rem';
-              header.textContent = '🛠️ CMS Fixes for ' +
-                (data.cms || selectedCms) +
-                (data.cmsVersion ? ' ' + data.cmsVersion : '');
-
-              const body = document.createElement('div');
-              body.textContent = data.answer || '';
-
-              cmsAnswerContent.appendChild(header);
-              cmsAnswerContent.appendChild(body);
-            } else if (cmsAnswerContent) {
-              cmsAnswerContent.textContent = '❌ Error: ' + (data.error || 'Unknown error');
-            }
-
-          } catch (err) {
-            if (cmsAnswerContent) {
-              cmsAnswerContent.textContent = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
-            }
-          } finally {
+} catch (err) {
+  if (cmsAnswerContent) {
+    cmsAnswerContent.innerHTML = '❌ Failed to generate CMS fixes. Please try again. (' + renderCodeBlocks(err.message) + ')';
+  }
+} finally {
             newCmsBtn.disabled = false;
             newCmsBtn.textContent = originalLabel;
           }
@@ -1265,15 +1278,40 @@ if (askBtn) {
         }
       });
 
-      const auditPayload = {
-        question: question,
-        auditData: {
-          overallScore: overallScore,
-          modules: modules,
-          failedItems: failedItems.slice(0, 10),
-          priorityFixes: priorityFixes.slice(0, 5),
-        },
-      };
+// Pull real page context from the cached HTML
+const rawHtml = document.getElementById('results')?.dataset.renderedHtml || '';
+let currentTitle = '', currentMetaDesc = '', currentH1 = '', pageExcerpt = '';
+let ctaCount = 0, linkCount = 0;
+
+if (rawHtml) {
+  const tempDoc = new DOMParser().parseFromString(rawHtml, 'text/html');
+  currentTitle = tempDoc.querySelector('title')?.textContent?.trim() || '';
+  currentMetaDesc = tempDoc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
+  currentH1 = tempDoc.querySelector('h1')?.textContent?.trim() || '';
+  pageExcerpt = (tempDoc.body?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+
+  ctaCount = tempDoc.querySelectorAll(
+    'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="buy"], button, [role="button"], .btn, .button'
+  ).length;
+  linkCount = tempDoc.querySelectorAll('a[href]').length;
+}
+
+const auditPayload = {
+  question: question,
+  auditData: {
+    url: document.body.getAttribute('data-url') || '',
+    pageTitle: currentTitle,
+    metaDescription: currentMetaDesc,
+    h1: currentH1,
+    pageExcerpt: pageExcerpt,
+    ctaCount: ctaCount,
+    linkCount: linkCount,
+    overallScore: overallScore,
+    modules: modules,
+    failedItems: failedItems.slice(0, 10),
+    priorityFixes: priorityFixes.slice(0, 5),
+  },
+};
 
       const response = await fetch('https://ask-ai-seo-ux.traffictorch.workers.dev/', {
         method: 'POST',
@@ -1285,11 +1323,11 @@ if (askBtn) {
 
       const data = await response.json();
 
-      if (data.success) {
-        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${data.answer}`;
-      } else {
-        answerContent.innerHTML = `❌ Error: ${data.error || 'Unknown error'}`;
-      }
+if (data.success) {
+  answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+} else {
+  answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
+}
     } catch (err) {
       answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
     } finally {

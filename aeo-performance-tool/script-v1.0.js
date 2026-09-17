@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const label = cmsBtn.textContent;
       cmsBtn.textContent = 'Generating…';
       cmsWrap.classList.remove('hidden');
-      cmsOut.textContent = '⏳ Building CMS-specific AEO instructions…';
+      cmsOut.textContent = '⏳ Traffic Torching…';
       try {
         const r = await fetch(AEO_CMS_API, {
           method: 'POST',

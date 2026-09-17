@@ -644,3 +644,33 @@ div.prose p {
 }
 .dark .share-status { color: #9ca3af; }
 
+
+
+/* AI output code blocks */
+.code-block {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 1rem 0;
+  border: 1px solid #333;
+}
+
+.code-block code {
+  white-space: pre;
+  word-break: normal;
+  tab-size: 2;
+}
+
+/* Optional: light mode */
+@media (prefers-color-scheme: light) {
+  .code-block {
+    background: #f5f5f5;
+    color: #333;
+    border-color: #ddd;
+  }
+}

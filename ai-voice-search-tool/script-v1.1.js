@@ -890,7 +890,7 @@ ${topFailed.length === 0 ? `
           const originalLabel = cmsFixesBtn.textContent;
           cmsFixesBtn.textContent = 'Generating...';
           cmsAnswerContainer?.classList.remove('hidden');
-          if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Building CMS-specific AI voice search instructions...';
+          if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Traffic Torching...';
 
           try {
             const payload = {
