@@ -112,8 +112,28 @@
     <lastmod>2026-09-10</lastmod>
   </url>
   
-   <url>
-    <loc>https://traffictorch.net/developer/api/</loc>
+  <url>
+    <loc>https://traffictorch.net/integrations/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://traffictorch.net/integrations/browser-extensions/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://traffictorch.net/integrations/plugins/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://traffictorch.net/integrations/developer-tools/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://traffictorch.net/integrations/developer/api/</loc>
     <lastmod>2026-09-05</lastmod>
   </url>
   

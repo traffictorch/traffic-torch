@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===== SEO ===== -->
+  <title>Traffic Torch Developer Tools – VS Code, GitHub Action & Developer API</title>
+  <meta name="description" content="Integrate Traffic Torch SEO, UX & AI-search audits into your workflow. Free VS Code extension, GitHub Action and REST Developer API with webhooks. Privacy-first, no data stored.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://traffictorch.net/integrations/developer-tools/">
+
+  <!-- Theme colors -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/integrations/developer-tools/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/integrations/developer-tools/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Traffic Torch Developer Tools – VS Code, GitHub Action & Developer API">
+  <meta property="og:description" content="VS Code extension, GitHub Action and REST Developer API for Traffic Torch SEO, UX & AI-search audits. Free, privacy-first.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/integrations/developer-tools/">
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Traffic Torch developer tools: VS Code extension, GitHub Action and REST API">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Traffic Torch Developer Tools – VS Code, GitHub Action & Developer API">
+  <meta name="twitter:description" content="VS Code extension, GitHub Action and REST Developer API for Traffic Torch SEO, UX & AI-search audits. Free, privacy-first.">
+  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <!-- ===== Structured Data ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/integrations/developer-tools/#webpage",
+        "url": "https://traffictorch.net/integrations/developer-tools/",
+        "name": "Traffic Torch Developer Tools",
+        "description": "VS Code extension, GitHub Action and REST Developer API for Traffic Torch SEO, UX and AI-search audits.",
+        "isPartOf": { "@type": "WebSite", "@id": "https://traffictorch.net/" },
+        "inLanguage": "en",
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/images/traffic-torch-toolkit.webp",
+          "width": 1200,
+          "height": 630
+        },
+        "breadcrumb": { "@id": "https://traffictorch.net/integrations/developer-tools/#breadcrumb" },
+        "mainEntity": { "@id": "https://traffictorch.net/integrations/developer-tools/#itemlist" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://traffictorch.net/integrations/developer-tools/#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" },
+          { "@type": "ListItem", "position": 2, "name": "Integrations", "item": "https://traffictorch.net/integrations/" },
+          { "@type": "ListItem", "position": 3, "name": "Developer Tools", "item": "https://traffictorch.net/integrations/developer-tools/" }
+        ]
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://traffictorch.net/integrations/developer-tools/#itemlist",
+        "name": "Traffic Torch Developer Tools",
+        "itemListOrder": "https://schema.org/ItemListOrderAscending",
+        "numberOfItems": 3,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": "SoftwareApplication",
+              "name": "Traffic Torch Dev Tools for VS Code",
+              "applicationCategory": "DeveloperApplication",
+              "operatingSystem": "Windows, macOS, Linux, Web",
+              "softwareVersion": "2.0",
+              "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" },
+              "description": "Real-time SEO, GEO and UX health scoring for pre-filled HTML inside Visual Studio Code.",
+              "downloadUrl": "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+              "url": "https://traffictorch.net/integrations/developer-tools/#vscode",
+              "publisher": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@type": "SoftwareApplication",
+              "name": "Traffic Torch Audit – GitHub Action",
+              "applicationCategory": "DeveloperApplication",
+              "operatingSystem": "GitHub Actions Runner (Linux, macOS, Windows)",
+              "softwareVersion": "2.0",
+              "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" },
+              "description": "One-click SEO, GEO and UX Health audit in your GitHub CI pipeline.",
+              "downloadUrl": "https://github.com/marketplace/actions/traffic-torch-audit",
+              "url": "https://traffictorch.net/integrations/developer-tools/#github-action",
+              "publisher": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" }
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": { "@id": "https://traffictorch.net/integrations/developer-tools/#api" }
+          }
+        ]
+      },
+      {
+        "@type": "WebAPI",
+        "@id": "https://traffictorch.net/integrations/developer-tools/#api",
+        "name": "Traffic Torch Developer API",
+        "description": "REST API to programmatically run 13+ SEO, UX, GEO and AI-search audit tools, manage API keys and receive webhook notifications on audit completion.",
+        "documentation": "https://traffictorch.net/developer/api/",
+        "url": "https://traffictorch.net/developer/api/",
+        "provider": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" },
+        "termsOfService": "https://traffictorch.net/terms/",
+        "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://traffictorch.net/integrations/developer-tools/#faq",
+        "mainEntityOfPage": { "@id": "https://traffictorch.net/integrations/developer-tools/#webpage" },
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What developer tools does Traffic Torch offer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Three: a free VS Code extension for real-time SEO/GEO/UX scoring inside the editor, a free GitHub Action that runs audits in your CI pipeline, and a REST Developer API that gives programmatic access to 13+ audit tools with API keys, daily quotas and webhooks."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is the Developer API free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The Developer API is free to use and shares the same daily quota as your Traffic Torch account: 3 requests/day on Free, 25/day on Pro and 300/day on Enterprise. The quota resets at midnight UTC."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I authenticate to the Developer API?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Two credentials are used. A Bearer token (JWT) obtained at login is required for management endpoints such as keys, webhooks and account-info. An X-API-Key header, generated on the Developer API page at traffictorch.net/developer/api/, is required for the tool endpoint /api/tools/* that actually runs audits."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which audit tools are available through the API?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The API exposes the same engine as the site: seo-intent, seo-ux, local-seo, product-seo, entity, topical, schema-generator, ai-search, ai-voice, ai-audit, quit-risk, keyword-research and keyword-placement."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does the Developer API support webhooks?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. You can register a webhook URL and subscribe to the audit.completed event. Traffic Torch sends a POST request with the full audit result to your endpoint the moment an audit finishes. A usage.alert event is planned."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where can I find full API documentation?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Full endpoint reference, error codes, rate limits, code samples in cURL, JavaScript, Python and PHP, webhook payload schema, changelog and support contacts are available at traffictorch.net/developer/api/."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does the GitHub Action require an API key?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The GitHub Action opens the Traffic Torch audit experience with your URL pre-filled, so you can run it inside CI without exposing credentials. If you want the result to flow back into your pipeline programmatically, use the Developer API instead."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does the VS Code extension send my code to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The extension analyses the pre-filled HTML you give it locally. It never transmits your source code, and it does not require an account."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- PWA + icons -->
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+
+  <!-- Styles -->
+  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/home-css-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/home-css-v1.0.css">
+  </noscript>
+  <link rel="stylesheet" href="/print-share.css" media="print">
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  </noscript>
+
+  <!-- Extra styles for code blocks on this page -->
+<style>
+  /* Code blocks – tight line-height, no phantom blank lines */
+  pre {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+    border-radius: 0.5rem;
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin: 0;
+    max-width: 100%;
+    tab-size: 2;
+  }
+  pre code {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0;
+    border-radius: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    white-space: pre;      /* preserve indentation */
+  }
+  /* Allow long lines to wrap only if they would overflow */
+  @media (max-width: 640px) {
+    pre code {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  }
+  /* Inline code */
+  code.inline {
+    background: rgba(148,163,184,0.18);
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.3rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85em;
+    line-height: 1.3;
+  }
+  /* Endpoint list accent */
+  .endpoint-row {
+    border-left: 3px solid #f97316;
+    padding-left: 1rem;
+  }
+</style>
+
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+
+  <div class="flex flex-1 min-h-screen">
+
+    <!-- ===== Desktop Sidebar ===== -->
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
+      </div>
+    </aside>
+
+    <!-- ===== Main ===== -->
+    <div class="flex-1 flex flex-col">
+
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <main class="container mx-auto px-4 py-8 flex-1 max-w-7xl">
+
+        <!-- ===== Breadcrumbs ===== -->
+        <nav aria-label="Breadcrumb" class="max-w-6xl mx-auto mb-6 text-sm">
+          <ol class="flex flex-wrap items-center gap-2 text-gray-500 dark:text-gray-400">
+            <li><a href="/" class="hover:text-orange-500">Home</a></li>
+            <li aria-hidden="true">›</li>
+            <li><a href="/integrations/" class="hover:text-orange-500">Integrations</a></li>
+            <li aria-hidden="true">›</li>
+            <li class="text-gray-800 dark:text-gray-200 font-semibold" aria-current="page">Developer Tools</li>
+          </ol>
+        </nav>
+
+        <!-- ===== Hero ===== -->
+        <section class="max-w-4xl mx-auto text-center mb-12">
+          <h1 class="text-3xl md:text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">
+            Traffic Torch Developer Tools
+          </h1>
+          <p class="text-xl md:text-2xl font-medium text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+            Bring 360° SEO, UX &amp; AI-search intelligence into your editor, your CI pipeline and your own apps.
+          </p>
+          <p class="text-base text-gray-500 dark:text-gray-400 mt-4 max-w-2xl mx-auto">
+            Free VS Code extension, free GitHub Action, and a REST Developer API. Same audit engine as the OFUX dashboard — packaged for the tools you already use.
+          </p>
+        </section>
+
+        <!-- Share Buttons -->
+        <div class="share-block">
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </div>
+
+        <!-- ===== VS Code + GitHub Action cards ===== -->
+        <section id="tools" class="max-w-6xl mx-auto mb-20">
+          <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+
+            <!-- VS Code -->
+            <article id="vscode" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group flex flex-col">
+              <div class="h-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500"></div>
+              <div class="p-8 text-center flex-1 flex flex-col">
+                <div class="text-6xl mb-6 group-hover:animate-bounce" aria-hidden="true">🛠️</div>
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-3">VS Code Extension</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed flex-1">
+                  Real-time SEO, GEO and UX health scoring inside Visual Studio Code. Paste HTML — get instant scores, warnings and prioritised fixes without leaving the editor.
+                </p>
+                <ul class="text-left text-sm text-gray-600 dark:text-gray-400 mb-8 space-y-1.5">
+                  <li>✔ Works on pre-filled HTML</li>
+                  <li>✔ Real-time scoring on save</li>
+                  <li>✔ Zero telemetry — code stays local</li>
+                  <li>✔ Same engine as the web app</li>
+                </ul>
+                <a href="https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools"
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg group-hover:scale-105"
+                   aria-label="Install Traffic Torch VS Code extension">
+                  Install VS Code Extension <span class="ml-2 text-xl" aria-hidden="true">→</span>
+                </a>
+              </div>
+            </article>
+
+            <!-- GitHub Action -->
+            <article id="github-action" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group flex flex-col">
+              <div class="h-2 bg-gradient-to-r from-orange-500 to-amber-600"></div>
+              <div class="p-8 text-center flex-1 flex flex-col">
+                <div class="text-6xl mb-6 group-hover:animate-bounce" aria-hidden="true">🚀</div>
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-3">GitHub Action</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed flex-1">
+                  One-click SEO + GEO + UX Health audit in your CI pipeline. Instantly opens the full Traffic Torch experience with your URL pre-filled — no credentials exposed.
+                </p>
+                <ul class="text-left text-sm text-gray-600 dark:text-gray-400 mb-8 space-y-1.5">
+                  <li>✔ Drop-in step for any workflow</li>
+                  <li>✔ No API key required</li>
+                  <li>✔ Perfect for previews &amp; staging</li>
+                  <li>✔ Free and open source</li>
+                </ul>
+                <a href="https://github.com/marketplace/actions/traffic-torch-audit"
+                   target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center justify-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-md hover:shadow-lg group-hover:scale-105"
+                   aria-label="Add Traffic Torch Audit GitHub Action">
+                  Add to GitHub <span class="ml-2 text-xl" aria-hidden="true">→</span>
+                </a>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <!-- ===== Developer API teaser ===== -->
+        <section id="api" class="max-w-5xl mx-auto mb-20 scroll-mt-24">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+              Traffic Torch Developer API
+            </h2>
+            <p class="text-lg text-gray-700 dark:text-gray-300 mt-3 max-w-3xl mx-auto">
+              Programmatic access to the same audit engine behind every Traffic Torch tool. Run audits, manage keys and receive webhooks — all over a clean REST interface.
+            </p>
+          </div>
+
+          <!-- API highlight cards -->
+          <div class="grid md:grid-cols-3 gap-6 mb-10">
+            <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5">
+              <div class="text-3xl mb-2" aria-hidden="true">🔑</div>
+              <h3 class="font-bold text-base text-gray-800 dark:text-gray-200">API Keys</h3>
+              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Generate and revoke keys per project. <code class="inline">X-API-Key</code> header for tool calls.</p>
+            </div>
+            <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5">
+              <div class="text-3xl mb-2" aria-hidden="true">📡</div>
+              <h3 class="font-bold text-base text-gray-800 dark:text-gray-200">Webhooks</h3>
+              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Subscribe to <code class="inline">audit.completed</code> and get the full result pushed to your endpoint.</p>
+            </div>
+            <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5">
+              <div class="text-3xl mb-2" aria-hidden="true">📊</div>
+              <h3 class="font-bold text-base text-gray-800 dark:text-gray-200">Quota</h3>
+              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">3 / 25 / 300 requests per day (Free / Pro / Enterprise). Resets midnight UTC.</p>
+            </div>
+          </div>
+
+          <!-- Endpoint quick reference -->
+          <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 mb-10">
+            <h3 class="text-lg font-bold mb-4 text-gray-800 dark:text-gray-200">🔌 Core Endpoints</h3>
+            <div class="space-y-4 text-sm">
+
+              <div class="endpoint-row">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="font-mono text-xs font-bold text-orange-500">POST</span>
+                  <span class="font-mono text-xs">/api/tools/:tool</span>
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">Run audit</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">
+                  Run any audit tool. Replace <code class="inline">:tool</code> with one of:
+                  <code class="inline">seo-intent</code>, <code class="inline">seo-ux</code>, <code class="inline">local-seo</code>,
+                  <code class="inline">product-seo</code>, <code class="inline">entity</code>, <code class="inline">topical</code>,
+                  <code class="inline">schema-generator</code>, <code class="inline">ai-search</code>,
+                  <code class="inline">ai-voice</code>, <code class="inline">ai-audit</code>,
+                  <code class="inline">quit-risk</code>, <code class="inline">keyword-research</code>,
+                  <code class="inline">keyword-placement</code>.
+                </p>
+              </div>
+
+              <div class="endpoint-row">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="font-mono text-xs font-bold text-orange-500">GET</span>
+                  <span class="font-mono text-xs">/api/account-info</span>
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">Usage</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">
+                  Returns your tier, daily usage, remaining quota, and GA4/GSC connection status.
+                </p>
+              </div>
+
+              <div class="endpoint-row">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="font-mono text-xs font-bold text-orange-500">GET · POST · DELETE</span>
+                  <span class="font-mono text-xs">/api/webhooks</span>
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">Webhooks</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">
+                  List, create and delete webhook subscriptions. Payload is delivered as JSON with the full audit result on <code class="inline">audit.completed</code>.
+                </p>
+              </div>
+
+              <div class="endpoint-row">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="font-mono text-xs font-bold text-orange-500">GET · POST · DELETE</span>
+                  <span class="font-mono text-xs">/api/keys</span>
+                  <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">Keys</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">
+                  Manage the API keys used to authorise tool calls.
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Quick example -->
+          <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 mb-10">
+            <h3 class="text-lg font-bold mb-3 text-gray-800 dark:text-gray-200">💻 Quick Example (cURL)</h3>
+            <pre><code>curl -X POST https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com"}'</code></pre>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">
+              Response:
+            </p>
+            <pre><code>{
+  "success": true,
+  "data": {
+    "tool": "seo-intent",
+    "url": "https://example.com",
+    "score": 85,
+    "summary": "Good intent match"
+  }
+}</code></pre>
+          </div>
+
+          <!-- Link to full docs -->
+          <div class="text-center">
+            <a href="/developer/api/"
+               class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl hover:opacity-90 transition"
+               aria-label="Read the full Traffic Torch Developer API documentation">
+              📖 Read the Full API Documentation →
+            </a>
+            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+              Authentication, error codes, rate limits, code samples (cURL, JavaScript, Python, PHP), webhook payload schema, changelog and support.
+            </p>
+          </div>
+        </section>
+
+        <!-- ===== What you can build ===== -->
+        <section id="use-cases" class="max-w-5xl mx-auto mb-16">
+          <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+            What You Can Build With It
+          </h2>
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5">
+              <div class="text-4xl mb-3" aria-hidden="true">🔁</div>
+              <h3 class="font-bold text-lg text-orange-600 dark:text-orange-400">CI Quality Gate</h3>
+              <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                Run audits on every PR. Fail the build if SEO or UX Health drops below your threshold.
+              </p>
+            </div>
+            <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5">
+              <div class="text-4xl mb-3" aria-hidden="true">🗂️</div>
+              <h3 class="font-bold text-lg text-purple-600 dark:text-purple-400">Bulk Site Audits</h3>
+              <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                Loop over a sitemap and store scores per URL. Spot pages regressing before users notice.
+              </p>
+            </div>
+            <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5">
+              <div class="text-4xl mb-3" aria-hidden="true">📊</div>
+              <h3 class="font-bold text-lg text-green-600 dark:text-green-400">Client Dashboards</h3>
+              <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                Feed audit scores into your own agency dashboard with webhooks — no polling required.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Related integrations ===== -->
+        <section id="related" class="max-w-5xl mx-auto mb-16">
+          <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+            Related Integrations
+          </h2>
+          <div class="grid md:grid-cols-3 gap-6">
+            <a href="/integrations/browser-extensions/" class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group">
+              <div class="text-4xl mb-3" aria-hidden="true">🌐</div>
+              <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">Browser Extensions</h3>
+              <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Chrome, Firefox and Edge extensions for human-in-the-loop audits.</p>
+              <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+            </a>
+            <a href="/integrations/plugins/" class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group">
+              <div class="text-4xl mb-3" aria-hidden="true">🎨</div>
+              <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">CMS &amp; Design Plugins</h3>
+              <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">WordPress, Figma and Framer plugins for design-time &amp; publishing-time checks.</p>
+              <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+            </a>
+            <a href="/integrations/" class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group">
+              <div class="text-4xl mb-3" aria-hidden="true">🧩</div>
+              <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">All Integrations</h3>
+              <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Every way to plug Traffic Torch into your stack — browsers, code, CMS, design.</p>
+              <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+            </a>
+          </div>
+        </section>
+
+        <!-- ===== FAQ ===== -->
+        <section id="faq" class="max-w-4xl mx-auto mb-16">
+          <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+            Frequently Asked Questions
+          </h2>
+          <div class="space-y-3">
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">What developer tools does Traffic Torch offer?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Three: a free VS Code extension for real-time SEO/GEO/UX scoring inside the editor, a free GitHub Action that runs audits in your CI pipeline, and a REST Developer API that gives programmatic access to 13+ audit tools with API keys, daily quotas and webhooks.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Is the Developer API free?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Yes. The Developer API is free and shares the same daily quota as your Traffic Torch account: 3 requests/day on Free, 25/day on Pro and 300/day on Enterprise. The quota resets at midnight UTC.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">How do I authenticate to the Developer API?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Two credentials are used. A Bearer token (JWT) obtained at login is required for management endpoints such as keys, webhooks and account-info. An <code class="inline">X-API-Key</code> header, generated on the <a href="/developer/api/" class="text-orange-500 hover:underline">Developer API page</a>, is required for the tool endpoint <code class="inline">/api/tools/*</code> that actually runs audits.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Which audit tools are available through the API?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">The API exposes the same engine as the site: <code class="inline">seo-intent</code>, <code class="inline">seo-ux</code>, <code class="inline">local-seo</code>, <code class="inline">product-seo</code>, <code class="inline">entity</code>, <code class="inline">topical</code>, <code class="inline">schema-generator</code>, <code class="inline">ai-search</code>, <code class="inline">ai-voice</code>, <code class="inline">ai-audit</code>, <code class="inline">quit-risk</code>, <code class="inline">keyword-research</code> and <code class="inline">keyword-placement</code>.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Does the Developer API support webhooks?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Yes. You can register a webhook URL and subscribe to the <code class="inline">audit.completed</code> event. Traffic Torch sends a POST request with the full audit result to your endpoint the moment an audit finishes. A <code class="inline">usage.alert</code> event is planned.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Where can I find full API documentation?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Full endpoint reference, error codes, rate limits, code samples in cURL, JavaScript, Python and PHP, webhook payload schema, changelog and support contacts are available at <a href="/developer/api/" class="text-orange-500 hover:underline">traffictorch.net/developer/api/</a>.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Does the GitHub Action require an API key?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">No. The GitHub Action opens the Traffic Torch audit experience with your URL pre-filled, so you can run it inside CI without exposing credentials. If you want the result to flow back into your pipeline programmatically, use the Developer API instead.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Does the VS Code extension send my code to a server?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">No. The extension analyses the pre-filled HTML you give it locally. It never transmits your source code, and it does not require an account.</div>
+            </details>
+          </div>
+        </section>
+
+        <!-- ===== Final CTA ===== -->
+        <section class="max-w-3xl mx-auto text-center mb-16">
+          <h2 class="text-2xl md:text-3xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+            Ship with confidence.
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400 mb-8">Install the VS Code extension, add the GitHub Action, or grab an API key — all free.</p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a href="https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools" target="_blank" rel="noopener noreferrer"
+               class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-md">🛠️ VS Code</a>
+            <a href="https://github.com/marketplace/actions/traffic-torch-audit" target="_blank" rel="noopener noreferrer"
+               class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition shadow-md">🚀 GitHub Action</a>
+            <a href="/developer/api/"
+               class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl transition shadow-md">🔑 Get API Key</a>
+          </div>
+        </section>
+
+        <!-- Share Buttons (bottom) -->
+        <div class="share-block">
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </div>
+
+      </main>
+
+      <div id="footer-placeholder"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="/main-v1.1.js" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js"></script>
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b5ec7016f72456a9b4484d5dc706b79","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+  <script type="module">
+    import { injectShareModule } from '/share-injector.js';
+    document.addEventListener('DOMContentLoaded', () => { injectShareModule(); });
+  </script>
+</body>
+</html>

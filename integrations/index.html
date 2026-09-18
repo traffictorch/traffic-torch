@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ===== SEO ===== -->
+  <title>Traffic Torch Integrations – Browser Extensions, CMS Plugins & Developer Tools</title>
+  <meta name="description" content="Every way to plug Traffic Torch into your stack: Chrome, Firefox and Edge extensions; WordPress, Figma and Framer plugins; VS Code, GitHub Action and REST Developer API. Free, privacy-first.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://traffictorch.net/integrations/">
+
+  <!-- Theme colors -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/integrations/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/integrations/">
+
+  <!-- Open Graph (reusing homepage image) -->
+  <meta property="og:title" content="Traffic Torch Integrations – Browser Extensions, CMS Plugins & Developer Tools">
+  <meta property="og:description" content="Chrome, Firefox, Edge, WordPress, Figma, Framer, VS Code, GitHub Actions and the REST API. Every way to plug Traffic Torch into your stack.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/integrations/">
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Traffic Torch integrations: browser extensions, plugins and developer tools">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Traffic Torch Integrations – Browser Extensions, CMS Plugins & Developer Tools">
+  <meta name="twitter:description" content="Chrome, Firefox, Edge, WordPress, Figma, Framer, VS Code, GitHub Actions and the REST API. Every way to plug Traffic Torch into your stack.">
+  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <!-- ===== Structured Data ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/integrations/#webpage",
+        "url": "https://traffictorch.net/integrations/",
+        "name": "Traffic Torch Integrations",
+        "description": "Every way to plug Traffic Torch into your stack: browser extensions, CMS & design plugins, and developer tools.",
+        "isPartOf": { "@type": "WebSite", "@id": "https://traffictorch.net/" },
+        "inLanguage": "en",
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/images/traffic-torch-toolkit.webp",
+          "width": 1200,
+          "height": 630
+        },
+        "breadcrumb": { "@id": "https://traffictorch.net/integrations/#breadcrumb" },
+        "mainEntity": { "@id": "https://traffictorch.net/integrations/#itemlist" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://traffictorch.net/integrations/#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" },
+          { "@type": "ListItem", "position": 2, "name": "Integrations", "item": "https://traffictorch.net/integrations/" }
+        ]
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://traffictorch.net/integrations/#itemlist",
+        "name": "Traffic Torch Integrations",
+        "itemListOrder": "https://schema.org/ItemListOrderAscending",
+        "numberOfItems": 3,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Browser Extensions",
+            "description": "Chrome, Firefox and Microsoft Edge extensions for human-in-the-loop SEO, UX and AI-search audits.",
+            "url": "https://traffictorch.net/integrations/browser-extensions/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "CMS & Design Plugins",
+            "description": "WordPress, Figma and Framer plugins for publishing-time and design-time SEO and UX checks.",
+            "url": "https://traffictorch.net/integrations/plugins/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Developer Tools",
+            "description": "VS Code extension, GitHub Action and the REST Developer API for programmatic access.",
+            "url": "https://traffictorch.net/integrations/developer-tools/"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://traffictorch.net/integrations/#faq",
+        "mainEntityOfPage": { "@id": "https://traffictorch.net/integrations/#webpage" },
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What integrations does Traffic Torch offer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Three families. Browser extensions for Chrome, Firefox and Microsoft Edge. CMS and design plugins for WordPress, Figma and Framer. Developer tools including a VS Code extension, a GitHub Action and a REST Developer API. All are free to install, and the same Traffic Torch account unlocks higher quotas across every one."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are the Traffic Torch integrations free?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Every integration is free to install and use. The Free tier gives you 3 audits per day. The same account unlocks Pro (25/day) or Enterprise (300/day) quotas across all integrations, plus saved history and cross-device sync."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which integration should I start with?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "If you audit pages while browsing, start with the browser extension for your browser. If you publish on WordPress, or design in Figma or Framer, start with the plugin for your platform. If you want audits inside your code editor, CI pipeline or your own apps, start with the developer tools."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do all the integrations use the same audit engine?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The browser extensions, the WordPress, Figma and Framer plugins, the VS Code extension, the GitHub Action and the Developer API all run the same Traffic Torch audit engine that powers the OFUX dashboard. You get the same scores, the same signals and the same fix recommendations, wherever you trigger an audit."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do the integrations send my data to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Browser extensions, the VS Code extension and the WordPress plugin analyse content locally. Figma and Framer plugins analyse the frames and URLs you point them at. The Developer API returns results to your own infrastructure. Optional features such as saved audit history only touch the server after you log in."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need a Traffic Torch account to use the integrations?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Every integration works without an account. Signing in is optional and unlocks higher daily quotas, saved audit history and cross-device sync. The same account works across every Traffic Torch tool, plugin and extension."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there an integration for Shopify, Wix or Squarespace?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Not yet. Shopify, Wix and Squarespace are on the roadmap. In the meantime, you can audit any published Shopify, Wix or Squarespace page with the browser extensions for Chrome, Firefox and Edge, or programmatically via the Developer API."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where can I find the full API documentation?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Full endpoint reference, authentication details, error codes, rate limits, code samples in cURL, JavaScript, Python and PHP, webhook payload schema and changelog are available at traffictorch.net/integrations/developer/api/."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- PWA + icons -->
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+
+  <!-- Styles -->
+  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/home-css-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/home-css-v1.0.css">
+  </noscript>
+  <link rel="stylesheet" href="/print-share.css" media="print">
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  </noscript>
+
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+
+  <div class="flex flex-1 min-h-screen">
+
+    <!-- ===== Desktop Sidebar ===== -->
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
+      </div>
+    </aside>
+
+    <!-- ===== Main ===== -->
+    <div class="flex-1 flex flex-col">
+
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <main class="container mx-auto px-4 py-8 flex-1 max-w-7xl">
+
+        <!-- ===== Breadcrumbs ===== -->
+        <nav aria-label="Breadcrumb" class="max-w-6xl mx-auto mb-6 text-sm">
+          <ol class="flex flex-wrap items-center gap-2 text-gray-500 dark:text-gray-400">
+            <li><a href="/" class="hover:text-orange-500">Home</a></li>
+            <li aria-hidden="true">›</li>
+            <li class="text-gray-800 dark:text-gray-200 font-semibold" aria-current="page">Integrations</li>
+          </ol>
+        </nav>
+
+        <!-- ===== Hero ===== -->
+        <section class="max-w-4xl mx-auto text-center mb-12">
+          <h1 class="text-3xl md:text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">
+            Traffic Torch Integrations
+          </h1>
+          <p class="text-xl md:text-2xl font-medium text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
+            One audit engine. Every tool you already use.
+          </p>
+          <p class="text-base text-gray-500 dark:text-gray-400 mt-4 max-w-2xl mx-auto">
+            Browser extensions, CMS and design plugins, and developer tools — all free, all privacy-first, all sharing the same 360° SEO, UX and AI-search scoring as the OFUX dashboard.
+          </p>
+        </section>
+
+        <!-- Share Buttons -->
+        <div class="share-block">
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </div>
+
+        <!-- ===== Three families ===== -->
+        <section id="families" class="max-w-6xl mx-auto mb-20">
+          <div class="grid md:grid-cols-3 gap-8">
+
+            <!-- Browser Extensions -->
+            <a href="/integrations/browser-extensions/"
+               class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:border-orange-400 transition-all duration-300 group flex flex-col"
+               aria-label="Explore Traffic Torch browser extensions for Chrome, Firefox and Edge">
+              <div class="h-2 bg-gradient-to-r from-orange-500 via-red-500 to-purple-600"></div>
+              <div class="p-8 text-center flex-1 flex flex-col">
+                <div class="text-6xl mb-6 group-hover:animate-bounce" aria-hidden="true">🌐</div>
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Browser Extensions</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed flex-1">
+                  Audit any page you're already looking at. One click, instant 360° score, no context switching.
+                </p>
+                <ul class="text-left text-sm text-gray-600 dark:text-gray-400 mb-6 space-y-1.5">
+                  <li>🌐 Chrome (Chromium, Brave, Vivaldi, Opera)</li>
+                  <li>🦊 Firefox</li>
+                  <li>🔷 Microsoft Edge</li>
+                </ul>
+                <span class="mt-auto inline-block text-sm text-orange-500 font-semibold group-hover:translate-x-1 transition-transform">Explore →</span>
+              </div>
+            </a>
+
+            <!-- Plugins -->
+            <a href="/integrations/plugins/"
+               class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:border-orange-400 transition-all duration-300 group flex flex-col"
+               aria-label="Explore Traffic Torch plugins for WordPress, Figma and Framer">
+              <div class="h-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-emerald-500"></div>
+              <div class="p-8 text-center flex-1 flex flex-col">
+                <div class="text-6xl mb-6 group-hover:animate-bounce" aria-hidden="true">🎨</div>
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-3">CMS &amp; Design Plugins</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed flex-1">
+                  Audit SEO and UX where you actually build and publish — before code, before launch.
+                </p>
+                <ul class="text-left text-sm text-gray-600 dark:text-gray-400 mb-6 space-y-1.5">
+                  <li>📘 WordPress (posts, pages, products)</li>
+                  <li>🎨 Figma (design-time checks)</li>
+                  <li>🔥 Framer (official, auto-detects URL)</li>
+                </ul>
+                <span class="mt-auto inline-block text-sm text-orange-500 font-semibold group-hover:translate-x-1 transition-transform">Explore →</span>
+              </div>
+            </a>
+
+            <!-- Developer Tools -->
+            <a href="/integrations/developer-tools/"
+               class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-xl hover:border-orange-400 transition-all duration-300 group flex flex-col"
+               aria-label="Explore Traffic Torch developer tools for VS Code, GitHub and the REST API">
+              <div class="h-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500"></div>
+              <div class="p-8 text-center flex-1 flex flex-col">
+                <div class="text-6xl mb-6 group-hover:animate-bounce" aria-hidden="true">🛠️</div>
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Developer Tools</h2>
+                <p class="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed flex-1">
+                  Bring audits into your editor, CI pipeline and your own apps — with a clean REST interface.
+                </p>
+                <ul class="text-left text-sm text-gray-600 dark:text-gray-400 mb-6 space-y-1.5">
+                  <li>🛠️ VS Code extension</li>
+                  <li>🚀 GitHub Action</li>
+                  <li>🧑‍💻 REST Developer API + webhooks</li>
+                </ul>
+                <span class="mt-auto inline-block text-sm text-orange-500 font-semibold group-hover:translate-x-1 transition-transform">Explore →</span>
+              </div>
+            </a>
+
+          </div>
+        </section>
+
+        <!-- ===== Why integrations matter ===== -->
+        <section id="why" class="max-w-5xl mx-auto mb-16">
+          <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+            Why Integrations Beat a Single Dashboard
+          </h2>
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5">
+              <div class="text-4xl mb-3" aria-hidden="true">⏱️</div>
+              <h3 class="font-bold text-lg text-orange-600 dark:text-orange-400">Catch Issues Earlier</h3>
+              <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                A heading or contrast problem caught in Figma takes seconds to fix. The same problem caught after launch takes a sprint.
+              </p>
+            </div>
+            <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5">
+              <div class="text-4xl mb-3" aria-hidden="true">🎯</div>
+              <h3 class="font-bold text-lg text-purple-600 dark:text-purple-400">Meet Users Where They Are</h3>
+              <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                Content editors live in WordPress. Designers live in Figma and Framer. Developers live in VS Code and CI. Each integration reaches one of them natively.
+              </p>
+            </div>
+            <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5">
+              <div class="text-4xl mb-3" aria-hidden="true">🔒</div>
+              <h3 class="font-bold text-lg text-green-600 dark:text-green-400">Privacy by Default</h3>
+              <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                Local analysis wherever possible. Your content and credentials never leave your device during an audit. Optional cloud features only activate after you log in.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== Pick your workflow ===== -->
+        <section id="pick" class="max-w-5xl mx-auto mb-16">
+          <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+            Pick the Integration for Your Workflow
+          </h2>
+          <div class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
+                <thead class="border-b border-gray-200 dark:border-gray-700">
+                  <tr>
+                    <th class="py-3 pr-4 font-semibold">If you…</th>
+                    <th class="py-3 pr-4 font-semibold">Start with</th>
+                    <th class="py-3 font-semibold">Best for</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <td class="py-3 pr-4">Audit pages while browsing</td>
+                    <td class="py-3 pr-4"><a href="/integrations/browser-extensions/" class="text-orange-500 hover:underline font-semibold">Browser Extensions</a></td>
+                    <td class="py-3">SEO consultants, auditors, competitors research</td>
+                  </tr>
+                  <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <td class="py-3 pr-4">Publish content on WordPress</td>
+                    <td class="py-3 pr-4"><a href="/integrations/plugins/#wordpress" class="text-orange-500 hover:underline font-semibold">WordPress Plugin</a></td>
+                    <td class="py-3">Bloggers, in-house editors, agencies</td>
+                  </tr>
+                  <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <td class="py-3 pr-4">Design in Figma</td>
+                    <td class="py-3 pr-4"><a href="/integrations/plugins/#figma" class="text-orange-500 hover:underline font-semibold">Figma Plugin</a></td>
+                    <td class="py-3">Product designers, UX teams, agencies</td>
+                  </tr>
+                  <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <td class="py-3 pr-4">Build sites in Framer</td>
+                    <td class="py-3 pr-4"><a href="/integrations/plugins/#framer" class="text-orange-500 hover:underline font-semibold">Framer Plugin</a></td>
+                    <td class="py-3">Solo founders, landing-page builders, indie hackers</td>
+                  </tr>
+                  <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <td class="py-3 pr-4">Write code in VS Code</td>
+                    <td class="py-3 pr-4"><a href="/integrations/developer-tools/#vscode" class="text-orange-500 hover:underline font-semibold">VS Code Extension</a></td>
+                    <td class="py-3">Front-end developers, full-stack teams</td>
+                  </tr>
+                  <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <td class="py-3 pr-4">Ship via GitHub Actions</td>
+                    <td class="py-3 pr-4"><a href="/integrations/developer-tools/#github-action" class="text-orange-500 hover:underline font-semibold">GitHub Action</a></td>
+                    <td class="py-3">DevOps, agencies running preview audits</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 pr-4">Automate or integrate audits</td>
+                    <td class="py-3 pr-4"><a href="/integrations/developer/api/" class="text-orange-500 hover:underline font-semibold">Developer API</a></td>
+                    <td class="py-3">SaaS builders, dashboards, bulk site audits</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== How they share one engine ===== -->
+        <section id="one-engine" class="max-w-4xl mx-auto mb-16">
+          <details class="glass rounded-2xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-6" open>
+            <summary class="cursor-pointer text-lg font-bold text-gray-800 dark:text-gray-200">
+              One audit engine, everywhere
+            </summary>
+            <div class="mt-4 text-sm text-gray-700 dark:text-gray-300 space-y-3">
+              <p>Every integration — browser extensions, WordPress plugin, Figma plugin, Framer plugin, VS Code extension, GitHub Action and the Developer API — runs the exact same Traffic Torch audit engine that powers the OFUX dashboard.</p>
+              <p>That means a page audited in Chrome returns the same score as the same page audited through the API or via the WordPress plugin. Your team can mix and match without arguing about whose numbers are right.</p>
+              <p>Every integration is also <strong>free to install</strong>. A single Traffic Torch account unlocks the same quota across all of them — 3 audits/day on Free, 25/day on Pro, 300/day on Enterprise.</p>
+            </div>
+          </details>
+        </section>
+
+        <!-- ===== FAQ ===== -->
+        <section id="faq" class="max-w-4xl mx-auto mb-16">
+          <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+            Frequently Asked Questions
+          </h2>
+          <div class="space-y-3">
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">What integrations does Traffic Torch offer?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Three families. <strong>Browser extensions</strong> for Chrome, Firefox and Microsoft Edge. <strong>CMS and design plugins</strong> for WordPress, Figma and Framer. <strong>Developer tools</strong> including a VS Code extension, a GitHub Action and a REST Developer API. All free, all sharing the same audit engine as the OFUX dashboard.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Are the Traffic Torch integrations free?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Yes. Every integration is free to install and use. The Free tier gives you 3 audits per day. The same account unlocks Pro (25/day) or Enterprise (300/day) quotas across all integrations, plus saved history and cross-device sync.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Which integration should I start with?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">If you audit pages while browsing, start with the <a href="/integrations/browser-extensions/" class="text-orange-500 hover:underline">browser extension</a> for your browser. If you publish on WordPress or design in Figma or Framer, start with the <a href="/integrations/plugins/" class="text-orange-500 hover:underline">plugin</a> for your platform. If you want audits inside your editor, CI pipeline or your own apps, start with the <a href="/integrations/developer-tools/" class="text-orange-500 hover:underline">developer tools</a>.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Do all the integrations use the same audit engine?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Yes. The browser extensions, the WordPress, Figma and Framer plugins, the VS Code extension, the GitHub Action and the Developer API all run the same Traffic Torch audit engine that powers the OFUX dashboard. You get the same scores, the same signals and the same fix recommendations, wherever you trigger an audit.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Do the integrations send my data to a server?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">No. Browser extensions, the VS Code extension and the WordPress plugin analyse content locally. Figma and Framer plugins analyse the frames and URLs you point them at. The Developer API returns results to your own infrastructure. Optional features such as saved audit history only touch the server after you log in.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Do I need a Traffic Torch account to use the integrations?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">No. Every integration works without an account. Signing in is optional and unlocks higher daily quotas, saved audit history and cross-device sync. The same account works across every Traffic Torch tool, plugin and extension.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Is there an integration for Shopify, Wix or Squarespace?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Not yet. Shopify, Wix and Squarespace are on the roadmap. In the meantime, you can audit any published Shopify, Wix or Squarespace page with the <a href="/integrations/browser-extensions/" class="text-orange-500 hover:underline">browser extensions</a> for Chrome, Firefox and Edge, or programmatically via the <a href="/integrations/developer/api/" class="text-orange-500 hover:underline">Developer API</a>.</div>
+            </details>
+            <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Where can I find the full API documentation?</summary>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Full endpoint reference, authentication details, error codes, rate limits, code samples in cURL, JavaScript, Python and PHP, webhook payload schema and changelog are available at <a href="/integrations/developer/api/" class="text-orange-500 hover:underline">traffictorch.net/integrations/developer/api/</a>.</div>
+            </details>
+          </div>
+        </section>
+
+        <!-- ===== Final CTA ===== -->
+        <section class="max-w-3xl mx-auto text-center mb-16">
+          <h2 class="text-2xl md:text-3xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+            Install once. Audit anywhere.
+          </h2>
+          <p class="text-gray-600 dark:text-gray-400 mb-8">Free forever, no credit card, no tracking.</p>
+          <div class="flex flex-wrap justify-center gap-4">
+            <a href="/integrations/browser-extensions/"
+               class="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl transition shadow-md">🌐 Browser Extensions</a>
+            <a href="/integrations/plugins/"
+               class="px-6 py-3 bg-gradient-to-r from-red-500 to-blue-600 text-white font-bold rounded-xl transition shadow-md">🎨 Plugins</a>
+            <a href="/integrations/developer-tools/"
+               class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl transition shadow-md">🛠️ Developer Tools</a>
+          </div>
+        </section>
+
+        <!-- Share Buttons (bottom) -->
+        <div class="share-block">
+          <strong class="share-label">Share?</strong>
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </div>
+
+      </main>
+
+      <div id="footer-placeholder"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="/main-v1.1.js" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js"></script>
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b5ec7016f72456a9b4484d5dc706b79","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+  <script type="module">
+    import { injectShareModule } from '/share-injector.js';
+    document.addEventListener('DOMContentLoaded', () => { injectShareModule(); });
+  </script>
+</body>
+</html>

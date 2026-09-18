@@ -217,39 +217,45 @@
     </a>
   </div>
 
-  <!-- Extras -->
-  <button
-    type="button"
-    class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    data-category="extras"
-    title="Extras – Browser extensions, plugins & developer API"
-    data-tooltip="Extras – Browser extensions, plugins & developer API"
-  >
-    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">➕</span>
-    <span class="sidebar-text font-semibold flex-1">Extras</span>
-    <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
-  </button>
-  <div class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="extras">
-    <a href="/#extensions" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Traffic Torch Browser Extensions – Chrome, Firefox & Edge"
-       data-tooltip="Traffic Torch Browser Extensions – Chrome, Firefox & Edge">
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🦊</span>
-      <span class="sidebar-text hidden md:block">Extensions</span>
-    </a>
-    <a href="/#ai-seo-plugins" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Traffic Torch AI SEO Plugins – WordPress, Figma & Framer"
-       data-tooltip="Traffic Torch AI SEO Plugins – WordPress, Figma & Framer">
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">💠</span>
-      <span class="sidebar-text hidden md:block">Plugins</span>
-    </a>
-    <a href="/developer/api/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Traffic Torch Developer API Set up"
-       data-tooltip="Traffic Torch Developer API Set up">
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🧑‍💻</span>
-      <span class="sidebar-text hidden md:block">Developer</span>
-    </a>
-  </div>
+<!-- Extras group -->
+<button
+  type="button"
+  class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
+  aria-expanded="false"
+  data-category="extras"
+  title="Extras – Browser extensions, CMS plugins, developer tools & API"
+  data-tooltip="Extras – Browser extensions, CMS plugins, developer tools & API"
+>
+  <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">➕</span>
+  <span class="sidebar-text font-semibold flex-1">Extras</span>
+  <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
+</button>
+<div class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="extras">
+  <a href="/integrations/browser-extensions/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+     title="Traffic Torch Browser Extensions – Chrome, Firefox & Edge"
+     data-tooltip="Traffic Torch Browser Extensions – Chrome, Firefox & Edge">
+    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🌐</span>
+    <span class="sidebar-text hidden md:block">Browser Extensions</span>
+  </a>
+  <a href="/integrations/plugins/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+     title="Traffic Torch Plugins – WordPress, Figma & Framer"
+     data-tooltip="Traffic Torch Plugins – WordPress, Figma & Framer">
+    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🎨</span>
+    <span class="sidebar-text hidden md:block">Plugins</span>
+  </a>
+  <a href="/integrations/developer-tools/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+     title="Traffic Torch Developer Tools – VS Code, GitHub Action & API"
+     data-tooltip="Traffic Torch Developer Tools – VS Code, GitHub Action & API">
+    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🛠️</span>
+    <span class="sidebar-text hidden md:block">Developer Tools</span>
+  </a>
+  <a href="/integrations/developer/api/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+     title="Traffic Torch Developer API – Full endpoint reference"
+     data-tooltip="Traffic Torch Developer API – Full endpoint reference">
+    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🧑‍💻</span>
+    <span class="sidebar-text hidden md:block">Developer API</span>
+  </a>
+</div>
 
   <!-- Help Guides -->
   <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"

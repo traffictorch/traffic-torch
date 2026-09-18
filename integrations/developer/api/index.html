@@ -6,39 +6,99 @@
   <title>Traffic Torch – Developer API</title>
   <meta name="description" content="Traffic Torch Developer API – programmatically run audits, manage keys, and integrate with your tools.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://traffictorch.net/developer/api/">
+  <link rel="canonical" href="https://traffictorch.net/integrations/developer/api/">
 
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
   <meta property="og:title" content="Traffic Torch – Developer API">
   <meta property="og:description" content="Programmatic access to all Traffic Torch SEO, UX, and AI audit tools.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://traffictorch.net/developer/api/">
+  <meta property="og:url" content="https://traffictorch.net/integrations/developer/api/">
   <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Traffic Torch – Developer API">
-  
+
   <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebPage",
-      "@id": "https://traffictorch.net/developer/api/",
-      "url": "https://traffictorch.net/developer/api/",
-      "name": "Traffic Torch Developer API",
-      "description": "Programmatically run all 15 audit tools, retrieve results, and manage your API keys.",
-      "isPartOf": {
-        "@type": "WebSite",
-        "@id": "https://traffictorch.net/",
-        "name": "Traffic Torch"
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/integrations/developer/api/",
+        "url": "https://traffictorch.net/integrations/developer/api/",
+        "name": "Traffic Torch Developer API",
+        "description": "Programmatically run all 15 audit tools, retrieve results, and manage your API keys.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": "https://traffictorch.net/",
+          "name": "Traffic Torch"
+        },
+        "breadcrumb": {
+          "@id": "https://traffictorch.net/integrations/developer/api/#breadcrumb"
+        },
+        "about": {
+          "@type": "Thing",
+          "name": "SEO API"
+        },
+        "mainEntity": {
+          "@id": "https://traffictorch.net/integrations/developer/api/#api"
+        }
       },
-      "about": {
-        "@type": "Thing",
-        "name": "SEO API"
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://traffictorch.net/integrations/developer/api/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://traffictorch.net/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Integrations",
+            "item": "https://traffictorch.net/integrations/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Developer Tools",
+            "item": "https://traffictorch.net/integrations/developer-tools/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "Developer API",
+            "item": "https://traffictorch.net/integrations/developer/api/"
+          }
+        ]
       },
-      "mainEntity": {
+      {
+        "@type": "WebAPI",
+        "@id": "https://traffictorch.net/integrations/developer/api/#api",
+        "name": "Traffic Torch Developer API",
+        "description": "REST API to programmatically run 13+ SEO, UX, GEO and AI-search audit tools, manage API keys and receive webhook notifications on audit completion.",
+        "documentation": "https://traffictorch.net/integrations/developer/api/",
+        "url": "https://traffictorch.net/integrations/developer/api/",
+        "provider": {
+          "@type": "Organization",
+          "name": "Traffic Torch",
+          "url": "https://traffictorch.net/"
+        },
+        "termsOfService": "https://traffictorch.net/terms/",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD"
+        }
+      },
+      {
         "@type": "FAQPage",
+        "@id": "https://traffictorch.net/integrations/developer/api/#faq",
+        "mainEntityOfPage": {
+          "@id": "https://traffictorch.net/integrations/developer/api/"
+        },
         "mainEntity": [
           {
             "@type": "Question",
@@ -98,10 +158,9 @@
           }
         ]
       }
-    }
-  ]
-}
-</script>
+    ]
+  }
+  </script>
 
   <!-- Preload CSS -->
   <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
@@ -157,22 +216,41 @@
     html {
       scroll-behavior: smooth;
     }
-    
-/* Code blocks – wrap long lines and prevent clipping */
-pre, pre code {
-  background-color: #1e293b !important;
-  color: #f1f5f9 !important;
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  overflow-x: auto;
-  white-space: pre-wrap !important;      /* allow wrapping */
-  word-break: break-word !important;    /* break long words */
-  font-family: monospace;
-  font-size: 0.875rem;
-  line-height: 2;
-  max-width: 100%;
-}
 
+    /* Code blocks – tight line-height, no phantom blank lines */
+    pre {
+      background-color: #1e293b !important;
+      color: #f1f5f9 !important;
+      border-radius: 0.5rem;
+      padding: 0.85rem 1rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin: 0;
+      max-width: 100%;
+      tab-size: 2;
+    }
+    pre code {
+      background: transparent !important;
+      color: inherit !important;
+      padding: 0;
+      border-radius: 0;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      white-space: pre;
+    }
+    @media (max-width: 640px) {
+      pre code {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    }
+    /* Inline code */
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -219,6 +297,19 @@ pre, pre code {
 
       <div class="max-w-4xl mx-auto">
 
+        <!-- ===== Breadcrumbs ===== -->
+        <nav aria-label="Breadcrumb" class="mb-6 text-sm">
+          <ol class="flex flex-wrap items-center gap-2 text-gray-500 dark:text-gray-400">
+            <li><a href="/" class="hover:text-orange-500">Home</a></li>
+            <li aria-hidden="true">›</li>
+            <li><a href="/integrations/" class="hover:text-orange-500">Integrations</a></li>
+            <li aria-hidden="true">›</li>
+            <li><a href="/integrations/developer-tools/" class="hover:text-orange-500">Developer Tools</a></li>
+            <li aria-hidden="true">›</li>
+            <li class="text-gray-800 dark:text-gray-200 font-semibold" aria-current="page">Developer API</li>
+          </ol>
+        </nav>
+
         <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">🧑‍💻 Developer API</h1>
         <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">Programmatically run all 15 audit tools, retrieve results, and manage your API keys.</p>
 
@@ -240,16 +331,15 @@ pre, pre code {
             <li><a href="#support" class="text-orange-500 hover:underline">📧 Support</a></li>
           </ul>
         </nav>
-        
-<!-- Share Buttons --> 
-<div class="share-block">
-  <strong class="share-label">Share?</strong>
-  <div class="share-row">
-    <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
-    <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-  </div>
-  <p class="share-status" aria-live="polite"></p>
-</div>
+
+        <!-- Share Buttons -->
+        <div class="share-block">
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </div>
 
         <!-- ===== API KEY MANAGEMENT ===== -->
         <section class="glass rounded-2xl p-6 mb-8">
@@ -303,7 +393,7 @@ pre, pre code {
           <!-- Add webhook form -->
           <div class="flex flex-wrap items-center gap-3 mb-4">
             <input type="url" x-model="newWebhookUrl" placeholder="https://your-domain.com/webhook" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm min-w-[200px]">
-<select x-model="newWebhookEvents" multiple aria-label="Select events" class="px-2 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm min-w-[150px]">
+            <select x-model="newWebhookEvents" multiple aria-label="Select events" class="px-2 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm min-w-[150px]">
               <option value="audit.completed">Audit Completed</option>
               <option value="usage.alert">Usage Alert</option>
             </select>
@@ -339,7 +429,7 @@ pre, pre code {
                 <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Run audit</span>
               </div>
               <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Run any audit tool. Replace <code>:tool</code> with: <code>seo-intent</code>, <code>seo-ux</code>, <code>local-seo</code>, <code>product-seo</code>, <code>entity</code>, <code>topical</code>, <code>schema-generator</code>, <code>ai-search</code>, <code>ai-voice</code>, <code>ai-audit</code>, <code>quit-risk</code>, <code>keyword-research</code>, <code>keyword-placement</code>.</p>
-              <pre class="mt-2 text-xs bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>POST /api/tools/seo-intent
+              <pre class="mt-2"><code>POST /api/tools/seo-intent
 X-API-Key: YOUR_API_KEY
 {"url": "https://example.com"}</code></pre>
             </div>
@@ -402,7 +492,7 @@ X-API-Key: YOUR_API_KEY
               <li><strong>Bearer Token (JWT)</strong> – used for most endpoints (keys, webhooks, account info). Obtain it by logging in via the <a href="/login/" class="text-blue-500 hover:underline">login page</a>.</li>
               <li><strong>X-API-Key</strong> – used exclusively for the tool endpoint <code>/api/tools/*</code>. Generate a key on this page.</li>
             </ul>
-            <pre class="bg-gray-900 text-white p-3 rounded-lg mt-2 overflow-x-auto"><code>Authorization: Bearer &lt;your_jwt&gt;
+            <pre class="mt-2"><code>Authorization: Bearer &lt;your_jwt&gt;
 X-API-Key: &lt;your_api_key&gt;</code></pre>
             <p class="text-xs text-gray-500">The <code>X-API-Key</code> header is only required for the tool endpoint; all other endpoints use the <code>Authorization</code> header.</p>
           </div>
@@ -439,11 +529,11 @@ X-API-Key: &lt;your_api_key&gt;</code></pre>
             <p><strong>POST</strong> <code>/api/tools/:tool</code></p>
             <p><strong>Headers:</strong> <code>X-API-Key: &lt;your_api_key&gt;</code> and <code>Content-Type: application/json</code></p>
             <p><strong>Request body:</strong></p>
-            <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>{
+            <pre><code>{
   "url": "https://example.com"
 }</code></pre>
             <p><strong>Response (success):</strong></p>
-            <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>{
+            <pre><code>{
   "success": true,
   "data": {
     "tool": "seo-intent",
@@ -463,7 +553,7 @@ X-API-Key: &lt;your_api_key&gt;</code></pre>
           <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
             <p><strong>GET</strong> <code>/api/webhooks</code> – list your webhooks (requires Bearer token).</p>
             <p><strong>POST</strong> <code>/api/webhooks</code> – create a new webhook (requires Bearer token).</p>
-            <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>{
+            <pre><code>{
   "url": "https://your-domain.com/webhook",
   "events": ["audit.completed"]
 }</code></pre>
@@ -479,7 +569,7 @@ X-API-Key: &lt;your_api_key&gt;</code></pre>
           <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
             <p><strong>GET</strong> <code>/api/account-info</code> – returns your account details and daily usage.</p>
             <p><strong>Response example:</strong></p>
-            <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>{
+            <pre><code>{
   "email": "user@example.com",
   "isPro": true,
   "proSince": "2025-03-01T...",
@@ -539,14 +629,14 @@ X-API-Key: &lt;your_api_key&gt;</code></pre>
           <div class="space-y-6 text-sm text-gray-700 dark:text-gray-300">
             <div>
               <h4 class="font-bold text-base">cURL</h4>
-              <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>curl -X POST https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent \
+              <pre><code>curl -X POST https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent \
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com"}'</code></pre>
             </div>
             <div>
               <h4 class="font-bold text-base">JavaScript (fetch)</h4>
-              <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent', {
+              <pre><code>fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent', {
   method: 'POST',
   headers: {
     'X-API-Key': 'YOUR_API_KEY',
@@ -560,7 +650,7 @@ X-API-Key: &lt;your_api_key&gt;</code></pre>
             </div>
             <div>
               <h4 class="font-bold text-base">Python (requests)</h4>
-              <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>import requests
+              <pre><code>import requests
 
 url = 'https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent'
 headers = {'X-API-Key': 'YOUR_API_KEY', 'Content-Type': 'application/json'}
@@ -571,7 +661,7 @@ print(response.json())</code></pre>
             </div>
             <div>
               <h4 class="font-bold text-base">PHP (cURL)</h4>
-              <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>$ch = curl_init('https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent');
+              <pre><code>$ch = curl_init('https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -592,7 +682,7 @@ echo $response;</code></pre>
           <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
           <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
             <p>When an audit completes, Traffic Torch sends a POST request to your registered webhook URL with the following JSON payload:</p>
-            <pre class="bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>{
+            <pre><code>{
   "event": "audit.completed",
   "tool": "seo-intent",
   "url": "https://example.com",
@@ -608,16 +698,15 @@ echo $response;</code></pre>
             <p><strong>Event types:</strong> <code>audit.completed</code> (currently the only event). <code>usage.alert</code> will be added in the future.</p>
           </div>
         </section>
- 
- <!-- Share Buttons -->       
-<div class="share-block">
-  <strong class="share-label">Share?</strong>
-  <div class="share-row">
-    <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
-    <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-  </div>
-  <p class="share-status" aria-live="polite"></p>
-</div>
+
+        <!-- Share Buttons -->
+        <div class="share-block">
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </div>
 
         <!-- FAQ -->
         <section id="faq" class="glass rounded-2xl p-6 mb-8">
