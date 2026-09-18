@@ -492,14 +492,14 @@
           </div>
         </div>
 
-<div class="share-block">
-  <strong class="share-label">Share?</strong>
-  <div class="share-row">
-    <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
-    <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-  </div>
-  <p class="share-status" aria-live="polite"></p>
-</div>
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
 
         <section id="deep-dive" class="py-4 bg-gray dark:bg-gray-900">
           <div class="max-w-7xl mx-auto px-2">
@@ -919,14 +919,14 @@
           </div>
         </section>
 
-<div class="share-block">
-  <strong class="share-label">Share?</strong>
-  <div class="share-row">
-    <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
-    <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-  </div>
-  <p class="share-status" aria-live="polite"></p>
-</div>
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
 
         <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
           <div class="inline-block">
@@ -939,11 +939,21 @@
           document.getElementById('page-name').textContent = document.title.replace('Traffic Torch – ', '').replace(' | Traffic Torch', '').replace(' Tool', '').trim();
         </script>
 
-        <section class="bottom-banner" aria-label="Traffic Torch visual summary">
-          <picture>
-            <img src="/images/tool-banners/lighthouse-plus-tool-infographic-1200w.webp" srcset="/images/tool-banners/lighthouse-plus-tool-infographic-480w.webp 480w, /images/tool-banners/lighthouse-plus-tool-infographic-800w.webp 800w, /images/tool-banners/lighthouse-plus-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch Lighthouse Plus Tool – human UX and page performance audit" width="1200" height="263" loading="lazy" decoding="async">
-          </picture>
-        </section>
+<section class="bottom-banner" aria-label="Traffic Torch visual summary">
+  <picture>
+    <img
+      src="/images/tool-banners/lighthouse-plus-tool-infographic-1200w.webp"
+      srcset="/images/tool-banners/lighthouse-plus-tool-infographic-640w.webp 640w,
+              /images/tool-banners/lighthouse-plus-tool-infographic-1200w.webp 1200w"
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px"
+      alt="Traffic Torch Lighthouse Plus Tool – human UX and page performance audit"
+      width="1200"
+      height="480"
+      loading="lazy"
+      decoding="async">
+  </picture>
+</section>
+
       </main>
 
       <div id="footer-placeholder"></div>

@@ -118,8 +118,8 @@
         "@id": "https://traffictorch.net/integrations/developer-tools/#api",
         "name": "Traffic Torch Developer API",
         "description": "REST API to programmatically run 13+ SEO, UX, GEO and AI-search audit tools, manage API keys and receive webhook notifications on audit completion.",
-        "documentation": "https://traffictorch.net/developer/api/",
-        "url": "https://traffictorch.net/developer/api/",
+        "documentation": "https://traffictorch.net/integrations/developer/api/",
+        "url": "https://traffictorch.net/integrations/developer/api/",
         "provider": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" },
         "termsOfService": "https://traffictorch.net/terms/",
         "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" }
@@ -150,7 +150,7 @@
             "name": "How do I authenticate to the Developer API?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Two credentials are used. A Bearer token (JWT) obtained at login is required for management endpoints such as keys, webhooks and account-info. An X-API-Key header, generated on the Developer API page at traffictorch.net/developer/api/, is required for the tool endpoint /api/tools/* that actually runs audits."
+              "text": "Two credentials are used. A Bearer token (JWT) obtained at login is required for management endpoints such as keys, webhooks and account-info. An X-API-Key header, generated on the Developer API page at traffictorch.net/integrations/developer/api/, is required for the tool endpoint /api/tools/* that actually runs audits."
             }
           },
           {
@@ -174,7 +174,7 @@
             "name": "Where can I find full API documentation?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Full endpoint reference, error codes, rate limits, code samples in cURL, JavaScript, Python and PHP, webhook payload schema, changelog and support contacts are available at traffictorch.net/developer/api/."
+              "text": "Full endpoint reference, error codes, rate limits, code samples in cURL, JavaScript, Python and PHP, webhook payload schema, changelog and support contacts are available at traffictorch.net/integrations/developer/api/."
             }
           },
           {
@@ -357,14 +357,14 @@
           </p>
         </section>
 
-        <!-- Share Buttons -->
-        <div class="share-block">
-          <div class="share-row">
-            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
-            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-          </div>
-          <p class="share-status" aria-live="polite"></p>
-        </div>
+ <!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
 
         <!-- ===== VS Code + GitHub Action cards ===== -->
         <section id="tools" class="max-w-6xl mx-auto mb-20">
@@ -532,7 +532,7 @@
 
           <!-- Link to full docs -->
           <div class="text-center">
-            <a href="/developer/api/"
+            <a href="/integrations/developer/api/"
                class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl hover:opacity-90 transition"
                aria-label="Read the full Traffic Torch Developer API documentation">
               📖 Read the Full API Documentation →
@@ -616,7 +616,7 @@
             </details>
             <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
               <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">How do I authenticate to the Developer API?</summary>
-              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Two credentials are used. A Bearer token (JWT) obtained at login is required for management endpoints such as keys, webhooks and account-info. An <code class="inline">X-API-Key</code> header, generated on the <a href="/developer/api/" class="text-orange-500 hover:underline">Developer API page</a>, is required for the tool endpoint <code class="inline">/api/tools/*</code> that actually runs audits.</div>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Two credentials are used. A Bearer token (JWT) obtained at login is required for management endpoints such as keys, webhooks and account-info. An <code class="inline">X-API-Key</code> header, generated on the <a href="/integrations/developer/api/" class="text-orange-500 hover:underline">Developer API page</a>, is required for the tool endpoint <code class="inline">/api/tools/*</code> that actually runs audits.</div>
             </details>
             <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
               <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Which audit tools are available through the API?</summary>
@@ -628,7 +628,7 @@
             </details>
             <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
               <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Where can I find full API documentation?</summary>
-              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Full endpoint reference, error codes, rate limits, code samples in cURL, JavaScript, Python and PHP, webhook payload schema, changelog and support contacts are available at <a href="/developer/api/" class="text-orange-500 hover:underline">traffictorch.net/developer/api/</a>.</div>
+              <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">Full endpoint reference, error codes, rate limits, code samples in cURL, JavaScript, Python and PHP, webhook payload schema, changelog and support contacts are available at <a href="/integrations/developer/api/" class="text-orange-500 hover:underline">traffictorch.net/integrations/developer/api/</a>.</div>
             </details>
             <details class="glass rounded-xl bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 p-4">
               <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Does the GitHub Action require an API key?</summary>
@@ -652,19 +652,19 @@
                class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-md">🛠️ VS Code</a>
             <a href="https://github.com/marketplace/actions/traffic-torch-audit" target="_blank" rel="noopener noreferrer"
                class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition shadow-md">🚀 GitHub Action</a>
-            <a href="/developer/api/"
+            <a href="/integrations/developer/api/"
                class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl transition shadow-md">🔑 Get API Key</a>
           </div>
         </section>
 
-        <!-- Share Buttons (bottom) -->
-        <div class="share-block">
-          <div class="share-row">
-            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
-            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-          </div>
-          <p class="share-status" aria-live="polite"></p>
-        </div>
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
 
       </main>
 
