@@ -1239,7 +1239,7 @@ const initTool = (form, results, progressContainer) => {
         }
       });
 
-      document.addEventListener('click', (e) => {
+        document.addEventListener('click', (e) => {
         const showCodeBtn = e.target.closest('.show-code-btn');
         if (showCodeBtn) {
           e.preventDefault();
@@ -1264,22 +1264,23 @@ const initTool = (form, results, progressContainer) => {
           return;
         }
 
-        // Show Fixes toggle
-        const card = e.target.closest('.score-card');
-        if (card) {
-          const fixesPanel = card.querySelector('.fixes-panel');
-          const toggleBtn = e.target.closest('.fixes-toggle');
-          if (toggleBtn) {
-            document.querySelectorAll('.fixes-panel').forEach(p => {
-              if (p !== fixesPanel) p.classList.add('hidden');
-            });
-            if (fixesPanel) fixesPanel.classList.toggle('hidden');
-            const failedCount = parseInt(toggleBtn.getAttribute('data-failed-count') || '0', 10);
-            if (failedCount > 0 && fixesPanel) {
-              const isHidden = fixesPanel.classList.contains('hidden');
-              toggleBtn.textContent = isHidden ? `Show Fixes (${failedCount})` : `Hide Fixes (${failedCount})`;
-            }
-          }
+        // Show / Hide Fixes toggle — independent per card (same as Lighthouse Plus)
+        const toggleBtn = e.target.closest('.fixes-toggle');
+        if (toggleBtn) {
+          e.preventDefault();
+          const card = toggleBtn.closest('.score-card');
+          const fixesPanel = card?.querySelector('.fixes-panel');
+          if (!fixesPanel) return;
+
+          fixesPanel.classList.toggle('hidden');
+          const isOpen = !fixesPanel.classList.contains('hidden');
+          const failedCount = parseInt(toggleBtn.getAttribute('data-failed-count') || '0', 10);
+
+          if (isOpen && failedCount > 0)        toggleBtn.textContent = `Hide Fixes (${failedCount})`;
+          else if (isOpen)                      toggleBtn.textContent = 'Hide Details';
+          else if (failedCount > 0)             toggleBtn.textContent = `Show Fixes (${failedCount})`;
+          else                                  toggleBtn.textContent = 'Details';
+          return;
         }
       });
 

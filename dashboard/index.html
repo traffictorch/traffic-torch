@@ -350,7 +350,6 @@
                           <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
                             <span x-text="new Date(audit.timestamp * (audit.timestamp < 10000000000 ? 1000 : 1)).toLocaleDateString()"></span>
                             <span class="font-medium text-gray-900 dark:text-white" x-text="audit.tool"></span>
-                            <span x-else class="text-gray-400">—</span>
                           </div>
                           <div class="text-sm break-all text-blue-600 dark:text-blue-400" x-text="audit.url"></div>
                           <div class="flex gap-3 mt-1">
@@ -403,7 +402,6 @@
                   <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
                     <span x-text="new Date(audit.timestamp * (audit.timestamp < 10000000000 ? 1000 : 1)).toLocaleDateString()"></span>
                     <span class="font-medium text-gray-900 dark:text-white" x-text="audit.tool"></span>
-                    <span x-else class="text-gray-400">—</span>
                   </div>
                   <div class="text-sm break-all text-blue-600 dark:text-blue-400" x-text="audit.url"></div>
                   <div class="flex gap-3 mt-1">
@@ -423,10 +421,10 @@
     </div>
     <div class="mt-4 text-center">
       <template x-if="recentAudits.length > displayCount">
-        <button @click="loadMoreAudits()" class="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
-          <span x-if="user.tier === 'enterprise'">Show more</span>
-          <span x-else>Load more</span>
-        </button>
+<button @click="loadMoreAudits()"
+        class="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
+        x-text="user.tier === 'enterprise' ? 'Show more' : 'Load more'">
+</button>
       </template>
     </div>
   </div>
@@ -1391,20 +1389,28 @@ function dashboardApp() {
 
       const urlParams = new URLSearchParams(window.location.search);
       const ga4Code = urlParams.get('ga4_code');
+      const ga4State = urlParams.get('state');                                    // ← NEW
       if (ga4Code) {
-        const newUrl = window.location.pathname + window.location.search.replace(/[?&]ga4_code=[^&]*/, '').replace(/^&/, '?');
+        const newUrl = window.location.pathname + window.location.search
+          .replace(/[?&]ga4_code=[^&]*/, '')
+          .replace(/[?&]state=[^&]*/, '')                                         // ← NEW
+          .replace(/^&/, '?');
         window.history.replaceState({}, document.title, newUrl || '/dashboard/');
         const propertyId = prompt('Enter your GA4 Property ID (e.g., 123456789):');
         if (propertyId) {
-          this.finishGA4Connection(ga4Code, propertyId);
+          this.finishGA4Connection(ga4Code, propertyId, ga4State);                // ← NEW arg
         } else {
           this.ga4.error = 'Property ID is required to connect.';
         }
       }
 
       const gscCode = urlParams.get('gsc_code');
+      const gscState = urlParams.get('state');                                    // ← NEW
       if (gscCode) {
-        const newUrl = window.location.pathname + window.location.search.replace(/[?&]gsc_code=[^&]*/, '').replace(/^&/, '?');
+        const newUrl = window.location.pathname + window.location.search
+          .replace(/[?&]gsc_code=[^&]*/, '')
+          .replace(/[?&]state=[^&]*/, '')                                         // ← NEW
+          .replace(/^&/, '?');
         window.history.replaceState({}, document.title, newUrl || '/dashboard/');
         const rawSite = prompt('Enter your GSC site URL (e.g., example.com or https://example.com/) – we\'ll auto‑convert the format:');
         if (rawSite) {
@@ -1415,7 +1421,7 @@ function dashboardApp() {
           if (siteUrl.startsWith('http') && !siteUrl.endsWith('/')) {
             siteUrl += '/';
           }
-          this.finishGSCConnection(gscCode, siteUrl);
+          this.finishGSCConnection(gscCode, siteUrl, gscState);                   // ← NEW arg
         } else {
           this.gsc.error = 'Site URL is required to connect.';
         }
@@ -1659,7 +1665,7 @@ async fetchAccountInfo() {
       .catch(err => { this.ga4.error = 'Failed to start GA4 connection: ' + err.message; });
     },
 
-    async finishGA4Connection(code, propertyId) {
+    async finishGA4Connection(code, propertyId, state) {
       this.ga4.loading = true;
       this.ga4.error = null;
       try {
@@ -1669,7 +1675,7 @@ async fetchAccountInfo() {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ code, propertyId })
+          body: JSON.stringify({ code, propertyId, state })
         });
         const data = await res.json();
         if (res.ok) {
@@ -2100,7 +2106,7 @@ plugins: {
       .catch(err => { this.gsc.error = 'Failed to start GSC connection: ' + err.message; });
     },
 
-    async finishGSCConnection(code, siteUrl) {
+    async finishGSCConnection(code, siteUrl, state) {
       this.gsc.loading = true;
       this.gsc.error = null;
       try {
@@ -2110,7 +2116,7 @@ plugins: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ code, siteUrl })
+          body: JSON.stringify({ code, siteUrl, state })
         });
         const data = await res.json();
         if (res.ok) {
