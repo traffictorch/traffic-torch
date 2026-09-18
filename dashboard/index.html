@@ -1678,11 +1678,22 @@ async fetchAccountInfo() {
           body: JSON.stringify({ code, propertyId, state })
         });
         const data = await res.json();
+        
         if (res.ok) {
           this.ga4.connected = true;
           this.fetchCachedReport();
         } else {
-          this.ga4.error = data.error || 'Failed to connect GA4';
+          // Friendly error messages based on worker response
+          const errorMsg = (data.error || '').toLowerCase();
+          if (res.status === 400 && errorMsg.includes('state')) {
+            this.ga4.error = 'Your connection link expired. Please click Connect GA4 again.';
+          } else if (res.status === 403 && errorMsg.includes('mismatch')) {
+            this.ga4.error = 'User mismatch. Please make sure you are logged in and try again.';
+          } else if (res.status === 400 && errorMsg.includes('property')) {
+            this.ga4.error = 'GA4 Property ID is required. Please try again and enter it when prompted.';
+          } else {
+            this.ga4.error = data.error || 'Failed to connect GA4';
+          }
         }
       } catch (err) {
         this.ga4.error = 'Connection failed: ' + err.message;
@@ -2119,6 +2130,7 @@ plugins: {
           body: JSON.stringify({ code, siteUrl, state })
         });
         const data = await res.json();
+        
         if (res.ok) {
           this.gsc.connected = true;
           this.gsc.siteUrl = siteUrl;
@@ -2126,7 +2138,17 @@ plugins: {
           this.user.gscSiteUrl = siteUrl;
           this.fetchGSCReport();
         } else {
-          this.gsc.error = data.error || 'Failed to connect GSC';
+          // Friendly error messages based on worker response
+          const errorMsg = (data.error || '').toLowerCase();
+          if (res.status === 400 && errorMsg.includes('state')) {
+            this.gsc.error = 'Your connection link expired. Please click Connect GSC again.';
+          } else if (res.status === 403 && errorMsg.includes('mismatch')) {
+            this.gsc.error = 'User mismatch. Please make sure you are logged in and try again.';
+          } else if (res.status === 400 && errorMsg.includes('site')) {
+            this.gsc.error = 'GSC Site URL is required. Please try again and enter it when prompted.';
+          } else {
+            this.gsc.error = data.error || 'Failed to connect GSC';
+          }
         }
       } catch (err) {
         this.gsc.error = 'Connection failed: ' + err.message;
