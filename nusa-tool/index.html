@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NUSA — Next-level UX · SEO · AEO Audit</title>
+<meta name="description" content="NUSA audits a URL across UX, SEO and AEO in one live stream. No dashboards. No score circles.">
+<link rel="stylesheet" href="./css/nusa.css">
+</head>
+<body>
+
+<header class="nusa-bar">
+  <span class="brand">NUSA</span>
+  <span class="sep">/</span>
+  <span class="tag">Next-level UX · SEO · AEO</span>
+  <span class="spacer"></span>
+  <button id="lite-toggle" class="lite on" aria-pressed="true">lite</button>
+</header>
+
+<main>
+
+  <form id="url-form" class="url-bar" autocomplete="off">
+    <span class="caret">▸</span>
+    <input id="url-input" type="text" inputmode="url" placeholder="paste a URL — try traffictorch.net" required>
+    <button type="submit" aria-label="Run audit">↵</button>
+  </form>
+
+  <div id="ruler" class="ruler hidden" aria-hidden="true">
+    <div class="ruler-track"></div>
+    <div class="playhead" id="playhead"></div>
+  </div>
+
+  <section id="stage" class="stage hidden">
+    <div class="col ledger-col">
+      <div class="col-head"><span>LEDGER</span><span id="ledger-count" class="num">0</span></div>
+      <div id="ledger" class="ledger"></div>
+    </div>
+    <div class="col narration-col">
+      <div class="col-head"><span>NARRATION</span><span id="status" class="num">idle</span></div>
+      <div id="narration" class="narration"></div>
+      <form id="ask-form" class="ask" autocomplete="off">
+        <span class="violet-mark">✦</span>
+        <input id="ask-input" placeholder="ask nusa anything…" autocomplete="off">
+      </form>
+    </div>
+  </section>
+
+  <section id="actions" class="actions hidden">
+    <button id="batch-fix" class="act-btn">▸ generate all fixes</button>
+    <button id="re-audit" class="act-btn">▸ re-run audit</button>
+  </section>
+
+  <section id="chamber" class="chamber hidden">
+    <div class="col-head"><span>CITATION CHAMBER</span><span class="num">simulated engines</span></div>
+    <form id="chamber-form" class="chamber-form" autocomplete="off">
+      <span class="violet-mark">▶</span>
+      <input id="chamber-input" placeholder="What would a user ask this page?" autocomplete="off">
+      <button type="submit">run simulation</button>
+    </form>
+    <div id="chamber-out" class="chamber-out"></div>
+  </section>
+
+</main>
+
+<footer class="nusa-foot">
+  <span>Blueprint Noir · Lite mode</span>
+  <span class="spacer"></span>
+  <span id="foot-meta" class="num">ready</span>
+</footer>
+
+<script type="module" src="./js/nusa.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+name = "nusa-patch"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[ai]
+binding = "AI"
+
+[observability]
+enabled = true
