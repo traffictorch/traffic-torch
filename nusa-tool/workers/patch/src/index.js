@@ -1,7 +1,6 @@
-// nusa-patch — prose fix + live-runnable patchScript
-// Model: Llama 4 Scout (instruct, no reasoning leak)
+// nusa-patch v2 — gpt-oss-20b + affected HTML context
 
-const MODEL = '@cf/meta/llama-4-scout-17b-16e-instruct';
+const MODEL = '@cf/openai/gpt-oss-20b';
 
 const SYSTEM = `You output ONLY valid JSON. No markdown fences. No commentary.
 
@@ -13,19 +12,15 @@ Schema:
   "reason": string | null
 }
 
-"prose" — numbered fix, 3-6 steps, separated by literal \\n. Terse, direct. No emoji, no intro, no greeting. MUST contain at least 3 numbered steps.
+"prose" — numbered fix steps. 2-6 steps. Terse. Specific. Reference ACTUAL values you see in the affected HTML (colors, selectors, attribute names, lengths). Never say "use a tool" or "check with an analyzer" — compute the answer yourself from what is provided.
 
-"patchScript" — a self-contained JS string, a single IIFE: "(() => { ... })();"
-  • Side effects only. Idempotent. No network, no storage, no window.location.
-  • DOM-patchable: missing alt, missing/duplicate H1, title too long, missing meta description, missing author meta, missing publish date meta, missing viewport, missing JSON-LD, missing lang, missing canonical, missing og tags.
-  • NOT DOM-patchable → patchScript null, applicable false, fill reason.
+"patchScript" — a self-contained JS string, single IIFE: "(() => { ... })();"
+  • Side effects only. Idempotent. No network, storage, or window.location.
+  • DOM-patchable: missing alt, H1, title length, meta description, meta tags, viewport, JSON-LD, lang, canonical, og, FAQPage schema.
+  • NOT DOM-patchable → null, applicable false, fill reason.
   • Not DOM-patchable: llms.txt, robots.txt, HTTP headers, HTTPS, render-blocking resources, TTFB, CLS from third-party JS, font loading, DNS, redirects.
 
-Example (author byline):
-{"applicable":true,"prose":"1. Open the homepage template.\\n2. Add a visible byline above the H1.\\n3. Link the name with rel=\\"author\\".\\n4. Add a matching author page at /about/.","patchScript":"(() => { if (document.querySelector('meta[name=\\"author\\"]')) return; const m = document.createElement('meta'); m.name = 'author'; m.content = 'Author Name'; document.head.appendChild(m); })();","reason":null}
-
-Example (llms.txt):
-{"applicable":false,"prose":"1. Create /llms.txt at the site root.\\n2. Add a # title line, a summary paragraph, and a Markdown link list.\\n3. Deploy with Content-Type: text/plain.\\n4. Confirm it is not blocked by robots.txt.","patchScript":null,"reason":"requires server-side change"}
+When the finding is about COLOR CONTRAST, you MUST state the actual failing colors and the WCAG-compliant replacement. Read them from affectedHtml inline styles. If not present, say so explicitly in prose step 1.
 
 Return the JSON object only.`;
 
@@ -41,22 +36,10 @@ export default {
 
     let body;
     try { body = await request.json(); } catch { return json({ error: 'invalid JSON' }, 400, cors); }
-
-    const { finding, cms, url, pageTitle } = body;
+    const { finding, cms, url, pageTitle, affectedHtml } = body;
     if (!finding || !finding.label) return json({ error: 'finding.label required' }, 400, cors);
 
-    const userMsg = `FINDING
-category: ${finding.cat || 'unknown'}
-label:    ${finding.label}
-node:     ${finding.node || 'n/a'}
-severity: ${finding.severity || 'n/a'}
-
-CONTEXT
-url:       ${url || 'n/a'}
-pageTitle: ${pageTitle || 'n/a'}
-cms:       ${cms?.name || 'Custom / Unknown'}${cms?.version ? ' ' + cms.version : ''}
-
-Return the JSON object now.`;
+    const userMsg = buildUserMessage({ finding, cms, url, pageTitle, affectedHtml });
 
     let raw = '';
     try {
@@ -65,7 +48,7 @@ Return the JSON object now.`;
           { role: 'system', content: SYSTEM },
           { role: 'user', content: userMsg }
         ],
-        max_tokens: 1400,
+        max_tokens: 1800,
         temperature: 0.15,
         response_format: { type: 'json_object' }
       });
@@ -76,24 +59,17 @@ Return the JSON object now.`;
 
     const parsed = extractJson(raw);
     if (!parsed) {
-      return json({
-        success: false, error: 'Model returned non-JSON', model: MODEL,
-        rawType: typeof raw, rawHead: String(raw).slice(0, 600), rawLen: String(raw).length
-      }, 502, cors);
+      return json({ success: false, error: 'non-JSON', model: MODEL, rawHead: String(raw).slice(0, 400) }, 502, cors);
+    }
+
+    let prose = String(parsed.prose || '').trim();
+    if (!/have an ePic day/i.test(prose)) {
+      prose = prose.replace(/\s+$/, '') + '\n\nAfter changes: have an ePic day (or night).';
     }
 
     if (parsed.patchScript != null && typeof parsed.patchScript !== 'string') {
       parsed.patchScript = null;
       parsed.applicable = false;
-      parsed.reason = parsed.reason || 'model returned non-string patchScript';
-    }
-
-    let prose = String(parsed.prose || '').trim();
-
-    // guard: if prose is missing numbered content, do not pretend it succeeded
-    const hasSteps = /\d+\./.test(prose) && prose.replace(/\s/g,'').length > 30;
-    if (!hasSteps) {
-      prose = prose || '(no prose returned by model — try again)';
     }
 
     return json({
@@ -107,6 +83,30 @@ Return the JSON object now.`;
   }
 };
 
+function buildUserMessage({ finding, cms, url, pageTitle, affectedHtml }) {
+  const lines = [
+    'FINDING',
+    `category: ${finding.cat || 'unknown'}`,
+    `label:    ${finding.label}`,
+    `node:     ${finding.node || 'n/a'}`,
+    `severity: ${finding.severity || 'n/a'}`,
+    '',
+    'CONTEXT',
+    `url:       ${url || 'n/a'}`,
+    `pageTitle: ${pageTitle || 'n/a'}`,
+    `cms:       ${cms?.name || 'Custom / Unknown'}${cms?.version ? ' ' + cms.version : ''}`
+  ];
+  if (affectedHtml) {
+    lines.push('', 'AFFECTED HTML (the actual failing element from the rendered page):', '```html');
+    lines.push(String(affectedHtml).slice(0, 2000));
+    lines.push('```');
+  } else {
+    lines.push('', 'AFFECTED HTML: not available (server-side or structural finding).');
+  }
+  lines.push('', 'Return the JSON object now.');
+  return lines.join('\n');
+}
+
 function unwrap(aiRes) {
   if (aiRes == null) return '';
   let r = aiRes;
@@ -118,10 +118,7 @@ function unwrap(aiRes) {
 }
 
 function json(obj, status = 200, extra = {}) {
-  return new Response(JSON.stringify(obj), {
-    status,
-    headers: { 'Content-Type': 'application/json', ...extra }
-  });
+  return new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json', ...extra } });
 }
 
 function extractJson(text) {
@@ -132,8 +129,6 @@ function extractJson(text) {
   if (first !== -1 && last > first) {
     const slice = s.slice(first, last + 1);
     try { return JSON.parse(slice); } catch {}
-    const repaired = slice.replace(/[\u0000-\u001F]+/g, m => (m === '\n' || m === '\r') ? '\\n' : '');
-    try { return JSON.parse(repaired); } catch {}
   }
   return null;
 }
