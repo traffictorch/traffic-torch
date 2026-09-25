@@ -11,6 +11,7 @@ import('/quit-risk-tool/plugin-solutions-v1.0.js')
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
 import { fixFor } from './module-explanations-v1.0.js';
+import { mergeMetricsIntoUX } from './metrics-adapter.js';
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 // Import the new modular analysis functions
@@ -26,7 +27,7 @@ import {
   showCodeForFailure,
   deriveSelectorsForFailure,
   escapeHtml
-} from './code-snippet-v1.0.js';
+} from './code-snippet-v2.0.js';
 
 // ─── Code block renderer ─────────────────────────────────────────
 function renderCodeBlocks(text) {
@@ -152,7 +153,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const PROXY = 'https://full-render-v2.traffictorch.workers.dev/';
+  // ── New dedicated full-render worker for the Quit Risk Tool ─────
+  const PROXY = 'https://qr-full-render-worker.traffictorch.workers.dev/';
 
   const factorDefinitions = {
     readability: {
@@ -221,11 +223,22 @@ document.addEventListener('DOMContentLoaded', () => {
   function countWords(text) {
     return text.trim().split(/\s+/).filter(w => w.length > 0).length;
   }
-  function countExternalLinks(links) {
-    const currentHost = window.location.host;
+  function countExternalLinks(links, baseUrl) {
+    let baseHost;
+    try {
+      baseHost = new URL(baseUrl || window.location.href).host;
+    } catch {
+      baseHost = window.location.host;
+    }
     return Array.from(links).filter(a => {
+      // Use the raw href attribute — a.href is auto-resolved by the
+      // DOMParser against the audit tool's own URL, which makes every
+      // relative internal link look external.
+      const raw = a.getAttribute('href');
+      if (!raw) return false;
+      if (/^(#|mailto:|tel:|javascript:|data:)/i.test(raw)) return false;
       try {
-        return new URL(a.href, window.location.href).host !== currentHost;
+        return new URL(raw, baseUrl || window.location.href).host !== baseHost;
       } catch {
         return false;
       }
@@ -267,29 +280,84 @@ document.addEventListener('DOMContentLoaded', () => {
       totalImages: imgs.length
     };
   }
-  function getUXContent(doc) {
-    const textElements = doc.querySelectorAll('p, li, article, section, main, div');
-    let fullText = '';
-    let paragraphTexts = [];
-    let boldCount = 0;
-    let listItemCount = 0;
-    textElements.forEach(el => {
-      const t = el.textContent.trim();
-      if (t.length > 15) {
-        fullText += t + ' ';
-        if (el.tagName === 'P') paragraphTexts.push(t);
+    // ── Primary nav picker ────────────────────────────────────────────
+  // The old selector matched every <nav> on the page, so a header nav
+  // plus a mobile overlay nav double-counted top-level items. We now
+  // pick the most likely primary nav and only count its direct items.
+  function pickPrimaryNav(doc) {
+    const candidates = [
+      'header nav',
+      'nav[aria-label*="main" i]',
+      'nav[aria-label*="primary" i]',
+      'nav[role="navigation"]',
+      'nav',
+    ];
+    for (const sel of candidates) {
+      const el = doc.querySelector(sel);
+      if (el) return el;
+    }
+    return null;
+  }
+
+  // ── Clean visible-text extractor ──────────────────────────────────
+  // Walks text nodes, skipping script/style/svg/noscript so inline CSS
+  // inside SVG <style> blocks (like The Carmel's logo) no longer gets
+  // counted as page words and syllables.
+  function extractVisibleTextFromDoc(doc) {
+    const root = doc.body || doc.documentElement;
+    if (!root) return '';
+    const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent) return NodeFilter.FILTER_REJECT;
+        if (parent.closest('script, style, svg, noscript, template')) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
       }
-      boldCount += el.querySelectorAll('b, strong').length;
-      if (el.tagName === 'UL' || el.tagName === 'OL') listItemCount += el.querySelectorAll('li').length;
     });
+    let text = '';
+    let n;
+    while ((n = walker.nextNode())) {
+      const t = n.textContent.trim();
+      if (t) text += t + ' ';
+    }
+    return text;
+  }
+
+  function getUXContent(doc, metrics, auditedUrl) {
+    // ── Text extraction ─────────────────────────────────────────────
+    // Walk text nodes so nested containers don't multiply the same
+    // paragraph 3–5×. Skips script/style/svg/noscript content entirely.
+    const fullText = extractVisibleTextFromDoc(doc);
+
+    // Paragraph texts: one entry per real <p> / <li>, never duplicated.
+    const paragraphTexts = [];
+    doc.querySelectorAll('p, li').forEach(el => {
+      if (el.closest('script, style, svg, noscript')) return;
+      const t = (el.textContent || '').trim();
+      if (t.length > 15) paragraphTexts.push(t);
+    });
+
+    // Direct counts — no more accumulation via nested containers.
+    const boldCount = doc.querySelectorAll('b, strong').length;
+    const listItemCount = doc.querySelectorAll('li').length;
+
     const links = doc.querySelectorAll('a[href]');
     const images = doc.querySelectorAll('img');
     const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
+
+    // ── Primary nav only ────────────────────────────────────────────
+    const primaryNav = pickPrimaryNav(doc);
+    const topLevelItems = primaryNav
+      ? primaryNav.querySelectorAll(':scope > ul > li, :scope > li').length
+      : 0;
+
     return {
       fullText: fullText,
       wordCount: countWords(fullText),
       linkCount: links.length,
-      externalLinkCount: countExternalLinks(links),
+      externalLinkCount: countExternalLinks(links, auditedUrl),
       imageCount: images.length,
       altData: countMissingAlt(doc),
       headingCount: headings.length,
@@ -299,9 +367,9 @@ document.addEventListener('DOMContentLoaded', () => {
       paragraphTexts,
       boldCount,
       listItemCount,
-      mainNav: doc.querySelector('nav, [role="navigation"], header nav, .main-menu, #main-menu, .navbar, .navigation'),
+      mainNav: primaryNav,
       hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
-      topLevelItems: doc.querySelectorAll('nav > ul > li, .main-menu > li, header nav > ul > li').length || 0,
+      topLevelItems,
       hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]'),
       hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]'),
       hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]'),
@@ -311,6 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })(),
       hasMediaQueries: !!doc.querySelector('style, link[rel="stylesheet"][href*="css"]'),
       hasTouchFriendly: (() => {
+        // Rendered metrics replace this heuristic when available.
         const links = doc.querySelectorAll('a, button, [role="button"]');
         let smallCount = 0;
         links.forEach(el => {
@@ -333,7 +402,47 @@ document.addEventListener('DOMContentLoaded', () => {
         return lazyCount >= 2 && percentage >= 40;
       })(),
       externalScripts: doc.querySelectorAll('script[src^="http"]').length,
-      hasRenderBlocking: doc.querySelectorAll('script:not([defer]):not([async]), link[rel="stylesheet"]:not([media])').length,
+      hasRenderBlocking: (() => {
+        const head = doc.head || doc.querySelector('head');
+        if (!head) return 0;
+
+        // Inline helper: is this <script> actually render-blocking?
+        function isBlockingScript(s) {
+          const type = (s.getAttribute('type') || '').toLowerCase();
+
+          // External script (has src)
+          if (s.src) {
+            if (s.defer || s.async) return false;   // explicitly deferred
+            if (type === 'module') return false;     // modules defer by default
+            return true;
+          }
+
+          // Inline script: blocking unless its type is clearly non-JS.
+          // Examples of non-JS: application/ld+json, application/json,
+          // text/template, text/x-handlebars-template, importmap.
+          if (!type) return true;                    // plain inline JS
+          if (type === 'text/javascript') return true;
+          if (type === 'application/javascript') return true;
+          return false;
+        }
+
+        // Inline helper: is this <link rel="stylesheet"> blocking?
+        function isBlockingStyle(l) {
+          const rel = (l.getAttribute('rel') || '').toLowerCase();
+          if (rel !== 'stylesheet') return false;
+          if (l.hasAttribute('media')) return false;       // conditional media
+          if (l.hasAttribute('disabled')) return false;    // explicitly disabled
+          if (l.getAttribute('rel') === 'preload') return false;  // preload isn't blocking
+          return true;
+        }
+
+        const blockingScripts = Array.from(head.querySelectorAll('script'))
+          .filter(isBlockingScript);
+        const blockingStyles = Array.from(head.querySelectorAll('link'))
+          .filter(isBlockingStyle);
+
+        return blockingScripts.length + blockingStyles.length;
+      })(),
       fontCount: doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"], link[rel="stylesheet"][href*="typekit"], link[rel="stylesheet"][href*="cloud.typography"]').length || 0,
       hasFontDisplaySwap: doc.body.innerHTML.includes('font-display: swap') ||
                          doc.body.innerHTML.includes('font-display:swap') ||
@@ -661,17 +770,34 @@ document.addEventListener('DOMContentLoaded', () => {
   async function performAnalysis(url, htmlCode) {
     try {
       let html;
+      let metrics = null;
+      let renderedLoadTime = null;
       if (htmlCode) {
         html = htmlCode;
       } else {
         const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
         if (!res.ok) throw new Error('Page not reachable');
-        html = await res.text();
+        const payload = await res.json();
+        if (!payload || payload.success === false) {
+          throw new Error((payload && payload.error) || 'Render failed');
+        }
+        html = payload.html;
+        metrics = payload.metrics || null;
+        renderedLoadTime = payload.loadTime ?? null;
       }
       const doc = new DOMParser().parseFromString(html, 'text/html');
-      const uxData = getUXContent(doc);
+      let uxData = getUXContent(doc, metrics, url);
+      uxData = mergeMetricsIntoUX(uxData, metrics);
+      uxData.renderedLoadTime = renderedLoadTime;
+
+      // Prefer the rendered word count for density / readability when present.
+      if (uxData.renderedWordCount && uxData.renderedWordCount > 50) {
+        uxData.wordCount = uxData.renderedWordCount;
+      }
+
       const cmsInfo = detectCMS({ doc, html, url });
       const ux = analyzeUX(uxData);
+      window._qr = { ux, uxData, factorDetails: null };
 
       // 👇 Save the audit to history so it shows in the dashboard
       await saveAuditHistory(url, 'Quit Risk');
@@ -683,6 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mobile: calculateMobile(uxData).details,
         performance: calculatePerformance(uxData).details
       };
+      window._qr.factorDetails = factorDetails;
       const failedMetrics = [];
       if (ux.accessibility < 75) {
         failedMetrics.push({
@@ -883,6 +1010,7 @@ document.addEventListener('DOMContentLoaded', () => {
       window.scrollTo({ top: targetY, behavior: 'smooth' });
       
       results.dataset.renderedHtml = html || '';
+      results._uxData = uxData;
 
       results.innerHTML = `
 <!-- Big Overall Score Card -->
@@ -1424,7 +1552,7 @@ if (data.success && cmsAnswerContent) {
       results.innerHTML = `
         <div class="text-center py-20">
           <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
-          <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Whitelist: full-render-v2.traffictorch.workers.dev or use Code Analysis.</p>
+          <p class="mt-6 text-xl text-gray-600 dark:text-gray-400">Whitelist: qr-full-render-worker.traffictorch.workers.dev or use Code Analysis.</p>
         </div>
       `;
     }
@@ -1464,13 +1592,14 @@ if (data.success && cmsAnswerContent) {
       setTimeout(() => { textarea?.focus(); }, 700);
     }
 
-   // Show the code (Lighthouse-style) for a failure
+    // Show the code for a failure — now data-driven.
     const showCodeBtn = e.target.closest('.show-code-btn');
     if (showCodeBtn) {
       e.preventDefault();
       const failureText = showCodeBtn.dataset.failure || '';
       const html = results.dataset.renderedHtml || '';
-      showCodeForFailure(failureText, html, { title: 'Affected code' });
+      const uxData = results._uxData || null;
+      showCodeForFailure(failureText, html, { title: 'Affected code', uxData });
       return;
     }
   });

@@ -1,0 +1,14 @@
+name = "qr-full-render-worker"
+main = "src/index.js"
+compatibility_date = "2024-10-01"
+compatibility_flags = ["nodejs_compat"]
+keep_names = false
+
+[browser]
+binding = "BROWSER"
+
+[vars]
+ALLOWED_ORIGIN = "*"
+
+[observability]
+enabled = true

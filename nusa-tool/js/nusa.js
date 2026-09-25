@@ -1,24 +1,28 @@
-// NUSA v5.1 — getUXData supplies all keys the modules read
+// NUSA v5.3 — fix list prepends; fix-this is a button; scoring mirrors
+// quit-risk-tool and lighthouse-plus-tool verbatim.
 
 const WORKERS = {
   lighthouse: 'https://lighthouse-audit.traffictorch.workers.dev/',
+  qrRender:   'https://qr-full-render-worker.traffictorch.workers.dev/',
   aeo:        'https://aeo-audit.traffictorch.workers.dev/',
   ask:        'https://nusa-ask.traffictorch.workers.dev/',
-  patch:      'https://nusa-patch.traffictorch.workers.dev/',
+  patch:      'https://nusa-fix.traffictorch.workers.dev/',
   verify:     'https://nusa-verify.traffictorch.workers.dev/',
   render:     'https://nusa-render.traffictorch.workers.dev/'
 };
 
-import { calculateReadability }   from './modules/quit-risk/readability.js';
-import { calculateNavigation }    from './modules/quit-risk/navigation.js';
-import { calculateAccessibility } from './modules/quit-risk/accessibility.js';
-import { calculateMobile }        from './modules/quit-risk/mobile.js';
-import { calculatePerformance }   from './modules/quit-risk/performance.js';
+import { calculateReadability }   from '/quit-risk-tool/modules/readability.js';
+import { calculateNavigation }    from '/quit-risk-tool/modules/navigation.js';
+import { calculateAccessibility } from '/quit-risk-tool/modules/accessibility.js';
+import { calculateMobile }        from '/quit-risk-tool/modules/mobile.js';
+import { calculatePerformance }   from '/quit-risk-tool/modules/performance.js';
+import { mergeMetricsIntoUX }     from '/quit-risk-tool/metrics-adapter.js';
 
-import { renderSummaryCards, collectFindings } from './summary-cards.js';
+import { renderSummaryCards, collectFindings, evaluateModule } from './summary-cards.js';
 import { whyMatters } from './why-matters.js';
 import { extractSnippets, openCodeModal, ruleKey } from './code-snippets.js';
 import { detectCMS } from './cms-detect.js';
+import { initShareModule } from '/share-module.js';
 
 const $   = id => document.getElementById(id);
 const el  = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
@@ -41,12 +45,16 @@ function looksLikeRealFix(prose) {
   return hasSteps || hasCode;
 }
 
+/* ── narration — prepend so newest appears at top ─────────── */
 function narrate(text, opts = {}) {
   const p = el('p', opts.anchor ? 'anchor' : '');
   if (opts.ts !== false) p.appendChild(el('span', 'ts', `[${String(ms()).padStart(5,'0')}ms]`));
   p.appendChild(document.createTextNode(text));
-  const n = $('narration');
-  if (n) { n.appendChild(p); n.scrollTop = n.scrollHeight; }
+const n = $('narration');
+if (n) {
+  n.appendChild(p);           
+  n.scrollTop = n.scrollHeight;
+}
   return p;
 }
 
@@ -54,17 +62,61 @@ function narrateFinding(f) {
   const p = el('p', 'finding');
   if (f.infoOnly) p.classList.add('info-only');
   p.appendChild(el('span', 'ts', `[${String(ms()).padStart(5,'0')}ms]`));
-  const bolt = el('span', 'bolt-fix', '◆ fix this →');
+
+  const bolt = el('button', 'bolt-fix', '◆ fix this →');
+  bolt.type = 'button';
   bolt.addEventListener('click', ev => { ev.stopPropagation(); openFixPanel(f); });
   p.appendChild(bolt);
-  p.appendChild(document.createTextNode(' ' + f.label));
+
+  const labelSpan = el('span', 'finding-label', f.label);
+  p.appendChild(labelSpan);
+
   p.dataset.findingId = f.id;
   p.addEventListener('click', e => {
     if (e.target.closest('.bolt-fix')) return;
     document.dispatchEvent(new CustomEvent('nusa:focus-finding', { detail: { findingId: f.id } }));
   });
-  const n = $('narration');
-  if (n) { n.appendChild(p); n.scrollTop = n.scrollHeight; }
+
+const n = $('narration');
+if (n) {
+  n.appendChild(p);           
+  n.scrollTop = n.scrollHeight;
+}
+}
+
+/* Ask AI answers render into their own container, not the fix list */
+function askNarrate(text) {
+  const host = $('ask-answers');
+  if (!host) return;
+  const wrap = el('div', 'ask-msg');
+  wrap.innerHTML = renderRich(text);
+  host.appendChild(wrap);
+  host.scrollTop = host.scrollHeight;
+}
+
+function renderRich(text) {
+  if (text == null) return '';
+  let s = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  const blocks = [];
+  s = s.replace(/```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g, (_, lang, code) => {
+    blocks.push(
+      `<pre><code class="lang-${(lang || 'plaintext').toLowerCase()}">${code.replace(/\s+$/, '')}</code></pre>`
+    );
+    return `\u0000B${blocks.length - 1}\u0000`;
+  });
+
+  const paras = s.split(/\n{2,}/).map(block => {
+    if (/^\u0000B\d+\u0000$/.test(block.trim())) return block;
+    return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+  });
+
+  s = paras.join('');
+  s = s.replace(/\u0000B(\d+)\u0000/g, (_, i) => blocks[+i]);
+  return s;
 }
 
 function setProgress(text, opts = {}) {
@@ -98,100 +150,168 @@ function startRuler() {
 }
 function stopRuler() { if (rulerStop) rulerStop(); }
 
-function getUXData(doc) {
-  const textElements = doc.querySelectorAll('p, li, article, section, main, div');
-  let fullText = '', paragraphTexts = [], boldCount = 0, listItemCount = 0;
-  textElements.forEach(node => {
-    const t = node.textContent.trim();
-    if (t.length > 15) {
-      fullText += t + ' ';
-      if (node.tagName === 'P') paragraphTexts.push(t);
-    }
-    boldCount += node.querySelectorAll('b, strong').length;
-    if (node.tagName === 'UL' || node.tagName === 'OL') listItemCount += node.querySelectorAll('li').length;
-  });
+/* ═══════════════════════════════════════════════════════════════
+   UX extraction — copied from quit-risk-tool/script-v1.3.js
+   ═══════════════════════════════════════════════════════════════ */
+function countWords(text) {
+  return text.trim().split(/\s+/).filter(w => w.length > 0).length;
+}
+function countExternalLinks(links, baseUrl) {
+  let baseHost;
+  try { baseHost = new URL(baseUrl || window.location.href).host; }
+  catch { baseHost = window.location.host; }
+  return Array.from(links).filter(a => {
+    const raw = a.getAttribute('href');
+    if (!raw) return false;
+    if (/^(#|mailto:|tel:|javascript:|data:)/i.test(raw)) return false;
+    try { return new URL(raw, baseUrl || window.location.href).host !== baseHost; }
+    catch { return false; }
+  }).length;
+}
+function hasViewportMeta(doc) {
+  const meta = doc.querySelector('meta[name="viewport"]');
+  return meta && /width\s*=\s*device-width/i.test(meta.content);
+}
+function hasSemanticMain(doc) { return !!doc.querySelector('main'); }
+function hasSemanticArticleOrSection(doc) { return !!doc.querySelector('article, section'); }
+function countMissingAlt(doc) {
   const imgs = doc.querySelectorAll('img');
   let missing = 0, decorative = 0, meaningful = 0;
   imgs.forEach(img => {
     const alt = img.getAttribute('alt');
     const isDecorative = img.classList.contains('decorative') ||
-                         img.getAttribute('role') === 'presentation' ||
-                         (alt !== null && alt.trim() === '' && !img.hasAttribute('title'));
+                        img.getAttribute('role') === 'presentation' ||
+                        (alt !== null && alt.trim() === '' && !img.hasAttribute('title'));
     if (isDecorative) decorative++;
     else { meaningful++; if (alt === null || alt.trim() === '') missing++; }
   });
-
-  // Links — internal vs external
-  const allLinks = Array.from(doc.querySelectorAll('a[href]'));
-  const linkCount = allLinks.length;
-  let externalLinkCount = 0;
-  try {
-    const host = new URL(doc.baseURI || 'https://x').hostname;
-    for (const a of allLinks) {
-      const href = a.getAttribute('href') || '';
-      if (/^https?:\/\//i.test(href)) {
-        try {
-          const h = new URL(href).hostname;
-          if (h && h !== host) externalLinkCount++;
-        } catch (_) {}
-      }
+  return { missingCount: missing, meaningfulCount: meaningful, decorativeCount: decorative, totalImages: imgs.length };
+}
+function pickPrimaryNav(doc) {
+  const candidates = ['header nav','nav[aria-label*="main" i]','nav[aria-label*="primary" i]','nav[role="navigation"]','nav'];
+  for (const sel of candidates) {
+    const el = doc.querySelector(sel);
+    if (el) return el;
+  }
+  return null;
+}
+function extractVisibleTextFromDoc(doc) {
+  const root = doc.body || doc.documentElement;
+  if (!root) return '';
+  const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent) return NodeFilter.FILTER_REJECT;
+      if (parent.closest('script, style, svg, noscript, template')) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
     }
-  } catch (_) {}
+  });
+  let text = '';
+  let n;
+  while ((n = walker.nextNode())) {
+    const t = n.textContent.trim();
+    if (t) text += t + ' ';
+  }
+  return text;
+}
+function getUXContent(doc, metrics, auditedUrl) {
+  const fullText = extractVisibleTextFromDoc(doc);
+  const paragraphTexts = [];
+  doc.querySelectorAll('p, li').forEach(el => {
+    if (el.closest('script, style, svg, noscript')) return;
+    const t = (el.textContent || '').trim();
+    if (t.length > 15) paragraphTexts.push(t);
+  });
+  const boldCount = doc.querySelectorAll('b, strong').length;
+  const listItemCount = doc.querySelectorAll('li').length;
+  const links = doc.querySelectorAll('a[href]');
+  const images = doc.querySelectorAll('img');
+  const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
+  const primaryNav = pickPrimaryNav(doc);
+  const topLevelItems = primaryNav ? primaryNav.querySelectorAll(':scope > ul > li, :scope > li').length : 0;
 
-  // Main nav presence
-  const mainNav = !!doc.querySelector('nav, [role="navigation"], header nav, .nav, .navbar, #nav');
-
-  // Media queries / responsive hints
-  const htmlStr  = doc.documentElement.outerHTML || '';
-  const styleStr = Array.from(doc.querySelectorAll('style')).map(s => s.textContent || '').join(' ');
-  const hasMediaQueries = /@media[^{]*\((?:max|min)-width/i.test(htmlStr) ||
-                          /@media[^{]*\((?:max|min)-width/i.test(styleStr);
-
-  // Touch-friendly hint: any 44px+ sized clickable class or role
-  const hasTouchFriendly =
-    !!doc.querySelector('[class*="touch"], [class*="btn-lg"], button, [role="button"], a.button') &&
-    /min-height\s*:\s*(?:4[4-9]|[5-9]\d)px|height\s*:\s*4[4-9]px/i.test(htmlStr + styleStr);
-
-  // HTTPS
-  const isHttps = /^https:/i.test(doc.baseURI || '');
-
-  const countWords = t => t.trim().split(/\s+/).filter(w => w.length > 0).length;
   return {
     fullText, wordCount: countWords(fullText),
-    linkCount,
-    externalLinkCount,
-    mainNav,
-    hasMediaQueries,
-    hasTouchFriendly,
-    isHttps,
-    rawHtml: htmlStr,
-    imageCount: imgs.length,
-    altData: { missingCount: missing, meaningfulCount: meaningful, decorativeCount: decorative, totalImages: imgs.length },
-    headingCount: doc.querySelectorAll('h1,h2,h3,h4,h5,h6').length,
-    hasViewport: !!(doc.querySelector('meta[name="viewport"]')?.content || '').match(/width\s*=\s*device-width/i),
-    hasMain: !!doc.querySelector('main'),
-    hasArticleOrSection: !!doc.querySelector('article, section'),
+    linkCount: links.length,
+    externalLinkCount: countExternalLinks(links, auditedUrl),
+    imageCount: images.length,
+    altData: countMissingAlt(doc),
+    headingCount: headings.length,
+    hasViewport: hasViewportMeta(doc),
+    hasMain: hasSemanticMain(doc),
+    hasArticleOrSection: hasSemanticArticleOrSection(doc),
     paragraphTexts, boldCount, listItemCount,
-    hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb'),
-    hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"]'),
+    mainNav: primaryNav,
+    hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
+    topLevelItems,
+    hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]'),
+    hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]'),
     hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]'),
+    viewportContent: (() => {
+      const meta = doc.querySelector('meta[name="viewport"]');
+      return meta ? meta.getAttribute('content') || '' : '';
+    })(),
+    hasMediaQueries: !!doc.querySelector('style, link[rel="stylesheet"][href*="css"]'),
+    hasTouchFriendly: (() => {
+      const links2 = doc.querySelectorAll('a, button, [role="button"]');
+      let smallCount = 0;
+      links2.forEach(el => {
+        const rect = el.getBoundingClientRect?.() || { width: 0, height: 0 };
+        if (rect.width < 44 || rect.height < 44) smallCount++;
+      });
+      return smallCount < 5;
+    })(),
     hasManifest: !!doc.querySelector('link[rel="manifest"]'),
-    hasServiceWorkerHint: /serviceWorker|\.register\(/.test(doc.body.innerHTML),
+    hasServiceWorkerHint: doc.body.innerHTML.includes('serviceWorker') || doc.body.innerHTML.includes('register('),
     hasAppleTouchIcon: !!doc.querySelector('link[rel*="apple-touch-icon"]'),
+    isHttps: /^https:/i.test(auditedUrl || ''),
     hasLazyLoading: (() => {
-      const all = doc.querySelectorAll('img[src]');
-      const lazy = doc.querySelectorAll('img[loading="lazy"]');
-      return all.length > 0 && lazy.length >= 2 && (lazy.length / all.length) * 100 >= 40;
+      const allImgs = doc.querySelectorAll('img[src]');
+      const lazyImgs = doc.querySelectorAll('img[loading="lazy"]');
+      const total = allImgs.length;
+      const lazyCount = lazyImgs.length;
+      if (total === 0) return false;
+      return lazyCount >= 2 && (lazyCount / total) * 100 >= 40;
     })(),
     externalScripts: doc.querySelectorAll('script[src^="http"]').length,
-    hasRenderBlocking: doc.querySelectorAll('script:not([defer]):not([async]), link[rel="stylesheet"]:not([media])').length,
-    fontCount: doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"]').length,
-    hasFontDisplaySwap: /font-display\s*:\s*swap/.test(doc.head.innerHTML),
-    hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"]'),
-    potentialCTAs: doc.querySelectorAll('a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="buy"], button, [role="button"], .btn').length,
-    viewportContent: doc.querySelector('meta[name="viewport"]')?.content || '',
-    hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
-    topLevelItems: doc.querySelectorAll('nav > ul > li, header nav > ul > li').length || 0
+    hasRenderBlocking: (() => {
+      const head = doc.head || doc.querySelector('head');
+      if (!head) return 0;
+      function isBlockingScript(s) {
+        const type = (s.getAttribute('type') || '').toLowerCase();
+        if (s.src) {
+          if (s.defer || s.async) return false;
+          if (type === 'module') return false;
+          return true;
+        }
+        if (!type) return true;
+        if (type === 'text/javascript') return true;
+        if (type === 'application/javascript') return true;
+        return false;
+      }
+      function isBlockingStyle(l) {
+        const rel = (l.getAttribute('rel') || '').toLowerCase();
+        if (rel !== 'stylesheet') return false;
+        if (l.hasAttribute('media')) return false;
+        if (l.hasAttribute('disabled')) return false;
+        if (l.getAttribute('rel') === 'preload') return false;
+        return true;
+      }
+      const bs = Array.from(head.querySelectorAll('script')).filter(isBlockingScript);
+      const bl = Array.from(head.querySelectorAll('link')).filter(isBlockingStyle);
+      return bs.length + bl.length;
+    })(),
+    fontCount: doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"], link[rel="stylesheet"][href*="typekit"], link[rel="stylesheet"][href*="cloud.typography"]').length || 0,
+    hasFontDisplaySwap: doc.body.innerHTML.includes('font-display: swap') ||
+                       doc.body.innerHTML.includes('font-display:swap') ||
+                       doc.head.innerHTML.includes('font-display: swap') ||
+                       doc.head.innerHTML.includes('font-display:swap'),
+    hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"], source[type="image/avif"]'),
+    potentialCTAs: doc.querySelectorAll(
+      'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], ' +
+      'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
+      '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
+    ).length
   };
 }
 
@@ -203,9 +323,15 @@ async function runAudit(rawUrl) {
   previewShot = null;
   previewPins.clear();
   t0 = performance.now();
-  $('stage')?.classList.remove('hidden');
-  $('chamber')?.classList.add('hidden');
-  $('summary-cards')?.classList.add('hidden');
+$('stage')?.classList.remove('hidden');
+const pmEl = $('preview-meta'); if (pmEl) pmEl.textContent = 'rendering…';
+const pvEl = $('preview');
+if (pvEl) pvEl.innerHTML = '<div class="preview-empty">rendering preview…</div>';
+$('chamber')?.classList.add('hidden');
+$('summary-cards')?.classList.add('hidden');
+$('ask-block')?.classList.remove('hidden');
+$('share-module')?.classList.add('hidden');
+const aa = $('ask-answers'); if (aa) aa.innerHTML = '';
 
   const pv = $('preview');
   if (pv) pv.innerHTML = '<div class="preview-empty">rendering preview…</div>';
@@ -213,7 +339,7 @@ async function runAudit(rawUrl) {
   if (pm) pm.textContent = '·';
 
   startRuler();
-  narrate(`Opening ${url} — running three audits in parallel.`, { anchor: true });
+  narrate(`Opening ${url} — running UX, SEO & AEO audits in parallel.`, { anchor: true });
   setProgress('rendering…');
 
   let lh, aeo;
@@ -239,13 +365,30 @@ async function runAudit(rawUrl) {
   setProgress('running UX pass…');
   await sleep(80);
 
-  const html = lh.renderedHtml || lh.rawHtml || '';
-  const doc  = new DOMParser().parseFromString(html, 'text/html');
-  // Give DOMParser doc a baseURI equivalent so URL parsing has something to work with
+  // Same render as QuitRisk uses
+  let uxHtml = lh.renderedHtml || lh.rawHtml || '';
+  let uxMetrics = null;
+  let uxLoadTime = null;
   try {
-    Object.defineProperty(doc, 'baseURI', { value: url, configurable: true });
+    const qr = await fetch(WORKERS.qrRender + '?url=' + encodeURIComponent(url));
+    if (qr.ok) {
+      const p = await qr.json();
+      if (p && p.success !== false && p.html) {
+        uxHtml = p.html;
+        uxMetrics = p.metrics || null;
+        uxLoadTime = p.loadTime ?? null;
+      }
+    }
   } catch (_) {}
-  const uxData = getUXData(doc);
+
+  const html = uxHtml;
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  let uxData = getUXContent(doc, uxMetrics, url);
+  if (uxMetrics) uxData = mergeMetricsIntoUX(uxData, uxMetrics);
+  uxData.renderedLoadTime = uxLoadTime;
+  if (uxData.renderedWordCount && uxData.renderedWordCount > 50) {
+    uxData.wordCount = uxData.renderedWordCount;
+  }
 
   const r    = calculateReadability(uxData);
   const nav  = calculateNavigation(uxData);
@@ -299,6 +442,77 @@ async function runAudit(rawUrl) {
 
   renderSummaryCards(state);
   renderPreview();
+  renderShareModule();
+}
+
+function renderShareModule() {
+  const host = $('share-module');
+  if (!host || !state) return;
+
+  // Walk every module in every category using the same evaluator
+  // that summary-cards.js uses. Gives us the FULL check list,
+  // including passes and warns.
+  const allChecks = [];
+  for (const cat of ['UX', 'SEO', 'AEO']) {
+    const data = state[cat.toLowerCase()];
+    if (!data) continue;
+    for (const m of (data.modules || [])) {
+      const subs = evaluateModule(cat, m);
+      for (const s of subs) {
+        allChecks.push({ cat, module: m.name, label: s.name, status: s.status });
+      }
+      for (const failed of (m.failed || [])) {
+        const already = subs.some(s => s.name === failed);
+        if (!already) {
+          allChecks.push({ cat, module: m.name, label: failed, status: 'fail' });
+        }
+      }
+    }
+  }
+
+  const moduleScores = [
+    { name: 'UX',  score: state.ux.score  },
+    { name: 'SEO', score: state.seo.score },
+    { name: 'AEO', score: state.aeo.score }
+  ];
+
+  const overallScore = Math.round(
+    (state.ux.score + state.seo.score + state.aeo.score) / 3
+  );
+
+  // Deduplicate labels — same signal can appear in multiple modules
+  const dedupe = arr => Array.from(new Set(arr));
+
+  const passedMetrics = dedupe(allChecks.filter(c => c.status === 'pass').map(c => c.label));
+  const warnMetrics   = dedupe(allChecks.filter(c => c.status === 'warn').map(c => c.label));
+  const failMetrics   = dedupe(allChecks.filter(c => c.status === 'fail').map(c => c.label));
+
+  // ── Merge warns into failed for consistency with the other 17 tools ──
+  const failedMetrics = [...failMetrics, ...warnMetrics];
+
+  // Top fixes prioritise real fails first, then warns
+  const aiFixes = [...failMetrics, ...warnMetrics].slice(0, 5);
+
+  host.innerHTML = '';
+  host.classList.remove('hidden');
+
+  initShareModule(host, {
+    toolName: 'NUSA',
+    url: state.url,
+    pageTitle: state.doc?.title || 'Untitled page',
+    overallScore,
+    moduleScores,
+    passedMetrics,
+    failedMetrics,
+    aiFixes,
+    shareLink: `https://traffictorch.net/?url=${encodeURIComponent(state.url)}`,
+    rawData: {
+      scores: { ux: state.ux.score, seo: state.seo.score, aeo: state.aeo.score },
+      url: state.url,
+      cms: state.cms,
+      checks: allChecks
+    }
+  });
 }
 
 async function openFixPanel(f) {
@@ -376,15 +590,18 @@ async function openFixPanel(f) {
 }
 
 function appendFixActions(container, f, data) {
-  const viewBtn = el('button', 'view-code-btn', '▸ view the code');
-  viewBtn.addEventListener('click', () => {
-    const { snippets, rule } = extractSnippets(state?.html || '', f.label);
-    openCodeModal(
-      f.label,
-      snippets.length ? snippets : [{ selector: rule?.sel || '—', html: '(no matching element found on the page)' }]
-    );
-  });
-  container.appendChild(viewBtn);
+  const { snippets, rule } = extractSnippets(state?.html || '', f.label);
+
+  if (rule && rule.sel) {
+    const viewBtn = el('button', 'view-code-btn', '▸ view the code');
+    viewBtn.addEventListener('click', () => {
+      openCodeModal(
+        f.label,
+        snippets.length ? snippets : [{ selector: rule.sel, html: '(no matching elements on the rendered page)' }]
+      );
+    });
+    container.appendChild(viewBtn);
+  }
 
   if (data.patchScript) {
     const vb = el('button', 'verify-btn', '▸ verify in live browser');
@@ -463,7 +680,29 @@ $('ask-form')?.addEventListener('submit', async e => {
   const q = $('ask-input').value.trim();
   if (!q) return;
   $('ask-input').value = '';
-  narrate(`you: ${q}`, { ts: false });
+  askNarrate(`you: ${q}`);
+
+  // 1. All findings (not just fails) — with category, status, severity
+  const allFindings = (state?.findings || []).map(f => ({
+    cat: f.cat, label: f.label, status: f.status, severity: f.severity || 0
+  }));
+
+  // 2. HTML snippets for findings that have selectors — cap at 5 to keep payload sane
+  const snippetMap = {};
+  for (const f of (state?.findings || []).slice(0, 40)) {
+    const { snippets } = extractSnippets(state?.html || '', f.label);
+    if (snippets.length) {
+      snippetMap[f.label] = snippets.slice(0, 2).map(s =>
+        s.html.length > 500 ? s.html.slice(0, 500) + '…' : s.html
+      );
+    }
+  }
+
+  // 3. Module-level metrics (raw details from scorers)
+  const uxModules   = (state?.ux?.modules  || []).map(m => ({ name: m.name, score: m.score, details: m.details }));
+  const seoModules  = (state?.seo?.modules || []).map(m => ({ name: m.name, score: m.score, details: m.details }));
+  const aeoModules  = (state?.aeo?.modules || []).map(m => ({ name: m.name, score: m.score, details: m.details }));
+
   try {
     const res = await fetch(WORKERS.ask, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -472,19 +711,20 @@ $('ask-form')?.addEventListener('submit', async e => {
         auditData: {
           url: state?.url || '',
           pageTitle: state?.doc?.title || '',
-          cms: state?.cms ? { id: state.cms.id, name: state.cms.name } : { name: 'Custom / Unknown' },
-          failedItems: (state?.findings || []).filter(f => f.status === 'fail').map(f => `[${f.cat}] ${f.label}`),
-          scores: state ? { ux: state.ux.score, seo: state.seo.score, aeo: state.aeo.score } : {}
+          cms: state?.cms ? { id: state.cms.id, name: state.cms.name, version: state.cms.version } : { name: 'Custom / Unknown' },
+          scores: state ? { ux: state.ux.score, seo: state.seo.score, aeo: state.aeo.score } : {},
+          findings: allFindings,
+          snippets: snippetMap,
+          metrics: { ux: uxModules, seo: seoModules, aeo: aeoModules }
         }
       })
     });
     const data = await res.json();
-    narrate(`nusa: ${data.answer || data.error || 'no response'}`, { ts: false });
+    askNarrate(`nusa: ${data.answer || data.error || 'no response'}`);
   } catch (err) {
-    narrate(`nusa: request failed — ${err.message}`, { ts: false });
+    askNarrate(`nusa: request failed — ${err.message}`);
   }
 });
-
 $('chamber-form')?.addEventListener('submit', async e => {
   e.preventDefault();
   const q = $('chamber-input').value.trim();
@@ -493,11 +733,11 @@ $('chamber-form')?.addEventListener('submit', async e => {
   if (!out) return;
   out.innerHTML = '';
   const pageText = (state.doc?.body?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 4000);
-  const engines = [
-    { name: 'ChatGPT',     instr: 'Strict extractor mode. Answer the question using ONLY sentences that appear verbatim in the page content. If the answer is not present verbatim, respond exactly: CANNOT ANSWER: not in extractable text.' },
-    { name: 'Perplexity',  instr: 'Citation retrieval mode. Answer and list the exact sentences you would cite. If nothing is citable, respond exactly: CANNOT CITE: no extractable sentences.' },
-    { name: 'AI Overview', instr: 'Summariser mode. Give a short summary answer. End with: Confidence: high | medium | low' }
-  ];
+const engines = [
+  { name: 'ChatGPT',     instr: 'Answer the question using the page content plus general knowledge about the tool named in the page. Then on a new line list the sentences you would cite, prefixed with "Citations:".' },
+  { name: 'Perplexity',  instr: 'Answer and list the exact sentences you would cite. If nothing is citable, respond exactly: CANNOT CITE: no extractable sentences.' },
+  { name: 'AI Overview', instr: 'Summariser mode. Give a short summary answer. End with: Confidence: high | medium | low' }
+];
   const results = [];
   for (const engine of engines) {
     const row = el('div', 'engine');
@@ -511,7 +751,11 @@ $('chamber-form')?.addEventListener('submit', async e => {
       });
       const data = await res.json();
       const answer = (data.answer || '').trim();
-      const isFail = /CANNOT (ANSWER|CITE)/i.test(answer) || /not in extractable/i.test(answer);
+      const wordCount = answer.split(/\s+/).filter(Boolean).length;
+const tooShort = wordCount < 15 && !/^\d+\./.test(answer);
+const isFail = /CANNOT (ANSWER|CITE)/i.test(answer)
+            || /not in extractable/i.test(answer)
+            || tooShort;
       const isWarn = /confidence:\s*low/i.test(answer);
       const v = isFail ? 'fail' : isWarn ? 'warn' : 'pass';
       row.querySelector('.verdict').className = 'verdict ' + v;
@@ -550,7 +794,6 @@ async function renderPreview() {
   const host = $('preview');
   if (!host || !state) return;
   if (previewShot) return;
-
   host.innerHTML = '<div class="preview-empty">rendering preview…</div>';
 
   const selSet = new Set();
@@ -558,22 +801,20 @@ async function renderPreview() {
   for (const f of (state.findings || [])) {
     const { rule } = extractSnippets(state.html || '', f.label);
     if (!rule?.sel) continue;
-    if (rule.filter) {
-      filters.push({ selector: rule.sel, ...rule.filter });
-    } else {
-      selSet.add(rule.sel);
-    }
+    if (rule.filter) filters.push({ selector: rule.sel, ...rule.filter });
+    else selSet.add(rule.sel);
   }
 
   try {
     const res = await fetch(WORKERS.render, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        url: state.url,
-        screenshot: true,
-        highlightSelectors: [...selSet],
-        filters
-      })
+  url: state.url,
+  screenshot: true,
+  highlightSelectors: [...selSet],
+  filters,
+  deviceScaleFactor: 2      // ← asks the worker for a 2× DPI capture
+})
     });
     const data = await res.json();
     if (!data.success || !data.screenshot) throw new Error(data.error || 'preview failed');
@@ -589,16 +830,13 @@ function drawPreview() {
   const host = $('preview');
   if (!host || !previewShot) return;
   const { data, mime, w, h } = previewShot;
-
   host.innerHTML = `
     <div class="preview-canvas">
       <img class="preview-img" src="data:${mime};base64,${data}" alt="">
       <div class="preview-pins" id="preview-pins"></div>
     </div>`;
-
   const pm = $('preview-meta');
   if (pm) pm.textContent = `${w} × ${h}`;
-
   drawAllPins();
 }
 
@@ -606,19 +844,15 @@ function drawAllPins() {
   const pins = $('preview-pins');
   if (!pins) return;
   pins.innerHTML = '';
-  for (const [key, entry] of previewPins) {
-    drawPin(entry.findingId, entry.bbox, key);
-  }
+  for (const [key, entry] of previewPins) drawPin(entry.findingId, entry.bbox, key);
 }
 
 function drawPin(findingId, bbox, key) {
   const pins = $('preview-pins');
   if (!pins || !bbox || !previewShot) return;
-
   const f = (state?.findings || []).find(x => x.id === findingId);
   const { w: sw, h: sh } = previewShot;
   const pad = 4;
-
   const pin = document.createElement('div');
   pin.className = 'preview-pin' + (f?.cat === 'AEO' ? ' aeo' : (f?.status === 'fail' ? '' : ' warn'));
   pin.dataset.fid = key;
@@ -627,7 +861,6 @@ function drawPin(findingId, bbox, key) {
   pin.style.width  = ((bbox.w + pad * 2) / sw * 100) + '%';
   pin.style.height = ((bbox.h + pad * 2) / sh * 100) + '%';
   pin.title = f?.label || '';
-
   pin.addEventListener('click', () => {
     const found = (state?.findings || []).find(x => x.id === findingId);
     if (!found) return;
@@ -637,27 +870,21 @@ function drawPin(findingId, bbox, key) {
       snippets.length ? snippets : [{ selector: rule?.sel || '—', html: '(no matching element found on the page)' }]
     );
   });
-
   pins.appendChild(pin);
 }
 
 function pinFinding(finding) {
   if (!state || !previewShot) return;
-
   const { rule } = extractSnippets(state.html || '', finding.label);
   if (!rule || !rule.sel) return;
-
   const key = ruleKey(rule);
   if (!key) return;
-
   const bboxes = state.highlights?.[key] || [];
   if (!bboxes.length) return;
-
   bboxes.forEach((bbox, i) => {
     previewPins.set(`${finding.id}:${i}`, { findingId: finding.id, bbox });
   });
   drawAllPins();
-
   const firstPin = document.querySelector(`.preview-pin[data-fid^="${finding.id}:"]`);
   if (firstPin) firstPin.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }

@@ -2,10 +2,11 @@
 
 export function initShareModule(container, results) {
   if (!container) return;
-  const {
-    toolName, url, pageTitle, overallScore,
-    moduleScores, passedMetrics, failedMetrics, aiFixes = [], rawData = {}
-  } = results;
+const {
+  toolName, url, pageTitle, overallScore,
+  moduleScores, passedMetrics, failedMetrics,
+  warnMetrics = [], aiFixes = [], rawData = {}
+} = results;
 
   // Use custom shareLink if provided, otherwise fallback to homepage format
   const shareLink = results.shareLink || `${window.location.origin}/?url=${encodeURIComponent(url)}`;
@@ -46,22 +47,22 @@ export function initShareModule(container, results) {
       </div>
 
       <!-- Passed / Failed Metrics – responsive grid -->
-      <div class="passed-failed-grid grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div style="background:rgba(34,197,94,0.08); border-radius:1rem; padding:0.8rem 1.2rem;">
-          <h4 class="font-semibold text-green-600 dark:text-green-400 text-sm mb-2">✅ Passed</h4>
-          <ul class="list-none text-sm text-gray-700 dark:text-gray-300 space-y-1">
-            ${passedMetrics.slice(0,5).map(m => `<li class="border-b border-gray-200/50 dark:border-gray-700/50 py-1">${m}</li>`).join('')}
-            ${passedMetrics.length > 5 ? `<li class="text-gray-400 dark:text-gray-500 text-xs">+${passedMetrics.length-5} more</li>` : ''}
-          </ul>
-        </div>
-        <div style="background:rgba(239,68,68,0.08); border-radius:1rem; padding:0.8rem 1.2rem;">
-          <h4 class="font-semibold text-red-600 dark:text-red-400 text-sm mb-2">❌ Failed</h4>
-          <ul class="list-none text-sm text-gray-700 dark:text-gray-300 space-y-1">
-            ${failedMetrics.slice(0,5).map(m => `<li class="border-b border-gray-200/50 dark:border-gray-700/50 py-1">${m}</li>`).join('')}
-            ${failedMetrics.length > 5 ? `<li class="text-gray-400 dark:text-gray-500 text-xs">+${failedMetrics.length-5} more</li>` : ''}
-          </ul>
-        </div>
-      </div>
+<div class="passed-failed-grid grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  <div style="background:rgba(34,197,94,0.08); border-radius:1rem; padding:0.8rem 1.2rem;">
+    <h4 class="font-semibold text-green-600 dark:text-green-400 text-sm mb-2">✅ Passed (${passedMetrics.length})</h4>
+    <ul class="list-none text-sm text-gray-700 dark:text-gray-300 space-y-1">
+      ${passedMetrics.slice(0,5).map(m => `<li class="border-b border-gray-200/50 dark:border-gray-700/50 py-1">${m}</li>`).join('')}
+      ${passedMetrics.length > 5 ? `<li class="text-gray-400 dark:text-gray-500 text-xs">+${passedMetrics.length-5} more</li>` : ''}
+    </ul>
+  </div>
+  <div style="background:rgba(239,68,68,0.08); border-radius:1rem; padding:0.8rem 1.2rem;">
+    <h4 class="font-semibold text-red-600 dark:text-red-400 text-sm mb-2">❌ Failed (${failedMetrics.length})</h4>
+    <ul class="list-none text-sm text-gray-700 dark:text-gray-300 space-y-1">
+      ${failedMetrics.slice(0,5).map(m => `<li class="border-b border-gray-200/50 dark:border-gray-700/50 py-1">${m}</li>`).join('')}
+      ${failedMetrics.length > 5 ? `<li class="text-gray-400 dark:text-gray-500 text-xs">+${failedMetrics.length-5} more</li>` : ''}
+    </ul>
+  </div>
+</div>
 
       <!-- AI Fixes (visible in print) -->
       ${aiFixes && aiFixes.length ? `

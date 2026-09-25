@@ -1,0 +1,17 @@
+{
+  "name": "qr-full-render-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --port 8787 --ip 0.0.0.0",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4.13.0"
+  },
+  "dependencies": {
+    "@cloudflare/puppeteer": "^0.0.14"
+  }
+}

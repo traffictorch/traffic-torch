@@ -1,29 +1,39 @@
-/* NUSA — Blueprint Noir */
+/* NUSA — Blueprint Noir
+   Scoped for integration into the Traffic Torch shell.
+   Global selectors (:root, *, html, body, main, code, pre, ::selection)
+   are rewritten to affect only content inside <div id="nusa-app">.
+   Class-based rules below are unchanged. */
 
-:root{
-  --ink:#080B14;
-  --ink2:#0F1420;
-  --line:#1E2535;
-  --text:#E8ECF4;
-  --dim:#6E7891;
-  --amber:#F5A623;
-  --verdant:#4ADE80;
-  --crimson:#E5484D;
-  --violet:#A78BFA;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --max:1400px;
-  --preview-w:440px;
+/* ── LIGHT (default) ──────────────────────────────────────── */
+#nusa-app{
+  --ink:#F3F4F6;      /* was #FAFAFB — now gray-100 */
+  --ink2:#E5E7EB;     /* was #F1F3F6 — gray-200, used for inset panels */
+  --line:#D1D5DB;     /* was #DDE1E9 — a touch more visible */
+  --text:#111827;
+  --dim:#4B5563;
+  --amber:#B45309;
+  --verdant:#15803D;
+  --crimson:#B91C1C;
+  --violet:#6D28D9;
+  /* ...rest unchanged (fonts, --max, display:flex, etc.) */
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--ink);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
-body{min-height:100vh;display:flex;flex-direction:column}
-main{flex:1;display:flex;flex-direction:column}
-.hidden{display:none !important}
-.spacer{flex:1}
-.num,code,pre{font-family:var(--mono);font-feature-settings:"tnum"}
-.violet-mark{color:var(--violet)}
-::selection{background:rgba(167,139,250,.28);color:var(--text)}
+
+/* ── DARK — Blueprint Noir (applies when site toggle adds .dark) ── */
+html.dark #nusa-app{
+  --ink:#080B14; --ink2:#0F1420; --line:#1E2535;
+  --text:#E8ECF4; --dim:#6E7891;
+  --amber:#F5A623; --verdant:#4ADE80; --crimson:#E5484D; --violet:#A78BFA;
+  border-color:var(--line);
+}
+#nusa-app *{box-sizing:border-box;margin:0;padding:0}
+#nusa-app.hidden,#nusa-app .hidden{display:none}
+#nusa-app .spacer{flex:1}
+#nusa-app .num,#nusa-app code,#nusa-app pre{font-family:var(--mono);font-feature-settings:"tnum"}
+#nusa-app .violet-mark{color:var(--violet)}
+#nusa-app ::selection{background:rgba(167,139,250,.28);color:var(--text)}
+html:not(.dark) #nusa-app ::selection{background:rgba(124,92,224,.18)}
+
+/* ══════════ Everything below is UNCHANGED from your original ══════════ */
 
 .nusa-bar{display:flex;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line);font-size:13px}
 .brand{font-weight:800;letter-spacing:.14em}
@@ -35,11 +45,6 @@ main{flex:1;display:flex;flex-direction:column}
 .url-bar input::placeholder{color:var(--dim)}
 .url-bar button{background:transparent;border:1px solid var(--line);color:var(--text);font-family:var(--mono);font-size:16px;padding:6px 14px;cursor:pointer;border-radius:0}
 .url-bar button:hover{border-color:var(--amber);color:var(--amber)}
-
-.ruler{position:relative;height:36px;border-bottom:1px solid var(--line);max-width:var(--max);width:100%;margin:0 auto;overflow:hidden}
-.ruler-track{position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,var(--line) 0 1px,transparent 1px 80px)}
-.playhead{position:absolute;top:0;bottom:0;width:1px;background:var(--amber);transform:translateX(0);transition:transform .12s linear}
-.playhead::after{content:'';position:absolute;top:-2px;left:-3px;width:7px;height:7px;background:var(--amber);border-radius:50%}
 
 .summary-cards{max-width:var(--max);width:100%;margin:0 auto;border-bottom:1px solid var(--line)}
 .sum-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:12px 22px;align-items:start}
@@ -84,6 +89,7 @@ main{flex:1;display:flex;flex-direction:column}
 .sum-more-btn{display:block;width:100%;margin-top:8px;padding:5px 8px;background:transparent;border:1px dashed var(--line);color:var(--dim);font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;text-align:left;transition:color .12s,border-color .12s}
 .sum-more-btn:hover{border-color:var(--dim);color:var(--text)}
 .sum-hidden-modules.hidden{display:none}
+.sum-module-summary{font-size:10.5px;color:var(--dim);padding:2px 0 4px 10px;letter-spacing:.02em}
 
 .stage{flex:1;display:grid;grid-template-columns:minmax(0,1fr) var(--preview-w);max-width:var(--max);width:100%;margin:0 auto;border-bottom:1px solid var(--line);min-height:0}
 @media (max-width:980px){.stage{grid-template-columns:1fr}}
@@ -95,7 +101,6 @@ main{flex:1;display:flex;flex-direction:column}
 .col-head.working{color:var(--text)}
 .work-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--amber);margin-left:8px;vertical-align:middle;animation:work-dot 1s ease-in-out infinite}
 @keyframes work-dot{0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
-
 .narration-col{min-height:0}
 .narration{flex:1;overflow-y:auto;padding:16px 22px;min-height:340px;max-height:calc(100vh - 300px)}
 .narration p{margin:0 0 12px;font-size:15px;line-height:1.62;max-width:64ch;animation:fadein .28s ease-out}
@@ -142,25 +147,12 @@ main{flex:1;display:flex;flex-direction:column}
 .verify-diff .vrow.bad .vd,.verify-diff .vrow.bad .va{color:var(--crimson)}
 .verify-diff .vrow.flat{color:var(--dim)}
 
-/* ═══ PREVIEW — screenshot + overlay pins ═══ */
 .preview{flex:1;overflow-y:auto;padding:14px 18px 24px;min-height:340px;max-height:calc(100vh - 300px);scroll-behavior:smooth}
 .preview-empty{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:60px 0}
 .preview-canvas{position:relative;width:100%;border:1px solid var(--line);background:var(--ink);line-height:0}
 .preview-img{display:block;width:100%;height:auto;image-rendering:auto}
 .preview-pins{position:absolute;inset:0;pointer-events:none}
-.preview-pin{
-  position:absolute;
-  border:2px dashed var(--crimson);
-  background:rgba(229,72,77,.12);
-  border-radius:3px;
-  box-sizing:border-box;
-  pointer-events:auto;
-  cursor:pointer;
-  min-height:18px;
-  min-width:18px;
-  animation:pinpulse 2s ease-in-out infinite;
-  transition:background .15s,border-color .15s;
-}
+.preview-pin{position:absolute;border:2px dashed var(--crimson);background:rgba(229,72,77,.12);border-radius:3px;box-sizing:border-box;pointer-events:auto;cursor:pointer;min-height:18px;min-width:18px;animation:pinpulse 2s ease-in-out infinite;transition:background .15s,border-color .15s}
 .preview-pin:hover{background:rgba(229,72,77,.24)}
 .preview-pin.warn{border-color:var(--amber);background:rgba(245,166,35,.12)}
 .preview-pin.warn:hover{background:rgba(245,166,35,.24)}
@@ -200,3 +192,222 @@ main{flex:1;display:flex;flex-direction:column}
 .gap .label{display:block;color:var(--violet);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
 
 .nusa-foot{display:flex;align-items:center;gap:12px;padding:10px 22px;font-family:var(--mono);font-size:11px;color:var(--dim);border-top:1px solid var(--line)}
+
+/* ── OFUX-style URL form (kept inside #nusa-app) ── */
+#nusa-app .ofux-url-form{display:flex;flex-direction:column;gap:1rem;max-width:42rem;margin:1.5rem auto;padding:0 1.5rem}
+@media (min-width:640px){#nusa-app .ofux-url-form{flex-direction:row}}
+#nusa-app .ofux-url-input{flex:1;padding:1rem 1.5rem;border-radius:1rem;border:1px solid var(--line);background:var(--ink2);color:var(--text);font-family:var(--mono);font-size:1.125rem;outline:none;transition:box-shadow .15s ease,border-color .15s ease}
+#nusa-app .ofux-url-input::placeholder{color:var(--dim)}
+#nusa-app .ofux-url-input:focus{border-color:var(--amber);box-shadow:0 0 0 4px rgba(245,166,35,.25)}
+#nusa-app .ofux-url-btn{padding:1rem 2rem;background:linear-gradient(to right,#f97316,#db2777);color:#fff;font-family:var(--sans);font-weight:700;font-size:1rem;border:none;border-radius:1rem;cursor:pointer;white-space:nowrap;transition:opacity .15s ease}
+#nusa-app .ofux-url-btn:hover{opacity:.9}
+
+/* Breathing room for ask + chamber */
+#nusa-app .ask{
+  padding:16px 22px;
+  min-height:60px;
+  border-top:1px solid var(--line);
+}
+#nusa-app .ask input{
+  padding:10px 0;
+  font-size:14px;
+  min-height:40px;
+}
+#nusa-app .ask button{
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:14px;
+  padding:8px 14px;
+  cursor:pointer;
+  transition:border-color .12s,color .12s;
+}
+#nusa-app .ask button:hover{border-color:var(--violet);color:var(--violet)}
+
+#nusa-app .chamber{padding:6px 0 24px 0}
+#nusa-app .chamber > .col-head{padding:14px 22px;background:var(--ink2)}
+#nusa-app .chamber-form{padding:18px 22px;gap:12px}
+#nusa-app .chamber-form input{padding:12px 14px;min-height:44px}
+#nusa-app .chamber-form button{padding:12px 20px;min-height:44px}
+#nusa-app .chamber-out{padding:0 22px 4px}
+
+/* ── Ask AI widget — self-contained, full-width below stage ── */
+#nusa-app .ask-block{
+  border-top:1px solid var(--line);
+  background:var(--ink);
+}
+#nusa-app .ask-block.hidden{display:none}
+
+#nusa-app .ask-block .ask{
+  border-top:0;              /* wrapper supplies the top rule */
+  border-bottom:1px solid var(--line);
+  padding:14px 22px;
+  min-height:56px;
+}
+
+#nusa-app .ask-answers{
+  padding:14px 22px;
+  max-height:340px;
+  overflow-y:auto;
+  font-size:14px;
+  line-height:1.62;
+  color:var(--text);
+}
+#nusa-app .ask-answers:empty{display:none}
+#nusa-app .ask-answers p{
+  margin:0 0 10px;
+  max-width:70ch;
+  animation:fadein .25s ease-out;
+}
+#nusa-app .ask-answers p:last-child{margin-bottom:0}
+
+/* ── Force side-by-side on desktop, stack below 760px ── */
+#nusa-app .stage:not(.hidden){
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) 440px !important;
+}
+@media (max-width:760px){
+  #nusa-app .stage:not(.hidden){
+    grid-template-columns:1fr !important;
+  }
+}
+#nusa-app .stage.hidden{display:none !important}
+
+#nusa-app .preview-canvas{
+  display: flex;
+  justify-content: center;
+  background: var(--ink2);       /* fills the extra 50px gutter */
+}
+#nusa-app .preview-img{
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Polish pass — fix list, fix-this button, summary cards
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Fix list — roomier line height + spacing ── */
+#nusa-app .narration p{
+  line-height: 1.85;
+  margin: 0 0 14px;
+}
+#nusa-app .narration p.finding{
+  padding: 6px 0;                       /* gentle vertical breathing room per finding */
+}
+#nusa-app .narration .ts{
+  font-size: 11px;
+  vertical-align: 1px;                  /* nudge timestamp up so it aligns with the first text line */
+}
+
+/* ── 2. "fix this →" button — bordered chip like view-the-code ── */
+#nusa-app .bolt-fix{
+  display: inline-block;
+  padding: 3px 9px;
+  border: 1px solid var(--verdant);
+  border-radius: 4px;
+  color: var(--verdant);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .02em;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, color .12s;
+  vertical-align: 1px;
+}
+#nusa-app .bolt-fix:hover{
+  background: rgba(74,222,128,.10);
+  border-color: var(--verdant);
+  color: var(--verdant);
+  text-decoration: none;                /* kill the old underline */
+}
+html.dark #nusa-app .bolt-fix:hover{
+  background: rgba(74,222,128,.14);
+}
+
+/* ── 3. "SHOW 5 MORE MODULES" — bigger target, more padding below ── */
+#nusa-app .sum-more-btn{
+  margin-top: 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--violet);      /* solid, not dashed */
+  color: var(--violet);
+  font-size: 11px;
+  letter-spacing: .1em;
+  background: transparent;
+  transition: background .15s, color .15s;
+}
+#nusa-app .sum-more-btn:hover{
+  background: rgba(167,139,250,.10);
+  border-color: var(--violet);
+  color: var(--text);
+}
+
+/* Extra padding at the bottom of each summary card so nothing crowds the row below */
+#nusa-app .sum-card{
+  padding-bottom: 18px;
+}
+
+/* A bit more breathing room between the summary row and the stage/fix list */
+#nusa-app .sum-row{
+  padding-bottom: 22px;
+}
+#nusa-app .summary-cards{
+  padding-bottom: 4px;
+}
+
+/* ── Code modal — redefines CSS vars since it lives outside #nusa-app ── */
+.cm-backdrop{
+  --ink:   #FFFFFF;
+  --ink2:  #F5F6F8;
+  --line:  #D1D5DB;
+  --text:  #111827;
+  --dim:   #4B5563;
+  --violet:#6D28D9;
+}
+html.dark .cm-backdrop{
+  --ink:   #080B14;
+  --ink2:  #0F1420;
+  --line:  #1E2535;
+  --text:  #E8ECF4;
+  --dim:   #6E7891;
+  --violet:#A78BFA;
+}
+
+/* ── Ask AI answers — rich rendering ── */
+#nusa-app .ask-answers .ask-msg{
+  margin: 0 0 14px;
+  max-width: 70ch;
+  font-size: 14px;
+  line-height: 1.62;
+  animation: fadein .25s ease-out;
+}
+#nusa-app .ask-answers .ask-msg p{
+  margin: 0 0 10px;
+}
+#nusa-app .ask-answers .ask-msg p:last-child{
+  margin-bottom: 0;
+}
+#nusa-app .ask-answers .ask-msg pre{
+  background: var(--ink2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 12px 14px;
+  margin: 10px 0;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre;
+}
+#nusa-app .ask-answers .ask-msg code{
+  font-family: var(--mono);
+  color: var(--text);
+}
+#nusa-app .ask-answers .ask-msg strong{
+  color: var(--violet);
+}
