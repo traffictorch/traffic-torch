@@ -376,7 +376,7 @@ html.dark .cm-backdrop{
   --text:  #E8ECF4;
   --dim:   #6E7891;
   --violet:#A78BFA;
-}
+} 
 
 /* ── Ask AI answers — rich rendering ── */
 #nusa-app .ask-answers .ask-msg{

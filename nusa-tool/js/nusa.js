@@ -513,7 +513,7 @@ function renderShareModule() {
       checks: allChecks
     }
   });
-}
+} 
 
 async function openFixPanel(f) {
   const prev = document.querySelector(`.fix-panel[data-fid="${f.id}"]`);
