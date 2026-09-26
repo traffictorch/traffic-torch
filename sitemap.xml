@@ -8,7 +8,7 @@
   <!-- Core pages -->
   <url>
     <loc>https://traffictorch.net/</loc>
-    <lastmod>2026-09-16</lastmod>
+    <lastmod>2026-09-26</lastmod>
   </url>
   
   <url>
@@ -16,6 +16,11 @@
     <lastmod>2026-09-11</lastmod>
   </url>
   
+  <url>
+    <loc>https://traffictorch.net/ofux-tool/</loc>
+    <lastmod>2026-09-26</lastmod>
+  </url>
+ 
   <url>
     <loc>https://traffictorch.net/lighthouse-plus-tool/</loc>
     <lastmod>2026-09-11</lastmod>
@@ -179,8 +184,11 @@
 
   <!-- Blog posts -->
   
-  lighthouse-plus-tool
-  
+   <url>
+    <loc>https://traffictorch.net/blog/posts/nusa-tool-help-guide/</loc>
+    <lastmod>2026-09-26</lastmod>
+    </url>
+   
     <url>
     <loc>https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/</loc>
     <lastmod>2026-09-12</lastmod>
@@ -193,7 +201,7 @@
   
     <url>
     <loc>https://traffictorch.net/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-09-26</lastmod>
     </url>
 
     <url>

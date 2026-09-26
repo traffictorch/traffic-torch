@@ -1,5 +1,6 @@
-// nusa-ask — merged v2
-// Rich audit context + format rules + markdown post-processing + model fallback.
+// nusa-ask — merged v4
+// Tighter prompt. Three deterministic gates: invented plugins, CMS leaks on custom,
+// invented third-party scripts.
 
 const MODELS = [
   '@cf/openai/gpt-oss-20b',
@@ -8,27 +9,64 @@ const MODELS = [
   '@cf/meta/llama-4-scout-17b-16e-instruct'
 ];
 
-const SYSTEM = `You are NUSA — a blunt, precise web-audit consultant.
+const KNOWN_PLUGINS = [
+  'yoast', 'rank math', 'seopress',
+  'perfmatters', 'wp rocket', 'autoptimize', 'litespeed',
+  'really simple ssl',
+  'wpcode', 'code snippets',
+  'smush', 'shortpixel', 'tinyimg',
+  'superpwa', 'pwa for wp',
+  'equalize digital', 'wp accessibility'
+];
 
-INPUT
-You receive a specific page audit that includes: page URL, title, CMS, scores, ALL findings (fail/warn/pass), affected HTML snippets, and module metrics.
+// Terms that only make sense when a CMS is detected. If cms is Custom and the
+// answer uses one of these, the answer is rejected.
+const CMS_TERMS = [
+  'theme\u2019s style.css', "theme's style.css",
+  'child theme', 'child-theme',
+  'gutenberg', 'block editor', 'customizer',
+  'wp-content', 'wp-admin', 'wp_head',
+  'wp rocket', 'perfmatters', 'yoast', 'rank math', 'seopress',
+  'functions.php', 'header.php', 'footer.php',
+  'plugins \u2192', 'plugins →',
+  'appearance \u2192', 'appearance →',
+  'settings \u2192', 'settings →'
+];
 
-RULES
-- Answer questions about this specific audit using ONLY the audit data provided.
-- Reference real values by name and number. Say "your page has 106 links" not "consider reducing links".
-- When asked about a specific finding, reference the matching snippet verbatim. Do not invent markup that is not in the snippets.
-- If auditData.cms.name is "Custom / Unknown", give code-level or hosting-level advice only. Never say "if you're using WordPress" or name a CMS you can't confirm.
-- If auditData.cms.name is a known platform, give instructions for that platform's real admin UI. Never hedge.
-- Never use placeholder values like "example.com", "Your Name", "image.jpg". Use realistic paths based on the page's existing structure, or describe what to add instead.
-- If the data does not contain the answer, say so in one line and stop. Do not invent.
+// Domains that are safe to reference in a script tag. Anything else gets rejected
+// unless the audit data itself mentioned it.
+const KNOWN_SCRIPT_DOMAINS = [
+  'googletagmanager.com', 'google-analytics.com', 'gstatic.com',
+  'googletagservices.com', 'doubleclick.net', 'facebook.net',
+  'cloudflare.com', 'cloudflareinsights.com', 'jsdelivr.net',
+  'unpkg.com', 'cdnjs.cloudflare.com', 'fonts.googleapis.com',
+  'fonts.gstatic.com', 'hotjar.com', 'clarity.ms', 'segment.com'
+];
+
+const SYSTEM = `You are NUSA — a web-audit consultant. Answer in plain prose.
+
+WHAT YOU GET
+A page audit: URL, title, CMS, scores, findings (fail/warn/pass), HTML snippets, metrics.
+
+HOW TO ANSWER
+- Use only the audit data. If a value isn't there, say so in one line and stop.
+- Match the question to its category (SEO / UX / AEO / all three).
+- Reference real numbers and names: "147 links", "the h2 at line 4".
+- Quote snippets verbatim when relevant. Never invent markup.
+- Give the fix in the general area, not a fake exact path. "In your performance plugin's script settings" — not "Perfmatters → Scripts → row 3".
+- If cms is Custom / Unknown: neutral language only. "Your stylesheet", "your template", "your layout file". No theme, plugin, or CMS admin.
+- If cms is known: name the general admin area (the Customizer, the block editor, the SEO plugin settings). Do not invent menu paths, button labels, or checkbox names.
+- Plugins: only from Yoast, Rank Math, SEOPress, Perfmatters, WP Rocket, Autoptimize, LiteSpeed, Really Simple SSL, WPCode, Code Snippets, Smush, ShortPixel, TinyIMG, SuperPWA, PWA for WP, Equalize Digital, WP Accessibility. Otherwise describe the category ("an SEO plugin").
+- Never invent file paths, hex colours, config values, CDN URLs, or script tags. If you don't know the exact value, describe what to change.
+- Never invent business facts. When suggesting content, describe the topic ("a paragraph describing the property type and amenities") — do not write the paragraph.
+- Informational findings (status pass, or labelled informational): explain what they mean and stop. Do not suggest changes.
 
 FORMAT
-- Keep answers under 200 words unless the user explicitly asks for detail.
-- Default to plain text. No markdown headings, no bold or italic markers.
-- Every code fix, property, tag, or config goes in a fenced code block with a language tag.
-- Structure multi-step fixes with numbers: "1. 2. 3."
-- Use hyphens for sub-points under a numbered fix.
-- No greeting. No sign-off. No filler. Australian bluntness welcome.`;
+- Under 200 words.
+- Plain text. No markdown headings, no bold or italic.
+- Code/tags in fenced blocks with a language. Six lines max. Abbreviate URLs to .../filename.ext.
+- Multi-step fixes numbered. Sub-points with hyphens.
+- No greeting. No sign-off.`;
 
 export default {
   async fetch(request, env) {
@@ -55,6 +93,8 @@ export default {
     const contextBlock = buildContext(auditData);
     const userMsg = `${contextBlock}\n\nQUESTION\n${question}`;
 
+    const isCustom = !auditData.cms || /custom|unknown/i.test(auditData.cms.name || '');
+
     let lastError = null;
     for (const model of MODELS) {
       try {
@@ -77,6 +117,33 @@ export default {
         }
 
         answer = stripMarkdown(answer);
+
+        // ── Gate 1: invented plugin names ──────────────────────
+        const badPlugin = checkInventedPlugins(answer);
+        if (badPlugin) {
+          lastError = new Error(`${model} invented plugin: ${badPlugin}`);
+          console.warn(`[${model}] invented plugin: ${badPlugin}`);
+          continue;
+        }
+
+        // ── Gate 2: CMS-specific terms on a custom stack ───────
+        if (isCustom) {
+          const leak = checkCMSLeak(answer);
+          if (leak) {
+            lastError = new Error(`${model} leaked CMS term on custom stack: ${leak}`);
+            console.warn(`[${model}] CMS leak: ${leak}`);
+            continue;
+          }
+        }
+
+        // ── Gate 3: invented third-party scripts ───────────────
+        const fake = checkInventedScripts(answer, auditData);
+        if (fake) {
+          lastError = new Error(`${model} invented script URL: ${fake}`);
+          console.warn(`[${model}] invented script: ${fake}`);
+          continue;
+        }
+
         return json({ success: true, answer, model }, 200, cors);
       } catch (e) {
         lastError = e;
@@ -87,6 +154,68 @@ export default {
     return json({ success: false, error: 'All models unavailable', details: lastError?.message }, 503, cors);
   }
 };
+
+/* ───────────────────────── gates ───────────────────────── */
+
+function checkInventedPlugins(answer) {
+  if (!answer) return null;
+  const re = /\b(?:plugin|app|extension)\s+(?:called\s+|named\s+)?["']?([A-Z][A-Za-z0-9 .'-]{2,30})["']?/g;
+  let m;
+  while ((m = re.exec(answer))) {
+    const raw = m[1].replace(/["']$/, '').trim();
+    const name = raw.toLowerCase();
+    if (/^(the|a|an)\s/i.test(raw)) continue;
+    if (/^(performance|image|seo|accessibility|security|optimisation|optimization|caching|cache|snippet)\s+(plugin|app|extension)/i.test(raw)) continue;
+    if (KNOWN_PLUGINS.some(k => name.includes(k) || k.includes(name))) continue;
+    return raw;
+  }
+  return null;
+}
+
+function checkCMSLeak(answer) {
+  if (!answer) return null;
+  const lower = answer.toLowerCase();
+  for (const term of CMS_TERMS) {
+    if (lower.includes(term.toLowerCase())) return term;
+  }
+  return null;
+}
+
+function checkInventedScripts(answer, auditData) {
+  if (!answer) return null;
+  // Extract src="..." from <script> tags in fenced blocks
+  const srcRe = /<script[^>]+src=["']([^"']+)["']/gi;
+  // Also catch bare URLs in script-ish contexts
+  const urlRe = /https?:\/\/([a-z0-9.-]+)\/[^\s"'<>]*\.js\b/gi;
+
+  const sourceBlob = JSON.stringify(auditData).toLowerCase();
+
+  let m;
+  while ((m = srcRe.exec(answer))) {
+    const host = extractHost(m[1]);
+    if (!host) continue;
+    if (KNOWN_SCRIPT_DOMAINS.some(d => host.endsWith(d))) continue;
+    if (sourceBlob.includes(host)) continue; // audit already mentions it
+    return m[1];
+  }
+  while ((m = urlRe.exec(answer))) {
+    const host = m[1].toLowerCase();
+    if (KNOWN_SCRIPT_DOMAINS.some(d => host.endsWith(d))) continue;
+    if (sourceBlob.includes(host)) continue;
+    return m[0];
+  }
+  return null;
+}
+
+function extractHost(url) {
+  try {
+    return new URL(url).host.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+/* ───────────────────────── context ───────────────────────── */
 
 function buildContext(auditData) {
   return [
@@ -139,15 +268,15 @@ function buildContext(auditData) {
     .join('\n\n');
 }
 
+/* ───────────────────────── response parsing ───────────────────────── */
+
 function unwrap(aiRes) {
   if (aiRes == null) return '';
   let r = aiRes;
 
-  // Legacy shapes
   if (typeof r === 'object' && 'response' in r) r = r.response;
   else if (typeof r === 'object' && 'result' in r) r = r.result;
 
-  // OpenAI chat completion shape
   if (typeof r === 'object' && Array.isArray(r.choices) && r.choices.length) {
     const c = r.choices[0];
     if (c?.message?.content) r = c.message.content;
@@ -169,7 +298,6 @@ function unwrap(aiRes) {
 function stripMarkdown(answer) {
   if (!answer) return '';
 
-  // Protect fenced code blocks with placeholders
   const blocks = [];
   let out = answer.replace(/```[\s\S]*?```/g, m => {
     blocks.push(m);
@@ -177,17 +305,16 @@ function stripMarkdown(answer) {
   });
 
   out = out
-    .replace(/^#{1,6}\s+/gm, '')                        // # headings
-    .replace(/\*\*(.*?)\*\*/g, '$1')                    // **bold**
-    .replace(/__(.*?)__/g, '$1')                        // __bold__
-    .replace(/(^|[^*])\*(?!\s)(.*?)(?<!\s)\*/g, '$1$2') // *italic*
-    .replace(/(^|[^_])_(?!\s)(.*?)(?<!\s)_/g, '$1$2')   // _italic_
-    .replace(/`([^`]+)`/g, '$1')                        // `inline code`
-    .replace(/^\s*[-*+]\s+/gm, '- ')                    // normalize bullets
-    .replace(/\n{3,}/g, '\n\n')                         // collapse blank lines
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/__(.*?)__/g, '$1')
+    .replace(/(^|[^*])\*(?!\s)(.*?)(?<!\s)\*/g, '$1$2')
+    .replace(/(^|[^_])_(?!\s)(.*?)(?<!\s)_/g, '$1$2')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/^\s*[-*+]\s+/gm, '- ')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
 
-  // Restore fenced code blocks
   out = out.replace(/\u0000BLOCK(\d+)\u0000/g, (_, i) => blocks[+i]);
   return out;
 }

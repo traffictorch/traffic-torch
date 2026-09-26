@@ -1,5 +1,5 @@
-// NUSA v5.3 — fix list prepends; fix-this is a button; scoring mirrors
-// quit-risk-tool and lighthouse-plus-tool verbatim.
+// NUSA v5.5 — ask-ai pair pattern (question at top, no page drop)
+// Changes from v5.4: askNarrate → askStart/askFinish. Everything else identical.
 
 const WORKERS = {
   lighthouse: 'https://lighthouse-audit.traffictorch.workers.dev/',
@@ -23,14 +23,44 @@ import { whyMatters } from './why-matters.js';
 import { extractSnippets, openCodeModal, ruleKey } from './code-snippets.js';
 import { detectCMS } from './cms-detect.js';
 import { initShareModule } from '/share-module.js';
+import { saveAudit } from '/audit-history.js';
+import { canRunTool } from '/main-v1.1.js';
 
 const $   = id => document.getElementById(id);
 const el  = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+/* ── URL history ── */
+const URL_HISTORY_KEY = 'nusa-url-history';
+const URL_HISTORY_MAX = 10;
+
+function loadUrlHistory() {
+  try {
+    const raw = localStorage.getItem(URL_HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveUrlToHistory(url) {
+  if (!url || typeof url !== 'string') return;
+  const clean = url.trim();
+  if (!clean) return;
+  const list = loadUrlHistory().filter(u => u !== clean);
+  list.unshift(clean);
+  localStorage.setItem(URL_HISTORY_KEY, JSON.stringify(list.slice(0, URL_HISTORY_MAX)));
+}
+
+function populateUrlDatalist() {
+  const dl = document.getElementById('url-history-list');
+  if (!dl) return;
+  const urls = loadUrlHistory();
+  dl.innerHTML = urls.map(u =>
+    `<option value="${u.replace(/"/g, '&quot;')}"></option>`
+  ).join('');
+}
+
 let t0 = performance.now();
-const ms = () => Math.round(performance.now() - t0);
 let state = null;
 let previewShot = null;
 const previewPins = new Map();
@@ -45,23 +75,21 @@ function looksLikeRealFix(prose) {
   return hasSteps || hasCode;
 }
 
-/* ── narration — prepend so newest appears at top ─────────── */
+/* ── narration ─────────────────────────────────────────────── */
 function narrate(text, opts = {}) {
   const p = el('p', opts.anchor ? 'anchor' : '');
-  if (opts.ts !== false) p.appendChild(el('span', 'ts', `[${String(ms()).padStart(5,'0')}ms]`));
   p.appendChild(document.createTextNode(text));
-const n = $('narration');
-if (n) {
-  n.appendChild(p);           
-  n.scrollTop = n.scrollHeight;
-}
+  const n = $('narration');
+  if (n) {
+    n.appendChild(p);
+    n.scrollTop = n.scrollHeight;
+  }
   return p;
 }
 
 function narrateFinding(f) {
   const p = el('p', 'finding');
   if (f.infoOnly) p.classList.add('info-only');
-  p.appendChild(el('span', 'ts', `[${String(ms()).padStart(5,'0')}ms]`));
 
   const bolt = el('button', 'bolt-fix', '◆ fix this →');
   bolt.type = 'button';
@@ -77,21 +105,39 @@ function narrateFinding(f) {
     document.dispatchEvent(new CustomEvent('nusa:focus-finding', { detail: { findingId: f.id } }));
   });
 
-const n = $('narration');
-if (n) {
-  n.appendChild(p);           
-  n.scrollTop = n.scrollHeight;
-}
+  const n = $('narration');
+  if (n) {
+    n.appendChild(p);
+    n.scrollTop = n.scrollHeight;
+  }
 }
 
-/* Ask AI answers render into their own container, not the fix list */
-function askNarrate(text) {
+/* Ask AI — create a question+answer pair at the top of the container */
+function askStart(question) {
   const host = $('ask-answers');
-  if (!host) return;
-  const wrap = el('div', 'ask-msg');
-  wrap.innerHTML = renderRich(text);
-  host.appendChild(wrap);
-  host.scrollTop = host.scrollHeight;
+  if (!host) return null;
+
+  const pair = el('div', 'ask-pair');
+
+  const q = el('div', 'ask-msg ask-q');
+  q.innerHTML = renderRich('you: ' + question);
+  pair.appendChild(q);
+
+  const a = el('div', 'ask-msg ask-a');
+  a.innerHTML = '<em>thinking…</em>';
+  pair.appendChild(a);
+
+  host.prepend(pair);
+  host.scrollTop = 0;
+  return a;
+}
+
+/* Ask AI — fill the answer into the pair that askStart created */
+function askFinish(answerEl, text) {
+  if (!answerEl) return;
+  answerEl.innerHTML = renderRich(text);
+  const host = $('ask-answers');
+  if (host) host.scrollTop = 0;
 }
 
 function renderRich(text) {
@@ -151,7 +197,7 @@ function startRuler() {
 function stopRuler() { if (rulerStop) rulerStop(); }
 
 /* ═══════════════════════════════════════════════════════════════
-   UX extraction — copied from quit-risk-tool/script-v1.3.js
+   UX extraction
    ═══════════════════════════════════════════════════════════════ */
 function countWords(text) {
   return text.trim().split(/\s+/).filter(w => w.length > 0).length;
@@ -318,20 +364,22 @@ function getUXContent(doc, metrics, auditedUrl) {
 async function runAudit(rawUrl) {
   const url = /^https?:\/\//i.test(rawUrl) ? rawUrl : 'https://' + rawUrl;
 
+  saveUrlToHistory(url);
+
   const n = $('narration'); if (n) n.innerHTML = '';
   state = null;
   previewShot = null;
   previewPins.clear();
   t0 = performance.now();
-$('stage')?.classList.remove('hidden');
-const pmEl = $('preview-meta'); if (pmEl) pmEl.textContent = 'rendering…';
-const pvEl = $('preview');
-if (pvEl) pvEl.innerHTML = '<div class="preview-empty">rendering preview…</div>';
-$('chamber')?.classList.add('hidden');
-$('summary-cards')?.classList.add('hidden');
-$('ask-block')?.classList.remove('hidden');
-$('share-module')?.classList.add('hidden');
-const aa = $('ask-answers'); if (aa) aa.innerHTML = '';
+  $('stage')?.classList.remove('hidden');
+  const pmEl = $('preview-meta'); if (pmEl) pmEl.textContent = 'rendering…';
+  const pvEl = $('preview');
+  if (pvEl) pvEl.innerHTML = '<div class="preview-empty">rendering preview…</div>';
+  $('chamber')?.classList.add('hidden');
+  $('summary-cards')?.classList.add('hidden');
+  $('ask-block')?.classList.remove('hidden');
+  $('share-module')?.classList.add('hidden');
+  const aa = $('ask-answers'); if (aa) aa.innerHTML = '';
 
   const pv = $('preview');
   if (pv) pv.innerHTML = '<div class="preview-empty">rendering preview…</div>';
@@ -365,7 +413,6 @@ const aa = $('ask-answers'); if (aa) aa.innerHTML = '';
   setProgress('running UX pass…');
   await sleep(80);
 
-  // Same render as QuitRisk uses
   let uxHtml = lh.renderedHtml || lh.rawHtml || '';
   let uxMetrics = null;
   let uxLoadTime = null;
@@ -438,20 +485,33 @@ const aa = $('ask-answers'); if (aa) aa.innerHTML = '';
   narrate(`Audit settled. ${state.findings.length} finding${state.findings.length === 1 ? '' : 's'}.`, { anchor: true });
   setProgress('settled', { busy: false });
   stopRuler();
+
+  await sleep(250);
+  const narr = $('narration');
+  if (narr) narr.scrollTo({ top: 0, behavior: 'smooth' });
+  $('summary-cards')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   $('chamber')?.classList.remove('hidden');
 
   renderSummaryCards(state);
   renderPreview();
   renderShareModule();
+
+  document.body.setAttribute('data-url', url);
+
+  try {
+    const overallScore = Math.round(
+      (state.ux.score + state.seo.score + state.aeo.score) / 3
+    );
+    await saveAudit({ url, tool: 'NUSA', score: overallScore });
+  } catch (e) {
+    console.warn('NUSA audit save failed:', e);
+  }
 }
 
 function renderShareModule() {
   const host = $('share-module');
   if (!host || !state) return;
 
-  // Walk every module in every category using the same evaluator
-  // that summary-cards.js uses. Gives us the FULL check list,
-  // including passes and warns.
   const allChecks = [];
   for (const cat of ['UX', 'SEO', 'AEO']) {
     const data = state[cat.toLowerCase()];
@@ -480,17 +540,14 @@ function renderShareModule() {
     (state.ux.score + state.seo.score + state.aeo.score) / 3
   );
 
-  // Deduplicate labels — same signal can appear in multiple modules
   const dedupe = arr => Array.from(new Set(arr));
 
   const passedMetrics = dedupe(allChecks.filter(c => c.status === 'pass').map(c => c.label));
   const warnMetrics   = dedupe(allChecks.filter(c => c.status === 'warn').map(c => c.label));
   const failMetrics   = dedupe(allChecks.filter(c => c.status === 'fail').map(c => c.label));
 
-  // ── Merge warns into failed for consistency with the other 17 tools ──
   const failedMetrics = [...failMetrics, ...warnMetrics];
 
-  // Top fixes prioritise real fails first, then warns
   const aiFixes = [...failMetrics, ...warnMetrics].slice(0, 5);
 
   host.innerHTML = '';
@@ -513,7 +570,7 @@ function renderShareModule() {
       checks: allChecks
     }
   });
-} 
+}
 
 async function openFixPanel(f) {
   const prev = document.querySelector(`.fix-panel[data-fid="${f.id}"]`);
@@ -590,15 +647,13 @@ async function openFixPanel(f) {
 }
 
 function appendFixActions(container, f, data) {
-  const { snippets, rule } = extractSnippets(state?.html || '', f.label);
+  const extracted = extractSnippets(state?.html || '', f.label);
+  const { rule, category } = extracted;
 
-  if (rule && rule.sel) {
+  if (rule && category !== 'page' && (rule.sel || rule.expected)) {
     const viewBtn = el('button', 'view-code-btn', '▸ view the code');
     viewBtn.addEventListener('click', () => {
-      openCodeModal(
-        f.label,
-        snippets.length ? snippets : [{ selector: rule.sel, html: '(no matching elements on the rendered page)' }]
-      );
+      openCodeModal(f.label, extracted);
     });
     container.appendChild(viewBtn);
   }
@@ -669,18 +724,31 @@ document.addEventListener('nusa:focus-finding', e => {
   }
 });
 
-$('url-form')?.addEventListener('submit', e => {
+$('url-form')?.addEventListener('submit', async e => {
   e.preventDefault();
   const v = $('url-input').value.trim();
-  if (v) runAudit(v);
+  if (!v) return;
+
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) {
+    document.getElementById('upgradeModal')?.classList.remove('hidden');
+    return;
+  }
+  runAudit(v);
 });
 
 $('ask-form')?.addEventListener('submit', async e => {
   e.preventDefault();
   const q = $('ask-input').value.trim();
   if (!q) return;
+  const btn = e.target.querySelector('button[type="submit"]');
+  const originalText = btn?.textContent || '↵';
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
   $('ask-input').value = '';
-  askNarrate(`you: ${q}`);
+
+  // Question appears instantly at the top of the container; answer slot shows "thinking…"
+  const answerEl = askStart(q);
+  if (!answerEl) return;
 
   // 1. All findings (not just fails) — with category, status, severity
   const allFindings = (state?.findings || []).map(f => ({
@@ -720,24 +788,39 @@ $('ask-form')?.addEventListener('submit', async e => {
       })
     });
     const data = await res.json();
-    askNarrate(`nusa: ${data.answer || data.error || 'no response'}`);
+    askFinish(answerEl, 'nusa: ' + (data.answer || data.error || 'no response'));
   } catch (err) {
-    askNarrate(`nusa: request failed — ${err.message}`);
+    askFinish(answerEl, 'nusa: request failed — ' + err.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = originalText; }
   }
 });
+
 $('chamber-form')?.addEventListener('submit', async e => {
   e.preventDefault();
   const q = $('chamber-input').value.trim();
   if (!q || !state) return;
   const out = $('chamber-out');
   if (!out) return;
+  const btn = e.target.querySelector('button[type="submit"]');
+  const originalText = btn?.textContent || 'run simulation';
+  if (btn) { btn.disabled = true; btn.textContent = 'simulating…'; }
   out.innerHTML = '';
   const pageText = (state.doc?.body?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 4000);
-const engines = [
-  { name: 'ChatGPT',     instr: 'Answer the question using the page content plus general knowledge about the tool named in the page. Then on a new line list the sentences you would cite, prefixed with "Citations:".' },
-  { name: 'Perplexity',  instr: 'Answer and list the exact sentences you would cite. If nothing is citable, respond exactly: CANNOT CITE: no extractable sentences.' },
-  { name: 'AI Overview', instr: 'Summariser mode. Give a short summary answer. End with: Confidence: high | medium | low' }
-];
+  const engines = [
+    {
+      name: 'ChatGPT',
+      instr: 'The user asked a specific question about the page. Search the PAGE CONTENT below and reply with the 1–3 sentences that best answer it. Quote them verbatim — do not paraphrase, do not invent, do not summarise. If the page contains a directly relevant answer, output only those sentences. If nothing on the page is relevant to the question, output exactly: CANNOT ANSWER'
+    },
+    {
+      name: 'Perplexity',
+      instr: 'The user asked a specific question. Find sentences in the PAGE CONTENT that could be cited as a source for that question. Be generous — anything topical, related, or providing context counts as citable. Format your reply as: a one-line answer, then a new line starting with "Citations:" followed by each cited sentence from the page on its own line. Only output exactly CANNOT CITE if the page contains zero sentences on the topic.'
+    },
+    {
+      name: 'AI Overview',
+      instr: 'You have been given the PAGE CONTENT below. Use ONLY that content to answer the user\'s question in 1–3 sentences. Do not ask for extra data, do not say "I don\'t have the results", do not reference audit scores. If the page does not cover the topic, output: CANNOT ANSWER. Otherwise end your reply with a new line reading exactly one of: Confidence: high / Confidence: medium / Confidence: low'
+    }
+  ];
   const results = [];
   for (const engine of engines) {
     const row = el('div', 'engine');
@@ -752,15 +835,15 @@ const engines = [
       const data = await res.json();
       const answer = (data.answer || '').trim();
       const wordCount = answer.split(/\s+/).filter(Boolean).length;
-const tooShort = wordCount < 15 && !/^\d+\./.test(answer);
-const isFail = /CANNOT (ANSWER|CITE)/i.test(answer)
-            || /not in extractable/i.test(answer)
-            || tooShort;
+      const tooShort = wordCount < 15 && !/^\d+\./.test(answer);
+      const isFail = /CANNOT (ANSWER|CITE)/i.test(answer)
+                  || /not in extractable/i.test(answer)
+                  || tooShort;
       const isWarn = /confidence:\s*low/i.test(answer);
       const v = isFail ? 'fail' : isWarn ? 'warn' : 'pass';
       row.querySelector('.verdict').className = 'verdict ' + v;
       row.querySelector('.verdict').textContent = v === 'pass' ? '✓' : v === 'warn' ? '~' : '✗';
-      row.querySelector('.body').textContent = answer.slice(0, 280) || '(empty)';
+      row.querySelector('.body').textContent = answer.slice(0, 1200) || '(empty)';
       results.push({ name: engine.name, verdict: v, answer });
     } catch (err) {
       row.querySelector('.verdict').className = 'verdict fail';
@@ -773,6 +856,7 @@ const isFail = /CANNOT (ANSWER|CITE)/i.test(answer)
   out.appendChild(gap);
   if (!results.some(r => r.verdict === 'fail')) {
     gap.innerHTML = `<span class="label">Citation ready</span>All three engines can answer this from the page.`;
+    if (btn) { btn.disabled = false; btn.textContent = originalText; }
     return;
   }
   gap.innerHTML = `<span class="label">Citation gap</span><em>analysing…</em>`;
@@ -788,6 +872,7 @@ const isFail = /CANNOT (ANSWER|CITE)/i.test(answer)
   } catch (err) {
     gap.innerHTML = `<span class="label">Citation gap</span>could not generate: ${esc(err.message)}`;
   }
+  if (btn) { btn.disabled = false; btn.textContent = originalText; }
 });
 
 async function renderPreview() {
@@ -801,6 +886,7 @@ async function renderPreview() {
   for (const f of (state.findings || [])) {
     const { rule } = extractSnippets(state.html || '', f.label);
     if (!rule?.sel) continue;
+    if (rule.cat === 'page' || rule.cat === 'resource') continue;
     if (rule.filter) filters.push({ selector: rule.sel, ...rule.filter });
     else selSet.add(rule.sel);
   }
@@ -809,12 +895,12 @@ async function renderPreview() {
     const res = await fetch(WORKERS.render, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-  url: state.url,
-  screenshot: true,
-  highlightSelectors: [...selSet],
-  filters,
-  deviceScaleFactor: 2      // ← asks the worker for a 2× DPI capture
-})
+        url: state.url,
+        screenshot: true,
+        highlightSelectors: [...selSet],
+        filters,
+        deviceScaleFactor: 2
+      })
     });
     const data = await res.json();
     if (!data.success || !data.screenshot) throw new Error(data.error || 'preview failed');
@@ -864,11 +950,7 @@ function drawPin(findingId, bbox, key) {
   pin.addEventListener('click', () => {
     const found = (state?.findings || []).find(x => x.id === findingId);
     if (!found) return;
-    const { snippets, rule } = extractSnippets(state?.html || '', found.label);
-    openCodeModal(
-      found.label,
-      snippets.length ? snippets : [{ selector: rule?.sel || '—', html: '(no matching element found on the page)' }]
-    );
+    openCodeModal(found.label, extractSnippets(state?.html || '', found.label));
   });
   pins.appendChild(pin);
 }
@@ -888,3 +970,23 @@ function pinFinding(finding) {
   const firstPin = document.querySelector(`.preview-pin[data-fid^="${finding.id}:"]`);
   if (firstPin) firstPin.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+
+/* ── DOM ready ── */
+document.addEventListener('DOMContentLoaded', () => {
+  populateUrlDatalist();
+  const input = document.getElementById('url-input');
+  if (input) input.addEventListener('focus', populateUrlDatalist);
+});
+
+/* ── Auto-run from ?url= ── */
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const urlParam = params.get('url');
+  if (!urlParam) return;
+  const input = document.getElementById('url-input');
+  if (!input) return;
+  let cleanUrl = decodeURIComponent(urlParam.trim());
+  if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = 'https://' + cleanUrl;
+  input.value = cleanUrl;
+  setTimeout(() => runAudit(cleanUrl), 500);
+});

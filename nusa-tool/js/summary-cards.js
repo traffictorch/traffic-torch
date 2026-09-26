@@ -229,23 +229,35 @@ export function renderSummaryCards(state) {
   const idByKey = new Map();
   for (const f of findings) idByKey.set(`${f.cat}::${f.label}`, f.id);
 
-  function overallCard() {
-    return `
-      <div class="sum-card sum-overall" data-cat="overall">
-        <div class="sum-head"><span class="sum-title">OVERALL</span></div>
-        <div class="sum-overall-score ${scoreClass(overall)}">${overall}</div>
-        <div class="sum-overall-label">/100 combined</div>
-        <div class="sum-overall-subs">
-          <span>UX <b>${uxScore}</b></span>
-          <span>SEO <b>${seoScore}</b></span>
-          <span>AEO <b>${aeoScore}</b></span>
-        </div>
-        <div class="sum-counts">
-          <span class="sum-count-fail">${blocking}</span> blocking ·
-          <span class="sum-count-warn">${warnings}</span> warn
-        </div>
-      </div>`;
+function overallCard() {
+  // Count passes using the same evaluator the share module uses
+  let totalPasses = 0;
+  for (const cat of ['UX', 'SEO', 'AEO']) {
+    const data = state[cat.toLowerCase()];
+    if (!data) continue;
+    for (const m of (data.modules || [])) {
+      const subs = evaluateModule(cat, m);
+      totalPasses += subs.filter(s => s.status === 'pass').length;
+    }
   }
+
+  return `
+    <div class="sum-card sum-overall" data-cat="overall">
+      <div class="sum-head"><span class="sum-title">OVERALL</span></div>
+      <div class="sum-overall-score ${scoreClass(overall)}">${overall}</div>
+      <div class="sum-overall-label">/100 combined</div>
+      <div class="sum-overall-subs">
+        <span>UX <b>${uxScore}</b></span>
+        <span>SEO <b>${seoScore}</b></span>
+        <span>AEO <b>${aeoScore}</b></span>
+      </div>
+      <div class="sum-counts">
+        <span class="sum-count-fail">${blocking}</span> blocking ·
+        <span class="sum-count-warn">${warnings}</span> warn ·
+        <span class="sum-count-pass">${totalPasses}</span> pass
+      </div>
+    </div>`;
+}
 
   function categoryCard(cat, data) {
     const catScoreVal = cat === 'UX' ? uxScore : cat === 'SEO' ? seoScore : aeoScore;

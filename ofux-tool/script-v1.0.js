@@ -855,7 +855,7 @@ function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overal
 
 
 // ─── Main Orchestration ──────────────────────────────────────────────────
-export async function runHomepageAnalysis(url, containerId, aiContainerId) {
+export async function runOfuxAnalysis(url, containerId, aiContainerId) {
   const container = document.getElementById(containerId);
   // aiContainerId is not used anymore – we keep the static Ask AI section in HTML.
   if (!container) return;

@@ -267,21 +267,21 @@
 
         <!-- ═══════ NUSA TOOL ═══════ -->
         <section id="homepage-tool" class="max-w-7xl mx-auto px-2 py-2" aria-labelledby="nusa-tool-heading">
-          <h2 id="nusa-tool-heading" class="text-xl md:text-2xl font-black text-center mt-2 mb-4 bg-gradient-to-r from-purple-700 to-cyan-700 dark:from-purple-500 dark:to-cyan-500 bg-clip-text text-transparent">
-            What is Online Find-ability &amp; User Experience?
-          </h2>
 
           <div id="nusa-app">
 
-            <form id="url-form" class="ofux-url-form" autocomplete="off" aria-label="NUSA audit form">
-              <label for="url-input" class="sr-only">Website URL to audit</label>
-              <input id="url-input" type="url" inputmode="url"
-                     placeholder="https://example.com/your-page" required
-                     class="ofux-url-input">
-              <button type="submit" class="ofux-url-btn" aria-label="Run NUSA audit">
-                Analyze NUSA
-              </button>
-            </form>
+<form id="url-form" class="nusa-url-form" autocomplete="off" aria-label="NUSA audit form">
+  <label for="url-input" class="sr-only">Website URL to audit</label>
+  <input id="url-input" type="url" inputmode="url"
+         placeholder="https://example.com/your-page" required
+         class="nusa-url-input"
+         list="url-history-list"
+         autocomplete="off">
+  <datalist id="url-history-list"></datalist>
+  <button type="submit" class="nusa-url-btn" aria-label="Run NUSA audit">
+    Analyze NUSA
+  </button>
+</form>
 
             <section id="summary-cards" class="summary-cards hidden" aria-label="Audit summary"></section>
 

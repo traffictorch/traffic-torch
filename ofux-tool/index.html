@@ -37,11 +37,11 @@
     "@graph": [
       {
         "@type": "WebSite",
-        "name": "Traffic Torch – OFUX Dashboard",
-        "url": "https://traffictorch.net/ofux-tool/",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/",
         "description": "OFUX: Online Findability & User Experience – three audits in one dashboard. Free, privacy-first.",
         "publisher": { "@type": "Organization", "name": "Traffic Torch" },
-        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://traffictorch.net/" }
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://traffictorch.net/ofux-tool/" }
       },
       {
         "@type": "WebPage",
@@ -55,10 +55,15 @@
           { "@type": "ImageObject", "url": "https://traffictorch.net/seo-ux-tool/images/seo-ux-optimizations-infographic-800w.webp", "contentUrl": "https://traffictorch.net/seo-ux-tool/images/seo-ux-optimizations-infographic-800w.webp", "width": 800, "height": 1200, "caption": "OFUX Pillars: On‑Page SEO, Mobile & PWA, Performance, Accessibility" },
           { "@type": "ImageObject", "url": "https://traffictorch.net/seo-ux-tool/images/seo-ux-audit-infographic-800w.webp", "contentUrl": "https://traffictorch.net/seo-ux-tool/images/seo-ux-audit-infographic-800w.webp", "width": 800, "height": 1200, "caption": "OFUX Audit Modules: Content Quality, UX Design, Security, Indexability" }
         ],
-        "speakable": {
-          "@type": "SpeakableSpecification",
-          "cssSelector": ["#faq", "#what-is", ".max-w-4xl.mx-auto.my-20 details div.mt-6", "section#what-is p.text-2xl.md\\:text-3xl.font-bold.text-center"]
-        }
+"speakable": {
+  "@type": "SpeakableSpecification",
+  "cssSelector": [
+    "#what-is h1",
+    "#what-is p",
+    "#faq summary",
+    "#faq details > div"
+  ]
+}
       },
       {
         "@type": "SoftwareApplication",
@@ -81,7 +86,7 @@
       {
         "@type": "Organization",
         "name": "Traffic Torch",
-        "url": "https://traffictorch.net/ofux-tool/",
+        "url": "https://traffictorch.net/",
         "logo": "https://traffictorch.net/logo-512.webp",
         "description": "Creators of OFUX – the online findability and user experience dashboard. We help websites improve rankings, engagement, and AI citation.",
         "sameAs": [
@@ -114,14 +119,27 @@
         "description": "Musician, Author, Web Designer, and Creator of OFUX – the online findability and user experience dashboard.",
         "worksFor": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" }
       },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" }]
-      },
+{
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "OFUX – Online Findability & User Experience Audit",
+      "item": "https://traffictorch.net/ofux-tool/"
+    }
+  ]
+},
       {
         "@type": "FAQPage",
         "@id": "https://traffictorch.net/ofux-tool/#faq",
-        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://traffictorch.net/" },
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://traffictorch.net/ofux-tool/" },
         "mainEntity": [
           { "@type": "Question", "name": "Why did we build OFUX instead of a traditional SEO tool?", "acceptedAnswer": { "@type": "Answer", "text": "We realised that standalone SEO tools ignore UX, and standalone UX tools ignore AI search. After auditing hundreds of sites, we saw that the real winners master all three – so we created OFUX to give you a single dashboard that tells you exactly where you stand. (And yes, we call it “OFUX” because we strip away the fluff.)" } },
           { "@type": "Question", "name": "How does on‑page SEO affect findability in 2026?", "acceptedAnswer": { "@type": "Answer", "text": "In our testing, pages that nail title tags, meta descriptions, heading structure and internal links see a 20‑40% increase in qualified organic traffic. But that’s only half the story – you also need to satisfy user intent and be ready for AI overviews. We’ve seen sites with perfect technical SEO still lose traffic because their content didn’t answer the user’s actual question. That’s why OFUX checks both on‑page signals and semantic relevance." } },
@@ -267,7 +285,7 @@
         <!-- ═══════ HERO – ANSWERABILITY DEFINITION + PAIN POINT + QUESTION ═══════ -->
         <section id="what-is" class="text-center mb-6" aria-labelledby="hero-heading">
           <h1 id="hero-heading" class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500 bg-clip-text text-transparent mb-6">
-            Traffic Torch UX - AEO - SEO Audit Tools
+            OFUX – Online Findability & User Experience Audit
           </h1>
 
           <!-- Clear definition pattern in opening (Answerability fix) -->
@@ -276,22 +294,18 @@
           </p>
         </section>
 
-        <section id="homepage-tool" class="max-w-7xl mx-auto px-2 py-2" aria-labelledby="ofux-tool-heading">
-          <!-- Question-style H2 (Answerability fix) -->
-          <h2 id="ofux-tool-heading" class="text-1xl md:text-2xl font-black text-center mt-2 mb-2 bg-gradient-to-r from-purple-700 to-cyan-700 dark:from-purple-500 dark:to-cyan-500 bg-clip-text text-transparent">
-            What is Online Find-ability & User Experience (OFUX)?
-          </h2>
+        <section id="ofux-tool" class="max-w-7xl mx-auto px-2 py-2" aria-labelledby="ofux-tool-heading">
 
-          <form id="homepage-audit-form" class="max-w-2xl mx-auto flex flex-col sm:flex-row gap-4 mb-12" aria-label="OFUX audit form">
-            <label for="homepage-url-input" class="sr-only">Website URL to audit</label>
-            <input type="url" id="homepage-url-input" placeholder="https://example.com/your-page"
+          <form id="ofux-audit-form" class="max-w-2xl mx-auto flex flex-col sm:flex-row gap-4 mb-12" aria-label="OFUX audit form">
+            <label for="ofux-url-input" class="sr-only">Website URL to audit</label>
+            <input type="url" id="ofux-url-input" placeholder="https://example.com/your-page"
                    class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 focus:ring-4 focus:ring-orange-500 text-lg">
             <button type="submit" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-2xl hover:opacity-90 whitespace-nowrap">
               Analyze OFUX
             </button>
           </form>
 
-          <div id="homepage-cards-container"></div>
+          <div id="ofux-cards-container"></div>
 
           <div id="progress-container" class="text-center my-8 hidden" aria-live="polite">
             <div class="spinner mx-auto mb-4"></div>
@@ -432,118 +446,6 @@
                 </div>
                 <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
               </div>
-            </article>
-          </div>
-        </section>
-
-        <!-- ═══════ Pricing ═══════ -->
-        <section id="upgrade-short" class="max-w-6xl mx-auto px-4 py-12" aria-labelledby="pricing-heading">
-          <header class="text-center mb-8">
-            <h2 id="pricing-heading" class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500 bg-clip-text text-transparent">
-              Unlock More Audits
-            </h2>
-            <p class="text-gray-700 dark:text-gray-400 mt-2">Choose the plan that fits your needs.</p>
-          </header>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <article class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
-              <h3 class="text-xl font-bold">Free</h3>
-              <p class="text-3xl font-black mt-2">$0</p>
-              <p class="text-sm text-gray-600 dark:text-gray-400">Forever free</p>
-              <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
-                <li>✓ 3 audits per day</li>
-                <li>✓ All 17 tools</li>
-                <li>✓ 7‑day GA4 &amp; GSC data</li>
-                <li>✓ Basic dashboard</li>
-                <li>✗ Real‑time analytics</li>
-                <li>✗ Custom date ranges</li>
-                <li>✗ CSV exports</li>
-                <li>✗ Priority support</li>
-              </ul>
-              <a href="/login/?tab=register" class="mt-6 inline-block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">
-                Create Account →
-              </a>
-            </article>
-
-            <article class="glass rounded-2xl p-6 text-center border-2 border-orange-500/50 shadow-lg shadow-orange-500/20 flex flex-col relative">
-              <h3 class="text-xl font-bold mt-4">Pro</h3>
-              <p class="text-3xl font-black mt-2">$6</p>
-              <p class="text-sm text-gray-600 dark:text-gray-400">per month</p>
-              <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
-                <li>✓ 25 audits per day</li>
-                <li>✓ All 17 tools</li>
-                <li>✓ 30‑day GA4 data</li>
-                <li>✓ 28‑day GSC data</li>
-                <li>✓ CSV exports</li>
-                <li>✓ Priority support</li>
-                <li>✗ Real‑time analytics</li>
-                <li>✗ Custom date ranges</li>
-              </ul>
-              <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">
-                Upgrade →
-              </a>
-            </article>
-
-            <article class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
-              <h3 class="text-xl font-bold">Enterprise</h3>
-              <p class="text-3xl font-black mt-2">$68</p>
-              <p class="text-sm text-gray-600 dark:text-gray-400">per month</p>
-              <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
-                <li>✓ 300 audits per day</li>
-                <li>✓ All 17 tools</li>
-                <li>✓ 365‑day GA4 &amp; GSC data</li>
-                <li>✓ Real‑time analytics</li>
-                <li>✓ Custom date ranges</li>
-                <li>✓ CSV exports</li>
-                <li>✓ Dedicated support</li>
-              </ul>
-              <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">
-                Upgrade →
-              </a>
-            </article>
-          </div>
-
-          <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
-            All plans include all 17 tools. <a href="/pro/" class="text-orange-700 dark:text-orange-400 hover:underline">See full details →</a>
-          </p>
-        </section>
-
-        <!-- Beta discounts -->
-        <section class="py-8 bg-white/5 dark:bg-black/20" aria-labelledby="beta-heading">
-          <h2 id="beta-heading" class="sr-only">Beta Discounts</h2>
-          <div class="max-w-5xl mx-auto px-6 text-center">
-            <p class="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-300">
-              🎉 <strong class="text-orange-700 dark:text-orange-400">Beta Discounts!</strong>
-            </p>
-            <p class="text-base text-gray-700 dark:text-gray-400 mt-2">
-              Get <strong class="text-orange-700 dark:text-orange-400">Lifetime Pro for free</strong> or <strong class="text-purple-700 dark:text-purple-400">29% off Enterprise</strong>.
-            </p>
-            <a href="/upgrade/#beta-discounts" class="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">
-              See Details →
-            </a>
-          </div>
-        </section>
-
-        <!-- Login / Create account -->
-        <section class="py-8 max-w-5xl mx-auto px-6" aria-labelledby="account-heading">
-          <h2 id="account-heading" class="sr-only">Account Access</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <article class="bg-white/10 dark:bg-black/20 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 hover:border-orange-400 transition">
-              <div class="text-5xl mb-4" aria-hidden="true">🔑</div>
-              <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Already a member?</h3>
-              <p class="text-gray-700 dark:text-gray-400 mt-2 text-sm">Log in to your account and pick up where you left off.</p>
-              <a href="/login/?tab=login" class="inline-block mt-6 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">
-                Log In →
-              </a>
-            </article>
-
-            <article class="bg-white/10 dark:bg-black/20 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 hover:border-orange-400 transition">
-              <div class="text-5xl mb-4" aria-hidden="true">🚀</div>
-              <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">New here?</h3>
-              <p class="text-gray-700 dark:text-gray-400 mt-2 text-sm">Create your account and start auditing for free.</p>
-              <a href="/login/?tab=register" class="inline-block mt-6 px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition">
-                Create Account →
-              </a>
             </article>
           </div>
         </section>
@@ -990,8 +892,8 @@
                   Core Expertise: SEO Correlation Research • UX Optimization • Privacy-First Development • AI-Assisted Diagnostics. Continuously aligned with the latest guidelines, best practices, and real-world data.
                 </p>
                 <div class="text-sm text-gray-700 dark:text-gray-400 italic mt-6">
-                  <p>Published: 2025-11-01</p>
-                  <p>Last updated: 2026-09-16</p>
+                  <p>Published: 2026-09-26</p>
+                  <p>Last updated: 2026-09-26</p>
                 </div>
               </div>
             </div>
@@ -1031,23 +933,23 @@
   </script>
 
   <script type="module">
-    import { runHomepageAnalysis } from '/ofux-tool/script-v1.0.js';
+    import { runOfuxAnalysis } from '/ofux-tool/script-v1.0.js';
     import { canRunTool } from '/main-v1.1.js';
 
-    document.getElementById('homepage-audit-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const input = document.getElementById('homepage-url-input');
-      let url = input.value.trim();
-      if (!url) return;
-      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+document.getElementById('ofux-audit-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const input = document.getElementById('ofux-url-input');
+  let url = input.value.trim();
+  if (!url) return;
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
 
-      const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) {
-        document.getElementById('upgradeModal').classList.remove('hidden');
-        return;
-      }
-      runHomepageAnalysis(url, 'homepage-cards-container', 'ai-answer-container');
-    });
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) {
+    document.getElementById('upgradeModal').classList.remove('hidden');
+    return;
+  }
+  runOfuxAnalysis(url, 'ofux-cards-container', 'ai-answer-container');
+});
   </script>
 
   <script>
@@ -1135,7 +1037,7 @@
             setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-700 dark:text-orange-400 hover:underline">Connect GSC</a>');
           }
         } catch (err) {
-          console.error('Homepage cards error:', err);
+          console.error('OFUX cards error:', err);
           setExtraCTA('ga4-extra-cta', '');
           setExtraCTA('gsc-extra-cta', '');
         }
@@ -1181,6 +1083,7 @@
     </ul>
     <h3>Explore the Traffic Torch Toolkit:</h3>
     <ul>
+      <li><a href="https://traffictorch.net/ofux-tool/">OFUX – Online Findability & User Experience Audit</a></li>
       <li><a href="https://traffictorch.net/topical-authority-audit-tool/">Topical Authority Audit Tool</a></li>
       <li><a href="https://traffictorch.net/seo-entity-extractor-tool/">SEO Entity Extractor Tool</a></li>
       <li><a href="https://traffictorch.net/seo-intent-tool/">SEO Intent Tool</a></li>

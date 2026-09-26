@@ -1,47 +1,109 @@
-// nusa-fix v5 — hint-aware prompt
+// nusa-fix v16 — generic, honest, short
+//
+// The model's job: describe what needs to change, name the general area to fix it on
+// the user's platform, and give one plain example. No exact plugin names invented,
+// no fake code, no file paths the worker can't verify.
 
 const DEFAULT_MODEL = '@cf/openai/gpt-oss-20b';
 
-// Explicit disambiguation for findings whose label alone is ambiguous.
-// The model was picking the wrong axis (format vs lazy, shorten vs lengthen).
-const HINTS = {
-  'Image Optimization':        'This metric is about image FORMAT (WebP/AVIF conversion). NOT lazy loading. NOT srcset. Add/convert to .webp or .avif.',
-  'Lazy Loading Media':        'This metric is about adding loading="lazy" to images. NOT format conversion.',
-  'Script Optimization':       'This metric is about reducing render-blocking scripts — add defer/async, move inline scripts external. NOT about removing scripts entirely.',
-  'Script Bloat Detection':    'This metric is about total script weight and third-party count. Combine/minify. Remove unused third-party tags.',
-  'Asset Volume Flags':        'This metric is about total asset count/size across the page. Compress, deduplicate, combine.',
-  'Menu Structure Clarity':    'This metric is about top-level nav item count (ideal 5-7) and label clarity.',
-  'Link Density Evaluation':   'This metric is about links-per-100-words. Ideal 2-6. Not total link count.',
-  'Internal Linking Balance':  'This metric is about the ratio of internal links vs external links vs word count.',
-  'Overall Text Scannability': 'This metric is about heading count, list usage, and bold text — anything that breaks up long prose.',
-  'Paragraph Density & Length': 'This metric is about average words per paragraph. Ideal under 80.',
-  'Responsive Breakpoints':    'This metric is about media queries for phone/tablet/desktop widths.',
-  'Touch Target Size':         'This metric is about clickable elements under 44×44 CSS pixels. Increase padding or min-height.',
-  'Color Contrast Ratios':     'This metric is about WCAG AA contrast (4.5:1 normal, 3:1 large text). Change text or background colour.',
-  'Overall WCAG Compliance':   'This is a rollup of accessibility checks. Focus on the single most impactful fix — usually contrast or alt text.',
-  'PWA Readiness Indicators':  'This metric is about manifest, service worker, and HTTPS. NOT apple-touch-icon sizes.',
-  'Font Optimization':         'This metric is about font-display:swap and font family/weight count.',
-  'Flesch Reading Ease Score': 'Higher is better. Simplify vocabulary and shorten sentences.',
-  'Flesch-Kincaid Grade Level':'Lower is better. Target grade 8 or below.',
-  'Average Sentence Length':   'Lower is better. Target under 20 words per sentence.'
+/* ───────────────────────── platform ───────────────────────── */
+
+function platform(cms) {
+  const n = (cms?.name || '').toLowerCase();
+  if (/wordpress|woocommerce/.test(n)) return 'WordPress';
+  if (/shopify/.test(n))               return 'Shopify';
+  if (/squarespace/.test(n))           return 'Squarespace';
+  if (/wix/.test(n))                   return 'Wix';
+  if (/webflow/.test(n))               return 'Webflow';
+  if (/drupal/.test(n))                return 'Drupal';
+  if (/joomla/.test(n))                return 'Joomla';
+  if (/magento/.test(n))               return 'Magento';
+  return 'Custom';
+}
+
+/* ───────────────────────── category ───────────────────────── */
+
+function category(label) {
+  const l = (label || '').toLowerCase();
+  if (/flesch|kincaid|reading ease|sentence length|paragraph density|scannab|text-to-code|text density|content depth|author byline|publish date/i.test(l))
+    return 'content';
+  if (/heading order|semantic html|div-soup|h1|landmark|skip-to-content|aria|alt text|label|link-name|button-name|accessible name/i.test(l))
+    return 'structure';
+  if (/contrast|touch target|wcag/i.test(l))
+    return 'styling';
+  if (/lazy|image|webp|avif|script|css|font|inline|cls|lcp|inp|ttfb|fcp|render blocking|asset|heavyweight|over \d+\s*kb/i.test(l))
+    return 'performance';
+  if (/title|meta description|canonical|manifest|theme-color|viewport|apple-|noindex|nofollow|hreflang|schema|json-ld|structured data/i.test(l))
+    return 'metadata';
+  if (/hsts|x-frame|permissions-policy|referrer-policy|robots\.txt|llms\.txt/i.test(l))
+    return 'server';
+  return 'general';
+}
+
+/* ───────────────────────── platform-specific surfaces ───────────────────────── */
+
+const SURFACES = {
+  WordPress: {
+    content:     'the WordPress page or post editor',
+    structure:   'the WordPress block editor, or a child-theme template if the markup is hard-coded',
+    styling:     'Appearance → Customize → Additional CSS, or a CSS snippet plugin',
+    performance: 'a performance plugin such as Perfmatters, WP Rocket, or Autoptimize, or the theme itself',
+    metadata:    'an SEO plugin such as Yoast or Rank Math, or the site header',
+    server:      'the server configuration or a security plugin',
+    general:     'the WordPress admin or the active theme'
+  },
+  Shopify: {
+    content:     'the Shopify admin → Pages or Products',
+    structure:   'the theme editor (Online Store → Themes → Edit code)',
+    styling:     'the theme editor → Assets → theme.css',
+    performance: 'an image-optimisation app or the theme settings',
+    metadata:    'the page’s SEO fields in the Shopify admin',
+    server:      'the domain settings or Cloudflare',
+    general:     'the Shopify admin or the theme editor'
+  },
+  Squarespace: {
+    content:     'the Squarespace page editor',
+    structure:   'the page editor or a Code Block',
+    styling:     'Design → Custom CSS',
+    performance: 'the site’s Speed settings or an Extension',
+    metadata:    'the page settings → SEO tab',
+    server:      'the DNS host or Cloudflare',
+    general:     'the Squarespace settings panel'
+  },
+  Wix: {
+    content:     'the Wix Editor',
+    structure:   'the Wix Editor or an HTML embed',
+    styling:     'Settings → Custom Code, wrapped in a style block',
+    performance: 'the site’s Performance settings or a Wix App',
+    metadata:    'the page’s SEO panel',
+    server:      'the DNS host or Cloudflare',
+    general:     'the Wix Editor or site settings'
+  },
+  Webflow: {
+    content:     'the Webflow Designer',
+    structure:   'the Webflow Designer',
+    styling:     'Project Settings → Custom Code → Head',
+    performance: 'Webflow Site Settings → Performance',
+    metadata:    'the page settings → SEO fields',
+    server:      'the DNS host or Cloudflare',
+    general:     'the Webflow Designer or Project Settings'
+  },
+  Custom: {
+    content:     'your content files',
+    structure:   'your HTML templates or partials',
+    styling:     'your site stylesheet',
+    performance: 'your build pipeline, CDN, or template',
+    metadata:    'your layout’s head section',
+    server:      'your server config (nginx/Apache) or CDN',
+    general:     'your source code'
+  }
 };
 
-function lookupHint(label) {
-  if (!label) return null;
-  for (const [k, v] of Object.entries(HINTS)) {
-    if (label.toLowerCase().includes(k.toLowerCase())) return v;
-  }
-  // Content-shape hints for ratio findings
-  if (/text[\s-]?to[\s-]?code/i.test(label)) {
-    const m = label.match(/(\d+(?:\.\d+)?)\s*%/);
-    const pct = m ? parseFloat(m[1]) : null;
-    if (pct !== null && pct < 15) {
-      return 'The page has TOO LITTLE visible text relative to markup. The fix is to ADD more prose — do NOT shorten existing paragraphs. Target ratio is 15% or higher.';
-    }
-    return 'The page has too much text relative to markup — trim wrapper markup, keep prose. Target ratio 15%.';
-  }
-  return null;
+function surfaceFor(platformName, cat) {
+  return (SURFACES[platformName] && SURFACES[platformName][cat]) || SURFACES[platformName].general;
 }
+
+/* ───────────────────────── worker entry ───────────────────────── */
 
 export default {
   async fetch(request, env) {
@@ -78,109 +140,145 @@ function json(obj, status = 200, extra = {}) {
   });
 }
 
+/* ───────────────────────── prompt ───────────────────────── */
+
 function buildPrompt({ url, pageTitle, cms, finding, affectedHtml }) {
-  const cmsName = cms?.name || 'Custom / Unknown';
-  const cmsLine = cms?.version ? `${cmsName} ${cms.version}` : cmsName;
+  const pName = platform(cms);
+  const pLine = cms?.version ? `${pName} ${cms.version}` : pName;
+  const cat = category(finding.label);
+  const surface = surfaceFor(pName, cat);
+
+  // Abbreviate any URL in the failing HTML so the model can't paste long paths.
+  const safeHtml = affectedHtml && String(affectedHtml).trim().length > 20
+    ? String(affectedHtml).replace(/https?:\/\/[^\s"'<>]+/g, u => {
+        const last = u.split('?')[0].split('/').pop() || '';
+        return last ? '.../' + last : u;
+      }).slice(0, 500)
+    : null;
+
+  const htmlBlock = safeHtml ? `\n\nFailing HTML (URLs abbreviated):\n\`\`\`html\n${safeHtml}\n\`\`\`` : '';
   const catLine = finding.cat + (finding.module ? ' · ' + finding.module : '');
-  const hasHtml = affectedHtml && String(affectedHtml).trim().length > 20;
-  const hint = lookupHint(finding.label);
 
-  const htmlBlock = hasHtml
-    ? '\n\nActual failing HTML:\n```html\n' + String(affectedHtml).slice(0, 1200) + '\n```'
-    : '\n\n(Page-wide metric — no specific element.)';
+  return `Describe an audit fix in 2 sentences, then give 2-3 example steps.
 
-  const hintBlock = hint ? `\n\nCRITICAL — what this metric actually means:\n${hint}` : '';
-
-  const rules = hasHtml
-    ? `Output exactly four numbered steps, nothing else:
-
-1. One sentence — the fix.
-2. Code change. Fenced \`\`\` block with the real replacement snippet. Use the actual values from the failing HTML.
-3. Where to apply it (file path / CMS location for ${cmsName}).
-4. How to verify it worked.
-
-At least one step must contain a \`\`\` code block. No greetings. No sign-off. Start directly with "1."`
-    : `Output exactly four numbered steps, nothing else:
-
-1. What needs to change.
-2. The specific action (content edit, restructure, or rule to apply). No code block needed.
-3. Where to apply it (CMS editor / template / content type for ${cmsName}).
-4. How to verify it worked.
-
-Be specific to this page, not generic advice. No greetings. No sign-off. Start directly with "1."`;
-
-  return `Fix generator for a website audit tool. Start directly with "1." Output four numbered steps only.
+Platform: ${pLine}
+General area to fix this on this platform: ${surface}
 
 Context:
 - Page: ${url || 'unknown'}${pageTitle ? ' — "' + pageTitle + '"' : ''}
-- Platform: ${cmsLine}
 - Category: ${catLine}
-- Finding: ${finding.label}${htmlBlock}${hintBlock}
+- Finding: ${finding.label}${htmlBlock}
 
-${rules}`;
+Output format (exactly this shape):
+
+Line 1 — a plain 2-sentence paragraph, 40 words or fewer. Sentence 1: what needs to change. Sentence 2: where to fix it, using the general area named above.
+
+Then a blank line, then the literal word: Example:
+
+Then 2 or 3 short numbered steps showing a typical way to make this fix on ${pName}. Generic steps are fine — a user can adapt them.
+
+Rules:
+- Never invent plugin names. If you mention a plugin, use only well-known ones (Yoast, Rank Math, Perfmatters, WP Rocket, Autoptimize, Really Simple SSL). Otherwise describe the category ("an SEO plugin", "a performance plugin").
+- Never write a full URL. Use .../filename.ext.
+- One short code block is allowed only if the fix is a CSS rule, a meta tag, or an HTML pattern. 5 lines maximum. Do not paste the failing HTML back.
+- No markdown bold, italic, or inline code in prose.
+- No greetings. No sign-offs. No verification step. Start directly with the prose.
+- Custom-platform rule: when cms is "Custom / Unknown", never mention a theme, plugin, CMS admin screen, or CMS-specific path. Use neutral language: "your stylesheet", "your template", "your layout file", "your server config". Never say "theme's style.css", "WP Rocket", "Gutenberg", "child theme", or any product name that only exists on a CMS.
+- No invented third-party scripts: never produce a CDN URL, a script tag, an API call, or a config object for a product you cannot verify exists in the audit data or in the known-plugin list. If the finding names a technology you cannot confirm (e.g. WebMCP), say: "This is an informational signal — no action required unless you're actively integrating with a specific provider."`;
 }
+
+/* ───────────────────────── generateFix ───────────────────────── */
 
 async function generateFix(env, payload) {
   const model = payload.model || DEFAULT_MODEL;
-  const hasHtml = payload.affectedHtml && String(payload.affectedHtml).trim().length > 20;
   const prompt = buildPrompt(payload);
 
   const aiRes = await env.AI.run(model, {
     messages: [
       {
         role: 'system',
-        content: 'You output numbered fix steps only. Start directly with "1." No greetings, no sign-offs, no questions, no markdown headings. Follow any CRITICAL metric-semantics instruction exactly.'
+        content: 'You describe website audit fixes in 2 short sentences, then give 2-3 generic example steps. No greetings. No sign-offs. No markdown emphasis. Never invent plugin names or file paths.'
       },
       { role: 'user', content: prompt }
     ],
-    max_tokens: 3000,
+    max_tokens: 1200,
     temperature: 0.3,
     reasoning_effort: 'low'
   });
 
   const { prose, source } = extractText(aiRes);
 
-  if (!prose || prose.length < 80) {
+  if (!prose || prose.length < 40) {
     return {
       applicable: false, prose: '',
       reason: 'model returned no usable fix',
-      debug: { responseShape: describeShape(aiRes), contentField: source, raw: safeStringify(aiRes).slice(0, 400) }
+      debug: { responseShape: describeShape(aiRes), contentField: source, raw: safeStringify(aiRes).slice(0, 300) }
     };
   }
 
-  const hasSteps = /(?:^|\n)\s*\d+[.)]\s+\S/.test(prose);
-  const hasCode  = /```/.test(prose);
-  const looksLikeSignoff = /^after changes[:\s]/i.test(prose) && prose.length < 120;
+  const cleaned = stripInlineMarkdown(stripWrapper(prose));
 
-  if (looksLikeSignoff || !hasSteps) {
-    return { applicable: false, prose: '', reason: 'model returned a non-actionable response', debug: { proseHead: prose.slice(0, 300) } };
-  }
-  if (hasHtml && !hasCode) {
-    return { applicable: false, prose: '', reason: 'model did not include a code snippet', debug: { proseHead: prose.slice(0, 300) } };
+  // Basic shape check
+  const hasExample = /(^|\n)\s*Example:\s*(\n|$)/i.test(cleaned);
+  const hasSteps   = /(?:^|\n)\s*\d+[.)]\s+\S/.test(cleaned);
+  if (!hasExample || !hasSteps) {
+    return { applicable: false, prose: '', reason: 'model did not follow the format', debug: { proseHead: cleaned.slice(0, 200) } };
   }
 
-  return { applicable: true, prose: stripWrapper(prose), patchScript: null, model };
+  // Reject invented plugins that don't exist on well-known lists
+  const KNOWN_PLUGINS = ['yoast','rank math','seopress','perfmatters','wp rocket','autoptimize','litespeed','really simple ssl','wpcode','code snippets','smush','shortpixel','tinyimg','crush.pics','superpwa','pwa for wp','wp accessibility','equalize digital'];
+  const pluginMentions = cleaned.match(/\b(?:plugin|app|extension)\s+(?:called\s+|named\s+)?["']?([A-Z][A-Za-z0-9 .'-]{2,30})["']?/g) || [];
+  const invented = pluginMentions.find(m => {
+    const name = m.replace(/^(?:plugin|app|extension)\s+(?:called\s+|named\s+)?["']?/i, '').replace(/["']$/, '').toLowerCase();
+    return name.length > 3 && !KNOWN_PLUGINS.some(k => name.includes(k) || k.includes(name));
+  });
+  if (invented) {
+    return { applicable: false, prose: '', reason: `model invented a plugin name: ${invented}`, debug: { proseHead: cleaned.slice(0, 200) } };
+  }
+
+  // Reject long URLs in code blocks
+  const blocks = cleaned.match(/```[\s\S]*?```/g) || [];
+  if (blocks.some(b => /https?:\/\/[^\s"'<>]{50,}/.test(b))) {
+    return { applicable: false, prose: '', reason: 'code block contains a full URL', debug: { proseHead: cleaned.slice(0, 200) } };
+  }
+
+  // Prose word cap
+  const intro = cleaned.split(/\n\s*Example:/i)[0] || '';
+  const words = intro.trim().split(/\s+/).filter(Boolean).length;
+  if (words > 60) {
+    return { applicable: false, prose: '', reason: 'intro paragraph too long', debug: { words } };
+  }
+
+  return { applicable: true, prose: cleaned, patchScript: null, model };
+}
+
+/* ───────────────────────── helpers ───────────────────────── */
+
+function stripInlineMarkdown(text) {
+  if (!text) return text;
+  const parts = String(text).split(/(```[\s\S]*?```)/g);
+  return parts.map((part, i) => {
+    if (i % 2 === 1) return part;
+    return part
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/__([^_]+)__/g, '$1')
+      .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1$2')
+      .replace(/(^|[^_])_([^_\n]+)_(?!_)/g, '$1$2')
+      .replace(/`([^`\n]+)`/g, '$1');
+  }).join('');
 }
 
 function extractText(aiRes) {
   if (!aiRes) return { prose: '', source: 'null' };
   if (typeof aiRes === 'string') return { prose: aiRes.trim(), source: 'string' };
-
   if (Array.isArray(aiRes.choices) && aiRes.choices.length) {
     const c = aiRes.choices[0];
     const m = c.message || c.delta || {};
-    if (typeof m.content === 'string' && m.content.trim().length > 0) return { prose: m.content.trim(), source: 'choices[0].message.content' };
-    if (typeof m.refusal === 'string' && m.refusal.trim().length > 0) return { prose: m.refusal.trim(), source: 'choices[0].message.refusal' };
-    if (typeof m.reasoning_content === 'string' && m.reasoning_content.trim().length > 0) return { prose: m.reasoning_content.trim(), source: 'choices[0].message.reasoning_content' };
-    if (typeof c.text === 'string' && c.text.trim().length > 0) return { prose: c.text.trim(), source: 'choices[0].text' };
+    if (typeof m.content === 'string' && m.content.trim()) return { prose: m.content.trim(), source: 'choices[0].message.content' };
+    if (typeof c.text === 'string' && c.text.trim()) return { prose: c.text.trim(), source: 'choices[0].text' };
   }
-
   if (typeof aiRes.response === 'string') return { prose: aiRes.response.trim(), source: 'response' };
-  if (aiRes.response && typeof aiRes.response === 'object') {
-    const r = aiRes.response;
-    if (typeof r.content === 'string' && r.content.trim()) return { prose: r.content.trim(), source: 'response.content' };
-    if (typeof r.text === 'string' && r.text.trim()) return { prose: r.text.trim(), source: 'response.text' };
-  }
+  if (aiRes.response && typeof aiRes.response.content === 'string') return { prose: aiRes.response.content.trim(), source: 'response.content' };
   if (typeof aiRes.result === 'string') return { prose: aiRes.result.trim(), source: 'result' };
   if (typeof aiRes.output_text === 'string') return { prose: aiRes.output_text.trim(), source: 'output_text' };
   return { prose: '', source: 'unknown' };
@@ -189,8 +287,7 @@ function extractText(aiRes) {
 function describeShape(x) {
   if (x == null) return 'null';
   if (typeof x !== 'object') return typeof x;
-  const keys = Object.keys(x);
-  return keys.length ? '{' + keys.join(', ') + '}' : '{}';
+  return '{' + Object.keys(x).join(', ') + '}';
 }
 function safeStringify(x) { try { return JSON.stringify(x, null, 2); } catch { return '[unserializable]'; } }
 function stripWrapper(s) { return String(s).replace(/^```[a-z]*\n/, '').replace(/\n```$/, '').trim(); }

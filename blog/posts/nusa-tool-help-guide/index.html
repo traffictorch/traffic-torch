@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <!-- SEO Title & Description -->
+  <title>NUSA Tool Help Guide – Quit Risk, Lighthouse Plus &amp; AEO Performance | Traffic Torch</title>
+  <meta name="description" content="How the NUSA tool works: run Quit Risk, Lighthouse Plus and AEO Performance audits on any page. Understand your three scores, the metrics behind them, and how to fix what matters first.">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/blog/posts/nusa-tool-help-guide/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/blog/posts/nusa-tool-help-guide/">
+
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/blog/posts/nusa-tool-help-guide/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="NUSA Tool Help Guide – Quit Risk, Lighthouse Plus &amp; AEO Performance">
+  <meta property="og:description" content="How the NUSA tool works: run three audits on any page, understand your scores, and fix what matters first.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://traffictorch.net/blog/posts/nusa-tool-help-guide/">
+  <meta property="og:image" content="https://traffictorch.net/blog/images/nusa-tool/nusa-dashboard-1200w.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NUSA Tool Help Guide – Quit Risk, Lighthouse Plus &amp; AEO Performance">
+  <meta name="twitter:description" content="Run three audits on any page, understand your scores, and fix what matters first.">
+  <meta name="twitter:image" content="https://traffictorch.net/blog/images/nusa-tool/nusa-dashboard-1200w.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <!-- JSON‑LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://traffictorch.net/#organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/",
+        "logo": "https://traffictorch.net/logo-512.webp",
+        "sameAs": [
+          "https://g.dev/traffictorch",
+          "https://github.com/traffictorch/",
+          "https://orcid.org/0009-0006-4084-0241",
+          "https://www.wikidata.org/wiki/Q139815165",
+          "https://zenodo.org/records/20149616",
+          "https://github.com/traffictorch/traffic-torch",
+          "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+          "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+          "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+          "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+          "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+          "https://www.framer.com/marketplace/plugins/traffic-torch/",
+          "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+          "https://github.com/marketplace/actions/traffic-torch-audit",
+          "https://www.linkedin.com/in/ylia-callan-8b889976/",
+          "https://x.com/Guitaralize"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://traffictorch.net/#website",
+        "url": "https://traffictorch.net/",
+        "name": "Traffic Torch",
+        "publisher": { "@id": "https://traffictorch.net/#organization" }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/blog/posts/nusa-tool-help-guide/#webpage",
+        "url": "https://traffictorch.net/blog/posts/nusa-tool-help-guide/",
+        "name": "NUSA Tool Help Guide – Quit Risk, Lighthouse Plus & AEO Performance",
+        "description": "How the NUSA tool works: run Quit Risk, Lighthouse Plus and AEO Performance audits on any page. Understand your three scores, the metrics behind them, and how to fix what matters first.",
+        "isPartOf": { "@id": "https://traffictorch.net/#website" },
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/blog/images/nusa-tool/nusa-dashboard-1200w.webp",
+          "width": 1200,
+          "height": 630
+        },
+        "datePublished": "2026-09-26T10:00:00+10:00",
+        "dateModified": "2026-09-26T10:00:00+10:00",
+        "author": {
+          "@type": "Person",
+          "name": "Traffic Torch Team",
+          "url": "https://traffictorch.net/"
+        },
+        "publisher": { "@id": "https://traffictorch.net/#organization" },
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": ["#faq", "h1", "p:first-of-type"]
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://traffictorch.net/blog/posts/nusa-tool-help-guide/#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://traffictorch.net/news/" },
+          { "@type": "ListItem", "position": 3, "name": "NUSA Tool Help Guide", "item": "https://traffictorch.net/blog/posts/nusa-tool-help-guide/" }
+        ]
+      },
+      {
+        "@type": "BlogPosting",
+        "headline": "NUSA Tool Help Guide – Quit Risk, Lighthouse Plus & AEO Performance",
+        "description": "How the NUSA tool works: run three audits on any page, understand your scores, and fix what matters first.",
+        "image": "https://traffictorch.net/blog/images/nusa-tool/nusa-dashboard-1200w.webp",
+        "datePublished": "2026-09-26T10:00:00+10:00",
+        "dateModified": "2026-09-26T10:00:00+10:00",
+        "author": { "@type": "Person", "name": "Traffic Torch Team", "url": "https://traffictorch.net/" },
+        "publisher": { "@id": "https://traffictorch.net/#organization" },
+        "mainEntityOfPage": { "@id": "https://traffictorch.net/blog/posts/nusa-tool-help-guide/#webpage" },
+        "keywords": [
+          "NUSA tool",
+          "Quit Risk",
+          "Lighthouse Plus",
+          "AEO Performance",
+          "UX friction audit",
+          "Core Web Vitals",
+          "AI crawler audit",
+          "bounce prediction",
+          "agent readiness"
+        ],
+        "wordCount": 2400,
+        "inLanguage": "en",
+        "articleSection": "Help Guides",
+        "isPartOf": {
+          "@type": "Blog",
+          "name": "Traffic Torch Blog",
+          "url": "https://traffictorch.net/news/"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://traffictorch.net/blog/posts/nusa-tool-help-guide/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is the NUSA tool?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "NUSA is a free, browser-based audit tool that runs three audits on any URL at the same time: Quit Risk (UX friction and bounce prediction), Lighthouse Plus (performance, accessibility, Core Web Vitals and agent-readiness), and AEO Performance (AI crawler render fidelity, schema parsing and content extractability). You get three 0–100 scores, module breakdowns, and plain-English fixes in one view."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How is NUSA different from OFUX?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "OFUX focuses on findability: UX Health, SEO Intent and AI Search answerability. NUSA focuses on what happens once someone lands on the page and once an AI crawler arrives: UX friction and bounce risk (Quit Risk), hard performance and accessibility metrics (Lighthouse Plus), and AI crawler readiness (AEO Performance). They are complementary: OFUX tells you whether your page can be found, NUSA tells you whether it survives the visit and the crawl."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need an account to run a NUSA audit?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The NUSA tool runs client-side in your browser and works without an account. Creating a free account simply unlocks audit history, cloud sync, and higher daily limits."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How long does a NUSA audit take?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Most NUSA audits finish in 10 to 30 seconds. The exact time depends on the page size, the number of external resources it loads, and your connection speed. All three audits run in parallel, so you are not waiting three times as long."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I run just one of the three NUSA audits?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Each pillar – Quit Risk, Lighthouse Plus, and AEO Performance – also has its own standalone tool page. The NUSA dashboard simply runs all three at once so you get the full picture in one scan."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my data safe when using NUSA?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. NUSA audits run client-side – the page content is never sent to our servers. Nothing about your URL, your HTML, or the results is stored unless you choose to save it to your account. We never sell or share your data."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How often should I run NUSA?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Run NUSA after every significant template, design, or content change, and at least once a month on your top landing pages. Because Core Web Vitals, tap-target behavior, and AI crawler support change over time, monthly baselines help you catch regressions early."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- PWA and Icons -->
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+
+  <!-- Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/blog/style-v1.0.css">
+  </noscript>
+
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  </noscript>
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop Sidebar -->
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1" aria-label="Open mobile menu">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4" aria-label="Toggle sidebar">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl" aria-label="Toggle theme">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+        <article class="max-w-7xl mx-auto px-2">
+          <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-2 md:p-4 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+
+            <!-- Featured Image -->
+            <picture class="mb-12 block">
+              <source media="(max-width: 640px)" srcset="/blog/images/nusa-tool/nusa-dashboard-640w.webp">
+              <source media="(min-width: 641px)" srcset="/blog/images/nusa-tool/nusa-dashboard-1200w.webp">
+              <img
+                src="/blog/images/nusa-tool/nusa-dashboard-1200w.webp"
+                alt="NUSA tool help guide – Quit Risk, Lighthouse Plus, and AEO Performance audits running side by side"
+                class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+                width="1200"
+                height="630">
+            </picture>
+
+            <!-- Title -->
+            <h1 class="text-3xl text-center md:text-4xl lg:text-5xl font-black mb-5 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+              NUSA Tool Help Guide – Quit Risk, Lighthouse Plus &amp; AEO Performance
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="text-xl md:text-2xl text-center font-medium text-gray-700 dark:text-gray-300 mb-10 leading-relaxed max-w-4xl">
+              How the NUSA tool works, what each of its three scores actually measures, and how to turn your results into a prioritized fix list.
+            </p>
+
+            <!-- Introduction -->
+            <div class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12">
+              <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg">
+                <strong>NUSA</strong> is a free, browser‑based audit tool. Enter one URL and it runs three separate audits on that page at the same time: <strong>Quit Risk</strong>, <strong>Lighthouse Plus</strong>, and <strong>AEO Performance</strong>. You get three 0–100 scores, a breakdown of the metrics behind each one, and plain‑English fixes.
+              </p>
+              <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-6">
+                This guide is about the tool itself: what each pillar measures, how to read the results, and how to move the numbers that matter. It's not a dashboard tutorial – it's a field manual for getting real value out of a NUSA scan.
+              </p>
+            </div>
+
+            <!-- Table of Contents -->
+            <nav id="table-of-contents" class="bg-white dark:bg-gray-900 p-4 md:p-6 mt-10 rounded-2xl shadow-lg mb-12 border border-gray-200 dark:border-gray-700 sticky top-4 z-10">
+              <h2 class="text-2xl md:text-3xl font-black text-center text-gray-800 dark:text-gray-100 mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+                Table of Contents
+              </h2>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[600px]">
+                  <thead>
+                    <tr class="bg-gray-100 dark:bg-gray-800/80">
+                      <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Section</th>
+                      <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">Quick Link</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-gray-800 dark:text-gray-200">
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">1. What is NUSA?</td>
+                      <td class="p-4 text-center"><a href="#what-is-nusa" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">2. The Three Pillars</td>
+                      <td class="p-4 text-center"><a href="#three-pillars" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">3. How to Run a NUSA Audit</td>
+                      <td class="p-4 text-center"><a href="#how-to-run" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">4. Understanding Your Scores</td>
+                      <td class="p-4 text-center"><a href="#scores" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">5. Quit Risk – UX Friction &amp; Bounce Prediction</td>
+                      <td class="p-4 text-center"><a href="#quit-risk" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">6. Lighthouse Plus – Performance &amp; Agent Readiness</td>
+                      <td class="p-4 text-center"><a href="#lighthouse-plus" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">7. AEO Performance – AI Crawler Readiness</td>
+                      <td class="p-4 text-center"><a href="#aeo-performance" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">8. Ask Traffic Torch AI for NUSA</td>
+                      <td class="p-4 text-center"><a href="#ask-ai" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">9. From Scores to Fixes</td>
+                      <td class="p-4 text-center"><a href="#action-plan" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                      <td class="p-4 font-medium">10. FAQ</td>
+                      <td class="p-4 text-center"><a href="#faq" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="mt-6 text-center text-sm md:text-base text-gray-600 dark:text-gray-400 flex flex-wrap justify-center gap-4 md:gap-6">
+                <a href="#action-plan" class="text-orange-600 dark:text-orange-400 hover:underline">Prioritized Action Plan</a>
+                <a href="#faq" class="text-orange-600 dark:text-orange-400 hover:underline">Frequently Asked Questions</a>
+              </div>
+            </nav>
+
+            <!-- CTA Box -->
+            <div class="mt-12 p-4 md:p-6 rounded-2xl border border-orange-200 dark:border-orange-800 bg-white/5 dark:bg-black/20 backdrop-blur-sm text-center">
+              <p class="text-xl md:text-2xl font-black mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+                Ready to score a page?
+              </p>
+              <p class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-6 leading-relaxed max-w-2xl mx-auto">
+                Paste any URL and get Quit Risk, Lighthouse Plus, and AEO Performance scores in one scan.<br class="hidden sm:block">
+                <span class="text-orange-600 dark:text-orange-400 font-semibold">Free • Client‑side • No data stored.</span>
+              </p>
+              <a href="https://traffictorch.net/"
+                 class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">
+                Go to NUSA Audit →
+              </a>
+            </div>
+
+            <!-- ================= SECTION 1 ================= -->
+            <section id="what-is-nusa" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+                1. What is NUSA?
+              </h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  <strong>NUSA</strong> is Traffic Torch's three‑in‑one audit tool. One URL in, three scores out. Each score comes from a dedicated audit that has its own standalone tool page, but NUSA runs all three at once so you don't have to switch tabs.
+                </p>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-4">
+                  The three audits answer three different questions about the same page:
+                </p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Quit Risk</strong> – “Will real users stay, or will they bounce?”</li>
+                  <li><strong>Lighthouse Plus</strong> – “Does the page perform well for humans <em>and</em> for agents?”</li>
+                  <li><strong>AEO Performance</strong> – “Can AI crawlers read, parse, and quote this page?”</li>
+                </ul>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">
+                  Everything runs in your browser. Nothing about the page, the URL, or the results is sent to a server unless you explicitly save it to your account.
+                </p>
+                <p class="mt-8 text-center md:text-left">
+                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+                </p>
+              </div>
+            </section>
+
+            <!-- ================= SECTION 2 ================= -->
+            <section id="three-pillars" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent">
+                2. The Three Pillars
+              </h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Each pillar is a self‑contained audit with its own scoring model, its own metric list, and its own fix recommendations. Here's what each one covers at a glance.
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-6 mt-8 not-prose">
+                  <div class="bg-white/5 dark:bg-black/20 p-6 rounded-2xl border border-emerald-200 dark:border-emerald-800">
+                    <div class="text-4xl mb-3" aria-hidden="true">⚡</div>
+                    <h3 class="font-bold text-lg text-emerald-700 dark:text-emerald-400">Quit Risk</h3>
+                    <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">UX friction audit and bounce prediction. Looks at tap targets, reading flow, CTA clarity, layout stability, and other signals that predict abandonment.</p>
+                  </div>
+                  <div class="bg-white/5 dark:bg-black/20 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
+                    <div class="text-4xl mb-3" aria-hidden="true">🗼</div>
+                    <h3 class="font-bold text-lg text-orange-700 dark:text-orange-400">Lighthouse Plus</h3>
+                    <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">Performance, Accessibility, Core Web Vitals, PWA readiness, and agent‑readiness. A superset of vanilla Lighthouse.</p>
+                  </div>
+                  <div class="bg-white/5 dark:bg-black/20 p-6 rounded-2xl border border-cyan-200 dark:border-cyan-800">
+                    <div class="text-4xl mb-3" aria-hidden="true">🚀</div>
+                    <h3 class="font-bold text-lg text-cyan-700 dark:text-cyan-400">AEO Performance</h3>
+                    <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">AI crawler render fidelity, schema parsing, and content extractability. Tests whether AI search engines can actually use the page.</p>
+                  </div>
+                </div>
+
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-8">
+                  Because the three audits measure different things, it's normal for a page to score well on one pillar and badly on another. That's the point of NUSA – it separates “looks fine” from “actually works.”
+                </p>
+                <p class="mt-8 text-center md:text-left">
+                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+                </p>
+              </div>
+            </section>
+
+            <!-- ================= SECTION 3 ================= -->
+            <section id="how-to-run" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent">
+                3. How to Run a NUSA Audit
+              </h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  There are three ways to start a NUSA scan.
+                </p>
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">From the NUSA page</h3>
+                <ol class="list-decimal pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li>Open <code class="text-orange-600 dark:text-orange-400">traffictorch.net/</code>.</li>
+                  <li>Paste the URL you want to audit into the input field.</li>
+                  <li>Click <strong>Analyze NUSA</strong>. All three audits start immediately.</li>
+                </ol>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">From any pillar tool page</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  If you only care about one pillar, use the standalone page for <a href="/quit-risk-tool/" class="text-orange-600 dark:text-orange-400 hover:underline">Quit Risk</a>, <a href="/lighthouse-plus-tool/" class="text-orange-600 dark:text-orange-400 hover:underline">Lighthouse Plus</a>, or <a href="/aeo-performance-tool/" class="text-orange-600 dark:text-orange-400 hover:underline">AEO Performance</a>. Same engine, single score.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">From the browser extension</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  With the Traffic Torch extension installed, click the toolbar icon on any page you're already viewing and pick <strong>NUSA</strong>. The URL is filled in automatically.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Typical run time</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Most NUSA scans finish in 10–30 seconds. The exact time depends on page size, the number of external resources it requests, and your connection speed. The three audits run in parallel – you're not waiting three times as long.
+                </p>
+                <p class="mt-8 text-center md:text-left">
+                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+                </p>
+              </div>
+            </section>
+
+            <!-- ================= SECTION 4 ================= -->
+            <section id="scores" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+                4. Understanding Your Scores
+              </h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Each pillar returns a score between <strong>0 and 100</strong>. Below the score you get a grade emoji, a short rating, and a list of the individual metrics that fed into the number. Each metric is marked with one of three states:
+                </p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>✅ Pass</strong> – the page meets the standard. No action needed.</li>
+                  <li><strong>⚠️ Average</strong> – the page is in the middle of the pack. Worth improving when you have time.</li>
+                  <li><strong>❌ Fail</strong> – the page is missing something that actively hurts the metric. Fix these first.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What the score bands mean</h3>
+                <div class="not-prose overflow-x-auto mt-4">
+                  <table class="w-full text-left border-collapse min-w-[500px] text-sm">
+                    <thead>
+                      <tr class="bg-gray-100 dark:bg-gray-800/80">
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Band</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Score</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">What it usually means</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-gray-800 dark:text-gray-200">
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Excellent</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">90–100</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Page is in the top tier for this pillar. Maintain, don't overhaul.</td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Good</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">70–89</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Solid, but there are one or two obvious weak spots worth tightening.</td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Needs work</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">50–69</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Real friction, real cost. A short sprint on the ❌ items will lift the score.</td></tr>
+                      <tr><td class="p-3"><strong>Critical</strong></td><td class="p-3">0–49</td><td class="p-3">Something structural is broken or missing. Fix the ❌ items before doing anything else.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">
+                  Below each score you'll also see a <strong>“Full Results →”</strong> link. That takes you to the standalone pillar tool page, where you can see the underlying data and ask the AI for targeted fixes.
+                </p>
+                <p class="mt-8 text-center md:text-left">
+                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+                </p>
+              </div>
+            </section>
+
+            <!-- ================= SECTION 5 ================= -->
+            <section id="quit-risk" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                5. Quit Risk – UX Friction &amp; Bounce Prediction
+              </h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  <strong>Quit Risk</strong> measures the things that make a real visitor leave. It's not a checklist of “best practices” – it's a prediction of how likely the page is to lose someone before they take the action you wanted.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What it looks at</h3>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Tap target size and spacing</strong> – anything under 44×44 CSS pixels is a friction point on mobile.</li>
+                  <li><strong>Reading flow and paragraph density</strong> – long, unbroken blocks of text predict drop‑off.</li>
+                  <li><strong>CTA clarity</strong> – is the primary action obvious, above the fold, and unambiguous?</li>
+                  <li><strong>Layout stability</strong> – content shifting during load makes users feel the page is unreliable.</li>
+                  <li><strong>Distraction signals</strong> – intrusive interstitials, auto‑playing media, and overlapping elements.</li>
+                  <li><strong>Form friction</strong> – number of fields, required fields, and error‑message quality.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">When to prioritize Quit Risk</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Prioritize Quit Risk when you have traffic but low conversion, high bounce, or short session duration. The score tells you whether the problem is the page itself rather than the source of the traffic.
+                </p>
+
+                <p class="mt-8 text-center md:text-left">
+                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+                </p>
+              </div>
+            </section>
+
+            <!-- ================= SECTION 6 ================= -->
+            <section id="lighthouse-plus" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+                6. Lighthouse Plus – Performance, Accessibility &amp; Agent Readiness
+              </h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  <strong>Lighthouse Plus</strong> is a superset of vanilla Lighthouse. It keeps the classic signal categories and adds checks that matter in 2026: agent‑readiness, machine‑readability, and PWA behaviour.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What it looks at</h3>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Core Web Vitals</strong> – LCP, INP, and CLS, treated as hard signals rather than soft heuristics.</li>
+                  <li><strong>Accessibility</strong> – WCAG 2.2 AA contrast, landmarks, focus order, and ARIA usage.</li>
+                  <li><strong>Best practices</strong> – HTTPS, safe third‑party usage, and image aspect ratios.</li>
+                  <li><strong>SEO basics</strong> – title length, meta description, crawlability, and canonical signals.</li>
+                  <li><strong>PWA readiness</strong> – manifest validity, service worker presence, and installability.</li>
+                  <li><strong>Agent‑readiness</strong> – semantic HTML, structured data, and machine‑readable navigation.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">When to prioritize Lighthouse Plus</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Prioritize Lighthouse Plus when you want the page to feel fast and accessible to every visitor, and to be legible to the crawlers and agents that now sit in front of your audience. This is the pillar to fix before you start tuning content.
+                </p>
+
+                <p class="mt-8 text-center md:text-left">
+                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+                </p>
+              </div>
+            </section>
+
+            <!-- ================= SECTION 7 ================= -->
+            <section id="aeo-performance" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                7. AEO Performance – AI Crawler Readiness
+              </h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  <strong>AEO Performance</strong> tests whether AI search engines and answer engines can actually use your page. That means: can they render it, can they parse it, and can they extract the parts that are quotable?
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What it looks at</h3>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Render fidelity</strong> – does the page's content survive when JavaScript is limited or delayed?</li>
+                  <li><strong>Schema parsing</strong> – validity of JSON‑LD, required properties, and how easily crawlers can interpret the types.</li>
+                  <li><strong>Content extractability</strong> – are the important claims in semantic HTML, or buried in images and widgets?</li>
+                  <li><strong>Answerability signals</strong> – clear definitions, direct answers in the first screen, and question‑shaped headings.</li>
+                  <li><strong>CMS readiness</strong> – whether the platform you're on (WordPress, Shopify, Wix, Framer, etc.) supports the recommended fixes.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">When to prioritize AEO Performance</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Prioritize AEO Performance when you want your content to be cited by Perplexity, ChatGPT Search, Gemini, and Grok, or when you notice AI answers summarizing your topic without referencing your page. This pillar tells you which technical blockers are preventing citation.
+                </p>
+
+                <p class="mt-8 text-center md:text-left">
+                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+                </p>
+              </div>
+            </section>
+
+            <!-- ================= SECTION 8 ================= -->
+            <section id="ask-ai" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+                8. Ask Traffic Torch AI for NUSA
+              </h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  After a NUSA scan you can ask the AI about any of the three pillars. It reads the current audit results and gives you fixes in plain English.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Good questions to ask</h3>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li>“My Quit Risk score is 58 – what are the three fastest things I can fix?”</li>
+                  <li>“Why is my Lighthouse Plus accessibility score low on this page?”</li>
+                  <li>“Which of the AEO Performance failures is blocking AI crawlers the most?”</li>
+                  <li>“Give me a WordPress plugin shortlist for the Lighthouse Plus failures.”</li>
+                  <li>“Rewrite this H2 to be more answerable for AI search.”</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What the AI knows</h3>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li>The three NUSA scores and every metric state from the current scan.</li>
+                  <li>The URL and the page context that produced those scores.</li>
+                  <li>It does <em>not</em> have access to your personal data, other tabs, or your browsing history.</li>
+                </ul>
+
+                <p class="mt-8 text-center md:text-left">
+                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+                </p>
+              </div>
+            </section>
+
+            <!-- ================= SECTION 9 ================= -->
+            <section id="action-plan" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent">
+                9. From Scores to Fixes: A Prioritized Action Plan
+              </h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Don't try to fix everything at once. NUSA tells you which pillar is costing you the most. Work in this order.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Step 1 – Fix Lighthouse Plus fails</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Performance, accessibility, and Core Web Vitals issues contaminate every other signal. If LCP is slow or contrast fails WCAG, fix those before touching content.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Step 2 – Fix AEO Performance fails</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Once the page is technically sound, make sure AI crawlers can render, parse, and quote it. Schema errors, JS‑dependent content, and missing answer blocks are the usual culprits.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Step 3 – Tune Quit Risk</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  With the technical foundation in place, work on the UX friction items that remain. Tap targets, paragraph length, CTA clarity, and layout stability are the highest‑leverage fixes.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Step 4 – Re‑run and compare</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Re‑run NUSA on the same URL after each fix cycle. Scores should move in a predictable direction. If they don't, ask the AI what changed – it can usually pinpoint the regression.
+                </p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">How often to re‑scan</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Run NUSA after every significant template, design, or content change, and at least once a month on your top landing pages. Core Web Vitals, tap‑target behavior, and AI crawler support shift over time – a monthly baseline catches drift early.
+                </p>
+
+                <p class="mt-8 text-center md:text-left">
+                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+                </p>
+              </div>
+            </section>
+
+            <!-- ================= SECTION 10 ================= -->
+            <section id="faq" class="mb-20 scroll-mt-24">
+              <h2 class="text-3xl md:text-4xl font-black mt-16 mb-12 text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+                10. Frequently Asked Questions
+              </h2>
+              <div class="max-w-4xl mx-auto space-y-4">
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    What is the NUSA tool?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>NUSA is a free, browser‑based audit tool that runs three audits on any URL at the same time: <strong>Quit Risk</strong> (UX friction and bounce prediction), <strong>Lighthouse Plus</strong> (performance, accessibility, Core Web Vitals and agent‑readiness), and <strong>AEO Performance</strong> (AI crawler render fidelity, schema parsing and content extractability). You get three 0–100 scores, module breakdowns, and plain‑English fixes in one view.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    How is NUSA different from OFUX?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p><strong>OFUX</strong> focuses on findability: UX Health, SEO Intent and AI Search answerability. <strong>NUSA</strong> focuses on what happens once someone lands on the page and once an AI crawler arrives: UX friction and bounce risk (Quit Risk), hard performance and accessibility metrics (Lighthouse Plus), and AI crawler readiness (AEO Performance). They're complementary: OFUX tells you whether your page can be found, NUSA tells you whether it survives the visit and the crawl.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    Do I need an account to run a NUSA audit?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>No. The NUSA tool runs client‑side in your browser and works without an account. Creating a free account simply unlocks audit history, cloud sync, and higher daily limits.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    How long does a NUSA audit take?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>Most NUSA audits finish in 10–30 seconds. The exact time depends on the page size, the number of external resources it loads, and your connection speed. All three audits run in parallel, so you're not waiting three times as long.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    Can I run just one of the three NUSA audits?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>Yes. Each pillar – Quit Risk, Lighthouse Plus, and AEO Performance – also has its own standalone tool page. The NUSA dashboard simply runs all three at once so you get the full picture in one scan.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    Is my data safe when using NUSA?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>Yes. NUSA audits run client‑side – the page content is never sent to our servers. Nothing about your URL, your HTML, or the results is stored unless you choose to save it to your account. We never sell or share your data.</p>
+                  </div>
+                </details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
+                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
+                    How often should I run NUSA?
+                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
+                  </summary>
+                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
+                    <p>Run NUSA after every significant template, design, or content change, and at least once a month on your top landing pages. Because Core Web Vitals, tap‑target behavior, and AI crawler support change over time, monthly baselines help you catch regressions early.</p>
+                  </div>
+                </details>
+
+              </div>
+              <p class="mt-6 text-center md:text-left text-sm">
+                <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+              </p>
+            </section>
+
+            <!-- ================= CONCLUSION ================= -->
+            <section id="conclusion" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl md:text-4xl font-black text-center text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 bg-clip-text text-transparent">
+                Start Scoring
+              </h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none text-center md:text-left">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+                  The fastest way to learn NUSA is to run it on a page you already know. Pick a landing page, a product page, or your homepage. Compare the three scores. Then start with the pillar that has the lowest number and the most ❌ items.
+                </p>
+                <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+                  Fix one thing at a time. Re‑run the audit. Watch which number moves. That loop – scan, fix, rescan – is the whole method.
+                </p>
+              </div>
+              <div class="text-center mt-12">
+                <a href="https://traffictorch.net/"
+                   class="inline-block px-10 py-6 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-2xl rounded-2xl hover:brightness-110 hover:scale-[1.05] transition-all duration-300 shadow-2xl shadow-orange-500/50">
+                  Run Your First NUSA Audit →
+                </a>
+              </div>
+              <p class="mt-6 text-center md:text-left text-sm">
+                <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
+              </p>
+            </section>
+
+          </div>
+        </article>
+
+        <!-- Share Buttons -->
+        <div class="share-block">
+          <strong class="share-label">Share?</strong>
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </div>
+
+        <!-- Tools Grid -->
+        <h2 class="text-3xl md:text-3xl font-black text-center mt-10 mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+          SEO - GEO - UX Tools
+        </h2>
+        <div class="tools-grid max-w-7xl mx-auto px-2">
+          <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+            <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-blue-400 text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
+                  <h2 class="text-blue-400 text-2xl font-bold mb-3">Topical Authority Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Detect main topics, subtopics &amp; subtopic suggestions.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/seo-entity-extractor-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🧬</div>
+                  <h2 class="text-pink-400 text-2xl font-bold mb-3">SEO Entity Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Semantic entity extractor + audit + fixes.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
+                  <h2 class="text-emerald-400 text-2xl font-bold mb-3">Quit Risk Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">UX friction audit + bounce prediction + optimizations.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
+                  <h2 class="text-cyan-400 text-2xl font-bold mb-3">SEO Intent Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Intent matching + E-E-A-T audit + fixes.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
+                  <h2 class="text-orange-400 text-2xl font-bold mb-3">Product SEO Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-green-500/30 group-hover:border-green-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
+                  <h2 class="text-green-400 text-2xl font-bold mb-3">Local SEO Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">On-page local audit + NAP, schema, map signals + fixes.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+                  <h2 class="text-purple-400 text-2xl font-bold mb-3">Keyword Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">On-page keyword placement score + density fixes.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+                  <h2 class="text-red-400 text-2xl font-bold mb-3">VS Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis + beat strategies.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+                  <h2 class="text-orange-400 text-2xl font-bold mb-3">Ai Search Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Optimize for Perplexity, Grok, Gemini, ChatGPT Search.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+                  <h2 class="text-pink-400 text-2xl font-bold mb-3">Ai Content Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content + forecasts.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/ai-voice-search-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🎙️</div>
+                  <h2 class="text-green-400 text-2xl font-bold mb-3">Ai Voice Search Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Instant 360° audit for voice SEO.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
+                  <h2 class="text-cyan-400 text-2xl font-bold mb-3">Schema Generator Tool</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Detect &amp; Generate 18 Schema Markups in JSON-LD</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Try Now →
+                </span>
+              </div>
+            </a>
+
+            <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">🧰</div>
+                  <h3 class="text-indigo-400 text-2xl font-bold mb-3">All Tools</h3>
+                  <p class="text-gray-800 dark:text-gray-100">Complete suite — instant audits, gaps, fixes &amp; forecasts</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Explore All →
+                </span>
+              </div>
+            </a>
+
+            <a href="/ai-ux-seo-help-guides/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between">
+                <div>
+                  <div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">📋</div>
+                  <h2 class="text-indigo-400 text-2xl font-bold mb-3">Help Guides</h2>
+                  <p class="text-gray-800 dark:text-gray-100">Practical SEO tutorials: Deep-dive diagnostics, high-impact fixes.</p>
+                </div>
+                <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                  Read Up →
+                </span>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- Author Bio -->
+        <section class="max-w-5xl mx-auto my-24 px-2">
+          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+            <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-8 text-center">
+              <img src="/logo.webp" alt="Traffic Torch SEO • UX • AI Optimization Toolkit" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white shadow-xl">
+              <h3 class="text-4xl font-black text-white mb-4">Traffic Torch</h3>
+              <p class="text-xl text-white/90 max-w-3xl mx-auto">
+                SEO • UX • AI Optimization Audit Toolkit
+              </p>
+            </div>
+            <div class="p-2 md:p-4 text-center space-y-8">
+              <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+                Traffic Torch distills ongoing correlation research, algorithm update analysis and practical testing into 360° SEO + UX diagnostics, AI-powered fixes, and educational tools. Empowering creators, agencies, and businesses with transparent, evidence-based insights for better organic performance and user satisfaction.
+              </p>
+              <div class="pt-8 space-y-3">
+                <p class="text-base text-gray-800 dark:text-gray-200">
+                  Expertise: SEO Correlation Studies • UX Optimization • Privacy-First Web Tools • AI-Assisted Analysis.
+                </p>
+                <p class="text-base text-gray-800 dark:text-gray-200 italic mt-4">
+                  Updated based on the latest search engine guidelines, ranking factor research, and real-page performance data.
+                </p>
+                <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+                  <p>Published: 2026-09-26</p>
+                  <p>Last updated: 2026-09-26</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+          <div class="inline-block">
+            <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+              <a href="/">Traffic Torch</a>
+            </p>
+            <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+              <span id="page-name"></span>
+            </p>
+          </div>
+        </nav>
+
+        <script>
+          document.getElementById('page-name').textContent = document.title
+            .replace('Traffic Torch – ', '')
+            .replace(' | Traffic Torch', '')
+            .replace(' Tool', '')
+            .trim();
+        </script>
+
+      </main>
+
+      <!-- Footer -->
+      <div id="footer-placeholder"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/main-v1.1.js" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js"></script>
+
+</body>
+</html>

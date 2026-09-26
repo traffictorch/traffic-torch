@@ -147,7 +147,7 @@ html:not(.dark) #nusa-app ::selection{background:rgba(124,92,224,.18)}
 .verify-diff .vrow.bad .vd,.verify-diff .vrow.bad .va{color:var(--crimson)}
 .verify-diff .vrow.flat{color:var(--dim)}
 
-.preview{flex:1;overflow-y:auto;padding:14px 18px 24px;min-height:340px;max-height:calc(100vh - 300px);scroll-behavior:smooth}
+.preview{flex:1;overflow-y:auto;padding:14px 18px 24px;min-height:500px;max-height:80vh;scroll-behavior:smooth}
 .preview-empty{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:60px 0}
 .preview-canvas{position:relative;width:100%;border:1px solid var(--line);background:var(--ink);line-height:0}
 .preview-img{display:block;width:100%;height:auto;image-rendering:auto}
@@ -193,14 +193,57 @@ html:not(.dark) #nusa-app ::selection{background:rgba(124,92,224,.18)}
 
 .nusa-foot{display:flex;align-items:center;gap:12px;padding:10px 22px;font-family:var(--mono);font-size:11px;color:var(--dim);border-top:1px solid var(--line)}
 
-/* ── OFUX-style URL form (kept inside #nusa-app) ── */
-#nusa-app .ofux-url-form{display:flex;flex-direction:column;gap:1rem;max-width:42rem;margin:1.5rem auto;padding:0 1.5rem}
-@media (min-width:640px){#nusa-app .ofux-url-form{flex-direction:row}}
-#nusa-app .ofux-url-input{flex:1;padding:1rem 1.5rem;border-radius:1rem;border:1px solid var(--line);background:var(--ink2);color:var(--text);font-family:var(--mono);font-size:1.125rem;outline:none;transition:box-shadow .15s ease,border-color .15s ease}
-#nusa-app .ofux-url-input::placeholder{color:var(--dim)}
-#nusa-app .ofux-url-input:focus{border-color:var(--amber);box-shadow:0 0 0 4px rgba(245,166,35,.25)}
-#nusa-app .ofux-url-btn{padding:1rem 2rem;background:linear-gradient(to right,#f97316,#db2777);color:#fff;font-family:var(--sans);font-weight:700;font-size:1rem;border:none;border-radius:1rem;cursor:pointer;white-space:nowrap;transition:opacity .15s ease}
-#nusa-app .ofux-url-btn:hover{opacity:.9}
+/* ── NUSA URL form ── */
+#nusa-app .nusa-url-form{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+  max-width:42rem;
+  margin:1.5rem auto;
+  padding:0 1.5rem;
+}
+@media (min-width:640px){
+  #nusa-app .nusa-url-form{ flex-direction:row; }
+}
+
+#nusa-app .nusa-url-input{
+  flex:1;
+  padding:1rem 1.5rem;
+  border-radius:1rem;
+  border:1px solid var(--line);
+  background:var(--ink2);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:1.125rem;
+  outline:none;
+  transition:box-shadow .15s ease,border-color .15s ease;
+}
+#nusa-app .nusa-url-input::placeholder{ color:var(--dim); }
+#nusa-app .nusa-url-input:focus{
+  border-color:var(--amber);
+  box-shadow:0 0 0 4px rgba(245,166,35,.25);
+}
+
+#nusa-app .nusa-url-btn{
+  padding:1rem 2rem;
+  background:linear-gradient(to right,#f97316,#db2777);
+  color:#fff;
+  font-family:var(--sans);
+  font-weight:700;
+  font-size:1rem;
+  border:none;
+  border-radius:1rem;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:opacity .15s ease;
+}
+#nusa-app .nusa-url-btn:hover{ opacity:.9; }
+
+/* Native datalist dropdown styling — Chrome/Safari respect these */
+#nusa-app .nusa-url-input::-webkit-calendar-picker-indicator{
+  display:none;   /* hide the little arrow Chrome adds for list= */
+  cursor:pointer;
+}
 
 /* Breathing room for ask + chamber */
 #nusa-app .ask{
@@ -349,7 +392,7 @@ html.dark #nusa-app .bolt-fix:hover{
 
 /* Extra padding at the bottom of each summary card so nothing crowds the row below */
 #nusa-app .sum-card{
-  padding-bottom: 18px;
+  padding-bottom: 8px;
 }
 
 /* A bit more breathing room between the summary row and the stage/fix list */
@@ -410,4 +453,121 @@ html.dark .cm-backdrop{
 }
 #nusa-app .ask-answers .ask-msg strong{
   color: var(--violet);
+}
+
+/* ── Mobile polish ── */
+
+@media (max-width: 640px) {
+  #nusa-app .sum-module-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  #nusa-app .sum-module-status {
+    font-size: 10px;
+  }
+}
+
+/* Padding between SETTLED and PREVIEW, and around the loading dot */
+
+#nusa-app .col-head {
+  padding: 12px 22px;
+  gap: 14px;
+}
+
+#nusa-app .work-dot {
+  margin-left: 10px;
+  margin-right: 4px;
+}
+
+/* When the two columns stack (mobile), give the top col-head extra
+   bottom breathing room and border the second one for separation */
+
+@media (max-width: 980px) {
+  #nusa-app .narration-col .col-head {
+    padding-bottom: 14px;
+  }
+  #nusa-app .preview-col .col-head {
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* Citation Chamber: input on top, button below on mobile */
+
+@media (max-width: 640px) {
+  #nusa-app .chamber-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  #nusa-app .chamber-form button {
+    width: 100%;
+    padding: 12px 20px;
+  }
+}
+
+/* Name + verdict on one line, answer below — applies at all sizes */
+#nusa-app .engine {
+  display: block;
+  padding: 12px 0;
+}
+
+#nusa-app .engine .name {
+  display: inline-block;
+  margin-right: 6px;
+}
+
+#nusa-app .engine .verdict {
+  display: inline-block;
+  margin-left: 2px;
+}
+
+#nusa-app .engine .body {
+  display: block;
+  margin-top: 6px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+@media (max-width: 640px) {
+  #nusa-app .engine .name {
+    font-size: 12.5px;
+  }
+  #nusa-app .engine .body {
+    font-size: 13px;
+  }
+}
+
+/* disabled button styling in nusa.css */
+#nusa-app button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+/* ASK ai - never grows the page */
+#ask-answers {
+  max-height: 55vh;        /* bounded — never grows the page */
+  overflow-y: auto;
+  scroll-behavior: auto;   /* instant, not smooth — smooth feels laggy on prepend */
+  padding-right: 4px;      /* room for scrollbar */
+}
+
+.ask-pair {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.ask-pair:last-child {
+  border-bottom: none;
+}
+
+.ask-q {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ask-a {
+  margin-top: 2px;
 }
