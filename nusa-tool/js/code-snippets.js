@@ -335,18 +335,20 @@ let stylesInjected = false;
 function injectModalStyles() {
   if (stylesInjected) return;
   stylesInjected = true;
-  const s = document.createElement('style');
-  s.textContent = `
-    .cm-note { padding: 10px 12px; margin: 0 0 12px; font-size: 13px; line-height: 1.5;
-               color: #cbd5e1; background: rgba(148,163,184,0.10); border-radius: 8px;
-               border-left: 3px solid #64748b; }
-    .cm-cat { margin-left: 10px; padding: 2px 8px; font-size: 10px; letter-spacing: 0.08em;
-              text-transform: uppercase; color: #94a3b8; background: rgba(148,163,184,0.15);
-              border-radius: 999px; }
-    .cm-head { display: flex; align-items: center; }
-    .cm-head .cm-title { flex: 1; }
-  `;
-  document.head.appendChild(s);
+const s = document.createElement('style');
+s.textContent = `
+  .cm-note { padding: 10px 12px; margin: 0 0 12px; font-size: 13px; line-height: 1.5;
+             color: var(--text); background: rgba(148,163,184,0.10); border-radius: 8px;
+             border-left: 3px solid var(--line); }
+  .cm-cat { margin-left: 10px; padding: 2px 8px; font-size: 10px; letter-spacing: 0.08em;
+            text-transform: uppercase; color: var(--dim); background: rgba(148,163,184,0.15);
+            border-radius: 999px; }
+  .cm-head { display: flex; align-items: center; }
+  .cm-head .cm-title { flex: 1; }
+  .cm-item pre { color: var(--text); }
+  .cm-item pre code { color: var(--text); }
+`;
+document.head.appendChild(s);
 }
 
 export function openCodeModal(title, payload) {
