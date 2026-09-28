@@ -361,94 +361,98 @@
           </section>
         </section>
 
-        <!-- ═══════ GA4 / GSC CARDS ═══════ -->
-        <section id="epic-cards" class="max-w-6xl mx-auto px-2 py-8" aria-labelledby="analytics-overview-heading">
-          <h2 id="analytics-overview-heading" class="sr-only">Live Analytics Overview</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+    <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
 
-            <article id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
-              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
-              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
-                <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
-              </div>
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
 
-              <header class="flex justify-between items-start mb-4">
-                <h3 class="text-xl font-extrabold text-orange-700 dark:text-orange-400">Google Analytics 4</h3>
-                <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
-              </header>
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
 
-              <p id="ga4-last-updated" class="text-xs text-gray-500 dark:text-gray-400 mb-4">Loading data…</p>
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
 
-              <div class="grid grid-cols-2 gap-5">
-                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-                  <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">Sessions</p>
-                  <p id="ga4-sessions" class="text-3xl font-black">—</p>
-                </div>
-                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-                  <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">Users</p>
-                  <p id="ga4-users" class="text-3xl font-black">—</p>
-                </div>
-                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-                  <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">New Users</p>
-                  <p id="ga4-new-users" class="text-3xl font-black">—</p>
-                </div>
-                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-                  <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">Page Views</p>
-                  <p id="ga4-views" class="text-3xl font-black">—</p>
-                </div>
-              </div>
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
 
-              <div class="mt-4 text-center">
-                <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';"
-                     style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; cursor: pointer !important;">
-                  📊 Analytics
-                </div>
-                <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
-              </div>
-            </article>
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
+  </div>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
 
-            <article id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
-              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
-              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
-                <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
-              </div>
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
 
-              <header class="flex justify-between items-start mb-4">
-                <h3 class="text-xl font-extrabold text-blue-700 dark:text-blue-400">Search Console</h3>
-                <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
-              </header>
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
 
-              <p id="gsc-last-updated" class="text-xs text-gray-500 dark:text-gray-400 mb-4">Loading data…</p>
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
 
-              <div class="grid grid-cols-2 gap-5">
-                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-                  <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">Total Clicks</p>
-                  <p id="gsc-clicks" class="text-3xl font-black">—</p>
-                </div>
-                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-                  <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">Impressions</p>
-                  <p id="gsc-impressions" class="text-3xl font-black">—</p>
-                </div>
-                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-                  <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">CTR</p>
-                  <p id="gsc-ctr" class="text-3xl font-black">—</p>
-                </div>
-                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-                  <p class="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">Avg Position</p>
-                  <p id="gsc-position" class="text-3xl font-black">—</p>
-                </div>
-              </div>
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
 
-              <div class="mt-4 text-center">
-                <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';"
-                     style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; cursor: pointer !important;">
-                  🌐 Search Console
-                </div>
-                <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
-              </div>
-            </article>
-          </div>
-        </section>
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
 
         <!-- ═══════ HOW TRAFFIC TORCH WORKS ═══════ -->
         <section id="faq" class="max-w-4xl mx-auto my-20" aria-labelledby="how-it-works-heading">
@@ -932,25 +936,39 @@
     }
   </script>
 
-  <script type="module">
-    import { runOfuxAnalysis } from '/ofux-tool/script-v1.0.js';
-    import { canRunTool } from '/main-v1.1.js';
+<script type="module">
+  import { runOfuxAnalysis } from '/ofux-tool/script-v1.0.js';
+  import { canRunTool } from '/main-v1.1.js';
 
-document.getElementById('ofux-audit-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const input = document.getElementById('ofux-url-input');
-  let url = input.value.trim();
-  if (!url) return;
-  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  document.getElementById('ofux-audit-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = document.getElementById('ofux-url-input');
+    let url = input.value.trim();
+    if (!url) return;
+    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
 
-  const canProceed = await canRunTool('limit-audit-id');
-  if (!canProceed) {
-    document.getElementById('upgradeModal').classList.remove('hidden');
-    return;
-  }
-  runOfuxAnalysis(url, 'ofux-cards-container', 'ai-answer-container');
-});
-  </script>
+    const canProceed = await canRunTool('limit-audit-id');
+    if (!canProceed) {
+      document.getElementById('upgradeModal').classList.remove('hidden');
+      return;
+    }
+    runOfuxAnalysis(url, 'ofux-cards-container', 'ai-answer-container');
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const urlParam = params.get('url');
+    if (!urlParam) return;
+    const input = document.getElementById('ofux-url-input');
+    if (!input) return;
+    let cleanUrl = decodeURIComponent(urlParam.trim());
+    if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = 'https://' + cleanUrl;
+    input.value = cleanUrl;
+    setTimeout(() => {
+      document.getElementById('ofux-audit-form').requestSubmit();
+    }, 500);
+  });
+</script>
 
   <script>
     (function() {
