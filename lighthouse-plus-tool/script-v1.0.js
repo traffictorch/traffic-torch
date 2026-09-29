@@ -1,4 +1,4 @@
-// Lighthouse Plus Tool – client controller
+// Lighthouse Plus Tool – Script JS
 import { renderModuleCards } from './module-cards-v1.0.js';
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { moduleExplanations, fixFor } from './module-explanations-v1.0.js';
@@ -8,7 +8,8 @@ import { detectCMS } from '/cms-detect.js';
 import {
   initCodeSnippetModal,
   showCodeForFailure,
-  deriveSelectorsForFailure
+  deriveSelectorsForFailure,
+  extractSnippets
 } from './code-snippet-v1.0.js';
 
 // ─── Code block renderer ─────────────────────────────────────────
@@ -33,6 +34,59 @@ function renderCodeBlocks(text) {
   );
 
   return escaped;
+}
+
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
 }
 
 const LH_AUDIT_API = 'https://lighthouse-audit.traffictorch.workers.dev/';
@@ -132,22 +186,26 @@ function recomputeOverall(mods) {
 }
 
 // ─── Compute passes / warnings / fails for a module ───
-// Priority: explicit worker counts on mod.passes / mod.incomplete if present,
+// Priority: explicit worker counts on mod.passes if present,
 // otherwise derive from signals. Fails come from mod.failed.
+// Informational signals are counted separately and never treated as warnings.
 function computeCheckCounts(mod) {
-  const signals        = mod.signals || [];
-  const signalPasses   = signals.filter((s) => s.pass).length;
-  const signalWarnings = signals.filter((s) => !s.pass).length;
-  const fails          = (mod.failed || []).length;
+  const signals = mod.signals || [];
+  const fails   = (mod.failed || []).length;
 
   // Accessibility sends an explicit axe pass count; everyone else uses signals.
-  const passes = Number.isFinite(mod.passes) ? mod.passes : signalPasses;
+  const signalPasses = signals.filter((s) => s.pass).length;
+  const passes       = Number.isFinite(mod.passes) ? mod.passes : signalPasses;
+
+  const signalWarnings = signals.filter((s) => !s.pass && !s.informational).length;
+  const signalInfo     = signals.filter((s) => !s.pass && s.informational).length;
 
   return {
     passes,
     warnings: signalWarnings,
+    informational: signalInfo,
     fails,
-    total: passes + signalWarnings + fails,
+    total: passes + signalWarnings + signalInfo + fails,
   };
 }
 
@@ -290,6 +348,8 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/\s+/g, ' ')
       .trim()
       .slice(0, 300);
+      
+      const headSnapshot = buildHeadSnapshot(ctxDoc);
 
     const pageContext = {
       metaDescription: ctxDoc?.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '',
@@ -312,19 +372,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     const overall = recomputeOverall(modules);
 
-    const priorityFixes = modules
-      .filter((m) => m.score < 80 && (m.failed || []).length)
-      .sort((a, b) => a.score - b.score)
-      .flatMap((m) => (m.failed || []).map((f) => ({
-        name: f,
-        module: m.name,
-        score: m.score,
-        desc: fixFor(f),
-        impact: m.score < 50 ? '🚨 Critical — fix now'
-              : m.score < 70 ? '⚡ High impact'
-              :                '📌 Medium impact',
-      })))
-      .slice(0, 6);
+const priorityFixes = modules
+  .filter((m) => {
+    const failed   = (m.failed || []).length;
+    const warnings = (m.signals || []).filter((s) => !s.pass && !s.informational).length;
+    return m.score < 80 || failed > 0 || warnings > 0;
+  })
+  .sort((a, b) => a.score - b.score)
+  .flatMap((m) => {
+    const failed = m.failed || [];
+    const warnings = (m.signals || [])
+      .filter((s) => !s.pass && !s.informational)
+      .map((s) => s.label);
+
+    const items = failed.length
+      ? failed
+      : warnings.length
+        ? warnings
+        : [`Improve ${m.name} (score ${m.score})`];
+
+    return items.map((item) => ({
+      name: item,
+      module: m.name,
+      score: m.score,
+      desc: fixFor(item),
+      impact:
+        m.score < 50 ? '🚨 Critical — fix now'
+        : m.score < 70 ? '⚡ High impact'
+        : '📌 Medium impact',
+    }));
+  })
+  .slice(0, 6);
 
     let cmsInfo = { name: 'Custom / Unknown', version: null, confidence: 'unknown', signals: [] };
     try {
@@ -387,11 +465,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 my-16 max-w-7xl mx-auto px-4">
         ${modules.map((m) => {
-          const failedItems    = m.failed || [];
-          const warningSignals = (m.signals || []).filter((s) => !s.pass);
-          const passingSignals = (m.signals || []).filter((s) => s.pass);
-          const isA11y         = m.name === 'Accessibility';
-          const issueCount     = failedItems.length + warningSignals.length;
+const failedItems          = m.failed || [];
+const actionableWarnings   = (m.signals || []).filter((s) => !s.pass && !s.informational);
+const informationalSignals = (m.signals || []).filter((s) => !s.pass &&  s.informational);
+const passingSignals       = (m.signals || []).filter((s) => s.pass);
+const isA11y               = m.name === 'Accessibility';
+const issueCount           = failedItems.length + actionableWarnings.length;
           const expl           = moduleExplanations[m.name] || {};
           const slug           = expl.slug || m.name.toLowerCase().replace(/\s+/g, '-');
 
@@ -424,12 +503,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${failedItems.map((f) => `
                   <p class="text-red-600 dark:text-red-400 font-medium leading-snug">❌ ${escapeHtml(f)}</p>
                 `).join('')}
-                ${warningSignals.map((s) => `
-                  <p class="text-orange-500 dark:text-orange-400 font-medium leading-snug">⚠️ ${escapeHtml(s.label)}</p>
-                `).join('')}
-                ${!isA11y ? passingSignals.map((s) => `
-                  <p class="text-green-600 dark:text-green-400 font-medium leading-snug">✅ ${escapeHtml(s.label)}</p>
-                `).join('') : ''}
+${actionableWarnings.map((s) => `
+  <p class="text-orange-500 dark:text-orange-400 font-medium leading-snug">⚠️ ${escapeHtml(s.label)}</p>
+`).join('')}
+${informationalSignals.map((s) => `
+  <p class="text-gray-500 dark:text-gray-400 font-medium leading-snug">ℹ️ ${escapeHtml(s.label)}</p>
+`).join('')}
+${!isA11y ? passingSignals.map((s) => `
+  <p class="text-green-600 dark:text-green-400 font-medium leading-snug">✅ ${escapeHtml(s.label)}</p>
+`).join('') : ''}
               </div>
 
               <div class="mt-auto pt-5">
@@ -458,27 +540,27 @@ document.addEventListener('DOMContentLoaded', () => {
                   `;
                 }).join('')}
 
-                ${warningSignals.map((s, idx) => {
-                  const needsTop = failedItems.length > 0 || idx > 0;
-                  const rule = deriveSelectorsForFailure(s.label);
-                  return `
-                    <div class="${needsTop ? 'pt-3 border-t border-gray-300 dark:border-gray-700' : ''}">
-                      <p class="font-bold text-orange-500 dark:text-orange-400 mb-2 leading-snug">⚠️ ${escapeHtml(s.label)}</p>
-                      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(s.label))}</p>
-                      ${rule ? `
-                        <button type="button"
-                                class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
-                                data-failure="${escapeHtml(s.label)}">
-                          🔍 Show the code
-                        </button>
-                      ` : ''}
-                    </div>
-                  `;
-                }).join('')}
+${actionableWarnings.map((s, idx) => {
+  const needsTop = failedItems.length > 0 || idx > 0;
+  const rule = deriveSelectorsForFailure(s.label);
+  return `
+    <div class="${needsTop ? 'pt-3 border-t border-gray-300 dark:border-gray-700' : ''}">
+      <p class="font-bold text-orange-500 dark:text-orange-400 mb-2 leading-snug">⚠️ ${escapeHtml(s.label)}</p>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(fixFor(s.label))}</p>
+      ${rule ? `
+        <button type="button"
+                class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                data-failure="${escapeHtml(s.label)}">
+          🔍 Show the code
+        </button>
+      ` : ''}
+    </div>
+  `;
+}).join('')}
 
-                ${(!failedItems.length && warningSignals.length === 0)
-                  ? '<p class="text-green-600 font-medium">All checks passed — nothing to fix.</p>'
-                  : ''}
+${(!failedItems.length && actionableWarnings.length === 0 && informationalSignals.length === 0)
+  ? '<p class="text-green-600 font-medium">All checks passed — nothing to fix.</p>'
+  : ''}
 
                 <div class="pt-3 border-t border-gray-300 dark:border-gray-700 flex flex-col gap-2 text-sm">
                   <a href="#ask-ai-section"
@@ -649,6 +731,22 @@ document.addEventListener('DOMContentLoaded', () => {
       aiBtn.textContent = 'Thinking…';
       aiWrap.classList.remove('hidden');
       aiOut.textContent = '⏳ Traffic Torching…';
+
+      // Collect affected HTML snippets for the top priority fixes.
+      const renderedHtml = results.dataset.renderedHtml || '';
+      const affectedSnippets = {};
+      if (renderedHtml && priorityFixes.length) {
+        for (const f of priorityFixes.slice(0, 3)) {
+          try {
+            const rule = deriveSelectorsForFailure(f.name);
+            if (rule?.selectors?.length) {
+              const snips = extractSnippets(renderedHtml, rule.selectors, { limit: 2, maxLen: 400 });
+              if (snips.length) affectedSnippets[f.name] = snips.map((s) => s.html);
+            }
+          } catch {}
+        }
+      }
+
       try {
         const r = await fetch(LH_AI_API, {
           method: 'POST',
@@ -658,6 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
             auditData: {
               url: url || 'Custom HTML',
               pageTitle,
+			  headSnapshot,
               ...pageContext,
               overallScore: overall,
               cms: {
@@ -691,11 +790,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 longTasks: browserMetrics.longTasks,
                 totalResources: browserMetrics.totalResources,
                 totalTransferSize: browserMetrics.totalTransferSize,
-                consoleErrors: browserMetrics.consoleErrors?.length || 0,
-                pageErrors: browserMetrics.pageErrors?.length || 0,
-                failedRequests: (browserMetrics.failedRequests || []).length,
-                renderBlockingRequests: (browserMetrics.renderBlockingRequests || []).length,
+                consoleErrorsCount: browserMetrics.consoleErrors?.length || 0,
+                pageErrorsCount: browserMetrics.pageErrors?.length || 0,
+                failedRequestsCount: (browserMetrics.failedRequests || []).length,
+                renderBlockingRequestsCount: (browserMetrics.renderBlockingRequests || []).length,
+                renderBlockingList: (browserMetrics.renderBlockingRequests || []).slice(0, 10).map((r) => ({
+                  url: String(r.name || r.url || '').slice(0, 200),
+                  type: String(r.type || 'other'),
+                })),
+                failedRequestsList: (browserMetrics.failedRequests || []).slice(0, 10).map((r) => {
+                  if (typeof r === 'string') return { url: r.slice(0, 200), failure: '' };
+                  return {
+                    url: String(r.url || r.name || '').slice(0, 200),
+                    failure: String(r.failure || r.errorText || r.status || '').slice(0, 120),
+                  };
+                }),
+                consoleErrorsList: (browserMetrics.consoleErrors || []).slice(0, 5).map((e) => String(e).slice(0, 200)),
               } : null,
+              snippets: affectedSnippets,
             },
           }),
         });
@@ -703,6 +815,12 @@ document.addEventListener('DOMContentLoaded', () => {
         aiOut.innerHTML = d.success
           ? renderCodeBlocks(d.answer)
           : '❌ ' + renderCodeBlocks(d.error || 'Unknown error');
+        if (d.warnings?.length) {
+          const banner = document.createElement('div');
+          banner.className = 'mt-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-200 text-sm';
+          banner.textContent = d.warnings.join(' ');
+          aiOut.prepend(banner);
+        }
       } catch (err) {
         aiOut.innerHTML = '❌ ' + renderCodeBlocks(err.message);
       } finally {

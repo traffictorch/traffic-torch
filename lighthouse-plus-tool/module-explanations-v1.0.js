@@ -1,14 +1,14 @@
 // Module explanations + fix hints for Lighthouse Plus Tool
 export const moduleExplanations = {
-  "Core Web Vitals": {
+"Core Web Vitals": {
     slug: "core-web-vitals",
-    what: "The five page-experience metrics Google uses to grade real user experience: LCP (Largest Contentful Paint), INP (Interaction to Next Paint), CLS (Cumulative Layout Shift), FCP (First Contentful Paint), and TTFB (Time to First Byte). Together they measure how fast, stable, and responsive a page feels to a human visitor.",
+    what: "Google's three Core Web Vitals — LCP (Largest Contentful Paint), INP (Interaction to Next Paint), and CLS (Cumulative Layout Shift) — plus two supporting loading diagnostics, FCP (First Contentful Paint) and TTFB (Time to First Byte). Together they measure how fast, stable, and responsive a page feels to a human visitor.",
     how: "Traffic Torch renders your page in a real headless Chrome instance via Cloudflare Browser Run at a mobile viewport (390x844), injects PerformanceObservers before any script runs, then measures LCP, CLS, FCP, and TBT live during a network-idle load plus a 3.5-second settle window. TTFB is captured from the browser's navigation timing API. INP is proxied by Total Blocking Time when no interaction occurs.",
     why: "Core Web Vitals are a direct ranking signal and the clearest measure of real user experience. Pages that fail them lose engagement, conversions, and search visibility. Passing them is the foundation every other performance improvement builds on."
   },
-  "Performance Score": {
+"Performance Score": {
     slug: "performance-score",
-    what: "The Lighthouse performance category, expressed as what blocks the browser from showing content quickly. It covers render-blocking resources, unused JavaScript and CSS, image delivery, main-thread work, and long tasks that freeze the page.",
+    what: "A Lighthouse-inspired performance score focused on what blocks the browser from showing content quickly: render-blocking resources, unused JavaScript and CSS, image delivery, main-thread work, and long tasks that freeze the page. Note: this module does not include Speed Index, which Lighthouse v12 does.",
     how: "Traffic Torch scans the raw HTML head for scripts that lack defer, async or type=module, counts stylesheets, measures large inline scripts and style blocks, checks every <img> for width, height, lazy loading and fetchpriority, and combines that with live TBT and long-task counts captured by Puppeteer.",
     why: "Performance failures slow every interaction and cost conversions. Every fix here compounds: fewer blocking scripts speed up LCP, less main-thread work improves INP, and smaller stylesheets improve FCP. It is the single module where one change most often lifts several others."
   },
@@ -30,9 +30,9 @@ export const moduleExplanations = {
     how: "Traffic Torch parses the rendered HTML and validates title length (target 50-60 chars), meta description length (target 120-160), canonical presence, hreflang tags, robots meta content, H1 count, and viewport correctness. Each check is scored on a sliding scale rather than pass/fail.",
     why: "These are the visible signals in search results. A missing title, noindex directive, or duplicate H1 will cost you rankings regardless of how good the content is. They are cheap to fix and produce immediate visibility gains."
   },
-  "PWA Readiness": {
+"PWA Readiness": {
     slug: "pwa-readiness",
-    what: "How ready your site is to be installed as a Progressive Web App: a valid web app manifest, a registered service worker, an offline fallback, correct theme colour and icon set, and HTTPS.",
+    what: "How ready your site is to be installed as a Progressive Web App: a valid web app manifest, a registered service worker, an offline fallback, correct theme colour and icon set, and HTTPS. Note: Lighthouse removed its PWA category in v12, so this is a custom Traffic Torch readiness check, not a direct Lighthouse replacement.",
     how: "Traffic Torch scans the HTML for the manifest link, service worker registration, theme-color meta, apple-touch-icon and mask-icon links, and apple-mobile-web-app-capable. It also confirms the site is served over HTTPS, which PWAs require.",
     why: "Installable PWAs launch from the home screen, work offline, and re-engage users without an app store. They are the closest thing to a native app experience on the open web, and they consistently outperform regular tabs on repeat visits and retention."
   },
@@ -92,7 +92,7 @@ export const fixHints = [
   { pattern: /image-alt/i, fix: 'Add descriptive alt text to every meaningful image. Use alt="" (empty) for purely decorative images.' },
   { pattern: /link-name/i, fix: 'Give every link descriptive text. Avoid "click here" or bare URLs. Use aria-label if the visible text cannot describe the destination.' },
   { pattern: /button-name/i, fix: 'Give every button an accessible name via visible text or aria-label. Icon-only buttons need an aria-label.' },
-  { pattern: /label/i, fix: 'Give every form field a visible <label for="..."> or an aria-label attribute. Screen readers depend on these.' },
+{ pattern: /^label\b/i, fix: 'Give every form field a visible <label for="..."> or an aria-label attribute. Screen readers depend on these.' },
   { pattern: /landmark/i, fix: 'Wrap page regions in semantic elements: <main>, <nav>, <header>, <footer>. One main per page.' },
   { pattern: /heading-order/i, fix: 'Use headings in sequential order (H1 → H2 → H3) and never skip levels.' },
   { pattern: /image\(s\) without alt/i, fix: 'Add alt text to every <img>. Descriptive for content images, empty for decorative ones.' },
@@ -149,7 +149,37 @@ export const fixHints = [
   // ─── Agentic Browsing ───
   { pattern: /robots.txt blocks AI agents/i, fix: 'Remove Disallow rules for AI user agents (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, CCBot) from robots.txt.' },
   { pattern: /semantic landmarks/i, fix: 'Wrap page sections in semantic elements: <main>, <nav>, <header>, <footer>, <article>, <aside>.' },
-  { pattern: /form field\(s\) without labels/i, fix: 'Give every form field a <label for="id"> or aria-label. Agents and screen readers rely on these to fill forms.' }
+  { pattern: /form field\(s\) without labels/i, fix: 'Give every form field a <label for="id"> or aria-label. Agents and screen readers rely on these to fill forms.' },
+
+  // ─── Additional warning hints ───
+  { pattern: /^label \(/i, fix: 'Give every form field a visible <label for="..."> or an aria-label attribute. Screen readers depend on these.' },
+  { pattern: /No HSTS header/i, fix: 'Add a Strict-Transport-Security response header (e.g. max-age=31536000; includeSubDomains). Most CDNs and hosts can set this for you.' },
+  { pattern: /No X-Content-Type-Options/i, fix: 'Add an X-Content-Type-Options: nosniff response header to stop MIME-type sniffing attacks.' },
+  { pattern: /X-Powered-By exposes/i, fix: 'Remove or mask the X-Powered-By response header. In Express set app.disable("x-powered-by"). In nginx use proxy_hide_header X-Powered-By.' },
+  { pattern: /No apple-touch-icon/i, fix: 'Add <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png"> so iOS home-screen installs show a proper icon.' },
+  { pattern: /No mask-icon/i, fix: 'Add <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000"> for Safari pinned tabs.' },
+  { pattern: /apple-mobile-web-app-capable/i, fix: 'Add <meta name="apple-mobile-web-app-capable" content="yes"> to let iOS launch the site full-screen from the home screen.' },
+  { pattern: /No safe-area insets/i, fix: 'Add viewport-fit=cover to the viewport meta and pad sticky headers and footers with env(safe-area-inset-*) so content clears notches and home indicators.' },
+  { pattern: /No skip-to-content link/i, fix: 'Add <a href="#main" class="skip-link">Skip to content</a> as the first focusable element on the page so keyboard and agent users can bypass navigation.' },
+  { pattern: /No llms\.txt/i, fix: 'Add an /llms.txt file at the site root summarising your key pages. Optional but helps AI agents navigate your site.' },
+  { pattern: /No WebMCP integration/i, fix: 'Optional for now — WebMCP is a beta spec. To prepare, expose window.__webmcp or navigator.modelContext hooks that agents can call.' },
+  { pattern: /Heavyweights detected/i, fix: 'Audit every heavyweight third party (Google Tag Manager, Facebook Pixel, Hotjar, Clarity, DoubleClick, YouTube embeds, Intercom, HubSpot). Remove any you do not actively use. Load the rest on idle or after user interaction.' },
+  { pattern: /Horizontal scroll container/i, fix: 'Check any element with overflow-x: auto or overflow-x: scroll. Ensure it is only used deliberately (code blocks, tables) and add max-width: 100% to prevent body-level horizontal scroll on mobile.' },
+  { pattern: /tabindex=-1/i, fix: 'Verify any tabindex="-1" is only on elements intended for programmatic focus (skip-link targets, modal roots). Never use it on interactive controls.' },
+  { pattern: /modal\/dialog elements/i, fix: 'Audit every modal or dialog for focus traps. Ensure ESC closes it, focus returns to the trigger on close, and background content is aria-hidden while open.' },
+  { pattern: /CLS .*mobile users notice/i, fix: 'Set explicit width and height on every image, reserve space for ads and embeds, and preload fonts with font-display: swap or optional to stop late layout shifts on mobile.' },
+
+  // ─── Axe rule-specific hints (from real SPELL / Giant Media audits) ───
+  { pattern: /aria-required-parent/i, fix: 'Fix ARIA structural nesting. A role like "listitem" must be inside a "list", "menuitem" inside a "menu", "treeitem" inside a "tree". Check the axe node details for the specific missing parent role.' },
+  { pattern: /aria-required-children/i, fix: 'Add the required child roles inside the parent. A "list" needs "listitem" children, "menu" needs "menuitem", "tablist" needs "tab". Read the axe violation for the exact role required.' },
+  { pattern: /aria-valid-attr-value/i, fix: 'Fix invalid ARIA attribute values. Common causes: aria-controls pointing at a missing id, aria-expanded not set to true/false, aria-labelledby referencing a non-existent element, aria-activedescendant pointing at a missing id.' },
+  { pattern: /meta-viewport/i, fix: 'Remove user-scalable=no and maximum-scale=1 from the viewport meta tag. Both block pinch-zoom and fail WCAG 1.4.4 (Resize text). Also ensure the meta includes width=device-width.' },
+  { pattern: /nested-interactive/i, fix: 'Do not nest interactive elements — no <button> inside <a>, no <a> inside <button>, no focusable elements inside other focusable elements. Keyboard and screen-reader users get stuck. Use a single wrapper and style it.' },
+  { pattern: /target-size/i, fix: 'Make every touch target at least 24×24 CSS pixels, or leave 24px of space between adjacent targets (WCAG 2.2 AA). 44×44 is the safer mobile guideline. Add padding rather than increasing font size.' },
+  { pattern: /video-caption/i, fix: 'Add <track kind="captions" src="captions.vtt" srclang="en" label="English" default> inside every <video>. Autoplay or muted videos still need captions if they carry information.' },
+  { pattern: /aria-hidden-focus/i, fix: 'Remove focusable children from elements with aria-hidden="true". Either hide them properly (display:none, visibility:hidden) or remove aria-hidden from the wrapper.' },
+  { pattern: /aria-input-field-name/i, fix: 'Give every ARIA input (combobox, searchbox, textbox, spinbutton) an accessible name via aria-label, aria-labelledby, or a <label> with matching for/id.' },
+  { pattern: /scrollable-region-focusable/i, fix: 'Make scrollable containers reachable by keyboard. Add tabindex="0" to the scrollable region so keyboard users can scroll it without a mouse.' }
 ];
 
 export function fixFor(text) {
