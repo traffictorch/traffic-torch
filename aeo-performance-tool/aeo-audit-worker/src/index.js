@@ -1,6 +1,14 @@
 // aeo-audit.traffictorch.workers.dev — Phase 3 (Puppeteer / Browser Run binding)
 import puppeteer from '@cloudflare/puppeteer';
 
+// FIX: hoisted so buildPriorityFixes / buildWarningFixes can use it
+const AEO_WEIGHTS = {
+  'Render Fidelity': 14, 'DOM Stability': 10, 'Content Extractability': 14,
+  'Schema Parse Performance': 12, 'Crawler Accessibility': 14,
+  'Text Density Performance': 10, 'Semantic Structure Integrity': 10,
+  'Render Blocking Performance': 8, 'Content Stability Performance': 8
+};
+
 export default {
   async fetch(request, env) {
     if (request.method === 'OPTIONS') return cors(null, 204);
@@ -64,14 +72,8 @@ async function runAudit({ url, html }, env) {
         });
       });
 
-      // Inject observers BEFORE any page script runs.
-      // Polls for documentElement because it may be null at this point.
       await page.evaluateOnNewDocument(() => {
-        window.__aeoMetrics = {
-          cls: 0, lcp: 0, fcp: 0, longTasks: 0,
-          mutations: 0, mutationNodes: 0
-        };
-
+        window.__aeoMetrics = { cls: 0, lcp: 0, fcp: 0, longTasks: 0, mutations: 0, mutationNodes: 0 };
         try {
           new PerformanceObserver((list) => {
             for (const entry of list.getEntries()) {
@@ -79,7 +81,6 @@ async function runAudit({ url, html }, env) {
             }
           }).observe({ type: 'layout-shift', buffered: true });
         } catch (_) {}
-
         try {
           new PerformanceObserver((list) => {
             const entries = list.getEntries();
@@ -87,7 +88,6 @@ async function runAudit({ url, html }, env) {
             if (last) window.__aeoMetrics.lcp = last.startTime;
           }).observe({ type: 'largest-contentful-paint', buffered: true });
         } catch (_) {}
-
         try {
           new PerformanceObserver((list) => {
             for (const entry of list.getEntries()) {
@@ -95,14 +95,11 @@ async function runAudit({ url, html }, env) {
             }
           }).observe({ type: 'paint', buffered: true });
         } catch (_) {}
-
         try {
           new PerformanceObserver((list) => {
             window.__aeoMetrics.longTasks += list.getEntries().length;
           }).observe({ type: 'longtask', buffered: true });
         } catch (_) {}
-
-        // Attach MutationObserver once documentElement exists.
         const attach = () => {
           if (!document.documentElement) return setTimeout(attach, 10);
           try {
@@ -168,16 +165,12 @@ async function runAudit({ url, html }, env) {
 
       await browser.close();
 
-      try {
-        const origin = new URL(finalUrl || url).origin;
-        const r = await fetchWithTimeout(`${origin}/robots.txt`, {}, 8000);
-        if (r.ok) robotsTxt = await r.text();
-      } catch (_) {}
-
     } catch (err) {
       // Fallback to raw fetch only
       try {
-        const r = await fetchWithTimeout(url, {}, 12000);
+        const r = await fetchWithTimeout(url, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TrafficTorchBot/1.0)' }
+        }, 12000);
         if (r.ok) { renderedHtml = await r.text(); rawHtml = renderedHtml; renderSource = 'raw-fallback'; }
       } catch (_) {}
       if (!renderedHtml) throw new Error('All render paths failed: ' + err.message);
@@ -185,6 +178,20 @@ async function runAudit({ url, html }, env) {
   } else if (html) {
     rawHtml = html;
     renderedHtml = html;
+  }
+
+  // FIX: robots.txt fetch now runs for BOTH puppeteer AND raw-fallback paths.
+  // Also uses a longer timeout + UA to match most origin servers' expectations.
+  if (!html && (finalUrl || url)) {
+    try {
+      const origin = new URL(finalUrl || url).origin;
+      const r = await fetchWithTimeout(
+        `${origin}/robots.txt`,
+        { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TrafficTorchBot/1.0)' } },
+        12000
+      );
+      if (r.ok) robotsTxt = await r.text();
+    } catch (_) {}
   }
 
   const modules = [
@@ -199,37 +206,48 @@ async function runAudit({ url, html }, env) {
     analyzeContentStability(renderedHtml, browserMetrics)
   ];
 
-  const AEO_WEIGHTS = {
-    'Render Fidelity': 14, 'DOM Stability': 10, 'Content Extractability': 14,
-    'Schema Parse Performance': 12, 'Crawler Accessibility': 14,
-    'Text Density Performance': 10, 'Semantic Structure Integrity': 10,
-    'Render Blocking Performance': 8, 'Content Stability Performance': 8
-  };
-
   let weightedSum = 0, weightTotal = 0;
-  for (const m of modules) { const w = AEO_WEIGHTS[m.name] ?? 10; weightedSum += m.score * w; weightTotal += w; }
-  let overall = Math.round(weightedSum / weightTotal);
+  for (const m of modules) {
+    const w = AEO_WEIGHTS[m.name] ?? 10;
+    weightedSum += m.score * w;
+    weightTotal += w;
+  }
+  const weightedAverage = weightTotal > 0 ? Math.round(weightedSum / weightTotal) : 0;
+  let overall = weightedAverage;
+  let capApplied = false;
   const lowest = Math.min(...modules.map(m => m.score));
-  if (lowest < 25) overall = Math.min(overall, 60);
-  else if (lowest < 40) overall = Math.min(overall, 72);
-  else if (lowest < 60) overall = Math.min(overall, 85);
+  if (lowest < 25)      { overall = Math.min(overall, 60); capApplied = overall !== weightedAverage; }
+  else if (lowest < 40) { overall = Math.min(overall, 72); capApplied = overall !== weightedAverage; }
+  else if (lowest < 60) { overall = Math.min(overall, 85); capApplied = overall !== weightedAverage; }
+
+  let capReason = null;
+  if (capApplied) {
+    const worst = modules.reduce((a, b) => a.score <= b.score ? a : b);
+    capReason = { module: worst.name, score: worst.score, weightedAverage };
+  }
 
   return {
     success: true,
     url: finalUrl || 'Custom HTML',
     pageTitle: extractTitle(renderedHtml),
     overall,
+    weightedAverage,
+    capApplied,
+    capReason,
     grade: gradeFromScore(overall),
     modules,
     priorityFixes: buildPriorityFixes(modules),
+    warningFixes: buildWarningFixes(modules),
     rawHtml,
     renderedHtml,
+    robotsTxt,
     browserMetrics,
     meta: {
       rawHtmlLength: rawHtml.length,
       renderedHtmlLength: renderedHtml.length,
       renderSource,
       robotsFound: robotsTxt.length > 0,
+      robotsLength: robotsTxt.length,
       headers: sanitizeHeaders(responseHeaders),
       fetchedAt: new Date().toISOString()
     }
@@ -379,7 +397,7 @@ function analyzeContentExtractability(html) {
 function analyzeSchemaParse(html) {
   const failed = [], signals = [];
   let score = 100;
-  const blocks = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi) || [];
+  const blocks = html.match(/<script[^>]*type=["']?application\/ld\+json["']?[^>]*>[\s\S]*?<\/script>/gi) || [];
   const types = new Set();
   let parseErrors = 0, parseWarnings = 0, maxDepth = 0;
 
@@ -418,17 +436,22 @@ function analyzeCrawlerAccessibility(html, robotsTxt, url) {
     failed.push('No robots.txt found');
     score -= 10;
   } else {
-    const aiBots = ['GPTBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-Web', 'anthropic-ai', 'PerplexityBot', 'CCBot', 'Google-Extended', 'Bytespider'];
-    const blocked = [];
-    for (const bot of aiBots) {
-      const re = new RegExp(`User-agent:\\s*${bot}[\\s\\S]{0,200}?Disallow:\\s*\\/\\s*(?:\\n|$)`, 'i');
-      if (re.test(robotsTxt)) blocked.push(bot);
-    }
-    if (blocked.length > 0) { failed.push(`robots.txt blocks AI crawlers: ${blocked.join(', ')}`); score -= Math.min(blocked.length * 12, 40); }
-    else signals.push({ label: 'No AI crawler blocking in robots.txt', pass: true });
+    // FIX: if the wildcard blocks root, report ONLY that — it already
+    // implies every named bot is blocked. Listing them individually is noise.
+    const wildcardBlocksEverything = isBotBlockedFromRoot(robotsTxt, '*');
 
-    if (/User-agent:\s*\*[\s\S]{0,200}?Disallow:\s*\/\s*(?:\n|$)/i.test(robotsTxt)) {
-      failed.push('robots.txt blocks all crawlers at root'); score -= 40;
+    if (wildcardBlocksEverything) {
+      failed.push('robots.txt blocks ALL crawlers at root with "User-agent: * / Disallow: /" — this also blocks every AI crawler');
+      score -= 40;
+    } else {
+      const aiBots = ['GPTBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-Web', 'anthropic-ai', 'PerplexityBot', 'CCBot', 'Google-Extended', 'Bytespider'];
+      const blocked = aiBots.filter(bot => isBotBlockedFromRoot(robotsTxt, bot));
+      if (blocked.length > 0) {
+        failed.push(`robots.txt blocks AI crawlers: ${blocked.join(', ')}`);
+        score -= Math.min(blocked.length * 12, 40);
+      } else {
+        signals.push({ label: 'No AI crawler blocking in robots.txt', pass: true });
+      }
     }
   }
 
@@ -648,6 +671,7 @@ function mod(name, score, metrics, signals, failed) {
   return { name, score, grade: gradeFromScore(score), metrics, signals, failed };
 }
 function gradeFromScore(score) { return score >= 80 ? 'Excellent' : score >= 60 ? 'Good' : 'Needs Work'; }
+
 function stripTags(html) {
   return String(html || '')
     .replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ')
@@ -657,10 +681,12 @@ function stripTags(html) {
     .replace(/&#0?39;/g, "'").replace(/&apos;/g, "'").replace(/&mdash;/g, '—').replace(/&ndash;/g, '–')
     .replace(/\s+/g, ' ').trim();
 }
+
 function extractTitle(html) {
   const m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
   return m ? stripTags(m[1]).slice(0, 200) : '';
 }
+
 function extractSchemaTypes(obj) {
   const out = [];
   if (!obj || typeof obj !== 'object') return out;
@@ -670,36 +696,124 @@ function extractSchemaTypes(obj) {
   for (const k of Object.keys(obj)) if (k !== '@type' && typeof obj[k] === 'object') out.push(...extractSchemaTypes(obj[k]));
   return out;
 }
+
 function objectDepth(obj, d = 0) {
   if (!obj || typeof obj !== 'object') return d;
   let max = d;
   for (const k of Object.keys(obj)) if (typeof obj[k] === 'object' && obj[k] !== null) max = Math.max(max, objectDepth(obj[k], d + 1));
   return max;
 }
+
 function buildPriorityFixes(modules) {
-  return modules.filter(m => m.score < 80)
+  return modules
+    .filter(m => m.score < 80)
     .map(m => {
-      const gap = 80 - m.score;
+      const weight  = AEO_WEIGHTS[m.name] ?? 10;
+      const maxGain = Math.round((100 - m.score) * weight / 100);
+      const minGain = Math.max(1, Math.round(maxGain * 0.35));
       return {
         name: m.failed[0] || `Improve ${m.name}`,
-        module: m.name, score: m.score,
-        impact: `+${Math.max(2, Math.round(gap * 0.35))}–${Math.min(40, Math.round(gap * 0.75))} points`,
-        desc: m.failed.length > 0 ? m.failed.join('. ') : `Improve ${m.name}`
+        module: m.name,
+        score: m.score,
+        weight,
+        maxGain,
+        impact: maxGain <= 0 ? 'Minimal' : `+${minGain}–${maxGain} points`,
+        desc: m.failed.length > 0 ? m.failed.join('. ') : `Raise ${m.name} above 80`
       };
     })
-    .sort((a, b) => a.score - b.score).slice(0, 5);
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 5);
 }
+
+function buildWarningFixes(modules) {
+  return modules
+    .filter(m => m.score >= 80 && (
+      m.score < 90 ||
+      (m.signals || []).some(s => !s.pass && !s.informational)
+    ))
+    .map(m => {
+      const weight  = AEO_WEIGHTS[m.name] ?? 10;
+      const maxGain = Math.round((100 - m.score) * weight / 100);
+      const warnings = (m.signals || [])
+        .filter(s => !s.pass && !s.informational)
+        .map(s => s.label);
+      return {
+        name: warnings[0] || `Polish ${m.name}`,
+        module: m.name,
+        score: m.score,
+        weight,
+        maxGain,
+        impact: maxGain <= 1 ? 'Very low' : `+0–${maxGain} points`,
+        desc: warnings.length
+          ? `Warnings: ${warnings.join('; ')}`
+          : 'Score is below excellent. Review module details for minor improvements.'
+      };
+    })
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 5);
+}
+
+function parseRobotsGroups(robots) {
+  const lines = String(robots || '').split(/\r?\n/).map(l => l.replace(/#.*$/, '').trim());
+  const groups = [];
+  let currentUas = [];
+  let currentRules = [];
+  for (const line of lines) {
+    if (!line) continue;
+    const uaMatch = line.match(/^User-agent:\s*(.+?)\s*$/i);
+    if (uaMatch) {
+      if (currentRules.length > 0) {
+        groups.push({ uas: currentUas, rules: currentRules });
+        currentUas = [];
+        currentRules = [];
+      }
+      currentUas.push(uaMatch[1].toLowerCase());
+      continue;
+    }
+    const ruleMatch = line.match(/^(Disallow|Allow):\s*(.*?)\s*$/i);
+    if (ruleMatch) {
+      if (currentUas.length === 0) continue;
+      currentRules.push({ directive: ruleMatch[1].toLowerCase(), path: ruleMatch[2] });
+    }
+  }
+  if (currentUas.length > 0) groups.push({ uas: currentUas, rules: currentRules });
+  return groups;
+}
+
+function isBotBlockedFromRoot(robots, bot) {
+  if (!robots) return false;
+  const botLower = bot.toLowerCase();
+  for (const group of parseRobotsGroups(robots)) {
+    const matches = group.uas.some(ua =>
+      ua === '*' ||
+      ua === botLower ||
+      ua.startsWith(botLower + '/') ||
+      ua.startsWith(botLower + ' ')
+    );
+    if (!matches) continue;
+    for (const rule of group.rules) {
+      if (rule.directive === 'disallow' &&
+          (rule.path === '/' || rule.path === '/*' || rule.path === '')) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function sanitizeHeaders(h) {
   const out = {}; const keep = ['content-type', 'content-encoding', 'cache-control', 'server', 'x-powered-by', 'content-length'];
   for (const k of keep) if (h[k]) out[k] = String(h[k]).slice(0, 200);
   return out;
 }
+
 async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   try { return await fetch(url, { ...options, signal: controller.signal }); }
   finally { clearTimeout(id); }
 }
+
 function cors(body, status = 200, contentType = null) {
   const headers = new Headers();
   headers.set('Access-Control-Allow-Origin', '*');

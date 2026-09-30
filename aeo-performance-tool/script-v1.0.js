@@ -286,7 +286,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderReport(data, payload) {
     const {
       url, pageTitle, overall, grade, modules, priorityFixes,
-      rawHtml, renderedHtml, browserMetrics, meta
+      rawHtml, renderedHtml, browserMetrics, meta,
+      weightedAverage, capApplied: dataCapApplied, capReason: dataCapReason
     } = data;
 
     let cmsInfo = { name: 'Custom / Unknown', version: null, confidence: 'unknown', signals: [] };
@@ -342,6 +343,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }));
 
+    // FIX: warning-level modules (>=80) so priority section never renders empty.
+    const warningMetrics = modules.filter(m =>
+      m.score >= 80 && (
+        m.score < 90 ||
+        (m.signals || []).some(s => !s.pass && !s.informational)
+      )
+    );
+
+    // FIX: merge priority fixes AND warning fixes so warnings are never hidden
+    // behind a single low-scoring module.
+    const workerWarningFixes = Array.isArray(data.warningFixes) ? data.warningFixes : [];
+    const localWarningFixes = warningMetrics.map(m => {
+      const warns = (m.signals || [])
+        .filter(s => !s.pass && !s.informational)
+        .map(s => s.label);
+      return {
+        name: warns[0] || `Polish ${m.name}`,
+        module: m.name,
+        score: m.score,
+        impact: m.score >= 85 ? 'Low impact' : 'Medium impact',
+        desc: warns.length
+          ? `Warnings: ${warns.join('; ')}`
+          : 'Score is below excellent. Review module details for minor improvements.'
+      };
+    });
+    const warningFixesFinal = workerWarningFixes.length > 0
+      ? workerWarningFixes
+      : localWarningFixes;
+
+    // Combine, cap at 5. Priority fixes come first; warnings fill remaining slots.
+    const displayFixes = [...priorityFixes, ...warningFixesFinal].slice(0, 5);
+
+    const fixesHeading = priorityFixes.length > 0
+      ? 'Top Priority Fixes'
+      : (displayFixes.length > 0 ? 'Priority Improvements' : 'Top Priority Fixes');
+
+    // FIX: cap awareness — worker signals when a low module capped the score.
+    const capApplied = dataCapApplied === true;
+    const capReason  = dataCapReason || null;
+
     document.body.setAttribute('data-url', url || 'Custom HTML Analysis');
     document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
     document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
@@ -370,6 +411,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center leading-tight">${escapeHtml(pageTitle || 'Analyzed Page')}</p>
           <p class="text-4xl sm:text-5xl font-bold text-center mt-4 ${overall >= 80 ? 'text-green-600' : overall >= 60 ? 'text-orange-400' : 'text-red-600'}">${gradeText(overall)}</p>
           <p class="text-xs text-gray-400 text-center mt-3">Source: ${escapeHtml(meta?.renderSource || 'unknown')} · rendered ${(meta?.renderedHtmlLength || 0).toLocaleString()} chars</p>
+          ${capApplied && capReason ? `
+            <p class="text-xs text-orange-600 dark:text-orange-400 text-center mt-3 leading-snug">
+              ⚠️ Score capped by <strong>${escapeHtml(capReason.module)}</strong> at ${capReason.score}.
+              Weighted average was ${capReason.weightedAverage}. Fix that module to unlock the full score.
+            </p>
+          ` : ''}
         </div>
       </div>
 
@@ -454,13 +501,13 @@ document.addEventListener('DOMContentLoaded', () => {
       ${renderBrowserMetricsPanel(browserMetrics)}
 
       <div class="mt-20 space-y-8 max-w-4xl mx-auto px-4">
-        <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top Priority Fixes</h2>
-        ${priorityFixes.length === 0 ? `
+        <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">${fixesHeading}</h2>
+        ${displayFixes.length === 0 ? `
           <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-3xl p-10 shadow-2xl border-l-8 border-green-500">
             <h3 class="text-3xl font-black text-green-600 dark:text-green-400 mb-4 text-center">🎉 No Major Fixes Needed!</h3>
             <p class="text-xl text-center text-gray-800 dark:text-gray-200">Your page passes all AEO performance checks.</p>
           </div>
-        ` : priorityFixes.map((fix, i) => `
+        ` : displayFixes.map((fix, i) => `
           <div class="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-xl border border-gray-200 dark:border-gray-700">
             <div class="flex items-start gap-6">
               <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-white text-2xl font-black shadow-xl">${i + 1}</div>
@@ -571,7 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
             pageTitle: pageTitle || null,
             overallScore: overall,
             scores: Object.fromEntries(modules.map(m => [m.name, m.score])),
-            priorityFixes: priorityFixes.map(f => ({ name: f.name, module: f.module, howToFix: f.desc })),
+            priorityFixes: displayFixes.map(f => ({ name: f.name, module: f.module, howToFix: f.desc })),
             mode: payload?.html ? 'pasted-code' : 'live-url'
           })
         });
@@ -610,8 +657,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Build per-fix HTML snippets from the cached rendered HTML
       const affectedSnippets = {};
       const rawHtmlForSnips = results.dataset.renderedHtml || '';
-      if (rawHtmlForSnips && priorityFixes.length) {
-        const snippetSources = priorityFixes.map(f => f.name);
+      if (rawHtmlForSnips && displayFixes.length) {
+        const snippetSources = displayFixes.map(f => f.name);
         modules.forEach(m => {
           (m.failed || []).forEach(f => {
             if (!snippetSources.includes(f)) snippetSources.push(f);
@@ -638,9 +685,12 @@ document.addEventListener('DOMContentLoaded', () => {
               url: url || 'Custom HTML',
               pageTitle,
               headSnapshot: headSnapshot,
+              robotsTxt: data.robotsTxt || '',     // FIX: give the AI the actual file
               ...pageContext,
               overallScore: overall,
               grade,
+              capApplied,
+              capReason,
               cms: {
                 name: cmsInfo?.name || 'Custom / Unknown',
                 version: cmsInfo?.version || null,
@@ -657,7 +707,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }))
               })),
               failedItems: failedMetrics.map(f => f.name),
-              priorityFixes: priorityFixes.map(f => ({
+              priorityFixes: displayFixes.map(f => ({
                 name: f.name,
                 module: f.module,
                 score: f.score,
@@ -724,7 +774,7 @@ document.addEventListener('DOMContentLoaded', () => {
         moduleScores: modules.map(m => ({ name: m.name, score: m.score })),
         passedMetrics: modules.filter(m => m.score >= 80).map(m => m.name),
         failedMetrics: failedMetrics.map(f => f.name),
-        aiFixes: priorityFixes.map(f => f.name),
+        aiFixes: displayFixes.map(f => f.name),
         shareLink: `${window.location.origin}/aeo-performance-tool/?url=${encodeURIComponent(url || '')}`
       });
     }
@@ -734,10 +784,27 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderBrowserMetricsPanel(bm) {
     if (!bm || !bm.capturedAt) return '';
 
-    const clsColor = bm.cls < 0.10 ? 'text-green-600' : bm.cls < 0.25 ? 'text-orange-400' : 'text-red-600';
-    const lcpColor = bm.lcp > 0 && bm.lcp < 2500 ? 'text-green-600' : bm.lcp < 4000 ? 'text-orange-400' : 'text-red-600';
-    const fcpColor = bm.fcp > 0 && bm.fcp < 1800 ? 'text-green-600' : bm.fcp < 3000 ? 'text-orange-400' : 'text-red-600';
-    const ttfbColor = bm.ttfb > 0 && bm.ttfb < 800 ? 'text-green-600' : bm.ttfb < 1800 ? 'text-orange-400' : 'text-red-600';
+    // FIX: normalize fields so .toFixed() never throws on undefined.
+    const cls            = bm.cls ?? 0;
+    const lcp            = bm.lcp ?? 0;
+    const fcp            = bm.fcp ?? 0;
+    const ttfb           = bm.ttfb ?? 0;
+    const longTasks      = bm.longTasks ?? 0;
+    const mutations      = bm.mutations ?? 0;
+    const mutationNodes  = bm.mutationNodes ?? 0;
+    const totalResources = bm.totalResources ?? 0;
+
+    const failedRequests = (bm.failedRequests || []).map(r =>
+      typeof r === 'string' ? { url: r, failure: '' } : r
+    );
+    const renderBlockingRequests = bm.renderBlockingRequests || [];
+    const consoleErrors = bm.consoleErrors || [];
+    const pageErrors    = bm.pageErrors || [];
+
+    const clsColor  = cls < 0.10 ? 'text-green-600' : cls < 0.25 ? 'text-orange-400' : 'text-red-600';
+    const lcpColor  = lcp > 0 && lcp < 2500 ? 'text-green-600' : lcp < 4000 ? 'text-orange-400' : 'text-red-600';
+    const fcpColor  = fcp > 0 && fcp < 1800 ? 'text-green-600' : fcp < 3000 ? 'text-orange-400' : 'text-red-600';
+    const ttfbColor = ttfb > 0 && ttfb < 800 ? 'text-green-600' : ttfb < 1800 ? 'text-orange-400' : 'text-red-600';
 
     const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString();
 
@@ -752,22 +819,22 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="text-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">CLS</p>
-              <p class="text-3xl font-black ${clsColor}">${bm.cls.toFixed(3)}</p>
-              <p class="text-xs mt-1 text-gray-500">${bm.cls < 0.10 ? 'Good' : bm.cls < 0.25 ? 'Improve' : 'Poor'}</p>
+              <p class="text-3xl font-black ${clsColor}">${cls.toFixed(3)}</p>
+              <p class="text-xs mt-1 text-gray-500">${cls < 0.10 ? 'Good' : cls < 0.25 ? 'Improve' : 'Poor'}</p>
             </div>
             <div class="text-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">LCP</p>
-              <p class="text-3xl font-black ${lcpColor}">${fmt(bm.lcp)}</p>
+              <p class="text-3xl font-black ${lcpColor}">${fmt(lcp)}</p>
               <p class="text-xs mt-1 text-gray-500">ms</p>
             </div>
             <div class="text-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">FCP</p>
-              <p class="text-3xl font-black ${fcpColor}">${fmt(bm.fcp)}</p>
+              <p class="text-3xl font-black ${fcpColor}">${fmt(fcp)}</p>
               <p class="text-xs mt-1 text-gray-500">ms</p>
             </div>
             <div class="text-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">TTFB</p>
-              <p class="text-3xl font-black ${ttfbColor}">${fmt(bm.ttfb)}</p>
+              <p class="text-3xl font-black ${ttfbColor}">${fmt(ttfb)}</p>
               <p class="text-xs mt-1 text-gray-500">ms</p>
             </div>
           </div>
@@ -775,30 +842,30 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="text-center p-3 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500">DOM Mutations</p>
-              <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">${fmt(bm.mutations)}</p>
+              <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">${fmt(mutations)}</p>
             </div>
             <div class="text-center p-3 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500">Nodes Changed</p>
-              <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">${fmt(bm.mutationNodes)}</p>
+              <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">${fmt(mutationNodes)}</p>
             </div>
             <div class="text-center p-3 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500">Long Tasks</p>
-              <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">${fmt(bm.longTasks)}</p>
+              <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">${fmt(longTasks)}</p>
             </div>
             <div class="text-center p-3 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500">Resources</p>
-              <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">${fmt(bm.totalResources)}</p>
+              <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">${fmt(totalResources)}</p>
             </div>
           </div>
 
-          ${(bm.consoleErrors?.length || 0) + (bm.pageErrors?.length || 0) > 0 ? `
+          ${(consoleErrors.length + pageErrors.length) > 0 ? `
             <div>
               <h4 class="font-bold text-red-600 mb-3">
-                ⚠️ ${(bm.consoleErrors?.length || 0) + (bm.pageErrors?.length || 0)} Error(s) During Render
+                ⚠️ ${consoleErrors.length + pageErrors.length} Error(s) During Render
               </h4>
               <ul class="space-y-1 text-xs font-mono bg-red-50 dark:bg-red-900/20 p-4 rounded-xl max-h-60 overflow-y-auto">
-                ${(bm.consoleErrors || []).slice(0, 10).map(e => `<li class="text-red-700 dark:text-red-300">🔴 ${escapeHtml(e)}</li>`).join('')}
-                ${(bm.pageErrors || []).slice(0, 10).map(e => `<li class="text-red-700 dark:text-red-300">💥 ${escapeHtml(e)}</li>`).join('')}
+                ${consoleErrors.slice(0, 10).map(e => `<li class="text-red-700 dark:text-red-300">🔴 ${escapeHtml(e)}</li>`).join('')}
+                ${pageErrors.slice(0, 10).map(e => `<li class="text-red-700 dark:text-red-300">💥 ${escapeHtml(e)}</li>`).join('')}
               </ul>
             </div>
           ` : `
@@ -807,20 +874,20 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `}
 
-          ${bm.failedRequests?.length ? `
+          ${failedRequests.length ? `
             <div>
-              <h4 class="font-bold text-orange-600 mb-3">⚠️ ${bm.failedRequests.length} Failed Request(s)</h4>
+              <h4 class="font-bold text-orange-600 mb-3">⚠️ ${failedRequests.length} Failed Request(s)</h4>
               <ul class="space-y-1 text-xs font-mono bg-orange-50 dark:bg-orange-900/20 p-4 rounded-xl max-h-60 overflow-y-auto">
-                ${bm.failedRequests.slice(0, 10).map(r => `<li class="text-orange-700 dark:text-orange-300">${escapeHtml(r.failure)} — ${escapeHtml(r.url)}</li>`).join('')}
+                ${failedRequests.slice(0, 10).map(r => `<li class="text-orange-700 dark:text-orange-300">${escapeHtml(r.failure)} — ${escapeHtml(r.url)}</li>`).join('')}
               </ul>
             </div>
           ` : ''}
 
-          ${bm.renderBlockingRequests?.length ? `
+          ${renderBlockingRequests.length ? `
             <div>
-              <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-3">🚧 ${bm.renderBlockingRequests.length} Render-Blocking Resource(s)</h4>
+              <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-3">🚧 ${renderBlockingRequests.length} Render-Blocking Resource(s)</h4>
               <ul class="space-y-1 text-xs font-mono bg-gray-50 dark:bg-gray-800 p-4 rounded-xl max-h-60 overflow-y-auto">
-                ${bm.renderBlockingRequests.slice(0, 10).map(r => `<li class="text-gray-700 dark:text-gray-300">[${escapeHtml(r.type || 'other')}] ${escapeHtml(r.name)}</li>`).join('')}
+                ${renderBlockingRequests.slice(0, 10).map(r => `<li class="text-gray-700 dark:text-gray-300">[${escapeHtml(r.type || 'other')}] ${escapeHtml(r.name)}</li>`).join('')}
               </ul>
             </div>
           ` : ''}

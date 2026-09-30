@@ -8,14 +8,9 @@
   <!-- Core pages -->
   <url>
     <loc>https://traffictorch.net/</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-01</lastmod>
   </url>
-  
-  <url>
-    <loc>https://traffictorch.net/dashboard/</loc>
-    <lastmod>2026-09-11</lastmod>
-  </url>
-  
+ 
   <url>
     <loc>https://traffictorch.net/ofux-tool/</loc>
     <lastmod>2026-09-26</lastmod>
@@ -58,7 +53,7 @@
   
   <url>
     <loc>https://traffictorch.net/aeo-performance-tool/</loc>
-    <lastmod>2026-09-12</lastmod>
+    <lastmod>2026-10-01</lastmod>
   </url>
     
   <url>

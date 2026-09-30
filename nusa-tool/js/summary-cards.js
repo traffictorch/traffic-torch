@@ -1,4 +1,8 @@
-// summary-cards.js — v13
+// summary-cards.js — v14
+// v14 changes:
+//   • VISIBLE_MODULES 5 → 6 (SEO card previews 6 modules before "show more")
+//   • Added "Full Results →" chip to UX / SEO / AEO cards, deep-linking
+//     to the standalone tools with the audited URL pre-filled via ?url=
 // UX scoring: quit-risk-tool factor tiers (copied verbatim)
 // SEO scoring: lighthouse-plus-tool/script-v1.0.js (copied verbatim:
 //              MODULE_WEIGHTS, applyIssueCap, recomputeOverall, gradeFromScore)
@@ -10,8 +14,15 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const shorten = (s, n) => { s = String(s||''); return s.length > n ? s.slice(0, n-1) + '…' : s; };
 
-const ACCORDION_CATS = new Set(['SEO']);
-const VISIBLE_MODULES = 5;
+const ACCORDION_CATS  = new Set(['SEO']);
+const VISIBLE_MODULES = 4;                                  // ← was 5
+
+/* Deep-link targets for the "Full Results →" chips */
+const TOOL_URLS = {
+  UX:  'https://traffictorch.net/quit-risk-tool/',
+  SEO: 'https://traffictorch.net/lighthouse-plus-tool/',
+  AEO: 'https://traffictorch.net/aeo-performance-tool/'
+};
 
 const iconFor    = s => s === 'pass' ? '✓' : s === 'warn' ? '⚠' : '✕';
 const scoreClass = s => s >= 80 ? 'good' : s >= 60 ? 'mid' : 'bad';
@@ -229,35 +240,35 @@ export function renderSummaryCards(state) {
   const idByKey = new Map();
   for (const f of findings) idByKey.set(`${f.cat}::${f.label}`, f.id);
 
-function overallCard() {
-  // Count passes using the same evaluator the share module uses
-  let totalPasses = 0;
-  for (const cat of ['UX', 'SEO', 'AEO']) {
-    const data = state[cat.toLowerCase()];
-    if (!data) continue;
-    for (const m of (data.modules || [])) {
-      const subs = evaluateModule(cat, m);
-      totalPasses += subs.filter(s => s.status === 'pass').length;
+  function overallCard() {
+    // Count passes using the same evaluator the share module uses
+    let totalPasses = 0;
+    for (const cat of ['UX', 'SEO', 'AEO']) {
+      const data = state[cat.toLowerCase()];
+      if (!data) continue;
+      for (const m of (data.modules || [])) {
+        const subs = evaluateModule(cat, m);
+        totalPasses += subs.filter(s => s.status === 'pass').length;
+      }
     }
-  }
 
-  return `
-    <div class="sum-card sum-overall" data-cat="overall">
-      <div class="sum-head"><span class="sum-title">OVERALL</span></div>
-      <div class="sum-overall-score ${scoreClass(overall)}">${overall}</div>
-      <div class="sum-overall-label">/100 combined</div>
-      <div class="sum-overall-subs">
-        <span>UX <b>${uxScore}</b></span>
-        <span>SEO <b>${seoScore}</b></span>
-        <span>AEO <b>${aeoScore}</b></span>
-      </div>
-      <div class="sum-counts">
-        <span class="sum-count-fail">${blocking}</span> blocking ·
-        <span class="sum-count-warn">${warnings}</span> warn ·
-        <span class="sum-count-pass">${totalPasses}</span> pass
-      </div>
-    </div>`;
-}
+    return `
+      <div class="sum-card sum-overall" data-cat="overall">
+        <div class="sum-head"><span class="sum-title">OVERALL</span></div>
+        <div class="sum-overall-score ${scoreClass(overall)}">${overall}</div>
+        <div class="sum-overall-label">/100 combined</div>
+        <div class="sum-overall-subs">
+          <span>UX <b>${uxScore}</b></span>
+          <span>SEO <b>${seoScore}</b></span>
+          <span>AEO <b>${aeoScore}</b></span>
+        </div>
+        <div class="sum-counts">
+          <span class="sum-count-fail">${blocking}</span> blocking ·
+          <span class="sum-count-warn">${warnings}</span> warn ·
+          <span class="sum-count-pass">${totalPasses}</span> pass
+        </div>
+      </div>`;
+  }
 
   function categoryCard(cat, data) {
     const catScoreVal = cat === 'UX' ? uxScore : cat === 'SEO' ? seoScore : aeoScore;
@@ -317,6 +328,19 @@ function overallCard() {
         <button class="sum-more-btn" data-count="${count}" type="button">▸ show ${count} more module${count > 1 ? 's' : ''}</button>`;
     }
 
+    // ── "Full Results →" chip → deep-links into the standalone tool (same tab) ──
+    const toolUrl = TOOL_URLS[cat];
+    const footerHtml = toolUrl
+      ? `<div class="sum-card-footer">
+           <a class="sum-full-results"
+              href="${toolUrl}?url=${encodeURIComponent(state.url || '')}"
+              rel="noopener"
+              aria-label="Open full ${cat} results for ${esc(state.url || '')}">
+             Full Results →
+           </a>
+         </div>`
+      : '';
+
     return `<div class="sum-card" data-cat="${cat}">
       <div class="sum-head"><span class="sum-title">${cat}</span></div>
       <div class="sum-counts">
@@ -324,6 +348,7 @@ function overallCard() {
         <span class="sum-overall-label" style="margin-left:6px">/100</span>
       </div>
       <div class="sum-pass-list">${bodyHtml}</div>
+      ${footerHtml}
     </div>`;
   }
 

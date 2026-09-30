@@ -571,3 +571,141 @@ html.dark .cm-backdrop{
 .ask-a {
   margin-top: 2px;
 }
+
+/* ── 4. "Full Results →" chip — same-tab deep link into the standalone tool ── */
+#nusa-app .sum-card-footer{
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  justify-content: center;          /* centred at every breakpoint */
+}
+
+#nusa-app .sum-full-results{
+  /* anchor reset — UA stylesheet would otherwise leave color:inherit
+     and the default underline in place */
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;              /* future-proof if label grows */
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+#nusa-app .sum-full-results:hover,
+#nusa-app .sum-full-results:focus-visible{
+  background: rgba(245,166,35,.10);
+  color: var(--text);
+  text-decoration: none;
+}
+#nusa-app .sum-full-results:focus-visible{
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+/* Per-category accent — matches each card's top border */
+#nusa-app .sum-card[data-cat="SEO"] .sum-full-results{
+  border-color: var(--verdant);
+  color: var(--verdant);
+}
+#nusa-app .sum-card[data-cat="SEO"] .sum-full-results:hover,
+#nusa-app .sum-card[data-cat="SEO"] .sum-full-results:focus-visible{
+  background: rgba(74,222,128,.10);
+  color: var(--text);
+}
+
+#nusa-app .sum-card[data-cat="AEO"] .sum-full-results{
+  border-color: var(--violet);
+  color: var(--violet);
+}
+#nusa-app .sum-card[data-cat="AEO"] .sum-full-results:hover,
+#nusa-app .sum-card[data-cat="AEO"] .sum-full-results:focus-visible{
+  background: rgba(167,139,250,.10);
+  color: var(--text);
+}
+
+/* Dark-mode hover — slightly brighter low-alpha overlays */
+html.dark #nusa-app .sum-full-results:hover,
+html.dark #nusa-app .sum-full-results:focus-visible{
+  background: rgba(245,166,35,.18);
+}
+html.dark #nusa-app .sum-card[data-cat="SEO"] .sum-full-results:hover,
+html.dark #nusa-app .sum-card[data-cat="SEO"] .sum-full-results:focus-visible{
+  background: rgba(74,222,128,.18);
+}
+html.dark #nusa-app .sum-card[data-cat="AEO"] .sum-full-results:hover,
+html.dark #nusa-app .sum-card[data-cat="AEO"] .sum-full-results:focus-visible{
+  background: rgba(167,139,250,.18);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   5. Mobile fixes — override base styles for narrow screens
+   Fixes:
+     • Truncated sub-metric text (no more "Elements must meet m...")
+     • Truncated module titles
+     • Full-width "Full Results →" button for a proper tap target
+     • Tightened spacing around the "show more/less" toggle
+     • Reduced card padding to reclaim horizontal space
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 520px) {
+
+  /* ── 1. Let long sub-metric text wrap instead of being truncated ── */
+  #nusa-app .sum-submetric {
+    align-items: flex-start;      /* keep the icon top-aligned when text wraps */
+    padding-left: 4px;            /* reclaim a little horizontal space */
+  }
+  #nusa-app .sum-submetric .text {
+    white-space: normal;          /* was: nowrap */
+    overflow: visible;            /* was: hidden */
+    text-overflow: clip;          /* was: ellipsis */
+    line-height: 1.35;            /* slightly tighter when it wraps */
+  }
+
+  /* ── 2. Let module names wrap too ── */
+  #nusa-app .sum-module-name {
+    white-space: normal;          /* was: nowrap */
+    overflow: visible;            /* was: hidden */
+    text-overflow: clip;          /* was: ellipsis */
+    line-height: 1.3;
+  }
+
+  /* ── 3. Full-width "Full Results →" button (proper tap target) ── */
+  #nusa-app .sum-card-footer {
+    justify-content: stretch;     /* let the child stretch to full width */
+    margin-top: 10px;
+    padding-top: 8px;
+  }
+  #nusa-app .sum-full-results {
+    display: block;               /* was: inline-block */
+    width: 100%;
+    text-align: center;
+    padding: 10px 14px;           /* taller tap target on mobile */
+  }
+
+  /* ── 4. Tighten the "show more/less" toggle ── */
+  #nusa-app .sum-more-btn {
+    margin-top: 10px;
+    padding: 8px 10px;
+  }
+
+  /* ── 5. Reduce card padding to give text more room ── */
+  #nusa-app .sum-card {
+    padding: 10px 12px;
+  }
+
+  /* ── 6. Extra safety: never let a sub-metric row overflow the card ── */
+  #nusa-app .sum-submetrics {
+    padding-left: 6px;            /* was: 10px */
+    min-width: 0;                 /* allows flex children to shrink */
+  }
+  #nusa-app .sum-submetric .text {
+    min-width: 0;                 /* allows text to shrink + wrap */
+    word-break: break-word;       /* break very long words if needed */
+  }
+}
