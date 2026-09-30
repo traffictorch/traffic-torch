@@ -24,6 +24,7 @@ function labelFor(name) {
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/ofux-tool/cms-detect.js';
 import { saveAudit } from '/audit-history.js';
+import { canRunTool } from '/main-v1.1.js';
 
 // ─── Quit Risk imports ────────────────────────────────────────────────────
 import { calculateReadability } from '/quit-risk-tool/modules/readability.js';
@@ -72,12 +73,62 @@ function renderCodeBlocks(text) {
     (_m, pre, nl) => (pre ? pre : '<br>')
   );
 
-  // Allow model-emitted <strong> tags through (they were escaped above)
   escaped = escaped
     .replace(/&lt;strong&gt;/g, '<strong>')
     .replace(/&lt;\/strong&gt;/g, '</strong>');
 
   return escaped;
+}
+
+// ─── Head snapshot builder (shared with all Traffic Torch tools) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
 }
 
 // ─── Helper to count pass/average/fail from modules ─────────────────────
@@ -606,26 +657,6 @@ function getAISearchSummary(doc, analyzedUrl) {
   return { score: overallScore, passed, failed, modules: moduleData };
 }
 
-// ─── Top‑3 Failure Selection (kept for potential future use) ────────────
-function selectTopFailures(summaries) {
-  const result = [];
-  const remainingFailures = [];
-
-  summaries.forEach(summary => {
-    if (summary.failed.length > 0) {
-      result.push({ tool: summary.toolName, metric: summary.failed[0] });
-      summary.failed.slice(1).forEach(m => remainingFailures.push({ tool: summary.toolName, metric: m }));
-    }
-  });
-
-  while (result.length < 3 && remainingFailures.length > 0) {
-    result.push(remainingFailures.shift());
-  }
-
-  if (result.length === 0) return { status: 'congrats', failures: [] };
-  return { status: 'has_failures', failures: result };
-}
-
 // ─── Build top-3 priority fixes across all homepage summaries ──────────
 function buildHomepagePriorityFixes(summaries) {
   const toolOrder = [...summaries].sort((a, b) => a.score - b.score);
@@ -639,11 +670,12 @@ function buildHomepagePriorityFixes(summaries) {
     fixes.push({
       module: `${summary.toolName} · ${modName}`,
       name: labelFor(metricName),
+      metricName,
+      toolName: summary.toolName,
       howToFix: `Failing check from the ${summary.toolName} audit (module: ${modName}). Apply the CMS-specific fix to pass this metric.`
     });
   };
 
-  // Pass 1: one fail per tool, worst tool first
   toolOrder.forEach(summary => {
     if (fixes.length >= 3) return;
     const firstFail = (summary.modules || [])
@@ -652,7 +684,6 @@ function buildHomepagePriorityFixes(summaries) {
     if (firstFail) pushFix(summary, firstFail.moduleName, firstFail.name);
   });
 
-  // Pass 2: top up with remaining fails, worst tool first
   if (fixes.length < 3) {
     toolOrder.forEach(summary => {
       if (fixes.length >= 3) return;
@@ -664,7 +695,6 @@ function buildHomepagePriorityFixes(summaries) {
     });
   }
 
-  // Pass 3: top up with averages if still short
   if (fixes.length < 3) {
     toolOrder.forEach(summary => {
       if (fixes.length >= 3) return;
@@ -684,7 +714,6 @@ function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overal
   try {
     if (!anchor) return;
 
-    // Remove any previous instance (idempotent across re-runs)
     const existing = document.getElementById('cms-fixes-section');
     if (existing) existing.remove();
 
@@ -791,8 +820,6 @@ function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overal
     cmsFixesBtn?.addEventListener('click', async () => {
       if (priorityFixes.length === 0) return;
 
-      // Dynamic import for quota check (same pattern as the ask-ai handler)
-      const { canRunTool } = await import('/main-v1.1.js');
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) return;
 
@@ -815,7 +842,11 @@ function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overal
           pageTitle: doc?.title || null,
           overallScore: overallScore,
           scores: toolScores,
-          priorityFixes: priorityFixes,
+          priorityFixes: priorityFixes.map(f => ({
+            module: f.module,
+            name: f.name,
+            howToFix: f.howToFix
+          })),
           mode: 'live-url'
         };
 
@@ -832,7 +863,11 @@ function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overal
         if (data.success && cmsAnswerContent) {
           const headerHtml = `<div style="font-weight:bold; margin-bottom:0.75rem;">🛠️ CMS Fixes for ${data.cms || selectedCms}${data.cmsVersion ? ' ' + data.cmsVersion : ''}</div>`;
           const bodyHtml = `<div>${renderCodeBlocks(data.answer || '')}</div>`;
-          cmsAnswerContent.innerHTML = headerHtml + bodyHtml;
+          let warningHtml = '';
+          if (Array.isArray(data.warnings) && data.warnings.length) {
+            warningHtml = `<div style="margin-top:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${data.warnings.join(' ')}</div>`;
+          }
+          cmsAnswerContent.innerHTML = headerHtml + bodyHtml + warningHtml;
         } else if (cmsAnswerContent) {
           cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
         }
@@ -848,17 +883,26 @@ function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overal
     });
 
   } catch (err) {
-    // Silent — the main report must never fail because the CMS section failed
     console.warn('CMS fixes section skipped:', err);
   }
 }
 
-
 // ─── Main Orchestration ──────────────────────────────────────────────────
 export async function runOfuxAnalysis(url, containerId, aiContainerId) {
   const container = document.getElementById(containerId);
-  // aiContainerId is not used anymore – we keep the static Ask AI section in HTML.
   if (!container) return;
+
+  // ── Rate limit check FIRST (same bucket as other tools) ──
+  const canProceed = await canRunTool('limit-audit-id');
+  if (!canProceed) {
+    container.innerHTML = `
+      <div class="text-center py-12 text-orange-600 dark:text-orange-400">
+        <p class="text-2xl font-bold">Usage limit reached</p>
+        <p class="text-lg mt-2">Please try again later or contact support.</p>
+      </div>
+    `;
+    return;
+  }
 
   container.innerHTML = `
     <div class="flex flex-col items-center justify-center py-12">
@@ -875,24 +919,24 @@ export async function runOfuxAnalysis(url, containerId, aiContainerId) {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     const cmsInfo = detectCMS({ doc, url });
 
-    // ─── Persist CMS + page context for the Ask AI handler ───
+    // ─── Cache raw HTML + head snapshot for the Ask AI handler ───
+    window._homepageRawHtml = html || '';
+    window._homepageHeadSnapshot = buildHeadSnapshot(doc);
     window._homepageCmsInfo = cmsInfo;
 
-    // Clone the doc so we can strip chrome without mutating the original
     const excerptDoc = doc.cloneNode(true);
     excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
 
-const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+    const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
 
-// Prefer the first substantial paragraph, fall back to first text block
-const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
-  .map(p => p.textContent.replace(/\s+/g, ' ').trim())
-  .filter(t => t.length > 60 && !t.includes('Initializing'));
+    const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+      .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+      .filter(t => t.length > 60 && !t.includes('Initializing'));
 
-const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '')
-  .replace(/\s+/g, ' ')
-  .trim()
-  .slice(0, 300);
+    const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 300);
 
     window._homepagePageContext = {
       pageTitle: doc.title || '',
@@ -920,7 +964,7 @@ const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '')
 
     const uxData = getUXContent(doc);
     const uxSummary = getQuitRiskSummary(uxData);
-    
+
     const seoSummary = getSEOSummary(doc, url);
     const aiSummary = getAISearchSummary(doc, url);
 
@@ -932,7 +976,6 @@ const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '')
 
     renderCards(container, summaries, url);
 
-    // ─── Persist to shared audit history (visible in dashboard) ─────
     const overallScoreForSave = Math.round(
       (uxSummary.score + seoSummary.score + aiSummary.score) / 3
     );
@@ -946,18 +989,13 @@ const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '')
     window._homepageUrl = url;
     document.body.setAttribute('data-url', url);
 
-    // ─── Compute module details for share module ────────────────────
     const uxCounts = countStatuses(uxSummary.modules);
     const seoCounts = countStatuses(seoSummary.modules);
     const aiCounts = countStatuses(aiSummary.modules);
 
-    // ─── Initialise Share Module ──────────────────────────────────────
-    console.log('Creating share container...');
     const shareContainer = document.createElement('div');
     shareContainer.id = 'share-module-container';
-    // Insert after the cards container
     container.insertAdjacentElement('afterend', shareContainer);
-    console.log('Share container inserted');
 
     const overall = Math.round((uxSummary.score + seoSummary.score + aiSummary.score) / 3);
     const shareResults = {
@@ -981,20 +1019,17 @@ const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '')
       ]
     };
     const aiContainer = document.getElementById('ai-answer-container');
-if (!aiContainer) {
-  // fallback – create if missing (should exist in your HTML)
-  const fallback = document.createElement('div');
-  fallback.id = 'ai-answer-container';
-  document.body.appendChild(fallback);
-}
-initShareModule(shareContainer, shareResults, aiContainer);
-    console.log('Share module initialised');
-    
-        // ─── CMS Fixes (rendered below the share dashboard) ──────────────
+    if (!aiContainer) {
+      const fallback = document.createElement('div');
+      fallback.id = 'ai-answer-container';
+      document.body.appendChild(fallback);
+    }
+    initShareModule(shareContainer, shareResults, aiContainer);
+
+    // ─── CMS Fixes (rendered below the share dashboard) ──────────────
     const homepagePriorityFixes = buildHomepagePriorityFixes(summaries);
     const overallHomepage = Math.round((uxSummary.score + seoSummary.score + aiSummary.score) / 3);
 
-        // ─── Top Priority Fixes (text list, above CMS fixes) ────────────
     if (homepagePriorityFixes.length > 0) {
       const existingPrio = document.getElementById('homepage-priority-fixes');
       if (existingPrio) existingPrio.remove();
@@ -1022,7 +1057,7 @@ initShareModule(shareContainer, shareResults, aiContainer);
       `;
       shareContainer.insertAdjacentElement('afterend', prioSection);
     }
-    
+
     renderHomepageCmsFixes(
       document.getElementById('homepage-priority-fixes') || shareContainer,
       cmsInfo,
@@ -1036,7 +1071,6 @@ initShareModule(shareContainer, shareResults, aiContainer);
         aiSearch: aiSummary.score
       }
     );
-    console.log('CMS fixes section rendered');
 
   } catch (err) {
     container.innerHTML = `
@@ -1162,7 +1196,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ─── Ask AI Listener ──────────────────────────────────────────────
-// This listener is always active, works before or after an audit.
 document.addEventListener('DOMContentLoaded', () => {
   const askBtn = document.getElementById('ask-ai-btn');
   const askInput = document.getElementById('ai-question-input');
@@ -1171,8 +1204,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (askBtn) {
     askBtn.addEventListener('click', async () => {
-      // ─── Check quota first ──────────────────────────────────────
-      const { canRunTool } = await import('/main-v1.1.js');
       const canProceed = await canRunTool('limit-audit-id');
       if (!canProceed) {
         const upgradeModal = document.getElementById('upgradeModal');
@@ -1192,7 +1223,6 @@ document.addEventListener('DOMContentLoaded', () => {
       answerContent.innerHTML = '⏳ Traffic Torching...';
 
       try {
-        // ─── Gather current audit data from the DOM ──────────────
         const summaries = window._homepageSummaries || [];
 
         let uxData = { score: 0, modules: [] };
@@ -1205,7 +1235,6 @@ document.addEventListener('DOMContentLoaded', () => {
           else if (s.toolName === 'AI Search') aiData = { score: s.score, modules: s.modules };
         });
 
-        // Gather all failed metrics
         const failedMetrics = [];
         summaries.forEach(s => {
           (s.modules || []).forEach(mod => {
@@ -1217,12 +1246,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const cms = window._homepageCmsInfo || { name: 'Custom / Unknown', version: null, confidence: 'unknown' };
         const pageContext = window._homepagePageContext || {};
+        const headSnapshot = window._homepageHeadSnapshot || '';
+
+        const priorityFixes = buildHomepagePriorityFixes(summaries).map(f => ({
+          name: f.name,
+          module: f.module,
+          score: 0,
+          impact: '',
+          desc: f.howToFix
+        }));
 
         const auditPayload = {
           question: question,
           auditData: {
             url: window._homepageUrl || '',
             ...pageContext,
+            headSnapshot: headSnapshot,
             cms: {
               name: cms.name,
               version: cms.version,
@@ -1233,6 +1272,9 @@ document.addEventListener('DOMContentLoaded', () => {
             seo: { score: seoData.score, modules: seoData.modules },
             aeo: { score: aiData.score, modules: aiData.modules },
             failedItems: failedMetrics.slice(0, 15),
+            priorityFixes: priorityFixes,
+            snippets: {},
+            browserMetrics: null
           },
         };
 
@@ -1247,7 +1289,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
 
         if (data.success) {
-          answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+          let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+          if (Array.isArray(data.warnings) && data.warnings.length) {
+            const warningText = data.warnings.join(' ');
+            html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+          }
+          answerContent.innerHTML = html;
         } else {
           answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
         }

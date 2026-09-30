@@ -30,6 +30,57 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
+// ─── Head snapshot builder (shared across all Traffic Torch tools) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const yourInput = document.getElementById('your-url');
@@ -37,16 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const phraseInput = document.getElementById('target-phrase');
   const results = document.getElementById('results');
 
-  // Auto-fill from shared report link
   const urlParams = new URLSearchParams(window.location.search);
 
   const sharedYourUrl = urlParams.get('your-url');
   if (sharedYourUrl) {
     try {
       let decoded = decodeURIComponent(sharedYourUrl);
-      if (!/^https?:\/\//i.test(decoded)) {
-        decoded = 'https://' + decoded;
-      }
+      if (!/^https?:\/\//i.test(decoded)) decoded = 'https://' + decoded;
       yourInput.value = decoded;
     } catch (e) {}
   }
@@ -55,9 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (sharedCompUrl) {
     try {
       let decoded = decodeURIComponent(sharedCompUrl);
-      if (!/^https?:\/\//i.test(decoded)) {
-        decoded = 'https://' + decoded;
-      }
+      if (!/^https?:\/\//i.test(decoded)) decoded = 'https://' + decoded;
       compInput.value = decoded;
     } catch (e) {}
   }
@@ -66,9 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (sharedKeyword) {
     try {
       const decoded = decodeURIComponent(sharedKeyword).trim();
-      if (decoded) {
-        phraseInput.value = decoded;
-      }
+      if (decoded) phraseInput.value = decoded;
     } catch (e) {}
   }
 
@@ -116,9 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cleanPhraseWords.forEach(word => { if (urlWords.includes(word)) matchedWords.add(word); });
 
       const required = Math.ceil(phraseWords.length / 2);
-      if (matchedWords.size >= required) {
-        matches += 1;
-      }
+      if (matchedWords.size >= required) matches += 1;
     }
 
     return matches;
@@ -135,17 +177,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const calculateContentScore = (words, density) => {
     let wordScore = 0;
-    if (words > 0) {
-      wordScore = Math.min(50, (words / 800) * 50);
-    }
+    if (words > 0) wordScore = Math.min(50, (words / 800) * 50);
     let densityScore = 0;
-    if (density >= 1 && density <= 2) {
-      densityScore = 50;
-    } else if (density >= 0.5 && density < 1) {
-      densityScore = 50 * ((density - 0.5) / 0.5);
-    } else if (density > 2 && density <= 3) {
-      densityScore = 50 * ((3 - density) / 1);
-    }
+    if (density >= 1 && density <= 2) densityScore = 50;
+    else if (density >= 0.5 && density < 1) densityScore = 50 * ((density - 0.5) / 0.5);
+    else if (density > 2 && density <= 3) densityScore = 50 * ((3 - density) / 1);
     return Math.round(wordScore + densityScore);
   };
 
@@ -160,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   };
 
-  // ── CMS detection helper ─────────────────────────────────────────
   const detectCMS = (doc) => {
     if (!doc?.documentElement) return 'unknown';
     const html = doc.documentElement.outerHTML.toLowerCase();
@@ -184,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Page-context extractor for Ask AI payload enrichment ─────────
   const extractPageContext = (doc, url, cmsName) => {
     if (!doc) return null;
+
     const excerptDoc = doc.cloneNode(true);
     excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
     const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
@@ -191,17 +227,21 @@ document.addEventListener('DOMContentLoaded', () => {
       .map(p => p.textContent.replace(/\s+/g, ' ').trim())
       .filter(t => t.length > 60);
     const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+
     return {
       url,
       pageTitle: doc.querySelector('title')?.textContent.trim() || '',
       metaDescription: doc.querySelector('meta[name="description"]')?.content || '',
       h1: doc.querySelector('h1')?.textContent.trim() || '',
       pageExcerpt,
+      langAttribute: doc.documentElement?.getAttribute('lang') || '',
+      viewportContent: doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '',
       linkCount: doc.querySelectorAll('a').length,
       imageCount: doc.querySelectorAll('img').length,
       headingCount: doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length,
       ctaCount: doc.querySelectorAll('a[href], button').length,
       wordCount: getWordCount(doc),
+      headSnapshot: buildHeadSnapshot(doc),
       cms: { name: cmsName || 'Custom / Unknown', version: '', confidence: '' }
     };
   };
@@ -228,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (compUrl && !compUrl.startsWith('http')) compUrl = 'https://' + compUrl;
     if (!yourUrl || !compUrl || !phrase) return;
 
-    // Progress loader
     const progressContainer = document.createElement('div');
     progressContainer.id = 'analysis-progress';
     progressContainer.className = 'mt-12 max-w-4xl mx-auto px-6';
@@ -275,7 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const yourCMS = detectCMS(yourDoc);
     const compCMS = detectCMS(compDoc);
 
-    // Progress steps
     const steps = [
       "Fetching both pages...",
       "Parsing titles, meta & headings on both pages",
@@ -326,12 +364,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const yourDensity = yourWords > 0 ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
       const compDensity = compWords > 0 ? (compContentMatches / compWords * 100).toFixed(1) : 0;
       data.content = {
-        yourWords,
-        compWords,
+        yourWords, compWords,
         yourDensity: parseFloat(yourDensity),
         compDensity: parseFloat(compDensity),
-        yourContentMatches,
-        compContentMatches
+        yourContentMatches, compContentMatches
       };
       yourScore += yourWords > 800 ? 20 : 0;
       compScore += compWords > 800 ? 20 : 0;
@@ -350,8 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
       data.urlSchema = {
         yourUrlMatch: countPhrase(yourUrl, phrase, true),
         compUrlMatch: countPhrase(compUrl, phrase, true),
-        yourSchema,
-        compSchema
+        yourSchema, compSchema
       };
       yourScore += (data.urlSchema.yourUrlMatch > 0 ? 10 : 0) + (data.urlSchema.yourSchema ? 5 : 0);
       compScore += (data.urlSchema.compUrlMatch > 0 ? 10 : 0) + (data.urlSchema.compSchema ? 5 : 0);
@@ -361,7 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const yourGrade = getGrade(yourScore);
       const compGrade = getGrade(compScore);
 
-      // Top Priority Fixes
       const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'Image Alts', 'Anchor Text', 'URL & Schema'];
       const failedModules = [];
       if (data.meta.yourMatches === 0) failedModules.push({ id: 'meta', name: 'Meta Title & Desc' });
@@ -428,7 +462,6 @@ document.addEventListener('DOMContentLoaded', () => {
       results.innerHTML = `
 <!-- Big Score Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12 px-2 max-w-5xl mx-auto">
-  <!-- Your Page -->
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full mx-auto border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
     <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Your Page</p>
     <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
@@ -466,7 +499,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 
-  <!-- Competitor Page -->
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 md:p-10 max-w-md w-full mx-auto border-4 ${compScore >= 80 ? 'border-green-500' : compScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
     <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Competitor Page</p>
     <div class="relative w-56 h-56 mx-auto md:w-64 md:h-64">
@@ -505,7 +537,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- Competitive Gap Verdict -->
 <div class="text-center my-12">
   <p class="text-4xl font-bold text-gray-800 dark:text-gray-200">
     Competitive Gap: 
@@ -516,7 +547,6 @@ document.addEventListener('DOMContentLoaded', () => {
   <p class="text-xl text-gray-600 dark:text-gray-400 mt-4">Target phrase: "${phrase}"</p>
 </div>
 
-<!-- Small Metric Cards -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 my-16">
   ${[
     { name: 'Meta Title & Desc', you: data.meta.yourMatches > 0 ? 100 : 0, comp: data.meta.compMatches > 0 ? 100 : 0 },
@@ -533,7 +563,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const hashId = moduleHashes[m.name] || '';
     const helpUrl = `/blog/posts/seo-keyword-competition-help-guide/#how-${hashId}`;
 
-    // Collect issues for failed AND average metrics (yourScore < 80)
     const moduleIssues = [];
     if (yourScore < 80) {
       if (m.name === 'Meta Title & Desc') {
@@ -585,7 +614,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // ── Status items for this module: failed / warning / passed ────
     const statusItems = { failed: [], warning: [], passed: [] };
     if (m.name === 'Meta Title & Desc') {
       if (data.meta.yourMatches > 0) statusItems.passed.push('Keyword in title/meta');
@@ -711,7 +739,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }).join('')}
 </div>
 
-<!-- Top Priority Fixes & Competitive Gaps -->
 <div class="my-20 max-w-6xl mx-auto">
   <h3 class="text-4xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
     Top Priority Fixes & Competitive Gaps
@@ -742,9 +769,7 @@ document.addEventListener('DOMContentLoaded', () => {
   `}
 </div>
 
-<!-- Closing the Relevance Gap & Projected Gains -->
 <div class="grid md:grid-cols-2 gap-12 my-20 max-w-6xl mx-auto">
-  <!-- Left: Relevance Improvement -->
   <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 border-l-8 border-orange-500">
     <h3 class="text-3xl font-black mb-8 text-center text-gray-900 dark:text-gray-100">Relevance Score Improvement</h3>
     <div class="flex justify-center items-center gap-12 mb-12">
@@ -793,7 +818,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </details>
   </div>
-  <!-- Right: Real-World Impact -->
   <div class="bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-3xl shadow-2xl p-10">
     <h3 class="text-3xl font-black mb-8 text-center">Potential Ranking Gains</h3>
     ${finalFixes.length === 0 ? `
@@ -861,11 +885,9 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- Share Dashboard Container -->
 <div id="share-dashboard-container" class="mt-16"></div>
 `;
 
-      // ─── Ensure share dashboard container exists ─────────────────────
       let shareContainer = document.getElementById('share-dashboard-container');
       if (!shareContainer) {
         shareContainer = document.createElement('div');
@@ -874,7 +896,6 @@ document.addEventListener('DOMContentLoaded', () => {
         results.appendChild(shareContainer);
       }
 
-      // ─── Insert Ask AI section before the share container ────────────
       const aiSectionHTML = `
 <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-2">
   <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Keyword Competition</h2>
@@ -893,7 +914,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       shareContainer.insertAdjacentHTML('beforebegin', aiSectionHTML);
 
-      // ─── Prepare share data ────────────────────────────────────────
       const moduleNames = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'Image Alts', 'Anchor Text', 'URL & Schema'];
       const yourScores = [
         data.meta.yourMatches > 0 ? 100 : 0,
@@ -945,14 +965,12 @@ document.addEventListener('DOMContentLoaded', () => {
         shareLink: shareLink
       };
 
-      // ─── Render dashboard ──────────────────────────────────────────
       if (typeof initShareModule === 'function') {
         initShareModule(shareContainer, shareData);
       } else {
         console.error('initShareModule not loaded – check import path');
       }
 
-      // ─── Ask AI Listener ──────────────────────────────────────────
       const askBtn = document.getElementById('ask-ai-btn');
       const askInput = document.getElementById('ai-question-input');
       const answerContainer = document.getElementById('ai-answer-container');
@@ -978,9 +996,8 @@ document.addEventListener('DOMContentLoaded', () => {
           answerContent.innerHTML = '⏳ Traffic Torching...';
 
           try {
-            // Build module scores for the payload
-            const moduleNames = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'Image Alts', 'Anchor Text', 'URL & Schema'];
-            const yourScores = [
+            const moduleNamesInner = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'Image Alts', 'Anchor Text', 'URL & Schema'];
+            const yourScoresInner = [
               data.meta.yourMatches > 0 ? 100 : 0,
               data.headings.yourH1Match > 0 ? 100 : 0,
               calculateContentScore(data.content.yourWords, data.content.yourDensity),
@@ -988,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', () => {
               data.anchors.your > 0 ? 100 : 0,
               Math.min(100, (data.urlSchema.yourUrlMatch > 0 ? 50 : 0) + (data.urlSchema.yourSchema ? 50 : 0))
             ];
-            const compScores = [
+            const compScoresInner = [
               data.meta.compMatches > 0 ? 100 : 0,
               data.headings.compH1Match > 0 ? 100 : 0,
               calculateContentScore(data.content.compWords, data.content.compDensity),
@@ -998,10 +1015,10 @@ document.addEventListener('DOMContentLoaded', () => {
             ];
 
             const moduleScoresMap = {};
-            moduleNames.forEach((name, i) => {
+            moduleNamesInner.forEach((name, i) => {
               const key = name.toLowerCase().replace(/[&\s]+/g, '');
-              moduleScoresMap[key + 'Your'] = yourScores[i];
-              moduleScoresMap[key + 'Comp'] = compScores[i];
+              moduleScoresMap[key + 'Your'] = yourScoresInner[i];
+              moduleScoresMap[key + 'Comp'] = compScoresInner[i];
             });
 
             const cmsContext = yourCMS && yourCMS !== 'unknown'
@@ -1053,7 +1070,14 @@ document.addEventListener('DOMContentLoaded', () => {
                   compKeywordMentions: data.content.compContentMatches
                 },
                 failedItems: failedMetrics.slice(0, 10),
-                priorityFixes: finalFixes.map(f => f.module + ': ' + f.text.split('\n')[0])
+                priorityFixes: finalFixes.map(f => ({
+                  name: f.text.split('\n')[0].slice(0, 120),
+                  module: f.module,
+                  score: yourScore,
+                  impact: '',
+                  desc: f.text
+                })),
+                browserMetrics: null
               }
             };
 
@@ -1068,7 +1092,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const aiResponse = await response.json();
 
             if (aiResponse.success) {
-              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(aiResponse.answer)}`;
+              let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(aiResponse.answer)}`;
+              if (Array.isArray(aiResponse.warnings) && aiResponse.warnings.length) {
+                const warningText = aiResponse.warnings.join(' ');
+                html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+              }
+              answerContent.innerHTML = html;
             } else {
               answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(aiResponse.error || 'Unknown error')}`;
             }
@@ -1081,11 +1110,9 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       }
-
     };
   });
 
-  // ── Delegated handler for score-card toggles + Ask AI links ─────
   document.addEventListener('click', (e) => {
     const fixBtn = e.target.closest('.fixes-toggle');
     if (fixBtn) {

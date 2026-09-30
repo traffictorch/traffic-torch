@@ -2,7 +2,7 @@
 // Single-file version — modules inlined/minimized; heavy logic in Worker AI
 
 import { canRunTool } from '/main-v1.1.js';
-import { initShareModule } from '/share-module.js';  // <-- new import
+import { initShareModule } from '/share-module.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -33,7 +33,6 @@ async function saveAuditHistory(url, toolName) {
     }
   }
 
-  // Guest fallback – same key the dashboard uses
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
   if (stored) {
@@ -132,58 +131,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let hasCheckedLimit = false;
 
-if (urlAnalyzeBtn) {
-  urlAnalyzeBtn.addEventListener('click', async () => {
-    if (hasCheckedLimit) return;
-    hasCheckedLimit = true;
-    const canProceed = await canRunTool('topical-authority-tool');
-    if (!canProceed) {
+  if (urlAnalyzeBtn) {
+    urlAnalyzeBtn.addEventListener('click', async () => {
+      if (hasCheckedLimit) return;
+      hasCheckedLimit = true;
+      const canProceed = await canRunTool('topical-authority-tool');
+      if (!canProceed) {
+        hasCheckedLimit = false;
+        return;
+      }
+
+      if (codeInput) codeInput.value = '';
+
+      let inputValue = urlInput?.value.trim();
+      if (!inputValue && sharedDecodedUrl) {
+        inputValue = sharedDecodedUrl;
+        if (urlInput) urlInput.value = sharedDecodedUrl;
+      }
+      if (!inputValue) {
+        alert('Please enter a URL');
+        hasCheckedLimit = false;
+        return;
+      }
+
+      const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
+      runAnalysis({ url, inputType: 'url', rawCode: null });
       hasCheckedLimit = false;
-      return;
-    }
+    });
+  }
 
-    if (codeInput) codeInput.value = '';
+  if (codeAnalyzeBtn) {
+    codeAnalyzeBtn.addEventListener('click', async () => {
+      if (hasCheckedLimit) return;
+      hasCheckedLimit = true;
+      const canProceed = await canRunTool('topical-authority-tool');
+      if (!canProceed) {
+        hasCheckedLimit = false;
+        return;
+      }
 
-    let inputValue = urlInput?.value.trim();
-    if (!inputValue && sharedDecodedUrl) {
-      inputValue = sharedDecodedUrl;
-      if (urlInput) urlInput.value = sharedDecodedUrl;
-    }
-    if (!inputValue) {
-      alert('Please enter a URL');
+      if (urlInput) urlInput.value = '';
+
+      const rawCode = codeInput?.value.trim();
+      if (!rawCode) {
+        alert('Please paste HTML code');
+        hasCheckedLimit = false;
+        return;
+      }
+
+      runAnalysis({ url: null, inputType: 'code', rawCode });
       hasCheckedLimit = false;
-      return;
-    }
-
-    const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
-    runAnalysis({ url, inputType: 'url', rawCode: null });
-    hasCheckedLimit = false;
-  });
-}
-
-if (codeAnalyzeBtn) {
-  codeAnalyzeBtn.addEventListener('click', async () => {
-    if (hasCheckedLimit) return;
-    hasCheckedLimit = true;
-    const canProceed = await canRunTool('topical-authority-tool');
-    if (!canProceed) {
-      hasCheckedLimit = false;
-      return;
-    }
-
-    if (urlInput) urlInput.value = '';
-
-    const rawCode = codeInput?.value.trim();
-    if (!rawCode) {
-      alert('Please paste HTML code');
-      hasCheckedLimit = false;
-      return;
-    }
-
-    runAnalysis({ url: null, inputType: 'code', rawCode });
-    hasCheckedLimit = false;
-  });
-}
+    });
+  }
 
   // Shared analysis runner
   async function runAnalysis(params) {
@@ -233,7 +232,7 @@ if (codeAnalyzeBtn) {
 
       clearTimeout(timeoutId);
       clearTimeout(heavyTimeout);
-      
+
       if (!res.ok) {
         let errData = {};
         try { errData = await res.json(); } catch {}
@@ -250,7 +249,6 @@ if (codeAnalyzeBtn) {
         throw new Error('Empty or invalid response from analysis server');
       }
 
-      // 👇 Save the audit to history so it shows in the dashboard
       const auditSaveUrl = inputType === 'code' ? 'Pasted HTML code' : (url || '');
       await saveAuditHistory(auditSaveUrl, 'Topical Authority');
 
@@ -285,6 +283,7 @@ if (codeAnalyzeBtn) {
 
       // ─── Cache audit data for Ask AI ───
       lastAuditData = {
+        auditRun: true,
         overallScore,
         pageTitle: pageTitle || (url
           ? url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')
@@ -317,7 +316,6 @@ if (codeAnalyzeBtn) {
 
       const grade = getGrade(overallScore);
 
-      // --- Build the results HTML, now with share dashboard container ---
       results.innerHTML = `
         <div class="max-w-5xl mx-auto px-4 py-2 text-gray-900 dark:text-gray-100">
           <!-- Overall Score Card -->
@@ -421,12 +419,11 @@ ${cluster.subtopics && cluster.subtopics.length > 0
               </p>
             </div>
           </div>
-          <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
+          <!-- Share Dashboard Container -->
           <div id="share-dashboard-container" class="mt-16"></div>
         </div>
       `;
 
-      // Set print-friendly title and data-url
       const printTitleEl = document.querySelector('#results .mt-6.text-xl.md\\:text-2xl.font-semibold.text-center');
       let printTitle = printTitleEl
         ? printTitleEl.textContent.trim()
@@ -437,19 +434,15 @@ ${cluster.subtopics && cluster.subtopics.length > 0
         .replace(/[\|\-–_]+/g, ' ')
         .trim() || 'Analyzed Page';
       document.body.setAttribute('data-print-title', printTitle);
-   
-      // Set data-url for the page being audited
+
       const analyzedUrl = url || document.getElementById('url-input')?.value?.trim() || 'Code Analysis';
       document.body.setAttribute('data-url', analyzedUrl);
 
-      // ─── Prepare and initialise the share dashboard ────────────────
-      // Build module scores, passed/failed metrics from clusters
       const moduleScores = clusters.map(cluster => ({
         name: cluster.pillar || 'Topic',
         score: Math.round(cluster.coverage || 0)
       }));
 
-      // For this tool, we define "passed" as coverage >= 50% (example threshold)
       const passedMetrics = [];
       const failedMetrics = [];
       clusters.forEach(cluster => {
@@ -461,7 +454,6 @@ ${cluster.subtopics && cluster.subtopics.length > 0
         }
       });
 
-      // If no clusters, treat overall score as single metric
       if (clusters.length === 0) {
         if (overallScore >= 50) {
           passedMetrics.push('Overall Authority');
@@ -481,7 +473,6 @@ ${cluster.subtopics && cluster.subtopics.length > 0
         failedMetrics: failedMetrics,
         aiFixes: suggestions ? suggestions.map(s => s.topic + (s.why ? ': ' + s.why : '')) : [],
         rawData: { clusters, suggestions, coveragePercent, predictedRankLift },
-        // Custom share link pointing back to this tool with the audited URL
         shareLink: `${window.location.origin}/topical-authority-tool/?url=${encodeURIComponent(analyzedUrl)}`
       };
 
@@ -519,65 +510,124 @@ ${cluster.subtopics && cluster.subtopics.length > 0
       }, 300);
     }
   }
-  
+
   // ─── Ask AI Listener ──────────────────────────────────────────────
-const askBtn = document.getElementById('ask-ai-btn');
-const askInput = document.getElementById('ai-question-input');
-const answerContainer = document.getElementById('ai-answer-container');
-const answerContent = document.getElementById('ai-answer-content');
+  const askBtn = document.getElementById('ask-ai-btn');
+  const askInput = document.getElementById('ai-question-input');
+  const answerContainer = document.getElementById('ai-answer-container');
+  const answerContent = document.getElementById('ai-answer-content');
 
-if (askBtn) {
-  askBtn.addEventListener('click', async () => {
-    const canProceed = await canRunTool('topical-authority-tool');
-    if (!canProceed) return;
+  if (askBtn) {
+    askBtn.addEventListener('click', async () => {
+      const canProceed = await canRunTool('topical-authority-tool');
+      if (!canProceed) return;
 
-    const question = askInput?.value?.trim();
-    if (!question) {
-      alert('Please enter a question.');
-      return;
-    }
-
-    askBtn.disabled = true;
-    askBtn.textContent = 'Thinking...';
-    answerContainer.classList.remove('hidden');
-    answerContent.innerHTML = '⏳ Traffic Torching...';
-
-    try {
-      // Use cached audit data if an audit has been run; otherwise tell the
-      // worker no audit exists yet so it answers generically.
-      const auditData = lastAuditData
-        ? { ...lastAuditData, auditRun: true }
-        : {
-            auditRun: false,
-            note: 'No audit has been run yet on this page. The user is asking before running an audit. Answer with general topical-authority best practices and invite them to run the audit for site-specific advice.'
-          };
-
-      const auditPayload = {
-        question: question,
-        auditData
-      };
-
-      const response = await fetch('https://ask-ai-topical-authority.traffictorch.workers.dev/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(auditPayload),
-      });
-
-      if (!response.ok) throw new Error(`Server error (${response.status})`);
-
-      const data = await response.json();
-
-      if (data.success) {
-        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
-      } else {
-        answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
+      const question = askInput?.value?.trim();
+      if (!question) {
+        alert('Please enter a question.');
+        return;
       }
-    } catch (err) {
-      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
-    } finally {
-      askBtn.disabled = false;
-      askBtn.textContent = 'Ask Traffic Torch AI';
-    }
-  });
-}
+
+      askBtn.disabled = true;
+      askBtn.textContent = 'Thinking...';
+      answerContainer.classList.remove('hidden');
+      answerContent.innerHTML = '⏳ Traffic Torching...';
+
+      try {
+        let auditPayload;
+
+        if (lastAuditData && lastAuditData.auditRun) {
+          // Post-audit: send enriched structured payload
+          const clusters = lastAuditData.clusters || [];
+          const suggestions = lastAuditData.suggestions || [];
+
+          const priorityFixes = suggestions.slice(0, 3).map(s => ({
+            name: s.topic || 'Suggested subtopic',
+            module: 'Topical Authority',
+            score: 0,
+            impact: s.estimatedImpact || '',
+            desc: s.why || ''
+          }));
+
+          const failedItems = clusters
+            .filter(c => (c.coverage || 0) < 50)
+            .map(c => `${c.pillar || 'Topic'} — ${Math.round(c.coverage || 0)}% coverage`);
+
+          auditPayload = {
+            question: question,
+            auditData: {
+              auditRun: true,
+              url: (document.body.getAttribute('data-url') || '').trim(),
+              pageTitle: lastAuditData.pageTitle || '',
+              headSnapshot: '',
+              langAttribute: '',
+              viewportContent: '',
+              linkCount: 0,
+              imageCount: 0,
+              headingCount: 0,
+              ctaCount: 0,
+              wordCount: lastAuditData.wordCount || 0,
+              pageExcerpt: lastAuditData.pageExcerpt || '',
+              overallScore: lastAuditData.overallScore || 0,
+              coveragePercent: lastAuditData.coveragePercent || 0,
+              predictedRankLift: lastAuditData.predictedRankLift || '',
+              cms: {
+                name: 'Custom / Unknown',
+                version: null,
+                confidence: 'unknown'
+              },
+              clusters: clusters,
+              suggestions: suggestions,
+              failedItems: failedItems.slice(0, 10),
+              priorityFixes: priorityFixes,
+              snippets: {},
+              browserMetrics: null
+            }
+          };
+        } else {
+          // Pre-audit: send minimal context so the worker knows to answer generically
+          auditPayload = {
+            question: question,
+            auditData: {
+              auditRun: false,
+              url: (document.body.getAttribute('data-url') || '').trim(),
+              pageTitle: '',
+              cms: {
+                name: 'Custom / Unknown',
+                version: null,
+                confidence: 'unknown'
+              },
+              note: 'No audit has been run yet on this page. The user is asking before running an audit. Answer with general topical-authority best practices and invite them to run the audit for site-specific advice.'
+            }
+          };
+        }
+
+        const response = await fetch('https://ask-ai-topical-authority.traffictorch.workers.dev/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(auditPayload),
+        });
+
+        if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+        const data = await response.json();
+
+        if (data.success) {
+          let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+          if (Array.isArray(data.warnings) && data.warnings.length) {
+            const warningText = data.warnings.join(' ');
+            html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+          }
+          answerContent.innerHTML = html;
+        } else {
+          answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
+        }
+      } catch (err) {
+        answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
+      } finally {
+        askBtn.disabled = false;
+        askBtn.textContent = 'Ask Traffic Torch AI';
+      }
+    });
+  }
 });

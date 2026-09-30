@@ -9,6 +9,7 @@ import {
   initCodeSnippetModal,
   showCodeForFailure,
   deriveSelectorsForFailure,
+  extractSnippets,
   escapeHtml
 } from './code-snippet-v1.0.js';
 
@@ -39,6 +40,57 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
+// ─── Head snapshot builder (shared with all Traffic Torch tools) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 // ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -64,7 +116,6 @@ async function saveAuditHistory(url, toolName) {
     }
   }
 
-  // Guest fallback – same key the dashboard uses
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
   if (stored) {
@@ -90,14 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
   const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
 
-  // One-time bootstrap: build the native <dialog> for code snippets
   initCodeSnippetModal();
 
-  // ============================================================
-  // Delegated click handler — Show Fixes toggle + Ask AI links + Show the code
-  // ============================================================
   document.addEventListener('click', (e) => {
-    // --- Show / Hide Fixes toggle ---
     const toggle = e.target.closest('.fixes-toggle');
     if (toggle) {
       const card = toggle.closest('.score-card');
@@ -112,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // --- Show the code that caused a failure ---
     const showCodeBtn = e.target.closest('.show-code-btn');
     if (showCodeBtn) {
       e.preventDefault();
@@ -122,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // --- Ask AI about this module ---
     const aiLink = e.target.closest('.ask-ai-link');
     if (aiLink) {
       e.preventDefault();
@@ -138,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
@@ -147,12 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);
+          setTimeout(() => { analyzeBtn.click(); }, 800);
         }
       }
     }
@@ -160,9 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('load', autoFillFromUrl);
 
-  // Auto-fill from shared report link (?url=...&keyword=...)
   const urlParams = new URLSearchParams(window.location.search);
-
   const sharedUrl = urlParams.get('url');
   if (sharedUrl) {
     try {
@@ -171,9 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         decodedUrl = 'https://' + decodedUrl;
       }
       pageUrlInput.value = decodedUrl;
-    } catch (e) {
-      // no console in production
-    }
+    } catch (e) {}
   }
   const sharedKeyword = urlParams.get('keyword');
   if (sharedKeyword) {
@@ -182,9 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (decodedKeyword) {
         targetKeywordInput.value = decodedKeyword;
       }
-    } catch (e) {
-      // no console in production
-    }
+    } catch (e) {}
   }
 
   if (sharedUrl && sharedKeyword) {
@@ -342,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return Math.round(wordScore + densityScore);
   };
 
-  // ====================== BUTTON HANDLERS ======================
   urlAnalyzeBtn.addEventListener('click', async () => {
     const yourUrl = pageUrlInput.value.trim();
     const phrase = targetKeywordInput.value.trim();
@@ -406,7 +439,6 @@ document.addEventListener('DOMContentLoaded', () => {
     await runAnalysis(yourDoc, phrase, displayUrl, 'code', rawCode);
   });
 
-  // ====================== REUSABLE ANALYSIS FUNCTION ======================
   async function runAnalysis(yourDoc, phrase, fullUrl, analysisType, rawHtml = '') {
     const canProceed = await canRunTool('keyword-tool');
     if (!canProceed) {
@@ -416,11 +448,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cmsInfo = detectCMS({ doc: yourDoc, url: analysisType === 'url' ? fullUrl : '' });
 
+    // ── Cache head snapshot + CMS info for the Ask AI handler ──
+    results.dataset.renderedHtml = rawHtml || '';
+    results.dataset.headSnapshot = buildHeadSnapshot(yourDoc);
+    document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
+    document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
+    document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
+
     let yourScore = 0;
     const data = {};
     const allFixes = [];
 
-    // Meta Title & Desc
     const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
     const descText = yourDoc.querySelector('meta[name="description"]')?.content.trim() || '';
     const titleMatch = countPhrase(titleText, phrase);
@@ -430,7 +468,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (titleMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta title', how: 'Place the keyword near the start of the title (under 60 characters) for maximum relevance.'});
     if (descMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta description', how: 'Include the keyword once naturally in the description (under 155 characters) to boost click-through rates.'});
 
-    // H1 & Headings
     const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6'));
     const headingsData = headings.map(h => ({ tag: h.tagName, text: h.textContent.trim(), match: countPhrase(h.textContent, phrase) > 0 }));
     const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
@@ -439,7 +476,6 @@ document.addEventListener('DOMContentLoaded', () => {
     yourScore += data.h1.match > 0 ? 15 : 0;
     if (data.h1.match === 0) allFixes.push({module: 'H1 & Headings', issue: 'Add keyword to H1', how: 'Rewrite your H1 to include the keyword naturally while keeping it engaging and reader-focused.'});
 
-    // Content Density
     const cleanContent = getCleanContent(yourDoc);
     const yourWords = getWordCount(yourDoc);
     const yourContentMatches = countPhrase(cleanContent, phrase);
@@ -449,7 +485,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yourWords < 800) allFixes.push({module: 'Content Density', issue: `Add depth (${800 - yourWords} words recommended)`, how: 'Expand with examples, FAQs, comparisons, or data to provide comprehensive value.'});
     if (parseFloat(yourDensity) < 0.5) allFixes.push({module: 'Content Density', issue: 'Increase keyword density', how: 'Add the keyword naturally in intro, subheads, and body (aim for 1-2%).'});
 
-    // Image Alts
     const yourImgs = yourDoc.querySelectorAll('img');
     const matchingAlts = Array.from(yourImgs)
       .filter(img => countPhrase(img.alt || '', phrase) > 0)
@@ -458,7 +493,6 @@ document.addEventListener('DOMContentLoaded', () => {
     yourScore += matchingAlts.length > 0 ? 15 : 0;
     if (matchingAlts.length === 0 && yourImgs.length > 0) allFixes.push({module: 'Image Alts', issue: 'Add keyword to key image alts', how: 'Update important images with descriptive alt text that includes the keyword naturally.'});
 
-    // Anchor Text
     const matchingAnchors = Array.from(yourDoc.querySelectorAll('a'))
       .filter(a => countPhrase(a.textContent || '', phrase) > 0)
       .map(a => ({ text: (a.textContent || '').trim(), href: a.href }));
@@ -466,7 +500,6 @@ document.addEventListener('DOMContentLoaded', () => {
     yourScore += matchingAnchors.length > 0 ? 10 : 0;
     if (matchingAnchors.length === 0) allFixes.push({module: 'Anchor Text', issue: 'Add keyword to anchor text', how: 'Use the keyword naturally as clickable text when linking to related pages.'});
 
-    // URL & Schema
     const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
     const schemaPresent = !!schemaScript;
     const urlMatch = analysisType === 'url' ? countPhrase(fullUrl, phrase, true) : countPhrase(titleText, phrase);
@@ -477,7 +510,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     yourScore = Math.min(100, Math.round(yourScore));
 
-    // 👇 Save the audit to history so it shows in the dashboard
     const auditSaveUrl = analysisType === 'code' ? 'Pasted HTML code' : fullUrl;
     await saveAuditHistory(auditSaveUrl, 'Keyword Placement');
 
@@ -520,12 +552,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
     const scores = modules.map(m => m.score);
 
-    // Scroll to results
     const offset = 280;
     const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
     window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-    results.dataset.renderedHtml = rawHtml || '';
     results.innerHTML = `
 <!-- Overall Score Card -->
 <div class="flex justify-center my-8 sm:my-12 px-2 sm:px-6">
@@ -592,27 +622,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const hashId      = moduleHashes[m.name] || '';
     const roundedScore = Math.round(score);
 
-    // Split diagnostics — fails first, then passes. No truncation.
     const failItems = diagnostics.filter(d => d.status === '❌');
     const passItems = diagnostics.filter(d => d.status === '✅');
     const failedCount = failItems.length;
 
-    // Signal list (un-truncated)
     const signalsHtml = [
       ...failItems.map(d => `<li class="flex items-start gap-2 text-red-600 dark:text-red-400"><span class="flex-shrink-0">❌</span><span>${d.issue}</span></li>`),
       ...passItems.map(d => `<li class="flex items-start gap-2 text-green-600 dark:text-green-400"><span class="flex-shrink-0">✅</span><span>${d.issue}</span></li>`)
     ].join('');
 
-    // Detected CMS label (cmsInfo is in scope from runAnalysis)
     const cmsLabel = cmsInfo?.name
       ? `${cmsInfo.name}${cmsInfo.version ? ' ' + cmsInfo.version : ''}`
       : 'Unknown';
 
-    // Prefill text for the Ask AI link
     const failedList = failItems.map(d => d.issue).join('; ');
-    const aiQuestion = `How do I improve my ${m.name} score? Failed checks: ${failedList || 'none'}. Detected CMS: ${cmsLabel}. Please give CMS-specific answers.`;
+    const aiQuestion = `How do I improve my ${m.name} score? Failed checks: ${failedList || 'none'}. Detected CMS: ${cmsLabel}. Target keyword: "${phrase}". Please give CMS-specific answers using the exact keyword.`;
 
-    // Fixes panel — one pair (failed title + fix) per failure. Uses fixFor() to look up a fix.
     let fixesHtml;
     if (failedCount > 0) {
       fixesHtml = failItems.map((d, idx) => {
@@ -641,7 +666,6 @@ document.addEventListener('DOMContentLoaded', () => {
       fixesHtml = '<p class="text-center text-green-600 dark:text-green-400 font-bold py-4">🎉 This module is fully optimized!</p>';
     }
 
-    // Detail rows (shown above the button inside the card)
     let details = '';
     if (m.name === 'Meta Title & Desc') {
       details = `
@@ -939,7 +963,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <div id="share-dashboard-container" class="mt-16"></div>
     `;
 
-    // === Plugin Solutions ===
     const pluginSection = document.createElement('div');
     pluginSection.id = 'plugin-solutions-section';
     pluginSection.className = 'mt-20';
@@ -962,7 +985,6 @@ document.addEventListener('DOMContentLoaded', () => {
       renderPluginSolutions(failedMetrics);
     }
 
-    // Radar Chart
     setTimeout(() => {
       const canvas = document.getElementById('health-radar');
       if (!canvas) return;
@@ -1009,7 +1031,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
     }, 150);
 
-    // ─── Set data-url ──────────────────────────────────────────────
     let displayUrl = 'traffictorch.net';
     if (analysisType === 'url' && fullUrl) {
       let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
@@ -1026,7 +1047,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     document.body.setAttribute('data-url', displayUrl);
 
-    // ─── Prepare and initialise share dashboard ──────────────────
     const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
 
     const passedMetrics = [];
@@ -1112,7 +1132,6 @@ document.addEventListener('DOMContentLoaded', () => {
             moduleScoresMap[key] = m.score;
           });
 
-          // ─── Page context excerpt (nav/header/footer stripped) ────
           const excerptDoc = yourDoc.cloneNode(true);
           excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
           const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
@@ -1124,11 +1143,31 @@ document.addEventListener('DOMContentLoaded', () => {
           const metaDescription = yourDoc.querySelector('meta[name="description"]')?.content?.trim() || '';
           const h1Text = yourDoc.querySelector('h1')?.textContent?.trim() || '';
           const pageTitleText = yourDoc?.title?.trim() || '';
+          const langAttribute = yourDoc.documentElement?.getAttribute('lang') || '';
+          const viewportContent = yourDoc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
           const linkCount = yourDoc.querySelectorAll('a').length;
           const imageCount = yourDoc.querySelectorAll('img').length;
           const headingCount = yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
           const ctaCount = yourDoc.querySelectorAll('button, [role="button"], input[type="submit"], a[href*="contact"], a[href*="signup"], a[href*="sign-up"], a[href*="demo"], a[href*="get-started"], a[href*="pricing"]').length;
           const wordCount = data.content.words;
+
+          const headSnapshot = results.dataset.headSnapshot || '';
+
+          // ── Build HTML snippets for the failed items ──
+          const affectedSnippets = {};
+          if (rawHtml) {
+            const snippetSources = topPriorityFixes.map(f => f.issue);
+            failedMetricsShare.forEach(m => { if (!snippetSources.includes(m)) snippetSources.push(m); });
+            for (const item of snippetSources.slice(0, 5)) {
+              try {
+                const rule = deriveSelectorsForFailure(item);
+                if (rule?.selectors?.length) {
+                  const snips = extractSnippets(rawHtml, rule.selectors, { limit: 2, maxLen: 400 });
+                  if (snips.length) affectedSnippets[item] = snips.map(s => s.html);
+                }
+              } catch {}
+            }
+          }
 
           const auditPayload = {
             question: question,
@@ -1138,6 +1177,9 @@ document.addEventListener('DOMContentLoaded', () => {
               metaDescription,
               h1: h1Text,
               pageExcerpt,
+              headSnapshot: headSnapshot,
+              langAttribute: langAttribute,
+              viewportContent: viewportContent,
               linkCount,
               imageCount,
               headingCount,
@@ -1176,7 +1218,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 matchingAnchors: data.anchors.count
               },
               failedItems: failedMetricsShare.slice(0, 10),
-              priorityFixes: topPriorityFixes.map(f => f.issue + ': ' + f.how)
+              priorityFixes: topPriorityFixes.map(f => ({
+                name: f.issue,
+                module: f.module,
+                score: 0,
+                impact: '',
+                desc: f.how || ''
+              })),
+              snippets: affectedSnippets,
+              browserMetrics: null
             }
           };
 
@@ -1191,7 +1241,12 @@ document.addEventListener('DOMContentLoaded', () => {
           const aiResponse = await response.json();
 
           if (aiResponse.success) {
-            answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(aiResponse.answer)}`;
+            let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(aiResponse.answer)}`;
+            if (Array.isArray(aiResponse.warnings) && aiResponse.warnings.length) {
+              const warningText = aiResponse.warnings.join(' ');
+              html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+            }
+            answerContent.innerHTML = html;
           } else {
             answerContent.innerHTML = `❌ Error: ${aiResponse.error || 'Unknown error'}`;
           }
@@ -1205,7 +1260,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // ─── CMS Fixes Logic ──────────────────────────────────────────
     const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
     const cmsBadgeDot        = document.getElementById('cms-badge-dot');
     const cmsBadgeName       = document.getElementById('cms-badge-name');
@@ -1314,8 +1368,21 @@ document.addEventListener('DOMContentLoaded', () => {
           const body = document.createElement('div');
           body.innerHTML = renderCodeBlocks(data.answer || '');
 
+          let warningEl = null;
+          if (Array.isArray(data.warnings) && data.warnings.length) {
+            warningEl = document.createElement('div');
+            warningEl.style.marginTop = '0.75rem';
+            warningEl.style.padding = '0.5rem 0.75rem';
+            warningEl.style.borderRadius = '0.5rem';
+            warningEl.style.background = '#fef3c7';
+            warningEl.style.color = '#92400e';
+            warningEl.style.fontSize = '0.85rem';
+            warningEl.textContent = data.warnings.join(' ');
+          }
+
           cmsAnswerContent.appendChild(header);
           cmsAnswerContent.appendChild(body);
+          if (warningEl) cmsAnswerContent.appendChild(warningEl);
         } else if (cmsAnswerContent) {
           cmsAnswerContent.innerHTML = '❌ Error: ' + (data.error || 'Unknown error');
         }

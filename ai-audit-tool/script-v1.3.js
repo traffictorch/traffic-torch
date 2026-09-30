@@ -6,7 +6,6 @@ import { computeRepetition } from './modules/repetition.js';
 import { computeSentenceLength } from './modules/sentenceLength.js';
 import { computeVocabulary } from './modules/vocabulary.js';
 import { canRunTool } from '/main-v1.1.js';
-// Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import { fixFor } from './module-explanations-v1.2.js';
@@ -17,7 +16,7 @@ import {
   escapeHtml
 } from './code-snippet-v1.0.js';
 
-// ── Renders AI answer text: escapes HTML, converts ``` fences to <pre class="code-block">, then newlines to <br> outside <pre> ──
+// ── Renders AI answer text ──
 function renderCodeBlocks(text) {
   if (text === null || text === undefined) return '';
   let escaped = String(text)
@@ -41,11 +40,83 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
+// ─── Head snapshot builder (shared with all other Traffic Torch tools) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 const PROXY = 'https://full-render-v2.traffictorch.workers.dev/?url=';
 
-// ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const auditUrl = url || 'Pasted HTML code';
@@ -65,12 +136,9 @@ async function saveAuditHistory(url, toolName) {
         })
       });
       return;
-    } catch (e) {
-      // fall through to guest storage
-    }
+    } catch (e) {}
   }
 
-  // Guest fallback – same key the dashboard uses
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
   if (stored) {
@@ -97,10 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let analyzedText = '';
   let wordCount = 0;
 
-  // One-time bootstrap for the "Show the code" modal
   initCodeSnippetModal();
 
-  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
@@ -109,22 +175,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-
-        // Optional: Auto-click the Analyze button after a tiny delay
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);   // Give the page time to render
+          setTimeout(() => { analyzeBtn.click(); }, 800);
         }
       }
     }
   }
 
-  // Run when page loads
   window.addEventListener('load', autoFillFromUrl);
 
-  // Auto-fill from shared report deep link
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
   if (sharedUrl && urlInput) {
@@ -162,10 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function analyzeAIContent(text) {
     if (!text || text.length < 200) {
-      // Not enough text to score reliably. Return a fully-formed neutral
-      // analysis so downstream renderers can safely read analysis.details.*
-      // without throwing (previously this returned no `details`, which crashed
-      // the report template with "Cannot read properties of undefined").
       return {
         moduleScores: [10, 10, 10, 10, 10],
         totalScore: 50,
@@ -230,12 +286,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return score === 10 ? '#10b981' : '#ef4444';
   }
 
-  // ==================== UNIFIED ANALYSIS + FULL REPORT (ONE SOURCE OF TRUTH) ====================
   async function runAnalysis(isUrlMode) {
     const canProceed = await canRunTool('ai-audit-tool');
     if (!canProceed) return;
 
-    // Clear opposite input and reset state
     if (isUrlMode) {
       codeInput.value = '';
     } else {
@@ -277,8 +331,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const minLoadTime = 600;
     const startTime = Date.now();
 
-    let rawPageHtml = '';   // captured for "Show the code" feature
-    let auditSaveUrl = '';  // captured for audit-history save
+    let rawPageHtml = '';
+    let auditSaveUrl = '';
 
     try {
       let doc;
@@ -302,6 +356,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const mainElement = getMainContent(doc);
       const cmsInfo = detectCMS({ doc, url: isUrlMode ? urlInput.value.trim() : '' });
+
+      // ── Cache head snapshot + CMS info for the Ask AI handler ──
+      results.dataset.renderedHtml = rawPageHtml || '';
+      results.dataset.headSnapshot = buildHeadSnapshot(doc);
+      document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
+      document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
+      document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
+
       const cleanElement = mainElement.cloneNode(true);
       cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
       let text = cleanElement.textContent || '';
@@ -312,7 +374,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const analysis = analyzeAIContent(text);
       const yourScore = analysis.totalScore;
 
-      // 👇 Save the audit to history so it shows in the dashboard
       await saveAuditHistory(auditSaveUrl, 'AI Content Audit');
 
       const modules = [
@@ -333,8 +394,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-        // FULL COMPLETE REPORT - identical for both URL and HTML input
-        results.dataset.renderedHtml = rawPageHtml || '';
         results.innerHTML = `
 <!-- Overall Score Card (AI Audit) -->
 <div class="flex justify-center my-8 sm:my-12 px-2 sm:px-6">
@@ -367,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
-<!-- On-Page Health Radar Chart -->
+<!-- Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
     <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
@@ -381,7 +440,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- Metrics Layout -->
 <div class="space-y-8">
-  <!-- Perplexity - Full width -->
   <div class="max-w-2xl mx-auto">
     ${(() => {
       const m = {
@@ -462,7 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })()}
   </div>
 
-  <!-- Remaining 4 metrics -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
     ${[
       {name: 'Burstiness', id: 'burstiness', score: analysis.moduleScores[1], details: analysis.details.burstiness, subNames: ['Sentence Length Variation', 'Word Length Burstiness'], subKeys: ['sentence', 'word']},
@@ -773,24 +830,23 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-2">
-            <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About AI Content</h2>
-            <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
-              Get tailored answers about AI detection metrics, perplexity, burstiness, repetition, and specific improvement steps.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4">
+  <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About AI Content</h2>
+  <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+    Get tailored answers about AI detection metrics, perplexity, burstiness, repetition, and specific improvement steps.
+  </p>
+  <div class="flex flex-col sm:flex-row gap-4">
 <textarea id="ai-question-input" placeholder="e.g., Why is my Perplexity low? How do I improve Burstiness?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
-              <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask AI</button>
-            </div>
-            <div id="ai-answer-container" class="mt-6 hidden">
-              <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
-            </div>
-          </div>
+    <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask AI</button>
+  </div>
+  <div id="ai-answer-container" class="mt-6 hidden">
+    <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+  </div>
+</div>
 
-<!-- Share Dashboard Container (replaces old share/feedback buttons) -->
+<!-- Share Dashboard Container -->
 <div id="share-dashboard-container" class="mt-16"></div>
         `;
 
-        // Radar chart
         setTimeout(() => {
           const canvas = document.getElementById('health-radar');
           if (canvas) {
@@ -849,11 +905,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }, 150);
 
-        // ─── Remove old initShareReport / initSubmitFeedback ──────────
-        // initShareReport(results);   // removed
-        // initSubmitFeedback(results); // removed
-
-        // ─── Set data-url ──────────────────────────────────────────────
         let displayUrl = 'traffictorch.net';
         if (isUrlMode) {
           let fullUrl = urlInput.value.trim();
@@ -865,12 +916,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         document.body.setAttribute('data-url', displayUrl);
 
-        // ─── Prepare and initialise share dashboard ──────────────────
         const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
 
         const passedMetrics = [];
         const failedMetrics = [];
-        // Collect sub-metrics pass/fail (score >= 10 is pass)
         const subMetricsMap = {
           'Perplexity': ['Trigram Entropy', 'Bigram Entropy'],
           'Burstiness': ['Sentence Length Variation', 'Word Length Burstiness'],
@@ -896,7 +945,6 @@ document.addEventListener('DOMContentLoaded', () => {
               failedMetrics.push(name);
             }
           });
-          // Also add module-level pass/fail (score >= 20 as pass)
           if (m.score >= 20) {
             passedMetrics.push(m.name);
           } else {
@@ -904,7 +952,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
-        // Build aiFixes from top priority fixes (the same 'priority' array)
         const priorityModules = [
           {
             name: 'Perplexity',
@@ -996,10 +1043,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const metaDescription = (doc.querySelector('meta[name="description"]')?.getAttribute('content') || '').trim();
         const h1 = (doc.querySelector('h1')?.textContent || '').replace(/\s+/g, ' ').trim();
+        const langAttribute = doc.documentElement?.getAttribute('lang') || '';
+        const viewportContent = doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
         const linkCount = doc.querySelectorAll('a[href]').length;
         const imageCount = doc.querySelectorAll('img').length;
         const headingCount = doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
         const ctaCount = doc.querySelectorAll('button, [role="button"], a.cta, a.button, .btn, [class*="cta"]').length;
+        const headSnapshot = results.dataset.headSnapshot || '';
 
         const askBtn = document.getElementById('ask-ai-btn');
         const askInput = document.getElementById('ai-question-input');
@@ -1021,15 +1071,12 @@ document.addEventListener('DOMContentLoaded', () => {
               return;
             }
 
-            const selectedModel = modelSelect?.value || '@cf/deepseek-ai/deepseek-v4-flash-0731';
-
             newAskBtn.disabled = true;
             newAskBtn.textContent = 'Thinking...';
             answerContainer.classList.remove('hidden');
             answerContent.innerHTML = '⏳ Traffic Torching...';
 
             try {
-              // Build module scores for the payload
               const moduleScoresMap = {};
               modules.forEach(m => {
                 const key = m.name.toLowerCase().replace(/\s+/g, '');
@@ -1044,6 +1091,9 @@ document.addEventListener('DOMContentLoaded', () => {
                   metaDescription,
                   h1,
                   pageExcerpt,
+                  headSnapshot: headSnapshot,
+                  langAttribute: langAttribute,
+                  viewportContent: viewportContent,
                   linkCount,
                   imageCount,
                   headingCount,
@@ -1070,12 +1120,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     rareWordFrequency: analysis.details.vocabulary.scores.rare >= 10
                   },
                   failedItems: failedMetrics.slice(0, 10),
-                  priorityFixes: priority.map(m => m.name + ': ' + m.fixes),
+                  priorityFixes: priority.map(f => ({
+                    name: f.name,
+                    module: f.name,
+                    score: f.score ?? 0,
+                    impact: '',
+                    desc: f.fixes || ''
+                  })),
                   cms: {
                     name: cmsInfo?.name || 'Custom / Unknown',
                     version: cmsInfo?.version || null,
                     confidence: cmsInfo?.confidence || 'low'
-                  }
+                  },
+                  browserMetrics: null
                 }
               };
 
@@ -1090,7 +1147,12 @@ document.addEventListener('DOMContentLoaded', () => {
               const data = await response.json();
 
               if (data.success) {
-                answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+                let html2 = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+                if (Array.isArray(data.warnings) && data.warnings.length) {
+                  const warningText = data.warnings.join(' ');
+                  html2 = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html2;
+                }
+                answerContent.innerHTML = html2;
               } else {
                 answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
               }
@@ -1210,9 +1272,14 @@ document.addEventListener('DOMContentLoaded', () => {
               const headerText = '🛠️ CMS Fixes for ' +
                 (data.cms || selectedCms) +
                 (data.cmsVersion ? ' ' + data.cmsVersion : '');
+              let warningHtml = '';
+              if (Array.isArray(data.warnings) && data.warnings.length) {
+                warningHtml = `<div style="margin-top:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${data.warnings.join(' ')}</div>`;
+              }
               cmsAnswerContent.innerHTML =
                 `<div style="font-weight:bold;margin-bottom:0.75rem;">${renderCodeBlocks(headerText)}</div>` +
-                `<div>${renderCodeBlocks(data.answer || '')}</div>`;
+                `<div>${renderCodeBlocks(data.answer || '')}</div>` +
+                warningHtml;
             } else if (cmsAnswerContent) {
               cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
             }
@@ -1243,7 +1310,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Attach both forms to the unified handler
   urlForm.addEventListener('submit', (e) => {
     e.preventDefault();
     runAnalysis(true);
@@ -1254,9 +1320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     runAnalysis(false);
   });
 
-  // ── Delegated handler for score-card toggles + Ask-AI links + Show-the-code ──
   document.addEventListener('click', (e) => {
-    // Fixes toggle
     const toggle = e.target.closest('.fixes-toggle');
     if (toggle) {
       const card = toggle.closest('.score-card');
@@ -1272,7 +1336,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Show the code for a failure
     const showCodeBtn = e.target.closest('.show-code-btn');
     if (showCodeBtn) {
       e.preventDefault();
@@ -1282,7 +1345,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Ask AI about this module
     const askLink = e.target.closest('.ask-ai-link');
     if (askLink) {
       e.preventDefault();

@@ -1,6 +1,6 @@
 // SEO Entity Tool script-v1.0.js
 import { canRunTool } from '/main-v1.1.js';
-import { initShareModule } from '/share-module.js';  // <-- new import
+import { initShareModule } from '/share-module.js';
 // ── Module imports ──────────────────────────────────────────────
 import { analyzeCoverage } from './modules/coverage.js';
 import { analyzeSalience } from './modules/salience.js';
@@ -11,7 +11,8 @@ import { analyzeReadiness } from './modules/readiness.js';
 import {
   initCodeSnippetModal,
   showCodeForFailure,
-  deriveSelectorsForFailure
+  deriveSelectorsForFailure,
+  extractSnippets
 } from './code-snippet-v1.0.js';
 
 function renderCodeBlocks(text) {
@@ -44,7 +45,6 @@ let lastAuditData = null;
 function simplePrefillAndRun() {
   const params = new URLSearchParams(window.location.search);
 
-  // Handle shared ?url= 
   const urlParam = params.get('url');
   if (urlParam) {
     const cleanUrl = decodeURIComponent(urlParam).trim();
@@ -53,7 +53,6 @@ function simplePrefillAndRun() {
       urlInput.value = cleanUrl;
     }
 
-    // Auto click URL analyze button for shared ?url=
     const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
     if (urlAnalyzeBtn) {
       setTimeout(() => {
@@ -62,7 +61,6 @@ function simplePrefillAndRun() {
     }
   }
 
-  // Handle ?input= for HTML auto-fill + auto-run
   const inputData = params.get('input');
   if (inputData) {
     const textarea = document.getElementById('code-input');
@@ -79,7 +77,6 @@ function simplePrefillAndRun() {
   }
 }
 
-// Run it — init the modal once, then prefill/auto-submit
 document.addEventListener('DOMContentLoaded', () => {
   initCodeSnippetModal();
   simplePrefillAndRun();
@@ -114,7 +111,6 @@ async function saveAuditHistory(url, toolName) {
     }
   }
 
-  // Guest fallback – same key the dashboard uses
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
   if (stored) {
@@ -174,22 +170,20 @@ function getModuleExplanation(moduleName) {
   return explanations[moduleName] || { what: 'No explanation available.', why: '' };
 }
 
-// Dual-input runAnalysis - blocked detection removed (no longer needed)
+// Dual-input runAnalysis
 async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   const results = document.getElementById('results');
- 
-  // Show the restored large spinner + keep your progress messages
+
   const loading = document.getElementById('loading');
   if (loading) {
     loading.classList.remove('hidden');
     loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
- 
-  // Clear results area
+
   results.innerHTML = '';
   results.classList.add('hidden');
-  // Keep your original progress messages (now applied to the large spinner)
-  const progressText = document.getElementById('progress-text'); // this must exist in HTML
+
+  const progressText = document.getElementById('progress-text');
   let current = 0;
   const messages = [
     "Analyzing Entities...",
@@ -219,7 +213,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       progressText.classList.add('text-yellow-600', 'dark:text-yellow-400');
     }
   }, 120000);
- 
+
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 180000);
@@ -252,21 +246,18 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       throw new Error('Invalid response format from server (not valid JSON)');
     }
 
-    // 👇 Save the audit to history so it shows in the dashboard
     const auditSaveUrl = inputType === 'code' ? 'Pasted HTML code' : (url || '');
     await saveAuditHistory(auditSaveUrl, 'Entity Extractor');
 
-    // Hide the large spinner on success
     const loading = document.getElementById('loading');
     if (loading) loading.classList.add('hidden');
-    // Show results and scroll to them
     results.classList.remove('hidden');
     setTimeout(() => {
       results.scrollIntoView({ behavior: 'smooth', block: 'start' });
       const offset = 100;
       setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
     }, 100);
-    // === Original results processing (full, no stripping) ===
+
     const extracted = data.extracted || [];
     const coverage = analyzeCoverage(extracted);
     const salience = analyzeSalience(extracted);
@@ -317,14 +308,11 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         `).join('')
       : '<p class="text-gray-600 dark:text-gray-400 text-center py-6">No entities detected.</p>';
 
-    // ── Cache the HTML for the "Show the code" modal ────────────────
-    // Prefer the worker's renderedHtml (URL analyses), fall back to rawCode
-    // (pasted-code analyses).
+    // ── Cache the HTML for the "Show the code" modal + snippets ────
     results.dataset.renderedHtml = data.renderedHtml || rawCode || '';
 
     results.innerHTML = `
 <div class="max-w-6xl mx-auto px-2 py-8">
-  <!-- Big Overall Readiness Score Card -->
   <div class="flex justify-center my-10 px-4">
     <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 md:p-12 w-full max-w-lg border-4 ${readiness.score >= 80 ? 'border-green-600' : readiness.score >= 40 ? 'border-orange-500' : 'border-red-500'}">
       <p class="text-center text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall Semantic Readiness</p>
@@ -374,7 +362,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       </p>
     </div>
   </div>
-  <!-- Extracted Entities -->
   <div class="mb-16">
     <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Extracted Entities</h3>
     <div class="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-6 text-center md:text-left">
@@ -386,14 +373,12 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       ${entitiesHTML}
     </div>
   </div>
-  <!-- Radar Chart -->
   <div class="mb-16">
     <h3 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-6">Semantic Health Radar</h3>
     <div class="w-full max-w-2xl mx-auto aspect-square">
       <canvas id="health-radar"></canvas>
     </div>
   </div>
-  <!-- Coverage + Salience -->
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
     ${modules.slice(0, 2).map(mod => {
       const { score, metrics = [], failed = [] } = mod.result;
@@ -490,7 +475,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       `;
     }).join('')}
   </div>
-  <!-- Relationships + Practices + Readiness -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
     ${modules.slice(2).map(mod => {
       const { score, metrics = [], failed = [] } = mod.result;
@@ -587,11 +571,10 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       `;
     }).join('')}
   </div>
-  <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
   <div id="share-dashboard-container" class="mt-16"></div>
 </div>
     `;
-    // Radar chart + init functions + toggle listeners
+
     setTimeout(() => {
       const canvas = document.getElementById('health-radar');
       if (!canvas) return;
@@ -647,12 +630,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       });
     }, 400);
 
-    // ─── Remove old initShareReport and initSubmitFeedback calls ───
-    // initShareReport(results);   // removed
-    // initSubmitFeedback(results); // removed
-
-    // ─── Set data-url (if not already set) ──────────────────────────
-    // The page title is already set in the HTML, but we also set data-url for consistency
     const pageTitleElement = document.querySelector('#results .mt-6.text-center.text-base.md\\:text-lg');
     let pageTitle = 'Analyzed Page';
     if (pageTitleElement) {
@@ -664,14 +641,11 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
     }
     document.body.setAttribute('data-url', pageTitle);
 
-    // ─── Prepare and initialise share dashboard ─────────────────────
-    // Build module scores and passed/failed metrics from the modules array
     const moduleScores = modules.map(mod => ({
       name: mod.name,
       score: mod.result.score
     }));
 
-    // For each module, we determine pass/fail based on score threshold (e.g., >= 60)
     const passedMetrics = [];
     const failedMetrics = [];
     modules.forEach(mod => {
@@ -683,10 +657,8 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       }
     });
 
-    // Also include individual metric pass/fail from each module's metrics (optional, but we'll add them)
     modules.forEach(mod => {
       (mod.result.metrics || []).forEach(m => {
-        // m.text contains description, we can push to passed/failed based on grade
         if (m.grade === 'good') {
           passedMetrics.push(m.text);
         } else {
@@ -695,7 +667,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       });
     });
 
-    // Use the original URL if available, else from input
     const analyzedUrl = url || document.getElementById('url-input')?.value?.trim() || 'Code Analysis';
 
     const shareData = {
@@ -706,9 +677,8 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       moduleScores: moduleScores,
       passedMetrics: passedMetrics,
       failedMetrics: failedMetrics,
-      aiFixes: [],  // no AI fixes generated in this tool
+      aiFixes: [],
       rawData: { modules, extracted, coverage, salience, relationships, practices, readiness },
-      // Custom share link pointing back to this tool with the audited URL
       shareLink: `${window.location.origin}/seo-entity-tool/?url=${encodeURIComponent(analyzedUrl)}`
     };
 
@@ -717,10 +687,8 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       initShareModule(shareContainer, shareData);
     }
 
-    // ─── Toggle listeners (unchanged) ───────────────────────────────
     if (!document.body.dataset.toggleListenersAttached) {
       document.body.addEventListener('click', function(e) {
-        // ── Show-the-code button inside fixes panel ─────────────
         const showCodeBtn = e.target.closest('.show-code-btn');
         if (showCodeBtn) {
           e.preventDefault();
@@ -730,7 +698,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           return;
         }
 
-        // ── Ask AI link inside fixes panel ──────────────────────
         const askLink = e.target.closest('.ask-ai-link');
         if (askLink) {
           e.preventDefault();
@@ -743,7 +710,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           return;
         }
 
-        // ── Existing toggle behavior (unchanged) ────────────────
         const button = e.target.closest('.fixes-toggle, .details-toggle');
         if (!button) return;
         e.preventDefault();
@@ -818,7 +784,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // === FIX: Clear opposite input + isolate data ===
       if (codeInput) codeInput.value = '';
 
       let inputValue = urlInput?.value.trim();
@@ -857,7 +822,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // === FIX: Clear opposite input + isolate data ===
       if (urlInput) urlInput.value = '';
 
       const rawCode = codeInput?.value.trim();
@@ -877,65 +841,130 @@ document.addEventListener('DOMContentLoaded', () => {
       hasCheckedLimit = false;
     });
   }
-  
+
   // ─── Ask AI Listener ──────────────────────────────────────────────
-const askBtn = document.getElementById('ask-ai-btn');
-const askInput = document.getElementById('ai-question-input');
-const answerContainer = document.getElementById('ai-answer-container');
-const answerContent = document.getElementById('ai-answer-content');
+  const askBtn = document.getElementById('ask-ai-btn');
+  const askInput = document.getElementById('ai-question-input');
+  const answerContainer = document.getElementById('ai-answer-container');
+  const answerContent = document.getElementById('ai-answer-content');
 
-if (askBtn) {
-  askBtn.addEventListener('click', async () => {
-    const canProceed = await canRunTool('seo-entity-extractor-tool');
-    if (!canProceed) return;
+  if (askBtn) {
+    askBtn.addEventListener('click', async () => {
+      const canProceed = await canRunTool('seo-entity-extractor-tool');
+      if (!canProceed) return;
 
-    const question = askInput?.value?.trim();
-    if (!question) {
-      alert('Please enter a question.');
-      return;
-    }
-
-    askBtn.disabled = true;
-    askBtn.textContent = 'Thinking...';
-    answerContainer.classList.remove('hidden');
-    answerContent.innerHTML = '⏳ Traffic Torching...';
-
-    try {
-      // Use cached audit data if an audit has been run; otherwise tell the
-      // worker no audit exists yet so it answers generically.
-      const auditData = lastAuditData
-        ? { ...lastAuditData, auditRun: true }
-        : {
-            auditRun: false,
-            note: 'No audit has been run yet on this page. The user is asking before running an audit. Answer with general semantic entity optimization best practices and invite them to run the audit for site-specific advice.'
-          };
-
-      const auditPayload = {
-        question: question,
-        auditData
-      };
-
-      const response = await fetch('https://ask-ai-entity.traffictorch.workers.dev/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(auditPayload),
-      });
-
-      if (!response.ok) throw new Error(`Server error (${response.status})`);
-
-      const data = await response.json();
-
-      if (data.success) {
-        answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
-      } else {
-        answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
+      const question = askInput?.value?.trim();
+      if (!question) {
+        alert('Please enter a question.');
+        return;
       }
-    } catch (err) {
-      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
-    } finally {
-      askBtn.disabled = false;
-      askBtn.textContent = 'Ask Traffic Torch AI';
-    }
-  });
-}
+
+      askBtn.disabled = true;
+      askBtn.textContent = 'Thinking...';
+      answerContainer.classList.remove('hidden');
+      answerContent.innerHTML = '⏳ Traffic Torching...';
+
+      try {
+        let auditPayload;
+
+        if (lastAuditData) {
+          // Post-audit: enriched structured payload with snippets
+          const htmlForSnips = results.dataset.renderedHtml || '';
+          const affectedSnippets = {};
+          if (htmlForSnips && Array.isArray(lastAuditData.failedItems)) {
+            for (const item of lastAuditData.failedItems.slice(0, 3)) {
+              try {
+                const rule = deriveSelectorsForFailure(item);
+                if (rule?.selectors?.length) {
+                  const snips = extractSnippets(htmlForSnips, rule.selectors, { limit: 2, maxLen: 400 });
+                  if (snips.length) affectedSnippets[item] = snips.map(s => s.html);
+                }
+              } catch {}
+            }
+          }
+
+          const priorityFixes = (lastAuditData.failedItems || []).slice(0, 3).map(item => ({
+            name: item,
+            module: 'SEO Entity',
+            score: 0,
+            impact: '',
+            desc: ''
+          }));
+
+          auditPayload = {
+            question: question,
+            auditData: {
+              auditRun: true,
+              url: document.body.getAttribute('data-url') || '',
+              pageTitle: lastAuditData.pageTitle || '',
+              headSnapshot: '',
+              langAttribute: '',
+              viewportContent: '',
+              linkCount: 0,
+              imageCount: 0,
+              headingCount: 0,
+              ctaCount: 0,
+              wordCount: lastAuditData.wordCount || 0,
+              pageExcerpt: lastAuditData.pageExcerpt || '',
+              overallScore: lastAuditData.overallScore || 0,
+              modules: lastAuditData.modules || [],
+              entities: lastAuditData.entities || [],
+              entityCount: lastAuditData.entityCount || 0,
+              failedItems: (lastAuditData.failedItems || []).slice(0, 10),
+              priorityFixes: priorityFixes,
+              snippets: affectedSnippets,
+              browserMetrics: null,
+              cms: {
+                name: 'Custom / Unknown',
+                version: null,
+                confidence: 'unknown'
+              }
+            }
+          };
+        } else {
+          // Pre-audit: minimal context so the worker answers generically
+          auditPayload = {
+            question: question,
+            auditData: {
+              auditRun: false,
+              url: document.body.getAttribute('data-url') || '',
+              pageTitle: '',
+              cms: {
+                name: 'Custom / Unknown',
+                version: null,
+                confidence: 'unknown'
+              },
+              note: 'No audit has been run yet on this page. The user is asking before running an audit. Answer with general semantic entity optimization best practices and invite them to run the audit for site-specific advice.'
+            }
+          };
+        }
+
+        const response = await fetch('https://ask-ai-entity.traffictorch.workers.dev/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(auditPayload),
+        });
+
+        if (!response.ok) throw new Error(`Server error (${response.status})`);
+
+        const data = await response.json();
+
+        if (data.success) {
+          let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+          if (Array.isArray(data.warnings) && data.warnings.length) {
+            const warningText = data.warnings.join(' ');
+            html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+          }
+          answerContent.innerHTML = html;
+        } else {
+          answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
+        }
+      } catch (err) {
+        answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
+      } finally {
+        askBtn.disabled = false;
+        askBtn.textContent = 'Ask Traffic Torch AI';
+      }
+    });
+  }
 });

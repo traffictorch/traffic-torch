@@ -16,7 +16,8 @@ import { detectCMS } from '/cms-detect.js';
 import {
   initCodeSnippetModal,
   showCodeForFailure,
-  deriveSelectorsForFailure
+  deriveSelectorsForFailure,
+  extractSnippets
 } from './code-snippet-v1.0.js';
 
 // ─── Code block renderer (shared) ─────────────────────────────
@@ -41,6 +42,70 @@ function renderCodeBlocks(text) {
   );
 
   return escaped;
+}
+
+// ─── Head snapshot builder (shared with Lighthouse Plus / Quit Risk / SEO-UX) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  return lines.join('\n');
 }
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
@@ -488,7 +553,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // ─── Determine displayUrl ───
       let displayUrl = url || "Custom HTML Analysis";
       
+      // ── Cache the audited HTML + head snapshot + CMS on body for Ask AI ──
       results.dataset.renderedHtml = html || customHtml || '';
+      results.dataset.headSnapshot = buildHeadSnapshot(doc);
+      document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
+      document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
+      document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
+
       results.innerHTML = `
         <!-- Overall Score Card (SEO Intent) -->
         <div class="flex justify-center my-8 sm:my-12 px-2 sm:px-6">
@@ -843,6 +914,33 @@ const imageCount = doc.querySelectorAll('img').length;
 const headingCount = doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
 const ctaCount = doc.querySelectorAll('button, a[class*="btn" i], a[class*="button" i], input[type="submit"]').length;
 const wordCount = cleanedText ? cleanedText.split(/\s+/).filter(Boolean).length : 0;
+
+// ── Head snapshot + page-level context for the AI worker ──
+const headSnapshot = results.dataset.headSnapshot || '';
+const langAttribute = doc.documentElement?.getAttribute('lang') || '';
+const viewportContent = doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
+
+// ── Build HTML snippets for the top priority fixes (best-effort) ──
+const affectedSnippets = {};
+const rawHtml = results.dataset.renderedHtml || '';
+if (rawHtml) {
+  const snippetSources = [];
+  // Priority fix texts first
+  topFixes.forEach(f => snippetSources.push(f.text));
+  // Then failed metrics labels
+  failedMetricsForShare.forEach(m => { if (!snippetSources.includes(m)) snippetSources.push(m); });
+
+  for (const item of snippetSources.slice(0, 5)) {
+    try {
+      const rule = deriveSelectorsForFailure(item);
+      if (rule?.selectors?.length) {
+        const snips = extractSnippets(rawHtml, rule.selectors, { limit: 2, maxLen: 400 });
+        if (snips.length) affectedSnippets[item] = snips.map(s => s.html);
+      }
+    } catch {}
+  }
+}
+
 const auditPayload = {
   question: question,
   auditData: {
@@ -851,6 +949,9 @@ const auditPayload = {
     metaDescription: metaDescEl?.getAttribute('content')?.trim() || null,
     h1: h1El?.textContent?.replace(/\s+/g, ' ').trim() || null,
     pageExcerpt: pageExcerpt || null,
+    headSnapshot: headSnapshot,
+    langAttribute: langAttribute,
+    viewportContent: viewportContent,
     linkCount,
     imageCount,
     headingCount,
@@ -883,7 +984,9 @@ const auditPayload = {
       hasCredentials: expertiseResult?.metrics?.credentials > 0 || false
     },
     failedItems: failedMetricsForShare,
-    priorityFixes: priorityFixes.map(f => f.text + ' (' + f.impact + ')')
+    priorityFixes: priorityFixes.map(f => f.text + ' (' + f.impact + ')'),
+    snippets: affectedSnippets,
+    browserMetrics: null
   }
 };
 
@@ -898,7 +1001,12 @@ const auditPayload = {
             const data = await response.json();
 
 if (data.success) {
-  answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+  let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+  if (Array.isArray(data.warnings) && data.warnings.length) {
+    const warningText = data.warnings.join(' ');
+    html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+  }
+  answerContent.innerHTML = html;
 } else {
   answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
 }
@@ -1016,9 +1124,14 @@ if (data.success && cmsAnswerContent) {
   const headerText = '🛠️ CMS Fixes for ' +
     (data.cms || selectedCms) +
     (data.cmsVersion ? ' ' + data.cmsVersion : '');
+  let warningHtml = '';
+  if (Array.isArray(data.warnings) && data.warnings.length) {
+    warningHtml = `<div style="margin-top:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${data.warnings.join(' ')}</div>`;
+  }
   cmsAnswerContent.innerHTML =
     `<div style="font-weight:bold;margin-bottom:0.75rem;">${headerText}</div>` +
-    `<div>${renderCodeBlocks(data.answer || '')}</div>`;
+    `<div>${renderCodeBlocks(data.answer || '')}</div>` +
+    warningHtml;
 } else if (cmsAnswerContent) {
   cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
 }

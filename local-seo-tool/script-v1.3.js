@@ -15,7 +15,8 @@ import { detectCMS } from '/cms-detect.js';
 import {
   initCodeSnippetModal,
   showCodeForFailure,
-  deriveSelectorsForFailure
+  deriveSelectorsForFailure,
+  extractSnippets
 } from './code-snippet-v1.0.js';
 
 // ── Edit 1: fenced-code-block renderer (module top) ────────────────────
@@ -40,6 +41,79 @@ function renderCodeBlocks(text) {
   );
 
   return escaped;
+}
+
+// ── Head snapshot builder (shared with Lighthouse Plus / Quit Risk / SEO-UX / SEO Intent) ──
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
 }
 
 // Small local HTML escaper for the fix-list template (Edit 3).
@@ -155,18 +229,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
 
-        // Optional: Auto-click the Analyze button after a tiny delay
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
           setTimeout(() => {
             analyzeBtn.click();
-          }, 800);   // Give the page time to render
+          }, 800);
         }
       }
     }
   }
 
-  // Run when page loads
   window.addEventListener('load', autoFillFromUrl);
 
   // Auto-fill from shared report link (?url=...&location=...)
@@ -298,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('module-text').textContent = progressModules[currentModuleIndex];
       } else {
         document.getElementById('module-text').textContent = progressModules[progressModules.length - 1];
-        clearInterval(moduleInterval);  // lock on "Generating local report"
+        clearInterval(moduleInterval);
       }
     }, 600);
   }
@@ -368,7 +440,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const city = location.split(',')[0].trim().toLowerCase();
 
-      // Auto-scroll to spinner
       startSpinnerLoader();
       window.scrollTo({
         top: results.getBoundingClientRect().top + window.pageYOffset - 240,
@@ -422,7 +493,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const city = location.split(',')[0].trim().toLowerCase();
 
-      // Auto-scroll to spinner
       startSpinnerLoader();
       window.scrollTo({
         top: results.getBoundingClientRect().top + window.pageYOffset - 240,
@@ -431,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         const yourDoc = new DOMParser().parseFromString(htmlCode, 'text/html');
-        analyzePage(yourDoc, city, null, location); // fullUrl = null when using direct HTML
+        analyzePage(yourDoc, city, null, location);
       } catch (err) {
         stopSpinnerLoader();
         results.innerHTML = '<p class="text-red-500 text-center text-xl p-10">Invalid HTML. Please paste valid full page source.</p>';
@@ -458,7 +528,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const mapsResult      = analyzeMapsVisuals(doc, city, hasLocalIntent);
     const schemaResult    = analyzeStructuredData(doc);
     const reviewsResult   = analyzeReviewsStructure(doc, fullUrl, city, schemaResult.data);
-    // const aiResult = await analyzeLocalIntent(doc, city, fullUrl, getCleanContent(doc));
 
     // Collect all fixes from modules
     allFixes.push(
@@ -470,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ...reviewsResult.fixes
     );
 
-    // Build data object (still used in modules array sub checks)
+    // Build data object
     data.nap       = napResult.data;
     data.keywords  = keywordsResult.data;
     data.content   = contentResult.data;
@@ -494,11 +563,9 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.keys(moduleWeights).forEach(mod => {
       const result = moduleResults[mod];
 
-      // FIXED: Proper maxRaw per module + correct percentage for Keywords & Titles
       let maxRaw = result.maxRaw || 100;
       let rawScore = result.score || 0;
 
-      // Special handling for Local Keywords & Titles (max points = 16)
       if (mod === 'Local Keywords & Titles') {
         maxRaw = 16;
       }
@@ -506,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const percentage = maxRaw > 0 ? Math.round((rawScore / maxRaw) * 100) : 0;
       const weighted = (percentage / 100) * moduleWeights[mod];
 
-      normalizedModuleScores[mod] = percentage;   // now correctly 0-100
+      normalizedModuleScores[mod] = percentage;
       overallScore += weighted;
     });
 
@@ -514,7 +581,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const yourScore = overallScore;
 
     // ── Potential improvement & fixes logic ───────────────────────────────────────
-    // Build topPriorityFixes first so we can sum gains ONLY from the 3 displayed fixes
     const moduleOrder = [
       'NAP & Contact', 'Local Keywords & Titles', 'Local Content & Relevance',
       'Maps & Visuals', 'Structured Data', 'Reviews & Structure'
@@ -566,7 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageTitle = doc.querySelector('title')?.textContent?.trim() || 'Your Page';
     const truncatedTitle = pageTitle.length > 65 ? pageTitle.substring(0, 62) + '...' : pageTitle;
 
-    // ── Edit 3: Ask AI page context (extracted once, reused below) ──────
+    // ── Page context for the AI worker ──────────────────────────────────
     const excerptDoc = doc.cloneNode(true);
     excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
     const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
@@ -583,6 +649,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctaCount = doc.querySelectorAll('a.button, a.btn, button, [role="button"], input[type="submit"], input[type="button"]').length;
     const wordCount = (contentRoot?.textContent || '')
       .replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length;
+
+    // ── Head snapshot + CMS context (shared with the AI worker) ──
+    const headSnapshot = buildHeadSnapshot(doc);
+    const langAttribute = doc.documentElement?.getAttribute('lang') || '';
+    const viewportContent = doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
 
     const analysisStartForMin = Date.now();
     const minVisibleMs = 800;
@@ -666,7 +737,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const renderedHtml = doc?.documentElement?.outerHTML || '';
-    results.dataset.renderedHtml = renderedHtml || rawHtml || '';
+    results.dataset.renderedHtml = renderedHtml || '';
 
     results.innerHTML = `
       <!-- Overall Score Card -->
@@ -714,14 +785,12 @@ document.addEventListener('DOMContentLoaded', () => {
           </p>
         </div>
       </div>
-      <!-- AI Detected Local Search Intents - Full width module (Disabled)-->
       <!-- Modern Scoring Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 my-12 px-2 w-full max-w-none mx-auto">
         ${modules.map((m, index) => {
           const grade = getGrade(m.score);
           const deepDiveId = moduleHashes[m.name];
 
-          // Non-passing sub-metrics (failed + average module → warnings)
           const isAverage = m.score >= 50 && m.score < 70;
 
           const displaySubs = m.sub.map(s => {
@@ -740,11 +809,9 @@ document.addEventListener('DOMContentLoaded', () => {
           const failedSubs = displaySubs.filter(s => s.displayStatus !== '✅');
           const failedCount = failedSubs.length;
 
-          // Build the fix list for the expanded panel (failed + average sub-metrics only)
           const moduleFixesList = allFixes.filter(
             f => f.module?.trim().toLowerCase() === m.name.trim().toLowerCase()
           );
-          // Carry status (❌ vs ⚠️) through so the renderer can style each row.
           const fixesForCard = failedSubs.map(s => {
             const match = moduleFixesList.find(f => f.sub === s.label);
             const fixText = match?.how || fixFor(s.label);
@@ -777,7 +844,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${grade.emoji} ${grade.grade}
               </p>
 
-              <!-- Sub-metric header: failed → warning → pass -->
               <div class="px-6 pb-4 space-y-2 flex-grow">
                 ${displaySubs.map(s => `
                   <div class="flex items-start gap-2 text-sm">
@@ -787,7 +853,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 `).join('')}
               </div>
 
-              <!-- Toggle button pinned to bottom of card -->
               <div class="mt-auto pt-5 px-6 pb-6">
                 <button type="button"
                         class="fixes-toggle w-full px-6 py-3 ${grade.bgLight} hover:opacity-90 rounded-xl font-medium transition ${grade.text} shadow-sm"
@@ -796,7 +861,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </button>
               </div>
 
-              <!-- Expanded fixes panel -->
               <div class="fixes-panel hidden px-6 pb-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 text-sm">
                 ${fixesForCard.length > 0
                   ? fixesForCard.map((f, i) => {
@@ -822,7 +886,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }).join('')
                   : '<p class="text-green-600 dark:text-green-400 font-medium text-center py-4">All checks passed – excellent!</p>'}
 
-                <!-- Ask AI + Read guide -->
                 <div class="mt-6 pt-5 border-t border-gray-200 dark:border-gray-700 flex flex-col gap-3">
                   <a href="#ask-ai-section"
                      class="ask-ai-link inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:underline font-medium"
@@ -847,14 +910,6 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="space-y-8 max-w-4xl mx-auto">
             ${topPriorityFixes.map((fix, i) => {
               const gainFix = fixGains.find(f => f.module === fix.module && f.sub === fix.sub) || { estimatedGain: 5, trafficImpact: 'Medium' };
-              const gainText = `+${gainFix.estimatedGain}–${gainFix.estimatedGain + 5} points`;
-              let impactIcon = '📈';
-              let impactColor = 'text-orange-600';
-              if (gainFix.trafficImpact === 'Very High') {
-                impactIcon = '🚀'; impactColor = 'text-red-600';
-              } else if (gainFix.trafficImpact === 'High') {
-                impactIcon = '📊'; impactColor = 'text-orange-600';
-              }
               return `
                 <div class="p-6 md:p-8 bg-white dark:bg-gray-950 rounded-2xl shadow-xl border-l-8 border-orange-500 flex flex-col md:flex-row gap-6">
                   <div class="text-5xl md:text-6xl font-black text-orange-600 shrink-0">${i+1}</div>
@@ -1009,6 +1064,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div id="share-dashboard-container" class="mt-16"></div>
     `;
 
+    // ── Cache head snapshot + CMS on body so the Ask AI handler can read them ──
+    results.dataset.headSnapshot = headSnapshot;
+    document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
+    document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
+    document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
+
     // Trigger plugins on critical failures
     const failedModules = modules.filter(m => m.score < 50).map(m => m.name);
     if (failedModules.length > 0) {
@@ -1056,21 +1117,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, 150);
 
-    // ─── Remove old initShareReport and initSubmitFeedback calls ───
-    // The old code had a setTimeout wrapping them, we remove that.
-
     // ─── Set data-url for the analyzed page ──────────────────────────
     const analyzedUrl = fullUrl || 'Code Analysis';
     document.body.setAttribute('data-url', analyzedUrl);
 
     // ─── Prepare and initialise share dashboard ──────────────────────
-    // Build module scores from the 'modules' array
     const moduleScores = modules.map(m => ({
       name: m.name,
       score: m.score
     }));
 
-    // Collect passed/failed metrics from the sub-checks
     const passedMetrics = [];
     const failedMetrics = [];
     modules.forEach(mod => {
@@ -1083,7 +1139,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Also include overall module pass/fail (score >= 50 as pass)
     modules.forEach(mod => {
       if (mod.score >= 50) {
         passedMetrics.push(mod.name);
@@ -1092,7 +1147,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Build the shareLink with URL and location parameters
     const shareLink = `${window.location.origin}/local-seo-tool/?url=${encodeURIComponent(analyzedUrl)}&location=${encodeURIComponent(location)}`;
 
     const shareData = {
@@ -1121,12 +1175,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const answerContent = document.getElementById('ai-answer-content');
 
     if (askBtn) {
-      // Remove old listener to avoid duplicates
       const newAskBtn = askBtn.cloneNode(true);
       askBtn.parentNode.replaceChild(newAskBtn, askBtn);
 
       newAskBtn.addEventListener('click', async () => {
-        // ─── CHECK QUOTA FIRST ──────────────────────────────────
         const canProceed = await canRunTool('local-seo-tool');
         if (!canProceed) return;
 
@@ -1136,16 +1188,30 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        const selectedModel = modelSelect?.value || '@cf/deepseek-ai/deepseek-v4-flash-0731';
-
-        // Disable button & show loading
         newAskBtn.disabled = true;
         newAskBtn.textContent = 'Thinking...';
         answerContainer.classList.remove('hidden');
         answerContent.innerHTML = '⏳ Traffic Torching...';
 
         try {
-          // Build the audit snapshot (Edit 3: rich page context + CMS inside auditData)
+          // ── Build HTML snippets for the top failed checks (best-effort) ──
+          const affectedSnippets = {};
+          if (renderedHtml) {
+            const snippetSources = [];
+            topPriorityFixes.forEach(f => snippetSources.push(f.sub || f.issue));
+            failedMetrics.forEach(m => { if (!snippetSources.includes(m)) snippetSources.push(m); });
+
+            for (const item of snippetSources.slice(0, 5)) {
+              try {
+                const rule = deriveSelectorsForFailure(item);
+                if (rule?.selectors?.length) {
+                  const snips = extractSnippets(renderedHtml, rule.selectors, { limit: 2, maxLen: 400 });
+                  if (snips.length) affectedSnippets[item] = snips.map(s => s.html);
+                }
+              } catch {}
+            }
+          }
+
           const auditPayload = {
             question: question,
             cms: (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'Custom / Unknown',
@@ -1157,11 +1223,15 @@ document.addEventListener('DOMContentLoaded', () => {
               metaDescription,
               h1,
               pageExcerpt,
+              headSnapshot: headSnapshot,
+              langAttribute: langAttribute,
+              viewportContent: viewportContent,
               linkCount,
               imageCount,
               headingCount,
               ctaCount,
               wordCount,
+              location: location || null,
               cms: {
                 name: (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'Custom / Unknown',
                 version: cmsInfo?.version || null,
@@ -1178,14 +1248,31 @@ document.addEventListener('DOMContentLoaded', () => {
               },
               flags: {
                 napPresent: napResult.data.present,
+                footerNap: napResult.data.footer,
+                contactComplete: napResult.data.complete,
                 titleLocal: keywordsResult.data.title,
                 metaLocal: keywordsResult.data.meta,
+                headingsLocal: keywordsResult.data.headings,
+                bodyKeywords: contentResult.data.localKeywords,
+                intentPatterns: contentResult.data.intentPatterns,
+                locationMentions: contentResult.data.locationMentions,
                 mapEmbedded: mapsResult.data.embedded,
+                localAltText: mapsResult.data.localAlt,
                 localSchema: schemaResult.data.localPresent,
-                reviewSchema: reviewsResult.data.schema
+                geoCoords: schemaResult.data.geoCoords,
+                openingHours: schemaResult.data.hours,
+                reviewSchema: reviewsResult.data.schema,
+                canonicalTag: reviewsResult.data.canonical,
+                internalGeoLinks: reviewsResult.data.internalLinks
               },
               failedItems: failedMetrics,
-              priorityFixes: topPriorityFixes.map(f => f.issue + ' (' + f.module + ')')
+              priorityFixes: topPriorityFixes.map(f => ({
+                name: f.sub || f.issue,
+                module: f.module,
+                desc: f.how || ''
+              })),
+              snippets: affectedSnippets,
+              browserMetrics: null
             }
           };
 
@@ -1199,9 +1286,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const data = await response.json();
 
-          // Edit 2: innerHTML + renderCodeBlocks
           if (data.success) {
-            answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+            let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+            if (Array.isArray(data.warnings) && data.warnings.length) {
+              const warningText = data.warnings.join(' ');
+              html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+            }
+            answerContent.innerHTML = html;
           } else {
             answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
           }
@@ -1227,7 +1318,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const cmsAnswerContainer = document.getElementById('cms-fixes-answer-container');
     const cmsAnswerContent   = document.getElementById('cms-fixes-answer-content');
 
-    // Render detected-CMS badge
     if (cmsBadgeName) {
       let label = cmsInfo.name || 'Custom / Unknown';
       if (cmsInfo.version) label += ' ' + cmsInfo.version;
@@ -1241,7 +1331,6 @@ document.addEventListener('DOMContentLoaded', () => {
       cmsBadgeDot.className = 'inline-block w-2.5 h-2.5 rounded-full mr-2 ' + dotClass;
     }
 
-    // Prefill override fields with detected values
     if (cmsOverrideSelect) {
       const known = Array.from(cmsOverrideSelect.options).map(o => o.value);
       cmsOverrideSelect.value = known.includes(cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown';
@@ -1250,12 +1339,10 @@ document.addEventListener('DOMContentLoaded', () => {
       cmsOverrideVersion.value = cmsInfo.version;
     }
 
-    // Toggle override panel
     cmsOverrideToggle?.addEventListener('click', () => {
       cmsOverridePanel?.classList.toggle('hidden');
     });
 
-    // If nothing to fix, disable button
     if (topPriorityFixes.length === 0) {
       if (cmsFixesBtn) {
         cmsFixesBtn.disabled = true;
@@ -1298,7 +1385,7 @@ document.addEventListener('DOMContentLoaded', () => {
           },
           priorityFixes: topPriorityFixes.slice(0, 3).map(f => ({
             module: f.module,
-            name: f.sub,
+            name: f.sub || f.issue,
             howToFix: f.how
           })),
           mode: fullUrl ? 'live-url' : 'pasted-code',
@@ -1315,12 +1402,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = await response.json();
 
-        // Edit 2: innerHTML + renderCodeBlocks (CMS Fixes branch)
         if (data.success && cmsAnswerContent) {
           const cmsLabel = (data.cms || selectedCms) + (data.cmsVersion ? ' ' + data.cmsVersion : '');
+          let warningHtml = '';
+          if (Array.isArray(data.warnings) && data.warnings.length) {
+            warningHtml = `<div style="margin-top:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${data.warnings.join(' ')}</div>`;
+          }
           cmsAnswerContent.innerHTML =
             `<div style="font-weight:bold;margin-bottom:0.75rem;">🛠️ CMS Fixes for ${escapeHtml(cmsLabel)}</div>` +
-            `<div>${renderCodeBlocks(data.answer || '')}</div>`;
+            `<div>${renderCodeBlocks(data.answer || '')}</div>` +
+            warningHtml;
         } else if (cmsAnswerContent) {
           cmsAnswerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
         }

@@ -506,6 +506,36 @@ export function deriveSelectorsForFailure(text) {
   return null;
 }
 
+// Public: pull plain-text code snippets for a failure, for use
+// in the AI worker payload. Returns an array of raw HTML/string
+// snippets (max `limit`, each capped at `maxLen`).
+// ─────────────────────────────────────────────────────────────
+export function extractSnippets(failureText, html, uxData, { limit = 2, maxLen = 400 } = {}) {
+  const name = findRendererName(failureText);
+  if (!name) return [];
+  const fn = RENDERERS[name];
+  if (typeof fn !== 'function') return [];
+
+  let rendered;
+  try { rendered = fn(uxData, html); } catch { return []; }
+  if (!rendered) return [];
+
+  const out = [];
+  const re = /<pre[^>]*><code>([\s\S]*?)<\/code><\/pre>/g;
+  let m;
+  while ((m = re.exec(rendered)) && out.length < limit) {
+    let s = m[1]
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'");
+    if (s.length > maxLen) s = s.slice(0, maxLen) + '…';
+    out.push(s);
+  }
+  return out;
+}
+
 // ─────────────────────────────────────────────────────────────
 // Main entry point
 // ─────────────────────────────────────────────────────────────

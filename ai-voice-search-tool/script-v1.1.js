@@ -6,13 +6,13 @@ import { computeSnippetVisibility } from './modules/snippet-visibility.js';
 import { computeSentimentQuality } from './modules/sentiment-quality.js';
 import { computeTraditionalKeywords } from './modules/traditional-keywords.js';
 import { canRunTool } from '/main-v1.1.js';
-// Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import {
   initCodeSnippetModal,
   showCodeForFailure,
   deriveSelectorsForFailure,
+  extractSnippets,
   escapeHtml
 } from './code-snippet-v1.0.js';
 
@@ -43,6 +43,79 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
+// ─── Head snapshot builder (shared with all other Traffic Torch tools) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 // ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -68,7 +141,6 @@ async function saveAuditHistory(url, toolName) {
     }
   }
 
-  // Guest fallback – same key the dashboard uses
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
   if (stored) {
@@ -92,10 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   const results = document.getElementById('results');
 
-  // One-time bootstrap: create the native <dialog> for "Show the code"
   initCodeSnippetModal();
 
-  // === ADD THIS EVENT LISTENER RIGHT AFTER THE VARIABLE DECLARATIONS ===
   analyzeCodeBtn.addEventListener('click', async () => {
     const htmlContent = codeInput.value.trim();
     if (!htmlContent) {
@@ -103,11 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
       codeInput.focus();
       return;
     }
-    urlInput.value = ''; // clear URL field when using code analysis
+    urlInput.value = '';
     await runAnalysis(htmlContent);
   });
 
-  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
@@ -116,22 +185,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-
-        // Optional: Auto-click the Analyze button after a tiny delay
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);   // Give the page time to render
+          setTimeout(() => { analyzeBtn.click(); }, 800);
         }
       }
     }
   }
 
-  // Run when page loads
   window.addEventListener('load', autoFillFromUrl);
 
-  // Auto-fill input from shared report deep link (?url=...)
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
   if (sharedUrl && urlInput) {
@@ -215,7 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return { emoji: '❌', text: 'Needs Work', color: '#ef4444' };
   }
 
-  // Unified analysis function used by both URL and Code buttons
   async function runAnalysis(htmlContent, pageUrl = '') {
     analyzedText = '';
     wordCount = 0;
@@ -235,14 +297,10 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     results.classList.remove('hidden');
 
-    // Auto scroll to spinner immediately when any button is clicked
     setTimeout(() => {
       const offset = 240;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({
-        top: targetY,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
     }, 50);
 
     const progressText = document.getElementById('progressText');
@@ -270,6 +328,14 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const doc = new DOMParser().parseFromString(htmlContent, 'text/html');
       const cmsInfo = detectCMS({ doc, url: pageUrl || '' });
+
+      // ── Cache head snapshot + CMS info for the Ask AI handler ──
+      results.dataset.renderedHtml = htmlContent || '';
+      results.dataset.headSnapshot = buildHeadSnapshot(doc);
+      document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
+      document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
+      document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
+
       const mainElement = getMainContent(doc);
       const cleanElement = mainElement.cloneNode(true);
       cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
@@ -285,7 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const verdict = mainGrade.text;
       const verdictEmoji = mainGrade.emoji;
 
-      // 👇 Save the audit to history so it shows in the dashboard
       const auditSaveUrl = pageUrl ? pageUrl : 'Pasted HTML code';
       await saveAuditHistory(auditSaveUrl, 'Voice Search');
 
@@ -302,7 +367,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const boost = failingModules * 15;
       const optimizedScore = Math.min(100, yourScore + boost);
 
-      // ─── Compute top failed sub‑metrics for priority fixes ──────────
       const allFailed = [];
       modules.forEach(m => {
         const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
@@ -327,13 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         const offset = 240;
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-        window.scrollTo({
-          top: targetY,
-          behavior: 'smooth'
-        });
-
-        // Cache the rendered HTML so the "Show the code" handler can reach it.
-        results.dataset.renderedHtml = htmlContent || '';
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
 
         results.innerHTML = `
 <!-- Overall Score Card -->
@@ -630,18 +688,18 @@ ${topFailed.length === 0 ? `
   </div>
 </div>
 <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-2">
-            <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About AI Voice Search</h2>
-            <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
-              Get tailored answers about AI voice search optimization, content quality, snippet visibility, and specific improvement steps.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4">
-              <textarea id="ai-question-input" placeholder="e.g., Why is my AI Visibility low? How do I improve voice snippet potential?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
-              <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask AI</button>
-            </div>
-            <div id="ai-answer-container" class="mt-6 hidden">
-              <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
-            </div>
-          </div>
+  <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About AI Voice Search</h2>
+  <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+    Get tailored answers about AI voice search optimization, content quality, snippet visibility, and specific improvement steps.
+  </p>
+  <div class="flex flex-col sm:flex-row gap-4">
+    <textarea id="ai-question-input" placeholder="e.g., Why is my AI Visibility low? How do I improve voice snippet potential?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
+    <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask AI</button>
+  </div>
+  <div id="ai-answer-container" class="mt-6 hidden">
+    <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+  </div>
+</div>
 <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
 <div id="share-dashboard-container" class="mt-16"></div>
         `;
@@ -703,7 +761,6 @@ ${topFailed.length === 0 ? `
           } catch (e) {}
         }, 150);
 
-        // ─── Set data-url ──────────────────────────────────────────────
         let displayUrl = 'traffictorch.net';
         if (pageUrl) {
           let cleaned = pageUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
@@ -718,12 +775,10 @@ ${topFailed.length === 0 ? `
         }
         document.body.setAttribute('data-url', displayUrl);
 
-        // ─── Prepare and initialise share dashboard ──────────────────
         const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
 
         const passedMetrics = [];
         const failedMetrics = [];
-        // Collect sub-metrics pass/fail
         modules.forEach(m => {
           const detailsKey = m.id.split('-').map((w,i)=>i===0?w:w.charAt(0).toUpperCase()+w.slice(1)).join('');
           const subMetrics = analysis.details?.[detailsKey]?.subMetrics || [];
@@ -734,7 +789,6 @@ ${topFailed.length === 0 ? `
               failedMetrics.push(s.name);
             }
           });
-          // Also add module-level pass/fail (score >= 60 as pass)
           if (m.score >= 60) {
             passedMetrics.push(m.name);
           } else {
@@ -771,6 +825,8 @@ ${topFailed.length === 0 ? `
         // ─── Build page context for Ask AI payload ────────────────────
         const metaDescription = (doc.querySelector('meta[name="description"]')?.getAttribute('content') || '').replace(/\s+/g, ' ').trim();
         const h1Text = (doc.querySelector('h1')?.textContent || '').replace(/\s+/g, ' ').trim();
+        const langAttribute = doc.documentElement?.getAttribute('lang') || '';
+        const viewportContent = doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
         const linkCount = doc.querySelectorAll('a[href]').length;
         const imageCount = doc.querySelectorAll('img').length;
         const headingCount = doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
@@ -783,6 +839,25 @@ ${topFailed.length === 0 ? `
           .map(p => p.textContent.replace(/\s+/g, ' ').trim())
           .filter(t => t.length > 60);
         const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300);
+
+        const headSnapshot = results.dataset.headSnapshot || '';
+
+        // ── Build HTML snippets for the top failed sub-metrics ──
+        const affectedSnippets = {};
+        const rawHtmlForSnips = results.dataset.renderedHtml || '';
+        if (rawHtmlForSnips) {
+          const snippetSources = topFailed.map(f => f.subName);
+          failedMetrics.forEach(m => { if (!snippetSources.includes(m)) snippetSources.push(m); });
+          for (const item of snippetSources.slice(0, 5)) {
+            try {
+              const rule = deriveSelectorsForFailure(item);
+              if (rule?.selectors?.length) {
+                const snips = extractSnippets(rawHtmlForSnips, rule.selectors, { limit: 2, maxLen: 400 });
+                if (snips.length) affectedSnippets[item] = snips.map(s => s.html);
+              }
+            } catch {}
+          }
+        }
 
         const askBtn = document.getElementById('ask-ai-btn');
         const askInput = document.getElementById('ai-question-input');
@@ -804,15 +879,12 @@ ${topFailed.length === 0 ? `
               return;
             }
 
-            const selectedModel = modelSelect?.value || '@cf/deepseek-ai/deepseek-v4-flash-0731';
-
             newAskBtn.disabled = true;
             newAskBtn.textContent = 'Thinking...';
             answerContainer.classList.remove('hidden');
             answerContent.innerHTML = '⏳ Traffic Torching...';
 
             try {
-              // Build module scores for the payload
               const moduleScoresMap = {};
               modules.forEach(m => {
                 const key = m.id.replace(/-/g, '');
@@ -827,6 +899,9 @@ ${topFailed.length === 0 ? `
                   metaDescription,
                   h1: h1Text,
                   pageExcerpt,
+                  headSnapshot: headSnapshot,
+                  langAttribute: langAttribute,
+                  viewportContent: viewportContent,
                   linkCount,
                   imageCount,
                   headingCount,
@@ -847,13 +922,21 @@ ${topFailed.length === 0 ? `
                     hasHighReadability: analysis.details?.contentQuality?.readabilityScore >= 60 || false
                   },
                   failedItems: failedMetrics.slice(0, 10),
-                  priorityFixes: topFailed.map(f => f.subName + ': ' + f.fix),
+                  priorityFixes: topFailed.map(f => ({
+                    name: f.subName,
+                    module: f.moduleName,
+                    score: f.score ?? 0,
+                    impact: `+${f.impact}`,
+                    desc: f.fix || ''
+                  })),
+                  snippets: affectedSnippets,
                   cms: {
                     name: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown',
                     version: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.version) ? cmsInfo.version : null,
                     confidence: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.confidence) ? cmsInfo.confidence : null,
                     signals: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.signals) ? cmsInfo.signals : null
-                  }
+                  },
+                  browserMetrics: null
                 }
               };
 
@@ -868,7 +951,12 @@ ${topFailed.length === 0 ? `
               const data = await response.json();
 
               if (data.success) {
-                answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+                let html2 = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+                if (Array.isArray(data.warnings) && data.warnings.length) {
+                  const warningText = data.warnings.join(' ');
+                  html2 = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html2;
+                }
+                answerContent.innerHTML = html2;
               } else {
                 answerContent.innerHTML = renderCodeBlocks(`❌ Error: ${data.error || 'Unknown error'}`);
               }
@@ -989,8 +1077,21 @@ ${topFailed.length === 0 ? `
               const body = document.createElement('div');
               body.innerHTML = renderCodeBlocks(data.answer || '');
 
+              let warningEl = null;
+              if (Array.isArray(data.warnings) && data.warnings.length) {
+                warningEl = document.createElement('div');
+                warningEl.style.marginTop = '0.75rem';
+                warningEl.style.padding = '0.5rem 0.75rem';
+                warningEl.style.borderRadius = '0.5rem';
+                warningEl.style.background = '#fef3c7';
+                warningEl.style.color = '#92400e';
+                warningEl.style.fontSize = '0.85rem';
+                warningEl.textContent = data.warnings.join(' ');
+              }
+
               cmsAnswerContent.appendChild(header);
               cmsAnswerContent.appendChild(body);
+              if (warningEl) cmsAnswerContent.appendChild(warningEl);
             } else if (cmsAnswerContent) {
               cmsAnswerContent.innerHTML = renderCodeBlocks('❌ Error: ' + (data.error || 'Unknown error'));
             }
@@ -1033,7 +1134,6 @@ form.addEventListener('submit', async (e) => {
     normalizedUrl = 'https://' + normalizedUrl;
   }
 
-  // Show loader BEFORE any async calls or checks
   results.innerHTML = `
     <div class="py-0 text-center">
       <div class="inline-block w-16 h-16 mb-8">
@@ -1047,14 +1147,10 @@ form.addEventListener('submit', async (e) => {
   `;
   results.classList.remove('hidden');
 
-  // Auto scroll to spinner immediately
   setTimeout(() => {
     const offset = 240;
     const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
-    window.scrollTo({
-      top: targetY,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: targetY, behavior: 'smooth' });
   }, 50);
 
   try {
@@ -1073,7 +1169,7 @@ form.addEventListener('submit', async (e) => {
     if (!res.ok) throw new Error('Page not reachable');
 
     const html = await res.text();
-    runAnalysis(html, normalizedUrl);   // Now safe — loader already shown, canRunTool already passed
+    runAnalysis(html, normalizedUrl);
   } catch (err) {
     results.innerHTML = `
       <div class="text-center py-20">
@@ -1084,9 +1180,7 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-  // Delegated handler: fixes toggle + ask AI prefill + show the code
   document.addEventListener('click', (e) => {
-    // "Show the code" button
     const showCodeBtn = e.target.closest('.show-code-btn');
     if (showCodeBtn) {
       e.preventDefault();

@@ -26,6 +26,7 @@ import {
   initCodeSnippetModal,
   showCodeForFailure,
   deriveSelectorsForFailure,
+  extractSnippets,
   escapeHtml
 } from './code-snippet-v2.0.js';
 
@@ -53,6 +54,60 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
+// ─── Head snapshot builder (shared with Lighthouse Plus) ─────────
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const urlInput = document.getElementById('url-input');
@@ -60,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const analyzeUrlBtn = document.getElementById('analyze-url-btn');
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   const results = document.getElementById('results');
-  
+
   initCodeSnippetModal();
 
   // ── Save audit to history (auth user → API, guest → localStorage) ──
@@ -115,18 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
 
-        // Optional: Auto-click the Analyze button after a tiny delay
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);   // Give the page time to render
+          setTimeout(() => { analyzeBtn.click(); }, 800);
         }
       }
     }
   }
 
-  // Run when page loads
   window.addEventListener('load', autoFillFromUrl);
 
   // Auto-fill URL from shared link (?url= parameter)
@@ -140,20 +191,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       urlInput.value = cleanUrl;
 
-      // Minimal auto-run - click button instead of form submit (prevents infinite refresh)
       setTimeout(() => {
         const analyzeBtn = document.getElementById('analyze-url-btn');
-        if (analyzeBtn) {
-          analyzeBtn.click();
-        }
+        if (analyzeBtn) { analyzeBtn.click(); }
       }, 600);
-
     } catch (err) {
       // silent fail
     }
   }
 
-  // ── New dedicated full-render worker for the Quit Risk Tool ─────
+  // ── Dedicated full-render worker for the Quit Risk Tool ─────
   const PROXY = 'https://qr-full-render-worker.traffictorch.workers.dev/';
 
   const factorDefinitions = {
@@ -231,9 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
       baseHost = window.location.host;
     }
     return Array.from(links).filter(a => {
-      // Use the raw href attribute — a.href is auto-resolved by the
-      // DOMParser against the audit tool's own URL, which makes every
-      // relative internal link look external.
       const raw = a.getAttribute('href');
       if (!raw) return false;
       if (/^(#|mailto:|tel:|javascript:|data:)/i.test(raw)) return false;
@@ -280,10 +324,6 @@ document.addEventListener('DOMContentLoaded', () => {
       totalImages: imgs.length
     };
   }
-    // ── Primary nav picker ────────────────────────────────────────────
-  // The old selector matched every <nav> on the page, so a header nav
-  // plus a mobile overlay nav double-counted top-level items. We now
-  // pick the most likely primary nav and only count its direct items.
   function pickPrimaryNav(doc) {
     const candidates = [
       'header nav',
@@ -299,10 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return null;
   }
 
-  // ── Clean visible-text extractor ──────────────────────────────────
-  // Walks text nodes, skipping script/style/svg/noscript so inline CSS
-  // inside SVG <style> blocks (like The Carmel's logo) no longer gets
-  // counted as page words and syllables.
   function extractVisibleTextFromDoc(doc) {
     const root = doc.body || doc.documentElement;
     if (!root) return '';
@@ -326,12 +362,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getUXContent(doc, metrics, auditedUrl) {
-    // ── Text extraction ─────────────────────────────────────────────
-    // Walk text nodes so nested containers don't multiply the same
-    // paragraph 3–5×. Skips script/style/svg/noscript content entirely.
     const fullText = extractVisibleTextFromDoc(doc);
 
-    // Paragraph texts: one entry per real <p> / <li>, never duplicated.
     const paragraphTexts = [];
     doc.querySelectorAll('p, li').forEach(el => {
       if (el.closest('script, style, svg, noscript')) return;
@@ -339,7 +371,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (t.length > 15) paragraphTexts.push(t);
     });
 
-    // Direct counts — no more accumulation via nested containers.
     const boldCount = doc.querySelectorAll('b, strong').length;
     const listItemCount = doc.querySelectorAll('li').length;
 
@@ -347,7 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const images = doc.querySelectorAll('img');
     const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
 
-    // ── Primary nav only ────────────────────────────────────────────
     const primaryNav = pickPrimaryNav(doc);
     const topLevelItems = primaryNav
       ? primaryNav.querySelectorAll(':scope > ul > li, :scope > li').length
@@ -379,7 +409,6 @@ document.addEventListener('DOMContentLoaded', () => {
       })(),
       hasMediaQueries: !!doc.querySelector('style, link[rel="stylesheet"][href*="css"]'),
       hasTouchFriendly: (() => {
-        // Rendered metrics replace this heuristic when available.
         const links = doc.querySelectorAll('a, button, [role="button"]');
         let smallCount = 0;
         links.forEach(el => {
@@ -406,33 +435,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const head = doc.head || doc.querySelector('head');
         if (!head) return 0;
 
-        // Inline helper: is this <script> actually render-blocking?
         function isBlockingScript(s) {
           const type = (s.getAttribute('type') || '').toLowerCase();
-
-          // External script (has src)
           if (s.src) {
-            if (s.defer || s.async) return false;   // explicitly deferred
-            if (type === 'module') return false;     // modules defer by default
+            if (s.defer || s.async) return false;
+            if (type === 'module') return false;
             return true;
           }
-
-          // Inline script: blocking unless its type is clearly non-JS.
-          // Examples of non-JS: application/ld+json, application/json,
-          // text/template, text/x-handlebars-template, importmap.
-          if (!type) return true;                    // plain inline JS
+          if (!type) return true;
           if (type === 'text/javascript') return true;
           if (type === 'application/javascript') return true;
           return false;
         }
 
-        // Inline helper: is this <link rel="stylesheet"> blocking?
         function isBlockingStyle(l) {
           const rel = (l.getAttribute('rel') || '').toLowerCase();
           if (rel !== 'stylesheet') return false;
-          if (l.hasAttribute('media')) return false;       // conditional media
-          if (l.hasAttribute('disabled')) return false;    // explicitly disabled
-          if (l.getAttribute('rel') === 'preload') return false;  // preload isn't blocking
+          if (l.hasAttribute('media')) return false;
+          if (l.hasAttribute('disabled')) return false;
+          if (l.getAttribute('rel') === 'preload') return false;
           return true;
         }
 
@@ -501,14 +522,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return { grade: 'Poor', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   }
 
-  // ────────────────────────────────────────────────────────────────
-  // buildModuleHTML
-  //   • Card header shows EVERY metric inline, sorted ❌ → ⚠️ → ✅
-  //   • No More Details panel (removed)
-  //   • Show Fixes panel lists FAILED + WARNING metrics
-  //   • Ask-AI / guide links live inside the fixes panel
-  //   • Show Fixes button: green, rounded-full, w-full, anchored bottom
-  // ────────────────────────────────────────────────────────────────
   function buildModuleHTML(moduleName, value, moduleData, factorScores = null, cmsInfo = null) {
     const ringColor = value < 60 ? '#ef4444' : value < 80 ? '#fb923c' : '#22c55e';
     const borderClass = value < 60 ? 'border-red-500' : value < 80 ? 'border-orange-500' : 'border-green-500';
@@ -519,7 +532,6 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (value >= 60) { statusMessage = "Needs improvement"; statusEmoji = "⚠️"; }
     else { statusMessage = "Needs work"; statusEmoji = "❌"; }
 
-    // ── Grade each factor once ─────────────────────────────────────
     const graded = moduleData.factors.map(f => {
       let passed = value >= f.threshold;
       if (factorScores) {
@@ -566,11 +578,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const warningItems = graded.filter(g => g.isWarning);
     const passedItems  = graded.filter(g => g.passed);
 
-    // Metrics that need attention (fixes panel + button count)
     const fixItems    = [...failedItems, ...warningItems];
     const fixCount    = fixItems.length;
 
-    // ── Card header: every metric inline, sorted ❌ → ⚠️ → ✅ ──────
     const metricsHTML = `
       <div class="space-y-2">
         ${failedItems.map(f => `
@@ -590,7 +600,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </p>`).join('')}
       </div>`;
 
-    // ── Fixes panel: paired {title + fix}; failed first, warnings after ──
     const fixesOnlyHTML = fixItems.map((f, i) => {
       const fixText =
         f.howToFix ||
@@ -616,7 +625,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>`;
     }).join('');
 
-    // ── Ask-AI prefill + guide link metadata ───────────────────────
     const MODULE_SLUGS = {
       'Readability': 'readability',
       'Navigation': 'navigation',
@@ -698,7 +706,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const canProceed = await canRunTool('quit-risk-tool');
     if (!canProceed) return;
 
-    // Clear HTML code input to prevent state leakage
     codeInput.value = '';
 
     let url = urlInput.value.trim();
@@ -723,7 +730,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const canProceed = await canRunTool('quit-risk-tool');
     if (!canProceed) return;
 
-    // Clear URL input to prevent state leakage
     urlInput.value = '';
 
     const htmlCode = codeInput.value.trim();
@@ -739,7 +745,6 @@ document.addEventListener('DOMContentLoaded', () => {
     triggerAnalysis(null, htmlCode);
   });
 
-  // Shared trigger function (supports both URL via proxy and direct HTML code)
   async function triggerAnalysis(url, htmlCode) {
     results.classList.remove('hidden');
     document.getElementById('loading').classList.remove('hidden');
@@ -790,16 +795,17 @@ document.addEventListener('DOMContentLoaded', () => {
       uxData = mergeMetricsIntoUX(uxData, metrics);
       uxData.renderedLoadTime = renderedLoadTime;
 
-      // Prefer the rendered word count for density / readability when present.
       if (uxData.renderedWordCount && uxData.renderedWordCount > 50) {
         uxData.wordCount = uxData.renderedWordCount;
       }
+
+      // ── Head snapshot for AI context ──
+      const headSnapshot = buildHeadSnapshot(doc);
 
       const cmsInfo = detectCMS({ doc, html, url });
       const ux = analyzeUX(uxData);
       window._qr = { ux, uxData, factorDetails: null };
 
-      // 👇 Save the audit to history so it shows in the dashboard
       await saveAuditHistory(url, 'Quit Risk');
 
       const factorDetails = {
@@ -855,15 +861,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const failedModules = modulePriority.filter(m => m.score < m.threshold);
       failedModules.forEach(mod => {
         if (mod.data.factors.length > 0) {
-          priorityFixes.push({ ...mod.data.factors[0], module: mod.name, extraCount: mod.data.factors.length });
+          priorityFixes.push({ ...mod.data.factors[0], module: mod.name, extraCount: mod.data.factors.length, score: mod.score });
         }
       });
       if (priorityFixes.length < 3 && failedModules.length > 0) {
         const topModule = failedModules[0];
         if (topModule.data.factors.length >= 3) {
-          priorityFixes.push({ ...topModule.data.factors[1], module: topModule.name, isSecond: true, extraCount: topModule.data.factors.length });
+          priorityFixes.push({ ...topModule.data.factors[1], module: topModule.name, isSecond: true, extraCount: topModule.data.factors.length, score: topModule.score });
         }
       }
+
+// ── Extract HTML snippets for the top priority fixes ──
+const affectedSnippets = {};
+if (html && priorityFixes.length) {
+  for (const f of priorityFixes.slice(0, 3)) {
+    try {
+      const snips = extractSnippets(f.name, html, uxData, { limit: 2, maxLen: 400 });
+      if (snips.length) affectedSnippets[f.name] = snips;
+    } catch {}
+  }
+}
+
       let priorityFixesHTML = '';
       if (priorityFixes.length > 0) {
         priorityFixesHTML = priorityFixes.map((fix, index) => `
@@ -1004,12 +1022,12 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
       const scores = modules.map(m => m.score);
 
-      // Smooth scroll to results
       const offset = 240;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
-      
+
       results.dataset.renderedHtml = html || '';
+      results.dataset.headSnapshot = headSnapshot;
       results._uxData = uxData;
 
       results.innerHTML = `
@@ -1183,7 +1201,6 @@ ${impactHTML}
 </div>
       `;
 
-      // ─── Restore displayUrl definition ──────────────────────────────
       let fullUrl = url || document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net';
       if (fullUrl) {
@@ -1198,7 +1215,6 @@ ${impactHTML}
         }
       }
 
-      // ─── Render Plugin Solutions ──────────────────────────────────────
       if (typeof renderPluginSolutions === 'function') {
         renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
       } else {
@@ -1206,11 +1222,9 @@ ${impactHTML}
           if (typeof renderPluginSolutions === 'function') {
             renderPluginSolutions(failedMetrics, 'plugin-solutions-section');
           }
-          // Silent fail if still not available
         }, 500);
       }
 
-      // ─── Radar Chart ──────────────────────────────────────────────────
       setTimeout(() => {
         const canvas = document.getElementById('health-radar');
         if (!canvas) return;
@@ -1259,7 +1273,6 @@ ${impactHTML}
         }
       }, 150);
 
-      // ─── Share Dashboard ──────────────────────────────────────────────
       const moduleThresholds = {
         readability: 65,
         nav: 70,
@@ -1287,12 +1300,11 @@ ${impactHTML}
         return { name: m.name, score: m.score };
       });
 
-      // Build the analyzed URL for the share link
       const analyzedUrl = url || document.getElementById('url-input').value.trim() || window.location.href;
 
       const shareData = {
         toolName: 'Quit Risk Tool',
-        url: analyzedUrl,                      // the page being audited
+        url: analyzedUrl,
         pageTitle: doc?.title || document.title || 'Page',
         overallScore: ux.score,
         moduleScores,
@@ -1300,7 +1312,6 @@ ${impactHTML}
         failedMetrics: failedMetricsShare,
         aiFixes: [],
         rawData: { ux: uxData, modules },
-        // Custom share link that points back to the Quit Risk Tool with the audited URL
         shareLink: `${window.location.origin}/quit-risk-tool/?url=${encodeURIComponent(analyzedUrl)}`
       };
 
@@ -1309,7 +1320,6 @@ ${impactHTML}
         initShareModule(shareContainer, shareData);
       }
 
-      // ─── Set data-url ────────────────────────────────────────────────
       document.body.setAttribute('data-url', displayUrl);
 
       // ─── Ask AI Logic ──────────────────────────────────────────────
@@ -1320,12 +1330,10 @@ ${impactHTML}
       const answerContent = document.getElementById('ai-answer-content');
 
       if (askBtn) {
-        // Remove old listener to avoid duplicates
         const newAskBtn = askBtn.cloneNode(true);
         askBtn.parentNode.replaceChild(newAskBtn, askBtn);
 
         newAskBtn.addEventListener('click', async () => {
-          // ─── CHECK QUOTA FIRST ──────────────────────────────────
           const canProceed = await canRunTool('quit-risk-tool');
           if (!canProceed) return;
 
@@ -1335,16 +1343,12 @@ ${impactHTML}
             return;
           }
 
-          const selectedModel = modelSelect?.value || '@cf/deepseek-ai/deepseek-v4-flash-0731';
-
-          // Disable button & show loading
           newAskBtn.disabled = true;
           newAskBtn.textContent = 'Thinking...';
           answerContainer.classList.remove('hidden');
           answerContent.innerHTML = '⏳ Traffic Torching...';
 
           try {
-            // Build the audit snapshot (same structure as SEO Intent)
             const pageExcerpt = (doc?.body?.textContent || '')
               .replace(/\s+/g, ' ')
               .trim()
@@ -1358,12 +1362,20 @@ ${impactHTML}
                 metaDescription: doc?.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '',
                 h1: doc?.querySelector('h1')?.textContent?.trim() || '',
                 pageExcerpt: pageExcerpt,
+                headSnapshot: headSnapshot,
+                langAttribute: doc?.documentElement?.getAttribute('lang') || '',
+                viewportContent: uxData.viewportContent || '',
                 linkCount: uxData.linkCount,
                 imageCount: uxData.imageCount,
                 headingCount: uxData.headingCount,
                 ctaCount: uxData.potentialCTAs,
                 wordCount: uxData.wordCount,
                 overallScore: ux.score,
+                cms: {
+                  name: cmsInfo?.name || 'Custom / Unknown',
+                  version: cmsInfo?.version || null,
+                  confidence: cmsInfo?.confidence || 'unknown',
+                },
                 scores: {
                   readability: ux.readability,
                   navigation: ux.nav,
@@ -1397,11 +1409,16 @@ ${impactHTML}
                   altMissing: uxData.altData?.missingCount || 0,
                   altMeaningful: uxData.altData?.meaningfulCount || 0
                 },
-                cms: cmsInfo?.name || 'Custom / Unknown',
-                cmsVersion: cmsInfo?.version || null,
-                cmsConfidence: cmsInfo?.confidence || null,
                 failedItems: failedMetricsShare,
-                priorityFixes: priorityFixes.map(f => f.name + ' (' + f.module + ')')
+                priorityFixes: priorityFixes.map(f => ({
+                  name: f.name,
+                  module: f.module,
+                  score: f.score ?? 0,
+                  impact: f.isSecond ? 'secondary' : 'primary',
+                  desc: f.howToFix || ''
+                })),
+                snippets: affectedSnippets,
+                browserMetrics: null
               }
             };
 
@@ -1415,11 +1432,16 @@ ${impactHTML}
 
             const data = await response.json();
 
-if (data.success) {
-  answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
-} else {
-  answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
-}
+            if (data.success) {
+              let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+              if (Array.isArray(data.warnings) && data.warnings.length) {
+                const warningText = data.warnings.join(' ');
+                html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+              }
+              answerContent.innerHTML = html;
+            } else {
+              answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
+            }
 
           } catch (err) {
             answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
@@ -1430,7 +1452,7 @@ if (data.success) {
         });
       }
 
-            // ─── CMS Fixes Logic ──────────────────────────────────────────
+      // ─── CMS Fixes Logic ──────────────────────────────────────────
       const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
       const cmsBadgeDot        = document.getElementById('cms-badge-dot');
       const cmsBadgeName       = document.getElementById('cms-badge-name');
@@ -1442,7 +1464,6 @@ if (data.success) {
       const cmsAnswerContainer = document.getElementById('cms-fixes-answer-container');
       const cmsAnswerContent   = document.getElementById('cms-fixes-answer-content');
 
-      // Render detected-CMS badge
       if (cmsBadgeName) {
         let label = cmsInfo.name || 'Custom / Unknown';
         if (cmsInfo.version) label += ' ' + cmsInfo.version;
@@ -1456,7 +1477,6 @@ if (data.success) {
         cmsBadgeDot.className = 'inline-block w-2.5 h-2.5 rounded-full mr-2 ' + dotClass;
       }
 
-      // Prefill override fields with detected values
       if (cmsOverrideSelect) {
         const known = Array.from(cmsOverrideSelect.options).map(o => o.value);
         cmsOverrideSelect.value = known.includes(cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown';
@@ -1465,12 +1485,10 @@ if (data.success) {
         cmsOverrideVersion.value = cmsInfo.version;
       }
 
-      // Toggle override panel
       cmsOverrideToggle?.addEventListener('click', () => {
         cmsOverridePanel?.classList.toggle('hidden');
       });
 
-      // If nothing to fix, disable button
       if (priorityFixes.length === 0) {
         if (cmsFixesBtn) {
           cmsFixesBtn.disabled = true;
@@ -1482,8 +1500,6 @@ if (data.success) {
       cmsFixesBtn?.addEventListener('click', async () => {
         if (priorityFixes.length === 0) return;
 
-        // Quota — same bucket as audits; swap to 'limit-cms-fix-id' if you
-        // want CMS fixes to have their own daily allowance on the backend.
         const canProceed = await canRunTool('quit-risk-tool');
         if (!canProceed) return;
 
@@ -1530,11 +1546,15 @@ if (data.success) {
 
           const data = await response.json();
 
-if (data.success && cmsAnswerContent) {
-  const headerHtml = `<div style="font-weight:bold; margin-bottom:0.75rem;">🛠️ CMS Fixes for ${data.cms || selectedCms}${data.cmsVersion ? ' ' + data.cmsVersion : ''}</div>`;
-  const bodyHtml = `<div>${renderCodeBlocks(data.answer || '')}</div>`;
-  cmsAnswerContent.innerHTML = headerHtml + bodyHtml;
-} else if (cmsAnswerContent) {
+          if (data.success && cmsAnswerContent) {
+            const headerHtml = `<div style="font-weight:bold; margin-bottom:0.75rem;">🛠️ CMS Fixes for ${data.cms || selectedCms}${data.cmsVersion ? ' ' + data.cmsVersion : ''}</div>`;
+            const bodyHtml = `<div>${renderCodeBlocks(data.answer || '')}</div>`;
+            let warningHtml = '';
+            if (Array.isArray(data.warnings) && data.warnings.length) {
+              warningHtml = `<div style="margin-top:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${data.warnings.join(' ')}</div>`;
+            }
+            cmsAnswerContent.innerHTML = headerHtml + bodyHtml + warningHtml;
+          } else if (cmsAnswerContent) {
             cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
           }
         } catch (err) {
@@ -1560,7 +1580,6 @@ if (data.success && cmsAnswerContent) {
 
   // ─── Delegated click handler ────────────────────────────────────
   document.addEventListener('click', e => {
-    // Show / Hide Fixes toggle
     const fixesBtn = e.target.closest('.fixes-toggle, .show-fixes');
     if (fixesBtn) {
       const card = fixesBtn.closest('.module-card');
@@ -1579,7 +1598,6 @@ if (data.success && cmsAnswerContent) {
       return;
     }
 
-    // Ask AI about this module
     const askLink = e.target.closest('.ask-ai-link');
     if (askLink) {
       e.preventDefault();
@@ -1592,7 +1610,6 @@ if (data.success && cmsAnswerContent) {
       setTimeout(() => { textarea?.focus(); }, 700);
     }
 
-    // Show the code for a failure — now data-driven.
     const showCodeBtn = e.target.closest('.show-code-btn');
     if (showCodeBtn) {
       e.preventDefault();

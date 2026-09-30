@@ -1,7 +1,6 @@
 // KEYWORD RESEARCH TOOL Script js
 
 import { canRunTool } from '/main-v1.1.js';
-// Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
@@ -34,6 +33,65 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
+// ── Head snapshot builder (shared with all Traffic Torch tools) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
+// Module-level cache so Ask AI can detect pre- vs post-audit state
+const keywordResearchState = {
+  auditRun: false,
+  seed: '',
+  url: '',
+  suggestions: [],
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('keywordForm');
     const loader = document.getElementById('loader');
@@ -42,11 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const results = document.getElementById('results');
     const suggestionsGrid = document.getElementById('suggestionsGrid');
 
-    // ── Center the loader text (defensive; safe if already centered) ──
     if (progressText) progressText.style.textAlign = 'center';
     if (progressTip) progressTip.style.textAlign = 'center';
 
-    // ── Hide loader AND clear its inner text so nothing lingers ──
     function hideLoader() {
         if (loader) loader.classList.add('hidden');
         if (progressText) progressText.textContent = '';
@@ -61,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let tipIndex = 0;
 
-    // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
     function autoFillAndRunFromUrl() {
         const params = new URLSearchParams(window.location.search);
         const inputData = params.get('input');
@@ -80,10 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Run after DOM is ready
     setTimeout(autoFillAndRunFromUrl, 150);
 
-    // Auto-fill from URL params (for shared reports)
     const params = new URLSearchParams(window.location.search);
     const sharedKeyword = params.get('keyword');
     const sharedUrl = params.get('url');
@@ -122,10 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (inputUrl && !inputUrl.startsWith('http')) {
                 inputUrl = `https://${inputUrl}`;
             }
-            // Explicitly clear the opposite input to prevent state leakage
             if (codeInput) codeInput.value = '';
 
-            // Show spinner and scroll
             if (loader) loader.classList.remove('hidden');
             if (progressText) progressText.textContent = 'Analyzing...';
             if (progressTip) progressTip.textContent = tips[0];
@@ -133,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (loader) loader.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 50);
 
-            // Cycle only until the LAST tip, then stay there
             let localTipIndex = 0;
             const tipInterval = setInterval(() => {
                 if (localTipIndex < tips.length - 1) {
@@ -165,10 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 hasCheckedLimit = false;
                 return;
             }
-            // Explicitly clear the opposite input to prevent state leakage
             if (urlInputEl) urlInputEl.value = '';
 
-            // Show spinner and scroll
             if (loader) loader.classList.remove('hidden');
             if (progressText) progressText.textContent = 'Analyzing...';
             if (progressTip) progressTip.textContent = tips[0];
@@ -186,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // === runAnalysis function ===
     async function runAnalysis(params) {
         const { seed, url, inputType, rawCode, tipInterval } = params;
 
@@ -215,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            // Normal success path
             hideLoader();
             if (results) results.classList.remove('hidden');
 
@@ -226,8 +272,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }, 150);
 
-            // === RESULTS RENDERING ===
             const suggestions = Array.isArray(data.suggestions) ? data.suggestions : [];
+
+            // ── Cache audit state so Ask AI knows we're post-audit ──
+            keywordResearchState.auditRun = true;
+            keywordResearchState.seed = seed || '';
+            keywordResearchState.url = url || '';
+            keywordResearchState.suggestions = suggestions.slice();
 
             const titleEl = document.getElementById('analyzed-page-title');
             if (titleEl) {
@@ -276,7 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.setAttribute('data-keyword', seed || '—');
             document.body.setAttribute('data-url', url || '—');
 
-            // ─── Share Dashboard Integration ──────────────────────────────
             const suggestionsCount = suggestions.length;
             const overallScore = suggestionsCount > 0 ? Math.min(100, suggestionsCount * 10) : 0;
             const moduleScores = [
@@ -326,9 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ─── Ask AI: build page context from the tool's inputs ────────────
-    // This tool's Ask AI sits above results, so instead of cloning the
-    // rendered DOM we parse whatever the user pasted into the HTML code
-    // input (or fall back to seed/URL only).
     function getPageContextFromInputs() {
         const rawCode = codeInput?.value?.trim() || '';
         const urlValue = urlInputEl?.value?.trim() || '';
@@ -343,6 +390,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let headingCount = 0;
         let ctaCount = 0;
         let wordCount = 0;
+        let headSnapshot = '';
+        let langAttribute = '';
+        let viewportContent = '';
 
         if (rawCode) {
             try {
@@ -364,6 +414,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 headingCount = doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
                 ctaCount = doc.querySelectorAll('button, a[href*="contact"], a[href*="signup"], a[href*="sign-up"], a[href*="get-started"], [class*="cta"], [class*="btn"]').length;
                 wordCount = (contentRoot?.textContent || '').trim().split(/\s+/).filter(Boolean).length;
+
+                headSnapshot = buildHeadSnapshot(doc);
+                langAttribute = doc.documentElement?.getAttribute('lang') || '';
+                viewportContent = doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
             } catch (e) {
                 console.warn('Failed to parse code input for page context', e);
             }
@@ -374,13 +428,15 @@ document.addEventListener('DOMContentLoaded', () => {
             metaDescription,
             h1,
             pageExcerpt,
+            headSnapshot,
+            langAttribute,
+            viewportContent,
             linkCount,
             imageCount,
             headingCount,
             ctaCount,
             wordCount,
-            // This tool does not run CMS detection; stay on file-level advice.
-            cms: { name: 'Custom / Unknown', version: null, confidence: 0 },
+            cms: { name: 'Custom / Unknown', version: null, confidence: 'unknown' },
             seedKeyword: seed,
             url: urlValue || 'Not provided',
         };
@@ -411,22 +467,56 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const seed = document.getElementById('seed')?.value?.trim() || '';
                 const url = document.getElementById('url')?.value?.trim() || '';
-                const suggestions = Array.from(document.querySelectorAll('#suggestionsGrid button'))
-                    .map(btn => btn.textContent.trim())
-                    .filter(text => text && !text.includes('Copied'));
+
+                // Prefer the module-scoped cache; fall back to reading DOM buttons.
+                const suggestions = keywordResearchState.suggestions.length > 0
+                    ? keywordResearchState.suggestions
+                    : Array.from(document.querySelectorAll('#suggestionsGrid button'))
+                        .map(btn => btn.textContent.trim())
+                        .filter(text => text && !text.includes('Copied'));
 
                 const pageContext = getPageContextFromInputs();
+                const auditRun = keywordResearchState.auditRun || suggestions.length > 0;
 
-                const auditPayload = {
-                    question: question,
-                    auditData: {
-                        ...pageContext,
-                        seedKeyword: pageContext.seedKeyword || seed,
-                        url: pageContext.url !== 'Not provided' ? pageContext.url : (url || 'Not provided'),
-                        suggestionsCount: suggestions.length,
-                        suggestions: suggestions.slice(0, 20),
-                    },
-                };
+                const failedItems = suggestions.length === 0 && auditRun
+                    ? ['No keyword suggestions generated']
+                    : [];
+
+                const priorityFixes = suggestions.slice(0, 5).map(s => ({
+                    name: s,
+                    module: 'Keyword Suggestions',
+                    score: 0,
+                    impact: '',
+                    desc: '',
+                }));
+
+                const auditPayload = auditRun
+                    ? {
+                        question: question,
+                        auditData: {
+                            auditRun: true,
+                            ...pageContext,
+                            seedKeyword: pageContext.seedKeyword || seed,
+                            url: pageContext.url !== 'Not provided' ? pageContext.url : (url || 'Not provided'),
+                            suggestionsCount: suggestions.length,
+                            suggestions: suggestions.slice(0, 30),
+                            failedItems: failedItems,
+                            priorityFixes: priorityFixes,
+                            snippets: {},
+                            browserMetrics: null,
+                        },
+                    }
+                    : {
+                        question: question,
+                        auditData: {
+                            auditRun: false,
+                            url: pageContext.url !== 'Not provided' ? pageContext.url : (url || 'Not provided'),
+                            seedKeyword: pageContext.seedKeyword || seed,
+                            pageTitle: pageContext.pageTitle || '',
+                            cms: pageContext.cms,
+                            note: 'No keyword research has been run yet on this page. The user is asking before generating suggestions. Answer with general keyword research best practices and, if the question is about keyword ideas, provide 10-20 example keywords relevant to what the user is asking about. Invite them to run the tool for suggestions tailored to their seed keyword or page.',
+                        },
+                    };
 
                 const response = await fetch('https://keyword-research-ai.traffictorch.workers.dev/', {
                     method: 'POST',
@@ -440,7 +530,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (answerContent) {
                     if (data.success) {
-                        answerContent.innerHTML = '🧠 <strong>Traffic Torch AI</strong><br><br>' + renderCodeBlocks(data.answer);
+                        let html = '🧠 <strong>Traffic Torch AI</strong><br><br>' + renderCodeBlocks(data.answer);
+                        if (Array.isArray(data.warnings) && data.warnings.length) {
+                            const warningText = data.warnings.join(' ');
+                            html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+                        }
+                        answerContent.innerHTML = html;
                     } else {
                         answerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
                     }

@@ -8,7 +8,8 @@ import { detectCMS } from '/cms-detect.js';
 import {
   initCodeSnippetModal,
   showCodeForFailure,
-  deriveSelectorsForFailure
+  deriveSelectorsForFailure,
+  extractSnippets
 } from './code-snippet-v1.0.js';
 
 const AEO_AUDIT_API = 'https://aeo-audit.traffictorch.workers.dev/';
@@ -40,6 +41,79 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
+// ─── Head snapshot builder (shared with all other Traffic Torch tools) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 // ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -65,7 +139,6 @@ async function saveAuditHistory(url, toolName) {
     }
   }
 
-  // Guest fallback – same key the dashboard uses
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
   if (stored) {
@@ -89,14 +162,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const analyzeUrl  = document.getElementById('analyze-url-btn');
   const analyzeCode = document.getElementById('analyze-code-btn');
 
-  // Prefill from ?url= or ?input=
   const params = new URLSearchParams(window.location.search);
   const urlParam   = params.get('url');
   const inputParam = params.get('input');
   if (urlParam)   urlInput.value = decodeURIComponent(urlParam);
   if (inputParam) codeInput.value = decodeURIComponent(inputParam);
 
-    // ─── Auto-run when opened with ?url= or ?input= (dashboard Quick Audit / share links) ───
   if (urlParam) {
     setTimeout(() => analyzeUrl.click(), 500);
   } else if (inputParam) {
@@ -109,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return /^https?:\/\//i.test(t) ? t : 'https://' + t;
   };
 
-  // ─── One-time event delegation (no per-render listeners) ───
   document.addEventListener('click', (e) => {
     const toggle = e.target.closest('.fixes-toggle');
     if (toggle) {
@@ -155,10 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // These live in the #module-cards-container section and are always visible.
   renderModuleCards('module-cards-container');
-
-  // One-time init of the "Show the code" modal (native <dialog>, top-layer safe).
   initCodeSnippetModal();
 
   analyzeUrl.addEventListener('click', async () => {
@@ -178,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   async function runAudit(payload) {
-    // ─── Hard reset: clear everything from the previous audit ───
     results.replaceChildren();
     results.classList.remove('hidden');
 
@@ -208,7 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
       if (!data.success) throw new Error(data.error || 'Audit failed');
 
-      // 👇 Save the audit to history so it shows in the dashboard
       const auditSaveUrl = payload?.html ? 'Pasted HTML code' : (payload?.url || data?.url || '');
       await saveAuditHistory(auditSaveUrl, 'AEO Performance');
 
@@ -224,15 +289,17 @@ document.addEventListener('DOMContentLoaded', () => {
       rawHtml, renderedHtml, browserMetrics, meta
     } = data;
 
-    // ─── Fresh CMS detection on every audit ───
     let cmsInfo = { name: 'Custom / Unknown', version: null, confidence: 'unknown', signals: [] };
     let pageContext = {};
+    let headSnapshot = '';
+    let auditDoc = null;
+
     try {
       const doc = new DOMParser().parseFromString(renderedHtml || rawHtml || '', 'text/html');
+      auditDoc = doc;
       const detected = detectCMS({ doc, html: rawHtml || renderedHtml || '', url: url || '' });
       if (detected && detected.name) cmsInfo = detected;
 
-      // ─── Page context for Ask AI (nav/header/footer stripped) ───
       const excerptDoc = doc.cloneNode(true);
       excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
       const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
@@ -245,12 +312,16 @@ document.addEventListener('DOMContentLoaded', () => {
         metaDescription: doc.querySelector('meta[name="description"]')?.getAttribute('content') || '',
         h1: doc.querySelector('h1')?.textContent?.trim() || '',
         pageExcerpt,
+        langAttribute: doc.documentElement?.getAttribute('lang') || '',
+        viewportContent: doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '',
         linkCount: doc.querySelectorAll('a[href]').length,
         imageCount: doc.querySelectorAll('img').length,
         headingCount: doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length,
         ctaCount: doc.querySelectorAll('button, [role="button"], a.cta, .cta, input[type="submit"]').length,
         wordCount: (contentRoot?.textContent || '').trim().split(/\s+/).filter(Boolean).length
       };
+
+      headSnapshot = buildHeadSnapshot(doc);
     } catch (err) {
       console.warn('CMS detection failed:', err);
     }
@@ -271,15 +342,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }));
 
-      document.body.setAttribute('data-url', url || 'Custom HTML Analysis');
+    document.body.setAttribute('data-url', url || 'Custom HTML Analysis');
+    document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
+    document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
+    document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
 
-    // Cache the HTML that produced this report so the "Show the code"
-    // click handler can hand it to the snippet extractor without re-fetching.
     results.dataset.renderedHtml = renderedHtml || rawHtml || payload?.html || '';
+    results.dataset.headSnapshot = headSnapshot;
 
-    // ─── Render the full report ───
     results.innerHTML = `
-      <!-- Overall score -->
       <div class="flex justify-center my-8 sm:my-12 px-2 sm:px-2">
         <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${gradeBorder(overall)}">
           <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall AEO Performance Score</p>
@@ -302,7 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <!-- Radar -->
       <div class="max-w-5xl mx-auto my-16 px-4">
         <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
           <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">AEO Performance Radar</h3>
@@ -311,7 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <!-- Module cards -->
       <div class="grid md:grid-cols-3 gap-8 my-16 max-w-6xl mx-auto px-4">
         ${modules.map(m => {
           const failed = m.failed || [];
@@ -382,10 +451,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('')}
       </div>
 
-      <!-- Live Browser Metrics (Puppeteer) -->
       ${renderBrowserMetricsPanel(browserMetrics)}
 
-      <!-- Priority Fixes -->
       <div class="mt-20 space-y-8 max-w-4xl mx-auto px-4">
         <h2 class="text-4xl md:text-5xl font-black text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Top Priority Fixes</h2>
         ${priorityFixes.length === 0 ? `
@@ -408,10 +475,8 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('')}
       </div>
 
-      <!-- Plugin Solutions -->
       <div id="plugin-solutions-section" class="mt-20"></div>
 
-      <!-- CMS Fixes -->
       <div class="mt-20 max-w-4xl mx-auto px-4">
         <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">Get step-by-step AEO fix instructions tailored to your CMS.</p>
@@ -430,7 +495,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <!-- Ask AI -->
       <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-4">
         <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI</h2>
         <p class="text-center text-gray-600 dark:text-gray-400 mb-6">Ask about any failing metric, how to fix it, or what to prioritise.</p>
@@ -446,7 +510,6 @@ document.addEventListener('DOMContentLoaded', () => {
       <div id="share-dashboard-container" class="mt-16"></div>
     `;
 
-    // ─── Radar chart ───
     setTimeout(() => {
       const canvas = document.getElementById('aeo-radar');
       if (!canvas || typeof Chart === 'undefined') return;
@@ -480,13 +543,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, 150);
 
-    // ─── Plugin solutions (with detected CMS pre-selected) ───
     if (failedMetrics.length) {
       const detectedCms = cmsInfo?.name && cmsInfo.name !== 'Custom / Unknown' ? cmsInfo.name : '';
       renderPluginSolutions(failedMetrics, 'plugin-solutions-section', detectedCms);
     }
 
-    // ─── CMS Fixes handler ───
     const cmsBtn = document.getElementById('cms-fixes-btn');
     const cmsWrap = document.getElementById('cms-fixes-answer-container');
     const cmsOut = document.getElementById('cms-fixes-answer-content');
@@ -515,9 +576,15 @@ document.addEventListener('DOMContentLoaded', () => {
           })
         });
         const d = await r.json();
-        cmsOut.innerHTML = d.success
-          ? renderCodeBlocks(d.answer || '')
-          : '❌ ' + renderCodeBlocks(d.error || 'Unknown error');
+        if (d.success) {
+          let html = renderCodeBlocks(d.answer || '');
+          if (Array.isArray(d.warnings) && d.warnings.length) {
+            html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${d.warnings.join(' ')}</div>` + html;
+          }
+          cmsOut.innerHTML = html;
+        } else {
+          cmsOut.innerHTML = '❌ ' + renderCodeBlocks(d.error || 'Unknown error');
+        }
       } catch (err) {
         cmsOut.innerHTML = '❌ ' + renderCodeBlocks(err.message);
       } finally {
@@ -526,7 +593,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // ─── Ask AI handler ───
     const aiBtn = document.getElementById('ask-ai-btn');
     const aiInput = document.getElementById('ai-question-input');
     const aiWrap = document.getElementById('ai-answer-container');
@@ -540,6 +606,28 @@ document.addEventListener('DOMContentLoaded', () => {
       aiBtn.textContent = 'Thinking…';
       aiWrap.classList.remove('hidden');
       aiOut.textContent = '⏳ Traffic Torching…';
+
+      // Build per-fix HTML snippets from the cached rendered HTML
+      const affectedSnippets = {};
+      const rawHtmlForSnips = results.dataset.renderedHtml || '';
+      if (rawHtmlForSnips && priorityFixes.length) {
+        const snippetSources = priorityFixes.map(f => f.name);
+        modules.forEach(m => {
+          (m.failed || []).forEach(f => {
+            if (!snippetSources.includes(f)) snippetSources.push(f);
+          });
+        });
+        for (const item of snippetSources.slice(0, 5)) {
+          try {
+            const rule = deriveSelectorsForFailure(item);
+            if (rule?.selectors?.length) {
+              const snips = extractSnippets(rawHtmlForSnips, rule.selectors, { limit: 2, maxLen: 400 });
+              if (snips.length) affectedSnippets[item] = snips.map(s => s.html);
+            }
+          } catch {}
+        }
+      }
+
       try {
         const r = await fetch(AEO_AI_API, {
           method: 'POST',
@@ -549,30 +637,75 @@ document.addEventListener('DOMContentLoaded', () => {
             auditData: {
               url: url || 'Custom HTML',
               pageTitle,
+              headSnapshot: headSnapshot,
               ...pageContext,
               overallScore: overall,
+              grade,
               cms: {
                 name: cmsInfo?.name || 'Custom / Unknown',
                 version: cmsInfo?.version || null,
                 confidence: cmsInfo?.confidence || 'unknown'
               },
-              modules: modules.map(m => ({ name: m.name, score: m.score, failed: m.failed })),
-              priorityFixes: priorityFixes.map(f => f.name),
+              modules: modules.map(m => ({
+                name: m.name,
+                score: m.score,
+                failed: m.failed || [],
+                signals: (m.signals || []).map(s => ({
+                  label: s.label,
+                  pass: s.pass,
+                  informational: s.informational || false
+                }))
+              })),
+              failedItems: failedMetrics.map(f => f.name),
+              priorityFixes: priorityFixes.map(f => ({
+                name: f.name,
+                module: f.module,
+                score: f.score,
+                impact: f.impact,
+                desc: f.desc || ''
+              })),
+              snippets: affectedSnippets,
               browserMetrics: browserMetrics ? {
                 cls: browserMetrics.cls,
                 lcp: browserMetrics.lcp,
                 fcp: browserMetrics.fcp,
+                ttfb: browserMetrics.ttfb,
+                tbt: browserMetrics.tbt,
                 longTasks: browserMetrics.longTasks,
                 mutations: browserMetrics.mutations,
-                consoleErrors: browserMetrics.consoleErrors?.length || 0
+                mutationNodes: browserMetrics.mutationNodes,
+                totalResources: browserMetrics.totalResources,
+                totalTransferSize: browserMetrics.totalTransferSize,
+                consoleErrorsCount: browserMetrics.consoleErrors?.length || 0,
+                pageErrorsCount: browserMetrics.pageErrors?.length || 0,
+                failedRequestsCount: (browserMetrics.failedRequests || []).length,
+                renderBlockingRequestsCount: (browserMetrics.renderBlockingRequests || []).length,
+                renderBlockingList: (browserMetrics.renderBlockingRequests || []).slice(0, 10).map((r) => ({
+                  url: String(r.name || r.url || '').slice(0, 200),
+                  type: String(r.type || 'other')
+                })),
+                failedRequestsList: (browserMetrics.failedRequests || []).slice(0, 10).map((r) => {
+                  if (typeof r === 'string') return { url: r.slice(0, 200), failure: '' };
+                  return {
+                    url: String(r.url || r.name || '').slice(0, 200),
+                    failure: String(r.failure || r.errorText || r.status || '').slice(0, 120)
+                  };
+                }),
+                consoleErrorsList: (browserMetrics.consoleErrors || []).slice(0, 5).map((e) => String(e).slice(0, 200))
               } : null
             }
           })
         });
         const d = await r.json();
-        aiOut.innerHTML = d.success
-          ? renderCodeBlocks(d.answer || '')
-          : '❌ ' + renderCodeBlocks(d.error || 'Unknown error');
+        if (d.success) {
+          let html = renderCodeBlocks(d.answer || '');
+          if (Array.isArray(d.warnings) && d.warnings.length) {
+            html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${d.warnings.join(' ')}</div>` + html;
+          }
+          aiOut.innerHTML = html;
+        } else {
+          aiOut.innerHTML = '❌ ' + renderCodeBlocks(d.error || 'Unknown error');
+        }
       } catch (err) {
         aiOut.innerHTML = '❌ ' + renderCodeBlocks(err.message);
       } finally {
@@ -581,7 +714,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // ─── Share dashboard ───
     const shareEl = document.getElementById('share-dashboard-container');
     if (shareEl && typeof initShareModule === 'function') {
       initShareModule(shareEl, {
@@ -617,7 +749,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </summary>
         <div class="mt-8 p-6 md:p-8 bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl space-y-8">
 
-          <!-- Core Web Vitals grid -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="text-center p-4 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">CLS</p>
@@ -641,7 +772,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- Secondary metrics -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="text-center p-3 rounded-xl bg-gray-50 dark:bg-gray-800">
               <p class="text-xs uppercase tracking-wider text-gray-500">DOM Mutations</p>
@@ -661,7 +791,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- Console errors -->
           ${(bm.consoleErrors?.length || 0) + (bm.pageErrors?.length || 0) > 0 ? `
             <div>
               <h4 class="font-bold text-red-600 mb-3">
@@ -678,7 +807,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `}
 
-          <!-- Failed requests -->
           ${bm.failedRequests?.length ? `
             <div>
               <h4 class="font-bold text-orange-600 mb-3">⚠️ ${bm.failedRequests.length} Failed Request(s)</h4>
@@ -688,7 +816,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           ` : ''}
 
-          <!-- Render-blocking resources -->
           ${bm.renderBlockingRequests?.length ? `
             <div>
               <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-3">🚧 ${bm.renderBlockingRequests.length} Render-Blocking Resource(s)</h4>

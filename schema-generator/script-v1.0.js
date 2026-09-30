@@ -8,7 +8,7 @@ import { detectCMS } from '/cms-detect.js';
 const API_PROXY = 'https://full-render-v2.traffictorch.workers.dev/?url=';
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
-// ── PATTERN EDIT 1: renderCodeBlocks at module top ──────────────────
+// ── renderCodeBlocks at module top ──────────────────────────────────
 function renderCodeBlocks(text) {
   if (text === null || text === undefined) return '';
   let escaped = String(text)
@@ -31,7 +31,57 @@ function renderCodeBlocks(text) {
 
   return escaped;
 }
-// ── END PATTERN EDIT 1 ─────────────────────────────────────────────
+
+// ── Head snapshot builder (shared with all Traffic Torch tools) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
 
 // ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
@@ -272,7 +322,7 @@ const initTool = (form, results, progressContainer) => {
 
       const headerLabel = isCodeMode ? 'Pasted JSON-LD' : new URL(url).hostname;
 
-      const { cmsInfo, pageSignals, pageContext } = await fetchLivePageData(url, isCodeMode);
+      const { cmsInfo, pageSignals, pageContext, headSnapshot } = await fetchLivePageData(url, isCodeMode);
 
       const auditSaveUrl = isCodeMode ? 'Pasted JSON-LD' : url;
       await saveAuditHistory(auditSaveUrl, 'Schema Generator');
@@ -338,7 +388,7 @@ const initTool = (form, results, progressContainer) => {
           </div>
         `;
 
-        window.__schemaValidatorData = { ...data, pageUrl: url, isCodeMode, cmsInfo, pageSignals, pageContext };
+        window.__schemaValidatorData = { ...data, pageUrl: url, isCodeMode, cmsInfo, pageSignals, pageContext, headSnapshot };
 
         const sjb = document.getElementById('schema-suggest-json-btn');
         const stb = document.getElementById('schema-suggest-text-btn');
@@ -524,7 +574,7 @@ const initTool = (form, results, progressContainer) => {
         </div>
       `;
 
-      window.__schemaValidatorData = { ...data, pageUrl: url, isCodeMode, cmsInfo, pageSignals, pageContext };
+      window.__schemaValidatorData = { ...data, pageUrl: url, isCodeMode, cmsInfo, pageSignals, pageContext, headSnapshot };
 
       const overrideToggle = document.getElementById('schema-cms-override-toggle');
       const overridePanel  = document.getElementById('schema-cms-override-panel');
@@ -604,45 +654,91 @@ const initTool = (form, results, progressContainer) => {
       askBtn.disabled = true;
       askBtn.textContent = 'Thinking...';
       answerContainer.classList.remove('hidden');
-      // ── PATTERN EDIT 2 (Ask AI loading) ──
       answerContent.innerHTML = '⏳ Traffic Torching...';
 
-        try {
+      try {
         const stored = window.__schemaValidatorData || {};
         const ctx = stored.pageContext || {};
+
+        // Whether an audit has been run yet
+        const auditRun = typeof stored.hasSchema === 'boolean'
+                      || typeof stored.totalErrors === 'number';
 
         const detectedTypes = Array.isArray(stored.detectedTypes) ? stored.detectedTypes : [];
         const hasSchema = !!stored.hasSchema;
         const schemasDetected = hasSchema ? (detectedTypes.length || stored.jsonLdCount || 1) : 0;
         const schemaTypes = detectedTypes.slice(0, 30);
+        const topErrors = Array.isArray(stored.topErrors) ? stored.topErrors : [];
+        const validationResults = Array.isArray(stored.validationResults) ? stored.validationResults : [];
 
-        const auditPayload = {
-          question: question,
-          auditData: {
-            url: stored.pageUrl || document.getElementById('url-input')?.value?.trim() || '',
-            pageTitle: ctx.pageTitle || document.title || null,
-            metaDescription: ctx.metaDescription || null,
-            h1: ctx.h1 || null,
-            pageExcerpt: ctx.pageExcerpt || null,
-            linkCount: ctx.linkCount ?? 0,
-            imageCount: ctx.imageCount ?? 0,
-            headingCount: ctx.headingCount ?? 0,
-            ctaCount: ctx.ctaCount ?? 0,
-            wordCount: ctx.wordCount ?? 0,
-            cms: {
-              name: stored.cmsInfo?.name || 'Custom / Unknown',
-              version: stored.cmsInfo?.version || null,
-              confidence: stored.cmsInfo?.confidence || 'low',
-            },
-            hasSchema,
-            schemasDetected,
-            schemaTypes,
-            jsonLdCount: stored.jsonLdCount ?? 0,
-            totalErrors: stored.totalErrors ?? 0,
-            totalWarnings: stored.totalWarnings ?? 0,
-          },
-        };
-// ── END PATTERN EDIT 3 (v2) ──
+        // Build structured priorityFixes from topErrors
+        const priorityFixes = topErrors.slice(0, 5).map(e => ({
+          name: e.message || 'Schema error',
+          module: 'Schema Validation',
+          score: 0,
+          impact: '',
+          desc: Array.isArray(e.fieldNames) && e.fieldNames.length
+            ? `Fields: ${e.fieldNames.join(', ')}`
+            : ''
+        }));
+
+        // Collect failed item strings from validationResults
+        const failedItems = [];
+        validationResults.forEach(r => {
+          (r.errors || []).forEach(er => failedItems.push(er.message));
+        });
+        if (!failedItems.length) {
+          topErrors.forEach(e => failedItems.push(e.message || 'Schema error'));
+        }
+
+        const auditPayload = auditRun
+          ? {
+              question: question,
+              auditData: {
+                auditRun: true,
+                url: stored.pageUrl || document.getElementById('url-input')?.value?.trim() || '',
+                pageTitle: ctx.pageTitle || document.title || null,
+                metaDescription: ctx.metaDescription || null,
+                h1: ctx.h1 || null,
+                pageExcerpt: ctx.pageExcerpt || null,
+                headSnapshot: stored.headSnapshot || '',
+                langAttribute: '',
+                viewportContent: '',
+                linkCount: ctx.linkCount ?? 0,
+                imageCount: ctx.imageCount ?? 0,
+                headingCount: ctx.headingCount ?? 0,
+                ctaCount: ctx.ctaCount ?? 0,
+                wordCount: ctx.wordCount ?? 0,
+                cms: {
+                  name: stored.cmsInfo?.name || 'Custom / Unknown',
+                  version: stored.cmsInfo?.version || null,
+                  confidence: stored.cmsInfo?.confidence || 'low',
+                },
+                hasSchema,
+                schemasDetected,
+                schemaTypes,
+                jsonLdCount: stored.jsonLdCount ?? 0,
+                totalErrors: stored.totalErrors ?? 0,
+                totalWarnings: stored.totalWarnings ?? 0,
+                failedItems: failedItems.slice(0, 10),
+                priorityFixes: priorityFixes,
+                snippets: {},
+                browserMetrics: null,
+              },
+            }
+          : {
+              question: question,
+              auditData: {
+                auditRun: false,
+                url: document.getElementById('url-input')?.value?.trim() || '',
+                cms: {
+                  name: 'Custom / Unknown',
+                  version: null,
+                  confidence: 'unknown',
+                },
+                note: 'No schema validation has been run yet on this page. The user is asking before running the validator. Answer with general JSON-LD schema best practices and invite them to run the validator for site-specific advice.',
+              },
+            };
 
         const response = await fetch('https://schema-ai.traffictorch.workers.dev/', {
           method: 'POST',
@@ -654,9 +750,13 @@ const initTool = (form, results, progressContainer) => {
 
         const data = await response.json();
 
-        // ── PATTERN EDIT 2 (Ask AI success/error) ──
         if (data.success) {
-          answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+          let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+          if (Array.isArray(data.warnings) && data.warnings.length) {
+            const warningText = data.warnings.join(' ');
+            html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+          }
+          answerContent.innerHTML = html;
         } else {
           answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
         }
@@ -678,6 +778,7 @@ async function fetchLivePageData(url, isCodeMode) {
     cmsInfo: { name: 'Custom / Unknown', version: null, confidence: 'low', signals: [] },
     pageSignals: {},
     pageContext: {},
+    headSnapshot: '',
   };
   if (isCodeMode || !url) return fallback;
 
@@ -704,6 +805,7 @@ async function fetchLivePageData(url, isCodeMode) {
       cmsInfo,
       pageSignals: extractPageSignals(doc),
       pageContext: extractPageContext(doc),
+      headSnapshot: buildHeadSnapshot(doc),
     };
   } catch (e) {
     console.warn('Live page data fetch failed:', e);
@@ -711,7 +813,7 @@ async function fetchLivePageData(url, isCodeMode) {
   }
 }
 
-// ── PATTERN EDIT 3 helper: build page context block ──
+// ── Build page context block ──
 function extractPageContext(doc) {
   if (!doc) return {};
   const excerptDoc = doc.cloneNode(true);
@@ -733,7 +835,6 @@ function extractPageContext(doc) {
 
   return { pageTitle, metaDescription, h1, pageExcerpt, linkCount, imageCount, headingCount, ctaCount, wordCount };
 }
-// ── END PATTERN EDIT 3 helper ──
 
 // ──────────────────────────────────────────────
 // Extract page signals for AI suggest worker
@@ -918,7 +1019,6 @@ async function requestSchemaAiFix() {
   const answerContainer = document.getElementById('schema-cms-answer-container');
   const answerContent   = document.getElementById('schema-cms-answer-content');
   answerContainer?.classList.remove('hidden');
-  // ── PATTERN EDIT 2 (CMS Fixes loading) ──
   if (answerContent) answerContent.innerHTML = '⏳ Traffic Torching...';
 
   try {
@@ -942,7 +1042,6 @@ async function requestSchemaAiFix() {
     if (!res.ok) throw new Error(`Server error (${res.status})`);
     const result = await res.json();
 
-    // ── PATTERN EDIT 2 (CMS Fixes success/error) ──
     if (result.success && result.answer && answerContent) {
       answerContent.innerHTML = '';
       const header = document.createElement('div');

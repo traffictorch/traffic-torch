@@ -11,13 +11,13 @@ import { computeReadability } from './modules/readability.js';
 import { computeUniqueInsights } from './modules/uniqueInsights.js';
 import { computeAntiAiSafety } from './modules/antiAiSafety.js';
 import { canRunTool } from '/main-v1.1.js';
-// Replace old share/feedback imports with the new dashboard
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import {
   initCodeSnippetModal,
   showCodeForFailure,
-  deriveSelectorsForFailure
+  deriveSelectorsForFailure,
+  extractSnippets
 } from './code-snippet-v1.0.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
@@ -47,6 +47,79 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
+// ─── Head snapshot builder (shared with all other Traffic Torch tools) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 // ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
@@ -72,7 +145,6 @@ async function saveAuditHistory(url, toolName) {
     }
   }
 
-  // Guest fallback – same key the dashboard uses
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
   if (stored) {
@@ -100,7 +172,6 @@ const WEIGHTS = {
   uniqueInsights: 0.08,
   antiAiSafety: 0.05
 };
-// Sanity check — warn if the weights don't sum to 1.0
 (() => {
   const sum = Object.values(WEIGHTS).reduce((a, b) => a + b, 0);
   if (Math.abs(sum - 1) > 0.0001) {
@@ -110,7 +181,6 @@ const WEIGHTS = {
 
 const clampScore = (n) => Math.max(0, Math.min(100, Math.round(n)));
 
-  // Auto-fill HTML from ?input= query parameter (for VS Code extension + direct links)
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
@@ -119,22 +189,16 @@ const clampScore = (n) => Math.max(0, Math.min(100, Math.round(n)));
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-
-        // Optional: Auto-click the Analyze button after a tiny delay
         const analyzeBtn = document.getElementById('analyze-code-btn');
         if (analyzeBtn) {
-          setTimeout(() => {
-            analyzeBtn.click();
-          }, 800);   // Give the page time to render
+          setTimeout(() => { analyzeBtn.click(); }, 800);
         }
       }
     }
   }
 
-  // Run when page loads
   window.addEventListener('load', autoFillFromUrl);
 
-// Wait for required elements with better reliability
 const waitForElements = () => {
   const form = document.getElementById('audit-form');
   const results = document.getElementById('results');
@@ -143,12 +207,10 @@ const waitForElements = () => {
   if (form && results && progressContainer) {
     initTool(form, results, progressContainer);
   } else {
-    // Try again next frame or after a short delay
     setTimeout(waitForElements, 10);
   }
 };
 
-// Main initialization
 const initTool = (form, results, progressContainer) => {
   initCodeSnippetModal();
   const progressText = document.getElementById('progress-text');
@@ -245,7 +307,6 @@ const initTool = (form, results, progressContainer) => {
         html = await res.text();
       }
 
-      // 👇 Save the audit to history so it shows in the dashboard
       const auditSaveUrl = analyzedUrl === 'Pasted HTML Code' ? 'Pasted HTML code' : analyzedUrl;
       await saveAuditHistory(auditSaveUrl, 'GEO / AI Search');
 
@@ -253,16 +314,22 @@ const initTool = (form, results, progressContainer) => {
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const cmsInfo = detectCMS({ doc, url: analyzedUrl !== 'Pasted HTML Code' ? analyzedUrl : '' });
+
+      // ── Cache page snapshot + CMS info for the Ask AI handler ──
+      results.dataset.renderedHtml = html || '';
+      results.dataset.headSnapshot = buildHeadSnapshot(doc);
+      document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
+      document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
+      document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
+
       let mainText = '';
       const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
       const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
       mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
       const first300 = mainText.slice(0, 1200);
-      // ✅ FIX 5: Build an HTML snippet from the cleaned main element for bold detection
       const first300Html = mainEl.innerHTML.slice(0, 2000);
 
-      // ─── Page context for AI enrichment ─────────────────────────────
       const excerptDoc = doc.cloneNode(true);
       excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
       const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
@@ -273,6 +340,8 @@ const initTool = (form, results, progressContainer) => {
 
       const metaDescription = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
       const h1Text = doc.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim() || '';
+      const langAttribute = doc.documentElement?.getAttribute('lang') || '';
+      const viewportContent = doc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
       const linkCount = doc.querySelectorAll('a[href]').length;
       const imageCount = doc.querySelectorAll('img').length;
       const headingCount = doc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
@@ -306,7 +375,6 @@ const initTool = (form, results, progressContainer) => {
       const antiData = computeAntiAiSafety(mainText, readData.variationScore);
       const antiAiSafety = clampScore(antiData.score);
 
-      // ✅ FIX 7: Weighted overall using WEIGHTS, then clamped 0–100
       const rawOverall =
         answerability  * WEIGHTS.answerability +
         structuredData * WEIGHTS.structuredData +
@@ -319,7 +387,6 @@ const initTool = (form, results, progressContainer) => {
 
       const yourScore = clampScore(rawOverall);
 
-      // ✅ FIX 8: Clamp module scores at render for defense-in-depth
       const modules = [
         { name: "Answerability", score: clampScore(answerability), desc: "Direct answers in first 300 words, FAQ schema, step-by-step structure" },
         { name: "Structured Data", score: clampScore(structuredData), desc: "JSON-LD presence and relevant types" },
@@ -382,7 +449,6 @@ const initTool = (form, results, progressContainer) => {
 
       const topLowScoring = lowScoring.slice(0, 3);
 
-      // One fix template per module — every low-scoring module now produces a fix
       const fixTemplates = {
         "Answerability":      { title: "Add Direct Answer in Opening",        emoji: "💡", gradient: "from-red-500/10 border-red-500",       color: "text-red-600",    what: "A clear, bold, quotable answer AI engines can cite directly", how: "Add a bold definition or summary in first 150–250 words. Use H2 questions and numbered steps.", why: "Answerability is the #1 factor for AI citation and source selection" },
         "EEAT Signals":       { title: "Add Author Bio & Photo",              emoji: "👤", gradient: "from-red-500/10 border-red-500",       color: "text-red-600",    what: "Visible byline proving who wrote this", how: "Headshot + name + bio + credentials + social links", why: "Boosts Expertise & Trust by 30–40 points — Google's #1 E-E-A-T signal" },
@@ -564,7 +630,6 @@ const initTool = (form, results, progressContainer) => {
         "Conversational Tone": ["Direct \"you\" address (>5)", "Personal \"I/we\" sharing", "Engaging questions asked", "Reader pain points acknowledged"],
         "Readability": ["Good Flesch score (>60)", "Natural sentence variation", "Low passive voice", "Low complex words (<15%)"],
         "Unique Insights": ["First-hand experience markers", "Dated/timely results mentioned", "Interviews/quotes included", "Deep content (1500+ words)"],
-        // ✅ FIX 6: Added "High sentence burstiness" so it displays under Anti-AI Safety
         "Anti-AI Safety": ["Low word repetition", "No predictable sentence starts", "High sentence burstiness"]
       };
 
@@ -576,7 +641,6 @@ const initTool = (form, results, progressContainer) => {
 
       results.dataset.renderedHtml = html || '';
       results.innerHTML = `
-        <!-- Overall Score Card (AI Search) -->
         <div class="flex justify-center my-8 sm:my-12 px-0 sm:px-6">
           <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${yourScore >= 80 ? 'border-green-500' : yourScore >= 60 ? 'border-orange-400' : 'border-red-500'}">
             <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Overall AI Search Score</p>
@@ -616,7 +680,6 @@ const initTool = (form, results, progressContainer) => {
             })()}
           </div>
         </div>
-        <!-- On-Page Health Radar Chart -->
         <div class="max-w-5xl mx-auto my-16 px-4">
           <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
             <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
@@ -827,7 +890,7 @@ const initTool = (form, results, progressContainer) => {
             </div>
           </div>
         </div>
-                <div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-4">
+        <div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-4">
           <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
           <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
             Get step-by-step AEO/GEO fix instructions tailored to your CMS.
@@ -892,7 +955,6 @@ const initTool = (form, results, progressContainer) => {
           </div>
         </div>
 
-        <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
         <div id="share-dashboard-container" class="mt-16"></div>
       `;
 
@@ -942,7 +1004,6 @@ const initTool = (form, results, progressContainer) => {
         } catch (e) {}
       }, 150);
 
-      // ─── Set data-url ──────────────────────────────────────────────
       let fullUrl = document.getElementById('url-input').value.trim();
       let displayUrl = 'traffictorch.net';
       if (fullUrl) {
@@ -958,11 +1019,8 @@ const initTool = (form, results, progressContainer) => {
       }
       document.body.setAttribute('data-url', displayUrl);
 
-      // ─── Prepare and initialise share dashboard ──────────────────
-      // Build module scores from the 'modules' array
       const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
 
-      // Build passed/failed metrics from the granular tests
       const passedMetrics = [];
       const failedMetrics = [];
       tests.forEach(t => {
@@ -972,7 +1030,6 @@ const initTool = (form, results, progressContainer) => {
           failedMetrics.push(t.text);
         }
       });
-      // Also add module-level pass/fail (score >= 70 as pass)
       modules.forEach(m => {
         if (m.score >= 70) {
           passedMetrics.push(m.name);
@@ -981,7 +1038,6 @@ const initTool = (form, results, progressContainer) => {
         }
       });
 
-      // Use the analyzedUrl (from input)
       const shareUrl = analyzedUrl !== 'Pasted HTML Code' ? analyzedUrl : '';
 
       const shareData = {
@@ -999,11 +1055,9 @@ const initTool = (form, results, progressContainer) => {
 
       const shareContainer = document.getElementById('share-dashboard-container');
       if (shareContainer) {
-        // Only initialise if we have a valid URL (skip for pasted HTML)
         if (shareUrl) {
           initShareModule(shareContainer, shareData);
         } else {
-          // For pasted HTML, show a placeholder
           shareContainer.innerHTML = `
             <div class="text-center text-gray-500 dark:text-gray-400 p-4 border border-gray-300 dark:border-gray-600 rounded-xl">
               <p>Sharing is available for live URLs only. Please run the analysis with a URL to share this report.</p>
@@ -1012,7 +1066,7 @@ const initTool = (form, results, progressContainer) => {
         }
       }
 
-            const askBtn = document.getElementById('ask-ai-btn');
+      const askBtn = document.getElementById('ask-ai-btn');
       const askInput = document.getElementById('ai-question-input');
       const modelSelect = document.getElementById('ai-model-select');
       const answerContainer = document.getElementById('ai-answer-container');
@@ -1032,19 +1086,35 @@ const initTool = (form, results, progressContainer) => {
             return;
           }
 
-          const selectedModel = modelSelect?.value || '@cf/deepseek-ai/deepseek-v4-flash-0731';
-
           newAskBtn.disabled = true;
           newAskBtn.textContent = 'Thinking...';
           answerContainer.classList.remove('hidden');
           answerContent.innerHTML = '⏳ Traffic Torching...';
 
           try {
-            // Build module scores for the payload
             const moduleScoresMap = {};
             modules.forEach(m => {
               moduleScoresMap[m.name.toLowerCase().replace(/\s+/g, '')] = m.score;
             });
+
+            // ── HTML snippets for the top failed tests ──
+            const affectedSnippets = {};
+            const rawHtmlForSnips = results.dataset.renderedHtml || '';
+            if (rawHtmlForSnips) {
+              const snippetSources = prioritisedFixes.map(f => f.title);
+              failedMetrics.forEach(m => { if (!snippetSources.includes(m)) snippetSources.push(m); });
+              for (const item of snippetSources.slice(0, 5)) {
+                try {
+                  const rule = deriveSelectorsForFailure(item);
+                  if (rule?.selectors?.length) {
+                    const snips = extractSnippets(rawHtmlForSnips, rule.selectors, { limit: 2, maxLen: 400 });
+                    if (snips.length) affectedSnippets[item] = snips.map(s => s.html);
+                  }
+                } catch {}
+              }
+            }
+
+            const headSnapshot = results.dataset.headSnapshot || '';
 
             const auditPayload = {
               question: question,
@@ -1054,6 +1124,9 @@ const initTool = (form, results, progressContainer) => {
                 metaDescription,
                 h1: h1Text,
                 pageExcerpt,
+                headSnapshot: headSnapshot,
+                langAttribute: langAttribute,
+                viewportContent: viewportContent,
                 linkCount,
                 imageCount,
                 headingCount,
@@ -1080,12 +1153,20 @@ const initTool = (form, results, progressContainer) => {
                   hasPerson: structData.flags.hasPerson || false
                 },
                 failedItems: failedMetrics.slice(0, 10),
-                priorityFixes: prioritisedFixes.map(f => f.title + ': ' + f.how),
+                priorityFixes: prioritisedFixes.map(f => ({
+                  name: f.title,
+                  module: f.module,
+                  score: 0,
+                  impact: '',
+                  desc: f.how || ''
+                })),
+                snippets: affectedSnippets,
                 cms: {
                   name: (typeof cmsInfo !== 'undefined' && cmsInfo && cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown',
                   version: (typeof cmsInfo !== 'undefined' && cmsInfo) ? (cmsInfo.version || null) : null,
                   confidence: (typeof cmsInfo !== 'undefined' && cmsInfo) ? (cmsInfo.confidence || 'low') : 'low'
-                }
+                },
+                browserMetrics: null
               }
             };
 
@@ -1100,7 +1181,12 @@ const initTool = (form, results, progressContainer) => {
             const data = await response.json();
 
             if (data.success) {
-              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+              let html2 = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+              if (Array.isArray(data.warnings) && data.warnings.length) {
+                const warningText = data.warnings.join(' ');
+                html2 = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html2;
+              }
+              answerContent.innerHTML = html2;
             } else {
               answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
             }
@@ -1222,9 +1308,14 @@ const initTool = (form, results, progressContainer) => {
             const headerText = '🛠️ CMS Fixes for ' +
               (data.cms || selectedCms) +
               (data.cmsVersion ? ' ' + data.cmsVersion : '');
+            let warningHtml = '';
+            if (Array.isArray(data.warnings) && data.warnings.length) {
+              warningHtml = `<div style="margin-top:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${data.warnings.join(' ')}</div>`;
+            }
             cmsAnswerContent.innerHTML =
               `<div style="font-weight:bold;margin-bottom:0.75rem">${headerText}</div>` +
-              `<div>${renderCodeBlocks(data.answer || '')}</div>`;
+              `<div>${renderCodeBlocks(data.answer || '')}</div>` +
+              warningHtml;
           } else if (cmsAnswerContent) {
             cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
           }
@@ -1239,7 +1330,7 @@ const initTool = (form, results, progressContainer) => {
         }
       });
 
-        document.addEventListener('click', (e) => {
+      document.addEventListener('click', (e) => {
         const showCodeBtn = e.target.closest('.show-code-btn');
         if (showCodeBtn) {
           e.preventDefault();
@@ -1249,7 +1340,6 @@ const initTool = (form, results, progressContainer) => {
           return;
         }
 
-        // Ask AI link → scroll to #ask-ai-section, prefill, focus
         const askLink = e.target.closest('.ask-ai-link');
         if (askLink) {
           e.preventDefault();
@@ -1264,7 +1354,6 @@ const initTool = (form, results, progressContainer) => {
           return;
         }
 
-        // Show / Hide Fixes toggle — independent per card (same as Lighthouse Plus)
         const toggleBtn = e.target.closest('.fixes-toggle');
         if (toggleBtn) {
           e.preventDefault();

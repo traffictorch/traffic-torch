@@ -15,7 +15,8 @@ import { fixFor } from './module-explanations-v1.0.js';
 import {
   initCodeSnippetModal,
   showCodeForFailure,
-  deriveSelectorsForFailure
+  deriveSelectorsForFailure,
+  extractSnippets
 } from './code-snippet-v1.0.js';
 
 function escapeHtml(s) {
@@ -47,6 +48,79 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
+// ─── Head snapshot builder (shared with all other Traffic Torch tools) ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
@@ -75,7 +149,6 @@ async function saveAuditHistory(url, toolName) {
     }
   }
 
-  // Guest fallback – same key the dashboard uses
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
   if (stored) {
@@ -111,7 +184,6 @@ async function saveAuditHistory(url, toolName) {
     }
   }
 
-  // Run after DOM is ready (more reliable than window.load for this tool)
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(autoFillAndRunFromUrl, 150);
   });
@@ -199,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // All original helper functions restored
   function countWords(text) {
     return text.trim().split(/\s+/).filter(w => w.length > 0).length;
   }
@@ -441,7 +512,6 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (value >= 50) { statusMessage = 'Needs Improvement'; statusEmoji = '⚠️'; }
     else                  { statusMessage = 'Needs Work';        statusEmoji = '❌'; }
 
-    // ── Categorise each factor: failed ❌ / warning ⚠️ / passed ✅ ──
     const failed = [];
     const warnings = [];
     const passed = [];
@@ -473,7 +543,6 @@ document.addEventListener('DOMContentLoaded', () => {
       else failed.push(item);
     });
 
-    // Header order: ❌ failed → ⚠️ warning → ✅ passed
     const headerItems = [...failed, ...warnings, ...passed];
 
     const headerHTML = headerItems.map(item => `
@@ -482,7 +551,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </p>
     `).join('');
 
-    // Fixes panel = failed + warnings (failed first)
     const fixableItems = [...failed, ...warnings];
 
     const fixesPanelHTML = fixableItems.length > 0
@@ -504,14 +572,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('')
       : '<p class="text-center text-gray-700 dark:text-gray-300 text-base py-6 font-medium">All checks passed — no fixes needed!</p>';
 
-    // ── Ask AI prefill (includes detected CMS) ─────────────────────
     const failedNames = fixableItems.map(i => i.name).join(', ') || 'none';
     const cmsLabel = cmsInfo?.name && cmsInfo.name !== 'Custom / Unknown'
       ? ` (CMS: ${cmsInfo.name}${cmsInfo.version ? ' ' + cmsInfo.version : ''})`
       : '';
     const askQuestion = `How do I improve my ${moduleName} score? Failed checks: ${failedNames}${cmsLabel}`;
 
-    // ── Help guide deep link ───────────────────────────────────────
     const moduleSlugMap = {
       'On-Page SEO': 'on-page-seo',
       'Technical SEO': 'technical-seo',
@@ -597,13 +663,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const PROXY = 'https://full-render-v2.traffictorch.workers.dev/';
 
-  // Shared analysis runner
   async function runProductSEOAnalysis(source, isCode = false) {
     const canProceed = await canRunTool('product-seo-tool');
     if (!canProceed) return;
 
     results.innerHTML = '';
     delete results.dataset.renderedHtml;
+    delete results.dataset.headSnapshot;
     loading.classList.remove('hidden');
     loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
@@ -656,6 +722,13 @@ async function performAnalysis(source, isCode = false) {
 
       const doc = new DOMParser().parseFromString(html, 'text/html');
       const cmsInfo = detectCMS({ doc, url: inputUrl !== 'Pasted HTML Code' ? inputUrl : '' });
+
+      // ── Cache page snapshot + CMS info for the Ask AI handler ──
+      results.dataset.renderedHtml = html || '';
+      results.dataset.headSnapshot = buildHeadSnapshot(doc);
+      document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
+      document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
+      document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
 
       // 👇 Save the audit to history so it shows in the dashboard
       const auditSaveUrl = isCode ? 'Pasted HTML code' : (inputUrl || '');
@@ -899,7 +972,8 @@ async function performAnalysis(source, isCode = false) {
       pluginSection.id = 'plugin-solutions-section';
       pluginSection.className = 'mt-16 px-1';
       wrapper.appendChild(pluginSection);
-            // ─── CMS Fixes ──────────────────────────────────────────────
+
+      // ─── CMS Fixes ──────────────────────────────────────────────
       const cmsSection = document.createElement('div');
       cmsSection.id = 'cms-fixes-section';
       cmsSection.className = 'mt-20 max-w-4xl mx-auto px-2';
@@ -955,6 +1029,7 @@ async function performAnalysis(source, isCode = false) {
         </div>
       `;
       wrapper.appendChild(cmsSection);
+
       const askAISection = document.createElement('div');
       askAISection.id = 'ask-ai-section';
       askAISection.className = 'mt-20 max-w-4xl mx-auto px-2';
@@ -975,13 +1050,11 @@ async function performAnalysis(source, isCode = false) {
       const pdfSection = document.createElement('div');
       pdfSection.className = 'text-center my-16';
       pdfSection.innerHTML = `
-        <!-- Share Dashboard Container (replaces old share/feedback buttons) -->
         <div id="share-dashboard-container" class="mt-16"></div>
       `;
       wrapper.appendChild(pdfSection);
       results.appendChild(wrapper);
-      // Cache the raw source HTML so the click handler can reach it
-      results.dataset.renderedHtml = html || '';
+
       if (typeof renderPluginSolutions === 'function') {
         renderPluginSolutions(failedFactors, 'plugin-solutions-section');
       } else {
@@ -1037,11 +1110,9 @@ async function performAnalysis(source, isCode = false) {
         } catch (e) {}
       }, 150);
 
-      // ─── Set data-url for the analyzed page ──────────────────────────
       const analyzedUrl = inputUrl === 'Pasted HTML Code' ? 'HTML Code Analysis' : inputUrl;
       document.body.setAttribute('data-url', analyzedUrl);
 
-      // ─── Prepare and initialise share dashboard ──────────────────────
       const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
 
       const passedMetrics = [];
@@ -1088,7 +1159,7 @@ async function performAnalysis(source, isCode = false) {
         `;
       }
       
-            const askBtn = document.getElementById('ask-ai-btn');
+      const askBtn = document.getElementById('ask-ai-btn');
       const askInput = document.getElementById('ai-question-input');
       const modelSelect = document.getElementById('ai-model-select');
       const answerContainer = document.getElementById('ai-answer-container');
@@ -1108,8 +1179,6 @@ async function performAnalysis(source, isCode = false) {
             return;
           }
 
-          const selectedModel = modelSelect?.value || '@cf/deepseek-ai/deepseek-v4-flash-0731';
-
           newAskBtn.disabled = true;
           newAskBtn.textContent = 'Thinking...';
           answerContainer.classList.remove('hidden');
@@ -1128,6 +1197,9 @@ async function performAnalysis(source, isCode = false) {
 
             const metaDescription = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
             const h1Text = doc.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim() || '';
+            const headSnapshot = results.dataset.headSnapshot || '';
+            const langAttribute = doc.documentElement?.getAttribute('lang') || '';
+            const viewportContent = seoData.viewportContent || '';
 
             const ctaCount = (() => {
               const textPattern = /\b(buy|add to (cart|bag)|shop now|purchase|checkout|get started|subscribe|sign up|learn more|contact us|get a quote|book now|order now|request a demo)\b/i;
@@ -1140,6 +1212,24 @@ async function performAnalysis(source, isCode = false) {
               return n;
             })();
 
+            // ── HTML snippets for the top priority fixes ──
+            const affectedSnippets = {};
+            if (html) {
+              const snippetSources = priorityFixes.map(f => f.name);
+              failedFactors.slice(0, 5).forEach(f => {
+                if (!snippetSources.includes(f.name)) snippetSources.push(f.name);
+              });
+              for (const item of snippetSources.slice(0, 5)) {
+                try {
+                  const rule = deriveSelectorsForFailure(item);
+                  if (rule?.selectors?.length) {
+                    const snips = extractSnippets(html, rule.selectors, { limit: 2, maxLen: 400 });
+                    if (snips.length) affectedSnippets[item] = snips.map(s => s.html);
+                  }
+                } catch {}
+              }
+            }
+
             const auditPayload = {
               question: question,
               auditData: {
@@ -1148,6 +1238,9 @@ async function performAnalysis(source, isCode = false) {
                 metaDescription,
                 h1: h1Text,
                 pageExcerpt,
+                headSnapshot: headSnapshot,
+                langAttribute: langAttribute,
+                viewportContent: viewportContent,
                 linkCount: seoData.linkCount,
                 imageCount: seoData.imageCount,
                 headingCount: seoData.headingCount,
@@ -1175,7 +1268,15 @@ async function performAnalysis(source, isCode = false) {
                   hasSocialMeta: seoData.hasSocialMeta || false
                 },
                 failedItems: failedMetrics,
-                priorityFixes: priorityFixes.map(f => f.name + ' (' + f.module + ')')
+                priorityFixes: priorityFixes.map(f => ({
+                  name: f.name,
+                  module: f.module,
+                  score: f.score ?? 0,
+                  impact: '',
+                  desc: f.howToFix || ''
+                })),
+                snippets: affectedSnippets,
+                browserMetrics: null
               }
             };
 
@@ -1190,7 +1291,12 @@ async function performAnalysis(source, isCode = false) {
             const data = await response.json();
 
             if (data.success) {
-              answerContent.innerHTML = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+              let html2 = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+              if (Array.isArray(data.warnings) && data.warnings.length) {
+                const warningText = data.warnings.join(' ');
+                html2 = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html2;
+              }
+              answerContent.innerHTML = html2;
             } else {
               answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
             }
@@ -1204,7 +1310,7 @@ async function performAnalysis(source, isCode = false) {
         });
       }
       
-            // ─── CMS Fixes Logic ──────────────────────────────────────────
+      // ─── CMS Fixes Logic ──────────────────────────────────────────
       const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
       const cmsBadgeDot        = document.getElementById('cms-badge-dot');
       const cmsBadgeName       = document.getElementById('cms-badge-name');
@@ -1299,19 +1405,26 @@ async function performAnalysis(source, isCode = false) {
 
           if (data.success && cmsAnswerContent) {
             cmsAnswerContent.innerHTML = '';
-
             const header = document.createElement('div');
             header.style.fontWeight = 'bold';
             header.style.marginBottom = '0.75rem';
             header.textContent = '🛠️ CMS Fixes for ' +
               (data.cms || selectedCms) +
               (data.cmsVersion ? ' ' + data.cmsVersion : '');
-
             const body = document.createElement('div');
             body.innerHTML = renderCodeBlocks(data.answer || '');
-
+            let warningEl = '';
+            if (Array.isArray(data.warnings) && data.warnings.length) {
+              warningEl = `<div style="margin-top:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${data.warnings.join(' ')}</div>`;
+            }
+            cmsAnswerContent.innerHTML = '';
             cmsAnswerContent.appendChild(header);
             cmsAnswerContent.appendChild(body);
+            if (warningEl) {
+              const w = document.createElement('div');
+              w.innerHTML = warningEl;
+              cmsAnswerContent.appendChild(w.firstChild);
+            }
           } else if (cmsAnswerContent) {
             cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
           }
@@ -1326,7 +1439,6 @@ async function performAnalysis(source, isCode = false) {
         }
       });
 
-      // ─── Scroll to results ──────────────────────────────────────────────
       const offset = 140;
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
@@ -1365,7 +1477,6 @@ if (codeAnalyzeBtn) {
   });
 }
 
-// Shared URL logic - safely guarded to prevent URL constructor error on HTML paste
 const urlParams = new URLSearchParams(window.location.search);
 const sharedUrl = urlParams.get('url');
 if (sharedUrl && urlInput) {
@@ -1382,7 +1493,6 @@ if (sharedUrl && urlInput) {
 
   // ─── Delegated click handler for dynamic module cards + Ask AI ──
   document.addEventListener('click', (e) => {
-    // 1) Fixes toggle
     const toggle = e.target.closest('.fixes-toggle');
     if (toggle) {
       const card = toggle.closest('.score-card') || toggle.closest('.module-card');
@@ -1398,7 +1508,6 @@ if (sharedUrl && urlInput) {
       return;
     }
 
-    // 2) Ask AI link
     const askLink = e.target.closest('.ask-ai-link');
     if (askLink) {
       e.preventDefault();
@@ -1416,7 +1525,6 @@ if (sharedUrl && urlInput) {
       return;
     }
 
-    // 3) Show the code button
     const showCodeBtn = e.target.closest('.show-code-btn');
     if (showCodeBtn) {
       e.preventDefault();
