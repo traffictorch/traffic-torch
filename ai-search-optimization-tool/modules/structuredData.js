@@ -49,13 +49,14 @@ export function computeStructuredData(doc) {
   if (hasFaqHowto) structuredData += 18;
   if (hasPerson) structuredData += 22;
 
-  return {
-    score: structuredData,
-    flags: {
-      hasValidJsonLd,
-      hasArticle,
-      hasFaqHowto,
-      hasPerson
-    }
-  };
+const MAX = 20 + 35 + 18 + 22; // = 95
+return {
+  score: Math.min(100, (structuredData / MAX) * 100),
+  flags: {
+    hasValidJsonLd,
+    hasArticle,
+    hasFaqHowto,
+    hasPerson
+  }
+};
 }

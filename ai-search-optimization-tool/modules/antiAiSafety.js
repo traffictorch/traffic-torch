@@ -11,12 +11,13 @@ export function computeAntiAiSafety(mainText, variationScore) {
   if (variationScore > 70) antiAiSafety += 50;
   if (repeatedWords <= 2) antiAiSafety += 30;
   if (!hasPredictable) antiAiSafety += 20;
-  return {
-    score: antiAiSafety,
-    flags: {
-      highBurstiness: variationScore > 70,
-      lowRepetition: repeatedWords <= 2,
-      noPredictable: !hasPredictable
-    }
-  };
+const MAX = 50 + 30 + 20; // = 100
+return {
+  score: Math.min(100, (antiAiSafety / MAX) * 100),
+  flags: {
+    highBurstiness: variationScore > 70,
+    lowRepetition: repeatedWords <= 2,
+    noPredictable: !hasPredictable
+  }
+};
 }

@@ -16,13 +16,14 @@ export function computeUniqueInsights(mainText, words) {
   if (hasDated) uniqueInsights += 20;
   if (hasInterviews) uniqueInsights += 15;
 
-  return {
-    score: Math.min(100, uniqueInsights),
-    flags: {
-      hasInsights,
-      hasDated,
-      hasInterviews,
-      deepContent: words > 1500
-    }
-  };
+const MAX = 35 + 35 + 20 + 15; // = 105
+return {
+  score: Math.min(100, (uniqueInsights / MAX) * 100),
+  flags: {
+    hasInsights,
+    hasDated,
+    hasInterviews,
+    deepContent: words > 1500
+  }
+};
 } 

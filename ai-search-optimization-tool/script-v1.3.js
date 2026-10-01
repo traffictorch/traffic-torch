@@ -328,7 +328,7 @@ const initTool = (form, results, progressContainer) => {
       mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
       mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
       const first300 = mainText.slice(0, 1200);
-      const first300Html = mainEl.innerHTML.slice(0, 2000);
+      const first300Html = mainEl.innerHTML.slice(0, 1200);
 
       const excerptDoc = doc.cloneNode(true);
       excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
@@ -967,6 +967,9 @@ const initTool = (form, results, progressContainer) => {
           const gridColor = 'rgba(156, 163, 175, 0.3)';
           const borderColor = '#fb923c';
           const fillColor = 'rgba(251, 146, 60, 0.15)';
+          if (window.myChart && typeof window.myChart.destroy === 'function') {
+  window.myChart.destroy();
+}
           window.myChart = new Chart(ctx, {
             type: 'radar',
             data: {

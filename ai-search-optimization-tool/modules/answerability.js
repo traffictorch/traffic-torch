@@ -11,7 +11,9 @@ export function computeAnswerability(doc, first300Text, first300Html = '') {
   const hasBoldInFirst = /<(strong|b|em|mark|u)\b/i.test(first300Html) ||
                          /class=["'][^"']*?(bold|strong)[^"']*?["']/i.test(first300Html);
 
-  const hasDefinition = /\b(is|means|refers to|defined as|stands for|known as|typically refers|commonly understood as|represents|equals|consists of|involves|includes|contains|features|covers|describes|explains|shows|outlines|details|breaks down|summarizes|highlights|focuses on|centers on)\b/i.test(first300Text.toLowerCase());
+  const hasDefinition =
+  /\b(means|refers to|is defined as|stands for|commonly understood as|represents|can be described as|is known as)\b/i
+    .test(first300Text.toLowerCase());
 
   const hasFAQSchema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
     .some(s => s.textContent.includes('"FAQPage"') || s.textContent.includes('"HowTo"'));
@@ -22,22 +24,25 @@ export function computeAnswerability(doc, first300Text, first300Html = '') {
     return txt.length > 15 && txt.length < 120 && questionWords.test(txt) && /\?/.test(txt);
   });
 
-  const hasSteps = /\b(step|guide|how to|instructions|follow these|here's how|process|walkthrough|tutorial|do this|start by|next|then|finally|first|second|third|begin with|let's start|to get started|quick steps|simple steps|easy way|method|approach|technique|tip|trick|secret|pro tip|best way|recommended way|one way|another way|option|alternative|sequence|order|phase|stage)\b/i.test(first300Text.toLowerCase());
+  const hasSteps =
+  /\b(step[- ]by[- ]step|follow these steps|here'?s how|start by|first,|then,|next,|finally,|to get started|walkthrough|tutorial)\b/i
+    .test(first300Text.toLowerCase());
 
   if (hasBoldInFirst || hasDefinition) answerability += 30;
   if (hasFAQSchema) answerability += 25;
   if (hasQuestionH2) answerability += 15;
   if (hasSteps) answerability += 20;
 
-  return {
-    score: Math.min(100, answerability),   // ✅ clamped
-    flags: {
-      hasBoldInFirst,
-      hasDefinition,
-      hasFAQSchema,
-      hasQuestionH2,
-      hasSteps,
-      strongOpening: first300Text.length > 600
-    }
-  };
+const MAX = 15 + 30 + 25 + 15 + 20; // = 105
+return {
+  score: Math.min(100, (answerability / MAX) * 100),
+  flags: {
+    hasBoldInFirst,
+    hasDefinition,
+    hasFAQSchema,
+    hasQuestionH2,
+    hasSteps,
+    strongOpening: first300Text.length > 600
+  }
+};
 }

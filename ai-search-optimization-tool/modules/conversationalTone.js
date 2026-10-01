@@ -2,8 +2,8 @@
 export function computeConversational(mainText) {
   const youCount = (mainText.match(/\b(you|your|yours|yourself|yourselves|ya|y'all|yall|you're|you've|you'll|you'd)\b/gi) || []).length;
   const iWeCount = (mainText.match(/\b(I|we|our|ours|us|my|mine|myself|ourselves|I'm|we're|we've|I've|our team|the team)\b/gi) || []).length;
-  const sentencesWithQuestion = mainText.split(/[.!?]+/).filter(s => s.trim().includes('?') && s.trim().length > 20);
-  const questions = sentencesWithQuestion.length;
+  const questions = (mainText.match(/[^.!?]+\?/g) || [])
+  .filter(s => s.trim().length > 20).length;
   const painRegex = /\b(struggle|problem|issue|challenge|frustrat|hard|difficult|pain|annoy|confus|overwhelm|fail|mistake|wrong|tired|miss|ignore|skip|outdat|generic|robot|buried|hidden|waste|lose|never ranks|no traffic|invisible|confusing)\b/gi;
   const painPointsNearYou = (mainText.match(new RegExp(`\\b(you|your|you're)\\b.*?${painRegex.source}`, 'gi')) || []).length;
 
@@ -13,13 +13,14 @@ export function computeConversational(mainText) {
   if (questions > 3) conversational += 20;
   if (painPointsNearYou > 2) conversational += 20;
 
-  return {
-    score: Math.min(100, conversational),   // ✅ clamped
-    flags: {
-      directYou: youCount > 5,
-      personalIWe: iWeCount > 5,            // ✅ matches +25 threshold
-      engagingQuestions: questions > 3,     // ✅ matches +20 threshold
-      painPoints: painPointsNearYou > 2
-    }
-  };
+const MAX = 30 + 25 + 20 + 20; // = 95
+return {
+  score: Math.min(100, (conversational / MAX) * 100),
+  flags: {
+    directYou: youCount > 5,
+    personalIWe: iWeCount > 5,
+    engagingQuestions: questions > 3,
+    painPoints: painPointsNearYou > 2
+  }
+};
 }

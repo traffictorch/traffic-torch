@@ -34,15 +34,16 @@ export function computeReadability(mainText) {
   else if (complexRatio < 18) readability += 12;
   else if (complexRatio < 25) readability += 5;
 
-  return {
-    score: Math.min(100, readability),
-    flags: {
-      goodFlesch: flesch > 60,
-      naturalVariation: variationScore > 70,
-      lowPassive: passivePatterns.length < 5,
-      lowComplex: complexRatio < 15
-    },
-    variationScore,
-    words
-  };
+const MAX = 45 + 25 + 20 + 20; // = 110
+return {
+  score: Math.min(100, (readability / MAX) * 100),
+  flags: {
+    goodFlesch: flesch > 60,
+    naturalVariation: variationScore > 70,
+    lowPassive: passivePatterns.length < 5,
+    lowComplex: complexRatio < 15
+  },
+  variationScore,
+  words
+};
 }
