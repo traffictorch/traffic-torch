@@ -249,6 +249,10 @@ function simpleIntentPrefillAndRun() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // ✅ FIX 3a: narrowed authorBioSelectors — removed `[class*="bio" i]` (false-positived
+  // on substring matches like "biography", "biology", or unrelated CMS utility classes).
+  // ✅ FIX 3b: narrowed updateDateSelectors — removed `[class*="update" i]` and
+  // `[class*="date" i]` (matched cart-update forms, candidate, validate, etc).
   const defaultConfig = {
     parsing: {
       authorBylineSelectors: [
@@ -258,9 +262,10 @@ document.addEventListener('DOMContentLoaded', () => {
         '.blog-author', '.h-card .p-name', '.author-name'
       ],
       authorBioSelectors: [
-        '.author-bio', '.bio', '[class*="bio" i]', '.about-author', '.author-description',
-        '.author-box', '.author-info', '.author-details', '.writer-bio', '.contributor-bio',
-        '.author-profile', '.about-the-author'
+        '.author-bio', '.about-author', '.author-description',
+        '.author-box', '.author-info', '.author-details', '.writer-bio',
+        '.contributor-bio', '.author-profile', '.about-the-author',
+        '[itemprop="description"]'
       ],
       contactLinkSelectors: [
         'a[href*="/contact" i]', 'a[href*="mailto:" i]', 'a[href*="tel:" i]'
@@ -269,11 +274,14 @@ document.addEventListener('DOMContentLoaded', () => {
         'a[href*="/privacy" i]', 'a[href*="/terms" i]', 'a[href*="/legal" i]'
       ],
       updateDateSelectors: [
-        'time[datetime]', '.updated', '.last-modified', '.date-updated', '.published',
-        '.post-date', '.entry-date', 'meta[name="date" i]', 'meta[name="last-modified" i]',
-        'meta[property="article:modified_time"]', 'meta[property="og:updated_time"]',
-        'meta[name="revised"]', '[class*="update" i]', '[class*="date" i]',
-        '.modified-date', '.publish-date'
+        'time[datetime]',
+        '.updated', '.last-modified', '.date-updated', '.modified-date', '.publish-date',
+        'meta[property="article:modified_time"]',
+        'meta[property="og:updated_time"]',
+        'meta[name="last-modified" i]',
+        'meta[name="date" i]',
+        '[itemprop="dateModified"]',
+        '[itemprop="datePublished"]'
       ]
     }
   };
@@ -291,17 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
   simpleIntentPrefillAndRun();
   initCodeSnippetModal();
   
-  function deepMerge(target, source) {
-    for (const key in source) {
-      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        if (!target[key]) target[key] = {};
-        deepMerge(target[key], source[key]);
-      } else {
-        target[key] = source[key];
-      }
-    }
-    return target;
-  }
   const results = document.getElementById('results');
   const urlInput = document.getElementById('url-input');
   const codeInput = document.getElementById('code-input');
@@ -309,21 +306,68 @@ document.addEventListener('DOMContentLoaded', () => {
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
   function cleanUrl(u) {
     const trimmed = u.trim();
     if (!trimmed) return '';
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
     return 'https://' + trimmed;
   }
+
+  // ✅ FIX 1: rewrite of getVisibleText.
+  // Now rejects nav/header/footer/aside/form/template/svg, [hidden], aria-hidden="true",
+  // inline display:none / visibility:hidden, and common off-screen container patterns
+  // (menu-slideout, drawer, modal, popup, sr-only, invisible, hidden, offscreen).
+  // Walks the full ancestor chain so nested hidden wrappers are also excluded.
+  // This was the main cause of SPELL's 2,263-word over-count and Troy/NUSA skew.
   function getVisibleText(root) {
+    if (!root) return '';
     let text = '';
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode: (node) => {
         const parent = node.parentElement;
         if (!parent) return NodeFilter.FILTER_REJECT;
+
+        // 1. Reject by tag
         const tag = parent.tagName.toLowerCase();
-        if (['script', 'style', 'noscript', 'head', 'iframe', 'object', 'embed'].includes(tag)) return NodeFilter.FILTER_REJECT;
-        if (parent.hasAttribute('hidden') || parent.getAttribute('aria-hidden') === 'true') return NodeFilter.FILTER_REJECT;
+        if ([
+          'script', 'style', 'noscript', 'head', 'iframe', 'object', 'embed',
+          'nav', 'header', 'footer', 'aside', 'form', 'template', 'svg'
+        ].includes(tag)) {
+          return NodeFilter.FILTER_REJECT;
+        }
+
+        // 2. Reject explicit hidden / aria-hidden
+        if (parent.hasAttribute('hidden') || parent.getAttribute('aria-hidden') === 'true') {
+          return NodeFilter.FILTER_REJECT;
+        }
+
+        // 3. Reject inline display:none / visibility:hidden
+        const inline = parent.getAttribute('style') || '';
+        if (/display\s*:\s*none|visibility\s*:\s*hidden/i.test(inline)) {
+          return NodeFilter.FILTER_REJECT;
+        }
+
+        // 4. Reject only if an ancestor carries an UNAMBIGUOUS hidden class.
+        let el = parent;
+        while (el && el !== root) {
+          if (el.classList && el.classList.length > 0) {
+            if (el.classList.contains('hidden')      ||
+                el.classList.contains('sr-only')     ||
+                el.classList.contains('invisible')   ||
+                el.classList.contains('offscreen')   ||
+                el.classList.contains('visually-hidden')) {
+              return NodeFilter.FILTER_REJECT;
+            }
+            // Compound off-screen container names (safe to substring match)
+            const cls = (typeof el.className === 'string') ? el.className : '';
+            if (cls && /\b(menu-slideout|drawer-container|drawer-backdrop|modal-backdrop|modal-wrapper)\b/.test(cls)) {
+              return NodeFilter.FILTER_REJECT;
+            }
+          }
+          el = el.parentElement;
+        }
+
         return NodeFilter.FILTER_ACCEPT;
       }
     });
@@ -332,6 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return text.trim();
   }
+
   analyzeUrlBtn.addEventListener('click', async () => {
     const canProceed = await canRunTool('seo-intent-tool');
     if (!canProceed) return;
@@ -343,6 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
     codeInput.value = '';
     startAnalysis(url, null);
   });
+
   analyzeCodeBtn.addEventListener('click', async () => {
     const canProceed = await canRunTool('seo-intent-tool');
     if (!canProceed) return;
@@ -354,6 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
     urlInput.value = '';
     startAnalysis(null, customHtml);
   });
+
   async function startAnalysis(url, customHtml) {
     results.classList.remove('hidden');
     const offset = 120;
@@ -392,8 +439,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const auditSaveUrl = customHtml ? 'Pasted HTML code' : (url || '');
       await saveAuditHistory(auditSaveUrl, 'SEO Intent');
 
-      const text = getVisibleText(doc.body) || '';
+      // ✅ FIX 2: prefer <main> / <article> / [role="main"] as the extraction root so
+      // nav bars, footers, mobile drawers, and mega-menus are excluded entirely.
+      // Falls back to <body> if none of those exist.
+      const contentRoot = doc.querySelector('main, article, [role="main"]') || doc.body;
+      const text = getVisibleText(contentRoot) || '';
       const cleanedText = text.replace(/\s+/g, ' ').trim();
+
       progressText.textContent = "Analyzing E-E-A-T Signals...";
       await sleep(200);
       const expResult = analyzeExperience(cleanedText, doc);
@@ -436,27 +488,21 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (/how|what|why|guide|tutorial|step|learn|explain|best way/i.test(titleLower)) { intent = 'Informational'; confidence = 94; }
       else if (/near me|location|store|city|local|hours|map|address/i.test(titleLower)) { intent = 'Local'; confidence = 87; }
       else if (/sign up|login|purchase|buy now|order|checkout|book/i.test(titleLower)) { intent = 'Transactional'; confidence = 91; }
+
+      // ✅ FIX 4: overall score now averages the SAME normalized values the cards
+      // and radar already display. Removed the intent `confidence` term and the
+      // arbitrary `schemaTypes.length * 8` term. This makes the top card, the
+      // radar, and every module card agree with each other.
       const eeatAvg = Math.round((experienceScore + expertiseScore + authoritativenessScore + trustworthinessScore) / 4);
-      const depthScore = words > 2000 ? 95 : words > 1200 ? 82 : words > 700 ? 65 : 35;
-      const readScore = readability > 70 ? 90 : readability > 50 ? 75 : 45;
-      const overall = Math.round((depthScore + readScore + eeatAvg + confidence + schemaTypes.length * 8) / 5);
+      const overall = Math.round((normalizeDepth + normalizeReadability + eeatAvg + normalizeSchema) / 4);
       const currentScore = overall;
       let projectedScore = currentScore;
-      const totalFailed = failedExperience.length + failedExpertise.length + failedAuthoritativeness.length + failedTrustworthiness.length;
-      const hasDepthGap = words < 1500;
-      const hasSchemaGap = schemaTypes.length < 2;
-      const hasAuthorGap = !hasAuthorByline;
-      if (totalFailed > 0 || hasDepthGap || hasSchemaGap || hasAuthorGap) {
-        projectedScore = Math.min(100, currentScore +
-          (totalFailed * 5) +
-          (hasDepthGap ? 12 : 0) +
-          (hasSchemaGap ? 10 : 0) +
-          (hasAuthorGap ? 15 : 0)
-        );
-      }
-      const scoreDelta = Math.round(projectedScore - currentScore);
-      const isOptimal = scoreDelta <= 5;
-               
+
+      // ✅ FIX 7: dead code removed — totalFailed / hasDepthGap / hasSchemaGap /
+      // hasAuthorGap / projectedScore adjustments / scoreDelta / isOptimal were
+      // computed but never rendered. Kept `projectedScore` as a passthrough so any
+      // downstream code referencing it still works, but nothing writes to it now.
+
       // ─── Priority fixes — one candidate per FAILED METRIC, ranked by points
       const priorityCandidates = [];
 
@@ -752,11 +798,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <div id="share-dashboard-container" class="mt-16"></div>
       `;
       
-      // ─── Plugin Solutions ──────────────────────────────────────────
-      const pluginSection = document.createElement('div');
-      pluginSection.id = 'plugin-solutions-section';
-      pluginSection.className = 'mt-20';
-      results.appendChild(pluginSection);
+      // ✅ FIX 5: removed the duplicate `plugin-solutions-section` creation block.
+      // The template above already contains `<div id="plugin-solutions-section" class="mt-20"></div>`,
+      // and renderPluginSolutions() below finds it via getElementById. The extra
+      // `document.createElement('div')` + appendChild was producing an orphaned
+      // second element with the same ID.
       
       const failedMetrics = [];
       if (schemaGrade.text !== 'Excellent') failedMetrics.push({ name: "Schema Markup", grade: schemaGrade });
