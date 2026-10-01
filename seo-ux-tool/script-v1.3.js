@@ -303,7 +303,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const canProceed = await canRunTool('seo-ux-tool');
-    if (!canProceed) return;
+    if (!canProceed) {
+      if (progressContainer) progressContainer.classList.add('hidden');
+      return;
+    }
 
     progressText.textContent = 'Fetching page...';
 
@@ -359,7 +362,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const canProceed = await canRunTool('seo-ux-tool');
-      if (!canProceed) return;
+      if (!canProceed) {
+        if (progressContainer) progressContainer.classList.add('hidden');
+        return;
+      }
 
       const htmlCode = codeInput.value.trim();
       if (!htmlCode || htmlCode.length < 50) {
@@ -491,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
       impact: issue.impact || (100 - overallScore)
     }));
 
-    const yourScore = Math.round(overallScore * 0.92);
+    const yourScore = overallScore; // fixed: was * 0.92
     setTimeout(() => {
       const priorityContainer = document.getElementById('priority-cards-container');
       if (priorityContainer) {
@@ -555,13 +561,11 @@ document.addEventListener('DOMContentLoaded', () => {
         checks = [
           { text: 'Viewport meta tag correct', passed: !modIssues.some(i => i.issue.includes('Viewport')) },
           { text: 'Web app manifest linked', passed: !modIssues.some(i => i.issue.includes('manifest')) },
-          { text: 'Homescreen icons (192px+) provided', passed: !modIssues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) },
-          { text: 'Service worker', passed: !modIssues.some(i => i.issue.includes('service worker')) }
+          { text: 'Homescreen icons (192px+) provided', passed: !modIssues.some(i => i.issue.includes('homescreen') || i.issue.includes('icon')) }
         ];
       } else if (mod.id === 'perf') {
         checks = [
-          { text: 'Page weight reasonable (<300KB HTML)', passed: !modIssues.some(i => i.issue.includes('Page weight')) },
-          { text: 'Number of HTTP requests', passed: !modIssues.some(i => i.issue.includes('HTTP requests')) },
+          { text: 'HTML payload reasonable (<120KB)', passed: !modIssues.some(i => i.issue.includes('HTML payload')) },
           { text: 'Render-blocking resources', passed: !modIssues.some(i => i.issue.includes('render-blocking')) },
           { text: 'Web fonts optimized', passed: !modIssues.some(i => i.issue.includes('web font') || i.issue.includes('font')) }
         ];
@@ -701,9 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "All images have meaningful alt text",
         "Web app manifest linked",
         "Homescreen icons (192px+) provided",
-        "Service worker",
-        "Page weight reasonable (<300KB HTML)",
-        "Number of HTTP requests",
+        "HTML payload reasonable (<120KB)",
         "Render-blocking resources",
         "Web fonts optimized",
         "Form fields properly labeled",
@@ -726,15 +728,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (issueName.includes('alt text')) issueName = supportedMetricNames[4];
             if (issueName.includes('manifest')) issueName = supportedMetricNames[5];
             if (issueName.includes('homescreen') || issueName.includes('icon')) issueName = supportedMetricNames[6];
-            if (issueName.includes('service worker')) issueName = supportedMetricNames[7];
-            if (issueName.includes('Page weight')) issueName = supportedMetricNames[8];
-            if (issueName.includes('HTTP requests')) issueName = supportedMetricNames[9];
-            if (issueName.includes('Render-blocking')) issueName = supportedMetricNames[10];
-            if (issueName.includes('Web fonts')) issueName = supportedMetricNames[11];
-            if (issueName.includes('Form fields')) issueName = supportedMetricNames[12];
-            if (issueName.includes('calls-to-action')) issueName = supportedMetricNames[13];
-            if (issueName.includes('Breadcrumb')) issueName = supportedMetricNames[14];
-            if (issueName.includes('HTTPS') || issueName.includes('mixed content')) issueName = supportedMetricNames[15];
+            if (issueName.includes('HTML payload')) issueName = supportedMetricNames[7];
+            if (issueName.includes('Render-blocking')) issueName = supportedMetricNames[8];
+            if (issueName.includes('Web fonts')) issueName = supportedMetricNames[9];
+            if (issueName.includes('Form fields')) issueName = supportedMetricNames[10];
+            if (issueName.includes('calls-to-action')) issueName = supportedMetricNames[11];
+            if (issueName.includes('Breadcrumb')) issueName = supportedMetricNames[12];
+            if (issueName.includes('HTTPS') || issueName.includes('mixed content')) issueName = supportedMetricNames[13];
             if (supportedMetricNames.includes(issueName)) {
               failedMetrics.push({
                 name: issueName,
@@ -749,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         pluginSection.innerHTML = `
           <div class="mt-20 text-center">
-            <p class="text-xl text-gray-400">No issues found among the 16 supported areas that need plugin fixes.</p>
+            <p class="text-xl text-gray-400">No issues found among the 14 supported areas that need plugin fixes.</p>
           </div>
         `;
       }
@@ -887,7 +887,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const viewToggle = document.getElementById('view-toggle');
       const deviceToggle = document.getElementById('device-toggle');
       if (previewIframe && phoneFrame) {
-        previewIframe.src = url;
+        if (currentAnalysisMode === 'code') {
+          previewIframe.srcdoc = html;
+        } else {
+          previewIframe.src = url;
+        }
         let isMobile = true;
         let isIphone = true;
         if (viewToggle) {
@@ -911,7 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (previewErr) {}
 
     // ─── Set data-url ──────────────────────────────────────────────
-    const analyzedUrl = originalInput || url || 'Code Analysis';
+    const analyzedUrl = currentAnalysisMode === 'code' ? 'Pasted HTML code' : (originalInput || url || 'Code Analysis');
     document.body.setAttribute('data-url', analyzedUrl);
 
     // ─── Prepare and initialise share dashboard ──────────────────
@@ -1148,7 +1152,7 @@ document.addEventListener('DOMContentLoaded', () => {
               cmsVersion: selectedVersion,
               cmsConfidence: cmsInfo.confidence,
               cmsSignals: cmsInfo.signals,
-              url: url || null,
+              url: currentAnalysisMode === 'code' ? null : (url || null),
               pageTitle: doc?.title || null,
               overallScore: overallScore,
               scores: {

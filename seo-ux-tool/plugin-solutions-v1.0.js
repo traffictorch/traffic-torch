@@ -476,7 +476,7 @@ const pluginData = {
       }
     ]
   },
-  "Page weight reasonable (<300KB HTML)": {
+  "Page weight reasonable (<120KB HTML)": {
     WordPress: [
       {
         name: "Autoptimize",

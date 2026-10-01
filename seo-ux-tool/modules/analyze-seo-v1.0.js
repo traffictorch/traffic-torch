@@ -2,20 +2,34 @@ export function analyzeSEO(html, doc) {
     let score = 100;
     const issues = [];
     const title = doc.querySelector('title')?.textContent.trim() || '';
-    const desc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
+
+    // Meta description with raw HTML fallback
+    let desc = doc.querySelector('meta[name="description"]')?.content?.trim() || '';
+    if (!desc && html) {
+      const match = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i);
+      if (match) desc = match[1].trim();
+    }
+
     const mainHeadingElement = doc.querySelector('h1') || doc.querySelector('h2') || doc.querySelector('h3');
     const mainHeadingText = mainHeadingElement?.textContent.trim() || '';
+
+    // Improved primary keyword extraction: take the part before a pipe, but keep the full phrase
     let primaryKeywordRaw = '';
     if (title) {
-      const sections = title.split(/[\|\–\-\—]/);
-      primaryKeywordRaw = sections[0].trim();
+      // Split by pipe to remove brand name after pipe
+      const parts = title.split('|');
+      primaryKeywordRaw = parts[0].trim();
+      // If there's a dash separator (space-dash-space), we might still want to keep the whole phrase for better matching
     }
+
     const cleanedKeyword = primaryKeywordRaw
       .toLowerCase()
       .replace(/\b(the|a|an|and|or|best|top|official|tool|analyzer|analysis|vs|comparison|torch|traffic)\b/g, '')
       .replace(/[^\w\s]/g, '')
       .trim();
+
     const keywordParts = cleanedKeyword.split(/\s+/).filter(part => part.length >= 3);
+
     function fuzzyMatch(headingLower) {
       if (keywordParts.length === 0) return true;
       let matches = 0;
@@ -25,8 +39,10 @@ export function analyzeSEO(html, doc) {
         else if (headingLower.split(' ').some(word => word.length >= 4 && (word.includes(part) || part.includes(word)))) matches += 0.5;
       });
       const ratio = matches / keywordParts.length;
-      return ratio >= 0.4 || matches >= 2;
+      // Lower threshold slightly to 0.3 for better tolerance
+      return ratio >= 0.3 || matches >= 2;
     }
+
     if (primaryKeywordRaw && mainHeadingText) {
       const headingLower = mainHeadingText.toLowerCase();
       if (!fuzzyMatch(headingLower)) {
@@ -127,4 +143,4 @@ export function analyzeSEO(html, doc) {
       });
     }
     return { score: Math.max(0, Math.round(score)), issues };
-  }
+}

@@ -9,7 +9,9 @@ export function analyzeAccess(html, doc) {
       if (lvl > prev + 1) skipped = true;
       prev = lvl;
     });
-    const formControls = Array.from(doc.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="image"]), textarea, select'));
+    const formControls = Array.from(doc.querySelectorAll(
+  'input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]), textarea, select'
+));
 const unlabeled = formControls.filter(el => {
   // Skip buttons/submits without need for label unless they have visible text
   if (el.tagName === 'INPUT' && (el.type === 'button' || el.type === 'submit' || el.type === 'reset')) {

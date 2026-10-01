@@ -19,7 +19,7 @@ const moduleExplanations = [
     id: "performance",
     emoji: "⚡",
     name: "Performance",
-    what: "Performance measures loading speed, Core Web Vitals (LCP, FID, CLS), resource optimization, and server response times. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#performance\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
+    what: "Performance measures loading speed, Core Web Vitals (LCP, INP, CLS), resource optimization, and server response times. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#performance\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
     how: "We analyze paint timings, resource sizes, render-blocking assets, and provide lab-based simulations of real-user metrics. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#performance-how\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>",
     why: "Fast sites improve user satisfaction, lower bounce rates, and are heavily weighted in search rankings. <a href=\"https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/#performance-why\" class=\"text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1\">Learn more →</a>"
   },
