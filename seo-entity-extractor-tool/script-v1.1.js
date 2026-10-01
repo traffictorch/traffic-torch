@@ -1,19 +1,23 @@
-// SEO Entity Tool script-v1.0.js
+// seo-entity-extractor-tool/script-v1.1.js
 import { canRunTool } from '/main-v1.1.js';
 import { initShareModule } from '/share-module.js';
-// ── Module imports ──────────────────────────────────────────────
+
 import { analyzeCoverage } from './modules/coverage.js';
 import { analyzeSalience } from './modules/salience.js';
 import { analyzeRelationships } from './modules/relationships.js';
 import { analyzePractices } from './modules/practices.js';
 import { analyzeReadiness } from './modules/readiness.js';
-// ── Show-the-code modal module (shared UI helper, lives in tool folder) ──
+
 import {
   initCodeSnippetModal,
   showCodeForFailure,
   deriveSelectorsForFailure,
   extractSnippets
 } from './code-snippet-v1.0.js';
+
+// ── Module-scope caches ──
+let lastAuditData = null;
+let lastRenderedHtml = '';
 
 function renderCodeBlocks(text) {
   if (text === null || text === undefined) return '';
@@ -38,9 +42,6 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
-// Cache of the most recent successful audit so Ask AI has real page context
-let lastAuditData = null;
-
 // Minimal URL Prefill + Auto Submit
 function simplePrefillAndRun() {
   const params = new URLSearchParams(window.location.search);
@@ -49,16 +50,10 @@ function simplePrefillAndRun() {
   if (urlParam) {
     const cleanUrl = decodeURIComponent(urlParam).trim();
     const urlInput = document.getElementById('url-input');
-    if (urlInput) {
-      urlInput.value = cleanUrl;
-    }
+    if (urlInput) urlInput.value = cleanUrl;
 
     const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
-    if (urlAnalyzeBtn) {
-      setTimeout(() => {
-        urlAnalyzeBtn.click();
-      }, 300);
-    }
+    if (urlAnalyzeBtn) setTimeout(() => urlAnalyzeBtn.click(), 300);
   }
 
   const inputData = params.get('input');
@@ -66,13 +61,8 @@ function simplePrefillAndRun() {
     const textarea = document.getElementById('code-input');
     if (textarea) {
       textarea.value = decodeURIComponent(inputData);
-
       const analyzeBtn = document.getElementById('analyze-code-btn') || document.getElementById('code-analyze-btn');
-      if (analyzeBtn) {
-        setTimeout(() => {
-          analyzeBtn.click();
-        }, 300);
-      }
+      if (analyzeBtn) setTimeout(() => analyzeBtn.click(), 300);
     }
   }
 }
@@ -86,7 +76,6 @@ const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
 const ANALYZE_ENDPOINT = 'https://entity-ai-proxy.traffictorch.workers.dev/entity-analyze';
 
-// ── Save audit to history (auth user → API, guest → localStorage) ──
 async function saveAuditHistory(url, toolName) {
   const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
   const auditUrl = url || 'Pasted HTML code';
@@ -99,23 +88,15 @@ async function saveAuditHistory(url, toolName) {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          url: auditUrl,
-          tool_name: toolName,
-          score: null
-        })
+        body: JSON.stringify({ url: auditUrl, tool_name: toolName, score: null })
       });
       return;
-    } catch (e) {
-      // fall through to guest storage
-    }
+    } catch (e) { /* fall through to guest */ }
   }
 
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
-  if (stored) {
-    try { entries = JSON.parse(stored).entries || []; } catch {}
-  }
+  if (stored) { try { entries = JSON.parse(stored).entries || []; } catch {} }
   entries.unshift({
     _localId: Date.now() + '_' + Math.random(),
     url: auditUrl,
@@ -127,20 +108,15 @@ async function saveAuditHistory(url, toolName) {
   localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
 }
 
-// ── Small HTML escaper (used by the fixes template for safe rendering) ──
 function escapeHtml(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-function isShortContent(wordCount) {
-  return wordCount < 400;
-}
-
 function getGrade(score) {
   if (score >= 80) return { text: 'Excellent', emoji: '✅', color: 'text-green-600 dark:text-green-400' };
-  if (score >= 40) return { text: 'Average', emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
+  if (score >= 40) return { text: 'Average',   emoji: '⚠️', color: 'text-orange-500 dark:text-orange-400' };
   return { text: 'Needs Work', emoji: '❌', color: 'text-red-600 dark:text-red-400' };
 }
 
@@ -155,11 +131,11 @@ function getModuleExplanation(moduleName) {
       why: 'High salience signals the main topics clearly, boosting the page’s ability to rank for core queries and appear in featured snippets or AI overviews.'
     },
     'Relationships': {
-      what: 'Analyzes co-occurrence, type synergy, and clustering among entities to detect meaningful topical connections.',
+      what: 'Analyzes co-occurrence in real paragraphs, type synergy, and clustering among entities to detect meaningful topical connections.',
       why: 'Strong relationships create semantic clusters, improving topical depth and helping search engines associate the page with related concepts, entities, and user intent.'
     },
     'Practices': {
-      what: 'Evaluates on-page semantic optimizations: schema readiness, heading usage of entities, and name consistency.',
+      what: 'Evaluates on-page semantic optimizations: actual JSON-LD schema, heading usage of entities, name consistency, and image alt quality.',
       why: 'Good practices make entities machine-readable, enhance crawlability, and increase chances of rich results, Knowledge Graph inclusion, and better UX signals.'
     },
     'Readiness': {
@@ -170,16 +146,14 @@ function getModuleExplanation(moduleName) {
   return explanations[moduleName] || { what: 'No explanation available.', why: '' };
 }
 
-// Dual-input runAnalysis
 async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   const results = document.getElementById('results');
-
   const loading = document.getElementById('loading');
+
   if (loading) {
     loading.classList.remove('hidden');
     loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-
   results.innerHTML = '';
   results.classList.add('hidden');
 
@@ -206,6 +180,7 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       }
     }
   }, 4500);
+
   const heavyTimeout = setTimeout(() => {
     if (progressText) {
       progressText.textContent = "Still working — heavy page or slow server detected...";
@@ -227,52 +202,63 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       });
     } catch (fetchErr) {
       clearTimeout(timeoutId);
-      if (fetchErr.name === 'AbortError') throw new Error('Request timed out after 90 seconds. Page may be too large or server slow.');
+      if (fetchErr.name === 'AbortError') throw new Error('Request timed out after 180 seconds. Page may be too large or server slow.');
       throw new Error(`Network/fetch error: ${fetchErr.message}`);
     }
     clearTimeout(timeoutId);
     clearTimeout(heavyTimeout);
     clearInterval(interval);
-    progressText.textContent = "Processing response...";
+    if (progressText) progressText.textContent = "Processing response...";
+
     if (!res.ok) {
       let errData = {};
       try { errData = await res.json(); } catch {}
       throw new Error(errData.error || errData.message || `Server error ${res.status} ${res.statusText}`);
     }
     let data;
-    try {
-      data = await res.json();
-    } catch (parseErr) {
-      throw new Error('Invalid response format from server (not valid JSON)');
-    }
+    try { data = await res.json(); }
+    catch (parseErr) { throw new Error('Invalid response format from server (not valid JSON)'); }
 
     const auditSaveUrl = inputType === 'code' ? 'Pasted HTML code' : (url || '');
     await saveAuditHistory(auditSaveUrl, 'Entity Extractor');
 
-    const loading = document.getElementById('loading');
     if (loading) loading.classList.add('hidden');
     results.classList.remove('hidden');
     setTimeout(() => {
       results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      const offset = 100;
-      setTimeout(() => window.scrollBy({ top: -offset, behavior: 'smooth' }), 300);
+      setTimeout(() => window.scrollBy({ top: -100, behavior: 'smooth' }), 300);
     }, 100);
 
+    // ─── Extract data ───
     const extracted = data.extracted || [];
-    const coverage = analyzeCoverage(extracted);
-    const salience = analyzeSalience(extracted);
-    const relationships = analyzeRelationships(extracted);
-    const practices = analyzePractices(extracted);
-    const readiness = analyzeReadiness(coverage.score, salience.score, relationships.score, practices.score);
+
+    // ─── Build pageData for modules ───
+    const pageData = {
+      wordCount:  data.wordCount  || 0,
+      headings:   data.headings   || [],
+      jsonLd:     data.jsonLd     || [],
+      meta:       data.meta       || {},
+      paragraphs: data.paragraphs || [],
+      images:     data.images     || [],
+      title:      data.title      || ''
+    };
+
+    // ─── Run modules with real structural data ───
+    const coverage      = analyzeCoverage(extracted, pageData.wordCount);
+    const salience      = analyzeSalience(extracted, pageData);
+    const relationships = analyzeRelationships(extracted, pageData);
+    const practices     = analyzePractices(extracted, pageData);
+    const readiness     = analyzeReadiness(coverage.score, salience.score, relationships.score, practices.score);
+
     const modules = [
-      { name: 'Coverage', result: coverage, color: '#10b981', desc: 'How many & diverse entities are recognized (topical breadth)' },
-      { name: 'Salience', result: salience, color: '#f59e0b', desc: 'How prominent/important the entities are (authority strength)' },
+      { name: 'Coverage',      result: coverage,      color: '#10b981', desc: 'How many & diverse entities are recognized (topical breadth)' },
+      { name: 'Salience',      result: salience,      color: '#f59e0b', desc: 'How prominent/important the entities are (authority strength)' },
       { name: 'Relationships', result: relationships, color: '#8b5cf6', desc: 'How well entities connect & form clusters' },
-      { name: 'Practices', result: practices, color: '#ec4899', desc: 'On-page SEO & semantic best practices compliance' },
-      { name: 'Readiness', result: readiness, color: '#3b82f6', desc: 'Overall preparedness for semantic search & ranking' }
+      { name: 'Practices',     result: practices,     color: '#ec4899', desc: 'On-page SEO & semantic best practices compliance' },
+      { name: 'Readiness',     result: readiness,     color: '#3b82f6', desc: 'Overall preparedness for semantic search & ranking' }
     ];
 
-    // ─── Cache audit data for Ask AI ───
+    // ─── Cache for Ask AI ───
     lastAuditData = {
       overallScore: readiness.score,
       modules: modules.map(m => ({ name: m.name, score: m.result.score })),
@@ -287,17 +273,22 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       wordCount: data.wordCount || 0,
       pageExcerpt: data.pageExcerpt || ''
     };
+
+    // ─── Cache HTML for snippet modal ───
+    lastRenderedHtml = data.renderedHtml || rawCode || '';
+
     const typeCounts = extracted.reduce((acc, e) => {
       const t = e.type || 'OTHER';
       acc[t] = (acc[t] || 0) + 1;
       return acc;
     }, {});
     const diversitySummary = `${extracted.length} entities detected (${Object.entries(typeCounts).map(([t,c]) => `${c} ${t}`).join(', ')})`;
+
     const entitiesHTML = extracted.length > 0
       ? extracted.map(entity => `
           <div class="p-4 bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
-            <p class="font-bold text-gray-800 dark:text-gray-200">${entity.text || 'Unknown'}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400">${entity.type || 'Unknown'}</p>
+            <p class="font-bold text-gray-800 dark:text-gray-200">${escapeHtml(entity.text || 'Unknown')}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">${escapeHtml(entity.type || 'Unknown')}</p>
             <div class="mt-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div class="bg-blue-600 h-2 rounded-full" style="width: ${Math.round((entity.salience || 0) * 100)}%"></div>
             </div>
@@ -307,9 +298,6 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
           </div>
         `).join('')
       : '<p class="text-gray-600 dark:text-gray-400 text-center py-6">No entities detected.</p>';
-
-    // ── Cache the HTML for the "Show the code" modal + snippets ────
-    results.dataset.renderedHtml = data.renderedHtml || rawCode || '';
 
     results.innerHTML = `
 <div class="max-w-6xl mx-auto px-2 py-8">
@@ -353,240 +341,49 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
         document.body.setAttribute('data-page-title', displayTitle);
         return `
           <p class="mt-6 text-center text-base md:text-lg text-gray-700 dark:text-gray-300 px-4 leading-relaxed break-words">
-            ${displayTitle}
+            ${escapeHtml(displayTitle)}
           </p>
         `;
       })()}
       <p class="mt-6 text-center text-lg text-gray-600 dark:text-gray-300 px-4 leading-relaxed">
-        ${readiness.metrics && readiness.metrics[0] ? readiness.metrics[0].text.split(' – ')[1] || 'Semantic foundation analysis complete' : 'Semantic foundation analysis complete'}
+        ${readiness.levelDesc || 'Semantic foundation analysis complete'}
       </p>
     </div>
   </div>
+
   <div class="mb-16">
     <h3 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Extracted Entities</h3>
     <div class="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-4 mb-6 text-center md:text-left">
-      <p class="text-lg font-medium text-gray-700 dark:text-gray-300">
-        ${diversitySummary}
-      </p>
+      <p class="text-lg font-medium text-gray-700 dark:text-gray-300">${escapeHtml(diversitySummary)}</p>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[600px] overflow-y-auto pr-2">
       ${entitiesHTML}
     </div>
   </div>
+
   <div class="mb-16">
     <h3 class="text-2xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-6">Semantic Health Radar</h3>
     <div class="w-full max-w-2xl mx-auto aspect-square">
       <canvas id="health-radar"></canvas>
     </div>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start">
-    ${modules.slice(0, 2).map(mod => {
-      const { score, metrics = [], failed = [] } = mod.result;
-      const borderColorClass = score >= 80 ? 'border-green-600 dark:border-green-400' : score >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-600 dark:border-red-500';
-      const arcColor = score >= 80 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
-      return `
-      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[520px] md:min-h-[580px]">
-        <div class="flex justify-center mb-6">
-          <div class="relative w-32 h-32 mx-auto">
-            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
-              <circle cx="64" cy="64" r="56" stroke="${arcColor}" stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 352} 352" stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
-            </div>
-          </div>
-        </div>
-        <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
-        ${(() => {
-          const g = getGrade(score);
-          return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
-        })()}
-        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
-        <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
-          <span>More Details</span>
-          <span class="details-arrow transition-transform duration-200">▼</span>
-        </button>
-        <div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
-          <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
-          <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
-          <p class="text-center mt-6">
-            <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">How ${mod.name} is tested? →</a>
-          </p>
-        </div>
-        <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
-          ${metrics.map(m => {
-            let emoji = '❌', color = 'text-red-600 dark:text-red-400';
-            if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
-            else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
-            return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
-          }).join('')}
-        </ul>
-        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
-          <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
-          <span class="arrow transition-transform duration-200">▼</span>
-        </button>
-        <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
-          ${failed.length > 0 ? `
-            <ul class="space-y-4 text-sm">
-              ${failed.map((f, idx) => {
-                const rule = deriveSelectorsForFailure(f.text);
-                const emoji = f.grade === 'bad' ? '❌' : '⚠️';
-                const color = f.grade === 'bad'
-                  ? 'text-red-700 dark:text-red-300'
-                  : 'text-orange-600 dark:text-orange-400';
-                return `
-                  <li class="${color} flex items-start gap-3 ${idx > 0 ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}">
-                    <span class="flex-1">
-                      ${emoji} <span class="font-bold">${escapeHtml(f.text)}</span>
-                      ${rule ? `
-                        <button type="button"
-                                class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
-                                data-failure="${escapeHtml(f.text)}">
-                          🔍 Show the code
-                        </button>
-                      ` : ''}
-                    </span>
-                  </li>
-                `;
-              }).join('')}
-            </ul>
-          ` : `
-            <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
-          `}
-          <div class="mt-6 pt-5 border-t border-gray-200 dark:border-gray-700 space-y-3 text-sm">
-            <a href="#ask-ai-section"
-               class="ask-ai-link flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline font-medium"
-               data-ai-question="${(() => {
-                 const q = `How do I improve my ${mod.name} score? Failed checks: ${failed.length ? failed.map(f => f.text).join(' | ') : 'None — all checks passed.'}`;
-                 return q.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-               })()}">
-              🤖 Ask AI about this module →
-            </a>
-            <a href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/#${mod.name.toLowerCase()}"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 hover:underline font-medium">
-              📖 Read the full ${mod.name} guide →
-            </a>
-          </div>
-        </div>
-      </div>
-      `;
-    }).join('')}
-  </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-    ${modules.slice(2).map(mod => {
-      const { score, metrics = [], failed = [] } = mod.result;
-      const borderColorClass = score >= 80 ? 'border-green-600 dark:border-green-400' : score >= 40 ? 'border-orange-500 dark:border-orange-400' : 'border-red-600 dark:border-red-500';
-      const arcColor = score >= 80 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
-      return `
-      <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderColorClass} flex flex-col min-h-[540px]">
-        <div class="flex justify-center mb-6">
-          <div class="relative w-32 h-32 mx-auto">
-            <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
-              <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
-              <circle cx="64" cy="64" r="56" stroke="${arcColor}" stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 352} 352" stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
-            </div>
-          </div>
-        </div>
-        <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
-        ${(() => {
-          const g = getGrade(score);
-          return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
-        })()}
-        <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
-        <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
-          <span>More Details</span>
-          <span class="details-arrow transition-transform duration-200">▼</span>
-        </button>
-        <div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
-          <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
-          <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
-          <p class="text-center mt-6">
-            <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">How ${mod.name} is tested? →</a>
-          </p>
-        </div>
-        <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
-          ${metrics.map(m => {
-            let emoji = '❌', color = 'text-red-600 dark:text-red-400';
-            if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
-            else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
-            return `<li class="${color} flex items-start gap-3">${emoji} <span>${m.text}</span></li>`;
-          }).join('')}
-        </ul>
-        <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
-          <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
-          <span class="arrow transition-transform duration-200">▼</span>
-        </button>
-        <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
-          ${failed.length > 0 ? `
-            <ul class="space-y-4 text-sm">
-              ${failed.map((f, idx) => {
-                const rule = deriveSelectorsForFailure(f.text);
-                const emoji = f.grade === 'bad' ? '❌' : '⚠️';
-                const color = f.grade === 'bad'
-                  ? 'text-red-700 dark:text-red-300'
-                  : 'text-orange-600 dark:text-orange-400';
-                return `
-                  <li class="${color} flex items-start gap-3 ${idx > 0 ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}">
-                    <span class="flex-1">
-                      ${emoji} <span class="font-bold">${escapeHtml(f.text)}</span>
-                      ${rule ? `
-                        <button type="button"
-                                class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
-                                data-failure="${escapeHtml(f.text)}">
-                          🔍 Show the code
-                        </button>
-                      ` : ''}
-                    </span>
-                  </li>
-                `;
-              }).join('')}
-            </ul>
-          ` : `
-            <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
-          `}
-          <div class="mt-6 pt-5 border-t border-gray-200 dark:border-gray-700 space-y-3 text-sm">
-            <a href="#ask-ai-section"
-               class="ask-ai-link flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline font-medium"
-               data-ai-question="${(() => {
-                 const q = `How do I improve my ${mod.name} score? Failed checks: ${failed.length ? failed.map(f => f.text).join(' | ') : 'None — all checks passed.'}`;
-                 return q.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-               })()}">
-              🤖 Ask AI about this module →
-            </a>
-            <a href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/#${mod.name.toLowerCase()}"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 hover:underline font-medium">
-              📖 Read the full ${mod.name} guide →
-            </a>
-          </div>
-        </div>
-      </div>
-      `;
-    }).join('')}
-  </div>
+
+  ${renderModuleCards(modules.slice(0, 2), 2)}
+  ${renderModuleCards(modules.slice(2), 3)}
+
   <div id="share-dashboard-container" class="mt-16"></div>
 </div>
     `;
 
+    // ── Radar chart ──
     setTimeout(() => {
       const canvas = document.getElementById('health-radar');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       if (window.myRadarChart) window.myRadarChart.destroy();
-      const getModuleColor = (score) => {
-        if (score >= 80) return '#22c55e';
-        if (score >= 40) return '#f59e0b';
-        return '#ef4444';
-      };
-      const radarColors = modules.map(m => getModuleColor(m.result.score));
+      const getColor = (score) => score >= 80 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
+      const radarColors = modules.map(m => getColor(m.result.score));
       window.myRadarChart = new Chart(ctx, {
         type: 'radar',
         data: {
@@ -630,71 +427,50 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       });
     }, 400);
 
+    // ── Share data ──
     const pageTitleElement = document.querySelector('#results .mt-6.text-center.text-base.md\\:text-lg');
     let pageTitle = 'Analyzed Page';
-    if (pageTitleElement) {
-      pageTitle = pageTitleElement.textContent.trim();
-    } else if (data && data.title) {
-      pageTitle = data.title.trim();
-    } else if (url) {
-      pageTitle = url.trim();
-    }
+    if (pageTitleElement) pageTitle = pageTitleElement.textContent.trim();
+    else if (data && data.title) pageTitle = data.title.trim();
+    else if (url) pageTitle = url.trim();
     document.body.setAttribute('data-url', pageTitle);
 
-    const moduleScores = modules.map(mod => ({
-      name: mod.name,
-      score: mod.result.score
-    }));
-
+    const moduleScores = modules.map(mod => ({ name: mod.name, score: mod.result.score }));
     const passedMetrics = [];
     const failedMetrics = [];
     modules.forEach(mod => {
-      const score = mod.result.score;
-      if (score >= 60) {
-        passedMetrics.push(mod.name);
-      } else {
-        failedMetrics.push(mod.name);
-      }
-    });
-
-    modules.forEach(mod => {
+      if (mod.result.score >= 60) passedMetrics.push(mod.name);
+      else failedMetrics.push(mod.name);
       (mod.result.metrics || []).forEach(m => {
-        if (m.grade === 'good') {
-          passedMetrics.push(m.text);
-        } else {
-          failedMetrics.push(m.text);
-        }
+        if (m.grade === 'good') passedMetrics.push(m.text);
+        else failedMetrics.push(m.text);
       });
     });
 
     const analyzedUrl = url || document.getElementById('url-input')?.value?.trim() || 'Code Analysis';
-
     const shareData = {
       toolName: 'SEO Entity Tool',
       url: analyzedUrl,
       pageTitle: pageTitle || 'Analyzed Page',
       overallScore: readiness.score,
-      moduleScores: moduleScores,
-      passedMetrics: passedMetrics,
-      failedMetrics: failedMetrics,
+      moduleScores,
+      passedMetrics,
+      failedMetrics,
       aiFixes: [],
       rawData: { modules, extracted, coverage, salience, relationships, practices, readiness },
       shareLink: `${window.location.origin}/seo-entity-tool/?url=${encodeURIComponent(analyzedUrl)}`
     };
-
     const shareContainer = document.getElementById('share-dashboard-container');
-    if (shareContainer) {
-      initShareModule(shareContainer, shareData);
-    }
+    if (shareContainer) initShareModule(shareContainer, shareData);
 
+    // ── Global click handler (once) ──
     if (!document.body.dataset.toggleListenersAttached) {
       document.body.addEventListener('click', function(e) {
         const showCodeBtn = e.target.closest('.show-code-btn');
         if (showCodeBtn) {
           e.preventDefault();
           const failureText = showCodeBtn.dataset.failure || '';
-          const html = results.dataset.renderedHtml || '';
-          showCodeForFailure(failureText, html, { title: 'Affected code' });
+          showCodeForFailure(failureText, lastRenderedHtml, { title: 'Affected code' });
           return;
         }
 
@@ -745,13 +521,16 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   } catch (err) {
     clearInterval(interval);
     clearTimeout(heavyTimeout);
+    results.classList.remove('hidden');
     results.innerHTML = `
       <div class="text-center py-12 px-6">
         <p class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Analysis could not complete</p>
         <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
-          ${err.message.includes('timeout') || err.message.includes('fetch')
-            ? 'The page is very large or took too long to load. Try a smaller page or check your internet connection.'
-            : err.message || 'Error - Failed to analyze - Whitelist: entity-ai-proxy.traffictorch.workers.dev/entity-analyze or use Code Analysis.'}
+          ${escapeHtml(
+            (err.message || '').includes('timeout') || (err.message || '').includes('fetch')
+              ? 'The page is very large or took too long to load. Try a smaller page or check your internet connection.'
+              : err.message || 'Error - Failed to analyze - Whitelist: entity-ai-proxy.traffictorch.workers.dev/entity-analyze or use Code Analysis.'
+          )}
         </p>
         <button onclick="location.reload()" class="mt-4 px-8 py-3 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl">
           Try Again
@@ -761,7 +540,119 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
   }
 }
 
-// ── Button event listeners ──────────────────────────────────────
+// ── Render helper for module cards (keeps runAnalysis readable) ──
+function renderModuleCards(mods, colCount) {
+  const gridClass = colCount === 2
+    ? 'grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-12 items-start'
+    : 'grid grid-cols-1 md:grid-cols-3 gap-8';
+
+  return `
+    <div class="${gridClass}">
+      ${mods.map(mod => {
+        const { score, metrics = [], failed = [] } = mod.result;
+        const borderClass = score >= 80 ? 'border-green-600 dark:border-green-400'
+                          : score >= 40 ? 'border-orange-500 dark:border-orange-400'
+                          : 'border-red-600 dark:border-red-500';
+        const arcColor = score >= 80 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444';
+        const minH = colCount === 2 ? 'min-h-[520px] md:min-h-[580px]' : 'min-h-[540px]';
+        return `
+        <div class="score-card bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border-4 ${borderClass} flex flex-col ${minH}">
+          <div class="flex justify-center mb-6">
+            <div class="relative w-32 h-32 mx-auto">
+              <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+                <circle cx="64" cy="64" r="56" stroke="#e5e7eb" stroke-width="12" fill="none" class="dark:stroke-gray-700"/>
+                <circle cx="64" cy="64" r="56" stroke="${arcColor}" stroke-width="12" fill="none" stroke-dasharray="${(score / 100) * 352} 352" stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-4xl font-black" style="color: ${arcColor};">${score}</div>
+              </div>
+            </div>
+          </div>
+          <p class="text-center text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">${mod.name}</p>
+          ${(() => {
+            const g = getGrade(score);
+            return `<p class="text-center text-xl font-bold ${g.color} mb-4">${g.emoji} ${g.text}</p>`;
+          })()}
+          <p class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">${mod.desc}</p>
+
+          <button class="details-toggle w-full py-2 px-4 mt-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-lg transition flex justify-between items-center">
+            <span>More Details</span>
+            <span class="details-arrow transition-transform duration-200">▼</span>
+          </button>
+          <div class="details-panel mt-3 pt-4 pb-10 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+            <p class="mb-3"><strong>What it measures:</strong> ${getModuleExplanation(mod.name).what}</p>
+            <p class="mb-4"><strong>Why it matters:</strong> ${getModuleExplanation(mod.name).why}</p>
+            <p class="text-center mt-6">
+              <a href="#${mod.name.toLowerCase()}" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">How ${mod.name} is tested? →</a>
+            </p>
+          </div>
+
+          <ul class="text-sm space-y-3 mt-4 mb-4 flex-grow">
+            ${metrics.map(m => {
+              let emoji = '❌', color = 'text-red-600 dark:text-red-400';
+              if (m.grade === 'good') { emoji = '✅'; color = 'text-green-600 dark:text-green-400'; }
+              else if (m.grade === 'warning') { emoji = '⚠️'; color = 'text-orange-500 dark:text-orange-400'; }
+              return `<li class="${color} flex items-start gap-3">${emoji} <span>${escapeHtml(m.text)}</span></li>`;
+            }).join('')}
+          </ul>
+
+          <button class="fixes-toggle w-full py-3 px-5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-xl transition flex justify-between items-center mt-auto">
+            <span>Show Fixes ${failed.length > 0 ? `(${failed.length} items)` : ''}</span>
+            <span class="arrow transition-transform duration-200">▼</span>
+          </button>
+          <div class="fixes-panel mt-5 pt-5 pb-12 border-t border-gray-200 dark:border-gray-700 overflow-hidden transition-[height,opacity] duration-300 ease-in-out h-0 opacity-0">
+            ${failed.length > 0 ? `
+              <ul class="space-y-4 text-sm">
+                ${failed.map((f, idx) => {
+                  const rule = deriveSelectorsForFailure(f.text);
+                  const emoji = f.grade === 'bad' ? '❌' : '⚠️';
+                  const color = f.grade === 'bad'
+                    ? 'text-red-700 dark:text-red-300'
+                    : 'text-orange-600 dark:text-orange-400';
+                  return `
+                    <li class="${color} flex items-start gap-3 ${idx > 0 ? 'pt-3 border-t border-gray-200 dark:border-gray-700' : ''}">
+                      <span class="flex-1">
+                        ${emoji} <span class="font-bold">${escapeHtml(f.text)}</span>
+                        ${rule ? `
+                          <button type="button"
+                                  class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                                  data-failure="${escapeHtml(f.text)}">
+                            🔍 Show the code
+                          </button>
+                        ` : ''}
+                      </span>
+                    </li>
+                  `;
+                }).join('')}
+              </ul>
+            ` : `
+              <p class="text-center text-green-600 dark:text-green-400 font-medium py-3">✅ All major signals strong – only minor tweaks may help.</p>
+            `}
+            <div class="mt-6 pt-5 border-t border-gray-200 dark:border-gray-700 space-y-3 text-sm">
+              <a href="#ask-ai-section"
+                 class="ask-ai-link flex items-center gap-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:underline font-medium"
+                 data-ai-question="${(() => {
+                   const q = `How do I improve my ${mod.name} score? Failed checks: ${failed.length ? failed.map(f => f.text).join(' | ') : 'None — all checks passed.'}`;
+                   return q.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                 })()}">
+                🤖 Ask AI about this module →
+              </a>
+              <a href="https://traffictorch.net/blog/posts/semantic-entity-help-guide/#${mod.name.toLowerCase()}"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="flex items-center gap-2 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 hover:underline font-medium">
+                📖 Read the full ${mod.name} guide →
+              </a>
+            </div>
+          </div>
+        </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+// ── Button listeners ──
 document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
   if (!results) return;
@@ -779,10 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hasCheckedLimit = true;
 
       const canProceed = await canRunTool('seo-entity-extractor-tool');
-      if (!canProceed) {
-        hasCheckedLimit = false;
-        return;
-      }
+      if (!canProceed) { hasCheckedLimit = false; return; }
 
       if (codeInput) codeInput.value = '';
 
@@ -792,12 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (urlInput) urlInput.value = sharedDecodedUrl;
       }
 
-      if (!inputValue) {
-        alert('Please enter a URL');
-        hasCheckedLimit = false;
-        return;
-      }
-
+      if (!inputValue) { alert('Please enter a URL'); hasCheckedLimit = false; return; }
       const url = inputValue.startsWith('http') ? inputValue : `https://${inputValue}`;
 
       const loading = document.getElementById('loading');
@@ -817,19 +700,11 @@ document.addEventListener('DOMContentLoaded', () => {
       hasCheckedLimit = true;
 
       const canProceed = await canRunTool('seo-entity-extractor-tool');
-      if (!canProceed) {
-        hasCheckedLimit = false;
-        return;
-      }
+      if (!canProceed) { hasCheckedLimit = false; return; }
 
       if (urlInput) urlInput.value = '';
-
       const rawCode = codeInput?.value.trim();
-      if (!rawCode) {
-        alert('Please paste HTML code');
-        hasCheckedLimit = false;
-        return;
-      }
+      if (!rawCode) { alert('Please paste HTML code'); hasCheckedLimit = false; return; }
 
       const loading = document.getElementById('loading');
       if (loading) {
@@ -842,7 +717,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ─── Ask AI Listener ──────────────────────────────────────────────
+  // ── Ask AI ──
   const askBtn = document.getElementById('ask-ai-btn');
   const askInput = document.getElementById('ai-question-input');
   const answerContainer = document.getElementById('ai-answer-container');
@@ -854,10 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!canProceed) return;
 
       const question = askInput?.value?.trim();
-      if (!question) {
-        alert('Please enter a question.');
-        return;
-      }
+      if (!question) { alert('Please enter a question.'); return; }
 
       askBtn.disabled = true;
       askBtn.textContent = 'Thinking...';
@@ -868,8 +740,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let auditPayload;
 
         if (lastAuditData) {
-          // Post-audit: enriched structured payload with snippets
-          const htmlForSnips = results.dataset.renderedHtml || '';
+          const htmlForSnips = lastRenderedHtml || '';
           const affectedSnippets = {};
           if (htmlForSnips && Array.isArray(lastAuditData.failedItems)) {
             for (const item of lastAuditData.failedItems.slice(0, 3)) {
@@ -892,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }));
 
           auditPayload = {
-            question: question,
+            question,
             auditData: {
               auditRun: true,
               url: document.body.getAttribute('data-url') || '',
@@ -911,29 +782,20 @@ document.addEventListener('DOMContentLoaded', () => {
               entities: lastAuditData.entities || [],
               entityCount: lastAuditData.entityCount || 0,
               failedItems: (lastAuditData.failedItems || []).slice(0, 10),
-              priorityFixes: priorityFixes,
+              priorityFixes,
               snippets: affectedSnippets,
               browserMetrics: null,
-              cms: {
-                name: 'Custom / Unknown',
-                version: null,
-                confidence: 'unknown'
-              }
+              cms: { name: 'Custom / Unknown', version: null, confidence: 'unknown' }
             }
           };
         } else {
-          // Pre-audit: minimal context so the worker answers generically
           auditPayload = {
-            question: question,
+            question,
             auditData: {
               auditRun: false,
               url: document.body.getAttribute('data-url') || '',
               pageTitle: '',
-              cms: {
-                name: 'Custom / Unknown',
-                version: null,
-                confidence: 'unknown'
-              },
+              cms: { name: 'Custom / Unknown', version: null, confidence: 'unknown' },
               note: 'No audit has been run yet on this page. The user is asking before running an audit. Answer with general semantic entity optimization best practices and invite them to run the audit for site-specific advice.'
             }
           };
@@ -953,7 +815,7 @@ document.addEventListener('DOMContentLoaded', () => {
           let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
           if (Array.isArray(data.warnings) && data.warnings.length) {
             const warningText = data.warnings.join(' ');
-            html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
+            html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${escapeHtml(warningText)}</div>` + html;
           }
           answerContent.innerHTML = html;
         } else {

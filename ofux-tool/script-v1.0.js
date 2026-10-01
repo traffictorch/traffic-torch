@@ -1,5 +1,24 @@
 // ofux script js
-// Orchestrates the three tools on the homepage.
+
+// ─── Shared constants (matches the other three tools) ────────────────
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+const TOKEN_KEY = 'traffic_torch_jwt';
+// Unique quota bucket for the combined homepage audit. Make sure this key
+// is registered wherever canRunTool() reads its limits from.
+const OFUX_TOOL_KEY = 'ofux-tool';
+
+// AI Search weights — single source of truth (mirror of
+// /ai-search-optimization-tool/script-v1.3.js WEIGHTS).
+const AI_SEARCH_WEIGHTS = {
+  answerability: 0.25,
+  structuredData: 0.15,
+  eeat: 0.15,
+  scannability: 0.10,
+  conversational: 0.12,
+  readability: 0.10,
+  uniqueInsights: 0.08,
+  antiAiSafety: 0.05
+};
 
 const METRIC_LABEL_MAP = {
   personalMedia: 'Author photo or first-hand media shown',
@@ -20,20 +39,21 @@ function labelFor(name) {
     .trim();
 }
 
-// Share Dashboard
+// ─── Imports ─────────────────────────────────────────────────────────
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/ofux-tool/cms-detect.js';
 import { saveAudit } from '/audit-history.js';
 import { canRunTool } from '/main-v1.1.js';
 
-// ─── Quit Risk imports ────────────────────────────────────────────────────
+// ─── Quit Risk imports ───────────────────────────────────────────────
 import { calculateReadability } from '/quit-risk-tool/modules/readability.js';
 import { calculateNavigation } from '/quit-risk-tool/modules/navigation.js';
 import { calculateAccessibility } from '/quit-risk-tool/modules/accessibility.js';
 import { calculateMobile } from '/quit-risk-tool/modules/mobile.js';
 import { calculatePerformance } from '/quit-risk-tool/modules/performance.js';
+import { mergeMetricsIntoUX } from '/quit-risk-tool/metrics-adapter.js';
 
-// ─── SEO Intent imports ──────────────────────────────────────────────────
+// ─── SEO Intent imports ──────────────────────────────────────────────
 import { analyzeExperience } from '/seo-intent-tool/modules/experience.js';
 import { analyzeExpertise } from '/seo-intent-tool/modules/expertise.js';
 import { analyzeAuthoritativeness } from '/seo-intent-tool/modules/authoritativeness.js';
@@ -42,7 +62,7 @@ import { analyzeDepth } from '/seo-intent-tool/modules/depth.js';
 import { analyzeReadability as analyzeSEOReadability } from '/seo-intent-tool/modules/readability.js';
 import { analyzeSchema } from '/seo-intent-tool/modules/schema.js';
 
-// ─── AI Search imports ──────────────────────────────────────────────────
+// ─── AI Search imports ──────────────────────────────────────────────
 import { computeAnswerability } from '/ai-search-optimization-tool/modules/answerability.js';
 import { computeStructuredData } from '/ai-search-optimization-tool/modules/structuredData.js';
 import { computeEEAT } from '/ai-search-optimization-tool/modules/eeatSignals.js';
@@ -52,7 +72,48 @@ import { computeReadability as computeAIReadability } from '/ai-search-optimizat
 import { computeUniqueInsights } from '/ai-search-optimization-tool/modules/uniqueInsights.js';
 import { computeAntiAiSafety } from '/ai-search-optimization-tool/modules/antiAiSafety.js';
 
-// ─── Code block renderer ─────────────────────────────────────────
+// ─── Save audit history (matches Quit Risk / SEO Intent / AI Search) ──
+async function saveAuditHistory(url, toolName) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem(TOKEN_KEY);
+  const auditUrl = url || 'Pasted HTML code';
+
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/api/audit-history`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: auditUrl,
+          tool_name: toolName,
+          score: null
+        })
+      });
+      return;
+    } catch (e) {
+      // fall through to guest storage
+    }
+  }
+
+  const stored = localStorage.getItem('audit_guest');
+  let entries = [];
+  if (stored) {
+    try { entries = JSON.parse(stored).entries || []; } catch {}
+  }
+  entries.unshift({
+    _localId: Date.now() + '_' + Math.random(),
+    url: auditUrl,
+    tool: toolName,
+    score: null,
+    timestamp: Date.now()
+  });
+  entries = entries.slice(0, 5);
+  localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
+}
+
+// ─── Code block renderer ─────────────────────────────────────────────
 function renderCodeBlocks(text) {
   if (text === null || text === undefined) return '';
   let escaped = String(text)
@@ -80,7 +141,7 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
-// ─── Head snapshot builder (shared with all Traffic Torch tools) ───
+// ─── Head snapshot builder (shared with every other Traffic Torch tool) ─
 function buildHeadSnapshot(doc) {
   if (!doc || !doc.head) return '';
   const head = doc.head;
@@ -106,6 +167,28 @@ function buildHeadSnapshot(doc) {
         .map(a => `${a}="${s.getAttribute(a) || ''}"`)
         .join(' ');
       lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
     }
   }
 
@@ -144,48 +227,126 @@ function countStatuses(modules) {
   return { passed, average: avg, failed };
 }
 
-// ─── Shared DOM extraction for Quit Risk ────────────────────────────────
-function getUXContent(doc) {
-  function countWords(text) {
-    return text.trim().split(/\s+/).filter(w => w.length > 0).length;
-  }
-  function countExternalLinks(links) {
-    const currentHost = window.location.host;
-    return Array.from(links).filter(a => {
-      try {
-        return new URL(a.href, window.location.href).host !== currentHost;
-      } catch {
-        return false;
-      }
-    }).length;
-  }
-  function hasViewportMeta(doc) {
-    const meta = doc.querySelector('meta[name="viewport"]');
-    return meta && /width\s*=\s*device-width/i.test(meta.content);
-  }
-  function hasSemanticMain(doc) {
-    return !!doc.querySelector('main');
-  }
-  function hasSemanticArticleOrSection(doc) {
-    return !!doc.querySelector('article, section');
-  }
-  function countMissingAlt(doc) {
-    const imgs = doc.querySelectorAll('img');
-    let missing = 0, decorative = 0, meaningful = 0;
-    imgs.forEach(img => {
-      const alt = img.getAttribute('alt');
-      const isDecorative = img.classList.contains('decorative') ||
-                          img.getAttribute('role') === 'presentation' ||
-                          (alt !== null && alt.trim() === '' && !img.hasAttribute('title'));
-      if (isDecorative) decorative++;
-      else {
-        meaningful++;
-        if (alt === null || alt.trim() === '') missing++;
-      }
-    });
-    return { missingCount: missing, meaningfulCount: meaningful, decorativeCount: decorative, totalImages: imgs.length };
-  }
+// ─── Visible-text extractor (FIX 1 from SEO Intent) ─────────────────────
+// Rejects nav/header/footer/aside/form/template/svg, [hidden],
+// aria-hidden="true", inline display:none, and ancestors carrying
+// sr-only / visually-hidden / menu-slideout / drawer / modal classes.
+function getVisibleText(root) {
+  if (!root) return '';
+  let text = '';
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => {
+      const parent = node.parentElement;
+      if (!parent) return NodeFilter.FILTER_REJECT;
 
+      const tag = parent.tagName.toLowerCase();
+      if ([
+        'script', 'style', 'noscript', 'head', 'iframe', 'object', 'embed',
+        'nav', 'header', 'footer', 'aside', 'form', 'template', 'svg'
+      ].includes(tag)) {
+        return NodeFilter.FILTER_REJECT;
+      }
+
+      if (parent.hasAttribute('hidden') || parent.getAttribute('aria-hidden') === 'true') {
+        return NodeFilter.FILTER_REJECT;
+      }
+
+      const inline = parent.getAttribute('style') || '';
+      if (/display\s*:\s*none|visibility\s*:\s*hidden/i.test(inline)) {
+        return NodeFilter.FILTER_REJECT;
+      }
+
+      let el = parent;
+      while (el && el !== root) {
+        if (el.classList && el.classList.length > 0) {
+          if (el.classList.contains('hidden')      ||
+              el.classList.contains('sr-only')     ||
+              el.classList.contains('invisible')   ||
+              el.classList.contains('offscreen')   ||
+              el.classList.contains('visually-hidden')) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          const cls = (typeof el.className === 'string') ? el.className : '';
+          if (cls && /\b(menu-slideout|drawer-container|drawer-backdrop|modal-backdrop|modal-wrapper)\b/.test(cls)) {
+            return NodeFilter.FILTER_REJECT;
+          }
+        }
+        el = el.parentElement;
+      }
+
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  while (walker.nextNode()) {
+    text += walker.currentNode.textContent + ' ';
+  }
+  return text.trim();
+}
+
+// ─── Shared DOM extraction for Quit Risk (aligns with the QR tool) ─────
+function countWords(text) {
+  return text.trim().split(/\s+/).filter(w => w.length > 0).length;
+}
+function countExternalLinks(links, baseUrl) {
+  let baseHost;
+  try {
+    baseHost = new URL(baseUrl || window.location.href).host;
+  } catch {
+    baseHost = window.location.host;
+  }
+  return Array.from(links).filter(a => {
+    const raw = a.getAttribute('href');
+    if (!raw) return false;
+    if (/^(#|mailto:|tel:|javascript:|data:)/i.test(raw)) return false;
+    try {
+      return new URL(raw, baseUrl || window.location.href).host !== baseHost;
+    } catch {
+      return false;
+    }
+  }).length;
+}
+function hasViewportMeta(doc) {
+  const meta = doc.querySelector('meta[name="viewport"]');
+  return meta && /width\s*=\s*device-width/i.test(meta.content);
+}
+function hasSemanticMain(doc) {
+  return !!doc.querySelector('main');
+}
+function hasSemanticArticleOrSection(doc) {
+  return !!doc.querySelector('article, section');
+}
+function countMissingAlt(doc) {
+  const imgs = doc.querySelectorAll('img');
+  let missing = 0, decorative = 0, meaningful = 0;
+  imgs.forEach(img => {
+    const alt = img.getAttribute('alt');
+    const isDecorative = img.classList.contains('decorative') ||
+                        img.getAttribute('role') === 'presentation' ||
+                        (alt !== null && alt.trim() === '' && !img.hasAttribute('title'));
+    if (isDecorative) decorative++;
+    else {
+      meaningful++;
+      if (alt === null || alt.trim() === '') missing++;
+    }
+  });
+  return { missingCount: missing, meaningfulCount: meaningful, decorativeCount: decorative, totalImages: imgs.length };
+}
+function pickPrimaryNav(doc) {
+  const candidates = [
+    'header nav',
+    'nav[aria-label*="main" i]',
+    'nav[aria-label*="primary" i]',
+    'nav[role="navigation"]',
+    'nav',
+  ];
+  for (const sel of candidates) {
+    const el = doc.querySelector(sel);
+    if (el) return el;
+  }
+  return null;
+}
+
+function getUXContent(doc, metrics, auditedUrl) {
   const textElements = doc.querySelectorAll('p, li, article, section, main, div');
   let fullText = '', paragraphTexts = [], boldCount = 0, listItemCount = 0;
   textElements.forEach(el => {
@@ -202,11 +363,16 @@ function getUXContent(doc) {
   const images = doc.querySelectorAll('img');
   const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
 
+  const primaryNav = pickPrimaryNav(doc);
+  const topLevelItems = primaryNav
+    ? primaryNav.querySelectorAll(':scope > ul > li, :scope > li').length
+    : 0;
+
   return {
     fullText,
     wordCount: countWords(fullText),
     linkCount: links.length,
-    externalLinkCount: countExternalLinks(links),
+    externalLinkCount: countExternalLinks(links, auditedUrl),
     imageCount: images.length,
     altData: countMissingAlt(doc),
     headingCount: headings.length,
@@ -216,9 +382,9 @@ function getUXContent(doc) {
     paragraphTexts,
     boldCount,
     listItemCount,
-    mainNav: doc.querySelector('nav, [role="navigation"], header nav, .main-menu, #main-menu, .navbar, .navigation'),
+    mainNav: primaryNav,
     hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
-    topLevelItems: doc.querySelectorAll('nav > ul > li, .main-menu > li, header nav > ul > li').length || 0,
+    topLevelItems,
     hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]'),
     hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]'),
     hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]'),
@@ -259,30 +425,13 @@ function getUXContent(doc) {
       '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
     ).length,
     doc,
-    title: doc.title || ''
+    title: doc.title || '',
+    renderedLoadTime: null,
+    renderedMetrics: metrics || null
   };
 }
 
-// ─── Text extraction for SEO ─────────────────────────────────────────────
-function getVisibleText(root) {
-  let text = '';
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-    acceptNode: (node) => {
-      const parent = node.parentElement;
-      if (!parent) return NodeFilter.FILTER_REJECT;
-      const tag = parent.tagName.toLowerCase();
-      if (['script', 'style', 'noscript', 'head', 'iframe', 'object', 'embed'].includes(tag)) return NodeFilter.FILTER_REJECT;
-      if (parent.hasAttribute('hidden') || parent.getAttribute('aria-hidden') === 'true') return NodeFilter.FILTER_REJECT;
-      return NodeFilter.FILTER_ACCEPT;
-    }
-  });
-  while (walker.nextNode()) {
-    text += walker.currentNode.textContent + ' ';
-  }
-  return text.trim();
-}
-
-// ─── Quit Risk Summary ─────────────────────────────────────────────────────
+// ─── Quit Risk Summary ─────────────────────────────────────────────────
 function getQuitRiskSummary(data) {
   const r = calculateReadability(data);
   const n = calculateNavigation(data);
@@ -417,11 +566,9 @@ function getQuitRiskSummary(data) {
   return { score, passed, failed, modules: moduleData };
 }
 
-// ─── SEO Intent Summary ────────────────────────────────────────────────────
+// ─── SEO Intent Summary (aligned with SEO Intent tool) ─────────────────
 function getSEOSummary(doc, analyzedUrl) {
-  const rawText = getVisibleText(doc.body) || '';
-  const cleanedText = rawText.replace(/\s+/g, ' ').trim();
-
+  // Narrowed selectors — identical to SEO Intent's defaultConfig
   const config = {
     parsing: {
       authorBylineSelectors: [
@@ -431,9 +578,10 @@ function getSEOSummary(doc, analyzedUrl) {
         '.blog-author', '.h-card .p-name', '.author-name'
       ],
       authorBioSelectors: [
-        '.author-bio', '.bio', '[class*="bio" i]', '.about-author', '.author-description',
-        '.author-box', '.author-info', '.author-details', '.writer-bio', '.contributor-bio',
-        '.author-profile', '.about-the-author'
+        '.author-bio', '.about-author', '.author-description',
+        '.author-box', '.author-info', '.author-details', '.writer-bio',
+        '.contributor-bio', '.author-profile', '.about-the-author',
+        '[itemprop="description"]'
       ],
       contactLinkSelectors: [
         'a[href*="/contact" i]', 'a[href*="mailto:" i]', 'a[href*="tel:" i]'
@@ -442,14 +590,22 @@ function getSEOSummary(doc, analyzedUrl) {
         'a[href*="/privacy" i]', 'a[href*="/terms" i]', 'a[href*="/legal" i]'
       ],
       updateDateSelectors: [
-        'time[datetime]', '.updated', '.last-modified', '.date-updated', '.published',
-        '.post-date', '.entry-date', 'meta[name="date" i]', 'meta[name="last-modified" i]',
-        'meta[property="article:modified_time"]', 'meta[property="og:updated_time"]',
-        'meta[name="revised"]', '[class*="update" i]', '[class*="date" i]',
-        '.modified-date', '.publish-date'
+        'time[datetime]',
+        '.updated', '.last-modified', '.date-updated', '.modified-date', '.publish-date',
+        'meta[property="article:modified_time"]',
+        'meta[property="og:updated_time"]',
+        'meta[name="last-modified" i]',
+        'meta[name="date" i]',
+        '[itemprop="dateModified"]',
+        '[itemprop="datePublished"]'
       ]
     }
   };
+
+  // Prefer main/article/[role=main] as extraction root, like the SEO tool
+  const contentRoot = doc.querySelector('main, article, [role="main"]') || doc.body;
+  const rawText = getVisibleText(contentRoot) || '';
+  const cleanedText = rawText.replace(/\s+/g, ' ').trim();
 
   const exp = analyzeExperience(cleanedText, doc);
   const ext = analyzeExpertise(doc, cleanedText, config);
@@ -459,8 +615,11 @@ function getSEOSummary(doc, analyzedUrl) {
   const read = analyzeSEOReadability(cleanedText);
   const schema = analyzeSchema(doc.documentElement.outerHTML, doc);
 
-  const scores = [exp.score, ext.score, auth.score, trust.score, depth.normalized, read.normalized, schema.normalized];
-  const overallScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+  // SEO Intent formula: E-E-A-T averaged, then a 4-way flat average
+  const eeatAvg = Math.round((exp.score + ext.score + auth.score + trust.score) / 4);
+  const overallScore = Math.round(
+    (depth.normalized + read.normalized + eeatAvg + schema.normalized) / 4
+  );
 
   function getStatus(val) {
     if (val >= 80) return 'pass';
@@ -518,26 +677,52 @@ function getSEOSummary(doc, analyzedUrl) {
   return { score: overallScore, passed, failed, modules: moduleData };
 }
 
-// ─── AI Search Summary ────────────────────────────────────────────────────
+// ─── AI Search Summary (aligned with AI Search tool) ───────────────────
 function getAISearchSummary(doc, analyzedUrl) {
-  const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
-  const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
+  // Clone so we never mutate the caller's doc — matches the effective
+  // state of the standalone AI Search tool when it calls the modules.
+  const workingDoc = doc.cloneNode(true);
+
+  const candidates = [
+    workingDoc.querySelector('article'),
+    workingDoc.querySelector('main'),
+    workingDoc.querySelector('[role="main"]'),
+    workingDoc.body
+  ];
+  const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || workingDoc.body;
   mainEl.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
+
   const mainText = mainEl.textContent.replace(/\s+/g, ' ').trim();
   const first300 = mainText.slice(0, 1200);
+  const first300Html = mainEl.innerHTML.slice(0, 1200);
 
-  const ans = computeAnswerability(doc, first300);
-  const struct = computeStructuredData(doc);
-  const eeat = computeEEAT(doc, analyzedUrl);
-  const scan = computeScannability(doc, mainEl);
+  // NOTE: third argument required for the current answerability module
+  const ans = computeAnswerability(workingDoc, first300, first300Html);
+  const struct = computeStructuredData(workingDoc);
+  const eeat = computeEEAT(workingDoc, analyzedUrl);
+  const scan = computeScannability(workingDoc, mainEl);
   const conv = computeConversational(mainText);
   const read = computeAIReadability(mainText);
   const unique = computeUniqueInsights(mainText, read.words || 0);
   const anti = computeAntiAiSafety(mainText, read.variationScore || 0);
 
-  const moduleScores = [ans.score, struct.score, eeat.score, scan.score, conv.score, read.score, unique.score, anti.score];
-  const weights = [0.25, 0.15, 0.15, 0.10, 0.12, 0.10, 0.08, 0.05];
-  const overallScore = Math.round(moduleScores.reduce((sum, score, i) => sum + score * weights[i], 0));
+  const moduleScores = [
+    ans.score, struct.score, eeat.score, scan.score,
+    conv.score, read.score, unique.score, anti.score
+  ];
+  const weights = [
+    AI_SEARCH_WEIGHTS.answerability,
+    AI_SEARCH_WEIGHTS.structuredData,
+    AI_SEARCH_WEIGHTS.eeat,
+    AI_SEARCH_WEIGHTS.scannability,
+    AI_SEARCH_WEIGHTS.conversational,
+    AI_SEARCH_WEIGHTS.readability,
+    AI_SEARCH_WEIGHTS.uniqueInsights,
+    AI_SEARCH_WEIGHTS.antiAiSafety
+  ];
+  const overallScore = Math.round(
+    moduleScores.reduce((sum, score, i) => sum + score * weights[i], 0)
+  );
 
   const ansFlags = ans.flags || {};
   const structFlags = struct.flags || {};
@@ -709,6 +894,30 @@ function buildHomepagePriorityFixes(summaries) {
   return fixes.slice(0, 3);
 }
 
+// ─── Fetch page (QR worker for UX parity, fall back to full-render-v2) ─
+async function fetchPageForAnalysis(url) {
+  // Primary: QR render worker → returns { html, metrics, loadTime }
+  try {
+    const res = await fetch('https://qr-full-render-worker.traffictorch.workers.dev/?url=' + encodeURIComponent(url));
+    if (res.ok) {
+      const payload = await res.json();
+      if (payload && payload.success !== false && payload.html) {
+        return {
+          html: payload.html,
+          metrics: payload.metrics || null,
+          loadTime: payload.loadTime ?? null
+        };
+      }
+    }
+  } catch (_) { /* fall through */ }
+
+  // Fallback: full-render-v2 → plain HTML only
+  const res = await fetch('https://full-render-v2.traffictorch.workers.dev/?url=' + encodeURIComponent(url));
+  if (!res.ok) throw new Error('Page not reachable');
+  const html = await res.text();
+  return { html, metrics: null, loadTime: null };
+}
+
 // ─── Render CMS Fixes section below the share dashboard ────────────────
 function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overallScore, toolScores) {
   try {
@@ -820,7 +1029,8 @@ function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overal
     cmsFixesBtn?.addEventListener('click', async () => {
       if (priorityFixes.length === 0) return;
 
-      const canProceed = await canRunTool('limit-audit-id');
+      // ── FIX: use the dedicated OFUX quota bucket ──
+      const canProceed = await canRunTool(OFUX_TOOL_KEY);
       if (!canProceed) return;
 
       const selectedCms     = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';
@@ -892,8 +1102,8 @@ export async function runOfuxAnalysis(url, containerId, aiContainerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  // ── Rate limit check FIRST (same bucket as other tools) ──
-  const canProceed = await canRunTool('limit-audit-id');
+  // ── Rate limit check FIRST — dedicated OFUX bucket ──
+  const canProceed = await canRunTool(OFUX_TOOL_KEY);
   if (!canProceed) {
     container.innerHTML = `
       <div class="text-center py-12 text-orange-600 dark:text-orange-400">
@@ -912,10 +1122,8 @@ export async function runOfuxAnalysis(url, containerId, aiContainerId) {
   `;
 
   try {
-    const proxy = 'https://full-render-v2.traffictorch.workers.dev/';
-    const res = await fetch(proxy + '?url=' + encodeURIComponent(url));
-    if (!res.ok) throw new Error('Page not reachable');
-    const html = await res.text();
+    // Fetch page (QR worker for UX parity, fallback to full-render-v2)
+    const { html, metrics, loadTime } = await fetchPageForAnalysis(url);
     const doc = new DOMParser().parseFromString(html, 'text/html');
     const cmsInfo = detectCMS({ doc, url });
 
@@ -924,6 +1132,7 @@ export async function runOfuxAnalysis(url, containerId, aiContainerId) {
     window._homepageHeadSnapshot = buildHeadSnapshot(doc);
     window._homepageCmsInfo = cmsInfo;
 
+    // ─── Extract rich page context for the AI worker ───
     const excerptDoc = doc.cloneNode(true);
     excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
 
@@ -962,7 +1171,15 @@ export async function runOfuxAnalysis(url, containerId, aiContainerId) {
       hasPublishDate: !!doc.querySelector('time[datetime], meta[property="article:published_time"]'),
     };
 
-    const uxData = getUXContent(doc);
+    // ─── UX / Quit Risk summary (with browser metrics merged) ───
+    let uxData = getUXContent(doc, metrics, url);
+    if (typeof mergeMetricsIntoUX === 'function') {
+      uxData = mergeMetricsIntoUX(uxData, metrics);
+    }
+    uxData.renderedLoadTime = loadTime;
+    if (uxData.renderedWordCount && uxData.renderedWordCount > 50) {
+      uxData.wordCount = uxData.renderedWordCount;
+    }
     const uxSummary = getQuitRiskSummary(uxData);
 
     const seoSummary = getSEOSummary(doc, url);
@@ -979,10 +1196,17 @@ export async function runOfuxAnalysis(url, containerId, aiContainerId) {
     const overallScoreForSave = Math.round(
       (uxSummary.score + seoSummary.score + aiSummary.score) / 3
     );
+
+    // ─── Save to history (both paths, matching every other tool) ───
     try {
       await saveAudit({ url, tool: 'OFUX', score: overallScoreForSave });
     } catch (e) {
       console.warn('Failed to save OFUX audit:', e);
+    }
+    try {
+      await saveAuditHistory(url, 'OFUX Homepage Audit');
+    } catch (e) {
+      console.warn('Failed to save OFUX history:', e);
     }
 
     window._homepageSummaries = summaries;
@@ -1026,7 +1250,7 @@ export async function runOfuxAnalysis(url, containerId, aiContainerId) {
     }
     initShareModule(shareContainer, shareResults, aiContainer);
 
-    // ─── CMS Fixes (rendered below the share dashboard) ──────────────
+    // ─── Priority Fixes + CMS Fixes ──────────────────────────────────
     const homepagePriorityFixes = buildHomepagePriorityFixes(summaries);
     const overallHomepage = Math.round((uxSummary.score + seoSummary.score + aiSummary.score) / 3);
 
@@ -1177,7 +1401,7 @@ function renderCards(container, summaries, url) {
   `;
 }
 
-// Auto-run from ?url= parameter
+// ─── Auto-run from ?url= parameter ───────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const urlParam = params.get('url');
@@ -1195,115 +1419,120 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ─── Ask AI Listener ──────────────────────────────────────────────
+// ─── Ask AI Listener ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const askBtn = document.getElementById('ask-ai-btn');
   const askInput = document.getElementById('ai-question-input');
   const answerContainer = document.getElementById('ai-answer-container');
   const answerContent = document.getElementById('ai-answer-content');
 
-  if (askBtn) {
-    askBtn.addEventListener('click', async () => {
-      const canProceed = await canRunTool('limit-audit-id');
-      if (!canProceed) {
-        const upgradeModal = document.getElementById('upgradeModal');
-        if (upgradeModal) upgradeModal.classList.remove('hidden');
-        return;
-      }
+  if (!askBtn) return;
 
-      const question = askInput?.value?.trim();
-      if (!question) {
-        alert('Please enter a question.');
-        return;
-      }
+  // Clone + replace so we never stack duplicate listeners across re-renders.
+  const newAskBtn = askBtn.cloneNode(true);
+  askBtn.parentNode.replaceChild(newAskBtn, askBtn);
 
-      askBtn.disabled = true;
-      askBtn.textContent = 'Thinking...';
-      answerContainer.classList.remove('hidden');
-      answerContent.innerHTML = '⏳ Traffic Torching...';
+  newAskBtn.addEventListener('click', async () => {
+    // ── FIX: dedicated OFUX quota bucket ──
+    const canProceed = await canRunTool(OFUX_TOOL_KEY);
+    if (!canProceed) {
+      const upgradeModal = document.getElementById('upgradeModal');
+      if (upgradeModal) upgradeModal.classList.remove('hidden');
+      return;
+    }
 
-      try {
-        const summaries = window._homepageSummaries || [];
+    const question = askInput?.value?.trim();
+    if (!question) {
+      alert('Please enter a question.');
+      return;
+    }
 
-        let uxData = { score: 0, modules: [] };
-        let seoData = { score: 0, modules: [] };
-        let aiData = { score: 0, modules: [] };
+    newAskBtn.disabled = true;
+    newAskBtn.textContent = 'Thinking...';
+    answerContainer.classList.remove('hidden');
+    answerContent.innerHTML = '⏳ Traffic Torching...';
 
-        summaries.forEach(s => {
-          if (s.toolName === 'UX Health') uxData = { score: s.score, modules: s.modules };
-          else if (s.toolName === 'SEO Intent') seoData = { score: s.score, modules: s.modules };
-          else if (s.toolName === 'AI Search') aiData = { score: s.score, modules: s.modules };
-        });
+    try {
+      const summaries = window._homepageSummaries || [];
 
-        const failedMetrics = [];
-        summaries.forEach(s => {
-          (s.modules || []).forEach(mod => {
-            (mod.metrics || []).forEach(m => {
-              if (m.status === 'fail') failedMetrics.push(`${s.toolName}: ${m.name}`);
-            });
+      let uxData = { score: 0, modules: [] };
+      let seoData = { score: 0, modules: [] };
+      let aiData = { score: 0, modules: [] };
+
+      summaries.forEach(s => {
+        if (s.toolName === 'UX Health') uxData = { score: s.score, modules: s.modules };
+        else if (s.toolName === 'SEO Intent') seoData = { score: s.score, modules: s.modules };
+        else if (s.toolName === 'AI Search') aiData = { score: s.score, modules: s.modules };
+      });
+
+      const failedMetrics = [];
+      summaries.forEach(s => {
+        (s.modules || []).forEach(mod => {
+          (mod.metrics || []).forEach(m => {
+            if (m.status === 'fail') failedMetrics.push(`${s.toolName}: ${m.name}`);
           });
         });
+      });
 
-        const cms = window._homepageCmsInfo || { name: 'Custom / Unknown', version: null, confidence: 'unknown' };
-        const pageContext = window._homepagePageContext || {};
-        const headSnapshot = window._homepageHeadSnapshot || '';
+      const cms = window._homepageCmsInfo || { name: 'Custom / Unknown', version: null, confidence: 'unknown' };
+      const pageContext = window._homepagePageContext || {};
+      const headSnapshot = window._homepageHeadSnapshot || '';
 
-        const priorityFixes = buildHomepagePriorityFixes(summaries).map(f => ({
-          name: f.name,
-          module: f.module,
-          score: 0,
-          impact: '',
-          desc: f.howToFix
-        }));
+      const priorityFixes = buildHomepagePriorityFixes(summaries).map(f => ({
+        name: f.name,
+        module: f.module,
+        score: 0,
+        impact: '',
+        desc: f.howToFix
+      }));
 
-        const auditPayload = {
-          question: question,
-          auditData: {
-            url: window._homepageUrl || '',
-            ...pageContext,
-            headSnapshot: headSnapshot,
-            cms: {
-              name: cms.name,
-              version: cms.version,
-              confidence: cms.confidence,
-            },
-            overallScore: Math.round((uxData.score + seoData.score + aiData.score) / 3),
-            ux: { score: uxData.score, modules: uxData.modules },
-            seo: { score: seoData.score, modules: seoData.modules },
-            aeo: { score: aiData.score, modules: aiData.modules },
-            failedItems: failedMetrics.slice(0, 15),
-            priorityFixes: priorityFixes,
-            snippets: {},
-            browserMetrics: null
+      const auditPayload = {
+        question: question,
+        auditData: {
+          url: window._homepageUrl || '',
+          ...pageContext,
+          headSnapshot: headSnapshot,
+          cms: {
+            name: cms.name,
+            version: cms.version,
+            confidence: cms.confidence,
           },
-        };
+          overallScore: Math.round((uxData.score + seoData.score + aiData.score) / 3),
+          ux: { score: uxData.score, modules: uxData.modules },
+          seo: { score: seoData.score, modules: seoData.modules },
+          aeo: { score: aiData.score, modules: aiData.modules },
+          failedItems: failedMetrics.slice(0, 15),
+          priorityFixes: priorityFixes,
+          snippets: {},
+          browserMetrics: null
+        },
+      };
 
-        const response = await fetch('https://ask-traffic-torch-ai.traffictorch.workers.dev/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(auditPayload),
-        });
+      const response = await fetch('https://ask-traffic-torch-ai.traffictorch.workers.dev/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(auditPayload),
+      });
 
-        if (!response.ok) throw new Error(`Server error (${response.status})`);
+      if (!response.ok) throw new Error(`Server error (${response.status})`);
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (data.success) {
-          let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
-          if (Array.isArray(data.warnings) && data.warnings.length) {
-            const warningText = data.warnings.join(' ');
-            html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
-          }
-          answerContent.innerHTML = html;
-        } else {
-          answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
+      if (data.success) {
+        let html = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+        if (Array.isArray(data.warnings) && data.warnings.length) {
+          const warningText = data.warnings.join(' ');
+          html = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html;
         }
-      } catch (err) {
-        answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
-      } finally {
-        askBtn.disabled = false;
-        askBtn.textContent = 'Ask Traffic Torch AI';
+        answerContent.innerHTML = html;
+      } else {
+        answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
       }
-    });
-  }
+    } catch (err) {
+      answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
+    } finally {
+      newAskBtn.disabled = false;
+      newAskBtn.textContent = 'Ask Traffic Torch AI';
+    }
+  });
 });

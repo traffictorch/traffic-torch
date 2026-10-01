@@ -125,9 +125,9 @@ const RULES = [
     note: 'Places where your entity names appear — check spelling and capitalization consistency across these.' },
 
   // (e) Location without Organization (multiple phrasings across modules)
-  { test: /locations? .*?(organization|brand)|organization\/brand.*?location/i,
-    selectors: ['title', 'h1', 'h2'], limit: 6,
-    note: 'Highest-visibility places to add your brand/organization name.' },
+{ test: /location\(s\)|locations? .*?(organization|brand)|organization\/brand.*?location/i,
+  selectors: ['title', 'h1', 'h2'], limit: 6,
+  note: 'Highest-visibility places to add your brand/organization name.' },
 
   // (f) Prominence / salience — where the primary entity should live
   { test: /weak prominence|prominence is low|salience distribution|too flat|primary entity/i,
