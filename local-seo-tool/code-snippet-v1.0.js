@@ -33,7 +33,7 @@ const RULES = [
 
   { test: /Location Mentions/i,
     rawSearch: [
-      { pattern: /(?:in|near|around)\s+[A-Z][a-z]+/g, label: 'Candidate location mentions' }
+      { pattern: /(?:in|near|around)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)/gi, label: 'Candidate location mentions' }
     ] },
 
   { test: /Map Embedded/i,

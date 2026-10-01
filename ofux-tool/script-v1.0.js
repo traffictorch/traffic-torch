@@ -3,7 +3,7 @@
 // ─── Shared constants (matches the other three tools) ────────────────
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
-// Unique quota bucket for the combined homepage audit. Make sure this key
+// Unique quota bucket for the combined audit. Make sure this key
 // is registered wherever canRunTool() reads its limits from.
 const OFUX_TOOL_KEY = 'ofux-tool';
 
@@ -842,7 +842,7 @@ function getAISearchSummary(doc, analyzedUrl) {
   return { score: overallScore, passed, failed, modules: moduleData };
 }
 
-// ─── Build top-3 priority fixes across all homepage summaries ──────────
+// ─── Build top-3 priority fixes across all summaries ──────────
 function buildHomepagePriorityFixes(summaries) {
   const toolOrder = [...summaries].sort((a, b) => a.score - b.score);
   const fixes = [];
@@ -1204,7 +1204,7 @@ export async function runOfuxAnalysis(url, containerId, aiContainerId) {
       console.warn('Failed to save OFUX audit:', e);
     }
     try {
-      await saveAuditHistory(url, 'OFUX Homepage Audit');
+      await saveAuditHistory(url, 'OFUX Audit');
     } catch (e) {
       console.warn('Failed to save OFUX history:', e);
     }

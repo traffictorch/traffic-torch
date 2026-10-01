@@ -9,12 +9,11 @@ export function analyzeStructuredData(doc) {
 
   const findLocalBusiness = (obj) => {
     if (!obj) return null;
-    if (obj['@type'] === 'LocalBusiness') return obj;
-
-    // Support common subtypes
-    if (['ProfessionalService', 'Store', 'Restaurant', 'Dentist', 'VeterinaryCare', 'LocalBusiness'].includes(obj['@type']) && obj.address) {
-      return obj;
-    }
+const types = Array.isArray(obj['@type']) ? obj['@type'] : [obj['@type']];
+if (types.includes('LocalBusiness')) return obj;
+if (types.some(t => ['ProfessionalService', 'Store', 'Restaurant', 'Dentist', 'VeterinaryCare', 'LocalBusiness'].includes(t)) && obj.address) {
+  return obj;
+}
 
     // Check @graph
     if (obj['@graph'] && Array.isArray(obj['@graph'])) {

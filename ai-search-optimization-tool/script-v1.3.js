@@ -308,7 +308,7 @@ const initTool = (form, results, progressContainer) => {
       }
 
       const auditSaveUrl = analyzedUrl === 'Pasted HTML Code' ? 'Pasted HTML code' : analyzedUrl;
-      await saveAuditHistory(auditSaveUrl, 'GEO / AI Search');
+      await saveAuditHistory(auditSaveUrl, 'AEO / AI Search');
 
       await new Promise(r => setTimeout(r, 200));
 

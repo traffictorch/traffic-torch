@@ -4,6 +4,8 @@ import { moduleFixes } from "../fixes-v1.0.js";
 export function analyzeContentRelevance(doc, city, getCleanContent, hasLocalIntent) {
   const fixes = [];
 
+  const escapeRegExp = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  
   const cleanContent = getCleanContent(doc);
   const cityLower = city.toLowerCase().trim();
 
@@ -14,7 +16,7 @@ export function analyzeContentRelevance(doc, city, getCleanContent, hasLocalInte
   const intentPatterns = (cleanContent.match(/near me|nearby|local(ly)?\s|in the area|close to|in my area|areas? we serve/gi) || []).length > 1 
     && bodyHasCity ? 1 : 0;
 
-  const locationMentionsCount = (cleanContent.match(new RegExp(city, 'gi')) || []).length;
+  const locationMentionsCount = (cleanContent.match(new RegExp(escapeRegExp(city), 'gi')) || []).length;
   const locationMentions = locationMentionsCount > 2 ? 1 : 0;
 
   const data = {

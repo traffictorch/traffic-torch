@@ -48,5 +48,5 @@ export function analyzeKeywordsTitles(doc, city, hasLocalIntent) {
     });
   }
 
-  return { data, fixes, score };
+  return { data, fixes, score, maxRaw: 16 };
 }

@@ -25,7 +25,23 @@ export function analyzeReviewsStructure(doc, fullUrl, city, schemaData) {
   };
 
   const aggregateRating = findAggregateRating(schemaData);
-  const canonical = doc.querySelector('link[rel="canonical"]')?.href === fullUrl;
+  const canonicalEl = doc.querySelector('link[rel="canonical"]');
+let canonical = false;
+if (canonicalEl?.href) {
+  if (!fullUrl) {
+    canonical = true; // code analysis: just check presence
+  } else {
+    const normalize = (u) => {
+      try {
+        const url = new URL(u);
+        return (url.origin + url.pathname).replace(/\/$/, '').toLowerCase();
+      } catch {
+        return String(u).toLowerCase().replace(/\/$/, '');
+      }
+    };
+    canonical = normalize(canonicalEl.href) === normalize(fullUrl);
+  }
+}
 
   const cityLower = city.toLowerCase().trim();
 

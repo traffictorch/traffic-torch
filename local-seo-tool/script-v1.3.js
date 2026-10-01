@@ -511,7 +511,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function analyzePage(doc, city, fullUrl, location) {
-    const data = {};
     const cmsInfo = detectCMS({ doc, url: fullUrl || '' });
 
     // 👇 Save the audit to history so it shows in the dashboard
@@ -538,14 +537,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ...schemaResult.fixes,
       ...reviewsResult.fixes
     );
-
-    // Build data object
-    data.nap       = napResult.data;
-    data.keywords  = keywordsResult.data;
-    data.content   = contentResult.data;
-    data.maps      = mapsResult.data;
-    data.schema    = schemaResult.data;
-    data.reviews   = reviewsResult.data;
 
     // ── Weighted Normalized Scoring ───────────────────────────────────────────────
     const normalizedModuleScores = {};
@@ -585,18 +576,23 @@ document.addEventListener('DOMContentLoaded', () => {
       'NAP & Contact', 'Local Keywords & Titles', 'Local Content & Relevance',
       'Maps & Visuals', 'Structured Data', 'Reviews & Structure'
     ];
-    const topPriorityFixes = [];
-    const moduleIssues = {};
-    allFixes.forEach(f => {
-      if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
-      moduleIssues[f.module].push(f);
-    });
-    moduleOrder.forEach(mod => {
-      if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
-        topPriorityFixes.push(moduleIssues[mod][0]);
-      }
-    });
-    topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
+const moduleIssues = {};
+allFixes.forEach(f => {
+  if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
+  moduleIssues[f.module].push(f);
+});
+
+const allFailedFixes = [];
+moduleOrder.forEach(mod => {
+  if (moduleIssues[mod]) {
+    moduleIssues[mod].forEach(f => allFailedFixes.push(f));
+  }
+});
+
+const priorityWeight = { 'very-high': 4, 'high': 3, 'medium-high': 2, 'medium': 1, 'low': 0 };
+allFailedFixes.sort((a, b) => (priorityWeight[b.priority] || 0) - (priorityWeight[a.priority] || 0));
+
+const topPriorityFixes = allFailedFixes.slice(0, 3);
 
     let totalPotentialGain = 0;
     const fixGains = topPriorityFixes.map(fix => {
@@ -1170,7 +1166,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── Ask Traffic Torch AI Logic ──────────────────────────────────────────────
     const askBtn = document.getElementById('ask-ai-btn');
     const askInput = document.getElementById('ai-question-input');
-    const modelSelect = document.getElementById('ai-model-select');
     const answerContainer = document.getElementById('ai-answer-container');
     const answerContent = document.getElementById('ai-answer-content');
 
