@@ -19,7 +19,7 @@ const moduleExplanations = [
     emoji: "🌐",
     name: "AI Visibility",
     what: "Measures how discoverable, understandable, trustworthy, and citable your content is to large language models and voice-first assistants (Gemini, Perplexity, Grok, ChatGPT Search, etc.). Includes entity salience, citation probability, parseability, freshness signals, and training data inclusion likelihood. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#ai-visibility-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
-    how: "Client-side computation using compromise.js NLP: extracts named entities for Share of Voice %, counts citable elements (stats, quotes, references) for Citation Frequency, and evaluates direct-answer paragraphs (40–60 words with facts) for Presence Rate. Adds boosts for question sentences and relevant schema. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#ai-visibility-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Client-side computation using compromise.js NLP: extracts named entities for Citation Potential, counts citable elements (stats, quotes, references) for Citable Element Frequency, and evaluates direct-answer paragraphs (40–60 words with facts) for Direct Answer Rate. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#ai-visibility-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
     why: "Voice and AI assistants now dominate queries. Low AI Visibility means missing Position Zero voice answers, AI summaries, brand mentions, and indirect SEO lift. High visibility makes content the go-to source for Gemini, Perplexity, Grok and ChatGPT voice responses. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#ai-visibility-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
@@ -27,7 +27,7 @@ const moduleExplanations = [
     emoji: "✍️",
     name: "Content Quality",
     what: "Evaluates how natural, human-like, engaging, and voice-friendly your writing sounds when read aloud. Covers natural language patterns, burstiness/perplexity, repetition avoidance, emotional resonance, confidence markers, and ideal spoken-answer conciseness (40–90 seconds). <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#content-quality-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
-    how: "Uses compromise.js for Flesch-Kincaid readability approximation, average sentence length (peaks at ~50 words), pronoun ratio (rewards conversational tone), and entity coverage (authority signals). Boosts for question sentences; penalises low readability. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#content-quality-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Uses compromise.js for Flesch-Kincaid readability approximation, paragraph length (ideal 40–60 words), pronoun ratio (rewards conversational tone), and entity coverage (authority signals). <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#content-quality-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
     why: "AI assistants prefer content that mimics trusted human speech. Poor quality (robotic, repetitive, flat tone) reduces selection for voice answers and summaries. High quality improves dwell time, trust signals, and ranking in voice-first and generative results. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#content-quality-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
@@ -35,7 +35,7 @@ const moduleExplanations = [
     emoji: "🔍",
     name: "Snippet Visibility",
     what: "Measures likelihood of appearing as a featured snippet, rich result or direct voice answer (Position Zero). Checks direct-answer formatting, question alignment, structured data support (FAQPage, HowTo, Speakable), zero-click readiness, and multi-engine compatibility. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#snippet-visibility-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
-    how: "DOM + NLP scan: counts question headings followed by lists/tables for Snippet Ownership %, evaluates 40–60 word factual paragraphs for Zero-Click Share, and combines schema (FAQ/HowTo/Speakable) with structure score for AI Overview Appearances. Boosts for question-heavy or blog/news sites. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#snippet-visibility-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "DOM + NLP scan: counts question headings and accordion <summary> questions followed by lists/tables for Snippet Structure Score, evaluates 40–60 word factual paragraphs for Zero-Click Answer Readiness, and combines schema (FAQ/HowTo/Speakable) with structure score for AI Overview Readiness. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#snippet-visibility-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
     why: "Most voice queries end in zero-click answers. Winning snippet/Position Zero captures voice traffic, brand exposure, and indirect ranking lift. Without strong snippet signals, content is bypassed even if technically excellent. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#snippet-visibility-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
@@ -43,7 +43,7 @@ const moduleExplanations = [
     emoji: "❤️",
     name: "Sentiment Quality",
     what: "Assesses emotional tone, trust signals, positivity, confidence, and human resonance as perceived by AI assistants. Includes positive valence, confidence markers, empathy/relatability, trust/authority signals, and voice-friendly emotional delivery. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#sentiment-quality-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
-    how: "Uses word-list sentiment (positive/negative counts), hallucination risk (entity + speculative language mismatches), and mention sentiment (brand/product context tone). Boosts for e-commerce positive tone; penalises dominant negativity. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#sentiment-quality-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Uses an expanded word-list sentiment (positive/negative counts) and Factual Consistency Signals (speculative language near entities). <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#sentiment-quality-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
     why: "AI prioritises confident, positive, empathetic content for voice answers and recommendations. Poor sentiment increases hallucination risk and deprioritisation — especially in trust-sensitive verticals — while high quality boosts citation and likability. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#sentiment-quality-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
@@ -51,7 +51,7 @@ const moduleExplanations = [
     emoji: "🔑",
     name: "Traditional Keywords",
     what: "Evaluates effective placement and density of exact-match, semantic, and long-tail keywords that anchor intent matching in 2026. Covers title/H1 placement, long-tail/question keyword integration, semantic/LSI coverage, density/distribution, and voice-query alignment. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#traditional-keywords-what' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
-    how: "Compromise.js detects question sentences for Conversational Rankings Sim, counts 4+ word clauses for Long-Tail Density, and combines average phrase length with commonality (rare words = higher score) for Query Volume/Difficulty. Boosts question-heavy or blog/news content. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#traditional-keywords-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
+    how: "Compromise.js detects question sentences for Question Coverage, counts 4+ word clauses for Long-Tail Phrase Usage, and combines average phrase length with commonality for Query Complexity Estimate. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#traditional-keywords-how' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>",
     why: "Keywords remain the entry ticket for relevance, retrieval, and disambiguation across all engines and assistants. Weak keyword signals create a visibility floor — even perfect AI/voice scores cannot compensate for poor intent matching in 2026. <a href='https://traffictorch.net/blog/posts/ai-voice-search-help-guide/#traditional-keywords-why' class='text-orange-600 dark:text-orange-400 hover:underline font-medium ml-1'>Learn more →</a>"
   },
   {
@@ -72,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   container.innerHTML = moduleExplanations.map((m, index) => {
 
-    // Special overview card (last one)
     if (m.id === "ai-voice-overview") {
       return `
         <div id="${m.id}" class="bg-gradient-to-br from-pink to-orange dark:from-pink-950/30 dark:to-orange-950/20 rounded-3xl shadow-xl p-8 md:p-12 text-center border-2 border-pink-400 dark:border-pink-600">
@@ -85,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // Normal module card – inline Learn more links inside each <details>
     return `
       <div id="${m.id}" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8 hover:shadow-xl transition-shadow border-l-4 border-orange-500">
         <div class="text-5xl md:text-6xl mb-5 text-center">${m.emoji}</div>
@@ -124,8 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }).join('');
 
-  
-  // Call AFTER cards are rendered
   openDetailsFromHash();
 });
 

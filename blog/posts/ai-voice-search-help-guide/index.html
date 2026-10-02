@@ -117,7 +117,7 @@
         "height": 630
       },
       "datePublished": "2026-03-13T16:22:00+11:00",
-      "dateModified": "2026-05-29T09:49:00+11:00",
+      "dateModified": "2026-10-02T11:40:00+11:00",
       "author": {
         "@id": "https://traffictorch.net/#author"
       },
@@ -219,7 +219,7 @@
         "height": 630
       },
       "datePublished": "2026-03-13T16:22:00+11:00",
-      "dateModified": "2026-05-29T09:49:00+11:00",
+      "dateModified": "2026-10-02T11:40:00+11:00",
       "author": {
         "@id": "https://traffictorch.net/#author"
       },
@@ -256,7 +256,7 @@
         "speakable schema"
       ],
       "articleSection": "Voice Search Optimization",
-      "wordCount": 5517
+      "wordCount": 5750
     }
 
   ]
@@ -667,29 +667,24 @@
     <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
       <p><strong>Traffic Torch computes AI Visibility client-side using a three-sub-metric model powered by compromise.js (NLP library) and direct DOM inspection.</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add more depth.</p>
 
-      <p>The overall score (0–100) is the simple average of three weighted sub-metrics, with small conditional boosts applied afterward. Here is exactly how each part is calculated:</p>
+      <p>The overall score (0–100) is the simple average of the three sub-metrics. Here is exactly how each part is calculated:</p>
 
       <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
         <li>
-          <strong>Share of Voice % (SOV)</strong>
-          Extracts named entities (people, places, organizations) using compromise.js NLP. Calculates entity density as a percentage of total words. Combines this with schema detection (looking for SpeakableSpecification, FAQPage, Article, Product types in JSON-LD scripts). Final SOV is the weighted average (entity density × 2 + schema score) / 3, capped at 100.
+          <strong>Citation Potential</strong>
+          Combines schema coverage (50%) with named-entity density (50%). The schema walker recursively parses every JSON-LD block, including <code>@graph</code> arrays and array-form <code>@type</code> values, assigning weighted points to SpeakableSpecification, FAQPage, HowTo, Article, Product, WebPage, WebSite, Person, Organization, and BreadcrumbList. Entity density uses compromise.js people/places/organizations extraction. Final score blends both signals into a 0–100 range.
         </li>
         <li>
-          <strong>Citation Frequency</strong>
+          <strong>Citable Element Frequency</strong>
           Counts verifiable elements that make content citable: numbers/percentages (e.g. 42%, 1.5m), quoted phrases, and source-reference phrases ("according to", "source", "cite"). Normalizes the total count per 1,000 characters and scales to 0–100.
         </li>
         <li>
-          <strong>Presence Rate</strong>
-          Splits content into paragraphs (>50 chars). Counts how many fall in the ideal voice-answer sweet spot: 40–60 words, contain at least one fact/number, and form complete sentences. Percentage of qualifying paragraphs becomes the score (0–100).
+          <strong>Direct Answer Rate</strong>
+          Splits content into paragraphs using preserved <code>\n\n</code> boundaries. Counts how many fall in the ideal voice-answer sweet spot: 40–60 words, contain sentence-ending punctuation, and are factual (include a number, a question, or a definitional verb like "is/means/provides"). Percentage of qualifying paragraphs becomes the score (0–100).
         </li>
       </ol>
 
-      <p class="mt-6">Additional boosts:</p>
-      <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
-        <li>+10 points if schema score >50 <strong>and</strong> the page contains question sentences (voice AI strongly favors Q&A formats).</li>
-        <li>+5 points for e-commerce (Product schema detected) or news/article sites (time[datetime] elements present).</li>
-      </ul>
-
+      <p class="mt-6">No artificial boosts or penalties are applied. Scores reflect the raw metric average so results stay transparent and reproducible.</p>
     </div>
   </div>
 
@@ -762,33 +757,28 @@
   <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
     <p><strong>Traffic Torch computes Content Quality client-side using a four-sub-metric model powered by compromise.js (NLP library).</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add more descriptive depth.</p>
 
-    <p>The overall score (0–100) is the simple average of four sub-metrics, with conditional boosts and penalties applied afterward. Here is exactly how each part is calculated:</p>
+    <p>The overall score (0–100) is the simple average of four sub-metrics. Here is exactly how each part is calculated:</p>
 
     <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
       <li>
         <strong>Readability Score</strong>
-        Approximates Flesch-Kincaid readability using sentence count, word count, and syllable estimation. Formula: 206.835 – 1.015 × (words/sentences) – 84.6 × (syllables/words). Normalized to 0–100, with higher values (easier to read, ideal grade 6–8) scoring better.
+        Approximates Flesch-Kincaid readability using sentence count, word count, and syllable estimation. Formula: 206.835 – 1.015 × (words/sentences) – 84.6 × (syllables/words). Normalized to 0–100, with higher values (easier to read, ideal grade 6–8) scoring better. Non-prose pages (average sentence length over 60 words, or fewer than 200 words total) receive a neutral score of 40.
       </li>
       <li>
         <strong>Answer Conciseness</strong>
-        Calculates average sentence length across all sentences. Scores peak around 50 words per sentence (ideal for voice answers), with linear drop-off on either side. Formula clamps between 0–100.
+        Splits content into paragraphs using preserved <code>\n\n</code> boundaries. Each paragraph is scored against the ideal voice-answer length of 40–60 words: 40–60 words = full credit, 25–39 or 61–80 words = 60 %, 15–24 words = 30 %, longer = 20 %. The average across all paragraphs becomes the score.
       </li>
       <li>
         <strong>Pronoun Ratio</strong>
-        Counts first/second/third-person pronouns via compromise.js. Calculates raw percentage of pronouns vs total words, then scales aggressively (×20) so >5 % pronoun usage reaches near-full points. This rewards conversational tone.
+        Counts first/second/third-person pronouns via compromise.js. Calculates raw percentage of pronouns vs total words, then scales so 15 % pronoun usage reaches full points. This rewards conversational tone.
       </li>
       <li>
         <strong>Entity Coverage</strong>
-        Extracts named entities (people, places, organizations) using compromise.js. Calculates raw percentage of entities vs total words, then scales (×33.3) so >3 % entity density reaches near-full points. This rewards authority and E-E-A-T signals.
+        Extracts named entities (people, places, organizations) using compromise.js. Calculates raw percentage of entities vs total words, then scales so 8 % entity density reaches full points. This rewards authority and E-E-A-T signals.
       </li>
     </ol>
 
-    <p class="mt-6">Additional adjustments:</p>
-    <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
-      <li>+10 points if more than 5 question sentences are detected (voice AI strongly favours Q&A and FAQ-style content).</li>
-      <li>–10 points if readability falls below 50 (penalises jargon-heavy or overly complex text that is hard for voice synthesis).</li>
-    </ul>
-
+    <p class="mt-6">No artificial boosts or penalties are applied. Scores reflect the raw metric average so results stay transparent and reproducible.</p>
   </div>
 </div>
 
@@ -860,29 +850,24 @@
   <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
     <p><strong>Traffic Torch computes Snippet Visibility client-side using a three-sub-metric model powered by compromise.js (NLP library) and direct DOM inspection of headings, paragraphs, and schema scripts.</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add structured sections such as lists or tables under headings.</p>
 
-    <p>The overall score (0–100) is the simple average of three sub-metrics, with conditional boosts and penalties applied afterward. Here is exactly how each part is calculated:</p>
+    <p>The overall score (0–100) is the simple average of three sub-metrics. Here is exactly how each part is calculated:</p>
 
     <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
       <li>
-        <strong>Snippet Ownership %</strong>
-        Scans all headings (h1–h4) in the DOM. Counts how many are question-based using compromise.js NLP. Also checks if the immediate next sibling after each heading is a list (ul/ol) or table. Calculates percentage of headings that qualify as question + structured content. Score = (questionHeadings + structuredUnder) / total headings × 100.
+        <strong>Snippet Structure Score</strong>
+        Scans all headings (h1–h4) plus accordion <code>&lt;details&gt;&lt;summary&gt;</code> question blocks in the DOM. Adds 2.5 points per heading (capped at 25) plus 10 points per question heading or heading-followed-by-list/table (ul, ol, table). Rewards pages with clear, extractable structure without penalising long pages for having many headings.
       </li>
       <li>
-        <strong>Zero-Click Share</strong>
-        Scans all paragraph elements (p tags) in the DOM. Counts how many meet the ideal voice/snippet criteria: 40–60 words, contain at least one fact/number or question, and are concise/direct. Score = (qualifying paragraphs / total paragraphs) × 100.
+        <strong>Zero-Click Answer Readiness</strong>
+        Splits content into paragraphs using preserved <code>\n\n</code> boundaries. Each paragraph is scored: 40–60 words = full credit, 25–39 or 61–80 = 60 %, 15–24 = 30 %, longer = 20 %. Paragraphs with sentence-ending punctuation plus either a fact or a question get a 1.2× bonus. The average across all paragraphs becomes the score.
       </li>
       <li>
-        <strong>AI Overview Appearances</strong>
-        Combines schema detection (FAQPage, HowTo, SpeakableSpecification types in JSON-LD scripts, +33 points each) with structure score (structuredUnder × 10 + questionHeadings × 5, capped at 100). Final score = average of schemaScore and structureScore.
+        <strong>AI Overview Readiness</strong>
+        Combines schema score (weighted, from the same recursive walker used in AI Visibility) with a structure score (structuredUnder × 10 + questionHeadings × 5, capped at 100). Final score = average of schemaScore and structureScore.
       </li>
     </ol>
 
-    <p class="mt-6">Additional adjustments:</p>
-    <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
-      <li>+10 points if more than 5 question sentences are detected or the site type is detected as 'news' or 'blog' (informational pages perform better in snippets per research).</li>
-      <li>–10 points if no structured content (lists/tables) follows any heading (penalises unstructured pages, especially e-commerce without HowTo schema).</li>
-    </ul>
-
+    <p class="mt-6">No artificial boosts or penalties are applied. Scores reflect the raw metric average so results stay transparent and reproducible.</p>
   </div>
 </div>
 
@@ -952,31 +937,22 @@
     How it's Tested?
   </h3>
   <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
-    <p><strong>Traffic Torch computes Sentiment Quality client-side using a three-sub-metric model powered by compromise.js (NLP library) and predefined positive/negative word lists.</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add more factual, neutral content.</p>
+    <p><strong>Traffic Torch computes Sentiment Quality client-side using a two-sub-metric model powered by compromise.js (NLP library) and predefined positive/negative word lists.</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add more factual, neutral content.</p>
 
-    <p>The overall score (0–100) is the simple average of three sub-metrics, with conditional boosts and penalties applied afterward. Here is exactly how each part is calculated:</p>
+    <p>The overall score (0–100) is the simple average of the two sub-metrics. Here is exactly how each part is calculated:</p>
 
     <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
       <li>
         <strong>Sentiment Score</strong>
-        Converts text to lowercase and splits into words. Counts matches against predefined positive words (excellent, great, positive, best, reliable, trustworthy, helpful, accurate, recommended) and negative words (bad, poor, negative, worst, unreliable, inaccurate, confusing, misleading). Computes net positive percentage: (positive count – negative count) / total words × 100. Normalizes to 0–100 with a bias toward neutral/high scores (base 50 + raw value).
+        Converts text to lowercase and splits into words. Counts matches against expanded positive and negative word lists (including apparel-relevant terms like elegant, timeless, flattering, breathable). Computes the ratio of positive to total sentiment-bearing words (not total page words). Then dampens toward neutral by 35 % so a page with only positive sentiment words doesn't score an automatic 100. Neutral pages with no sentiment words score 50.
       </li>
       <li>
-        <strong>Hallucination Risk</strong>
-        Extracts named entities (people, places, organizations) across the full text using compromise.js. Then checks each sentence for entity presence combined with speculative language ("may", "might", "possible"). Calculates inconsistency percentage (sentences with both entities and speculation / total sentences × 100). Inverts to score: higher consistency = higher score (100 – risk %).
-      </li>
-      <li>
-        <strong>Mention Sentiment</strong>
-        Detects potential brand mentions (capitalised nouns via compromise.js). For each mention extracts ~50 characters of surrounding context. Counts positive vs negative words in that context. Averages tone across all mentions and scales to 0–100 (neutral default 50 if no mentions found).
+        <strong>Factual Consistency Signals</strong>
+        Extracts named entities (people, places, organizations) using compromise.js. Checks each sentence for entity presence combined with speculative language ("may", "might", "possible", "could", "would", "should"). Calculates the inconsistency percentage (sentences with both entities and speculation / total sentences × 100). Inverts to score: higher consistency = higher score (100 – risk %).
       </li>
     </ol>
 
-    <p class="mt-6">Additional adjustments:</p>
-    <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
-      <li>+10 points if site type is detected as e-commerce (via keywords like "product", "buy", "price") and sentiment score >70 (positive tone boosts citations in review-heavy verticals).</li>
-      <li>–10 points if negative word count exceeds positive count (penalises controversial or overly critical tone unsuitable for voice trust).</li>
-    </ul>
-
+    <p class="mt-6">No artificial boosts or penalties are applied. Scores reflect the raw metric average so results stay transparent and reproducible.</p>
   </div>
 </div>
 
@@ -1048,29 +1024,24 @@
   <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
     <p><strong>Traffic Torch computes Traditional Keywords client-side using a three-sub-metric model powered by compromise.js (NLP library) and simple text heuristics.</strong> The function requires at least 300 characters of readable text. Shorter content receives a flat low score of 20 with a clear warning to add more conversational phrases.</p>
 
-    <p>The overall score (0–100) is the simple average of three sub-metrics, with conditional boosts and penalties applied afterward. Here is exactly how each part is calculated:</p>
+    <p>The overall score (0–100) is the simple average of three sub-metrics. Here is exactly how each part is calculated:</p>
 
     <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
       <li>
-        <strong>Conversational Rankings Sim</strong>
-        Uses compromise.js to extract all question sentences from the text. Calculates the percentage of sentences that are questions. Scales aggressively (×10) so >10 % question-based content reaches near-full points. This simulates how well the page aligns with natural voice query phrasing.
+        <strong>Question Coverage</strong>
+        Uses compromise.js to extract question sentences and also counts literal "?" marks directly in the text. Takes the higher of the two percentages vs total sentences, then scales by 6.5 so roughly 15 % question-based content reaches full points. This measures how well the page aligns with natural voice query phrasing.
       </li>
       <li>
-        <strong>Long-Tail Density</strong>
-        Extracts clauses/phrases via compromise.js. Counts how many have 4+ words (approximating long-tail expressions). Calculates raw percentage and scales (×20) so >5 % long-tail density reaches near-full points. This rewards natural, specific phrasing over short keywords.
+        <strong>Long-Tail Phrase Usage</strong>
+        Extracts clauses/phrases via compromise.js. Counts how many have 4+ words (approximating long-tail expressions). Calculates raw percentage and scales (×5) so ~20 % long-tail density reaches near-full points. This rewards natural, specific phrasing over short keywords.
       </li>
       <li>
-        <strong>Query Volume/Difficulty</strong>
-        Calculates average phrase/clause length across the text. Combines with an estimated commonality score (percentage of very common words like "the", "a", "and", etc.). Longer phrases + lower commonality (more unique terms) = higher score, simulating higher volume potential and lower difficulty for specific voice queries.
+        <strong>Query Complexity Estimate</strong>
+        Calculates average phrase/clause length across the text. Combines with an estimated commonality score (percentage of very common words like "the", "a", "and", etc.). Longer phrases plus lower commonality (more unique terms) equals higher score, simulating higher volume potential and lower difficulty for specific voice queries.
       </li>
     </ol>
 
-    <p class="mt-6">Additional adjustments:</p>
-    <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
-      <li>+10 points if more than 10 question sentences are detected or site type is 'blog' or 'news' (informational/question-heavy content performs better in voice rankings per research).</li>
-      <li>–10 points if average phrase length falls below 4 words (penalises short, list-heavy content like basic e-commerce pages that miss voice intent).</li>
-    </ul>
-
+    <p class="mt-6">No artificial boosts or penalties are applied. Scores reflect the raw metric average so results stay transparent and reproducible.</p>
   </div>
 </div>
 
@@ -1136,7 +1107,7 @@
     </div>
 
     <p class="mt-12 text-center text-base text-gray-600 dark:text-gray-400 italic">
-      Updated March 2026 – based on ongoing correlation research, voice query trends, and real-time testing across major AI assistants.
+      Updated October 2026 – based on ongoing correlation research, voice query trends, and real-time testing across major AI assistants.
     </p>
   </div>
 </section>
@@ -1330,11 +1301,11 @@
           Core Expertise: Voice Search Optimization • AI Visibility & Citation • Snippet & Position Zero • Sentiment & Tone Analysis • Traditional & Conversational Keywords • Privacy-First Web Auditing.
         </p>
         <p class="text-base text-gray-800 dark:text-gray-200 italic">
-          Continuously updated with the latest Google guidelines, AI assistant behaviours (Gemini, Perplexity, Grok, ChatGPT Search), ranking factor studies, and real-world voice performance data - as of March 2026.
+          Continuously updated with the latest Google guidelines, AI assistant behaviours (Gemini, Perplexity, Grok, ChatGPT Search), ranking factor studies, and real-world voice performance data - as of October 2026.
         </p>
         <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6 space-y-1">
           <p>Guide originally published: 2026-03-13</p>
-          <p>Last updated: 2026-05-29</p>
+          <p>Last updated: 2026-10-02</p>
         </div>
       </div>
     </div>

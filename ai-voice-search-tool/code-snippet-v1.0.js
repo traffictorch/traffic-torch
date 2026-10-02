@@ -6,11 +6,6 @@ const SNIPPET_MAX = 800;
 const HEAD_MAX    = 2000;
 
 // ─── Failure-text → CSS-selector rules ────────────────────────────────
-// NOTE: This tool (AI Voice Search) emits sub-metric NAMES like
-// "Share of Voice %", "Readability Score", "AI Overview Appearances", etc.
-// The rules below cover BOTH:
-//   1. Lighthouse/axe-style raw-HTML audit failures (original set), AND
-//   2. This tool's sub-metric names (added at the bottom).
 // Rules are matched top-to-bottom; first match wins.
 const RULES = [
   // ── Raw-HTML / Lighthouse-style failures (original) ──────────────
@@ -101,13 +96,13 @@ const RULES = [
     selectors: ['a[href^="#main"]', 'a[href^="#content"]', 'a[href^="#skip"]'] },
   { test: /modal\/dialog elements/i, selectors: ['[role="dialog"]', '.modal'] },
 
-  // ── AI Voice Search sub-metric names (this tool's own failures) ──
+  // ── AI Voice Search sub-metric names (updated) ──
   // AI Visibility module
-  { test: /^Share of Voice/i,
-    selectors: ['script[type="application/ld+json"]'], limit: 5 },
-  { test: /^Citation Frequency/i,
-    selectors: ['blockquote', 'cite', 'q'], limit: 5 },
-  { test: /^Presence Rate/i,
+  { test: /^Citation Potential/i,
+    selectors: ['script[type="application/ld+json"]', 'p'], limit: 5 },
+  { test: /^Citable Element Frequency/i,
+    selectors: ['blockquote', 'cite', 'q', 'p'], limit: 5 },
+  { test: /^Direct Answer Rate/i,
     selectors: ['p'], limit: 5 },
   // Content Quality module
   { test: /^Readability Score/i,
@@ -121,24 +116,22 @@ const RULES = [
   // Sentiment & Quality module
   { test: /^Sentiment Score/i,
     selectors: ['p'], limit: 5 },
-  { test: /^Hallucination Risk/i,
-    selectors: ['p'], limit: 5 },
-  { test: /^Mention Sentiment/i,
+  { test: /^Factual Consistency Signals/i,
     selectors: ['p'], limit: 5 },
   // Snippet & Visibility module
-  { test: /^Snippet Ownership/i,
+  { test: /^Snippet Structure Score/i,
     selectors: ['h2', 'h3', 'ul', 'ol', 'table'], limit: 10 },
-  { test: /^Zero-Click Share/i,
+  { test: /^Zero-Click Answer Readiness/i,
     selectors: ['p'], limit: 5 },
-  { test: /^AI Overview Appearances/i,
+  { test: /^AI Overview Readiness/i,
     selectors: ['script[type="application/ld+json"]'], limit: 5 },
   // Keywords module
-  { test: /^Conversational Rankings/i,
-    selectors: ['h1, h2, h3, h4, h5, h6'], limit: 12 },
-  { test: /^Long-Tail Density/i,
-    selectors: ['h1, h2, h3, h4, h5, h6'], limit: 12 },
-  { test: /^Query Volume\/Difficulty/i,
-    selectors: ['h1, h2, h3, h4, h5, h6'], limit: 12 }
+  { test: /^Question Coverage/i,
+    selectors: ['h1, h2, h3, h4, h5, h6', 'p'], limit: 12 },
+  { test: /^Long-Tail Phrase Usage/i,
+    selectors: ['h1, h2, h3, h4, h5, h6', 'p'], limit: 12 },
+  { test: /^Query Complexity Estimate/i,
+    selectors: ['h1, h2, h3, h4, h5, h6', 'p'], limit: 12 }
 ];
 
 export function deriveSelectorsForFailure(text) {
@@ -209,7 +202,7 @@ function searchRawHtml(html, patterns) {
   return out;
 }
 
-// ─── Modal (native <dialog> — always centers on screen) ──────────────
+// ─── Modal (native <dialog>) ─────────────────────────────────────────
 const MODAL_ID = 'code-snippet-modal';
 
 export function initCodeSnippetModal() {
