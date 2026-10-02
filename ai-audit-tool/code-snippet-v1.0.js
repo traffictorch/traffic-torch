@@ -14,6 +14,8 @@ const SNIPPET_MAX = 800;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Failure-pattern → evidence rules
+// Order matters: first match wins. Specific rules go first, generic fallbacks
+// (/trigram/i, /bigram/i) go last so they only catch anything unrecognised.
 // ─────────────────────────────────────────────────────────────────────────────
 const RULES = [
   {
@@ -77,6 +79,17 @@ const RULES = [
     kind: 'wordFrequency', limit: 20,
     note: 'Low rare-word frequency means few unique words appear only once. ' +
           'Below are your most-repeated words — high counts crowd out rare vocabulary.'
+  },
+  // ── Generic fallbacks (must be last) ──────────────────────
+  {
+    test: /trigram/i,
+    kind: 'commonNgrams', n: 3, limit: 15,
+    note: 'Most frequent 3-word sequences in the extracted page text.'
+  },
+  {
+    test: /bigram/i,
+    kind: 'commonNgrams', n: 2, limit: 20,
+    note: 'Most frequent 2-word sequences in the extracted page text.'
   }
 ];
 
@@ -90,7 +103,21 @@ export function deriveSelectorsForFailure(text) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HTML → text extraction (cached per distinct HTML string)
+// Mirrors the main-content extraction used in script-v1.3.js so the evidence
+// shown here matches the text that produced the score.
 // ─────────────────────────────────────────────────────────────────────────────
+const REMOVE_SELECTORS = [
+  'script', 'style', 'noscript', 'template',
+  'header', 'nav', 'footer', 'aside',
+  '.menu', '.navbar', '.sidebar', '.widget',
+  '.cookie-banner', '.cookie-notice', '.popup', '.modal',
+  '.social-links', '.breadcrumbs', '.breadcrumb',
+  '.related-posts', '.comments', '#comments', '.author-box', '.newsletter',
+  '.sr-only', '[aria-hidden="true"]',
+  '[role="navigation"]', '[role="banner"]',
+  '[role="contentinfo"]', '[role="complementary"]'
+].join(',');
+
 let _cachedDoc = null;
 let _cachedHtmlRef = null;
 let _cachedText = null;
@@ -116,8 +143,24 @@ function getText(html) {
   if (_cachedText !== null && _cachedHtmlRef === html) return _cachedText;
   const doc = getDoc(html);
   if (!doc || !doc.body) return '';
-  const body = doc.body.cloneNode(true);
-  body.querySelectorAll('script, style, noscript, template').forEach(el => el.remove());
+
+  function visibleLength(el) {
+    if (!el) return 0;
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll('script, style, noscript, template').forEach(n => n.remove());
+    return (clone.textContent || '').replace(/\s+/g, ' ').trim().length;
+  }
+
+  let root = null;
+  let bestLen = 0;
+  doc.querySelectorAll('article, main, [role="main"], .main-content, .site-content, .content-area').forEach(el => {
+    const len = visibleLength(el);
+    if (len > bestLen) { bestLen = len; root = el; }
+  });
+  if (!root || bestLen < 400) root = doc.body;
+
+  const body = root.cloneNode(true);
+  body.querySelectorAll(REMOVE_SELECTORS).forEach(el => el.remove());
   _cachedText = (body.textContent || '').replace(/\s+/g, ' ').trim();
   return _cachedText;
 }
@@ -151,6 +194,8 @@ function topNgrams(words, n, limit) {
 }
 
 function sampleEvenly(arr, limit) {
+  if (!arr || !arr.length) return [];
+  if (limit <= 1) return [arr[Math.floor(arr.length / 2)]];
   if (arr.length <= limit) return arr.slice();
   const out = [];
   for (let i = 0; i < limit; i++) {

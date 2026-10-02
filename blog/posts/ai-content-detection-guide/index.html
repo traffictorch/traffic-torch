@@ -91,7 +91,7 @@
         "https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp"
       ],
       "datePublished": "2026-02-17T09:00:00+11:00",
-      "dateModified": "2026-05-19T12:52:00+11:00",
+      "dateModified": "2026-10-02T12:32:00+11:00",
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -158,7 +158,7 @@
       "description": "Learn the exact science behind Traffic Torch’s AI Audit Tool – the 5 human-likeness metrics, transparent formulas, SEO impact and practical fixes.",
       "image": "https://traffictorch.net/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp",
       "datePublished": "2026-02-17T09:00:00+11:00",
-      "dateModified": "2026-05-19T12:52:00+11:00",
+      "dateModified": "2026-10-02T12:32:00+11:00",
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -601,7 +601,7 @@
 <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Traffic Torch’s free AI Audit Tool analyses any URL in seconds and gives you a 0–100 Human Score based on the same 5 metrics professional detectors use. Everything runs 100 % client-side – no data leaves your browser.</p>
 
 <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8">The 5 Metrics Behind the AI Audit Tool</h2>
-<p class="text-gray-800 dark:text-gray-200">Each metric is scored out of 20. The tool shows you the exact sub-scores, visual gauges, and ready-to-use fixes. Below we explain every metric in the exact order the tool calculates them.</p>
+<p class="text-gray-800 dark:text-gray-200">Each metric is scored out of 20, made up of two sub-metrics graded 0–10 each. Sub-metrics are graded — not pass/fail — so a score of 8–10 is healthy, 6–7 is acceptable but improvable, and below 6 is flagged for attention. The tool shows you the exact sub-scores, visual gauges, and ready-to-use fixes. Below we explain every metric in the exact order the tool calculates them.</p>
 
 <h2 id="perplexity-what" class="text-3xl font-bold font-black text-orange-700 dark:text-orange-400 mt-16 mb-8 scroll-mt-24">
   What is Perplexity (and the story behind it)?
@@ -643,14 +643,16 @@
   <li>Build frequency counts for every bigram (word[i] + word[i+1]) and every trigram (word[i] + word[i+1] + word[i+2]).</li>
   <li>Calculate Shannon entropy for both distributions using the classic formula:<br>
     <code class="bg-gray-100 dark:bg-gray-900 px-1.5 py-0.5 rounded">H = -Σ (p × log₂(p))</code> where p = count / total possible transitions.</li>
-  <li>Assign points (max 20 for the Perplexity module):<br>
-    • Trigram entropy ≥ 7.5 → +10 points<br>
-    • Bigram entropy ≥ 7.0 → +10 points
+  <li>Normalise each entropy value against the theoretical maximum for the document length — <code>log₂(N−1)</code>, where N is the word count. This prevents long articles from being unfairly penalised (a 3,000-word post naturally has lower raw entropy than a 500-word post even when both are equally human-written).</li>
+  <li>Graded scoring (max 20 points for the Perplexity module — 10 points per sub-metric):<br>
+    • Normalised ratio ≥ 0.80 → 10 points (excellent)<br>
+    • Ratio 0.55–0.80 → graded 0–10 (smooth linear band)<br>
+    • Ratio &lt; 0.55 → 0 points
   </li>
 </ol>
 
 <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6 italic">
-  These thresholds (7.0 / 7.5) are tuned from real-world benchmarks of 2024–2025 top-ranking blog posts vs typical GPT-4 / Claude / Gemini outputs. Higher entropy = more unpredictable sequencing = more human-like.
+  The ratio thresholds (0.55 / 0.80) are tuned from real-world benchmarks of 2024–2025 top-ranking blog posts vs typical GPT-4 / Claude / Gemini outputs. Short posts typically sit around 0.70–0.85, long articles cluster around 0.60–0.75 — both comfortably pass. Higher ratios = more unpredictable sequencing = more human-like.
 </p>
 <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
@@ -721,14 +723,14 @@
   <li>Calculate the average sentence length (<code>avgSentLen</code>).</li>
   <li>Compute variance: average of squared differences from the mean → take square root to get standard deviation (<code>sentBurstiness</code> = √variance).</li>
   <li>Repeat the process for individual word lengths (characters per word) across the entire text → get <code>wordBurstiness</code>.</li>
-  <li>Scoring (max 20 points for the Burstiness module):<br>
-    • Sentence burstiness (std dev) ≥ 4.5 → +10 points<br>
-    • Word length burstiness (std dev) ≥ 2.0 → +10 points
+  <li>Graded scoring (max 20 points for the Burstiness module — 10 points per sub-metric):<br>
+    • Sentence std dev: ≤3.0 → 0 points; 3.0–4.5 → 0–5; 4.5–6.5 → 5–10; ≥6.5 → 10 points<br>
+    • Word length std dev: ≤1.4 → 0 points; 1.4–2.0 → 0–5; 2.0–2.8 → 5–10; ≥2.8 → 10 points
   </li>
 </ol>
 
 <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6 italic">
-  Thresholds are derived from 2024–2025 analysis of high-engagement human blog posts (typically 4.8–7.2 sentence std dev) vs typical LLM output (often 2.0–3.8). Higher values indicate more dynamic rhythm.
+  Thresholds are derived from 2024–2025 analysis of high-engagement human blog posts (typically 4.8–7.2 sentence std dev and 2.4–3.4 word std dev) vs typical LLM output (often 2.0–3.8 sentence std dev and 1.5–2.2 word std dev). Higher values indicate more dynamic rhythm.
 </p>
 
 <h2 id="burstiness-why" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
@@ -777,7 +779,7 @@
 </h2>
 
 <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6">
-  Traffic Torch focuses on the <strong>maximum frequency</strong> of any single bigram or trigram in the cleaned main content, a simple yet powerful proxy for detectable repetition.
+  Traffic Torch focuses on the <strong>maximum frequency</strong> of any single meaningful bigram or trigram in the cleaned main content, a simple yet powerful proxy for detectable repetition.
 </p>
 
 <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-6 font-medium">
@@ -786,19 +788,25 @@
 
 <ol class="list-decimal pl-6 space-y-4 text-gray-800 dark:text-gray-200 leading-relaxed">
   <li>Clean and lowercase the main text, split into words (remove empty tokens).</li>
-  <li>Build frequency maps:<br>
+  <li>Build frequency maps, <strong>skipping any n-gram made up entirely of common stopwords</strong> (e.g. "of the", "in a") so normal English connective phrases aren't penalised:<br>
     • Bigram map: every consecutive pair (word[i] + " " + word[i+1])<br>
     • Trigram map: every consecutive triple (word[i] + " " + word[i+1] + " " + word[i+2])
   </li>
   <li>Find the highest count in each map (<code>maxBigram</code> and <code>maxTrigram</code>).</li>
-  <li>Scoring (max 20 points for the Repetition module):<br>
-    • Max bigram count ≤ 3 → +10 points<br>
-    • Max trigram count ≤ 2 → +10 points
+  <li>Compute length-scaled allowed maximums so longer documents aren't unfairly penalised:<br>
+    • <code>allowedBigram = max(6, round(wordCount / 150))</code><br>
+    • <code>allowedTrigram = max(3, round(wordCount / 400))</code>
+  </li>
+  <li>Graded scoring (max 20 points for the Repetition module — 10 points per sub-metric). The score falls off smoothly as the max count exceeds the allowed maximum (ratio = max / allowed):<br>
+    • Ratio ≤ 1.0 → 10 points<br>
+    • Ratio 1.0–2.0 → 10 to 5 (linear)<br>
+    • Ratio 2.0–4.0 → 5 to 0 (linear)<br>
+    • Ratio ≥ 4.0 → 0 points
   </li>
 </ol>
 
 <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6 italic">
-  These conservative thresholds come from real benchmarks: top-ranking 2025 human-written articles rarely have any 2-word phrase appearing >3 times or 3-word phrase >2 times in ~1,500–3,000 word posts. AI drafts often show 5–15+ repeats of signature phrases.
+  The length-scaled thresholds come from real benchmarks: top-ranking 2025 human articles typically allow ~6–10 repeats of a meaningful 2-word phrase and 3–6 repeats of a 3-word phrase in the 1,500–3,000 word range. The stopword filter ensures phrases like "of the" don't count. AI drafts often push well past these limits with signature phrases repeating 15+ times.
 </p>
 <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
@@ -883,17 +891,18 @@
 
 <ol class="list-decimal pl-6 space-y-4 text-gray-800 dark:text-gray-200 leading-relaxed">
   <li>Split cleaned text into sentences using . ! ? boundaries.</li>
-  <li>For each sentence: count words (after filtering empty tokens) → build array of sentence lengths.</li>
+  <li>Discard fragments shorter than 5 words — this filters out headers, nav items, marketing taglines and list bullets so they don't skew the average.</li>
+  <li>For each remaining sentence: count words (after filtering empty tokens) → build array of sentence lengths.</li>
   <li>Calculate average sentence length: <code>avgSentLen = total words / sentence count</code>.</li>
   <li>Count commas per sentence → compute average commas per sentence (<code>avgCommas</code>).</li>
-  <li>Scoring (max 20 points for the Sentence Length module):<br>
-    • Average sentence length between 15 and 23 words inclusive → +10 points<br>
-    • Average commas per sentence ≥ 1.0 → +10 points
+  <li>Graded scoring (max 20 points for the Sentence Length module — 10 points per sub-metric):<br>
+    • <strong>Average length</strong>: 15–23 words → 10 points; graded outward (e.g. 12–14 → 6–10; 24–26 → 8–10; 10–11 → 3–6).<br>
+    • <strong>Complexity</strong>: graded 0–10 based on average commas per sentence — 1.0+ → 10; 0.8 → 9; 0.6 → 8; 0.4 → 6; 0.25 → 4; 0.1 → 2.
   </li>
 </ol>
 
 <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6 italic">
-  The 15–23 range matches readability research (Flesch-Kincaid, Hemingway App benchmarks) and 2025 top-ranking content analysis. ≥1.0 commas per sentence acts as a proxy for compound/complex sentences. Humans use more subordination than basic AI output.
+  The 15–23 ideal range matches readability research (Flesch-Kincaid, Hemingway App benchmarks) and 2025 top-ranking content analysis. The &lt;5-word filter prevents marketing taglines and menu items from artificially dragging down the average. Comma-based complexity is graded rather than binary — 0.4–0.6 commas per sentence is already healthy, since humans use more subordination than basic AI output.
 </p>
 <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
@@ -957,17 +966,17 @@
   <li>Clean and lowercase the main text, split into words (filter empty tokens).</li>
   <li>Calculate total word count (<code>wordCount</code>).</li>
   <li>Build a Set of unique words → size gives number of distinct terms.</li>
-  <li>Diversity = (unique words / total words) × 100.</li>
+  <li>Compute <strong>Guiraud's R</strong> diversity index: <code>uniqueWords / √(wordCount)</code>. This normalises for document length — raw diversity percentage falls sharply as length grows (Zipf's law), so it can't be used to compare a 500-word post with a 3,000-word article.</li>
   <li>Build frequency map of every word → count how many appear exactly once (<code>hapax</code>).</li>
   <li>Rare word ratio = (hapax count / total words) × 100.</li>
-  <li>Scoring (max 20 points for the Vocabulary module):<br>
-    • Diversity ≥ 65% → +10 points<br>
-    • Rare word ratio ≥ 15% → +10 points
+  <li>Graded scoring (max 20 points for the Vocabulary module — 10 points per sub-metric):<br>
+    • Diversity (Guiraud's R): ≥13 → 10 points; 9–13 → 5–10; 5–9 → 1–5; &lt;5 → 0.<br>
+    • Rare word ratio: ≥28% → 10 points; 18–28% → 5–10; 8–18% → 1–5; &lt;8% → 0.
   </li>
 </ol>
 
 <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6 italic">
-  Thresholds reflect 2025 benchmarks of high-quality human blog posts (diversity often 68–82%, hapax 16–28% in 1,000–3,000 word range) vs typical LLM output (diversity 55–64%, hapax 8–14%). Higher values indicate richer, more expert-like expression.
+  Thresholds reflect 2025 benchmarks of high-quality human blog posts. Guiraud's R typically lands at 9–15 for human-written blogs and 5–9 for marketing copy or LLM output. Hapax ratio typically 18–28% in human writing vs 8–14% in AI drafts. Higher values indicate richer, more expert-like expression.
 </p>
 
 <h2 id="vocabulary-why" class="text-3xl font-bold text-gray-800 dark:text-gray-200 mt-16 mb-8 scroll-mt-24">
@@ -1008,15 +1017,15 @@
 </p>
 
 <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 leading-relaxed mb-8 text-base">
-  <li><strong>Perplexity</strong> – unpredictability of word sequences (bigram & trigram entropy).</li>
+  <li><strong>Perplexity</strong> – unpredictability of word sequences (bigram & trigram entropy, normalised by document length).</li>
   <li><strong>Burstiness</strong> – natural variation in sentence and word lengths.</li>
-  <li><strong>Repetition</strong> – maximum reuse of identical bigrams and trigrams.</li>
-  <li><strong>Sentence Length</strong> – ideal 15–23 word average + comma-driven complexity.</li>
-  <li><strong>Vocabulary</strong> – lexical diversity and rare-word (hapax) frequency.</li>
+  <li><strong>Repetition</strong> – maximum reuse of identical bigrams and trigrams (stopword-filtered, length-scaled).</li>
+  <li><strong>Sentence Length</strong> – ideal 15–23 word average + graded comma-driven complexity.</li>
+  <li><strong>Vocabulary</strong> – Guiraud's R lexical diversity and rare-word (hapax) frequency.</li>
 </ul>
 
 <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-8">
-  Each metric is scored out of 20. Pages that consistently hit 80+ (especially with strong vocabulary and burstiness) tend to outperform generic AI drafts in rankings, dwell time, AI citations, and reader trust. The good news: most AI-assisted content only needs targeted edits in 1–3 of these areas to jump 20–40+ points.
+  Each metric is scored out of 20, using two graded sub-metrics so the score reflects nuance rather than a binary pass/fail. Pages that consistently hit 80+ (especially with strong vocabulary and burstiness) tend to outperform generic AI drafts in rankings, dwell time, AI citations, and reader trust. The good news: most AI-assisted content only needs targeted edits in 1–3 of these areas to jump 20–40+ points.
 </p>
 
 <div class="my-12 p-10 bg-gradient-to-br rounded-3xl shadow-xl border border-orange-200 dark:border-orange-800/50 text-center">
@@ -1252,7 +1261,7 @@
         </p>
               <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
         <p>Published: 2026-02-17</p>
-        <p>Last updated: 2026-05-19</p>
+        <p>Last updated: 2026-10-02</p>
       </div>
       </div>
     </div>

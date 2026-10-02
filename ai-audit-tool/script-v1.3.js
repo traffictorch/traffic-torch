@@ -40,6 +40,15 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
+// ── Safe title helper: reads doc.title, strips tags, caps length ──
+function safeTitle(doc, fallback = 'AI Audit Page') {
+  if (!doc) return fallback;
+  const raw = (doc.title || '').trim();
+  if (!raw) return fallback;
+  const stripped = raw.replace(/<[^>]*>/g, '');
+  return stripped.length > 120 ? stripped.slice(0, 120) : stripped;
+}
+
 // ─── Head snapshot builder (shared with all other Traffic Torch tools) ───
 function buildHeadSnapshot(doc) {
   if (!doc || !doc.head) return '';
@@ -162,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.getElementById('code-input');
   const results = document.getElementById('results');
 
-  let analyzedText = '';
   let wordCount = 0;
 
   initCodeSnippetModal();
@@ -194,50 +202,68 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 300);
   }
 
-  function getMainContent(doc) {
-    const main = doc.querySelector('main, [role="main"], article, .main-content, .site-content, .content-area');
-    if (main && main.textContent.trim().length > 600) return main;
+  // ─── Content extractor ────────────────────────────────────────
+  // Picks the *largest* candidate by VISIBLE text (scripts/styles stripped),
+  // not the first match. Falls back gracefully.
+  const REMOVE_SELECTORS = [
+    'header', 'nav', 'footer', 'aside',
+    'script', 'style', 'noscript', 'template',
+    '.menu', '.navbar', '.sidebar', '.widget',
+    '.cookie-banner', '.cookie-notice', '.popup', '.modal',
+    '.social-links', '.breadcrumbs', '.breadcrumb',
+    '.related-posts', '.comments', '#comments', '.author-box', '.newsletter',
+    '.sr-only', '[aria-hidden="true"]',
+    '[role="navigation"]', '[role="banner"]',
+    '[role="contentinfo"]', '[role="complementary"]'
+  ].join(',');
 
-    const candidates = doc.querySelectorAll('div, section, article');
-    let best = null;
-    let bestScore = 0;
-    candidates.forEach(el => {
+  function getMainContent(doc) {
+    // Measure only VISIBLE text — strip scripts/styles before counting length.
+    function visibleLength(el) {
+      if (!el) return 0;
+      const clone = el.cloneNode(true);
+      clone.querySelectorAll('script, style, noscript, template').forEach(n => n.remove());
+      return (clone.textContent || '').replace(/\s+/g, ' ').trim().length;
+    }
+
+    // 1. Largest <article> if it carries real prose (not a card with a JSON blob)
+    let bestArticle = null, bestArticleLen = 0;
+    doc.querySelectorAll('article').forEach(a => {
+      const len = visibleLength(a);
+      if (len > bestArticleLen) { bestArticleLen = len; bestArticle = a; }
+    });
+    if (bestArticle && bestArticleLen > 600) return bestArticle;
+
+    // 2. Largest <main> (or semantic equivalents)
+    let bestMain = null, bestMainLen = 0;
+    doc.querySelectorAll('main, [role="main"], .main-content, .site-content, .content-area').forEach(m => {
+      const len = visibleLength(m);
+      if (len > bestMainLen) { bestMainLen = len; bestMain = m; }
+    });
+    if (bestMain && bestMainLen > 600) return bestMain;
+
+    // 3. Best scoring <div>/<section>/<article> block by paragraph count + length
+    let best = null, bestScore = 0;
+    doc.querySelectorAll('div, section, article').forEach(el => {
       if (el.closest('header, nav, footer, aside, .menu, .sidebar')) return;
-      const paragraphs = el.querySelectorAll('p');
-      const textLength = el.textContent.trim().length;
-      const pCount = paragraphs.length;
-      const score = pCount * 100 + textLength;
-      if (score > bestScore && textLength > 600 && textLength < 20000) {
-        bestScore = score;
-        best = el;
-      }
+      const len = visibleLength(el);
+      if (len < 600 || len > 40000) return;
+      const pCount = el.querySelectorAll('p').length;
+      const score = pCount * 100 + len;
+      if (score > bestScore) { bestScore = score; best = el; }
     });
     if (best) return best;
 
+    // 4. Fall back to <body> with chrome stripped
     const body = doc.body.cloneNode(true);
-    const removeSelectors = 'header, nav, footer, aside, .menu, .navbar, .sidebar, .cookie-banner, .popup, .social-links, .breadcrumbs';
-    body.querySelectorAll(removeSelectors).forEach(e => e.remove());
+    body.querySelectorAll(REMOVE_SELECTORS).forEach(e => e.remove());
     return body;
   }
 
   function analyzeAIContent(text) {
+    // Should be unreachable — runAnalysis throws first.
     if (!text || text.length < 200) {
-      return {
-        moduleScores: [10, 10, 10, 10, 10],
-        totalScore: 50,
-        details: {
-          perplexity:     { trigram: '0.0', bigram: '0.0',
-                            scores: { trigram: 10, bigram: 10 } },
-          burstiness:     { sentence: '0.0', word: '0.0',
-                            scores: { sentence: 10, word: 10 } },
-          repetition:     { bigram: 0, trigram: 0,
-                            scores: { bigram: 10, trigram: 10 } },
-          sentenceLength: { avg: 0, complexity: '0.0',
-                            scores: { avg: 10, complexity: 10 } },
-          vocabulary:     { diversity: '0.0', rare: '0.0',
-                            scores: { diversity: 10, rare: 10 } }
-        }
-      };
+      throw new Error('analyzeAIContent received fewer than 200 characters.');
     }
     text = text.replace(/\s+/g, ' ').trim().toLowerCase();
     const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
@@ -273,17 +299,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getModuleGrade(score) {
-    if (score === 20) return { emoji: '✅', text: 'Excellent', color: '#10b981' };
-    if (score === 10) return { emoji: '⚠️', text: 'Good', color: '#f97316' };
+    if (score >= 16) return { emoji: '✅', text: 'Excellent', color: '#10b981' };
+    if (score >= 10) return { emoji: '⚠️', text: 'Good', color: '#f97316' };
     return { emoji: '❌', text: 'Needs Work', color: '#ef4444' };
   }
 
+  // Sub-metric icon/colour thresholds: healthy at 8+, acceptable at 6+.
   function getSubEmoji(score) {
-    return score === 10 ? '✅' : '❌';
+    return score >= 8 ? '✅' : score >= 6 ? '⚠️' : '❌';
   }
 
   function getSubColor(score) {
-    return score === 10 ? '#10b981' : '#ef4444';
+    return score >= 8 ? '#10b981' : score >= 6 ? '#f97316' : '#ef4444';
   }
 
   async function runAnalysis(isUrlMode) {
@@ -295,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       urlInput.value = '';
     }
-    analyzedText = '';
     wordCount = 0;
 
     results.innerHTML = `
@@ -365,11 +391,34 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
 
       const cleanElement = mainElement.cloneNode(true);
-      cleanElement.querySelectorAll('script, style, noscript').forEach(el => el.remove());
+      cleanElement.querySelectorAll('script, style, noscript, template').forEach(el => el.remove());
       let text = cleanElement.textContent || '';
       text = text.replace(/\s+/g, ' ').replace(/[^\p{L}\p{N}\p{P}\p{Z}]/gu, ' ').trim();
-      wordCount = text.split(/\s+/).filter(w => w.length > 1).length;
-      analyzedText = text;
+
+      // ── Guard: detect Cloudflare challenge or genuinely too-short pages ──
+      if (text.length < 200) {
+        const pageTitle = (doc.title || '').trim();
+        const isChallenge =
+          /just a moment|checking your browser|attention required|access denied|cloudflare|verify you are human/i
+            .test(pageTitle) ||
+          !!doc.querySelector(
+            '#cf-challenge-running, #challenge-form, #challenge-stage, ' +
+            '.cf-browser-verification, [data-translate="checking_browser"]'
+          );
+
+        if (isChallenge) {
+          throw new Error(
+            'This page is behind a Cloudflare bot-protection challenge. ' +
+            'The proxy cannot bypass it. Please use the Code Analysis tab and paste the actual page HTML instead.'
+          );
+        }
+
+        throw new Error(
+          `Only ${text.length} characters of visible text could be extracted from this page. ` +
+          'It may be image-heavy, paywalled, or rendered entirely by JavaScript that the proxy could not execute. ' +
+          'Try the Code Analysis tab instead.'
+        );
+      }
 
       const analysis = analyzeAIContent(text);
       const yourScore = analysis.totalScore;
@@ -394,6 +443,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
         window.scrollTo({ top: targetY, behavior: 'smooth' });
 
+        const pageTitleSafe = safeTitle(doc);
+
         results.innerHTML = `
 <!-- Overall Score Card (AI Audit) -->
 <div class="flex justify-center my-8 sm:my-12 px-2 sm:px-6">
@@ -411,12 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     </div>
-    ${(() => {
-      const title = (doc?.title || '').trim();
-      if (!title) return '';
-      const truncated = title.length > 65 ? title.substring(0, 65) : title;
-      return `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
-    })()}
+    ${pageTitleSafe ? `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${escapeHtml(pageTitleSafe)}</p>` : ''}
     ${(() => {
       const gradeText = yourScore >= 80 ? 'Excellent' : yourScore >= 60 ? 'Needs Improvement' : 'Needs Work';
       const gradeEmoji = yourScore >= 80 ? '✅' : yourScore >= 60 ? '⚠️' : '❌';
@@ -453,11 +499,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const sub1Score = m.details.scores.trigram;
       const sub2Score = m.details.scores.bigram;
       const failedItems = [];
-      if (sub1Score < 10) failedItems.push({ name: 'Trigram Entropy', fix: fixFor('Trigram Entropy') });
-      if (sub2Score < 10) failedItems.push({ name: 'Bigram Entropy',  fix: fixFor('Bigram Entropy') });
+      if (sub1Score < 6) failedItems.push({ name: 'Trigram Entropy', fix: fixFor('Trigram Entropy') });
+      if (sub2Score < 6) failedItems.push({ name: 'Bigram Entropy',  fix: fixFor('Bigram Entropy') });
       const failedCount = failedItems.length;
       const failedNames = failedItems.map(f => f.name).join(', ') || 'none';
-      const cmsName = (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'Unknown';
+      const cmsNameSafe = escapeHtml(cmsInfo?.name || 'Unknown');
       return `
       <div class="score-card bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 md:p-8 text-center border-l-4 flex flex-col" style="border-left-color: ${gradeColor}">
         <div class="relative w-40 h-40 mx-auto">
@@ -473,8 +519,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="mt-6 text-2xl font-bold" style="color: ${gradeColor}">${m.name}</p>
         <p class="mt-2 text-xl flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
         <div class="mt-4 space-y-3 text-base">
-          <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} Trigram Entropy</p>
-          <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} Bigram Entropy</p>
+          <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} Trigram Entropy (${sub1Score}/10)</p>
+          <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} Bigram Entropy (${sub2Score}/10)</p>
         </div>
 
         <p class="mt-4 text-sm">
@@ -508,7 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
             <a href="#ask-ai-section" class="ask-ai-link block text-purple-600 dark:text-purple-400 font-bold hover:underline"
-               data-ai-question="How do I improve my Perplexity score? Failed checks: ${failedNames}. Detected CMS: ${cmsName}. Module score: ${m.score}/20. Please give me ${cmsName}-specific fixes.">
+               data-ai-question="How do I improve my Perplexity score? Failed checks: ${escapeHtml(failedNames)}. Detected CMS: ${cmsNameSafe}. Module score: ${m.score}/20. Please give me ${cmsNameSafe}-specific fixes.">
               🤖 Ask AI about this module →
             </a>
             <a href="/blog/posts/ai-content-detection-guide/#perplexity" class="block text-orange-500 font-bold hover:underline">
@@ -532,11 +578,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const sub1Score = m.details.scores[m.subKeys[0]];
       const sub2Score = m.details.scores[m.subKeys[1]];
       const failedItems = [];
-      if (sub1Score < 10) failedItems.push({ name: m.subNames[0], fix: fixFor(m.subNames[0]) });
-      if (sub2Score < 10) failedItems.push({ name: m.subNames[1], fix: fixFor(m.subNames[1]) });
+      if (sub1Score < 6) failedItems.push({ name: m.subNames[0], fix: fixFor(m.subNames[0]) });
+      if (sub2Score < 6) failedItems.push({ name: m.subNames[1], fix: fixFor(m.subNames[1]) });
       const failedCount = failedItems.length;
       const failedNames = failedItems.map(f => f.name).join(', ') || 'none';
-      const cmsName = (typeof cmsInfo !== 'undefined' && cmsInfo?.name) ? cmsInfo.name : 'Unknown';
+      const cmsNameSafe = escapeHtml(cmsInfo?.name || 'Unknown');
       return `
       <div class="score-card bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center border-l-4 flex flex-col" style="border-left-color: ${gradeColor}">
         <div class="relative w-32 h-32 mx-auto">
@@ -552,8 +598,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="mt-4 text-xl font-bold" style="color: ${gradeColor}">${m.name}</p>
         <p class="mt-1 text-lg flex items-center justify-center gap-2" style="color: ${gradeColor}">${grade.text} ${grade.emoji}</p>
         <div class="mt-3 space-y-2 text-sm">
-          <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} ${m.subNames[0]}</p>
-          <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} ${m.subNames[1]}</p>
+          <p class="font-medium" style="color: ${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)} ${m.subNames[0]} (${sub1Score}/10)</p>
+          <p class="font-medium" style="color: ${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)} ${m.subNames[1]} (${sub2Score}/10)</p>
         </div>
 
         <p class="mt-3 text-sm">
@@ -587,7 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
             <a href="#ask-ai-section" class="ask-ai-link block text-purple-600 dark:text-purple-400 font-bold hover:underline"
-               data-ai-question="How do I improve my ${m.name} score? Failed checks: ${failedNames}. Detected CMS: ${cmsName}. Module score: ${m.score}/20. Please give me ${cmsName}-specific fixes.">
+               data-ai-question="How do I improve my ${escapeHtml(m.name)} score? Failed checks: ${escapeHtml(failedNames)}. Detected CMS: ${cmsNameSafe}. Module score: ${m.score}/20. Please give me ${cmsNameSafe}-specific fixes.">
               🤖 Ask AI about this module →
             </a>
             <a href="/blog/posts/ai-content-detection-guide/#${m.id}" class="block text-orange-500 font-bold hover:underline">
@@ -610,8 +656,8 @@ document.addEventListener('DOMContentLoaded', () => {
         score: analysis.moduleScores[0],
         details: analysis.details.perplexity,
         fixes: [
-          analysis.details.perplexity.scores.trigram < 10 ? 'To improve trigram entropy, deliberately introduce unexpected word combinations and personal anecdotes that don’t follow common patterns. This breaks predictable flows and makes your writing feel more spontaneous and human. Avoid sticking to safe, formulaic phrasing—edit specifically for surprise in every few sentences.' : '',
-          analysis.details.perplexity.scores.bigram < 10 ? 'Boost bigram entropy by actively swapping overused two-word pairs with creative alternatives or rephrased expressions. Incorporate transitional phrases that aren’t common and sprinkle in idiomatic expressions unique to your voice. These small changes create a less robotic rhythm and significantly increase overall unpredictability.' : ''
+          analysis.details.perplexity.scores.trigram < 6 ? 'To improve trigram entropy, deliberately introduce unexpected word combinations and personal anecdotes that don’t follow common patterns. This breaks predictable flows and makes your writing feel more spontaneous and human. Avoid sticking to safe, formulaic phrasing—edit specifically for surprise in every few sentences.' : '',
+          analysis.details.perplexity.scores.bigram < 6 ? 'Boost bigram entropy by actively swapping overused two-word pairs with creative alternatives or rephrased expressions. Incorporate transitional phrases that aren’t common and sprinkle in idiomatic expressions unique to your voice. These small changes create a less robotic rhythm and significantly increase overall unpredictability.' : ''
         ].filter(f => f).join('<br><br>')
       },
       {
@@ -619,8 +665,8 @@ document.addEventListener('DOMContentLoaded', () => {
         score: analysis.moduleScores[1],
         details: analysis.details.burstiness,
         fixes: [
-          analysis.details.burstiness.scores.sentence < 10 ? 'To increase sentence burstiness, consciously alternate between short, punchy sentences and longer, more detailed ones throughout your paragraphs. This variation mimics natural human speech rhythm and keeps readers engaged. Go through your text and intentionally split or combine sentences to eliminate uniform length patterns.' : '',
-          analysis.details.burstiness.scores.word < 10 ? 'Improve word length burstiness by mixing very short, simple words with longer, descriptive ones to avoid monotony. Use everyday terms alongside occasional specialized or evocative vocabulary where it fits naturally. This creates subtle emphasis and makes the content feel more authentic and less mechanically generated.' : ''
+          analysis.details.burstiness.scores.sentence < 6 ? 'To increase sentence burstiness, consciously alternate between short, punchy sentences and longer, more detailed ones throughout your paragraphs. This variation mimics natural human speech rhythm and keeps readers engaged. Go through your text and intentionally split or combine sentences to eliminate uniform length patterns.' : '',
+          analysis.details.burstiness.scores.word < 6 ? 'Improve word length burstiness by mixing very short, simple words with longer, descriptive ones to avoid monotony. Use everyday terms alongside occasional specialized or evocative vocabulary where it fits naturally. This creates subtle emphasis and makes the content feel more authentic and less mechanically generated.' : ''
         ].filter(f => f).join('<br><br>')
       },
       {
@@ -628,8 +674,8 @@ document.addEventListener('DOMContentLoaded', () => {
         score: analysis.moduleScores[2],
         details: analysis.details.repetition,
         fixes: [
-          analysis.details.repetition.scores.bigram < 10 ? 'Reduce bigram repetition by identifying the most common two-word phrases in your text and replacing them with synonyms or fully restructured sentences. Use a thesaurus strategically and ensure no single phrase dominates the content. This simple edit makes your writing far more dynamic and less predictable to both readers and search engines.' : '',
-          analysis.details.repetition.scores.trigram < 10 ? 'To fix trigram repetition, scan for any three-word sequences that appear multiple times and rewrite them with fresh vocabulary or different sentence structure. Introduce new transitional ideas to break recurring patterns. Consistent variation here dramatically improves the natural flow and reduces obvious AI-like flags.' : ''
+          analysis.details.repetition.scores.bigram < 6 ? 'Reduce bigram repetition by identifying the most common two-word phrases in your text and replacing them with synonyms or fully restructured sentences. Use a thesaurus strategically and ensure no single phrase dominates the content. This simple edit makes your writing far more dynamic and less predictable to both readers and search engines.' : '',
+          analysis.details.repetition.scores.trigram < 6 ? 'To fix trigram repetition, scan for any three-word sequences that appear multiple times and rewrite them with fresh vocabulary or different sentence structure. Introduce new transitional ideas to break recurring patterns. Consistent variation here dramatically improves the natural flow and reduces obvious AI-like flags.' : ''
         ].filter(f => f).join('<br><br>')
       },
       {
@@ -637,8 +683,8 @@ document.addEventListener('DOMContentLoaded', () => {
         score: analysis.moduleScores[3],
         details: analysis.details.sentenceLength,
         fixes: [
-          analysis.details.sentenceLength.scores.avg < 10 ? 'Bring your average sentence length into the ideal 15–23 word range by breaking up overly long run-on sentences and combining short, choppy ones where appropriate. This balance significantly improves readability and flow for all readers. Make it a habit to count words per sentence during final edits to maintain optimal rhythm.' : '',
-          analysis.details.sentenceLength.scores.complexity < 10 ? 'Increase sentence complexity by adding subordinate clauses using commas, semicolons, or conjunctions to layer related ideas naturally. This adds depth and sophistication without overwhelming the reader. Aim for 1–2 clauses in key sentences to better reflect complex human thought processes.' : ''
+          analysis.details.sentenceLength.scores.avg < 6 ? 'Bring your average sentence length into the ideal 15–23 word range by breaking up overly long run-on sentences and combining short, choppy ones where appropriate. This balance significantly improves readability and flow for all readers. Make it a habit to count words per sentence during final edits to maintain optimal rhythm.' : '',
+          analysis.details.sentenceLength.scores.complexity < 6 ? 'Increase sentence complexity by adding subordinate clauses using commas, semicolons, or conjunctions to layer related ideas naturally. This adds depth and sophistication without overwhelming the reader. Aim for 1–2 clauses in key sentences to better reflect complex human thought processes.' : ''
         ].filter(f => f).join('<br><br>')
       },
       {
@@ -646,8 +692,8 @@ document.addEventListener('DOMContentLoaded', () => {
         score: analysis.moduleScores[4],
         details: analysis.details.vocabulary,
         fixes: [
-          analysis.details.vocabulary.scores.diversity < 10 ? 'Boost vocabulary diversity by actively using synonyms and avoiding repetition of the same words throughout your content. Draw from broader themes, analogies, or related concepts to naturally introduce new terms. Higher unique word usage signals expertise and depth to both readers and search engines.' : '',
-          analysis.details.vocabulary.scores.rare < 10 ? 'Enhance rare word frequency by incorporating context-specific or niche terms that appear only once or twice in the text. Research specialized vocabulary relevant to your topic and weave it in thoughtfully. These unique words create an authentic, authoritative tone that stands out as genuinely human-written.' : ''
+          analysis.details.vocabulary.scores.diversity < 6 ? 'Boost vocabulary diversity by actively using synonyms and avoiding repetition of the same words throughout your content. Draw from broader themes, analogies, or related concepts to naturally introduce new terms. Higher unique word usage signals expertise and depth to both readers and search engines.' : '',
+          analysis.details.vocabulary.scores.rare < 6 ? 'Enhance rare word frequency by incorporating context-specific or niche terms that appear only once or twice in the text. Research specialized vocabulary relevant to your topic and weave it in thoughtfully. These unique words create an authentic, authoritative tone that stands out as genuinely human-written.' : ''
         ].filter(f => f).join('<br><br>')
       }
     ];
@@ -674,8 +720,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div>
               <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100">${m.name} – ${m.score}/20</h3>
               <div class="mt-2 space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                <p><span style="color:${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span> ${sub1Name}</p>
-                <p><span style="color:${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</span> ${sub2Name}</p>
+                <p><span style="color:${getSubColor(sub1Score)}">${getSubEmoji(sub1Score)}</span> ${sub1Name} (${sub1Score}/10)</p>
+                <p><span style="color:${getSubColor(sub2Score)}">${getSubEmoji(sub2Score)}</span> ${sub2Name} (${sub2Score}/10)</p>
               </div>
             </div>
           </div>
@@ -939,13 +985,13 @@ document.addEventListener('DOMContentLoaded', () => {
           const scores = subScoresMap[m.name] || [];
           subs.forEach((name, idx) => {
             const score = scores[idx] || 0;
-            if (score >= 10) {
+            if (score >= 6) {
               passedMetrics.push(name);
             } else {
               failedMetrics.push(name);
             }
           });
-          if (m.score >= 20) {
+          if (m.score >= 12) {
             passedMetrics.push(m.name);
           } else {
             failedMetrics.push(m.name);
@@ -958,8 +1004,8 @@ document.addEventListener('DOMContentLoaded', () => {
             score: analysis.moduleScores[0],
             details: analysis.details.perplexity,
             fixes: [
-              analysis.details.perplexity.scores.trigram < 10 ? 'Improve trigram entropy with unexpected word combinations.' : '',
-              analysis.details.perplexity.scores.bigram < 10 ? 'Boost bigram entropy with creative phrase variations.' : ''
+              analysis.details.perplexity.scores.trigram < 6 ? 'Improve trigram entropy with unexpected word combinations.' : '',
+              analysis.details.perplexity.scores.bigram < 6 ? 'Boost bigram entropy with creative phrase variations.' : ''
             ].filter(f => f).join('; ')
           },
           {
@@ -967,8 +1013,8 @@ document.addEventListener('DOMContentLoaded', () => {
             score: analysis.moduleScores[1],
             details: analysis.details.burstiness,
             fixes: [
-              analysis.details.burstiness.scores.sentence < 10 ? 'Alternate short and long sentences for rhythm.' : '',
-              analysis.details.burstiness.scores.word < 10 ? 'Mix short and long words for variety.' : ''
+              analysis.details.burstiness.scores.sentence < 6 ? 'Alternate short and long sentences for rhythm.' : '',
+              analysis.details.burstiness.scores.word < 6 ? 'Mix short and long words for variety.' : ''
             ].filter(f => f).join('; ')
           },
           {
@@ -976,8 +1022,8 @@ document.addEventListener('DOMContentLoaded', () => {
             score: analysis.moduleScores[2],
             details: analysis.details.repetition,
             fixes: [
-              analysis.details.repetition.scores.bigram < 10 ? 'Replace common two-word phrases with synonyms.' : '',
-              analysis.details.repetition.scores.trigram < 10 ? 'Rewrite recurring three-word sequences.' : ''
+              analysis.details.repetition.scores.bigram < 6 ? 'Replace common two-word phrases with synonyms.' : '',
+              analysis.details.repetition.scores.trigram < 6 ? 'Rewrite recurring three-word sequences.' : ''
             ].filter(f => f).join('; ')
           },
           {
@@ -985,8 +1031,8 @@ document.addEventListener('DOMContentLoaded', () => {
             score: analysis.moduleScores[3],
             details: analysis.details.sentenceLength,
             fixes: [
-              analysis.details.sentenceLength.scores.avg < 10 ? 'Balance average sentence length (15–23 words).' : '',
-              analysis.details.sentenceLength.scores.complexity < 10 ? 'Add clauses for sentence complexity.' : ''
+              analysis.details.sentenceLength.scores.avg < 6 ? 'Balance average sentence length (15–23 words).' : '',
+              analysis.details.sentenceLength.scores.complexity < 6 ? 'Add clauses for sentence complexity.' : ''
             ].filter(f => f).join('; ')
           },
           {
@@ -994,8 +1040,8 @@ document.addEventListener('DOMContentLoaded', () => {
             score: analysis.moduleScores[4],
             details: analysis.details.vocabulary,
             fixes: [
-              analysis.details.vocabulary.scores.diversity < 10 ? 'Use synonyms to boost vocabulary diversity.' : '',
-              analysis.details.vocabulary.scores.rare < 10 ? 'Add niche-specific rare words.' : ''
+              analysis.details.vocabulary.scores.diversity < 6 ? 'Use synonyms to boost vocabulary diversity.' : '',
+              analysis.details.vocabulary.scores.rare < 6 ? 'Add niche-specific rare words.' : ''
             ].filter(f => f).join('; ')
           }
         ];
@@ -1009,7 +1055,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const shareData = {
           toolName: 'AI Audit Tool',
           url: shareUrl || displayUrl,
-          pageTitle: doc?.title || 'AI Audit Page',
+          pageTitle: pageTitleSafe,
           overallScore: yourScore,
           moduleScores: moduleScores,
           passedMetrics: passedMetrics,
@@ -1053,7 +1099,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const askBtn = document.getElementById('ask-ai-btn');
         const askInput = document.getElementById('ai-question-input');
-        const modelSelect = document.getElementById('ai-model-select');
         const answerContainer = document.getElementById('ai-answer-container');
         const answerContent = document.getElementById('ai-answer-content');
 
@@ -1087,7 +1132,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 question: question,
                 auditData: {
                   url: isUrlMode ? urlInput.value.trim() : '',
-                  pageTitle: doc?.title || 'AI Audit Page',
+                  pageTitle: pageTitleSafe,
                   metaDescription,
                   h1,
                   pageExcerpt,
@@ -1108,16 +1153,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     vocabulary: moduleScoresMap.vocabulary || 0
                   },
                   flags: {
-                    trigramEntropy: analysis.details.perplexity.scores.trigram >= 10,
-                    bigramEntropy: analysis.details.perplexity.scores.bigram >= 10,
-                    sentenceBurstiness: analysis.details.burstiness.scores.sentence >= 10,
-                    wordBurstiness: analysis.details.burstiness.scores.word >= 10,
-                    bigramRepetition: analysis.details.repetition.scores.bigram >= 10,
-                    trigramRepetition: analysis.details.repetition.scores.trigram >= 10,
-                    avgSentenceLength: analysis.details.sentenceLength.scores.avg >= 10,
-                    sentenceComplexity: analysis.details.sentenceLength.scores.complexity >= 10,
-                    vocabularyDiversity: analysis.details.vocabulary.scores.diversity >= 10,
-                    rareWordFrequency: analysis.details.vocabulary.scores.rare >= 10
+                    trigramEntropy: analysis.details.perplexity.scores.trigram >= 6,
+                    bigramEntropy: analysis.details.perplexity.scores.bigram >= 6,
+                    sentenceBurstiness: analysis.details.burstiness.scores.sentence >= 6,
+                    wordBurstiness: analysis.details.burstiness.scores.word >= 6,
+                    bigramRepetition: analysis.details.repetition.scores.bigram >= 6,
+                    trigramRepetition: analysis.details.repetition.scores.trigram >= 6,
+                    avgSentenceLength: analysis.details.sentenceLength.scores.avg >= 6,
+                    sentenceComplexity: analysis.details.sentenceLength.scores.complexity >= 6,
+                    vocabularyDiversity: analysis.details.vocabulary.scores.diversity >= 6,
+                    rareWordFrequency: analysis.details.vocabulary.scores.rare >= 6
                   },
                   failedItems: failedMetrics.slice(0, 10),
                   priorityFixes: priority.map(f => ({
@@ -1150,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let html2 = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
                 if (Array.isArray(data.warnings) && data.warnings.length) {
                   const warningText = data.warnings.join(' ');
-                  html2 = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html2;
+                  html2 = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${escapeHtml(warningText)}</div>` + html2;
                 }
                 answerContent.innerHTML = html2;
               } else {
@@ -1181,7 +1226,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cmsBadgeName) {
           let label = cmsInfo.name || 'Custom / Unknown';
           if (cmsInfo.version) label += ' ' + cmsInfo.version;
-          cmsBadgeName.textContent = label;
+          cmsBadgeName.textContent = label;  // textContent is safe
         }
         if (cmsBadgeDot) {
           let dotClass = 'bg-gray-400';
@@ -1233,7 +1278,7 @@ document.addEventListener('DOMContentLoaded', () => {
               cmsConfidence: cmsInfo.confidence,
               cmsSignals: cmsInfo.signals,
               url: isUrlMode ? urlInput.value.trim() : null,
-              pageTitle: doc?.title || null,
+              pageTitle: pageTitleSafe,
               metaDescription,
               h1,
               pageExcerpt,
@@ -1274,7 +1319,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 (data.cmsVersion ? ' ' + data.cmsVersion : '');
               let warningHtml = '';
               if (Array.isArray(data.warnings) && data.warnings.length) {
-                warningHtml = `<div style="margin-top:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${data.warnings.join(' ')}</div>`;
+                warningHtml = `<div style="margin-top:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${escapeHtml(data.warnings.join(' '))}</div>`;
               }
               cmsAnswerContent.innerHTML =
                 `<div style="font-weight:bold;margin-bottom:0.75rem;">${renderCodeBlocks(headerText)}</div>` +
@@ -1302,7 +1347,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         results.innerHTML = `
           <div class="text-center py-20">
-            <p class="text-3xl text-red-500 font-bold">Error: ${err.message || 'Analysis failed'}</p>
+            <p class="text-3xl text-red-500 font-bold">Error: ${escapeHtml(err.message || 'Analysis failed')}</p>
             <p class="mt-6 text-xl text-gray-500 dark:text-gray-400">Whitelist: full-render-v2.traffictorch.workers.dev or use Code Analysis.</p>
           </div>
         `;
