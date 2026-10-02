@@ -93,7 +93,7 @@
         "https://traffictorch.net/blog/images/local-seo/local-seo-help-guide-1200w.webp"
       ],
       "datePublished": "2026-02-20T10:12:00+11:00",
-      "dateModified": "2026-05-19T11:17:00+11:00",
+      "dateModified": "2026-10-02T12:45:00+11:00",
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -160,7 +160,7 @@
       "description": "In-depth guide explaining Traffic Torch’s six local SEO audit modules: NAP & Contact, Local Keywords & Titles, Local Content & Relevance, Maps & Visuals, Structured Data, and Reviews & Structure. Includes how each is tested, why they matter for Google local rankings and user experience, and practical fixes to improve visibility and traffic.",
       "image": "https://traffictorch.net/blog/images/local-seo/local-seo-help-guide-1200w.webp",
       "datePublished": "2026-02-20T10:12:00+11:00",
-      "dateModified": "2026-05-19T11:17:00+11:00",
+      "dateModified": "2026-10-02T12:45:00+11:00",
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -653,9 +653,9 @@
     Key metrics evaluated (weighted into a 0–100 sub-score):
   </p>
   <ul class="list-disc pl-6 space-y-3 text-lg text-gray-800 dark:text-gray-200">
-    <li><strong>NAP Present:</strong> Detects <code>&lt;address&gt;</code>, <code>[itemprop="address"]</code>, or class-based elements containing your input city + a <code>tel:</code> phone link</li>
-    <li><strong>Footer NAP:</strong> Checks if footer text or <code>&lt;address&gt;</code> includes the city name (reinforces consistency)</li>
-    <li><strong>Contact Complete:</strong> Verifies NAP + opening hours markup (<code>[itemprop="openingHours"]</code>, <code>&lt;time&gt;</code>, or class patterns like <code>.hours</code>)</li>
+    <li><strong>NAP Present:</strong> Detects one of <code>&lt;address&gt;</code>, <code>[itemprop="address"]</code>, <code>[itemtype*="PostalAddress"]</code>, <code>.address</code>, or <code>.location</code> whose text contains your entered city, combined with a <code>tel:</code> phone link (<code>a[href^="tel:"]</code>) or <code>[itemprop="telephone"]</code>.</li>
+    <li><strong>Footer NAP:</strong> Checks if the page <code>&lt;footer&gt;</code> text includes the city name (reinforces consistency without over-weighting).</li>
+    <li><strong>Contact Complete:</strong> Requires NAP Present <em>and</em> one of <code>[itemprop="openingHours"]</code>, <code>[itemprop="openingHoursSpecification"]</code>, <code>.hours</code>, <code>.opening-hours</code>, or <code>&lt;time datetime&gt;</code>.</li>
   </ul>
   <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mt-6">
     Scores are visualized in the radar chart and contribute heavily to the overall local health score. Missing any element drops points fast.
@@ -743,18 +743,18 @@
     How Local Keywords & Titles Are Tested in Traffic Torch?
   </h3>
   <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
-    The tool uses a smart client-side function <code>hasLocalIntent(text, city)</code> that checks for common local patterns without keyword stuffing. It scans the most visible ranking signals first.
+    The tool runs a case-insensitive exact-match check for the city name you enter (the part before the first comma) inside the <code>&lt;title&gt;</code>, meta description, and heading tags. No keyword stuffing required - a single clean mention scores full points.
   </p>
   <p class="text-lg font-medium leading-relaxed text-gray-800 dark:text-gray-200 mb-4">
-    Key metrics evaluated (weighted into the module score):
+    Key metrics evaluated (each contributes to the module sub-score):
   </p>
   <ul class="list-disc pl-6 space-y-3 text-lg text-gray-800 dark:text-gray-200">
-    <li><strong>Title Local:</strong> City name or strong local intent phrase (e.g. “in Sydney”, “near me”, “Sydney plumber”) present in <code>&lt;title&gt;.</code></li>
-    <li><strong>Meta Local:</strong> Same local patterns detected in <code>&lt;meta name="description"&gt;</code> content.</li>
-    <li><strong>Headings Local:</strong> At least one H1, H2, or H3 contains city name or intent phrase (e.g. “Best Coffee in Sydney CBD”).</li>
+    <li><strong>Title Local:</strong> City name (as entered) appears in <code>&lt;title&gt;</code>. Case-insensitive substring match.</li>
+    <li><strong>Meta Local:</strong> City name appears in <code>&lt;meta name="description"&gt;</code> content.</li>
+    <li><strong>Headings Local:</strong> At least one of <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, or <code>&lt;h3&gt;</code> contains the city name.</li>
   </ul>
   <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mt-6">
-    Patterns include: "in [city]", "near [city]", "[city] near me", "local [service]", exact city name, "CBD", "area", "suburbs". No exact-match requirement, natural inclusion scores full points.
+    Because the check is substring-based, natural phrases like "Sydney plumber", "in Sydney", "Sydney CBD" all count. Only the city itself is required — the surrounding wording is up to you.
   </p>
 
   <h3 id="keywords-why" class="text-2xl font-bold mt-10 mb-6 text-gray-900 dark:text-gray-100">
@@ -845,9 +845,9 @@
     Key metrics evaluated (combined into a capped 0–20 sub-score):
   </p>
   <ul class="list-disc pl-6 space-y-3 text-lg text-gray-800 dark:text-gray-200">
-    <li><strong>Body Keywords:</strong> Presence of any local intent pattern (e.g. “near me”, “local”, “in the area”, city name) in cleaned body text.</li>
-    <li><strong>Intent Patterns:</strong> Count of strong local phrases (“nearby”, “areas we serve”, “close to”, “in my area”) - needs >1 match for full points.</li>
-    <li><strong>Location Mentions:</strong> City name appears >2 times (bonus +4 points if ≥5 mentions for natural depth without stuffing).</li>
+    <li><strong>Body Keywords:</strong> City name (as entered) appears anywhere in the cleaned body text. This is the gate — if the city is absent, the other two checks automatically score zero.</li>
+    <li><strong>Intent Patterns:</strong> Requires <em>both</em> conditions to be true — more than one match of intent phrases (e.g. “near me”, “nearby”, “local ”, “in the area”, “close to”, “in my area”, “areas we serve”) <em>and</em> the city name present. Both must pass.</li>
+    <li><strong>Location Mentions:</strong> City name appears more than twice in the cleaned content. A bonus is added when the count reaches 5 or more for depth without stuffing.</li>
   </ul>
   <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mt-6">
     All checks are conservative and context-aware, over-optimization (e.g. 20+ forced mentions) doesn’t inflate the score beyond the cap.
@@ -967,17 +967,17 @@
     How Maps & Visuals Are Checked?
   </h3>
   <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
-    The tool scans the DOM for embedded map iframes and analyzes image alt attributes using the same <code>hasLocalIntent()</code> function as other modules.
+    The tool scans the DOM for embedded map iframes and inspects image alt attributes for the entered city name.
   </p>
   <p class="text-lg font-medium leading-relaxed text-gray-800 dark:text-gray-200 mb-4">
     Key metrics evaluated (combined into the module sub-score):
   </p>
   <ul class="list-disc pl-6 space-y-3 text-lg text-gray-800 dark:text-gray-200">
-    <li><strong>Map Embedded:</strong> Detects <code>&lt;iframe src*="maps.google"&gt;</code> or <code>src*="google.com/maps"</code></li>
-    <li><strong>Local Alt Text:</strong> At least 2 images have alt text containing local intent patterns (city name, “in [city]”, “Sydney location”, “near me”, etc.)</li>
+    <li><strong>Map Embedded:</strong> Detects an <code>&lt;iframe&gt;</code> whose <code>src</code> contains <code>maps.google</code> or <code>google.com/maps</code>.</li>
+    <li><strong>Local Alt Text:</strong> Requires <em>at least one</em> <code>&lt;img&gt;</code> whose <code>alt</code> attribute contains the entered city name (case-insensitive). One well-crafted alt is enough to pass.</li>
   </ul>
   <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mt-6">
-    No additional points for >4 local alts (score is intentionally capped to prevent gaming). The focus remains on quality signals over quantity.
+    Each check is worth a fixed portion of the module score. Going beyond one local alt doesn’t inflate the score — the check is binary, so quality beats quantity.
   </p>
 
   <h3 id="maps-why" class="text-2xl font-bold mt-10 mb-6 text-gray-900 dark:text-gray-100">
@@ -1031,7 +1031,7 @@
   </h4>
   <ul class="list-disc pl-6 space-y-3 text-lg text-gray-800 dark:text-gray-200 mb-8">
     <li>Embed a Google Map iframe centered on your exact business location (use responsive embed code).</li>
-    <li>Add at least 2–3 images (storefront, interior, team, vehicles) with descriptive local alt text (e.g. “Sydney CBD plumbing team at work”, “Our van serving Parramatta and surrounds”).</li>
+    <li>Add at least one image with descriptive local alt text (e.g. “Sydney CBD plumbing team at work”). Adding 2–3 more with similar local context is a best-practice bonus — the tool only requires the first.</li>
     <li>Optimize image filenames too (e.g. sydney-emergency-plumber-storefront.jpg) for extra crawl signals.</li>
     <li>Place map near contact section or footer for maximum visibility and UX flow.</li>
     <li>Re-audit in Traffic Torch and see the Maps module score improve and projected local visibility uplift update.</li>
@@ -1067,15 +1067,15 @@
     How Structured Data Is Tested?
   </h3>
   <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mb-6">
-    The tool collects every JSON-LD script, parses it (handling nested @graph structures), and looks specifically for <code>LocalBusiness</code> (or recognized subtypes) that match your business context.
+    The tool collects every JSON-LD script, parses it (handling nested <code>@graph</code>, <code>department</code> arrays, and multi-type <code>@type</code> declarations), and looks specifically for <code>LocalBusiness</code> or a recognized subtype.
   </p>
   <p class="text-lg font-medium leading-relaxed text-gray-800 dark:text-gray-200 mb-4">
     Key metrics evaluated (combined into the module sub-score):
   </p>
   <ul class="list-disc pl-6 space-y-3 text-lg text-gray-800 dark:text-gray-200">
-    <li><strong>Local Schema</strong> - valid <code>LocalBusiness</code> (or subtype) object present with basic properties (name, address, telephone).</li>
-    <li><strong>Geo Coords</strong> - <code>geo.latitude</code> and <code>geo.longitude</code> are present and numeric (critical for Map Pack accuracy).</li>
-    <li><strong>Opening Hours</strong> - <code>openingHoursSpecification</code> array or legacy <code>openingHours</code> string exists and is reasonably formatted.</li>
+    <li><strong>Local Schema:</strong> Presence of a <code>LocalBusiness</code> object, <em>or</em> one of the recognized subtypes (<code>ProfessionalService</code>, <code>Store</code>, <code>Restaurant</code>, <code>Dentist</code>, <code>VeterinaryCare</code>) that also has an <code>address</code> property. The <code>@type</code> field can be a single string or an array of strings (e.g. <code>["LocalBusiness", "Store"]</code>).</li>
+    <li><strong>Geo Coords:</strong> <code>geo.latitude</code> and <code>geo.longitude</code> are both present and numeric. Critical for Map Pack accuracy.</li>
+    <li><strong>Opening Hours:</strong> An <code>openingHoursSpecification</code> array <em>or</em> the legacy <code>openingHours</code> string exists.</li>
   </ul>
   <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mt-6">
     The tool is forgiving of minor formatting issues but strict on missing core properties - incomplete markup scores lower.
@@ -1130,6 +1130,7 @@
     <li>Include precise <code>geo.latitude</code> and <code>geo.longitude</code> (copy from Google Maps pin).</li>
     <li>Use <code>openingHoursSpecification</code> array for detailed hours (days + time ranges) - avoid legacy string format.</li>
     <li>Add <code>address</code> with <code>streetAddress</code>, <code>addressLocality</code> (city), <code>postalCode</code>, <code>addressCountry</code>: "AU".</li>
+    <li>If you declare multiple types, use the array form: <code>"@type": ["LocalBusiness", "Store"]</code> — the tool recognises both strings and arrays.</li>
     <li>Re-audit in Traffic Torch and watch the Structured Data module score jump and rich results eligibility indicators appear.</li>
   </ul>
 
@@ -1169,9 +1170,9 @@
     Key metrics evaluated (combined into the module sub-score):
   </p>
   <ul class="list-disc pl-6 space-y-3 text-lg text-gray-800 dark:text-gray-200">
-    <li><strong>Review Schema</strong> - presence of <code>aggregateRating</code> with <code>ratingValue</code> and <code>reviewCount</code> inside a <code>LocalBusiness</code> or <code>Review</code> object.</li>
-    <li><strong>Canonical Tag</strong> - <code>&lt;link rel="canonical"&gt;</code> exists and matches the current page URL (prevents duplicate content issues).</li>
-    <li><strong>Internal Geo Links</strong> - internal anchors contain local patterns (e.g. href containing "/sydney", "/locations/", "service-areas", city/suburb names).</li>
+    <li><strong>Review Schema:</strong> Any <code>aggregateRating.ratingValue</code> found inside your JSON-LD — including when it's nested inside <code>@graph</code> arrays or inside a <code>review[]</code> array on a <code>LocalBusiness</code> object.</li>
+    <li><strong>Canonical Tag:</strong> A <code>&lt;link rel="canonical"&gt;</code> exists. When auditing a live URL, the normalized canonical (origin + path, trailing slash stripped, lowercased) must match the analyzed URL — protocol and <code>www.</code> differences are tolerated. In Code Analysis mode, presence alone passes.</li>
+    <li><strong>Internal Geo Links:</strong> At least one anchor whose text contains the entered city name <em>and</em> whose href points to a location-style path (<code>/contact</code>, <code>/location</code>, <code>/branch</code>, <code>/service-area</code>, etc.), or whose text contains the city and is longer than 8 characters.</li>
   </ul>
   <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 mt-6">
     Review schema must be valid and numeric; internal links are pattern-matched conservatively to reward genuine location hierarchy.
@@ -1501,7 +1502,7 @@
         </p>
               <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
         <p>Published: 2026-02-20</p>
-        <p>Last updated: 2026-05-19</p>
+        <p>Last updated: 2026-10-02</p>
       </div>
       </div>
     </div>

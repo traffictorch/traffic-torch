@@ -94,7 +94,7 @@
         "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp"
       ],
       "datePublished": "2026-03-17T11:34:00+11:00",
-      "dateModified": "2026-05-19T11:24:00+11:00",
+      "dateModified": "2026-10-02T10:30:00+11:00",
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -149,7 +149,7 @@
         "https://traffictorch.net/seo-entity-extractor-tool/images/semantic-entity-help-guide-banner-800x257.webp"
       ],
       "datePublished": "2026-03-17T11:34:00+11:00",
-      "dateModified": "2026-05-19T11:24:00+11:00",
+      "dateModified": "2026-10-02T10:30:00+11:00",
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -713,7 +713,7 @@
 <div id="coverage-how" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
   <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">How it's Audited</h3>
   <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-    Traffic Torch starts by receiving the list of extracted entities from the backend NLP analysis. It also attempts to obtain an accurate word count from cleaned page text. If real cleaned text is unavailable, it uses a fallback estimate based on entity count.
+    Traffic Torch starts by receiving the list of extracted entities from the backend NLP analysis. It also obtains an accurate word count from cleaned page text. If real cleaned text is unavailable, it uses a fallback estimate based on entity count.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
     Entity density is calculated as total entities divided by word count multiplied by 100 to give a percentage. Density grading uses specific ranges: 0.4% to 5.5% is considered good, slightly higher up to 9% is a warning, and very high density triggers a stuffing alert.
@@ -722,13 +722,19 @@
     Type diversity is determined by counting unique entity types. Weighted diversity applies higher multipliers to CONCEPT (1.6), ORGANIZATION (1.3), PERSON (1.25), PRODUCT (1.15), and lower to LOCATION, TECHNOLOGY, and OTHER.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    The score uses tiered buckets for entity count that adjust for short pages (under 400 words) versus normal pages. Bonuses are added for good density ranges and strong weighted diversity. Small penalties apply for very low diversity on longer content with decent entity volume.
+    The score uses tiered buckets for entity count that adjust for short pages (under 400 words) versus normal pages. On a normal-length page, maximum base weight requires 40+ entities, then 30+, then 18+, with progressively smaller base contributions below that. Short pages use lower thresholds.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Density bonuses are capped to prevent saturation. Weighted diversity bonuses are also capped, with smaller extras for LOCATION+ORGANIZATION combinations and CONCEPT-heavy pages. A modest penalty applies when type diversity is very low on content that already has a decent entity volume.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    A word-count penalty is applied to thin content. Pages under 500 words lose a small amount of score, and pages under 300 words lose more — reflecting that search engines and AI models favour substantive depth over short pages padded with entity mentions.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
     Metrics display total entities, approximate word count, density percentage, type diversity count, and weighted diversity score. Each metric receives a good, warning, or bad grade based on adaptive thresholds.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Failed items list specific issues such as low entity count, low density, high density (stuffing risk), low type diversity, low weighted diversity, or missing organization when locations are present. Each suggestion explains the problem and recommends natural improvements.
+    Failed items list specific issues such as low entity count, low density, high density (stuffing risk), low type diversity, low weighted diversity, missing organization when locations are present, or thin content under 500 words. Each suggestion explains the problem and recommends natural improvements.
   </p>
     <p class="mt-8 text-center md:text-left">
     <a href="https://traffictorch.net/seo-entity-extractor-tool/" 
@@ -791,13 +797,13 @@
     Traffic Torch normalizes all entity salience scores to the 0.0 to 1.0 range. It filters out any empty or invalid entities and sorts them descending by salience value.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    The module calculates average salience across all detected entities. It identifies the top entity's salience score and counts how many entities exceed strong (above 0.62) and very strong (above 0.82) thresholds.
+    The module calculates average salience across all detected entities. It identifies the top entity's salience score and counts how many entities exceed strong (above 0.62) and very strong (above 0.75) thresholds.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
     Distribution is assessed by measuring the drop from the top entity to roughly the fifth strongest. A small drop combined with many strong entities flags a flat hierarchy.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Scoring adapts to entity count tiers. Very short pages use conservative formulas. Short-focus pages reward high top salience and strong entity ratios. Normal pages add bonuses for very high top salience, multiple strong entities, and hierarchy.
+    Scoring adapts to entity count tiers. Very short pages use conservative formulas. Short-focus pages reward high top salience and strong entity ratios. Normal pages add bonuses for very high top salience, multiple strong entities, and hierarchy. The strong-entity proportion thresholds are calibrated so realistic pages with a long tail of low-salience mentions can still score well.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
     Penalties apply for flat distributions on medium or large entity sets. The final score is capped between 10 and 100.
@@ -850,10 +856,10 @@
   <div id="relationships-what" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
     <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">What is it?</h3>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-      Relationships analyzes how well the entities on your page connect to form meaningful topical clusters. It evaluates co-occurrence patterns, type synergies, and signals of semantic depth.
+      Relationships analyzes how well the entities on your page connect to form meaningful topical clusters. It evaluates actual co-occurrence in paragraphs and lists, type synergies, and signals of semantic depth.
     </p>
     <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-      The module focuses on the most salient entities to avoid noise. It calculates possible co-mention pairs as a proxy for relatedness and awards bonuses when high-value entity types appear together.
+      The module focuses on the most salient entities to avoid noise. It counts how many of these top entities appear together in the same paragraph or block-level text node, and awards bonuses when high-value entity types appear together.
     </p>
     <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
       Synergy bonuses reward common strong combinations. Examples include CONCEPT with ORGANIZATION or PERSON, PRODUCT with ORGANIZATION, TECHNOLOGY with CONCEPT, and ORGANIZATION with multiple LOCATION entities for local signals.
@@ -872,22 +878,25 @@
     Traffic Torch begins by taking the full list of extracted entities. It sorts them by descending salience and limits analysis to the top 18 most prominent entities. This focuses computation on the most relevant signals.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    The module calculates all possible co-mention pairs among these top entities. This combinatorial count serves as a proxy for relatedness since the page-level co-occurrence indicates potential topical connections.
+    The module then counts how many of these top entities appear together in the same paragraph, list item, summary, or block-level text node. Only genuine co-occurrences are counted — a combinatorial pair proxy is not used, because that would inflate the score even when entities never appear near each other.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Type synergy bonuses are applied for high-value combinations. Bonuses are awarded when CONCEPT appears with ORGANIZATION or PERSON, PRODUCT with ORGANIZATION, TECHNOLOGY with CONCEPT, or ORGANIZATION with multiple LOCATION entities for strong local signals.
+    If the worker returned no paragraph data, the module falls back to a conservative estimate based on entity count, so an unusually small page cannot accidentally score highly from missing data.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Diversity of entity types contributes through a scaled bonus. The more unique types are present among the top salient entities, the higher the diversity component.
+    Type synergy bonuses are applied for high-value combinations. Bonuses are awarded when CONCEPT appears with ORGANIZATION or PERSON, PRODUCT with ORGANIZATION, TECHNOLOGY with CONCEPT, or ORGANIZATION with multiple LOCATION entities for strong local signals. Synergy values are capped so type heuristics alone cannot push a page to a perfect score without real co-occurrence.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Scoring uses a logarithmic scale for co-mention pairs to provide diminishing returns on very large sets. It adds the synergy bonus and diversity bonus directly. Small penalties apply for very low pair counts on larger entity sets.
+    Diversity of entity types contributes through a scaled bonus, capped to keep the score honest when a page has many types but weak connections between them.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Metrics display the number of entities considered, possible co-mention pairs, type synergy bonus amount, example related pairs, and an overall relationship strength label. Each metric receives a good, warning, or bad grade.
+    Scoring uses a logarithmic scale for co-occurrence counts to provide diminishing returns on very large sets. It adds the synergy bonus and diversity bonus directly. Small penalties apply for very low pair counts on larger entity sets.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Failed items highlight specific weaknesses. These include too few entities, limited co-occurrences, narrow type diversity, weak synergy, missing organization with locations present, or poor clustering on larger sets.
+    Metrics display the number of entities considered, real co-occurring pairs, type synergy bonus amount, example related pairs, and an overall relationship strength label. Each metric receives a good, warning, or bad grade.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Failed items highlight specific weaknesses. These include too few entities, limited co-occurrences, narrow type diversity across the whole page (measured against the full extracted list, not just the top 18), weak synergy, missing organization with locations present, or poor clustering on larger sets.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
     Suggestions recommend grouping related entities in sections, using descriptive internal links, broadening complementary types, and implementing entity or mention schema where appropriate.
@@ -934,50 +943,50 @@
   <div id="practices-what" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
     <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">What is it?</h3>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-      Practices evaluates on-page optimizations that make entities more machine-readable and crawlable. It focuses on three key areas: schema readiness, likely entity usage in headings, and name consistency across mentions.
+      Practices evaluates on-page optimizations that make entities more machine-readable and crawlable. It focuses on four key areas: actual JSON-LD schema, entity usage in headings, name consistency across mentions, and image quality (alt text and width/height attributes).
     </p>
     <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-      Schema readiness scores potential for structured data markup based on detected entity types. High-value types such as ORGANIZATION, PERSON, PRODUCT, and CONCEPT receive the strongest weighting.
+      Schema readiness is scored from the JSON-LD actually present on the page. High-value types such as ORGANIZATION, PERSON, PRODUCT, and CONCEPT receive the strongest weighting. LocalBusiness and Article/WebPage markup also count.
     </p>
     <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-      Synergies boost the score. Examples include ORGANIZATION combined with multiple LOCATION entities for local signals or CONCEPT with ORGANIZATION for article potential.
-    </p>
-    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-      Heading usage is proxied by estimating how many high-salience entities could reasonably appear in headings. The top third of salient entities are considered strong candidates.
+      Heading usage checks whether your top salient entities actually appear in H1–H6 tags. This is the strongest crawlable signal that the page is about those entities.
     </p>
     <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
       Name consistency normalizes entity text by removing punctuation and extra spaces. It calculates the percentage of unique normalized forms to detect spelling, capitalization, or formatting variations.
     </p>
     <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-      The module rewards pages that combine strong schema potential, probable heading placement of key entities, and high naming consistency.
+      Image quality counts images with descriptive alt text and images with explicit width/height attributes. Missing alt text hurts accessibility and topical signals; missing width/height causes Cumulative Layout Shift (CLS).
+    </p>
+    <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+      The module rewards pages that combine strong schema, probable heading placement of key entities, high naming consistency, and well-formed images.
     </p>
   </div>
   
   <div id="practices-how" class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12 scroll-mt-24">
   <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">How it's Audited</h3>
   <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-    Traffic Torch sorts the extracted entities by descending salience. It counts occurrences of each entity type and creates flags for the presence of PERSON, ORGANIZATION, PRODUCT, CONCEPT, and LOCATION.
+    Traffic Torch sorts the extracted entities by descending salience. It then reads the JSON-LD script tags returned by the worker and walks any <code>@graph</code> arrays to collect every <code>@type</code> actually present on the page.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Schema potential is scored by assigning points to detected types. ORGANIZATION and PERSON receive the highest weight. PRODUCT and CONCEPT follow, while LOCATION adds a smaller base value.
+    Schema score is built from real types found. Organization, LocalBusiness, Product, Person, and Article/WebPage/NewsArticle each contribute a weighted amount, capped so a single type cannot dominate.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Synergy bonuses increase the schema score. ORGANIZATION with multiple LOCATION entities triggers local business boosts. CONCEPT combined with ORGANIZATION can add article potential on longer pages.
+    Heading usage is measured by comparing the top ~30 percent of salient entities against the actual text of every H1–H6 on the page. Only entities that genuinely appear in a heading count.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Heading usage is estimated by taking roughly the top 32 percent of salient entities. This count serves as a proxy for entities likely placed in H1, H2, or H3 tags due to their prominence.
+    Primary entity placement is checked separately against the <code>&lt;title&gt;</code> and meta description. Missing from the title triggers a stronger warning than missing from the description.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
     Name consistency normalizes all entity text. It removes punctuation, collapses multiple spaces, and converts to lowercase. The percentage of unique normalized forms is calculated against total entities.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Scoring weights schema readiness most heavily at 65 percent on pages with sufficient entities. Heading proxy contributes the rest. High consistency adds a small bonus on pages with eight or more entities.
+    Image quality is evaluated on two axes. Alt-text coverage rewards descriptive alt attributes on every image. Width/height coverage checks for explicit dimension attributes, which prevent Cumulative Layout Shift. Both are scored independently and both can appear as separate failed items.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Metrics display schema potential out of 100, estimated heading entities with percentage, and name consistency percentage with unique normalized count. Each metric receives a good, warning, or bad grade.
+    Metrics display the JSON-LD types found, top entities in headings, primary entity placement in title and description, alt-text coverage, width/height coverage, and name consistency. Each metric receives a good, warning, or bad grade.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Failed items flag low schema readiness with suggested types, few likely heading entities with placement advice, inconsistent naming with standardization tips, locations without organization, or decent volume lacking strong schema candidates.
+    Failed items flag missing JSON-LD, only-generic schema, few top entities in headings, primary entity missing from the title, primary entity missing from the description, missing alt text, missing width/height attributes, and inconsistent naming. Each failed item points to concrete fixes.
   </p>
     <p class="mt-8 text-center md:text-left">
     <a href="https://traffictorch.net/seo-entity-extractor-tool/" 
@@ -1002,7 +1011,10 @@
     Consistent entity naming reduces ambiguity. It prevents dilution of brand or topic identity and increases the likelihood of correct Knowledge Graph merging or disambiguation.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Pages that combine schema, heading placement, and naming consistency perform better in entity-aware environments. These optimizations provide high return on effort and future-proof content.
+    Well-formed images with alt text and explicit dimensions support both accessibility and Core Web Vitals. This is a direct ranking and UX signal that compounds with the entity work.
+  </p>
+  <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
+    Pages that combine schema, heading placement, naming consistency, and clean images perform better in entity-aware environments. These optimizations provide high return on effort and future-proof content.
   </p>
   <p class="mt-6 text-center md:text-left text-sm">
     <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
@@ -1027,10 +1039,10 @@
       Coverage and Salience receive the highest weights as foundational signals. Relationships and Practices contribute as important amplifiers of depth and machine readability.
     </p>
     <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-      The final score is a rounded weighted average clamped between 0 and 100. It includes descriptive levels such as Excellent, Good, Fair, Poor, or Needs Significant Work.
+      The final score is a rounded weighted average clamped between 0 and 100. It maps to one of three descriptive levels: Excellent, Average, or Needs Work.
     </p>
     <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-      Contribution percentages show how much each module influences the total. These percentages normalize to sum near 100 percent even when individual scores vary widely.
+      Contribution percentages show how much each module influences the total. These percentages are computed from the weighted contributions, so they always sum to near 100 percent even when individual raw scores vary widely.
     </p>
     <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
       Readiness serves as the ultimate summary metric. It predicts how effectively your page will perform in competitive, entity-aware ranking environments.
@@ -1052,13 +1064,13 @@
     The final score is computed as the weighted sum of the four inputs. The result is rounded to the nearest whole number.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    A descriptive level is assigned based on score thresholds. Excellent starts at 85, Good at 72, Fair at 55, Poor at 40, and anything below requires significant work.
+    A descriptive level is assigned based on score thresholds: <strong>Excellent</strong> at 80 or above, <strong>Average</strong> at 40 or above, and <strong>Needs Work</strong> below 40. Each level carries its own explanation to guide next steps.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Contribution percentages are calculated for display. They normalize each module's raw score against the sum of all four scores so the breakdown always approximates 100 percent.
+    Contribution percentages are calculated for display. They normalize each module's <em>weighted</em> contribution against the total weighted score, so the breakdown always approximates 100 percent and reflects true influence on the final number.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
-    Metrics show the overall readiness level with score, plus each module's contribution percentage and raw score. Each contribution receives a good, warning, or bad grade based on its strength.
+    Metrics show the overall readiness level with score, plus each module's weighted contribution percentage and raw score. Each contribution receives a good, warning, or bad grade based on its strength.
   </p>
   <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">
     Failed items prioritize core weaknesses first. Low Coverage or Salience triggers the highest-priority suggestion. Secondary issues in Relationships or Practices follow.
@@ -1324,7 +1336,7 @@
         </p>
         <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2026-03-17</p>
-          <p>Last updated: 2026-05-19</p>
+          <p>Last updated: 2026-10-02</p>
         </div>
       </div>
     </div>

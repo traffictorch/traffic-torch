@@ -94,7 +94,7 @@
           "height": 630
         },
         "datePublished": "2026-09-12T10:00:00+11:00",
-        "dateModified": "2026-09-12T10:00:00+11:00",
+        "dateModified": "2026-10-02T15:30:00+11:00",
         "author": { "@id": "https://traffictorch.net/#author" },
         "publisher": { "@id": "https://traffictorch.net/#organization" },
         "breadcrumb": { "@id": "https://traffictorch.net/blog/posts/aeo-performance-help-guide/#breadcrumb" },
@@ -129,7 +129,7 @@
             "name": "What does Traffic Torch's AEO Performance Tool test?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "It tests 9 modules using a Puppeteer headless render via Cloudflare Browser Run plus static HTML analysis. It measures render fidelity, DOM mutations, semantic HTML ratio, schema parse success, robots.txt rules, text-to-code ratio, heading structure, render-blocking resources, and content stability."
+              "text": "It tests 9 modules using a Puppeteer headless render via Cloudflare Browser Run plus static HTML analysis. It measures render fidelity, DOM mutations, semantic HTML ratio, schema parse success, robots.txt rules, text-to-code ratio, heading structure, render-blocking resources, and content stability. If the headless render fails, the tool automatically falls back to a raw fetch of the page so you still get a full report."
             }
           },
           {
@@ -163,7 +163,7 @@
           "height": 630
         },
         "datePublished": "2026-09-12T10:00:00+11:00",
-        "dateModified": "2026-09-12T10:00:00+11:00",
+        "dateModified": "2026-10-02T15:30:00+11:00",
         "author": { "@id": "https://traffictorch.net/#author" },
         "publisher": { "@id": "https://traffictorch.net/#organization" },
         "mainEntityOfPage": { "@id": "https://traffictorch.net/blog/posts/aeo-performance-help-guide/#webpage" },
@@ -455,7 +455,7 @@
                     <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
                   </summary>
                   <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
-                    <p>It tests 9 modules using a Puppeteer headless render via Cloudflare Browser Run plus static HTML analysis. It measures render fidelity, DOM mutations, semantic HTML ratio, schema parse success, robots.txt rules, text-to-code ratio, heading structure, render-blocking resources, and content stability.</p>
+                    <p>It tests 9 modules using a Puppeteer headless render via Cloudflare Browser Run plus static HTML analysis. It measures render fidelity, DOM mutations, semantic HTML ratio, schema parse success, robots.txt rules, text-to-code ratio, heading structure, render-blocking resources, and content stability. If the headless render fails, the tool automatically falls back to a raw fetch of the page so you still get a full report.</p>
                   </div>
                 </details>
 
@@ -733,9 +733,9 @@
               <div class="mb-16">
                 <h3 id="crawler-accessibility-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
                 <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
-                  <p><strong>Traffic Torch fetches your robots.txt, checks meta robots directives, and scans the HTML for accessibility barriers like cookie walls, infinite scroll, and JS-gated content.</strong></p>
+                  <p><strong>Traffic Torch fetches your robots.txt, checks meta robots directives, and scans the HTML for accessibility barriers like cookie walls, infinite scroll, and JS-gated content.</strong> The robots.txt fetch runs on both the live headless-render path and the raw-fetch fallback, and identifies itself with a bot user agent so origin servers can distinguish it from real traffic.</p>
                   <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
-                    <li><strong>robots.txt analysis:</strong> Fetches robots.txt and checks for disallow rules targeting AI crawlers: GPTBot, ChatGPT-User, ClaudeBot, Claude-Web, anthropic-ai, PerplexityBot, CCBot, Google-Extended, Bytespider.</li>
+                    <li><strong>robots.txt analysis:</strong> Fetches robots.txt and checks for disallow rules targeting AI crawlers: GPTBot, ChatGPT-User, ClaudeBot, Claude-Web, anthropic-ai, PerplexityBot, CCBot, Google-Extended, Bytespider. If a wildcard <code>User-agent: * / Disallow: /</code> block exists, it is reported as the single root cause rather than as nine separate bot blocks, because the wildcard already implies every named bot is blocked.</li>
                     <li><strong>Meta robots check:</strong> Scans for meta robots tags that include noindex or nofollow.</li>
                     <li><strong>Cookie wall detection:</strong> Looks for common consent manager markers (OneTrust, CookieBot, Osano, CookieYes).</li>
                     <li><strong>Infinite scroll detection:</strong> Looks for scroll-based content loading patterns without visible pagination.</li>
@@ -746,7 +746,8 @@
                   <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
                     <li>No blocking in robots.txt, no noindex, no cookie wall: 100 points.</li>
                     <li>Missing robots.txt: -10 points.</li>
-                    <li>One AI crawler blocked: -12 points each.</li>
+                    <li>One AI crawler blocked: -12 points each (capped at -40).</li>
+                    <li>Wildcard block at root: -40 points.</li>
                     <li>noindex directive: -40 points.</li>
                     <li>Cookie wall detected: -5 points.</li>
                     <li>Infinite scroll or hash routing: -10 points each.</li>
@@ -1037,7 +1038,7 @@
                   <p class="mt-8 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Back to Table of Contents</a></p>
                 </div>
 
-                <p class="mt-12 text-center text-base text-gray-600 dark:text-gray-400 italic">Updated September 2026 – based on ongoing correlation research, headless render testing, and real-time analysis across major AI crawlers and answer engines.</p>
+                <p class="mt-12 text-center text-base text-gray-600 dark:text-gray-400 italic">Updated October 2026 – based on ongoing correlation research, headless render testing, and real-time analysis across major AI crawlers and answer engines.</p>
               </div>
             </section>
 
@@ -1128,10 +1129,10 @@
               <p class="text-lg sm:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">Traffic Torch turns real-time correlation research, algorithm update tracking, and practical page testing into transparent 360° diagnostics, AI-powered fixes, and educational insights. We empower creators, agencies, and businesses to win in traditional search, AI answer engines, and generative AI ecosystems — with privacy-first, client-side tools that never track or store your data.</p>
               <div class="pt-6 space-y-4">
                 <p class="text-base sm:text-lg text-gray-800 dark:text-gray-200 font-medium">Core Expertise: AEO & GEO Performance • Render Fidelity & Headless Extraction • Schema Parse & Structured Data • Crawler Accessibility • Semantic HTML & Content Extractability • Privacy-First Web Auditing.</p>
-                <p class="text-base text-gray-800 dark:text-gray-200 italic">Continuously updated with the latest Google guidelines, AI crawler behaviours (GPTBot, ClaudeBot, PerplexityBot), ranking factor studies, and real-world headless render data — as of September 2026.</p>
+                <p class="text-base text-gray-800 dark:text-gray-200 italic">Continuously updated with the latest Google guidelines, AI crawler behaviours (GPTBot, ClaudeBot, PerplexityBot), ranking factor studies, and real-world headless render data — as of October 2026.</p>
                 <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6 space-y-1">
                   <p>Guide originally published: 2026-09-12</p>
-                  <p>Last updated: 2026-09-12</p>
+                  <p>Last updated: 2026-10-02 15:30 AEDT</p>
                 </div>
               </div>
             </div>

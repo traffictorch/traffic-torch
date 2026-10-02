@@ -95,7 +95,7 @@
         "https://traffictorch.net/blog/images/quit-risk/user-experience-help-guide-1200w.webp"
       ],
       "datePublished": "2026-02-19T11:11:00+11:00",
-      "dateModified": "2026-05-19T11:52:00+11:00",
+      "dateModified": "2026-10-02T14:30:00+11:00",
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -162,7 +162,7 @@
       "description": "Complete guide to lowering website quit risk through better UX and SEO. Learn readability, navigation, accessibility, mobile readiness, and performance optimization with real metrics and fixes from Traffic Torch’s free Quit Risk Tool.",
       "image": "https://traffictorch.net/blog/images/quit-risk/user-experience-help-guide-1200w.webp",
       "datePublished": "2026-02-19T11:11:00+11:00",
-      "dateModified": "2026-05-19T11:52:00+11:00",
+      "dateModified": "2026-10-02T14:30:00+11:00",
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -229,7 +229,7 @@
           "name": "How accurate is the Traffic Torch Quit Risk Tool?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "It uses industry-standard metrics (Flesch formulas, WCAG 2.2 AA signals, Core Web Vitals patterns, touch-target guidelines) combined with realistic thresholds derived from analyzing thousands of live pages. While not a full Lighthouse audit, it delivers highly actionable insights focused on quit-risk triggers."
+            "text": "It uses industry-standard metrics (Flesch formulas, WCAG 2.2 AA signals, Core Web Vitals patterns, touch-target guidelines) combined with realistic thresholds derived from analyzing thousands of live pages. When you audit a live URL, the numbers come from a real browser render — actual transfer sizes, computed contrast ratios, and measured touch targets — not just static HTML. While not a full Lighthouse audit, it delivers highly actionable insights focused on quit-risk triggers."
           }
         },
         {
@@ -535,7 +535,7 @@
             <span class="text-purple-600 dark:text-purple-400 text-2xl">+</span>
           </summary>
           <div class="px-6 pb-6 pt-2 prose dark:prose-invert text-gray-800 dark:text-gray-200">
-            <p>It uses industry-standard metrics (Flesch formulas, WCAG 2.2 AA signals, Core Web Vitals patterns, touch-target guidelines) combined with realistic thresholds derived from analyzing thousands of live pages. While not a full Lighthouse audit, it delivers highly actionable insights focused on quit-risk triggers.</p>
+            <p>It uses industry-standard metrics (Flesch formulas, WCAG 2.2 AA signals, Core Web Vitals patterns, touch-target guidelines) combined with realistic thresholds derived from analyzing thousands of live pages. When you audit a live URL, the numbers come from a real browser render — actual transfer sizes, computed contrast ratios, and measured touch targets — not just static HTML. While not a full Lighthouse audit, it delivers highly actionable insights focused on quit-risk triggers.</p>
           </div>
         </details>
 
@@ -595,7 +595,7 @@
       </h3>
       <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
         <p>
-          The tool parses your page content and runs industry-standard calculations on real extracted text:
+          When you audit a live URL, Traffic Torch renders the page in a real browser and extracts the <strong>visible rendered word count</strong> from the live DOM. That number is treated as ground truth, and the classic formula inputs (sentences, syllables, paragraph density) are scaled against it so nested layout containers don’t double-count the same text. The tool then runs industry-standard calculations:
         </p>
         <ul class="mt-5 space-y-4 list-disc pl-6">
           <li><strong>Flesch Reading Ease Score</strong><br>
@@ -609,10 +609,10 @@
           <li><strong>Paragraph Density & Length</strong><br>
             Flags walls of text. Best practice: 3–4 sentences max per paragraph on mobile.</li>
           <li><strong>Overall Text Scannability</strong><br>
-            Counts use of <strong>bold/strong</strong>, bullet/numbered lists, descriptive subheadings relative to total word count. Strong hierarchy boosts the final score significantly.</li>
+            Counts use of <strong>bold/strong</strong>, bullet/numbered lists, descriptive subheadings relative to the rendered word count. Strong hierarchy boosts the final score significantly.</li>
         </ul>
         <p class="mt-6 italic text-gray-600 dark:text-gray-400">
-          Passing threshold in Traffic Torch: 65+. The module weights each factor realistically to reflect actual user behavior on modern websites.
+          Passing threshold in Traffic Torch: 65+. When auditing pasted HTML (no browser render), the tool falls back to static DOM text extraction — scores remain comparable but may differ slightly from a live audit.
         </p>
         <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
@@ -729,20 +729,20 @@
       </h3>
       <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
         <p>
-          The tool analyzes your page’s DOM structure and link patterns with these key checks:
+          The tool analyzes your page’s DOM structure and link patterns, and it computes external-link ratios against the <strong>audited page’s own host</strong> (not the origin of the audit tool), so internal links are correctly identified even when you audit from a different domain. It uses these key checks:
         </p>
         <ul class="mt-5 space-y-4 list-disc pl-6">
           <li><strong>Link Density Evaluation</strong><br>
-            Counts total links relative to content length. Too many links (especially >12 per 100 words) create decision fatigue and dilute focus.<br>
+            Uses the standard editorial definition: <strong>links per 100 words</strong>. Ideal range is roughly 1–4 links per 100 words. Density above 12 signals decision fatigue and dilutes focus.<br>
             Target: balanced density that guides without overwhelming.</li>
           <li><strong>Menu Structure Clarity</strong><br>
-            Measures top-level items (ideal 5–7), label descriptiveness, logical hierarchy and presence of dropdowns or breadcrumbs.<br>
+            Scores the number of top-level items on a smooth curve — <strong>4–7 items is ideal</strong>; penalties kick in for genuinely bloated menus (10+) or almost-empty ones (0–1). Also checks label descriptiveness, logical hierarchy and presence of dropdowns or breadcrumbs.<br>
             Clear, user-need-focused menus score highest.</li>
           <li><strong>Internal Linking Balance</strong><br>
-            Checks contextual links from body content to related pages. Good distribution spreads page authority and helps users discover more.<br>
+            Estimates contextual body links by subtracting primary-nav links and external links from the total — so a page whose menu is doing most of the linking doesn’t get falsely praised.<br>
             Isolated pages or missing related links lower the score.</li>
           <li><strong>CTA Prominence & Visibility</strong><br>
-            Detects primary calls-to-action (buttons, forms, strong anchor text). Evaluates contrast, size, placement (above the fold preferred) and action-oriented wording.<br>
+            Counts only <strong>action-shaped</strong> anchors/buttons (e.g. contact, book, demo, trial, buy, start) and well-known CTA classes — not every <code>&lt;button&gt;</code> on the page. 2+ healthy, 4+ strong.<br>
             Prominent, contrasting CTAs significantly boost the score.</li>
         </ul>
         <p class="mt-6 italic text-gray-600 dark:text-gray-400">
@@ -862,24 +862,23 @@
       </h3>
       <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
         <p>
-          The tool scans your page DOM and styles for WCAG 2.2 AA compliance signals:
+          The tool scans your page’s DOM and, for live URLs, uses <strong>computed styles from a real browser render</strong> to calculate actual WCAG contrast ratios. It looks for these WCAG 2.2 AA compliance signals:
         </p>
         <ul class="mt-5 space-y-4 list-disc pl-6">
           <li><strong>Alt Text Coverage</strong><br>
-            Counts meaningful images without descriptive alt text. Decorative images should have alt="" or role="presentation".<br>
+            Counts meaningful images without descriptive alt text. Decorative images (role="presentation" or empty alt) are excluded. Raw counts of missing / meaningful / decorative images are surfaced so you know exactly what to fix.<br>
             Target: 100% coverage on informative images; missing alts heavily penalize the score.</li>
           <li><strong>Color Contrast Ratios</strong><br>
-            Estimates text/background contrast (normal text ≥4.5:1, large text ≥3:1 per WCAG AA).<br>
-            Low contrast fails both readability and accessibility - the tool flags risky combinations.</li>
+            For live URLs, contrast is <strong>measured</strong> from the rendered page: the tool walks actual text elements, resolves effective background colour up the ancestor chain, and calculates the real contrast ratio. Normal text ≥4.5:1, large text ≥3:1 per WCAG AA.<br>
+            When auditing pasted HTML (no render), a conservative estimate is used instead and flagged accordingly.</li>
           <li><strong>Semantic HTML Structure</strong><br>
-            Checks for proper use of tags main, article, section, nav, header, footer, heading hierarchy (one H1, logical H Tag order).<br>
+            Weights a real <code>&lt;main&gt;</code> most heavily, then <code>&lt;article&gt;</code>/<code>&lt;section&gt;</code>, landmark roles, and a heading hierarchy that uses multiple levels — not just any heading count. One H1, logical H Tag order.<br>
             Semantic markup helps screen readers and search engines understand page structure.</li>
           <li><strong>Overall WCAG Compliance Indicators</strong><br>
-            Looks for ARIA labels, keyboard-focusable elements, landmark roles and common failure patterns.<br>
-            Combines automated signals into a realistic compliance estimate (full manual testing still recommended for perfection).</li>
+            Looks for ARIA labels, landmark roles and common failure patterns. Combines automated signals into a realistic compliance estimate (full manual testing still recommended for perfection).</li>
         </ul>
         <p class="mt-6 italic text-gray-600 dark:text-gray-400">
-          Passing threshold in Traffic Torch: 78+. Scores prioritize high-impact issues that affect real users the most.
+          Passing threshold in Traffic Torch: 78+. Scores prioritise high-impact issues that affect real users the most. Contrast results now reflect the actual rendered page, so a low score means real users are seeing low-contrast text.
         </p>
         <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
@@ -1025,24 +1024,24 @@
       </h3>
       <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
         <p>
-          The tool audits visible resource patterns and best-practice adoption on your live page:
+          For live URLs, the tool reads <strong>real transfer sizes</strong> from the browser’s Performance Resource Timing API — not just counts of tags. Thresholds are calibrated against HTTP Archive medians (≈1.6 MB total, ≈350 KB script, ≈900 KB images, ≈90 KB fonts). For pasted HTML (no browser render), it falls back to count-based heuristics.
         </p>
         <ul class="mt-5 space-y-4 list-disc pl-6">
           <li><strong>Asset Volume & Optimization Flags</strong><br>
-            Counts images, scripts, stylesheets. Flags excessive total requests or large unoptimized files.<br>
+            Uses real total-transfer bytes where available, plus image count pressure. Flags pages that exceed reasonable weight for modern web audiences.<br>
             Targets: aggressive compression, next-gen formats (WebP/AVIF), server compression (Brotli/GZIP).</li>
           <li><strong>Script Bloat & Render-Blocking Detection</strong><br>
-            Identifies large or unused JavaScript, synchronous scripts in <code>&lt;head&gt;</code>.<br>
-            Best practice: defer/async non-critical JS, minify/bundle, remove dead code - aim for ≤2–3 small blocking resources.</li>
+            Measures real <strong>script transfer bytes</strong> when available. Render-blocking is classified from the browser’s <code>renderBlockingStatus</code> API (authoritative), with a head-only attribute fallback. Only <code>&lt;head&gt;</code> resources count — bottom-of-body scripts no longer penalize.<br>
+            Best practice: defer/async non-critical JS, minify/bundle, remove dead code — aim for ≤2–3 small blocking resources.</li>
           <li><strong>Font Optimization</strong><br>
-            Checks number of font families/weights and font-display strategy.<br>
+            Counts <strong>unique font families actually used</strong> on the rendered page (from computed styles), not font stylesheet links. Combines with real font byte weight when available. Detects <code>font-display: swap</code>.<br>
             Ideal: ≤2–3 families, font-display: swap, preload critical fonts, prefer system fonts when possible.</li>
           <li><strong>Lazy Loading & Image Optimization</strong><br>
-            Verifies native loading="lazy" on offscreen img and iframe, responsive srcset/sizes, modern formats.<br>
+            Recognises native <code>loading="lazy"</code> plus JS-driven lazy-loaders (<code>data-src</code>, <code>data-lazy</code>, <code>data-srcset</code>, <code>class="lazy"</code>) so real-world patterns count. Modern-image ratio comes from real MIME data captured during render, not just the <code>.webp</code>/<code>.avif</code> extension in HTML — CDN-served modern formats are now credited.<br>
             Missing lazy-loading or oversized images heavily penalize the score.</li>
         </ul>
         <p class="mt-6 italic text-gray-600 dark:text-gray-400">
-          Passing threshold in Traffic Torch: 82+. The module emphasizes issues that most directly cause early user abandonment.
+          Passing threshold in Traffic Torch: 82+. The module emphasises issues that most directly cause early user abandonment.
         </p>
         <p class="mt-8 text-center">
       <a href="#table-of-contents" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">
@@ -1158,21 +1157,17 @@
       </h3>
       <div class="prose prose-lg dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-relaxed">
         <p>
-          The tool inspects meta tags, CSS behavior, element sizes and PWA manifest signals:
+          For live URLs, the tool measures from a real browser render — actual viewport size, real element rectangles, and real resource presence. For pasted HTML it falls back to DOM inspection.
         </p>
         <ul class="mt-5 space-y-4 list-disc pl-6">
           <li><strong>Viewport Configuration</strong><br>
-            Checks for the correct meta tag: <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>.<br>
-            Missing or incorrect viewport forces zoomed-out desktop view on phones - a major fail.</li>
+            Checks for the correct meta tag: <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code>. Also flags zoom-blocking (<code>maximum-scale=1</code>, <code>user-scalable=no</code>). If a meta tag is missing but the page was rendered at a reasonable width, a partial credit is given — pages that reflow without a tag aren’t penalised as harshly as fixed-width pages.</li>
           <li><strong>Responsive Breakpoints & Layout</strong><br>
-            Detects horizontal scrolling, fixed-width elements or content overflow on narrow screens.<br>
-            Flexible grids, relative units (%, vw, rem) and media queries earn high points.</li>
+            Looks for real responsive signals — presence of media queries <strong>plus</strong> the actual rendered viewport the worker observed — rather than the old "any stylesheet exists" test. Penalises horizontal overflow and fixed-width content.</li>
           <li><strong>Touch Target Size</strong><br>
-            Measures interactive elements (links, buttons). WCAG and Apple recommend ≥44×44 pixels with adequate spacing.<br>
-            Small targets cause mis-taps and frustration - especially on mobile.</li>
+            Uses <strong>real measured rectangles</strong> from the live browser render: every anchor, button and <code>role="button"</code> element is measured, and the ratio of too-small targets (&lt;44×44 px) drives the sub-score. When no render data is available (pasted HTML), this factor is treated neutrally rather than guessed.</li>
           <li><strong>PWA Readiness Indicators</strong><br>
-            Looks for valid web app manifest (name, icons, theme color), HTTPS, service worker registration hints and installability signals.<br>
-            Strong PWA features enable add-to-home-screen prompts and offline potential.</li>
+            Builds a 0–100 sub-score from real signals: valid web app manifest, service worker registration hints, HTTPS, Apple touch icon, plus a mobile-first-build proxy (modern viewport + accessible touch). Strong PWA features enable add-to-home-screen prompts and offline potential.</li>
         </ul>
         <p class="mt-6 italic text-gray-600 dark:text-gray-400">
           Passing threshold in Traffic Torch: 80+. Scores heavily weight viewport and touch usability as they cause the most immediate user pain.
@@ -1466,7 +1461,7 @@
         </p>
               <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
         <p>Published: 2026-02-19</p>
-        <p>Last updated: 2026-05-19</p>
+        <p>Last updated: 2026-10-02</p>
       </div>
       </div>
     </div>

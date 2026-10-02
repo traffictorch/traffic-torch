@@ -28,6 +28,7 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:site_name" content="Traffic Torch">
+  <meta property="og:updated_time" content="2026-10-02T16:47:00+10:00">
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Mastering SEO Intent: E-E-A-T, Depth, Readability & Schema - Full Help Guide | Traffic Torch">
@@ -92,7 +93,7 @@
         "https://traffictorch.net/blog/images/seo-intent/seo-intent-help-guide-1200w.webp"
       ],
       "datePublished": "2026-02-20T06:15:00+11:00",
-      "dateModified": "2026-05-19T12:53:00+11:00",
+      "dateModified": "2026-10-02T16:47:00+10:00",
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -159,7 +160,7 @@
       "description": "Discover exactly how Traffic Torch measures search intent alignment. Learn what each module tests (E-E-A-T signals, content depth, readability, schema), why these factors drive rankings in 2026, and the highest-impact fixes to boost your positions and traffic. Perfect for anyone serious about modern SEO.",
       "image": "https://traffictorch.net/blog/images/seo-intent/seo-intent-help-guide-1200w.webp",
       "datePublished": "2026-02-20T06:15:00+11:00",
-      "dateModified": "2026-05-19T12:53:00+11:00",
+      "dateModified": "2026-10-02T16:47:00+10:00",
       "author": {
         "@type": "Person",
         "name": "Traffic Torch Team",
@@ -528,6 +529,22 @@
   </div>
 </nav>
 
+    <!-- ★ UPDATED: How the overall score is calculated -->
+    <div class="prose prose-lg dark:prose-invert max-w-none mb-12">
+      <h2 class="text-2xl md:text-3xl font-black mt-8 mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        How the Overall SEO Intent Score is Calculated
+      </h2>
+      <p>
+        Traffic Torch runs each of the seven modules independently, then averages them into the single 0–100 <strong>Overall SEO Intent Score</strong> displayed at the top of your report. Every module uses its own normalised 0–100 scale, so the sub-scores on the cards and the radar chart are directly comparable:
+      </p>
+      <p class="mt-4 font-medium">
+        Overall = (Experience + Expertise + Authoritativeness + Trustworthiness + Content Depth + Readability + Schema) ÷ 7
+      </p>
+      <p class="mt-4">
+        All content is extracted from the page's <code>&lt;main&gt;</code> or <code>&lt;article&gt;</code> region when present, with navigation, headers, footers, sidebar drawers, modals, and any element hidden by <code>display:none</code>, <code>visibility:hidden</code>, <code>[hidden]</code>, or <code>aria-hidden="true"</code> excluded. That gives an accurate read of the <strong>article body</strong> rather than inflated boilerplate, and keeps word count and Flesch reading ease consistent with how a human reads the page.
+      </p>
+    </div>
+
     <!-- CTA Box -->
     <div class="mt-12 p-2 rounded-2xl border border-orange-200 dark:border-orange-800 text-center md:text-center">
       <p class="text-lg font-semibold text-orange-700 dark:text-orange-300 mb-3">
@@ -616,13 +633,13 @@
       How Experience is Tested on Traffic Torch?
     </h3>
     <p>
-      Traffic Torch parses the visible text content (after stripping scripts, styles, and hidden elements) and looks for clear signals of first-hand involvement. The tool calculates a combined 0–100 score based on these weighted metrics:
+      Traffic Torch parses the visible text content from the page's <code>&lt;main&gt;</code> or <code>&lt;article&gt;</code> region, excluding navigation, headers, footers, sidebar drawers, modals, and any element hidden by <code>display:none</code>, <code>visibility:hidden</code>, <code>[hidden]</code> or <code>aria-hidden="true"</code>. It then looks for clear signals of first-hand involvement and calculates a combined 0–100 score based on these weighted metrics:
     </p>
     <ul class="list-disc pl-6 space-y-2 mt-4">
-      <li><strong>First-person pronouns count</strong> (“I”, “we”, “my”, “our”, “I’ve”, “we’ve”, etc.) - >15 = excellent, >5 = good, low = weak.</li>
+      <li><strong>First-person pronouns count</strong> (“I”, “we”, “my”, “our”, “I’ve”, “we’ve”, etc.) - &gt;15 = excellent, &gt;5 = good, low = weak.</li>
       <li><strong>Personal anecdote & testing phrases</strong> (e.g., “in my experience”, “I tested”, “we found that”, “hands-on”, “real-world”, “after testing”, “my results”) - count and density.</li>
       <li><strong>Timeline mentions tied to personal action</strong> (e.g., “last year I…”, “in 2024 we tried…”, “over the past 3 years” + first-person) - presence and relevance.</li>
-      <li><strong>Original personal media:</strong> Images/videos with alt/captions containing “my”, “our”, or clear personal context.</li>
+      <li><strong>Original personal media:</strong> Images/videos with alt or captions containing “my”, “our”, or clear personal context.</li>
     </ul>
     <p class="mt-4 italic text-gray-600 dark:text-gray-400">
       These are averaged into the final Experience sub-score shown in the tool’s radar chart and E-E-A-T breakdown.
@@ -696,9 +713,9 @@
     </p>
     <ul class="list-disc pl-6 space-y-2 mt-4">
       <li><strong>Visible author byline:</strong> Detected via common selectors (meta author, .author, .byline, [itemprop="author"], etc.) - presence = strong boost.</li>
-      <li><strong>Dedicated author bio section:</strong> Looks for blocks like .author-bio, .about-author, .writer-bio - with photo/background info = excellent.</li>
-      <li><strong>Credential keywords:</strong> Counts terms like PhD, MD, certified, licensed, years of experience, expert in, specialist, board-certified, 10+ years, veteran, professor, consultant, etc. - >2 strong mentions = high score.</li>
-      <li><strong>Citations & references:</strong> Presence of <code>&lt;cite&gt;</code>, .references, .sources, links to doi.org, pubmed, researchgate, or footer references section.</li>
+      <li><strong>Dedicated author bio section:</strong> Looks for blocks like .author-bio, .about-author, .writer-bio, .author-description, [itemprop="description"] - with photo/background info = excellent.</li>
+      <li><strong>Credential keywords:</strong> Counts terms like PhD, MD, certified, licensed, years of experience, expert in, specialist, board-certified, 10+ years, veteran, professor, consultant, etc. - &gt;2 strong mentions = high score.</li>
+      <li><strong>Citations & references:</strong> Presence of <code>&lt;cite&gt;</code>, .references, .sources, links to doi.org, pubmed, researchgate, or a footer references section.</li>
     </ul>
     <p class="mt-4 italic text-gray-600 dark:text-gray-400">
       These four signals are averaged to produce the Expertise sub-score visible in the E-E-A-T breakdown and radar chart.
@@ -748,7 +765,7 @@
   </div>
 </section>
 
-<!-- Module 3: Authoritativeness -->
+<!-- ★ UPDATED: Authoritativeness — now matches what the module actually checks -->
 <section id="authoritativeness" class="mb-20 scroll-mt-24">
   <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent" id="authoritativeness-heading">
     Authoritativeness - Building Topical Authority & Credibility
@@ -759,7 +776,7 @@
       What is the Authoritativeness Pillar?
     </h3>
     <p>
-      <strong>Authoritativeness measures how well your page (and site) is recognized as a go-to source</strong> on the topic. It’s the part of E-E-A-T that looks beyond the individual author to the broader reputation: citations from trusted sites, depth of coverage, topical clustering, and external validation signals.
+      <strong>Authoritativeness measures how well your page (and site) is recognised as a go-to source</strong> on the topic. It’s the part of E-E-A-T that looks beyond the individual author to the broader reputation: recognition from trusted sources, clear entity information, and depth of coverage that signals a site genuinely owns the subject.
     </p>
     <p class="mt-4">
       In 2026, Google increasingly uses topical authority (via entity graphs and content clusters) to decide which pages deserve top positions, especially when intent is informational or comparative.
@@ -769,16 +786,18 @@
       How Authoritativeness is Evaluated on Traffic Torch?
     </h3>
     <p>
-      While full site-level authority (Domain Rating, backlinks) requires external tools, Traffic Torch focuses on strong on-page signals that contribute to perceived authoritativeness. Key metrics include:
+      Full site-level authority (Domain Rating, backlink profile, brand mentions across the web) requires third-party tools. Traffic Torch focuses on two strong on-page signals that contribute to perceived authoritativeness, both averaged into the module's 0–100 score:
     </p>
     <ul class="list-disc pl-6 space-y-2 mt-4">
-      <li><strong>High-quality citations & references:</strong> Detects <code>&lt;cite&gt;</code>, .references, .sources sections, outbound links to doi.org, pubmed, researchgate, government/academic domains, or reputable industry sites.</li>
-      <li><strong>External link quality & context:</strong> Counts dofollow outbound links to high-authority sources (not just affiliates or directories).</li>
-      <li><strong>Content depth indicators:</strong> Substantial word count (1200–2000+ for competitive topics), varied sentence structure, subheadings covering multiple angles of the topic.</li>
-      <li><strong>Entity & topic coverage:</strong> Presence of semantically related terms, LSI keywords, and comprehensive sub-sections (inferred from heading structure and content breadth).</li>
+      <li>
+        <strong>Awards &amp; endorsements:</strong> Scans visible text for explicit recognition language — awards, "featured in", "as seen on", "recognised by", "endorsed by", "certified by", "accredited by", "trusted by", "partnered with", "press coverage", "media mention", "#1 rated", "highly rated", "top-rated", "best in/of [specific context or year]", accolades, prizes, nominations, and similar phrases. Bare words like "best" or "top" are <em>not</em> counted on their own — the phrase must have context.
+      </li>
+      <li>
+        <strong>About / Team page links:</strong> Detects links to dedicated about or team pages via <code>a[href*="/about"]</code>, <code>a[href*="/team"]</code>, or a nav link whose visible text is "About", "About Us", or "Team". These help Google verify the entity behind the site and build topical authority.
+      </li>
     </ul>
     <p class="mt-4 italic text-gray-600 dark:text-gray-400">
-      These on-page signals feed into the Authoritativeness sub-score in the E-E-A-T radar chart. (For full backlink analysis, pair with tools like Ahrefs or Semrush.)
+      This narrower scope is intentional. On-page prose can hint at authority, but real recognition lives in external citations, brand mentions, and the entity graph — signals that a browser-based tool cannot see. For the full picture, pair Traffic Torch with a backlink and brand-mention tool like Ahrefs or Semrush.
     </p>
 
     <h3 id="why-authoritativeness" class="text-2xl font-bold mt-12 mb-4 text-gray-800 dark:text-gray-200">
@@ -808,11 +827,11 @@
         Quick High-Impact Fixes for Authoritativeness
       </h4>
       <ul class="space-y-3 text-gray-800 dark:text-gray-200">
-        <li>Add 5–10+ high-quality outbound citations to studies, official sources, or respected publications.</li>
-        <li>Create a dedicated “Sources & References” section at the bottom with formatted links.</li>
-        <li>Expand coverage with 3–5 subheadings exploring related angles of the main topic.</li>
-        <li>Ensure word count reaches 1500–3000+ for in-depth guides (without fluff).</li>
-        <li>Re-analyze with Traffic Torch to track Authoritativeness score improvement and projected ranking lift.</li>
+        <li>Add a visible “As featured in” row, awards bar, or trust strip with recognisable names, logos, or press quotes.</li>
+        <li>Weave recognition into copy naturally — e.g. “Winner of the 2024 X Award” or “Our work has been featured in…” — instead of hiding it on a separate page.</li>
+        <li>Link “About” and “Team” pages from the main navigation and footer. Keep them detailed: who runs the site, how long you’ve been in business, where you’re located.</li>
+        <li>Collect client testimonials and case-study results; reference them from the article or a dedicated page.</li>
+        <li>Re-analyze with Traffic Torch to track the Authoritativeness score improvement and projected ranking lift.</li>
       </ul>
 
     </div>
@@ -878,10 +897,10 @@
       Traffic Torch scans the HTML for on-page trust indicators using targeted selectors. It calculates a combined 0–100 score based on these key signals:
     </p>
     <ul class="list-disc pl-6 space-y-2 mt-4">
-      <li><strong>Contact information links:</strong> Detects mailto:, tel:, /contact pages, or visible contact forms via selectors like a[href*="/contact" i], a[href*="mailto:" i].</li>
-      <li><strong>Privacy & legal policy links:</strong> Looks for /privacy, /terms, /legal, /disclaimer pages.</li>
-      <li><strong>Visible update or last-modified date:</strong> Finds time[datetime], .updated, .last-modified, meta[property="article:modified_time"], or similar freshness indicators.</li>
-      <li><strong>Implied security & transparency:</strong> Checks for HTTPS protocol (via page URL), no mixed content warnings, and presence of about/team/about-us links.</li>
+      <li><strong>Contact information links:</strong> Detects <code>mailto:</code>, <code>tel:</code>, <code>/contact</code> pages, or visible contact forms via selectors like <code>a[href*="/contact" i]</code>, <code>a[href*="mailto:" i]</code>.</li>
+      <li><strong>Privacy &amp; legal policy links:</strong> Looks for <code>/privacy</code>, <code>/terms</code>, <code>/legal</code>, <code>/disclaimer</code> pages.</li>
+      <li><strong>Visible update or last-modified date:</strong> Finds <code>time[datetime]</code>, <code>.updated</code>, <code>.last-modified</code>, <code>meta[property="article:modified_time"]</code>, <code>meta[property="og:updated_time"]</code>, or a text match for “Last updated”, “Published”, “Modified on” with a date.</li>
+      <li><strong>Implied security &amp; transparency:</strong> Checks for the HTTPS protocol (via the page URL) and any mixed-content warnings.</li>
     </ul>
     <p class="mt-4 italic text-gray-600 dark:text-gray-400">
       Presence of multiple signals yields a high score; missing key elements (especially contact + policies) significantly lowers the Trust sub-score in the E-E-A-T breakdown.
@@ -905,7 +924,7 @@
     </p>
     
     <p class="mb-4 text-sm text-gray-700 dark:text-gray-300">
-  Transparency, security (HTTPS), and clear contact info are foundational trust signals — detailed in Web Devs’s <a href="https://web.dev/articles/security-headers" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">Site Security & HTTPS guidelines</a> and <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">E-E-A-T documentation</a>.
+  Transparency, security (HTTPS), and clear contact info are foundational trust signals — detailed in Web Dev’s <a href="https://web.dev/articles/security-headers" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">Site Security & HTTPS guidelines</a> and <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" class="text-orange-600 dark:text-orange-400 hover:underline" target="_blank" rel="noopener">E-E-A-T documentation</a>.
 </p>
 
     <!-- Quick Fixes Box -->
@@ -931,10 +950,10 @@
   </div>
 </section>
 
-<!-- Module 5: Content Depth -->
+<!-- ★ UPDATED: Content Depth — now honest about what the module actually measures -->
 <section id="content-depth" class="mb-20 scroll-mt-24">
   <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent" id="content-depth-heading">
-    Content Depth & Topical Coverage
+    Content Depth &amp; Topical Coverage
   </h2>
 
   <div class="prose prose-lg dark:prose-invert max-w-none">
@@ -945,34 +964,37 @@
       <strong>Content depth measures how comprehensively and thoroughly a page covers its main topic:</strong> Going far beyond surface-level answers to address user questions, related sub-topics, comparisons, examples, and edge cases.
     </p>
     <p class="mt-4">
-      In 2026, Google’s Helpful Content system and core updates heavily favor in-depth, value-packed pages over thin or duplicated content. Depth is a key proxy for satisfying search intent completely.
+      In 2026, Google’s Helpful Content system and core updates heavily favour in-depth, value-packed pages over thin or duplicated content. Depth is a key proxy for satisfying search intent completely.
     </p>
 
     <h3 id="how-content-depth" class="text-2xl font-bold mt-12 mb-4 text-gray-800 dark:text-gray-200">
       How Content Depth is Evaluated on Traffic Torch?
     </h3>
     <p>
-      Traffic Torch analyzes the visible text content (after cleaning scripts, styles, hidden elements) and computes depth indicators. Key signals feeding into the depth score include:
+      Traffic Torch measures the <strong>word count of the article body</strong> as its single depth signal. Text is extracted from the page’s <code>&lt;main&gt;</code> or <code>&lt;article&gt;</code> region when present, with navigation, headers, footers, sidebar drawers, modals, and elements hidden by <code>display:none</code>, <code>visibility:hidden</code>, <code>[hidden]</code> or <code>aria-hidden="true"</code> excluded. This keeps the count honest — mobile drawers, mega menus, and off-canvas panels do not inflate the number.
+    </p>
+    <p class="mt-4">
+      The threshold applied is:
     </p>
     <ul class="list-disc pl-6 space-y-2 mt-4">
-      <li><strong>Word count & substance:</strong> Substantial length (typically 1200–3000+ words for competitive topics) with meaningful content (not filler).</li>
-      <li><strong>Sentence & paragraph variety:</strong> Mix of short/long sentences, varied structure to avoid repetitive or robotic patterns.</li>
-      <li><strong>Subheading hierarchy & coverage:</strong> Multiple H2/H3 sections that logically break down the topic into angles, FAQs, pros/cons, examples.</li>
-      <li><strong>Readability as a depth proxy:</strong> Flesch Reading Ease score (higher = more accessible depth, not overly complex).</li>
+      <li><strong>1,500+ words</strong> → Excellent (100)</li>
+      <li><strong>800–1,499 words</strong> → Good (75)</li>
+      <li><strong>400–799 words</strong> → Needs Work (50)</li>
+      <li><strong>Under 400 words</strong> → Needs Work (20)</li>
     </ul>
     <p class="mt-4 italic text-gray-600 dark:text-gray-400">
-      These factors combine into the Content Depth component of the overall health radar chart and intent alignment score.
+      Note: word count is a proxy, not a goal. A 2,000-word page that repeats itself is weaker than a focused 900-word page that answers the query completely. Use the depth score as a starting point, then improve substance — examples, screenshots, comparisons, step-by-step breakdowns — rather than padding.
     </p>
 
     <h3 id="why-content-depth" class="text-2xl font-bold mt-12 mb-4 text-gray-800 dark:text-gray-200">
-      Why Content Depth Matters for Rankings & UX?
+      Why Content Depth Matters for Rankings &amp; UX?
     </h3>
     <p>
-      <strong>Google now ranks pages that fully resolve user intent:</strong> Shallow content gets pushed down or filtered out in favor of comprehensive resources.
+      <strong>Google now ranks pages that fully resolve user intent:</strong> Shallow content gets pushed down or filtered out in favour of comprehensive resources.
     </p>
     <ul class="list-disc pl-6 space-y-2 mt-4">
-      <li>Deeper pages rank higher in informational and comparative queries</li>
-      <li>Users spend more time on-page, reducing bounce rate and signaling quality to Google.</li>
+      <li>Deeper pages rank higher in informational and comparative queries.</li>
+      <li>Users spend more time on-page, reducing bounce rate and signalling quality to Google.</li>
       <li>Comprehensive coverage increases chances of featured snippets, AI Overviews, and “People Also Ask” inclusion.</li>
       <li>Depth builds topical authority, making it easier to rank for related long-tail keywords.</li>
       <li>Helps avoid Helpful Content Update penalties for “thin” or “unsatisfying” pages.</li>
@@ -991,7 +1013,7 @@
         Quick High-Impact Fixes for Content Depth
       </h4>
       <ul class="space-y-3 text-gray-800 dark:text-gray-200">
-        <li>Expand to 1500–3000+ words by adding real examples, case studies, comparisons, and step-by-step breakdowns.</li>
+        <li>Expand to 1,500–3,000+ words by adding real examples, case studies, comparisons, and step-by-step breakdowns.</li>
         <li>Add 4–8 targeted subheadings (H2/H3) covering different angles, FAQs, pros/cons, common mistakes.</li>
         <li>Include original data, screenshots, tables, or infographics to support claims.</li>
         <li>Break up walls of text with short paragraphs, bullets, and varied sentence lengths.</li>
@@ -1011,12 +1033,12 @@
 <!-- Module 6: Readability -->
 <section id="readability" class="mb-20 scroll-mt-24">
   <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent" id="readability-heading">
-    Readability & User Experience Flow
+    Readability &amp; User Experience Flow
   </h2>
 
   <div class="prose prose-lg dark:prose-invert max-w-none">
     <h3 id="what-readability" class="text-2xl font-bold mt-10 mb-4 text-gray-800 dark:text-gray-200">
-      What is Readability in SEO & UX Context?
+      What is Readability in SEO &amp; UX Context?
     </h3>
     <p>
       <strong>Readability measures how easily users can understand and consume your content</strong> — factoring in sentence length, word complexity, paragraph structure, and overall flow. It directly impacts user satisfaction, dwell time, and bounce rate.
@@ -1029,26 +1051,26 @@
       How Readability is Calculated on Traffic Torch?
     </h3>
     <p>
-      Traffic Torch extracts all visible text from the page body (excluding scripts, styles, hidden elements), cleans it, and applies the classic Flesch Reading Ease formula:
+      Traffic Torch extracts the visible text from the page’s <code>&lt;main&gt;</code> or <code>&lt;article&gt;</code> region — excluding navigation, headers, footers, sidebar drawers, modals, and any element hidden by <code>display:none</code>, <code>visibility:hidden</code>, <code>[hidden]</code> or <code>aria-hidden="true"</code> — then applies the classic Flesch Reading Ease formula:
     </p>
     <p class="mt-4 font-medium">
       Readability = 206.835 − 1.015 × (total words / total sentences) − 84.6 × (total syllables / total words)
     </p>
     <ul class="list-disc pl-6 space-y-2 mt-4">
       <li><strong>Words</strong>: Count of meaningful words after trimming whitespace.</li>
-      <li><strong>Sentences</strong>: Detected via . ! ? punctuation (minimum 1 to avoid division errors).</li>
+      <li><strong>Sentences</strong>: Detected via <code>.</code> <code>!</code> <code>?</code> punctuation (minimum 1 to avoid division errors).</li>
       <li><strong>Syllables</strong>: Approximate count per word (vowel group matching, minimum 1 per word).</li>
       <li><strong>Final score</strong>: Rounded integer — higher = easier to read (60–70 = plain English, 80+ = very easy).</li>
     </ul>
     <p class="mt-4 italic text-gray-600 dark:text-gray-400">
-      The score appears in the health radar chart and contributes heavily to the overall on-page UX & intent match evaluation.
+      The score appears in the health radar chart and contributes heavily to the overall on-page UX &amp; intent match evaluation.
     </p>
 
     <h3 id="why-readability" class="text-2xl font-bold mt-12 mb-4 text-gray-800 dark:text-gray-200">
-      Why Readability Matters for Rankings & UX?
+      Why Readability Matters for Rankings &amp; UX?
     </h3>
     <p>
-      <strong>Google uses behavioral signals heavily</strong> — high readability correlates with longer time-on-page, lower pogo-sticking, and better mobile performance.
+      <strong>Google uses behavioural signals heavily</strong> — high readability correlates with longer time-on-page, lower pogo-sticking, and better mobile performance.
     </p>
     <ul class="list-disc pl-6 space-y-2 mt-4">
       <li>Improves mobile-first indexing and Core Web Vitals indirectly (faster comprehension = quicker interaction).</li>
@@ -1091,7 +1113,7 @@
 <!-- Module 7: Schema Markup -->
 <section id="schema" class="mb-20 scroll-mt-24">
   <h2 class="text-3xl md:text-4xl font-black mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent" id="schema-heading">
-    Schema Markup & Structured Data
+    Schema Markup &amp; Structured Data
   </h2>
 
   <div class="prose prose-lg dark:prose-invert max-w-none">
@@ -1106,26 +1128,26 @@
     </p>
 
     <h3 id="how-schema" class="text-2xl font-bold mt-12 mb-4 text-gray-800 dark:text-gray-200">
-      How Schema is Detected & Graded on Traffic Torch?
+      How Schema is Detected &amp; Graded on Traffic Torch?
     </h3>
     <p>
       Traffic Torch parses the page source for JSON-LD, microdata, or RDFa structured data blocks and evaluates both presence and quality. Scoring signals include:
     </p>
     <ul class="list-disc pl-6 space-y-2 mt-4">
-      <li><strong>Number of schema types found:</strong>Article, BlogPosting, FAQPage, HowTo, Product, Review, LocalBusiness, Organization, BreadcrumbList, etc.</li>
-      <li><strong>Relevance & completeness:</strong> Checks if primary types match page intent (e.g., Article on blog post, Product on e-commerce page).</li>
+      <li><strong>Number of schema types found:</strong> Article, BlogPosting, FAQPage, HowTo, Product, Review, LocalBusiness, Organization, BreadcrumbList, etc.</li>
+      <li><strong>Relevance &amp; completeness:</strong> Checks if primary types match page intent (e.g., Article on blog post, Product on e-commerce page).</li>
       <li><strong>Key properties present:</strong> Headline, datePublished, author, image, description for Article; aggregateRating, offers for Product; etc.</li>
       <li><strong>Grade levels:</strong> Excellent (multiple relevant + complete types), Good (basic valid schema), Needs Work (missing/invalid), None (no schema detected).</li>
     </ul>
     <p class="mt-4 italic text-gray-600 dark:text-gray-400">
-      The schema grade appears in the health radar chart and directly influences the intent match & rich results potential projection.
+      The schema grade appears in the health radar chart and directly influences the intent match &amp; rich results potential projection.
     </p>
 
     <h3 id="why-schema" class="text-2xl font-bold mt-12 mb-4 text-gray-800 dark:text-gray-200">
-      Why Schema Markup Matters for Rankings & UX?
+      Why Schema Markup Matters for Rankings &amp; UX?
     </h3>
     <p>
-      <strong>Schema doesn’t directly rank pages higher:</strong> But it dramatically improves SERP visibility, CTR, and click behavior, which are strong indirect ranking signals.
+      <strong>Schema doesn’t directly rank pages higher:</strong> But it dramatically improves SERP visibility, CTR, and click behaviour, which are strong indirect ranking signals.
     </p>
     <ul class="list-disc pl-6 space-y-2 mt-4">
       <li>Unlocks rich snippets (stars, prices, FAQs, images) that take up more SERP real estate.</li>
@@ -1223,7 +1245,7 @@
   
 <!-- Tools Grid -->
 <h2 id="tools-grid" class="text-3xl md:text-3xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
-      SEO GEO & UX Audit Tools
+      SEO GEO &amp; UX Audit Tools
     </h2>
 <div class="tools-grid max-w-7xl mx-auto px-2">
   <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -1367,7 +1389,7 @@
         </p>
               <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
         <p>Published: 2026-02-20</p>
-        <p>Last updated: 2026-05-19</p>
+        <p>Last updated: 2026-10-02</p>
       </div>
       </div>
     </div>
