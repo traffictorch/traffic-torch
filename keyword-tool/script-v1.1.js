@@ -1,4 +1,8 @@
 // Keyword Placement Tool script-v1.1.js
+// Hybrid: Deterministic 70 pts + AI Semantic 30 pts
+// Deterministic modules: Meta Title & Desc, H1 & Headings, Content & Readability,
+//                        Image Alts, Anchor Text, URL & Schema, Technical
+// AI module:             AI Semantic Audit (intent, entities, AEO, E-E-A-T)
 
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { canRunTool } from '/main-v1.1.js';
@@ -14,9 +18,15 @@ import {
 } from './code-snippet-v1.0.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+const SEMANTIC_WORKER = 'https://keyword-semantic-audit.traffictorch.workers.dev/';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
-// ── Render fenced code blocks from AI output ──────────────────────
+const DETERMINISTIC_MAX = 70;
+const AI_MAX = 30;
+
+/* ────────────────────────────────────────────────────────────────
+   AI output renderer (fenced code blocks → <pre>)
+   ──────────────────────────────────────────────────────────────── */
 function renderCodeBlocks(text) {
   if (text === null || text === undefined) return '';
   let escaped = String(text)
@@ -34,13 +44,15 @@ function renderCodeBlocks(text) {
 
   escaped = escaped.replace(
     /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
-    (_m, pre, nl) => (pre ? pre : '<br>')
+    (_m, pre) => (pre ? pre : '<br>')
   );
 
   return escaped;
 }
 
-// ─── Head snapshot builder (shared with all Traffic Torch tools) ───
+/* ────────────────────────────────────────────────────────────────
+   Head snapshot for AI payload
+   ──────────────────────────────────────────────────────────────── */
 function buildHeadSnapshot(doc) {
   if (!doc || !doc.head) return '';
   const head = doc.head;
@@ -50,9 +62,7 @@ function buildHeadSnapshot(doc) {
   if (sheets.length) {
     lines.push('Stylesheets in <head>:');
     for (const l of sheets) {
-      const href = l.getAttribute('href') || '';
-      const media = l.getAttribute('media');
-      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+      lines.push(`- ${l.getAttribute('href') || ''}`);
     }
   }
 
@@ -60,12 +70,7 @@ function buildHeadSnapshot(doc) {
   if (headScripts.length) {
     lines.push('Scripts in <head>:');
     for (const s of headScripts) {
-      const src = s.getAttribute('src') || '';
-      const attrs = ['async','defer','type','crossorigin','fetchpriority']
-        .filter(a => s.hasAttribute(a))
-        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
-        .join(' ');
-      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+      lines.push(`- ${s.getAttribute('src') || ''}`);
     }
   }
 
@@ -82,18 +87,16 @@ function buildHeadSnapshot(doc) {
   const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
   if (jsonLd.length) {
     lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
-    for (const s of jsonLd) {
-      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
-      lines.push(`- "${preview}…"`);
-    }
   }
 
   return lines.join('\n');
 }
 
-// ── Save audit to history (auth user → API, guest → localStorage) ──
-async function saveAuditHistory(url, toolName) {
-  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+/* ────────────────────────────────────────────────────────────────
+   Audit history (auth API or localStorage fallback)
+   ──────────────────────────────────────────────────────────────── */
+async function saveAuditHistory(url, toolName, score = null) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem(TOKEN_KEY);
   const auditUrl = url || 'Pasted HTML code';
 
   if (token) {
@@ -107,13 +110,11 @@ async function saveAuditHistory(url, toolName) {
         body: JSON.stringify({
           url: auditUrl,
           tool_name: toolName,
-          score: null
+          score: typeof score === 'number' ? score : null
         })
       });
       return;
-    } catch (e) {
-      // fall through to guest storage
-    }
+    } catch {}
   }
 
   const stored = localStorage.getItem('audit_guest');
@@ -125,13 +126,39 @@ async function saveAuditHistory(url, toolName) {
     _localId: Date.now() + '_' + Math.random(),
     url: auditUrl,
     tool: toolName,
-    score: null,
+    score: typeof score === 'number' ? score : null,
     timestamp: Date.now()
   });
   entries = entries.slice(0, 5);
   localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
 }
 
+/* ────────────────────────────────────────────────────────────────
+   AI semantic layer
+   ──────────────────────────────────────────────────────────────── */
+async function fetchAISemanticAudit(payload, { forceRefresh = false } = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+  try {
+    const res = await fetch(SEMANTIC_WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, forceRefresh }),
+      signal: controller.signal
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`AI worker ${res.status}: ${text.slice(0, 150)}`);
+    }
+    return await res.json();
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────
+   Main DOM ready
+   ──────────────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const pageUrlInput = document.getElementById('page-url');
@@ -143,6 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initCodeSnippetModal();
 
+  /* ── Global click delegation ─────────────────────────────────── */
   document.addEventListener('click', (e) => {
     const toggle = e.target.closest('.fixes-toggle');
     if (toggle) {
@@ -175,118 +203,335 @@ document.addEventListener('DOMContentLoaded', () => {
         textarea.value = aiLink.dataset.aiQuestion;
       }
       const section = document.getElementById('ask-ai-section');
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
       setTimeout(() => { textarea?.focus(); }, 700);
     }
   });
 
+  /* ── Auto-fill from ?input= ──────────────────────────────────── */
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
-
     if (inputData) {
       const textarea = document.getElementById('code-input');
       if (textarea) {
         textarea.value = decodeURIComponent(inputData);
-        const analyzeBtn = document.getElementById('analyze-code-btn');
-        if (analyzeBtn) {
-          setTimeout(() => { analyzeBtn.click(); }, 800);
-        }
+        setTimeout(() => document.getElementById('code-analyze-btn')?.click(), 800);
       }
     }
   }
-
   window.addEventListener('load', autoFillFromUrl);
 
+  /* ── Shared URL + keyword auto-run ───────────────────────────── */
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
   if (sharedUrl) {
     try {
       let decodedUrl = decodeURIComponent(sharedUrl);
-      if (!/^https?:\/\//i.test(decodedUrl)) {
-        decodedUrl = 'https://' + decodedUrl;
-      }
+      if (!/^https?:\/\//i.test(decodedUrl)) decodedUrl = 'https://' + decodedUrl;
       pageUrlInput.value = decodedUrl;
-    } catch (e) {}
+    } catch {}
   }
   const sharedKeyword = urlParams.get('keyword');
   if (sharedKeyword) {
     try {
       const decodedKeyword = decodeURIComponent(sharedKeyword).trim();
-      if (decodedKeyword) {
-        targetKeywordInput.value = decodedKeyword;
-      }
-    } catch (e) {}
+      if (decodedKeyword) targetKeywordInput.value = decodedKeyword;
+    } catch {}
   }
-
   if (sharedUrl && sharedKeyword) {
-    form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    setTimeout(() => urlAnalyzeBtn.click(), 400);
   }
 
   const PROXY = 'https://full-render-v2.traffictorch.workers.dev/';
+
   const progressModules = [
-    "Fetching page...",
-    "Analyzing metadata",
-    "Content depth & density",
-    "Scanning image alts",
-    "Testing internal anchors",
-    "Checking URL & schema",
-    "Generating report"
+    'Fetching page...',
+    'Analyzing metadata',
+    'Content depth & readability',
+    'Scanning image alts',
+    'Testing internal anchors',
+    'Checking URL, schema, technical',
+    'Running AI semantic audit',
+    'Generating report'
   ];
   let currentModuleIndex = 0;
   let moduleInterval;
 
+  /* ── Grade helper ────────────────────────────────────────────── */
   const getGrade = (score) => {
-    if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-    if (score >= 70) return { grade: 'Strong', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
-    if (score >= 50) return { grade: 'Average', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
-    if (score >= 30) return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
-    return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+    if (score >= 90) return { grade: 'Excellent',  emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+    if (score >= 70) return { grade: 'Strong',     emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+    if (score >= 50) return { grade: 'Average',    emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+    return               { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
   };
 
   const moduleHashes = {
     'Meta Title & Desc': 'meta-title-desc',
     'H1 & Headings': 'h1-headings',
-    'Content Density': 'content-density',
+    'Content & Readability': 'content-density',
     'Image Alts': 'image-alts',
     'Anchor Text': 'anchor-text',
-    'URL & Schema': 'url-schema'
+    'URL & Schema': 'url-schema',
+    'Technical': 'url-schema',
+    'AI Semantic Audit': 'url-schema'
   };
 
-  const getModuleDiagnostics = (m, data, phrase, fullUrl) => {
-    const diags = [];
-    if (m.name === 'Meta Title & Desc') {
-      if (data.meta.titleMatch === 0) diags.push({status: '❌', issue: 'Keyword missing from meta title', how: 'Place the keyword near the start of the title (under 60 characters) for maximum relevance.'});
-      else diags.push({status: '✅', issue: 'Keyword in meta title'});
-      if (data.meta.descMatch === 0) diags.push({status: '❌', issue: 'Keyword missing from meta description', how: 'Include the keyword once naturally in the description (under 155 characters).'});
-      else diags.push({status: '✅', issue: 'Keyword in meta description'});
-    } else if (m.name === 'H1 & Headings') {
-      if (data.h1.match === 0) diags.push({status: '❌', issue: 'Keyword missing from H1', how: 'Rewrite your H1 to include the keyword naturally while keeping it engaging.'});
-      else diags.push({status: '✅', issue: 'Keyword in H1'});
-    } else if (m.name === 'Content Density') {
-      if (data.content.words < 800) diags.push({status: '❌', issue: `Low word count (${data.content.words} words)`, how: 'Expand with examples, FAQs, comparisons, or data to reach 800+ words.'});
-      else diags.push({status: '✅', issue: 'Sufficient content depth'});
-      const density = parseFloat(data.content.density);
-      if (density < 0.5) diags.push({status: '❌', issue: 'Keyword density too low', how: 'Add the keyword naturally in intro, subheads, and body (aim for 1-2%).'});
-      else if (density > 3) diags.push({status: '❌', issue: 'Keyword density too high', how: 'Reduce repetitions to appear more natural.'});
-      else diags.push({status: '✅', issue: 'Good keyword density'});
-    } else if (m.name === 'Image Alts') {
-      if (data.alts.phrase === 0 && data.alts.total > 0) diags.push({status: '❌', issue: 'No key images have keyword in alt text', how: 'Update important images with descriptive alt text including the keyword naturally.'});
-      else diags.push({status: '✅', issue: 'Keyword in image alt text'});
-    } else if (m.name === 'Anchor Text') {
-      if (data.anchors.count === 0) diags.push({status: '❌', issue: 'No internal anchors use the keyword', how: 'Use the keyword naturally as clickable text when linking internally.'});
-      else diags.push({status: '✅', issue: 'Keyword in internal anchor text'});
-    } else if (m.name === 'URL & Schema') {
-      if (data.urlSchema.urlMatch === 0) diags.push({status: '❌', issue: 'Keyword missing from URL', how: 'Use a clean, hyphenated URL containing the keyword.'});
-      else diags.push({status: '✅', issue: 'Keyword in URL'});
-      if (data.urlSchema.schema === 0) diags.push({status: '❌', issue: 'No structured data detected', how: 'Add JSON-LD schema (Article, FAQ, etc.) in the head.'});
-      else diags.push({status: '✅', issue: 'Structured data present'});
+  /* ── Word-boundary safe phrase counter ───────────────────────── */
+  const countPhrase = (text = '', phrase = '', isUrl = false) => {
+    if (!text || !phrase) return 0;
+    const lower = String(text).toLowerCase();
+    const p = String(phrase).toLowerCase().trim();
+    if (!p) return 0;
+
+    const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    if (isUrl) {
+      const urlWords = lower
+        .replace(/https?:\/\//gi, '')
+        .replace(/[^a-z0-9]+/gi, ' ')
+        .split(/\s+/)
+        .filter(Boolean);
+      const phraseWords = p.split(/\s+/).filter(Boolean);
+      if (!phraseWords.length || !urlWords.length) return 0;
+      const matched = phraseWords.filter(w => urlWords.includes(w)).length;
+      return matched / phraseWords.length >= 0.6 ? 1 : 0;
     }
-    return diags;
+
+    const re = new RegExp(`(?<![\\p{L}\\p{N}])${esc(p)}(?![\\p{L}\\p{N}])`, 'giu');
+    const m = lower.match(re);
+    return m ? m.length : 0;
   };
 
+  /* ── Content extractor (keeps <header>) ──────────────────────── */
+  const getCleanContent = (doc) => {
+    if (!doc?.body) return '';
+    const clone = doc.body.cloneNode(true);
+
+    const strip = [
+      'nav', 'footer', 'aside', 'script', 'style', 'noscript', 'iframe',
+      '[role="navigation"]', '[role="contentinfo"]', '[role="complementary"]',
+      '.menu', '.nav', '.navbar', '.footer', '.cookie', '.popup',
+      '.sidebar', '.advert', '.newsletter'
+    ];
+    clone.querySelectorAll(strip.join(',')).forEach(el => el.remove());
+
+    const main = clone.querySelector('main, article, [role="main"]') || clone;
+    return main.textContent.replace(/\s+/g, ' ').trim();
+  };
+
+  const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
+
+  /* ── Deterministic scoring (70 pts) ──────────────────────────── */
+  function computeDeterministicScore({ yourDoc, phrase, fullUrl, analysisType, yourWords, cleanContent }) {
+    const fixes = [];
+    const modules = [];
+    let total = 0;
+
+    /* 1. Meta Title & Desc — 14 pts (title 8, desc 6) */
+    const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
+    const titleMatch = countPhrase(titleText, phrase);
+    const titleLen = titleText.length;
+    let titleScore = 0;
+    if (!titleText) {
+      fixes.push({ module: 'Meta Title & Desc', issue: 'Missing <title> tag', how: 'Add a descriptive title containing your target keyword.' });
+    } else {
+      if (titleMatch > 0) titleScore += 4;
+      else fixes.push({ module: 'Meta Title & Desc', issue: 'Keyword missing from meta title', how: 'Place the keyword near the start of the title, under 60 characters.' });
+      if (titleLen >= 30 && titleLen <= 60) titleScore += 3;
+      else fixes.push({ module: 'Meta Title & Desc', issue: `Meta title is ${titleLen} chars (aim 30–60)`, how: 'Trim or expand the title to 30–60 characters.' });
+      if (titleMatch > 0 && titleText.toLowerCase().indexOf(phrase.toLowerCase()) <= 60) titleScore += 1;
+    }
+
+    const descText = yourDoc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
+    const descMatch = countPhrase(descText, phrase);
+    const descLen = descText.length;
+    let descScore = 0;
+    if (!descText) {
+      fixes.push({ module: 'Meta Title & Desc', issue: 'Missing meta description', how: 'Add a 120–160 character description with the keyword and a clear benefit.' });
+    } else {
+      if (descMatch > 0) descScore += 3;
+      else fixes.push({ module: 'Meta Title & Desc', issue: 'Keyword missing from meta description', how: 'Include the keyword once naturally near the start.' });
+      if (descLen >= 120 && descLen <= 160) descScore += 2;
+      else fixes.push({ module: 'Meta Title & Desc', issue: `Meta description is ${descLen} chars (aim 120–160)`, how: 'Trim or expand the description to 120–160 characters.' });
+      if (/\b(learn|discover|get|try|see|explore|start|boost|improve|check|find|read)\b/i.test(descText)) descScore += 1;
+    }
+    total += titleScore + descScore;
+    modules.push({ name: 'Meta Title & Desc', score: Math.round(((titleScore + descScore) / 14) * 100) });
+
+    /* 2. H1 & Headings — 8 pts */
+    const h1s = yourDoc.querySelectorAll('h1');
+    const h2s = yourDoc.querySelectorAll('h2');
+    const h1Text = h1s[0]?.textContent.trim() || '';
+    const h1Match = countPhrase(h1Text, phrase);
+    let h1Score = 0;
+    if (h1s.length === 0) {
+      fixes.push({ module: 'H1 & Headings', issue: 'No H1 found', how: 'Add a single H1 containing your target keyword.' });
+    } else if (h1s.length > 1) {
+      fixes.push({ module: 'H1 & Headings', issue: `Multiple H1 tags (${h1s.length})`, how: 'Consolidate to one H1 per page.' });
+      h1Score += 1;
+    } else h1Score += 2;
+
+    if (h1Match > 0) h1Score += 4;
+    else if (h1Text) fixes.push({ module: 'H1 & Headings', issue: 'Keyword missing from H1', how: 'Rewrite the H1 to include the target keyword naturally.' });
+
+    const h2WithKeyword = Array.from(h2s).filter(h => countPhrase(h.textContent, phrase) > 0).length;
+    if (h2s.length > 0 && h2WithKeyword === 0) {
+      fixes.push({ module: 'H1 & Headings', issue: 'No H2 contains the keyword or variant', how: 'Include the keyword or a close variant in at least one H2.' });
+    } else if (h2s.length > 0) h1Score += 2;
+    total += h1Score;
+    modules.push({ name: 'H1 & Headings', score: Math.round((h1Score / 8) * 100) });
+
+    /* 3. Content & Readability — 14 pts (depth 8, readability 6) */
+    const wordCount = yourWords;
+    let contentScore = 0;
+    if (wordCount >= 1500) contentScore += 6;
+    else if (wordCount >= 800) contentScore += 5;
+    else if (wordCount >= 500) contentScore += 3;
+    else if (wordCount >= 300) contentScore += 2;
+    else if (wordCount > 0) contentScore += 1;
+    if (wordCount < 300) fixes.push({ module: 'Content & Readability', issue: `Thin content (${wordCount} words)`, how: 'Expand to 800+ words with examples and depth that matches intent.' });
+
+    const sentences = cleanContent.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const avgSentenceLen = sentences.length ? (wordCount / sentences.length) : 0;
+    if (avgSentenceLen > 0 && avgSentenceLen <= 25) contentScore += 2;
+    else if (avgSentenceLen > 25) fixes.push({ module: 'Content & Readability', issue: `Long sentences (avg ${avgSentenceLen.toFixed(0)} words)`, how: 'Break up long sentences for readability.' });
+
+    let readScore = 0;
+    const paraCount = yourDoc.querySelectorAll('p').length;
+    if (paraCount >= 5) readScore += 2;
+    if (avgSentenceLen > 0 && avgSentenceLen <= 20) readScore += 2;
+    if (h2s.length >= 3) readScore += 2;
+
+    total += contentScore + readScore;
+    modules.push({ name: 'Content & Readability', score: Math.round(((contentScore + readScore) / 14) * 100) });
+
+    /* 4. Image Alts — 6 pts */
+    const imgs = yourDoc.querySelectorAll('img');
+    const totalImgs = imgs.length;
+    let imgsWithAlt = 0, imgsWithKeyword = 0;
+    imgs.forEach(img => {
+      const alt = (img.getAttribute('alt') || '').trim();
+      if (alt) imgsWithAlt++;
+      if (alt && countPhrase(alt, phrase) > 0) imgsWithKeyword++;
+    });
+    let imgScore = 0;
+    if (totalImgs === 0) imgScore = 3;
+    else {
+      const altRatio = imgsWithAlt / totalImgs;
+      imgScore += Math.round(altRatio * 4);
+      if (imgsWithKeyword > 0) imgScore += 2;
+      else fixes.push({ module: 'Image Alts', issue: 'No image alt text contains the keyword', how: 'Add descriptive alt text with the keyword to 1–2 key images.' });
+      if (altRatio < 1) fixes.push({ module: 'Image Alts', issue: `${totalImgs - imgsWithAlt} image(s) missing alt`, how: 'Add descriptive alt text, or alt="" for decorative images.' });
+    }
+    total += imgScore;
+    modules.push({ name: 'Image Alts', score: totalImgs === 0 ? 50 : Math.round((imgScore / 6) * 100) });
+
+    /* 5. Anchor Text — 6 pts */
+    const baseHost = (() => { try { return new URL(fullUrl).hostname; } catch { return null; } })();
+    const internalLinks = Array.from(yourDoc.querySelectorAll('a[href]')).filter(a => {
+      const href = a.getAttribute('href') || '';
+      if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) return false;
+      if (!baseHost) return href.startsWith('/');
+      try { return new URL(href, fullUrl).hostname === baseHost; } catch { return false; }
+    });
+    const internalWithKeyword = internalLinks.filter(a => countPhrase(a.textContent || '', phrase) > 0).length;
+    let linkScore = 0;
+    if (internalLinks.length === 0) {
+      fixes.push({ module: 'Anchor Text', issue: 'No internal links found', how: 'Link to related pages from this page using descriptive anchor text.' });
+    } else {
+      linkScore += Math.min(3, Math.round(internalLinks.length / 3));
+      if (internalWithKeyword > 0) linkScore += 3;
+      else fixes.push({ module: 'Anchor Text', issue: 'No internal anchors contain the keyword', how: 'Use the keyword (or a close variant) as anchor text for at least one internal link.' });
+    }
+    total += linkScore;
+    modules.push({ name: 'Anchor Text', score: Math.round((linkScore / 6) * 100) });
+
+    /* 6. URL & Schema — 14 pts (URL 6, schema 8) */
+    let urlScore = 0;
+    const canonical = yourDoc.querySelector('link[rel="canonical"]')?.getAttribute('href') || '';
+    if (canonical) urlScore += 2;
+    else fixes.push({ module: 'URL & Schema', issue: 'Missing canonical link', how: 'Add <link rel="canonical" href="..."> to prevent duplicate content issues.' });
+
+    if (analysisType === 'url' && fullUrl) {
+      if (countPhrase(fullUrl, phrase, true) > 0) urlScore += 2;
+      else fixes.push({ module: 'URL & Schema', issue: 'Keyword not in URL', how: 'Use a clean, hyphenated URL that includes the target keyword.' });
+      const clean = !/[A-Z]/.test(fullUrl) && !/_/.test(fullUrl) && !fullUrl.includes('?');
+      if (clean) urlScore += 2;
+      else fixes.push({ module: 'URL & Schema', issue: 'URL not clean', how: 'Use lowercase, hyphen-separated URLs without query parameters.' });
+    } else {
+      urlScore += 2;
+    }
+
+    const schemaScripts = yourDoc.querySelectorAll('script[type="application/ld+json"]');
+    let schemaScore = 0, schemaTypes = [], schemaValid = false;
+    schemaScripts.forEach(s => {
+      try {
+        const parsed = JSON.parse(s.textContent);
+        const collect = (obj) => {
+          if (!obj || typeof obj !== 'object') return;
+          if (Array.isArray(obj)) { obj.forEach(collect); return; }
+          if (obj['@type']) schemaTypes.push(obj['@type']);
+          if (obj['@graph']) collect(obj['@graph']);
+        };
+        collect(parsed);
+        schemaValid = true;
+      } catch {}
+    });
+    if (schemaValid) schemaScore += 4;
+    else if (schemaScripts.length === 0) fixes.push({ module: 'URL & Schema', issue: 'No structured data detected', how: 'Add JSON-LD schema (Article, FAQ, Product) inside the <head>.' });
+    else fixes.push({ module: 'URL & Schema', issue: 'Invalid JSON-LD (parse error)', how: 'Fix the JSON syntax in your schema block.' });
+
+    const known = ['Article', 'BlogPosting', 'WebPage', 'FAQPage', 'HowTo', 'Product', 'Organization', 'BreadcrumbList'];
+    if (schemaTypes.some(t => known.includes(t))) schemaScore += 2;
+    if (schemaTypes.length >= 2) schemaScore += 2;
+
+    total += urlScore + schemaScore;
+    modules.push({ name: 'URL & Schema', score: Math.round(((urlScore + schemaScore) / 14) * 100) });
+
+    /* 7. Technical — 8 pts */
+    let techScore = 0;
+    const lang = yourDoc.documentElement.getAttribute('lang') || '';
+    if (lang) techScore += 2;
+    else fixes.push({ module: 'Technical', issue: 'Missing html lang attribute', how: 'Add lang="en" (or your language) to the <html> tag.' });
+
+    const viewport = yourDoc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
+    if (viewport.includes('width=device-width')) techScore += 2;
+    else fixes.push({ module: 'Technical', issue: 'Missing/invalid viewport meta', how: 'Add <meta name="viewport" content="width=device-width, initial-scale=1">.' });
+
+    const robots = yourDoc.querySelector('meta[name="robots"]')?.getAttribute('content') || '';
+    if (!/noindex/i.test(robots)) techScore += 2;
+    else fixes.push({ module: 'Technical', issue: 'Page has noindex directive', how: 'Remove noindex if this page should rank.' });
+
+    const ogTitle = yourDoc.querySelector('meta[property="og:title"]')?.getAttribute('content') || '';
+    const ogDesc = yourDoc.querySelector('meta[property="og:description"]')?.getAttribute('content') || '';
+    if (ogTitle && ogDesc) techScore += 2;
+    else fixes.push({ module: 'Technical', issue: 'Missing Open Graph tags', how: 'Add og:title and og:description for better social sharing.' });
+
+    total += techScore;
+    modules.push({ name: 'Technical', score: Math.round((techScore / 8) * 100) });
+
+    const capped = Math.min(DETERMINISTIC_MAX, total);
+
+    return {
+      score: capped,
+      max: DETERMINISTIC_MAX,
+      modules,
+      fixes,
+      details: {
+        titleText, titleMatch, titleLen,
+        descText, descMatch, descLen,
+        h1Text, h1Match, h1Count: h1s.length,
+        wordCount, totalImgs, imgsWithAlt, imgsWithKeyword,
+        internalLinks: internalLinks.length, internalWithKeyword,
+        canonical, schemaValid, schemaTypes,
+        lang, viewport, robots, ogTitle, ogDesc,
+        avgSentenceLen, paraCount
+      }
+    };
+  }
+
+  /* ── Spinner loader ──────────────────────────────────────────── */
   function startSpinnerLoader() {
     results.innerHTML = `
       <div id="loader" class="flex flex-col items-center justify-center space-y-4 mt-8">
@@ -295,11 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
     results.classList.remove('hidden');
-
-    results.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center'
-    });
+    results.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     document.getElementById('module-text').textContent = progressModules[0];
     currentModuleIndex = 1;
@@ -307,7 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentModuleIndex < progressModules.length) {
         document.getElementById('module-text').textContent = progressModules[currentModuleIndex++];
       }
-    }, 600);
+    }, 700);
   }
 
   function stopSpinnerLoader() {
@@ -316,6 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loader) loader.remove();
   }
 
+  /* ── Fetch page via full-render-v2 ───────────────────────────── */
   const fetchPage = async (url) => {
     try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
@@ -327,69 +569,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const countPhrase = (text = '', phrase = '', isUrl = false) => {
-    if (!text || !phrase) return 0;
-    const lower = text.toLowerCase();
-    const p = phrase.toLowerCase().trim();
-    let matches = (lower.match(new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
-    const cleanP = p.replace(/\b(in|the|a|an|of|at|on|for|and|&|near|best|top|great)\b/gi, '').trim();
-    if (cleanP.length > 4) {
-      matches += (lower.match(new RegExp(cleanP.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')) || []).length;
-    }
-    if (isUrl) {
-      const urlWords = lower
-        .replace(/https?:\/\//gi, '')
-        .replace(/[^a-z0-9- ]/gi, ' ')
-        .replace(/-/g, ' ')
-        .split(/\s+/)
-        .filter(w => w.trim().length > 0);
-      const phraseWords = p.split(/\s+/).filter(w => w.trim().length > 0);
-      const cleanPhraseWords = cleanP.split(/\s+/).filter(w => w.trim().length > 0);
-      const matchedWords = new Set();
-      phraseWords.forEach(word => { if (urlWords.includes(word)) matchedWords.add(word); });
-      cleanPhraseWords.forEach(word => { if (urlWords.includes(word)) matchedWords.add(word); });
-      const required = Math.ceil(phraseWords.length / 2);
-      if (matchedWords.size >= required) matches += 1;
-    }
-    return matches;
-  };
-
-  const getCleanContent = (doc) => {
-    if (!doc?.body) return '';
-    const clone = doc.body.cloneNode(true);
-    clone.querySelectorAll('nav, header, footer, aside, script, style, noscript, .menu, .nav, .navbar, .footer, .cookie, .popup').forEach(el => el.remove());
-    return clone.textContent.replace(/\s+/g, ' ').trim();
-  };
-
-  const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
-  const truncate = (str, len) => str.length > len ? str.slice(0, len - 3) + '...' : str;
-
-  const calculateContentScore = (content) => {
-    const words = content.words;
-    const density = parseFloat(content.density);
-    let wordScore = 0;
-    if (words > 0) wordScore = Math.min(50, (words / 800) * 50);
-    let densityScore = 0;
-    if (density >= 1 && density <= 2) densityScore = 50;
-    else if (density >= 0.5 && density < 1) densityScore = 50 * ((density - 0.5) / 0.5);
-    else if (density > 2 && density <= 3) densityScore = 50 * ((3 - density) / 1);
-    return Math.round(wordScore + densityScore);
-  };
-
+  /* ── URL button handler ──────────────────────────────────────── */
   urlAnalyzeBtn.addEventListener('click', async () => {
     const yourUrl = pageUrlInput.value.trim();
     const phrase = targetKeywordInput.value.trim();
 
-    if (!yourUrl) {
-      alert("Please enter a page URL");
-      pageUrlInput.focus();
-      return;
-    }
-    if (!phrase) {
-      alert("Please enter a target keyword");
-      targetKeywordInput.focus();
-      return;
-    }
+    if (!yourUrl) { alert('Please enter a page URL'); pageUrlInput.focus(); return; }
+    if (!phrase)  { alert('Please enter a target keyword'); targetKeywordInput.focus(); return; }
+
     codeInput.value = '';
     let fullUrl = yourUrl;
     if (!/^https?:\/\//i.test(yourUrl)) {
@@ -404,158 +591,263 @@ document.addEventListener('DOMContentLoaded', () => {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Failed to analyze - Whitelist: full-render-v2.traffictorch.workers.dev or use Code Analysis.</p>`;
       return;
     }
-    const { doc: yourDoc, html: rawHtml } = fetched;
-
-    await runAnalysis(yourDoc, phrase, fullUrl, 'url', rawHtml);
+    await runAnalysis(fetched.doc, phrase, fullUrl, 'url', fetched.html);
   });
 
+  /* ── Code button handler ─────────────────────────────────────── */
   codeAnalyzeBtn.addEventListener('click', async () => {
     const phrase = targetKeywordInput.value.trim();
     const rawCode = codeInput.value.trim();
 
-    if (!phrase) {
-      alert("Please enter a target keyword");
-      targetKeywordInput.focus();
-      return;
-    }
-    if (!rawCode) {
-      alert("Please paste the full HTML code");
-      codeInput.focus();
-      return;
-    }
+    if (!phrase)  { alert('Please enter a target keyword'); targetKeywordInput.focus(); return; }
+    if (!rawCode) { alert('Please paste the full HTML code'); codeInput.focus(); return; }
+
     pageUrlInput.value = '';
     startSpinnerLoader();
 
     let yourDoc;
     try {
       yourDoc = new DOMParser().parseFromString(rawCode, 'text/html');
-    } catch (e) {
+    } catch {
       stopSpinnerLoader();
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: Invalid HTML code.</p>`;
       return;
     }
 
-    const displayUrl = "https://code-analysis.traffictorch.net";
+    const displayUrl = 'https://code-analysis.traffictorch.net';
     await runAnalysis(yourDoc, phrase, displayUrl, 'code', rawCode);
   });
 
+  /* ── Per-module diagnostics ──────────────────────────────────── */
+  const getModuleDiagnostics = (moduleName, d, phrase, fullUrl, aiSemantic) => {
+    const diags = [];
+
+    if (moduleName === 'Meta Title & Desc') {
+      if (!d.titleText) diags.push({ status: '❌', issue: 'Missing title tag' });
+      else if (d.titleMatch === 0) diags.push({ status: '❌', issue: 'Keyword missing from meta title' });
+      else diags.push({ status: '✅', issue: 'Keyword in meta title' });
+
+      if (d.titleText && d.titleLen < 30) diags.push({ status: '❌', issue: `Title too short (${d.titleLen} chars)` });
+      else if (d.titleText && d.titleLen > 60) diags.push({ status: '❌', issue: `Title too long (${d.titleLen} chars)` });
+      else if (d.titleText) diags.push({ status: '✅', issue: `Title length ok (${d.titleLen} chars)` });
+
+      if (!d.descText) diags.push({ status: '❌', issue: 'Missing meta description' });
+      else if (d.descMatch === 0) diags.push({ status: '❌', issue: 'Keyword missing from meta description' });
+      else diags.push({ status: '✅', issue: 'Keyword in meta description' });
+
+      if (d.descText && d.descLen < 120) diags.push({ status: '❌', issue: `Meta description too short (${d.descLen} chars)` });
+      else if (d.descText && d.descLen > 160) diags.push({ status: '❌', issue: `Meta description too long (${d.descLen} chars)` });
+      else if (d.descText) diags.push({ status: '✅', issue: `Meta description length ok (${d.descLen} chars)` });
+    }
+
+    else if (moduleName === 'H1 & Headings') {
+      if (d.h1Count === 0) diags.push({ status: '❌', issue: 'No H1 found' });
+      else if (d.h1Count > 1) diags.push({ status: '❌', issue: `Multiple H1 tags (${d.h1Count})` });
+      else diags.push({ status: '✅', issue: 'Single H1 present' });
+
+      if (d.h1Match === 0) diags.push({ status: '❌', issue: 'Keyword missing from H1' });
+      else diags.push({ status: '✅', issue: 'Keyword in H1' });
+    }
+
+    else if (moduleName === 'Content & Readability') {
+      if (d.wordCount < 300) diags.push({ status: '❌', issue: `Thin content (${d.wordCount} words)` });
+      else if (d.wordCount < 800) diags.push({ status: '⚠️', issue: `Moderate depth (${d.wordCount} words)` });
+      else diags.push({ status: '✅', issue: `Good depth (${d.wordCount} words)` });
+
+      if (d.avgSentenceLen > 25) diags.push({ status: '❌', issue: `Long sentences (avg ${d.avgSentenceLen.toFixed(0)} words)` });
+      else if (d.avgSentenceLen > 0) diags.push({ status: '✅', issue: `Readable sentence length (avg ${d.avgSentenceLen.toFixed(0)} words)` });
+
+      if (d.paraCount < 5) diags.push({ status: '⚠️', issue: `Few paragraphs (${d.paraCount})` });
+      else diags.push({ status: '✅', issue: `${d.paraCount} paragraphs` });
+    }
+
+    else if (moduleName === 'Image Alts') {
+      if (d.totalImgs === 0) diags.push({ status: '⚠️', issue: 'No images on page' });
+      else {
+        if (d.imgsWithAlt < d.totalImgs) diags.push({ status: '❌', issue: `${d.totalImgs - d.imgsWithAlt} image(s) missing alt` });
+        else diags.push({ status: '✅', issue: 'All images have alt text' });
+        if (d.imgsWithKeyword > 0) diags.push({ status: '✅', issue: 'Keyword in image alt text' });
+        else diags.push({ status: '❌', issue: 'No image alt text contains the keyword' });
+      }
+    }
+
+    else if (moduleName === 'Anchor Text') {
+      if (d.internalLinks === 0) diags.push({ status: '❌', issue: 'No internal links found' });
+      else diags.push({ status: '✅', issue: `${d.internalLinks} internal links` });
+
+      if (d.internalWithKeyword > 0) diags.push({ status: '✅', issue: 'Keyword in internal anchor text' });
+      else diags.push({ status: '❌', issue: 'No internal anchors contain the keyword' });
+    }
+
+    else if (moduleName === 'URL & Schema') {
+      if (d.canonical) diags.push({ status: '✅', issue: 'Canonical link present' });
+      else diags.push({ status: '❌', issue: 'Missing canonical link' });
+
+      if (d.schemaValid) diags.push({ status: '✅', issue: 'Valid JSON-LD schema' });
+      else if (d.schemaTypes.length === 0) diags.push({ status: '❌', issue: 'No structured data detected' });
+      else diags.push({ status: '❌', issue: 'Invalid JSON-LD' });
+    }
+
+    else if (moduleName === 'Technical') {
+      if (d.lang) diags.push({ status: '✅', issue: 'html lang set' });
+      else diags.push({ status: '❌', issue: 'Missing html lang' });
+
+      if (d.viewport && d.viewport.includes('width=device-width')) diags.push({ status: '✅', issue: 'Viewport set' });
+      else diags.push({ status: '❌', issue: 'Missing or invalid viewport' });
+
+      if (!/noindex/i.test(d.robots)) diags.push({ status: '✅', issue: 'Indexable' });
+      else diags.push({ status: '❌', issue: 'noindex directive present' });
+
+      if (d.ogTitle && d.ogDesc) diags.push({ status: '✅', issue: 'Open Graph tags present' });
+      else diags.push({ status: '❌', issue: 'Missing Open Graph tags' });
+    }
+
+    else if (moduleName === 'AI Semantic Audit') {
+      if (!aiSemantic) {
+        diags.push({ status: '❌', issue: 'AI semantic audit unavailable' });
+      } else {
+        diags.push({
+          status: aiSemantic.intent?.pageMatchesIntent ? '✅' : '❌',
+          issue: `Intent: ${aiSemantic.intent?.predicted || 'unknown'} (page ${aiSemantic.intent?.pageMatchesIntent ? 'matches' : 'may not match'})`
+        });
+        diags.push({
+          status: (aiSemantic.entities?.coverageScore || 0) >= 70 ? '✅' : '❌',
+          issue: `Entity coverage: ${aiSemantic.entities?.coverageScore || 0}%`
+        });
+        diags.push({
+          status: (aiSemantic.aeoAnswerability || 0) >= 70 ? '✅' : '❌',
+          issue: `AEO answerability: ${aiSemantic.aeoAnswerability || 0}%`
+        });
+        diags.push({
+          status: (aiSemantic.semanticCoverage?.score || 0) >= 70 ? '✅' : '❌',
+          issue: `Semantic coverage: ${aiSemantic.semanticCoverage?.score || 0}%`
+        });
+      }
+    }
+
+    return diags;
+  };
+
+  /* ─────────────────────────────────────────────────────────────
+     Main analysis pipeline
+     ───────────────────────────────────────────────────────────── */
   async function runAnalysis(yourDoc, phrase, fullUrl, analysisType, rawHtml = '') {
     const canProceed = await canRunTool('keyword-tool');
-    if (!canProceed) {
-      stopSpinnerLoader();
-      return;
-    }
+    if (!canProceed) { stopSpinnerLoader(); return; }
 
     const cmsInfo = detectCMS({ doc: yourDoc, url: analysisType === 'url' ? fullUrl : '' });
 
-    // ── Cache head snapshot + CMS info for the Ask AI handler ──
     results.dataset.renderedHtml = rawHtml || '';
     results.dataset.headSnapshot = buildHeadSnapshot(yourDoc);
     document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
     document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
     document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
 
-    let yourScore = 0;
-    const data = {};
-    const allFixes = [];
-
-    const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
-    const descText = yourDoc.querySelector('meta[name="description"]')?.content.trim() || '';
-    const titleMatch = countPhrase(titleText, phrase);
-    const descMatch = countPhrase(descText, phrase);
-    data.meta = { titleText, descText, titleMatch, descMatch, yourMatches: titleMatch + descMatch };
-    yourScore += data.meta.yourMatches > 0 ? 25 : 0;
-    if (titleMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta title', how: 'Place the keyword near the start of the title (under 60 characters) for maximum relevance.'});
-    if (descMatch === 0) allFixes.push({module: 'Meta Title & Desc', issue: 'Add keyword to meta description', how: 'Include the keyword once naturally in the description (under 155 characters) to boost click-through rates.'});
-
-    const headings = Array.from(yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6'));
-    const headingsData = headings.map(h => ({ tag: h.tagName, text: h.textContent.trim(), match: countPhrase(h.textContent, phrase) > 0 }));
-    const yourH1 = yourDoc.querySelector('h1')?.textContent.trim() || '';
-    data.h1 = { match: countPhrase(yourH1, phrase) };
-    data.headingsData = headingsData;
-    yourScore += data.h1.match > 0 ? 15 : 0;
-    if (data.h1.match === 0) allFixes.push({module: 'H1 & Headings', issue: 'Add keyword to H1', how: 'Rewrite your H1 to include the keyword naturally while keeping it engaging and reader-focused.'});
-
     const cleanContent = getCleanContent(yourDoc);
     const yourWords = getWordCount(yourDoc);
-    const yourContentMatches = countPhrase(cleanContent, phrase);
-    const yourDensity = yourWords ? (yourContentMatches / yourWords * 100).toFixed(1) : 0;
-    data.content = { words: yourWords, matches: yourContentMatches, density: yourDensity };
-    yourScore += yourWords > 800 ? 20 : 0;
-    if (yourWords < 800) allFixes.push({module: 'Content Density', issue: `Add depth (${800 - yourWords} words recommended)`, how: 'Expand with examples, FAQs, comparisons, or data to provide comprehensive value.'});
-    if (parseFloat(yourDensity) < 0.5) allFixes.push({module: 'Content Density', issue: 'Increase keyword density', how: 'Add the keyword naturally in intro, subheads, and body (aim for 1-2%).'});
 
-    const yourImgs = yourDoc.querySelectorAll('img');
-    const matchingAlts = Array.from(yourImgs)
-      .filter(img => countPhrase(img.alt || '', phrase) > 0)
-      .map(img => img.alt?.trim() || '(empty alt)');
-    data.alts = { total: yourImgs.length, phrase: matchingAlts.length, matchingAlts };
-    yourScore += matchingAlts.length > 0 ? 15 : 0;
-    if (matchingAlts.length === 0 && yourImgs.length > 0) allFixes.push({module: 'Image Alts', issue: 'Add keyword to key image alts', how: 'Update important images with descriptive alt text that includes the keyword naturally.'});
+    /* ── Deterministic scoring (70 pts) ────────────────────────── */
+    const deterministic = computeDeterministicScore({
+      yourDoc, phrase, fullUrl, analysisType, yourWords, cleanContent
+    });
+    const d = deterministic.details;
 
-    const matchingAnchors = Array.from(yourDoc.querySelectorAll('a'))
-      .filter(a => countPhrase(a.textContent || '', phrase) > 0)
-      .map(a => ({ text: (a.textContent || '').trim(), href: a.href }));
-    data.anchors = { count: matchingAnchors.length, matchingAnchors };
-    yourScore += matchingAnchors.length > 0 ? 10 : 0;
-    if (matchingAnchors.length === 0) allFixes.push({module: 'Anchor Text', issue: 'Add keyword to anchor text', how: 'Use the keyword naturally as clickable text when linking to related pages.'});
+    /* ── AI semantic layer (30 pts) ───────────────────────────── */
+    let aiSemantic = null;
+    let aiContribution = 0;
+    let aiError = null;
 
-    const schemaScript = yourDoc.querySelector('script[type="application/ld+json"]');
-    const schemaPresent = !!schemaScript;
-    const urlMatch = analysisType === 'url' ? countPhrase(fullUrl, phrase, true) : countPhrase(titleText, phrase);
-    data.urlSchema = { urlMatch, schema: schemaPresent ? 1 : 0 };
-    yourScore += (data.urlSchema.urlMatch > 0 ? 10 : 0) + (data.urlSchema.schema ? 5 : 0);
-    if (data.urlSchema.urlMatch === 0) allFixes.push({module: 'URL & Schema', issue: 'Include keyword in URL', how: 'Use a clean, hyphenated URL containing the keyword and set up redirects if changing.'});
-    if (data.urlSchema.schema === 0) allFixes.push({module: 'URL & Schema', issue: 'Add structured data', how: 'Add JSON-LD schema (Article or FAQ) in the head for rich results.'});
+    try {
+      aiSemantic = await fetchAISemanticAudit({
+        targetKeyword: phrase,
+        url: analysisType === 'url' ? fullUrl : null,
+        pageTitle: d.titleText,
+        metaDescription: d.descText,
+        h1: d.h1Text,
+        pageExcerpt: cleanContent.slice(0, 3500),
+        cms: cmsInfo?.name || 'Unknown',
+        wordCount: yourWords,
+        headingTexts: Array.from(yourDoc.querySelectorAll('h1, h2, h3'))
+          .map(h => h.textContent.trim()).filter(Boolean).slice(0, 20),
+        imageAlts: Array.from(yourDoc.querySelectorAll('img[alt]'))
+          .map(i => i.getAttribute('alt')).filter(Boolean).slice(0, 15),
+        schemaTypes: d.schemaTypes
+      });
 
-    yourScore = Math.min(100, Math.round(yourScore));
+      if (aiSemantic && typeof aiSemantic.overallScore === 'number') {
+        aiContribution = Math.round((aiSemantic.overallScore / 100) * AI_MAX);
+      }
+    } catch (e) {
+      aiError = String(e.message || e);
+      console.warn('AI semantic layer unavailable:', aiError);
+    }
+
+    const yourScore = Math.min(100, deterministic.score + aiContribution);
+    const allFixes = [...deterministic.fixes];
+
+    /* AI topGaps become additional fixes */
+    if (aiSemantic && Array.isArray(aiSemantic.topGaps)) {
+      aiSemantic.topGaps.forEach((gap, i) => {
+        allFixes.push({
+          module: 'AI Semantic Audit',
+          issue: `Semantic gap ${i + 1}: ${gap}`,
+          how: 'Expand content to cover this subtopic, entity, or question to improve topical authority and AI search visibility.'
+        });
+      });
+    }
 
     const auditSaveUrl = analysisType === 'code' ? 'Pasted HTML code' : fullUrl;
-    await saveAuditHistory(auditSaveUrl, 'Keyword Placement');
+    await saveAuditHistory(auditSaveUrl, 'Keyword Placement', yourScore);
 
-    await new Promise(resolve => setTimeout(resolve, 2800));
+    await new Promise(resolve => setTimeout(resolve, 800));
     stopSpinnerLoader();
 
-    const moduleOrder = ['Meta Title & Desc', 'H1 & Headings', 'Content Density', 'URL & Schema', 'Image Alts', 'Anchor Text'];
-    const topPriorityFixes = [];
+    /* ── Priority fixes ────────────────────────────────────────── */
+    const moduleOrder = [
+      'Meta Title & Desc', 'H1 & Headings', 'Content & Readability',
+      'URL & Schema', 'Image Alts', 'Anchor Text', 'Technical', 'AI Semantic Audit'
+    ];
     const moduleIssues = {};
     allFixes.forEach(f => {
       if (!moduleIssues[f.module]) moduleIssues[f.module] = [];
       moduleIssues[f.module].push(f);
     });
+    const topPriorityFixes = [];
     moduleOrder.forEach(mod => {
       if (moduleIssues[mod] && moduleIssues[mod].length > 0) {
         topPriorityFixes.push(moduleIssues[mod][0]);
       }
     });
-    if (topPriorityFixes.length < 3) {
-      const topMod = topPriorityFixes.length > 0 ? topPriorityFixes[0].module : null;
-      if (topMod && moduleIssues[topMod] && moduleIssues[topMod].length > 1) {
-        topPriorityFixes.push(moduleIssues[topMod][1]);
-      }
-    }
     topPriorityFixes.length = Math.min(3, topPriorityFixes.length);
 
     const levels = ['Page 2+', 'Page 1 Possible', 'Top 10', 'Top 3 Potential'];
     const currentLevel = yourScore >= 90 ? 3 : yourScore >= 80 ? 2 : yourScore >= 60 ? 1 : 0;
     const projectedLevel = Math.min(3, currentLevel + (topPriorityFixes.length >= 2 ? 2 : topPriorityFixes.length));
-    const hasMetaOrContent = topPriorityFixes.some(f => f.module === 'Meta Title & Desc' || f.module === 'Content Density');
+    const hasMetaOrContent = topPriorityFixes.some(f => f.module === 'Meta Title & Desc' || f.module === 'Content & Readability');
     const bigGrade = getGrade(yourScore);
 
-    const modules = [
-      { name: 'Meta Title & Desc', score: data.meta.yourMatches > 0 ? 100 : 0 },
-      { name: 'H1 & Headings', score: data.h1.match > 0 ? 100 : 0 },
-      { name: 'Content Density', score: calculateContentScore(data.content) },
-      { name: 'Image Alts', score: data.alts.phrase > 0 ? 100 : 0 },
-      { name: 'Anchor Text', score: data.anchors.count > 0 ? 100 : 0 },
-      { name: 'URL & Schema', score: Math.min(100, (data.urlSchema.urlMatch ? 50 : 0) + (data.urlSchema.schema ? 50 : 0)) }
-    ];
+    /* ── Module display array (7 deterministic + 1 AI) ─────────── */
+    const modules = deterministic.modules.map(m => ({ ...m }));
+
+    const aiScore100 = aiSemantic && typeof aiSemantic.overallScore === 'number'
+      ? aiSemantic.overallScore
+      : 0;
+
+    modules.push({
+      name: 'AI Semantic Audit',
+      score: aiScore100,
+      aiSemantic,
+      aiError
+    });
+
     const scores = modules.map(m => m.score);
 
+    /* ── Scroll into view ──────────────────────────────────────── */
     const offset = 280;
     const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
     window.scrollTo({ top: targetY, behavior: 'smooth' });
 
+    /* ── Render results ────────────────────────────────────────── */
     results.innerHTML = `
 <!-- Overall Score Card -->
 <div class="flex justify-center my-8 sm:my-12 px-2 sm:px-6">
@@ -583,11 +875,14 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     </div>
+    <p class="mt-4 text-xs text-center text-gray-500 dark:text-gray-400">
+      Deterministic ${deterministic.score}/${DETERMINISTIC_MAX} + AI ${aiContribution}/${AI_MAX}
+    </p>
     ${(() => {
       const title = (yourDoc?.title || '').trim();
       if (!title) return '';
       const truncated = title.length > 65 ? title.substring(0, 65) + '...' : title;
-      return `<p id="analyzed-page-title" class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${truncated}</p>`;
+      return `<p id="analyzed-page-title" class="mt-4 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${escapeHtml(truncated)}</p>`;
     })()}
     <div class="mt-6 text-center">
       <p class="text-5xl sm:text-6xl font-bold ${bigGrade.color} drop-shadow-lg">
@@ -596,7 +891,8 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </div>
-<!-- On-Page Health Radar Chart -->
+
+<!-- Radar Chart -->
 <div class="max-w-5xl mx-auto my-16 px-4">
   <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
     <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">On-Page Health Radar</h3>
@@ -607,42 +903,45 @@ document.addEventListener('DOMContentLoaded', () => {
       Radar chart available on desktop/tablet
     </p>
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
-      Visual overview of your page performance across 7 key SEO Intent factors
+      Visual overview across ${modules.length} modules (7 deterministic + 1 AI semantic)
     </p>
   </div>
 </div>
+
 <!-- Module Score Cards -->
 <div class="grid md:grid-cols-3 gap-8 my-16">
-  ${modules.map((m, idx) => {
+  ${modules.map((m) => {
     const score = m.score;
     const borderColor = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-yellow-500' : 'border-red-500';
     const textColor   = score >= 80 ? 'text-green-600'   : score >= 60 ? 'text-yellow-600'   : 'text-red-600';
     const grade       = getGrade(Math.round(score));
-    const diagnostics = getModuleDiagnostics({ name: m.name }, data, phrase, fullUrl);
+    const diagnostics = getModuleDiagnostics(m.name, d, phrase, fullUrl, m.aiSemantic);
     const hashId      = moduleHashes[m.name] || '';
     const roundedScore = Math.round(score);
 
-    const failItems = diagnostics.filter(d => d.status === '❌');
-    const passItems = diagnostics.filter(d => d.status === '✅');
+    const failItems = diagnostics.filter(x => x.status === '❌');
+    const passItems = diagnostics.filter(x => x.status === '✅');
+    const warnItems = diagnostics.filter(x => x.status === '⚠️');
     const failedCount = failItems.length;
 
     const signalsHtml = [
-      ...failItems.map(d => `<li class="flex items-start gap-2 text-red-600 dark:text-red-400"><span class="flex-shrink-0">❌</span><span>${d.issue}</span></li>`),
-      ...passItems.map(d => `<li class="flex items-start gap-2 text-green-600 dark:text-green-400"><span class="flex-shrink-0">✅</span><span>${d.issue}</span></li>`)
+      ...failItems.map(x => `<li class="flex items-start gap-2 text-red-600 dark:text-red-400"><span class="flex-shrink-0">❌</span><span>${escapeHtml(x.issue)}</span></li>`),
+      ...warnItems.map(x => `<li class="flex items-start gap-2 text-orange-600 dark:text-orange-400"><span class="flex-shrink-0">⚠️</span><span>${escapeHtml(x.issue)}</span></li>`),
+      ...passItems.map(x => `<li class="flex items-start gap-2 text-green-600 dark:text-green-400"><span class="flex-shrink-0">✅</span><span>${escapeHtml(x.issue)}</span></li>`)
     ].join('');
 
     const cmsLabel = cmsInfo?.name
       ? `${cmsInfo.name}${cmsInfo.version ? ' ' + cmsInfo.version : ''}`
       : 'Unknown';
 
-    const failedList = failItems.map(d => d.issue).join('; ');
+    const failedList = failItems.map(x => x.issue).join('; ');
     const aiQuestion = `How do I improve my ${m.name} score? Failed checks: ${failedList || 'none'}. Detected CMS: ${cmsLabel}. Target keyword: "${phrase}". Please give CMS-specific answers using the exact keyword.`;
 
     let fixesHtml;
     if (failedCount > 0) {
-      fixesHtml = failItems.map((d, idx) => {
-        const failureText = d.issue;
-        const fixText     = d.how || fixFor(failureText);
+      fixesHtml = failItems.map((x, idx) => {
+        const failureText = x.issue;
+        const fixText     = x.how || fixFor(failureText);
         const rule        = deriveSelectorsForFailure(failureText);
         return `
           ${idx > 0 ? '<div class="mt-6 pt-6 border-t border-red-200 dark:border-red-700"></div>' : ''}
@@ -666,53 +965,89 @@ document.addEventListener('DOMContentLoaded', () => {
       fixesHtml = '<p class="text-center text-green-600 dark:text-green-400 font-bold py-4">🎉 This module is fully optimized!</p>';
     }
 
+    /* Module-specific details */
     let details = '';
     if (m.name === 'Meta Title & Desc') {
       details = `
         <div class="mt-4 text-left space-y-2 text-sm">
-          ${data.meta.titleMatch > 0 ? '✅' : '❌'} <span class="font-bold">Meta Title:</span><br>
-          <span class="text-gray-800 dark:text-gray-200 break-words">${data.meta.titleText || '(none)'}</span><br>
-          ${data.meta.descMatch > 0 ? '✅' : '❌'} <span class="font-bold">Meta Description:</span><br>
-          <span class="text-gray-800 dark:text-gray-200 break-words">${data.meta.descText || '(none)'}</span>
+          ${d.titleMatch > 0 ? '✅' : '❌'} <span class="font-bold">Meta Title:</span><br>
+          <span class="text-gray-800 dark:text-gray-200 break-words">${escapeHtml(d.titleText || '(none)')}</span><br>
+          ${d.descMatch > 0 ? '✅' : '❌'} <span class="font-bold">Meta Description:</span><br>
+          <span class="text-gray-800 dark:text-gray-200 break-words">${escapeHtml(d.descText || '(none)')}</span>
         </div>`;
     } else if (m.name === 'H1 & Headings') {
-      details = `
-        <div class="mt-4 text-left space-y-2 text-sm">
-          ${data.headingsData.length > 0 ? data.headingsData.map(h =>
-            `${h.match ? '✅' : ''} <span class="font-bold">${h.tag}:</span> <span class="text-gray-800 dark:text-gray-200 break-words">${h.text}</span>`
-          ).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">No headings found</span>'}
-        </div>`;
-    } else if (m.name === 'Content Density') {
+      const headingsList = Array.from(yourDoc.querySelectorAll('h1, h2, h3'))
+        .slice(0, 10)
+        .map(h => `${countPhrase(h.textContent, phrase) > 0 ? '✅' : ''} <span class="font-bold">${h.tagName}:</span> <span class="text-gray-800 dark:text-gray-200 break-words">${escapeHtml(h.textContent.trim())}</span>`)
+        .join('<br>');
+      details = `<div class="mt-4 text-left space-y-2 text-sm">${headingsList || '<span>No headings found</span>'}</div>`;
+    } else if (m.name === 'Content & Readability') {
       details = `
         <div class="mt-4 text-center space-y-2 text-sm">
-          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Word count:</span> ${data.content.words}</p>
-          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Keyword mentions:</span> ${data.content.matches}</p>
-          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Density:</span> ${data.content.density}% (ideal 1-2%)</p>
+          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Word count:</span> ${d.wordCount}</p>
+          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Paragraphs:</span> ${d.paraCount}</p>
+          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Avg sentence:</span> ${d.avgSentenceLen.toFixed(1)} words</p>
         </div>`;
     } else if (m.name === 'Image Alts') {
       details = `
         <div class="mt-4 text-left space-y-2 text-sm">
-          <p class="text-gray-800 dark:text-gray-200 font-bold">Matching alts (${data.alts.phrase}/${data.alts.total} images):</p>
-          ${data.alts.matchingAlts.length > 0 ? data.alts.matchingAlts.map(alt => `✅ <span class="text-gray-800 dark:text-gray-200 break-words">${alt}</span>`).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">None found</span>'}
+          <p class="text-gray-800 dark:text-gray-200 font-bold">${d.imgsWithKeyword}/${d.totalImgs} images have keyword in alt</p>
+          <p class="text-gray-800 dark:text-gray-200">${d.imgsWithAlt}/${d.totalImgs} images have alt text</p>
         </div>`;
     } else if (m.name === 'Anchor Text') {
       details = `
         <div class="mt-4 text-left space-y-2 text-sm">
-          <p class="text-gray-800 dark:text-gray-200 font-bold">Matching anchors (${data.anchors.count} found):</p>
-          ${data.anchors.matchingAnchors.length > 0 ? data.anchors.matchingAnchors.map(a => `✅ <span class="text-gray-800 dark:text-gray-200 break-words">${a.text}</span> → <span class="break-all">${a.href}</span>`).join('<br>') : '<span class="text-gray-800 dark:text-gray-200">None found</span>'}
+          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">Internal links:</span> ${d.internalLinks}</p>
+          <p class="text-gray-800 dark:text-gray-200"><span class="font-bold">With keyword anchor:</span> ${d.internalWithKeyword}</p>
         </div>`;
     } else if (m.name === 'URL & Schema') {
       details = `
         <div class="mt-4 text-left space-y-2 text-sm">
-          ${data.urlSchema.urlMatch > 0 ? '✅' : '❌'} <span class="font-bold">Keyword in URL</span><br>
-          <span class="text-gray-800 dark:text-gray-200 break-all">${fullUrl}</span><br>
-          ${data.urlSchema.schema ? '✅' : '❌'} <span class="font-bold">Structured Data (Schema)</span>
+          ${d.canonical ? '✅' : '❌'} <span class="font-bold">Canonical</span><br>
+          <span class="text-gray-800 dark:text-gray-200 break-all">${escapeHtml(d.canonical || '(none)')}</span><br>
+          ${d.schemaValid ? '✅' : '❌'} <span class="font-bold">Schema types:</span>
+          <span class="text-gray-800 dark:text-gray-200">${escapeHtml((d.schemaTypes || []).join(', ') || '(none)')}</span>
         </div>`;
+    } else if (m.name === 'Technical') {
+      details = `
+        <div class="mt-4 text-left space-y-2 text-sm">
+          <p>${d.lang ? '✅' : '❌'} <span class="font-bold">html lang:</span> ${escapeHtml(d.lang || '(none)')}</p>
+          <p>${d.viewport && d.viewport.includes('width=device-width') ? '✅' : '❌'} <span class="font-bold">Viewport:</span> ${escapeHtml((d.viewport || '(none)').slice(0, 60))}</p>
+          <p>${!/noindex/i.test(d.robots) ? '✅' : '❌'} <span class="font-bold">Robots:</span> ${escapeHtml(d.robots || '(not set)')}</p>
+          <p>${d.ogTitle && d.ogDesc ? '✅' : '❌'} <span class="font-bold">Open Graph:</span> ${d.ogTitle ? 'title present' : 'missing'}</p>
+        </div>`;
+    } else if (m.name === 'AI Semantic Audit') {
+      if (!m.aiSemantic) {
+        details = `<p class="mt-4 text-sm text-red-600 dark:text-red-400">AI semantic audit unavailable${m.aiError ? ': ' + escapeHtml(m.aiError.slice(0, 120)) : ''}</p>`;
+      } else {
+        const ai = m.aiSemantic;
+        details = `
+          <div class="mt-4 text-left space-y-3 text-sm">
+            <div>
+              <p class="font-bold text-gray-800 dark:text-gray-200">Intent: <span class="capitalize">${escapeHtml(ai.intent?.predicted || 'unknown')}</span></p>
+              <p class="text-gray-700 dark:text-gray-300 text-xs italic">${escapeHtml(ai.intent?.reason || '')}</p>
+            </div>
+            <div>
+              <p class="font-bold text-gray-800 dark:text-gray-200">Entity coverage: ${ai.entities?.coverageScore || 0}%</p>
+              ${ai.entities?.missing?.length ? `<p class="text-gray-700 dark:text-gray-300 text-xs">Missing: ${escapeHtml(ai.entities.missing.slice(0, 5).join(', '))}</p>` : ''}
+            </div>
+            <div>
+              <p class="font-bold text-gray-800 dark:text-gray-200">AEO answerability: ${ai.aeoAnswerability || 0}%</p>
+              ${ai.questions?.unanswered?.length ? `<p class="text-gray-700 dark:text-gray-300 text-xs">Unanswered: ${escapeHtml(ai.questions.unanswered.slice(0, 3).join(' | '))}</p>` : ''}
+            </div>
+            <div>
+              <p class="font-bold text-gray-800 dark:text-gray-200">E-E-A-T signals:</p>
+              <p class="text-gray-700 dark:text-gray-300 text-xs">
+                Author ${ai.eeat?.authorSignals || 0} · Citation ${ai.eeat?.citationSignals || 0} · Experience ${ai.eeat?.experienceSignals || 0} · Trust ${ai.eeat?.trustSignals || 0}
+              </p>
+            </div>
+          </div>`;
+      }
     }
 
     return `
       <div class="score-card flex flex-col text-center p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderColor}">
-        <h4 class="text-xl font-medium mb-4">${m.name}</h4>
+        <h4 class="text-xl font-medium mb-4">${escapeHtml(m.name)}</h4>
         <div class="relative w-28 h-28 mx-auto">
           <svg width="112" height="112" viewBox="0 0 112 112" class="transform -rotate-90">
             <circle cx="56" cy="56" r="48" stroke="#e5e7eb" stroke-width="12" fill="none"/>
@@ -744,12 +1079,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="mt-6 pt-6 border-t border-red-200 dark:border-red-700 space-y-3">
             <a href="#ask-ai-section"
                class="ask-ai-link block text-purple-600 dark:text-purple-400 font-bold hover:underline"
-               data-ai-question="${aiQuestion.replace(/"/g, '&quot;')}">
+               data-ai-question="${escapeHtml(aiQuestion)}">
               🤖 Ask AI about this module
             </a>
             <a href="/blog/posts/seo-keyword-help-guide/#${hashId}"
                class="block text-orange-600 dark:text-orange-400 font-bold hover:underline">
-              📖 Read the full ${m.name} guide
+              📖 Read the full ${escapeHtml(m.name)} guide
             </a>
           </div>
         </div>
@@ -757,34 +1092,32 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }).join('')}
 </div>
+
 <!-- Top Priority Fixes -->
 <div class="my-16">
   <h3 class="text-4xl font-bold text-center text-orange-600 mb-8">Top Priority Fixes</h3>
   ${topPriorityFixes.length ? `
     <div class="space-y-8 max-w-4xl mx-auto">
-      ${topPriorityFixes.map((fix, i) => {
-        const isSecond = i > 0 && fix.module === topPriorityFixes[0].module;
-        return `
-          <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border-l-8 border-orange-500 flex gap-6">
-            <div class="text-5xl font-black text-orange-600">${i+1}</div>
-            <div class="flex-1">
-              <div class="flex items-center gap-3 mb-3">
-                <span class="px-4 py-1 bg-orange-500 text-white rounded-full text-sm font-bold">${fix.module}</span>
-                ${isSecond ? '<span class="text-sm text-orange-600 dark:text-orange-400">(multiple issues in this module)</span>' : ''}
-              </div>
-              <h4 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">${fix.issue}</h4>
-              <p class="text-gray-800 dark:text-gray-200">${fix.how}</p>
+      ${topPriorityFixes.map((fix, i) => `
+        <div class="p-8 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border-l-8 border-orange-500 flex gap-6">
+          <div class="text-5xl font-black text-orange-600">${i + 1}</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="px-4 py-1 bg-orange-500 text-white rounded-full text-sm font-bold">${escapeHtml(fix.module)}</span>
             </div>
+            <h4 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">${escapeHtml(fix.issue)}</h4>
+            <p class="text-gray-800 dark:text-gray-200">${escapeHtml(fix.how)}</p>
           </div>
-        `;
-      }).join('')}
+        </div>
+      `).join('')}
     </div>
   ` : '<p class="text-center text-green-500 text-2xl font-bold">Strong optimization — keep it up!</p>'}
 </div>
-<!-- Score Improvement & Potential Gains -->
+
+<!-- Ranking Potential + Expected Gains -->
 <div class="max-w-6xl mx-auto my-20 grid md:grid-cols-2 gap-8">
   <div class="p-4 bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border-4 border-orange-500/20">
-    <h3 class="text-4xl font-black text-center mb-10 text-orange-600 dark:text-orange-400">Ranking Potential Improvement</h3>
+    <h3 class="text-4xl font-black text-center mb-10 text-orange-600 dark:text-orange-400">Ranking Potential</h3>
     <div class="flex justify-center items-baseline gap-8 mb-10">
       <div class="text-center">
         <div class="px-4 py-4 bg-gray-100 dark:bg-gray-800 rounded-2xl text-2xl font-bold text-gray-600 dark:text-gray-400">
@@ -804,47 +1137,35 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="space-y-4">
         <p class="text-center text-lg font-medium text-gray-700 dark:text-gray-300 mb-6">Top priority fixes & impact:</p>
         ${topPriorityFixes.map((fix, i) => `
-<div class="p-5 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800">
-  <div class="flex items-start gap-4">
-    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/40 text-xl font-bold text-orange-700 dark:text-orange-300">
-      ${i+1}
-    </div>
-    <div class="flex-1 min-w-0">
-      <p class="text-gray-900 dark:text-gray-100 font-medium leading-relaxed">
-        <span class="font-bold text-orange-700 dark:text-orange-300">${fix.issue}</span>
-        <br class="sm:hidden">
-        ${fix.how}
-      </p>
-    </div>
-  </div>
-</div>
+          <div class="p-5 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/40 text-xl font-bold text-orange-700 dark:text-orange-300">${i + 1}</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-gray-900 dark:text-gray-100 font-medium leading-relaxed">
+                  <span class="font-bold text-orange-700 dark:text-orange-300">${escapeHtml(fix.issue)}</span><br>
+                  ${escapeHtml(fix.how)}
+                </p>
+              </div>
+            </div>
+          </div>
         `).join('')}
       </div>
     ` : `
       <div class="text-center py-10">
         <p class="text-4xl mb-4">🎉 Excellent Optimization!</p>
-        <p class="text-xl text-gray-600 dark:text-gray-400">Your on-page SEO is strong. Focus on backlinks and content freshness for further gains.</p>
+        <p class="text-xl text-gray-600 dark:text-gray-400">Your on-page SEO is strong.</p>
       </div>
     `}
-    <details class="mt-10">
-      <summary class="cursor-pointer text-lg font-bold text-orange-600 dark:text-orange-400 hover:underline">How We Calculated This</summary>
-      <div class="mt-6 space-y-3 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-        <p>• Based on proven on-page factors that correlate with higher rankings in large-scale studies.</p>
-        <p>• Each critical fix typically improves relevance signals and user satisfaction.</p>
-        <p>• Projected level assumes all top fixes are implemented naturally.</p>
-        <p class="italic">Conservative estimate — actual improvement can be higher depending on competition.</p>
-      </div>
-    </details>
   </div>
   <div class="p-4 bg-gradient-to-br from-green-500 to-teal-600 text-white rounded-3xl shadow-2xl">
-    <h3 class="text-4xl font-black text-center mb-10">Expected Performance Gains</h3>
+    <h3 class="text-4xl font-black text-center mb-10">Expected Gains</h3>
     <div class="space-y-8">
       <div class="flex items-center gap-6">
         <div class="text-5xl">🖱️</div>
         <div class="flex-1">
           <p class="text-xl font-medium">Click-Through Rate (CTR)</p>
           <div class="mt-2 w-full bg-white/30 rounded-full h-10 overflow-hidden">
-            <div class="h-full rounded-full flex items-center justify-end pr-6 font-black text-lg transition-all duration-700"
+            <div class="h-full rounded-full flex items-center justify-end pr-6 font-black text-lg"
                  style="width: ${hasMetaOrContent ? 75 : 50}%; background-color: ${hasMetaOrContent ? '#86efac' : '#fca5a5'};">
               +${hasMetaOrContent ? '25–40' : '15–30'}%
             </div>
@@ -856,21 +1177,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="flex-1">
           <p class="text-xl font-medium">Impressions</p>
           <div class="mt-2 w-full bg-white/30 rounded-full h-10 overflow-hidden">
-            <div class="h-full rounded-full flex items-center justify-end pr-6 font-black text-lg transition-all duration-700"
+            <div class="h-full rounded-full flex items-center justify-end pr-6 font-black text-lg"
                  style="width: ${topPriorityFixes.length * 20}%; background-color: ${topPriorityFixes.length >= 2 ? '#86efac' : topPriorityFixes.length === 1 ? '#fdba74' : '#fca5a5'};">
               +${topPriorityFixes.length * 15}–${topPriorityFixes.length * 30}%
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex items-center gap-6">
-        <div class="text-5xl">📊</div>
-        <div class="flex-1">
-          <p class="text-xl font-medium">Average Position</p>
-          <div class="mt-2 w-full bg-white/30 rounded-full h-10 overflow-hidden">
-            <div class="h-full rounded-full flex items-center justify-end pr-6 font-black text-lg transition-all duration-700"
-                 style="width: ${hasMetaOrContent ? 70 : 55}%; background-color: ${hasMetaOrContent ? '#86efac' : '#fca5a5'};">
-              ↑ ${hasMetaOrContent ? '4–8' : '2–5'} spots
             </div>
           </div>
         </div>
@@ -880,7 +1189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="flex-1">
           <p class="text-xl font-medium">Organic Traffic</p>
           <div class="mt-2 w-full bg-white/30 rounded-full h-10 overflow-hidden">
-            <div class="h-full rounded-full flex items-center justify-end pr-6 font-black text-lg transition-all duration-700"
+            <div class="h-full rounded-full flex items-center justify-end pr-6 font-black text-lg"
                  style="width: ${topPriorityFixes.length * 25}%; background-color: ${topPriorityFixes.length >= 2 ? '#86efac' : topPriorityFixes.length === 1 ? '#fdba74' : '#fca5a5'};">
               +${topPriorityFixes.length * 20}–${topPriorityFixes.length * 45}%
             </div>
@@ -888,30 +1197,23 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     </div>
-    <div class="mt-10 space-y-3 text-sm leading-relaxed text-white dark:text-gray-200">
-      <p>Conservative estimates based on pages with similar optimization levels.</p>
-      <p>Track changes in Google Search Console (Impressions, CTR, Average Position).</p>
-      <p>Expect movement within 7–30 days after indexing.</p>
-    </div>
   </div>
 </div>
+
+<!-- CMS Fixes -->
 <div id="cms-fixes-section" class="mt-20 max-w-4xl mx-auto px-2">
   <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
   <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
     Get step-by-step keyword placement fix instructions tailored to your CMS.
   </p>
-
   <div class="flex items-center justify-center gap-3 mb-4 flex-wrap">
     <span class="text-sm text-gray-600 dark:text-gray-400">Detected:</span>
-    <span id="cms-detected-badge" class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm font-medium border border-gray-300 dark:border-gray-700">
+    <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm font-medium border border-gray-300 dark:border-gray-700">
       <span id="cms-badge-dot" class="inline-block w-2.5 h-2.5 rounded-full bg-gray-400 mr-2"></span>
       <span id="cms-badge-name">Custom / Unknown</span>
     </span>
-    <button id="cms-override-toggle" class="text-sm text-purple-600 dark:text-purple-400 underline hover:no-underline bg-transparent border-none cursor-pointer">
-      Change
-    </button>
+    <button id="cms-override-toggle" class="text-sm text-purple-600 dark:text-purple-400 underline hover:no-underline bg-transparent border-none cursor-pointer">Change</button>
   </div>
-
   <div id="cms-override-panel" class="hidden max-w-md mx-auto mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CMS</label>
     <select id="cms-override-select" class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -932,59 +1234,58 @@ document.addEventListener('DOMContentLoaded', () => {
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Version (optional)</label>
     <input id="cms-override-version" type="text" placeholder="e.g. 6.4.2" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
   </div>
-
   <div class="text-center">
-    <button id="cms-fixes-btn" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">
-      Generate CMS Fixes
-    </button>
-    <p id="cms-fixes-no-fixes" class="hidden mt-4 text-lg text-green-600 dark:text-green-400 font-medium">
-      No fixes needed — your keyword placement is solid. 🎉
-    </p>
+    <button id="cms-fixes-btn" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Generate CMS Fixes</button>
+    <p id="cms-fixes-no-fixes" class="hidden mt-4 text-lg text-green-600 dark:text-green-400 font-medium">No fixes needed — your keyword placement is solid. 🎉</p>
   </div>
-
   <div id="cms-fixes-answer-container" class="mt-6 hidden">
     <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
   </div>
 </div>
+
+<!-- Ask AI -->
 <div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-2">
-  <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Keyword Placement</h2>
+  <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI</h2>
   <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
-    Get tailored answers about keyword placement, meta tags, content density, and specific improvement steps.
+    Get tailored answers about keyword placement, semantic coverage, meta tags and content depth.
   </p>
   <div class="flex flex-col sm:flex-row gap-4">
-    <textarea id="ai-question-input" placeholder="e.g., Why is my meta title missing the keyword? How do I improve content density?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
+    <textarea id="ai-question-input" placeholder="e.g., Why is my meta title missing the keyword? How do I improve entity coverage?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
     <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask Traffic Torch AI</button>
   </div>
   <div id="ai-answer-container" class="mt-6 hidden">
     <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
   </div>
 </div>
-<!-- Share Dashboard Container -->
+
+<!-- Share Dashboard -->
 <div id="share-dashboard-container" class="mt-16"></div>
     `;
 
+    /* ── Plugin solutions section ──────────────────────────────── */
     const pluginSection = document.createElement('div');
     pluginSection.id = 'plugin-solutions-section';
     pluginSection.className = 'mt-20';
     results.appendChild(pluginSection);
 
     const failedMetrics = [];
-    if (data.meta.titleMatch === 0 || !data.meta.titleText || data.meta.titleText.trim() === '') {
-      failedMetrics.push({ name: "Meta Title", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+    if (d.titleMatch === 0 || !d.titleText) {
+      failedMetrics.push({ name: 'Meta Title', grade: { text: 'Needs Work', color: 'text-red-600', emoji: '❌' } });
     }
-    if (data.meta.descMatch === 0 || !data.meta.descText || data.meta.descText.trim() === '') {
-      failedMetrics.push({ name: "Meta Description", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+    if (d.descMatch === 0 || !d.descText) {
+      failedMetrics.push({ name: 'Meta Description', grade: { text: 'Needs Work', color: 'text-red-600', emoji: '❌' } });
     }
-    if (data.urlSchema.schema === 0) {
-      failedMetrics.push({ name: "Structured Data (Schema)", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+    if (!d.schemaValid) {
+      failedMetrics.push({ name: 'Structured Data (Schema)', grade: { text: 'Needs Work', color: 'text-red-600', emoji: '❌' } });
     }
-    if (data.alts.phrase === 0 && data.alts.total > 0) {
-      failedMetrics.push({ name: "Image Alts", grade: { text: "Needs Work", color: "text-red-600", emoji: "❌" } });
+    if (d.imgsWithKeyword === 0 && d.totalImgs > 0) {
+      failedMetrics.push({ name: 'Image Alts', grade: { text: 'Needs Work', color: 'text-red-600', emoji: '❌' } });
     }
     if (failedMetrics.length > 0) {
       renderPluginSolutions(failedMetrics);
     }
 
+    /* ── Radar chart ───────────────────────────────────────────── */
     setTimeout(() => {
       const canvas = document.getElementById('health-radar');
       if (!canvas) return;
@@ -1022,7 +1323,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ticks: { stepSize: 20, color: labelColor },
                 grid: { color: gridColor },
                 angleLines: { color: gridColor },
-                pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                pointLabels: { color: labelColor, font: { size: 13, weight: '600' } }
               }
             },
             plugins: { legend: { display: false } }
@@ -1031,17 +1332,12 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
     }, 150);
 
+    /* ── Share module ──────────────────────────────────────────── */
     let displayUrl = 'traffictorch.net';
     if (analysisType === 'url' && fullUrl) {
       let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
       const firstSlash = cleaned.indexOf('/');
-      if (firstSlash !== -1) {
-        const domain = cleaned.slice(0, firstSlash);
-        const path = cleaned.slice(firstSlash);
-        displayUrl = domain + '\n' + path;
-      } else {
-        displayUrl = cleaned;
-      }
+      displayUrl = firstSlash !== -1 ? cleaned.slice(0, firstSlash) + '\n' + cleaned.slice(firstSlash) : cleaned;
     } else if (analysisType === 'code') {
       displayUrl = 'Pasted HTML Code';
     }
@@ -1052,20 +1348,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const passedMetrics = [];
     const failedMetricsShare = [];
     modules.forEach(m => {
-      if (m.score >= 70) {
-        passedMetrics.push(m.name);
-      } else {
-        failedMetricsShare.push(m.name);
-      }
+      if (m.score >= 70) passedMetrics.push(m.name);
+      else failedMetricsShare.push(m.name);
     });
     moduleOrder.forEach(mod => {
-      const diags = getModuleDiagnostics({name: mod}, data, phrase, fullUrl);
-      diags.forEach(d => {
-        if (d.status === '✅') {
-          passedMetrics.push(d.issue);
-        } else {
-          failedMetricsShare.push(d.issue);
-        }
+      const diags = getModuleDiagnostics(mod, d, phrase, fullUrl, aiSemantic);
+      diags.forEach(x => {
+        if (x.status === '✅') passedMetrics.push(x.issue);
+        else if (x.status === '❌') failedMetricsShare.push(x.issue);
       });
     });
 
@@ -1084,7 +1374,7 @@ document.addEventListener('DOMContentLoaded', () => {
       passedMetrics: passedMetrics,
       failedMetrics: failedMetricsShare,
       aiFixes: aiFixes,
-      rawData: { data, modules, topPriorityFixes },
+      rawData: { deterministic: deterministic.details, modules, topPriorityFixes, aiSemantic },
       shareLink: shareLink
     };
 
@@ -1096,11 +1386,11 @@ document.addEventListener('DOMContentLoaded', () => {
         shareContainer.innerHTML = `
           <div class="text-center text-gray-500 dark:text-gray-400 p-4 border border-gray-300 dark:border-gray-600 rounded-xl">
             <p>Sharing is available for live URLs only. Please run the analysis with a URL to share this report.</p>
-          </div>
-        `;
+          </div>`;
       }
     }
 
+    /* ── Ask AI handler ────────────────────────────────────────── */
     const askBtn = document.getElementById('ask-ai-btn');
     const askInput = document.getElementById('ai-question-input');
     const answerContainer = document.getElementById('ai-answer-container');
@@ -1115,10 +1405,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!canProceed) return;
 
         const question = askInput?.value?.trim();
-        if (!question) {
-          alert('Please enter a question.');
-          return;
-        }
+        if (!question) { alert('Please enter a question.'); return; }
 
         newAskBtn.disabled = true;
         newAskBtn.textContent = 'Thinking...';
@@ -1133,58 +1420,29 @@ document.addEventListener('DOMContentLoaded', () => {
           });
 
           const excerptDoc = yourDoc.cloneNode(true);
-          excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+          excerptDoc.querySelectorAll('nav, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
           const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
           const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
             .map(p => p.textContent.replace(/\s+/g, ' ').trim())
             .filter(t => t.length > 60);
-          const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 300);
-
-          const metaDescription = yourDoc.querySelector('meta[name="description"]')?.content?.trim() || '';
-          const h1Text = yourDoc.querySelector('h1')?.textContent?.trim() || '';
-          const pageTitleText = yourDoc?.title?.trim() || '';
-          const langAttribute = yourDoc.documentElement?.getAttribute('lang') || '';
-          const viewportContent = yourDoc.querySelector('meta[name="viewport"]')?.getAttribute('content') || '';
-          const linkCount = yourDoc.querySelectorAll('a').length;
-          const imageCount = yourDoc.querySelectorAll('img').length;
-          const headingCount = yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6').length;
-          const ctaCount = yourDoc.querySelectorAll('button, [role="button"], input[type="submit"], a[href*="contact"], a[href*="signup"], a[href*="sign-up"], a[href*="demo"], a[href*="get-started"], a[href*="pricing"]').length;
-          const wordCount = data.content.words;
-
-          const headSnapshot = results.dataset.headSnapshot || '';
-
-          // ── Build HTML snippets for the failed items ──
-          const affectedSnippets = {};
-          if (rawHtml) {
-            const snippetSources = topPriorityFixes.map(f => f.issue);
-            failedMetricsShare.forEach(m => { if (!snippetSources.includes(m)) snippetSources.push(m); });
-            for (const item of snippetSources.slice(0, 5)) {
-              try {
-                const rule = deriveSelectorsForFailure(item);
-                if (rule?.selectors?.length) {
-                  const snips = extractSnippets(rawHtml, rule.selectors, { limit: 2, maxLen: 400 });
-                  if (snips.length) affectedSnippets[item] = snips.map(s => s.html);
-                }
-              } catch {}
-            }
-          }
+          const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 400);
 
           const auditPayload = {
-            question: question,
+            question,
             auditData: {
               url: analysisType === 'url' ? fullUrl : 'Pasted HTML',
-              pageTitle: pageTitleText || 'Keyword Analysis',
-              metaDescription,
-              h1: h1Text,
+              pageTitle: d.titleText || 'Keyword Analysis',
+              metaDescription: d.descText,
+              h1: d.h1Text,
               pageExcerpt,
-              headSnapshot: headSnapshot,
-              langAttribute: langAttribute,
-              viewportContent: viewportContent,
-              linkCount,
-              imageCount,
-              headingCount,
-              ctaCount,
-              wordCount,
+              headSnapshot: results.dataset.headSnapshot || '',
+              langAttribute: d.lang,
+              viewportContent: d.viewport,
+              linkCount: yourDoc.querySelectorAll('a').length,
+              imageCount: yourDoc.querySelectorAll('img').length,
+              headingCount: yourDoc.querySelectorAll('h1, h2, h3, h4, h5, h6').length,
+              ctaCount: yourDoc.querySelectorAll('button, [role="button"], input[type="submit"], a[href*="contact"], a[href*="signup"], a[href*="demo"], a[href*="pricing"]').length,
+              wordCount: d.wordCount,
               cms: {
                 name: cmsInfo?.name || 'Custom / Unknown',
                 version: cmsInfo?.version || null,
@@ -1192,40 +1450,31 @@ document.addEventListener('DOMContentLoaded', () => {
               },
               targetKeyword: phrase,
               overallScore: yourScore,
-              scores: {
-                metaTitleDesc: moduleScoresMap['metatitledesc'] || 0,
-                h1Headings: moduleScoresMap['h1headings'] || 0,
-                contentDensity: moduleScoresMap['contentdensity'] || 0,
-                imageAlts: moduleScoresMap['imagealts'] || 0,
-                anchorText: moduleScoresMap['anchortext'] || 0,
-                urlSchema: moduleScoresMap['urlschema'] || 0
-              },
+              deterministicScore: deterministic.score,
+              aiContribution,
+              scores: moduleScoresMap,
               flags: {
-                titleMatch: data.meta.titleMatch > 0,
-                descMatch: data.meta.descMatch > 0,
-                h1Match: data.h1.match > 0,
-                keywordInUrl: data.urlSchema.urlMatch > 0,
-                hasSchema: data.urlSchema.schema > 0,
-                hasKeywordInAlts: data.alts.phrase > 0,
-                hasKeywordInAnchors: data.anchors.count > 0
+                titleMatch: d.titleMatch > 0,
+                descMatch: d.descMatch > 0,
+                h1Match: d.h1Match > 0,
+                hasCanonical: !!d.canonical,
+                hasSchema: d.schemaValid,
+                hasKeywordInAlts: d.imgsWithKeyword > 0,
+                hasKeywordInAnchors: d.internalWithKeyword > 0
               },
               metrics: {
-                wordCount: data.content.words,
-                keywordMentions: data.content.matches,
-                density: data.content.density,
-                totalImages: data.alts.total,
-                matchingAlts: data.alts.phrase,
-                matchingAnchors: data.anchors.count
+                wordCount: d.wordCount,
+                totalImages: d.totalImgs,
+                imagesWithAlt: d.imgsWithAlt,
+                imagesWithKeyword: d.imgsWithKeyword,
+                internalLinks: d.internalLinks,
+                internalWithKeyword: d.internalWithKeyword
               },
               failedItems: failedMetricsShare.slice(0, 10),
               priorityFixes: topPriorityFixes.map(f => ({
-                name: f.issue,
-                module: f.module,
-                score: 0,
-                impact: '',
-                desc: f.how || ''
+                name: f.issue, module: f.module, score: 0, impact: '', desc: f.how || ''
               })),
-              snippets: affectedSnippets,
+              aiSemantic: aiSemantic || null,
               browserMetrics: null
             }
           };
@@ -1237,7 +1486,6 @@ document.addEventListener('DOMContentLoaded', () => {
           });
 
           if (!response.ok) throw new Error(`Server error (${response.status})`);
-
           const aiResponse = await response.json();
 
           if (aiResponse.success) {
@@ -1248,11 +1496,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             answerContent.innerHTML = html;
           } else {
-            answerContent.innerHTML = `❌ Error: ${aiResponse.error || 'Unknown error'}`;
+            answerContent.innerHTML = `❌ Error: ${escapeHtml(aiResponse.error || 'Unknown error')}`;
           }
-
         } catch (err) {
-          answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${err.message})`;
+          answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${escapeHtml(err.message)})`;
         } finally {
           newAskBtn.disabled = false;
           newAskBtn.textContent = 'Ask Traffic Torch AI';
@@ -1260,6 +1507,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    /* ── CMS Fixes handler ─────────────────────────────────────── */
     const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
     const cmsBadgeDot        = document.getElementById('cms-badge-dot');
     const cmsBadgeName       = document.getElementById('cms-badge-name');
@@ -1278,9 +1526,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (cmsBadgeDot) {
       let dotClass = 'bg-gray-400';
-      if (cmsInfo.confidence === 'high')        dotClass = 'bg-green-500';
+      if (cmsInfo.confidence === 'high') dotClass = 'bg-green-500';
       else if (cmsInfo.confidence === 'medium') dotClass = 'bg-yellow-500';
-      else if (cmsInfo.confidence === 'low')    dotClass = 'bg-orange-500';
+      else if (cmsInfo.confidence === 'low') dotClass = 'bg-orange-500';
       cmsBadgeDot.className = 'inline-block w-2.5 h-2.5 rounded-full mr-2 ' + dotClass;
     }
 
@@ -1288,9 +1536,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const known = Array.from(cmsOverrideSelect.options).map(o => o.value);
       cmsOverrideSelect.value = known.includes(cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown';
     }
-    if (cmsOverrideVersion && cmsInfo.version) {
-      cmsOverrideVersion.value = cmsInfo.version;
-    }
+    if (cmsOverrideVersion && cmsInfo.version) cmsOverrideVersion.value = cmsInfo.version;
 
     cmsOverrideToggle?.addEventListener('click', () => {
       cmsOverridePanel?.classList.toggle('hidden');
@@ -1306,11 +1552,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cmsFixesBtn?.addEventListener('click', async () => {
       if (topPriorityFixes.length === 0) return;
-
       const canProceed = await canRunTool('keyword-tool');
       if (!canProceed) return;
 
-      const selectedCms     = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';
+      const selectedCms = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';
       const selectedVersion = cmsOverrideVersion?.value?.trim() || cmsInfo.version || null;
 
       cmsFixesBtn.disabled = true;
@@ -1331,15 +1576,15 @@ document.addEventListener('DOMContentLoaded', () => {
           scores: {
             metaTitleDesc: modules.find(m => m.name === 'Meta Title & Desc')?.score || 0,
             h1Headings: modules.find(m => m.name === 'H1 & Headings')?.score || 0,
-            contentDensity: modules.find(m => m.name === 'Content Density')?.score || 0,
+            contentReadability: modules.find(m => m.name === 'Content & Readability')?.score || 0,
             imageAlts: modules.find(m => m.name === 'Image Alts')?.score || 0,
             anchorText: modules.find(m => m.name === 'Anchor Text')?.score || 0,
-            urlSchema: modules.find(m => m.name === 'URL & Schema')?.score || 0
+            urlSchema: modules.find(m => m.name === 'URL & Schema')?.score || 0,
+            technical: modules.find(m => m.name === 'Technical')?.score || 0,
+            aiSemantic: modules.find(m => m.name === 'AI Semantic Audit')?.score || 0
           },
           priorityFixes: topPriorityFixes.slice(0, 3).map(f => ({
-            module: f.module,
-            name: f.issue,
-            howToFix: f.how
+            module: f.module, name: f.issue, howToFix: f.how
           })),
           mode: analysisType === 'code' ? 'pasted-code' : 'live-url',
           targetKeyword: phrase || null
@@ -1352,22 +1597,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (!response.ok) throw new Error(`Server error (${response.status})`);
-
         const data = await response.json();
 
         if (data.success && cmsAnswerContent) {
           cmsAnswerContent.innerHTML = '';
-
           const header = document.createElement('div');
           header.style.fontWeight = 'bold';
           header.style.marginBottom = '0.75rem';
           header.textContent = '🛠️ CMS Fixes for ' +
-            (data.cms || selectedCms) +
-            (data.cmsVersion ? ' ' + data.cmsVersion : '');
-
+            (data.cms || selectedCms) + (data.cmsVersion ? ' ' + data.cmsVersion : '');
           const body = document.createElement('div');
           body.innerHTML = renderCodeBlocks(data.answer || '');
-
           let warningEl = null;
           if (Array.isArray(data.warnings) && data.warnings.length) {
             warningEl = document.createElement('div');
@@ -1379,17 +1619,15 @@ document.addEventListener('DOMContentLoaded', () => {
             warningEl.style.fontSize = '0.85rem';
             warningEl.textContent = data.warnings.join(' ');
           }
-
           cmsAnswerContent.appendChild(header);
           cmsAnswerContent.appendChild(body);
           if (warningEl) cmsAnswerContent.appendChild(warningEl);
         } else if (cmsAnswerContent) {
-          cmsAnswerContent.innerHTML = '❌ Error: ' + (data.error || 'Unknown error');
+          cmsAnswerContent.innerHTML = '❌ Error: ' + escapeHtml(data.error || 'Unknown error');
         }
-
       } catch (err) {
         if (cmsAnswerContent) {
-          cmsAnswerContent.innerHTML = '❌ Failed to generate CMS fixes. Please try again. (' + err.message + ')';
+          cmsAnswerContent.innerHTML = '❌ Failed to generate CMS fixes. Please try again. (' + escapeHtml(err.message) + ')';
         }
       } finally {
         cmsFixesBtn.disabled = false;

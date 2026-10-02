@@ -1,4 +1,4 @@
-/* /keyword-vs-tool/print-v1.1.css */
+/* /keyword-vs-tool/print-v1.1.css — hybrid side-by-side 8-module layout */
 
 @media print {
   @page {
@@ -9,8 +9,8 @@
   html, body {
     background: #ffffff !important;
     color: #111827 !important;
-    font-size: 11pt;
-    line-height: 1.5;
+    font-size: 10pt;
+    line-height: 1.45;
     margin: 0 !important;
     padding: 0 !important;
     -webkit-print-color-adjust: exact;
@@ -19,7 +19,7 @@
 
   /* ──────── COVER PAGE ──────── */
   body::before {
-    content: "TrafficTorch.net ⚖️\A\A Keyword Competition Tool 🆚\A\A Report:\A " attr(your-url);
+    content: "TrafficTorch.net ⚖️\A\A Keyword Competition Tool 🆚\A\A Your page:\A " attr(data-url);
     display: block;
     height: 100vh;
     min-height: 100vh;
@@ -31,7 +31,7 @@
     padding-top: 20vh;
     line-height: 1.4;
     white-space: pre;
-    font-size: 2rem;
+    font-size: 1.9rem;
     text-shadow:
       -2px -2px 0 #fb923c,
       2px -2px 0 #fb923c,
@@ -44,27 +44,27 @@
       0 10px 30px rgba(0,0,0,0.5);
   }
 
-  /* Start real report content on new page */
-  #results-wrapper {
+  /* ──────── REPORT CONTAINER ──────── */
+  #results {
+    display: block !important;
     page-break-before: always;
     margin-top: 0 !important;
   }
 
-  /* Full width + proper padding for print */
-  #results-wrapper,
-  #results-wrapper .container,
-  #results-wrapper .max-w-7xl,
-  #results-wrapper .max-w-6xl,
-  #results-wrapper .max-w-5xl,
-  #results-wrapper .max-w-4xl {
+  #results,
+  #results .container,
+  #results .max-w-7xl,
+  #results .max-w-6xl,
+  #results .max-w-5xl,
+  #results .max-w-4xl {
     max-width: none !important;
     width: 100% !important;
     margin: 0 !important;
-    padding: 1cm 1.2cm !important;
+    padding: 0 1cm !important;
     box-sizing: border-box;
   }
 
-  /* ──────── FORCE SHOW REPORT CONTENT ──────── */
+  /* ──────── FORCE SHOW ALL REPORT CONTENT ──────── */
   .report-section,
   .tool-result,
   .analysis-block,
@@ -76,6 +76,7 @@
   .seo-score-card,
   #results .score-card,
   #priority-gains-section,
+  #health-radar-vs,
   #health-radar,
   #priority-cards-container,
   #plugin-solutions-section,
@@ -83,7 +84,9 @@
   .hidden.mt-6,
   .hidden.mt-4,
   .hidden.space-y-6,
-  .hidden.space-y-8 {
+  .hidden.space-y-8,
+  .hidden.flex-col,
+  .hidden.mt-8 {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -92,15 +95,58 @@
     overflow: visible !important;
   }
 
-  /* ──────── PREVENT BREAKS INSIDE IMPORTANT MODULES ──────── */
+  .fixes-panel {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin-top: 1rem !important;
+  }
+
+  /* Spinner / loader — hide */
+  #loader,
+  .animate-spin,
+  #analysis-progress,
+  #module-text {
+    display: none !important;
+  }
+
+  /* ──────── WINNER VERDICT ──────── */
+  /* Keep the winner banner prominent but compact */
+  #results > .text-center.my-8,
+  #results > .text-center.my-12 {
+    page-break-after: avoid !important;
+    margin: 8pt 0 !important;
+    text-align: center !important;
+  }
+
+  /* ──────── TWO BIG SCORE CARDS ──────── */
+  /* Stack them so each gets its own visual block and stays unbroken */
+  #results > .grid.grid-cols-1.md\:grid-cols-2 {
+    display: block !important;
+  }
+  #results > .grid.grid-cols-1.md\:grid-cols-2 > .bg-white {
+    page-break-inside: avoid !important;
+    margin: 0 auto 10pt auto !important;
+    max-width: 100% !important;
+  }
+
+  /* ──────── PAGE BREAK RULES ──────── */
   .score-card,
   .metric-card,
   .fixes-panel,
   .full-details,
   .bg-white.dark\:bg-gray-800,
-  .bg-orange-50.dark\:bg-orange-900\/20 {
+  .bg-orange-50.dark\:bg-orange-900\/20,
+  .bg-white.dark\:bg-gray-900 {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+  }
+
+  #results .max-w-6xl.grid,
+  #results .my-20.grid {
+    page-break-inside: avoid !important;
   }
 
   /* ──────── TARGETED HIDING ──────── */
@@ -115,6 +161,9 @@
   #rank-higher,
   #keyword-gap-checklist,
   #share-buttons,
+  #share-dashboard-container,
+  #share-form-container,
+  #feedback-form-container,
   #tools-grid,
   #extensions-tools-integrations,
   #dev-tools,
@@ -126,17 +175,23 @@
   #three-pillars,
   #comparison,
   #keyword-form,
+  #audit-form,
   #analysis-progress,
   #upgradeModal,
   #author-bio,
   #promo-high-impact-cards,
   #promo-old-vs-modern-seo,
-  #share-form-container,
-  #feedback-form-container,
   #seo-ux-checklist,
+  #ask-ai-section,
+  #ai-answer-container,
+  #epic-cards,
+  #integrations-teaser,
   .tools-grid,
   .checklist-card,
   .bottom-banner,
+  .share-block,
+  .center-btn-container,
+  .ask-ai-link,
   details > summary {
     display: none !important;
   }
@@ -144,6 +199,7 @@
   /* ──────── CLEANUP & READABILITY ──────── */
   .shadow-lg,
   .shadow-xl,
+  .shadow-2xl,
   [class*="shadow"] {
     box-shadow: none !important;
   }
@@ -158,22 +214,54 @@
     width: 100% !important;
   }
 
-  /* Dark mode safety */
+  /* Dark mode safety — always print light */
   .dark body,
-  body.dark {
-    background: #111827 !important;
-    color: #f3f4f6 !important;
+  body.dark,
+  .dark {
+    background: #ffffff !important;
+    color: #111827 !important;
   }
 
-  /* Better page breaks */
   h1, h2, h3 {
     page-break-after: avoid;
     break-after: avoid;
   }
+  h1, h2, h3, h4 {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
 
-  /* Grid → Stack for print */
-  #results.grid,
-  .grid {
+  /* ──────── MODULE CARD GRID ──────── */
+  /* The 8-module section is <div class="grid md:grid-cols-2 lg:grid-cols-3">.
+     Force 2 columns in print for compact comparison cards. */
+  #results > .grid.md\:grid-cols-2.lg\:grid-cols-3,
+  #results > .grid.lg\:grid-cols-3 {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10pt !important;
+  }
+
+  /* ──────── RADAR CHART ──────── */
+  /* Two-dataset radar — keep visible and unbroken */
+  #health-radar-vs,
+  #health-radar {
     display: block !important;
+    visibility: visible !important;
+    max-width: 100% !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Canvas fallback styling */
+  canvas {
+    max-width: 100% !important;
+  }
+
+  /* ──────── LINK RENDERING ──────── */
+  a {
+    text-decoration: none !important;
+    color: #111827 !important;
+  }
+  a[href^="http"]::after {
+    content: "";
   }
 }

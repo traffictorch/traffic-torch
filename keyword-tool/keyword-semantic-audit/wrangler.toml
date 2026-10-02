@@ -1,0 +1,14 @@
+name = "keyword-semantic-audit"
+main = "keyword-semantic-audit.worker.js"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "SEMANTIC_CACHE"
+id = "2972959981cd49da8aa408739ca9a567"
