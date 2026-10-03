@@ -1,8 +1,5 @@
 // Keyword Placement Tool script-v1.1.js
-// Hybrid: Deterministic 70 pts + AI Semantic 30 pts
-// Deterministic modules: Meta Title & Desc, H1 & Headings, Content & Readability,
-//                        Image Alts, Anchor Text, URL & Schema, Technical
-// AI module:             AI Semantic Audit (intent, entities, AEO, E-E-A-T)
+// Hybrid: Deterministic 55 pts + AI Semantic 15 pts + Semantic Coverage 30 pts
 
 import { renderPluginSolutions } from './plugin-solutions-v1.0.js';
 import { canRunTool } from '/main-v1.1.js';
@@ -21,12 +18,10 @@ const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const SEMANTIC_WORKER = 'https://keyword-semantic-audit.traffictorch.workers.dev/';
 const TOKEN_KEY = 'traffic_torch_jwt';
 
-const DETERMINISTIC_MAX = 70;
-const AI_MAX = 30;
+const DETERMINISTIC_MAX = 55;
+const AI_MAX = 15;
+const VARIATIONS_MAX = 30;
 
-/* ────────────────────────────────────────────────────────────────
-   AI output renderer (fenced code blocks → <pre>)
-   ──────────────────────────────────────────────────────────────── */
 function renderCodeBlocks(text) {
   if (text === null || text === undefined) return '';
   let escaped = String(text)
@@ -50,9 +45,6 @@ function renderCodeBlocks(text) {
   return escaped;
 }
 
-/* ────────────────────────────────────────────────────────────────
-   Head snapshot for AI payload
-   ──────────────────────────────────────────────────────────────── */
 function buildHeadSnapshot(doc) {
   if (!doc || !doc.head) return '';
   const head = doc.head;
@@ -61,17 +53,13 @@ function buildHeadSnapshot(doc) {
   const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
   if (sheets.length) {
     lines.push('Stylesheets in <head>:');
-    for (const l of sheets) {
-      lines.push(`- ${l.getAttribute('href') || ''}`);
-    }
+    for (const l of sheets) lines.push(`- ${l.getAttribute('href') || ''}`);
   }
 
   const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
   if (headScripts.length) {
     lines.push('Scripts in <head>:');
-    for (const s of headScripts) {
-      lines.push(`- ${s.getAttribute('src') || ''}`);
-    }
+    for (const s of headScripts) lines.push(`- ${s.getAttribute('src') || ''}`);
   }
 
   const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
@@ -85,16 +73,11 @@ function buildHeadSnapshot(doc) {
   }
 
   const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
-  if (jsonLd.length) {
-    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
-  }
+  if (jsonLd.length) lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
 
   return lines.join('\n');
 }
 
-/* ────────────────────────────────────────────────────────────────
-   Audit history (auth API or localStorage fallback)
-   ──────────────────────────────────────────────────────────────── */
 async function saveAuditHistory(url, toolName, score = null) {
   const token = localStorage.getItem('authToken') || localStorage.getItem(TOKEN_KEY);
   const auditUrl = url || 'Pasted HTML code';
@@ -119,9 +102,7 @@ async function saveAuditHistory(url, toolName, score = null) {
 
   const stored = localStorage.getItem('audit_guest');
   let entries = [];
-  if (stored) {
-    try { entries = JSON.parse(stored).entries || []; } catch {}
-  }
+  if (stored) { try { entries = JSON.parse(stored).entries || []; } catch {} }
   entries.unshift({
     _localId: Date.now() + '_' + Math.random(),
     url: auditUrl,
@@ -133,9 +114,6 @@ async function saveAuditHistory(url, toolName, score = null) {
   localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
 }
 
-/* ────────────────────────────────────────────────────────────────
-   AI semantic layer
-   ──────────────────────────────────────────────────────────────── */
 async function fetchAISemanticAudit(payload, { forceRefresh = false } = {}) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 30000);
@@ -156,9 +134,26 @@ async function fetchAISemanticAudit(payload, { forceRefresh = false } = {}) {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────
-   Main DOM ready
-   ──────────────────────────────────────────────────────────────── */
+async function fetchSemanticVariations(payload, { forceRefresh = false } = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+  try {
+    const res = await fetch(SEMANTIC_WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: 'semantic-variations', ...payload, forceRefresh }),
+      signal: controller.signal
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`AI worker ${res.status}: ${text.slice(0, 150)}`);
+    }
+    return await res.json();
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('audit-form');
   const pageUrlInput = document.getElementById('page-url');
@@ -170,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initCodeSnippetModal();
 
-  /* ── Global click delegation ─────────────────────────────────── */
   document.addEventListener('click', (e) => {
     const toggle = e.target.closest('.fixes-toggle');
     if (toggle) {
@@ -208,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* ── Auto-fill from ?input= ──────────────────────────────────── */
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const inputData = params.get('input');
@@ -222,7 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.addEventListener('load', autoFillFromUrl);
 
-  /* ── Shared URL + keyword auto-run ───────────────────────────── */
   const urlParams = new URLSearchParams(window.location.search);
   const sharedUrl = urlParams.get('url');
   if (sharedUrl) {
@@ -253,12 +245,12 @@ document.addEventListener('DOMContentLoaded', () => {
     'Testing internal anchors',
     'Checking URL, schema, technical',
     'Running AI semantic audit',
+    'Classifying semantic variations',
     'Generating report'
   ];
   let currentModuleIndex = 0;
   let moduleInterval;
 
-  /* ── Grade helper ────────────────────────────────────────────── */
   const getGrade = (score) => {
     if (score >= 90) return { grade: 'Excellent',  emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
     if (score >= 70) return { grade: 'Strong',     emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
@@ -274,24 +266,22 @@ document.addEventListener('DOMContentLoaded', () => {
     'Anchor Text': 'anchor-text',
     'URL & Schema': 'url-schema',
     'Technical': 'url-schema',
-    'AI Semantic Audit': 'url-schema'
+    'AI Semantic Audit': 'url-schema',
+    'Semantic Coverage': 'url-schema'
   };
 
-  /* ── Word-boundary safe phrase counter ───────────────────────── */
   const countPhrase = (text = '', phrase = '', isUrl = false) => {
     if (!text || !phrase) return 0;
     const lower = String(text).toLowerCase();
     const p = String(phrase).toLowerCase().trim();
     if (!p) return 0;
-
     const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
     if (isUrl) {
       const urlWords = lower
         .replace(/https?:\/\//gi, '')
         .replace(/[^a-z0-9]+/gi, ' ')
-        .split(/\s+/)
-        .filter(Boolean);
+        .split(/\s+/).filter(Boolean);
       const phraseWords = p.split(/\s+/).filter(Boolean);
       if (!phraseWords.length || !urlWords.length) return 0;
       const matched = phraseWords.filter(w => urlWords.includes(w)).length;
@@ -303,11 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return m ? m.length : 0;
   };
 
-  /* ── Content extractor (keeps <header>) ──────────────────────── */
   const getCleanContent = (doc) => {
     if (!doc?.body) return '';
     const clone = doc.body.cloneNode(true);
-
     const strip = [
       'nav', 'footer', 'aside', 'script', 'style', 'noscript', 'iframe',
       '[role="navigation"]', '[role="contentinfo"]', '[role="complementary"]',
@@ -315,20 +303,17 @@ document.addEventListener('DOMContentLoaded', () => {
       '.sidebar', '.advert', '.newsletter'
     ];
     clone.querySelectorAll(strip.join(',')).forEach(el => el.remove());
-
     const main = clone.querySelector('main, article, [role="main"]') || clone;
     return main.textContent.replace(/\s+/g, ' ').trim();
   };
 
   const getWordCount = (doc) => getCleanContent(doc).split(/\s+/).filter(w => w.length > 0).length;
 
-  /* ── Deterministic scoring (70 pts) ──────────────────────────── */
   function computeDeterministicScore({ yourDoc, phrase, fullUrl, analysisType, yourWords, cleanContent }) {
     const fixes = [];
     const modules = [];
     let total = 0;
 
-    /* 1. Meta Title & Desc — 14 pts (title 8, desc 6) */
     const titleText = yourDoc.querySelector('title')?.textContent.trim() || '';
     const titleMatch = countPhrase(titleText, phrase);
     const titleLen = titleText.length;
@@ -359,7 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
     total += titleScore + descScore;
     modules.push({ name: 'Meta Title & Desc', score: Math.round(((titleScore + descScore) / 14) * 100) });
 
-    /* 2. H1 & Headings — 8 pts */
     const h1s = yourDoc.querySelectorAll('h1');
     const h2s = yourDoc.querySelectorAll('h2');
     const h1Text = h1s[0]?.textContent.trim() || '';
@@ -382,7 +366,6 @@ document.addEventListener('DOMContentLoaded', () => {
     total += h1Score;
     modules.push({ name: 'H1 & Headings', score: Math.round((h1Score / 8) * 100) });
 
-    /* 3. Content & Readability — 14 pts (depth 8, readability 6) */
     const wordCount = yourWords;
     let contentScore = 0;
     if (wordCount >= 1500) contentScore += 6;
@@ -406,7 +389,6 @@ document.addEventListener('DOMContentLoaded', () => {
     total += contentScore + readScore;
     modules.push({ name: 'Content & Readability', score: Math.round(((contentScore + readScore) / 14) * 100) });
 
-    /* 4. Image Alts — 6 pts */
     const imgs = yourDoc.querySelectorAll('img');
     const totalImgs = imgs.length;
     let imgsWithAlt = 0, imgsWithKeyword = 0;
@@ -427,7 +409,6 @@ document.addEventListener('DOMContentLoaded', () => {
     total += imgScore;
     modules.push({ name: 'Image Alts', score: totalImgs === 0 ? 50 : Math.round((imgScore / 6) * 100) });
 
-    /* 5. Anchor Text — 6 pts */
     const baseHost = (() => { try { return new URL(fullUrl).hostname; } catch { return null; } })();
     const internalLinks = Array.from(yourDoc.querySelectorAll('a[href]')).filter(a => {
       const href = a.getAttribute('href') || '';
@@ -447,7 +428,6 @@ document.addEventListener('DOMContentLoaded', () => {
     total += linkScore;
     modules.push({ name: 'Anchor Text', score: Math.round((linkScore / 6) * 100) });
 
-    /* 6. URL & Schema — 14 pts (URL 6, schema 8) */
     let urlScore = 0;
     const canonical = yourDoc.querySelector('link[rel="canonical"]')?.getAttribute('href') || '';
     if (canonical) urlScore += 2;
@@ -489,7 +469,6 @@ document.addEventListener('DOMContentLoaded', () => {
     total += urlScore + schemaScore;
     modules.push({ name: 'URL & Schema', score: Math.round(((urlScore + schemaScore) / 14) * 100) });
 
-    /* 7. Technical — 8 pts */
     let techScore = 0;
     const lang = yourDoc.documentElement.getAttribute('lang') || '';
     if (lang) techScore += 2;
@@ -511,11 +490,11 @@ document.addEventListener('DOMContentLoaded', () => {
     total += techScore;
     modules.push({ name: 'Technical', score: Math.round((techScore / 8) * 100) });
 
-    const capped = Math.min(DETERMINISTIC_MAX, total);
+    const capped = Math.min(70, total);
 
     return {
       score: capped,
-      max: DETERMINISTIC_MAX,
+      max: 70,
       modules,
       fixes,
       details: {
@@ -531,7 +510,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  /* ── Spinner loader ──────────────────────────────────────────── */
   function startSpinnerLoader() {
     results.innerHTML = `
       <div id="loader" class="flex flex-col items-center justify-center space-y-4 mt-8">
@@ -557,7 +535,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loader) loader.remove();
   }
 
-  /* ── Fetch page via full-render-v2 ───────────────────────────── */
   const fetchPage = async (url) => {
     try {
       const res = await fetch(PROXY + '?url=' + encodeURIComponent(url));
@@ -569,7 +546,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  /* ── URL button handler ──────────────────────────────────────── */
   urlAnalyzeBtn.addEventListener('click', async () => {
     const yourUrl = pageUrlInput.value.trim();
     const phrase = targetKeywordInput.value.trim();
@@ -594,7 +570,6 @@ document.addEventListener('DOMContentLoaded', () => {
     await runAnalysis(fetched.doc, phrase, fullUrl, 'url', fetched.html);
   });
 
-  /* ── Code button handler ─────────────────────────────────────── */
   codeAnalyzeBtn.addEventListener('click', async () => {
     const phrase = targetKeywordInput.value.trim();
     const rawCode = codeInput.value.trim();
@@ -618,8 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
     await runAnalysis(yourDoc, phrase, displayUrl, 'code', rawCode);
   });
 
-  /* ── Per-module diagnostics ──────────────────────────────────── */
-  const getModuleDiagnostics = (moduleName, d, phrase, fullUrl, aiSemantic) => {
+  const getModuleDiagnostics = (moduleName, d, phrase, fullUrl, aiSemantic, variations) => {
     const diags = [];
 
     if (moduleName === 'Meta Title & Desc') {
@@ -725,12 +699,30 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    else if (moduleName === 'Semantic Coverage') {
+      if (!variations) {
+        diags.push({ status: '❌', issue: 'Semantic variations audit unavailable' });
+      } else {
+        const s = variations.verdictSummary || {};
+        diags.push({
+          status: (s.exact || 0) > 0 ? '✅' : '❌',
+          issue: `${s.exact || 0} placement(s) with exact keyword`
+        });
+        diags.push({
+          status: (s.variant || 0) > 0 ? '✅' : '❌',
+          issue: `${s.variant || 0} placement(s) with a variant`
+        });
+        const weak = (s.partial || 0) + (s.absent || 0);
+        diags.push({
+          status: weak > 0 ? '⚠️' : '✅',
+          issue: `${weak} placement(s) partial or absent`
+        });
+      }
+    }
+
     return diags;
   };
 
-  /* ─────────────────────────────────────────────────────────────
-     Main analysis pipeline
-     ───────────────────────────────────────────────────────────── */
   async function runAnalysis(yourDoc, phrase, fullUrl, analysisType, rawHtml = '') {
     const canProceed = await canRunTool('keyword-tool');
     if (!canProceed) { stopSpinnerLoader(); return; }
@@ -746,13 +738,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const cleanContent = getCleanContent(yourDoc);
     const yourWords = getWordCount(yourDoc);
 
-    /* ── Deterministic scoring (70 pts) ────────────────────────── */
     const deterministic = computeDeterministicScore({
       yourDoc, phrase, fullUrl, analysisType, yourWords, cleanContent
     });
     const d = deterministic.details;
 
-    /* ── AI semantic layer (30 pts) ───────────────────────────── */
     let aiSemantic = null;
     let aiContribution = 0;
     let aiError = null;
@@ -782,10 +772,60 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('AI semantic layer unavailable:', aiError);
     }
 
-    const yourScore = Math.min(100, deterministic.score + aiContribution);
+    const h2Texts = Array.from(yourDoc.querySelectorAll('h2'))
+      .map(h => h.textContent.trim()).filter(Boolean).slice(0, 5);
+
+    const altTexts = Array.from(yourDoc.querySelectorAll('img[alt]'))
+      .map(i => i.getAttribute('alt')).filter(a => a && a.trim()).slice(0, 5);
+
+    const baseHostSV = (() => { try { return new URL(fullUrl).hostname; } catch { return null; } })();
+    const anchorTexts = Array.from(yourDoc.querySelectorAll('a[href]'))
+      .filter(a => {
+        const href = a.getAttribute('href') || '';
+        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) return false;
+        if (!baseHostSV) return href.startsWith('/');
+        try { return new URL(href, fullUrl).hostname === baseHostSV; } catch { return false; }
+      })
+      .map(a => (a.textContent || '').trim())
+      .filter(Boolean)
+      .slice(0, 5);
+
+    const urlSlug = (() => {
+      if (analysisType !== 'url') return '';
+      try { return new URL(fullUrl).pathname; } catch { return ''; }
+    })();
+
+    const placements = {
+      title: d.titleText,
+      metaDescription: d.descText,
+      h1: d.h1Text,
+      h2s: h2Texts,
+      imageAlts: altTexts,
+      internalAnchors: anchorTexts,
+      urlSlug
+    };
+
+    let variations = null;
+    let variationsError = null;
+
+    try {
+      variations = await fetchSemanticVariations({
+        targetKeyword: phrase,
+        placements
+      });
+    } catch (e) {
+      variationsError = String(e.message || e);
+      console.warn('Semantic variations unavailable:', variationsError);
+    }
+
+    const deterministicContribution = Math.round((deterministic.score / 70) * DETERMINISTIC_MAX);
+    const variationsContribution = variations && typeof variations.overallScore === 'number'
+      ? Math.round((variations.overallScore / 100) * VARIATIONS_MAX)
+      : 0;
+
+    const yourScore = Math.min(100, deterministicContribution + aiContribution + variationsContribution);
     const allFixes = [...deterministic.fixes];
 
-    /* AI topGaps become additional fixes */
     if (aiSemantic && Array.isArray(aiSemantic.topGaps)) {
       aiSemantic.topGaps.forEach((gap, i) => {
         allFixes.push({
@@ -796,16 +836,35 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    if (variations && variations.judgments) {
+      const j = variations.judgments;
+      const pl = placements;
+      const gaps = [];
+      if (j.title?.verdict === 'absent' || j.title?.verdict === 'partial') gaps.push({ target: 'title', text: pl.title });
+      if (j.h1?.verdict === 'absent' || j.h1?.verdict === 'partial') gaps.push({ target: 'H1', text: pl.h1 });
+      if (j.metaDescription?.verdict === 'absent' || j.metaDescription?.verdict === 'partial') gaps.push({ target: 'meta description', text: pl.metaDescription });
+      if (j.urlSlug?.verdict === 'absent' || j.urlSlug?.verdict === 'partial') gaps.push({ target: 'URL slug', text: pl.urlSlug });
+      if (gaps.length) {
+        gaps.slice(0, 2).forEach(g => {
+          allFixes.push({
+            module: 'Semantic Coverage',
+            issue: `Add keyword or a semantic variant to the ${g.target}`,
+            how: `Currently: "${(g.text || '').slice(0, 80)}" — rewrite to include the target keyword or a close variant while keeping it natural.`
+          });
+        });
+      }
+    }
+
     const auditSaveUrl = analysisType === 'code' ? 'Pasted HTML code' : fullUrl;
     await saveAuditHistory(auditSaveUrl, 'Keyword Placement', yourScore);
 
     await new Promise(resolve => setTimeout(resolve, 800));
     stopSpinnerLoader();
 
-    /* ── Priority fixes ────────────────────────────────────────── */
     const moduleOrder = [
       'Meta Title & Desc', 'H1 & Headings', 'Content & Readability',
-      'URL & Schema', 'Image Alts', 'Anchor Text', 'Technical', 'AI Semantic Audit'
+      'URL & Schema', 'Image Alts', 'Anchor Text', 'Technical',
+      'AI Semantic Audit', 'Semantic Coverage'
     ];
     const moduleIssues = {};
     allFixes.forEach(f => {
@@ -826,7 +885,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const hasMetaOrContent = topPriorityFixes.some(f => f.module === 'Meta Title & Desc' || f.module === 'Content & Readability');
     const bigGrade = getGrade(yourScore);
 
-    /* ── Module display array (7 deterministic + 1 AI) ─────────── */
     const modules = deterministic.modules.map(m => ({ ...m }));
 
     const aiScore100 = aiSemantic && typeof aiSemantic.overallScore === 'number'
@@ -840,14 +898,20 @@ document.addEventListener('DOMContentLoaded', () => {
       aiError
     });
 
+    modules.push({
+      name: 'Semantic Coverage',
+      score: variations && typeof variations.overallScore === 'number' ? variations.overallScore : 0,
+      variations,
+      variationsError,
+      placements
+    });
+
     const scores = modules.map(m => m.score);
 
-    /* ── Scroll into view ──────────────────────────────────────── */
     const offset = 280;
     const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
     window.scrollTo({ top: targetY, behavior: 'smooth' });
 
-    /* ── Render results ────────────────────────────────────────── */
     results.innerHTML = `
 <!-- Overall Score Card -->
 <div class="flex justify-center my-8 sm:my-12 px-2 sm:px-6">
@@ -876,7 +940,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     </div>
     <p class="mt-4 text-xs text-center text-gray-500 dark:text-gray-400">
-      Deterministic ${deterministic.score}/${DETERMINISTIC_MAX} + AI ${aiContribution}/${AI_MAX}
+      Deterministic ${deterministicContribution}/${DETERMINISTIC_MAX} · AI Semantic ${aiContribution}/${AI_MAX} · Variations ${variationsContribution}/${VARIATIONS_MAX}
     </p>
     ${(() => {
       const title = (yourDoc?.title || '').trim();
@@ -903,19 +967,19 @@ document.addEventListener('DOMContentLoaded', () => {
       Radar chart available on desktop/tablet
     </p>
     <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">
-      Visual overview across ${modules.length} modules (7 deterministic + 1 AI semantic)
+      Visual overview across ${modules.length} modules (7 deterministic + 2 AI)
     </p>
   </div>
 </div>
 
 <!-- Module Score Cards -->
-<div class="grid md:grid-cols-3 gap-8 my-16">
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 my-16">
   ${modules.map((m) => {
     const score = m.score;
     const borderColor = score >= 80 ? 'border-green-500' : score >= 60 ? 'border-yellow-500' : 'border-red-500';
     const textColor   = score >= 80 ? 'text-green-600'   : score >= 60 ? 'text-yellow-600'   : 'text-red-600';
     const grade       = getGrade(Math.round(score));
-    const diagnostics = getModuleDiagnostics(m.name, d, phrase, fullUrl, m.aiSemantic);
+    const diagnostics = getModuleDiagnostics(m.name, d, phrase, fullUrl, m.aiSemantic, m.variations);
     const hashId      = moduleHashes[m.name] || '';
     const roundedScore = Math.round(score);
 
@@ -965,7 +1029,6 @@ document.addEventListener('DOMContentLoaded', () => {
       fixesHtml = '<p class="text-center text-green-600 dark:text-green-400 font-bold py-4">🎉 This module is fully optimized!</p>';
     }
 
-    /* Module-specific details */
     let details = '';
     if (m.name === 'Meta Title & Desc') {
       details = `
@@ -1042,6 +1105,131 @@ document.addEventListener('DOMContentLoaded', () => {
               </p>
             </div>
           </div>`;
+      }
+    } else if (m.name === 'Semantic Coverage') {
+      if (!m.variations) {
+        details = `<p class="mt-4 text-sm text-red-600 dark:text-red-400">Semantic coverage audit unavailable${m.variationsError ? ': ' + escapeHtml(m.variationsError.slice(0, 120)) : ''}</p>`;
+      } else {
+        const v = m.variations;
+        const j = v.judgments || {};
+        const pl = m.placements || {};
+
+        /* Verdict styles */
+        const verdictStyles = {
+          exact:   { cls: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300',   label: '✅ Exact' },
+          variant: { cls: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300',       label: '🔵 Variant' },
+          partial: { cls: 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300', label: '🟡 Partial' },
+          absent:  { cls: 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300',           label: '❌ Absent' }
+        };
+        const badgeHtml = (verdict) => {
+          const s = verdictStyles[verdict] || verdictStyles.absent;
+          return `<span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold ${s.cls} whitespace-nowrap">${s.label}</span>`;
+        };
+
+        /* Stacked row: label + text on top, badge below */
+        const stackedRow = (label, text, verdict) => {
+          const truncated = text && text.length > 90 ? text.slice(0, 90) + '…' : (text || '(empty)');
+          return `
+            <div class="p-2.5 bg-gray-50 dark:bg-gray-800/60 rounded-lg border border-gray-200 dark:border-gray-700 mb-2 text-left">
+              <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">${escapeHtml(label)}</p>
+              <p class="text-[11px] text-gray-800 dark:text-gray-200 break-words mb-2">${escapeHtml(truncated)}</p>
+              <div>${badgeHtml(verdict)}</div>
+            </div>
+          `;
+        };
+
+        /* Compact row for use inside collapsible sections */
+        const compactRow = (label, text, verdict) => {
+          const truncated = text && text.length > 70 ? text.slice(0, 70) + '…' : (text || '(empty)');
+          return `
+            <div class="py-1.5 border-b border-gray-100 dark:border-gray-800 last:border-0 text-left">
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <span class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">${escapeHtml(label)}</span>
+                ${badgeHtml(verdict)}
+              </div>
+              <p class="text-[10px] text-gray-700 dark:text-gray-300 break-words leading-snug">${escapeHtml(truncated)}</p>
+            </div>
+          `;
+        };
+
+        /* Collapsible section */
+        const collapsibleSection = (title, entries) => {
+          if (!entries.length) return '';
+          const counts = entries.reduce((acc, e) => {
+            acc[e.verdict] = (acc[e.verdict] || 0) + 1;
+            return acc;
+          }, {});
+          const summaryBadges = Object.entries(counts).map(([verdict, count]) => {
+            const s = verdictStyles[verdict];
+            return `<span class="inline-block px-1.5 py-0.5 rounded-full text-[9px] font-semibold ${s.cls}">${count}</span>`;
+          }).join(' ');
+          return `
+            <details class="mb-2 bg-gray-50 dark:bg-gray-800/60 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <summary class="flex items-center justify-between gap-2 p-2.5 cursor-pointer list-none hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                <span class="text-[10px] font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">${escapeHtml(title)}</span>
+                <span class="flex items-center gap-1 flex-wrap">${summaryBadges}<span class="text-xs text-gray-500 dark:text-gray-400 ml-1">▾</span></span>
+              </summary>
+              <div class="px-2.5 pb-2 bg-white dark:bg-gray-900/40">
+                ${entries.map(e => compactRow(e.label, e.text, e.verdict)).join('')}
+              </div>
+            </details>
+          `;
+        };
+
+        /* Primary placements — always visible */
+        const primaryHtml = [];
+        if (pl.title)           primaryHtml.push(stackedRow('Title', pl.title, j.title?.verdict));
+        if (pl.metaDescription) primaryHtml.push(stackedRow('Meta', pl.metaDescription, j.metaDescription?.verdict));
+        if (pl.h1)              primaryHtml.push(stackedRow('H1', pl.h1, j.h1?.verdict));
+        if (pl.urlSlug)         primaryHtml.push(stackedRow('URL', pl.urlSlug, j.urlSlug?.verdict));
+
+        /* Secondary placements — collapsible */
+        const headingEntries = (pl.h2s || []).map((text, i) => ({
+          label: `H2 #${i + 1}`,
+          text,
+          verdict: j.h2s?.[i]?.verdict || 'absent'
+        }));
+        const altEntries = (pl.imageAlts || []).map((text, i) => ({
+          label: `Alt #${i + 1}`,
+          text,
+          verdict: j.imageAlts?.[i]?.verdict || 'absent'
+        }));
+        const anchorEntries = (pl.internalAnchors || []).map((text, i) => ({
+          label: `Anchor #${i + 1}`,
+          text,
+          verdict: j.internalAnchors?.[i]?.verdict || 'absent'
+        }));
+
+        const s = v.verdictSummary || {};
+        details = `
+          <div class="mt-4 text-left">
+            <div class="grid grid-cols-4 gap-1.5 mb-3 text-center">
+              <div class="p-1.5 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <div class="text-lg font-black text-green-600 dark:text-green-400">${s.exact || 0}</div>
+                <div class="text-[8px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Exact</div>
+              </div>
+              <div class="p-1.5 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div class="text-lg font-black text-blue-600 dark:text-blue-400">${s.variant || 0}</div>
+                <div class="text-[8px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Variant</div>
+              </div>
+              <div class="p-1.5 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                <div class="text-lg font-black text-yellow-600 dark:text-yellow-400">${s.partial || 0}</div>
+                <div class="text-[8px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Partial</div>
+              </div>
+              <div class="p-1.5 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <div class="text-lg font-black text-red-600 dark:text-red-400">${s.absent || 0}</div>
+                <div class="text-[8px] uppercase tracking-wide text-gray-500 dark:text-gray-400">Absent</div>
+              </div>
+            </div>
+
+            <p class="text-[9px] uppercase tracking-widest font-black text-gray-500 dark:text-gray-400 mb-2">Primary placements</p>
+            <div>${primaryHtml.join('')}</div>
+
+            ${collapsibleSection('Headings', headingEntries)}
+            ${collapsibleSection('Image alts', altEntries)}
+            ${collapsibleSection('Internal anchors', anchorEntries)}
+          </div>
+        `;
       }
     }
 
@@ -1262,7 +1450,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <div id="share-dashboard-container" class="mt-16"></div>
     `;
 
-    /* ── Plugin solutions section ──────────────────────────────── */
     const pluginSection = document.createElement('div');
     pluginSection.id = 'plugin-solutions-section';
     pluginSection.className = 'mt-20';
@@ -1285,7 +1472,6 @@ document.addEventListener('DOMContentLoaded', () => {
       renderPluginSolutions(failedMetrics);
     }
 
-    /* ── Radar chart ───────────────────────────────────────────── */
     setTimeout(() => {
       const canvas = document.getElementById('health-radar');
       if (!canvas) return;
@@ -1323,7 +1509,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ticks: { stepSize: 20, color: labelColor },
                 grid: { color: gridColor },
                 angleLines: { color: gridColor },
-                pointLabels: { color: labelColor, font: { size: 13, weight: '600' } }
+                pointLabels: { color: labelColor, font: { size: 11, weight: '600' } }
               }
             },
             plugins: { legend: { display: false } }
@@ -1332,7 +1518,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
     }, 150);
 
-    /* ── Share module ──────────────────────────────────────────── */
     let displayUrl = 'traffictorch.net';
     if (analysisType === 'url' && fullUrl) {
       let cleaned = fullUrl.replace(/^https?:\/\//i, '').replace(/^www\./i, '');
@@ -1352,7 +1537,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else failedMetricsShare.push(m.name);
     });
     moduleOrder.forEach(mod => {
-      const diags = getModuleDiagnostics(mod, d, phrase, fullUrl, aiSemantic);
+      const diags = getModuleDiagnostics(mod, d, phrase, fullUrl, aiSemantic, variations);
       diags.forEach(x => {
         if (x.status === '✅') passedMetrics.push(x.issue);
         else if (x.status === '❌') failedMetricsShare.push(x.issue);
@@ -1374,7 +1559,7 @@ document.addEventListener('DOMContentLoaded', () => {
       passedMetrics: passedMetrics,
       failedMetrics: failedMetricsShare,
       aiFixes: aiFixes,
-      rawData: { deterministic: deterministic.details, modules, topPriorityFixes, aiSemantic },
+      rawData: { deterministic: deterministic.details, modules, topPriorityFixes, aiSemantic, variations },
       shareLink: shareLink
     };
 
@@ -1390,7 +1575,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    /* ── Ask AI handler ────────────────────────────────────────── */
     const askBtn = document.getElementById('ask-ai-btn');
     const askInput = document.getElementById('ai-question-input');
     const answerContainer = document.getElementById('ai-answer-container');
@@ -1450,8 +1634,9 @@ document.addEventListener('DOMContentLoaded', () => {
               },
               targetKeyword: phrase,
               overallScore: yourScore,
-              deterministicScore: deterministic.score,
+              deterministicScore: deterministicContribution,
               aiContribution,
+              variationsContribution,
               scores: moduleScoresMap,
               flags: {
                 titleMatch: d.titleMatch > 0,
@@ -1475,6 +1660,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 name: f.issue, module: f.module, score: 0, impact: '', desc: f.how || ''
               })),
               aiSemantic: aiSemantic || null,
+              semanticVariations: variations || null,
               browserMetrics: null
             }
           };
@@ -1507,7 +1693,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    /* ── CMS Fixes handler ─────────────────────────────────────── */
     const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
     const cmsBadgeDot        = document.getElementById('cms-badge-dot');
     const cmsBadgeName       = document.getElementById('cms-badge-name');
@@ -1581,7 +1766,8 @@ document.addEventListener('DOMContentLoaded', () => {
             anchorText: modules.find(m => m.name === 'Anchor Text')?.score || 0,
             urlSchema: modules.find(m => m.name === 'URL & Schema')?.score || 0,
             technical: modules.find(m => m.name === 'Technical')?.score || 0,
-            aiSemantic: modules.find(m => m.name === 'AI Semantic Audit')?.score || 0
+            aiSemantic: modules.find(m => m.name === 'AI Semantic Audit')?.score || 0,
+            semanticCoverage: modules.find(m => m.name === 'Semantic Coverage')?.score || 0
           },
           priorityFixes: topPriorityFixes.slice(0, 3).map(f => ({
             module: f.module, name: f.issue, howToFix: f.how

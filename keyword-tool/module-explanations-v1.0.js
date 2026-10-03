@@ -62,6 +62,14 @@ const moduleExplanations = [
     what: 'Runs a Cloudflare Workers AI semantic audit against the target keyword. Predicts search intent, generates the entities and questions a top-ranking page would cover, and scores your page on entity coverage, AEO answerability, semantic depth, and E-E-A-T signals. This is the module that replaces the old keyword density check with something modern search engines actually value. <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#url-schema-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a>',
     how: 'An excerpt of your page (title, meta description, H1, headings, image alt text, schema types, and first ~3,500 characters of body content) is sent to a Cloudflare Workers AI endpoint running GLM-4.7-Flash. The model classifies intent, predicts expected entities and questions, and returns a weighted score. Results are cached against a content hash — any page edit produces a fresh analysis. <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#url-schema-how" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a>',
     why: 'Modern search rewards pages that fully answer the query, cover the right entities, and demonstrate experience, expertise, authoritativeness and trust. Exact-match keyword density was replaced years ago by semantic understanding. This module scores what actually matters in 2026: intent alignment, entity coverage, answerability, and E-E-A-T. It is weighted 30 out of 100 in the overall score. <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#url-schema-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a>'
+  },
+  {
+    id: 'semantic-coverage',
+    emoji: '🧭',
+    name: 'Semantic Coverage',
+    what: 'Runs each extracted placement (title, meta description, H1, H2s, image alts, internal anchors, URL slug) through a Cloudflare Workers AI classifier that judges whether the placement contains the target keyword exactly, as a semantic variant (e.g. "web developer" for "web design"), as a partial match, or not at all. <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#url-schema-what" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a>',
+    how: 'The deterministic layer extracts the placement strings — the AI never sees the raw HTML. The worker returns a verdict per placement: exact (100 pts), variant (80 pts), partial (30 pts), or absent (0 pts). Weighted average across all placements gives the module score. Title, H1, and URL slug carry more weight than individual alts or anchors. <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#url-schema-how" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a>',
+    why: 'Exact-match placement is still valuable, but modern search engines evaluate meaning, not just literal strings. This card measures how well your page covers the target topic across every placement — giving credit for natural variants like "web developer" when the keyword is "web design". It contributes 30 out of 100 points to the overall score. <a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/#url-schema-why" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Learn more →</a>'
   }
 ];
 
@@ -71,6 +79,16 @@ const moduleExplanations = [
    First matching pattern wins.
    ============================================================ */
 export const fixHints = [
+  /* ---- Semantic Coverage ---- */
+  { pattern: /semantic variations audit unavailable/i,
+    fix: 'The semantic variations layer could not be reached. This is temporary — re-run the audit in a moment. If the issue persists, check that your browser or network is not blocking the request to keyword-semantic-audit.traffictorch.workers.dev.' },
+  { pattern: /placement\(s\) with exact keyword/i,
+    fix: 'Exact-match placements are the strongest signal. If this is low, work the exact keyword into the title, H1, or URL slug first — those carry the most weight.' },
+  { pattern: /placement\(s\) with a variant/i,
+    fix: 'Variants (e.g. "web developer" for "web design") reinforce topical relevance without repeating the exact phrase. If this is 0, use one natural variant in an H2 or an internal anchor.' },
+  { pattern: /placement\(s\) partial or absent/i,
+    fix: 'Open the Semantic Coverage card for the full placement table. Prioritise title, H1, meta description, and at least one image alt. Aim for at least 3 placements containing the keyword or a close variant.' },
+
   /* ---- AI Semantic Audit ---- */
   { pattern: /ai semantic audit unavailable/i,
     fix: 'The AI semantic layer could not be reached. This is temporary — re-run the audit in a moment. If the issue persists, check that your browser or network is not blocking the request to keyword-semantic-audit.traffictorch.workers.dev.' },
