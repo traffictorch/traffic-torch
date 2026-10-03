@@ -571,7 +571,7 @@ div.prose p {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  padding: 2rem 0;
+  padding: 0rem 0;
   text-align: center;
 }
 
