@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" role="img" aria-label="Website owner avatar">
+  <defs>
+    <linearGradient id="ownerBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fb923c"/>
+      <stop offset="1" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="64" fill="url(#ownerBg)"/>
+  <!-- House / browser frame -->
+  <path d="M32 58 L64 34 L96 58 L96 94 L32 94 Z" fill="#ffffff" opacity="0.9"/>
+  <path d="M32 58 L64 34 L96 58" stroke="#ffffff" stroke-width="6" stroke-linejoin="round" fill="none"/>
+  <!-- Head -->
+  <circle cx="64" cy="68" r="10" fill="#fb923c"/>
+  <!-- Shoulders -->
+  <path d="M46 94 C46 82 82 82 82 94 Z" fill="#fb923c"/>
+  <!-- Browser dots -->
+  <circle cx="44" cy="50" r="2" fill="#fb923c"/>
+  <circle cx="52" cy="50" r="2" fill="#fb923c"/>
+  <circle cx="60" cy="50" r="2" fill="#fb923c"/>
+</svg>

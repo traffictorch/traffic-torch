@@ -110,7 +110,6 @@
       backdrop-filter: blur(4px);
     }
 
-    /* Password toggle SVG style */
     .password-toggle {
       position: absolute;
       right: 12px;
@@ -139,7 +138,6 @@
 
 <div x-data="dashboardApp()" x-init="initDashboard()" class="flex flex-1 min-h-screen">
 
-  <!-- ======== DASHBOARD ======== -->
   <div class="flex flex-1 min-h-screen">
 
     <!-- Desktop Sidebar -->
@@ -156,7 +154,6 @@
       </div>
     </aside>
 
-    <!-- Main Content -->
     <div class="flex-1 flex flex-col min-h-screen">
 
       <!-- Header -->
@@ -191,13 +188,157 @@
           </template>
         </div>
 
+        <!-- ===== PROFILE TAB ===== -->
+        <div x-show="activeDashboardTab === 'profile'" x-cloak>
+          <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
+
+            <h3 class="text-xl font-bold mb-6">👤 Your Profile</h3>
+
+            <div x-show="profile.loading" class="text-center py-8">
+              <div class="spinner mx-auto"></div>
+            </div>
+
+            <div x-show="!profile.loading" class="space-y-6">
+
+              <div>
+                <label class="block text-sm font-medium mb-3">Avatar</label>
+                <div class="grid grid-cols-3 gap-4">
+                  <template x-for="preset in ['owner','designer','seo']" :key="preset">
+                    <button type="button"
+                            @click="profile.avatar_preset = preset"
+                            class="p-4 rounded-2xl border-2 transition flex flex-col items-center gap-2"
+                            :class="profile.avatar_preset === preset
+                              ? 'border-orange-500 bg-orange-500/10'
+                              : 'border-gray-300 dark:border-gray-600 hover:border-orange-400'">
+                      <img :src="`/images/avatars/${preset}.svg`"
+                           :alt="preset"
+                           class="w-20 h-20 rounded-full"
+                           loading="lazy">
+                      <span class="text-sm font-medium capitalize" x-text="preset"></span>
+                    </button>
+                  </template>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Display name</label>
+                <input type="text" x-model="profile.display_name" maxlength="60"
+                       class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Username</label>
+                <input type="text" x-model="profile.username" maxlength="30" pattern="[a-z0-9_]+"
+                       class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50"
+                       placeholder="lowercase, numbers, underscore">
+                <p class="text-xs text-gray-500 mt-1">Your public URL: /u/<span x-text="profile.username || 'username'"></span>/</p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Role</label>
+                <select x-model="profile.role"
+                        class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                  <option value="owner">Website Owner</option>
+                  <option value="designer">Web Designer</option>
+                  <option value="seo">SEO Professional</option>
+                  <option value="developer">Developer</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Bio <span class="text-gray-500">(160 chars)</span></label>
+                <textarea x-model="profile.bio" maxlength="160" rows="2"
+                          class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50"></textarea>
+                <p class="text-xs text-gray-500 mt-1 text-right">
+                  <span x-text="(profile.bio || '').length"></span> / 160
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Website <span class="text-gray-500">(one link)</span></label>
+                <input type="url" x-model="profile.website_url" placeholder="https://example.com"
+                       class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                <p class="text-xs mt-1"
+                   :class="profile.website_approved ? 'text-green-500' : 'text-orange-500'"
+                   x-text="profile.website_approved ? 'Approved ✓' : 'Pending review — will not appear publicly until approved'"></p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Social link 1</label>
+                  <input type="url" x-model="profile.social1_url" placeholder="https://x.com/you"
+                         class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">Social link 2</label>
+                  <input type="url" x-model="profile.social2_url" placeholder="https://linkedin.com/in/you"
+                         class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Job title</label>
+                  <input type="text" x-model="profile.job_title" maxlength="60"
+                         class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">Company</label>
+                  <input type="text" x-model="profile.company" maxlength="60"
+                         class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">Location</label>
+                  <input type="text" x-model="profile.location" maxlength="60"
+                         class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                </div>
+              </div>
+
+              <div class="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <label class="flex items-center justify-between cursor-pointer">
+                  <span class="text-sm">Auto-share new audits to feed</span>
+                  <input type="checkbox" x-model="profile.auto_share" class="w-5 h-5">
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                  <span class="text-sm">Show my network on profile</span>
+                  <input type="checkbox" x-model="profile.show_network" class="w-5 h-5">
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                  <span class="text-sm">Allow others to add me to their network</span>
+                  <input type="checkbox" x-model="profile.allow_adds" class="w-5 h-5">
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                  <span class="text-sm">Public profile</span>
+                  <input type="checkbox" x-model="profile.profile_public" class="w-5 h-5">
+                </label>
+              </div>
+
+              <div class="flex gap-3 pt-4">
+                <button @click="saveProfile()" :disabled="profile.saving"
+                        class="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">
+                  <span x-show="!profile.saving">Save Profile</span>
+                  <span x-show="profile.saving">Saving…</span>
+                </button>
+                <a :href="'/u/' + (profile.username || '') + '/'"
+                   target="_blank"
+                   x-show="profile.username"
+                   class="px-5 py-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm font-medium flex items-center">
+                  View public →
+                </a>
+              </div>
+
+              <p x-show="profile.success" class="text-green-500 text-sm" x-text="profile.success"></p>
+              <p x-show="profile.error" class="text-red-500 text-sm" x-text="profile.error"></p>
+            </div>
+          </div>
+        </div>
+
         <!-- ===== DASHBOARD TAB ===== -->
         <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
 
-<!-- ===== EPIC CARDS: GA4 & GSC (no emoji, zeros for demo) ===== -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
 
-  <!-- GA4 Card -->
   <div class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
@@ -240,7 +381,6 @@
     </div>
   </div>
 
-  <!-- GSC Card -->
   <div class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
@@ -283,7 +423,6 @@
 
 </div>
 
-          <!-- Quick Audit -->
           <div class="glass rounded-2xl p-6 mb-8">
             <h3 class="text-xl font-bold mb-4">🚀 Quick Audit</h3>
             <div class="space-y-4">
@@ -316,11 +455,10 @@
             </div>
           </div>
 
-          <!-- Tool Cards Grid -->
           <h3 class="text-lg font-bold mt-12 mb-4">🔧 All Tools</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
             <a href="/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">📈</span><span class="text-sm font-medium">NUSA</span></a>
-			<a href="/ofux-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">📊</span><span class="text-sm font-medium">OFUX Tool</span></a>
+            <a href="/ofux-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">📊</span><span class="text-sm font-medium">OFUX Tool</span></a>
             <a href="/lighthouse-plus-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🗼</span><span class="text-sm font-medium">Lighthouse Plus</span></a>
             <a href="/aeo-performance-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🚀</span><span class="text-sm font-medium">AEO Performance</span></a>
             <a href="/seo-intent-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🎯</span><span class="text-sm font-medium">SEO Intent</span></a>
@@ -339,7 +477,6 @@
             <a href="/keyword-vs-tool/" class="tool-card glass rounded-xl p-4 text-center hover:bg-white/10 transition flex flex-col items-center"><span class="text-3xl mb-2">🆚</span><span class="text-sm font-medium">Keyword vs</span></a>
           </div>
 
-          <!-- Recent Audits -->
           <h3 class="text-lg font-bold mt-12 mb-4">📋 Recent Audits</h3>
           <div class="glass rounded-2xl overflow-hidden">
             <div class="overflow-x-auto">
@@ -371,93 +508,280 @@
             </div>
           </div>
           <div class="text-center mt-8">
-  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#dashboard-overview" 
-     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
-    📖 Read the Dashboard Help Guide →
-  </a>
-</div>
-<!-- Share -->
- <section class="share-block" aria-label="Share options">
-     <div class="share-row">
-        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
-        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-         </div>
-        <p class="share-status" aria-live="polite"></p>
-   </section>
+            <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#dashboard-overview"
+               class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
+              📖 Read the Dashboard Help Guide →
+            </a>
+          </div>
+          <section class="share-block" aria-label="Share options">
+            <div class="share-row">
+              <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+              <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+            </div>
+            <p class="share-status" aria-live="polite"></p>
+          </section>
         </div>
 
-<!-- ===== AUDITS TAB ===== -->
-<div x-show="activeDashboardTab === 'audits'" x-cloak>
-  <div class="glass rounded-2xl p-6">
-<!-- Daily Run Counter -->
-<div class="flex items-center justify-between mb-3 text-sm text-gray-600 dark:text-gray-400">
-  <span>
-    Daily Audits - Ask AI: <span class="font-bold text-orange-500" x-text="dailyUsedCount"></span> / 
-    <span class="font-bold" x-text="dailyLimit"></span>
-    <span class="ml-1 inline-block px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-200 dark:bg-gray-700"
-          x-text="user.tier === 'free' ? 'Free' : user.tier === 'pro' ? 'Pro' : user.tier === 'enterprise' ? 'Enterprise' : 'Guest'">
-    </span>
-  </span>
-  <span x-show="dailyUsedCount >= dailyLimit" class="text-red-500 font-medium">🚀 Limit reached – upgrade for more</span>
-</div>
+        <!-- ===== NETWORK TAB ===== -->
+        <div x-show="activeDashboardTab === 'network'" x-cloak>
 
-    <h3 class="text-xl font-bold mb-4">📋 Audit History</h3>
-    <div class="overflow-x-auto">
-      <table class="w-full text-left">
-        <tbody>
-          <template x-for="audit in displayedAudits" :key="audit.id || audit._localId">
-            <tr class="border-t border-gray-200 dark:border-gray-700">
-              <td colspan="5" class="p-4">
-                <div class="flex flex-col gap-2 w-full">
-                  <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                    <span x-text="new Date(audit.timestamp * (audit.timestamp < 10000000000 ? 1000 : 1)).toLocaleDateString()"></span>
-                    <span class="font-medium text-gray-900 dark:text-white" x-text="audit.tool"></span>
+          <div class="glass rounded-2xl p-4 mb-6 max-w-3xl mx-auto">
+            <div class="flex gap-2 flex-wrap">
+              <button @click="networkSubTab = 'feed'"
+                      class="px-4 py-2 rounded-lg text-sm font-medium transition"
+                      :class="networkSubTab === 'feed' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+                Feed
+              </button>
+              <button @click="networkSubTab = 'mine'; loadNetwork()"
+                      class="px-4 py-2 rounded-lg text-sm font-medium transition"
+                      :class="networkSubTab === 'mine' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+                My Network <span x-text="network.list.length ? '(' + network.list.length + ')' : ''"></span>
+              </button>
+              <button @click="networkSubTab = 'invite'"
+                      class="px-4 py-2 rounded-lg text-sm font-medium transition"
+                      :class="networkSubTab === 'invite' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+                Invite
+              </button>
+            </div>
+          </div>
+
+          <div x-show="networkSubTab === 'feed'" class="max-w-2xl mx-auto">
+
+            <div class="glass rounded-2xl p-3 mb-4 flex gap-2">
+              <template x-for="cat in ['ux','seo','aeo']" :key="cat">
+                <button @click="setFeedCategory(cat)"
+                        class="flex-1 py-2 rounded-lg text-sm font-bold uppercase tracking-wide transition"
+                        :class="feed.category === cat
+                          ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white'
+                          : 'text-gray-500 hover:text-orange-500'"
+                        x-text="cat">
+                </button>
+              </template>
+            </div>
+
+            <p class="text-xs text-gray-500 mb-3 text-center">
+              Audit slots used:
+              <span class="font-bold text-orange-500" x-text="feed.slots.used"></span> /
+              <span x-text="feed.slots.max"></span>
+              <span class="text-gray-400">· oldest post is replaced when full</span>
+            </p>
+
+            <div x-show="feed.loading" class="text-center py-8">
+              <div class="spinner mx-auto"></div>
+            </div>
+
+            <div x-show="!feed.loading && feed.posts.length === 0" class="glass rounded-2xl p-8 text-center">
+              <p class="text-4xl mb-3">📭</p>
+              <p class="text-gray-500">No posts in this category yet.</p>
+              <p class="text-sm text-gray-400 mt-2">Run an audit and click "Post to Community" to start.</p>
+            </div>
+
+            <div class="space-y-4">
+              <template x-for="post in feed.posts" :key="post.id">
+                <article class="glass rounded-2xl p-4">
+
+                  <div class="flex items-center gap-3 mb-3">
+                    <img :src="`/images/avatars/${post.avatar_preset || 'owner'}.svg`"
+                         :alt="post.display_name"
+                         class="w-10 h-10 rounded-full flex-shrink-0">
+                    <div class="flex-1 min-w-0">
+                      <p class="font-bold text-sm truncate">
+                        <a :href="'/u/' + post.username + '/'" class="hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                      </p>
+                      <p class="text-xs text-gray-500 capitalize">
+                        <span x-text="post.role || 'member'"></span>
+                        · <span x-text="new Date(post.created_at).toLocaleDateString()"></span>
+                      </p>
+                    </div>
+                    <button x-show="post.user_id !== user.id"
+                            @click="post.in_network ? removeFromNetwork(post.user_id) : addToNetwork(post.user_id)"
+                            class="text-xs px-3 py-1 rounded-full border transition"
+                            :class="post.in_network ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'"
+                            x-text="post.in_network ? 'In Your Network ✓' : 'Add to Network'">
+                    </button>
                   </div>
-                  <div class="text-sm break-all text-blue-600 dark:text-blue-400" x-text="audit.url"></div>
-                  <div class="flex gap-3 mt-1">
-                    <button @click="copyLink(audit)" class="text-blue-500 hover:underline text-sm">📋 Copy</button>
-                    <button @click="scanAgain(audit)" class="text-green-500 hover:underline text-sm">🔄 Scan</button>
-                    <button @click="deleteAudit(audit)" class="text-red-500 hover:underline text-sm">🗑️</button>
+
+                  <div class="flex items-center gap-3 mb-3 text-xs flex-wrap">
+                    <span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-500 uppercase font-bold"
+                          x-text="post.category"></span>
+                    <span class="font-medium" x-text="post.tool"></span>
+                    <span class="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-500 font-bold"
+                          x-text="post.score + '/100'"></span>
                   </div>
+
+                  <div class="mb-3">
+                    <p class="text-xs text-gray-500 mb-1">
+                      <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
+                    </p>
+                    <p x-show="post.note" class="text-sm leading-relaxed whitespace-pre-wrap" x-text="post.note"></p>
+                  </div>
+
+                  <div class="flex items-center gap-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs">
+                    <button @click="toggleComments(post.id)" class="text-gray-500 hover:text-orange-500">
+                      💬 <span x-text="post.comment_count || 0"></span>
+                    </button>
+                    <button @click="reportPost(post.id)" class="text-gray-500 hover:text-red-500">⚑ Report</button>
+                    <template x-if="post.user_id === user.id">
+                      <div class="flex gap-3 ml-auto">
+                        <button @click="editPost(post.id)" class="text-gray-500 hover:text-orange-500">Edit</button>
+                        <button @click="deletePost(post.id)" class="text-gray-500 hover:text-red-500">Delete</button>
+                      </div>
+                    </template>
+                  </div>
+
+                  <div x-show="feed.openComments[post.id]" class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+                    <template x-for="c in (feed.commentLists[post.id] || [])" :key="c.id">
+                      <div class="flex gap-2">
+                        <img :src="`/images/avatars/${c.avatar_preset || 'owner'}.svg`"
+                             class="w-8 h-8 rounded-full flex-shrink-0" alt="">
+                        <div class="flex-1">
+                          <p class="text-xs">
+                            <span class="font-bold" x-text="c.display_name || c.username"></span>
+                            <span class="text-gray-500 ml-2" x-text="new Date(c.created_at).toLocaleDateString()"></span>
+                          </p>
+                          <p class="text-sm mt-0.5" x-text="c.body"></p>
+                        </div>
+                      </div>
+                    </template>
+                    <div class="flex gap-2">
+                      <input type="text" maxlength="360"
+                             x-model="feed.commentDrafts[post.id]"
+                             @keydown.enter="submitComment(post.id)"
+                             placeholder="Add a comment… (360 chars)"
+                             class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                      <button @click="submitComment(post.id)"
+                              class="px-4 py-2 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition">
+                        Post
+                      </button>
+                    </div>
+                  </div>
+
+                </article>
+              </template>
+            </div>
+
+            <div x-show="feed.hasMore && !feed.loading" class="text-center mt-6">
+              <button @click="loadMoreFeed()" :disabled="feed.loadingMore"
+                      class="px-6 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm">
+                <span x-show="!feed.loadingMore">Load more</span>
+                <span x-show="feed.loadingMore">Loading…</span>
+              </button>
+            </div>
+
+            <p x-show="feed.error" class="text-red-500 text-center text-sm mt-4" x-text="feed.error"></p>
+          </div>
+
+          <div x-show="networkSubTab === 'mine'" class="max-w-2xl mx-auto glass rounded-2xl p-6">
+            <h3 class="text-lg font-bold mb-4">Your Network</h3>
+
+            <input type="text" x-model="network.search" placeholder="Search your network…"
+                   class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+
+            <div class="space-y-3">
+              <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
+                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
+                  <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`"
+                       class="w-10 h-10 rounded-full" alt="">
+                  <div class="flex-1 min-w-0">
+                    <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block"
+                       x-text="u.display_name || u.username"></a>
+                    <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
+                  </div>
+                  <button @click="removeFromNetwork(u.id)"
+                          class="text-xs text-red-500 hover:underline">Remove</button>
                 </div>
-              </td>
-            </tr>
-          </template>
-          <tr x-show="recentAudits.length === 0">
-            <td colspan="5" class="p-6 text-center text-gray-500">No audits saved yet.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="mt-4 text-center">
-      <template x-if="recentAudits.length > displayCount">
-<button @click="loadMoreAudits()"
-        class="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
-        x-text="user.tier === 'enterprise' ? 'Show more' : 'Load more'">
-</button>
-      </template>
-    </div>
-  </div>
-  <div class="text-center mt-8">
-  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#audit-history" 
-     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
-    📖 Read the Audit History Help Guide →
-  </a>
-</div>
-<!-- Share -->
- <section class="share-block" aria-label="Share options">
-     <div class="share-row">
-        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
-        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-         </div>
-        <p class="share-status" aria-live="polite"></p>
-   </section>
-</div>
+              </template>
+              <p x-show="network.list.length === 0" class="text-gray-500 text-sm text-center py-6">
+                No one yet. Add people from the feed.
+              </p>
+            </div>
+          </div>
+
+          <div x-show="networkSubTab === 'invite'" class="max-w-md mx-auto glass rounded-2xl p-6">
+            <h3 class="text-lg font-bold mb-2">Invite a colleague</h3>
+            <p class="text-sm text-gray-500 mb-4">Send them a link to sign up. No rewards, just a friendly nudge.</p>
+            <div class="flex gap-2">
+              <input type="email" x-model="network.inviteEmail" placeholder="colleague@example.com"
+                     class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+              <button @click="inviteColleague()"
+                      class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-medium">
+                Send
+              </button>
+            </div>
+            <p x-show="network.inviteStatus" class="text-sm mt-3" x-text="network.inviteStatus"></p>
+          </div>
+
+        </div>
+
+        <!-- ===== AUDITS TAB ===== -->
+        <div x-show="activeDashboardTab === 'audits'" x-cloak>
+          <div class="glass rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-3 text-sm text-gray-600 dark:text-gray-400">
+              <span>
+                Daily Audits - Ask AI: <span class="font-bold text-orange-500" x-text="dailyUsedCount"></span> /
+                <span class="font-bold" x-text="dailyLimit"></span>
+                <span class="ml-1 inline-block px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-200 dark:bg-gray-700"
+                      x-text="user.tier === 'free' ? 'Free' : user.tier === 'pro' ? 'Pro' : user.tier === 'enterprise' ? 'Enterprise' : 'Guest'">
+                </span>
+              </span>
+              <span x-show="dailyUsedCount >= dailyLimit" class="text-red-500 font-medium">🚀 Limit reached – upgrade for more</span>
+            </div>
+
+            <h3 class="text-xl font-bold mb-4">📋 Audit History</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <tbody>
+                  <template x-for="audit in displayedAudits" :key="audit.id || audit._localId">
+                    <tr class="border-t border-gray-200 dark:border-gray-700">
+                      <td colspan="5" class="p-4">
+                        <div class="flex flex-col gap-2 w-full">
+                          <div class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                            <span x-text="new Date(audit.timestamp * (audit.timestamp < 10000000000 ? 1000 : 1)).toLocaleDateString()"></span>
+                            <span class="font-medium text-gray-900 dark:text-white" x-text="audit.tool"></span>
+                          </div>
+                          <div class="text-sm break-all text-blue-600 dark:text-blue-400" x-text="audit.url"></div>
+                          <div class="flex gap-3 mt-1">
+                            <button @click="copyLink(audit)" class="text-blue-500 hover:underline text-sm">📋 Copy</button>
+                            <button @click="scanAgain(audit)" class="text-green-500 hover:underline text-sm">🔄 Scan</button>
+                            <button @click="deleteAudit(audit)" class="text-red-500 hover:underline text-sm">🗑️</button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </template>
+                  <tr x-show="recentAudits.length === 0">
+                    <td colspan="5" class="p-6 text-center text-gray-500">No audits saved yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mt-4 text-center">
+              <template x-if="recentAudits.length > displayCount">
+                <button @click="loadMoreAudits()"
+                        class="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
+                        x-text="user.tier === 'enterprise' ? 'Show more' : 'Load more'">
+                </button>
+              </template>
+            </div>
+          </div>
+          <div class="text-center mt-8">
+            <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#audit-history"
+               class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
+              📖 Read the Audit History Help Guide →
+            </a>
+          </div>
+          <section class="share-block" aria-label="Share options">
+            <div class="share-row">
+              <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+              <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+            </div>
+            <p class="share-status" aria-live="polite"></p>
+          </section>
+        </div>
 
         <!-- ===== ANALYTICS TAB ===== -->
         <div x-show="activeDashboardTab === 'analytics'" x-cloak>
           <div class="glass rounded-2xl p-2 max-w-6xl mx-auto">
-            <!-- Header -->
             <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
               <h3 class="text-xl font-bold">📊 Google Analytics 4</h3>
               <div class="flex flex-wrap items-center gap-3">
@@ -500,7 +824,6 @@
             </div>
 
             <div x-show="!ga4.loading">
-              <!-- Stats Cards -->
               <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                 <div class="text-center">
                   <p class="text-sm text-gray-500">Sessions</p>
@@ -526,14 +849,12 @@
                 </div>
               </div>
 
-              <!-- Overview Chart -->
               <div><canvas id="analyticsChart" height="150"></canvas></div>
 
-              <!-- New vs Returning Users – Doughnut -->
-<div class="w-full max-w-[320px] mx-auto mt-6 h-72">
-  <canvas id="newVsReturningChart"></canvas>
-</div>
-              <!-- CTA for guests / not connected -->
+              <div class="w-full max-w-[320px] mx-auto mt-6 h-72">
+                <canvas id="newVsReturningChart"></canvas>
+              </div>
+
               <div x-show="!isAuthenticated" class="mt-6 text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <p class="text-sm text-gray-700 dark:text-gray-300">Sign up to connect your own GA4 property and see real data.</p>
                 <a href="/login/" class="mt-2 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Create Account</a>
@@ -543,63 +864,56 @@
                 <button @click="connectGA4()" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Connect GA4</button>
               </div>
 
-<!-- ======== TOP CONTENT ======== -->
-<div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
-     class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-  <div class="flex justify-between items-center mb-3">
-    <h4 class="text-lg font-semibold">📄 Top Content</h4>
-    <button x-show="user.tier !== 'free'" @click="exportCSV('topContent')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
-  </div>
-  <div x-show="ga4.topContent.length > 0">
-    <!-- Unified Card Layout (same on all devices) -->
-    <div class="space-y-3">
-      <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
-        <div class="glass rounded-xl p-3 space-y-1">
-          <div class="text-sm font-medium break-words" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></div>
-          <div class="text-xs text-gray-500">
-            <span>Views: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span>
-          </div>
-          <div class="text-xs text-gray-500">
-            <span>Avg Duration: <span class="font-medium text-gray-900 dark:text-white" x-text="Math.round(item.metrics[1]) + 's'"></span></span>
-          </div>
-        </div>
-      </template>
-    </div>
-    <!-- Pagination -->
-    <div x-show="ga4.topContent.length > ga4.topPageSize" class="mt-3 flex items-center justify-center gap-2">
-      <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)" :disabled="ga4.topOffset === 0">← Previous</button>
-      <span class="text-sm text-gray-600 dark:text-gray-400">
-        <span x-text="Math.floor(ga4.topOffset / ga4.topPageSize) + 1"></span> /
-        <span x-text="Math.ceil(ga4.topContent.length / ga4.topPageSize)"></span>
-      </span>
-      <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.topContent.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)" :disabled="ga4.topOffset + ga4.topPageSize >= ga4.topContent.length">Next →</button>
-    </div>
-  </div>
-  <div x-show="ga4.topContent.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No content data available.</div>
-</div>
+              <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
+                   class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex justify-between items-center mb-3">
+                  <h4 class="text-lg font-semibold">📄 Top Content</h4>
+                  <button x-show="user.tier !== 'free'" @click="exportCSV('topContent')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+                </div>
+                <div x-show="ga4.topContent.length > 0">
+                  <div class="space-y-3">
+                    <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
+                      <div class="glass rounded-xl p-3 space-y-1">
+                        <div class="text-sm font-medium break-words" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></div>
+                        <div class="text-xs text-gray-500">
+                          <span>Views: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span>
+                        </div>
+                        <div class="text-xs text-gray-500">
+                          <span>Avg Duration: <span class="font-medium text-gray-900 dark:text-white" x-text="Math.round(item.metrics[1]) + 's'"></span></span>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                  <div x-show="ga4.topContent.length > ga4.topPageSize" class="mt-3 flex items-center justify-center gap-2">
+                    <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)" :disabled="ga4.topOffset === 0">← Previous</button>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                      <span x-text="Math.floor(ga4.topOffset / ga4.topPageSize) + 1"></span> /
+                      <span x-text="Math.ceil(ga4.topContent.length / ga4.topPageSize)"></span>
+                    </span>
+                    <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.topContent.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)" :disabled="ga4.topOffset + ga4.topPageSize >= ga4.topContent.length">Next →</button>
+                  </div>
+                </div>
+                <div x-show="ga4.topContent.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No content data available.</div>
+              </div>
 
-              <!-- ======== TRAFFIC SOURCES ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">📊 Traffic Sources</h4>
                 <div x-show="ga4.sources.length > 0">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-  <!-- Pie: centred, capped width, real height -->
-  <div class="flex justify-center">
-    <div class="w-full max-w-[320px] h-72">
-      <canvas id="sourcesPieChart"></canvas>
-    </div>
-  </div>
-  <!-- Bar: only shows when there are key events to plot -->
-  <div x-show="ga4.hasKeyEvents" class="h-72">
-    <canvas id="sourcesBarChart"></canvas>
-  </div>
-    </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex justify-center">
+                      <div class="w-full max-w-[320px] h-72">
+                        <canvas id="sourcesPieChart"></canvas>
+                      </div>
+                    </div>
+                    <div x-show="ga4.hasKeyEvents" class="h-72">
+                      <canvas id="sourcesBarChart"></canvas>
+                    </div>
+                  </div>
                 </div>
                 <div x-show="ga4.sources.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No traffic source data available.</div>
               </div>
-              
-             <!-- ======== GEOGRAPHIC ======== -->
+
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">🌍 Geographic Breakdown</h4>
@@ -610,7 +924,6 @@
                 <div x-show="ga4.countries.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No geographic data available.</div>
               </div>
 
-              <!-- ======== DEVICE BREAKDOWN ======== -->
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
                    class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">📱 Device Breakdown</h4>
@@ -618,66 +931,62 @@
                 <div x-show="ga4.devices.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No device data available.</div>
               </div>
 
-<!-- ======== TOP CONVERTING PAGES ======== -->
-<div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
-     class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-  <div class="flex justify-between items-center mb-3">
-    <h4 class="text-lg font-semibold">🎯 Top Converting Pages</h4>
-    <button x-show="user.tier !== 'free'" @click="exportCSV('convertingPages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
-  </div>
-  <div x-show="ga4.convertingPages.length > 0">
-    <!-- Unified Card Layout (same on all devices) -->
-    <div class="space-y-3">
-      <template x-for="(item, idx) in ga4.convertingPages.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="idx">
-        <div class="glass rounded-xl p-3 space-y-1">
-          <div class="text-sm font-medium break-words" x-text="item.dimensions[1] || item.dimensions[0]"></div>
-          <div class="text-xs text-gray-500">
-            <span>Key Events: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span>
-          </div>
-          <div class="text-xs text-gray-500">
-            <span>Conv Rate: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.metrics[0] / (item.metrics[1] || 1) * 100).toFixed(1) + '%'"></span></span>
-          </div>
-        </div>
-      </template>
-    </div>
-    <!-- Pagination (reuses same pagination as Top Content) -->
-    <div x-show="ga4.convertingPages.length > ga4.topPageSize" class="mt-3 flex items-center justify-center gap-2">
-      <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)" :disabled="ga4.topOffset === 0">← Previous</button>
-      <span class="text-sm text-gray-600 dark:text-gray-400">
-        <span x-text="Math.floor(ga4.topOffset / ga4.topPageSize) + 1"></span> /
-        <span x-text="Math.ceil(ga4.convertingPages.length / ga4.topPageSize)"></span>
-      </span>
-      <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.convertingPages.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)" :disabled="ga4.topOffset + ga4.topPageSize >= ga4.convertingPages.length">Next →</button>
-    </div>
-  </div>
-  <div x-show="ga4.convertingPages.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No conversion data available.</div>
-</div>
+              <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')"
+                   class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex justify-between items-center mb-3">
+                  <h4 class="text-lg font-semibold">🎯 Top Converting Pages</h4>
+                  <button x-show="user.tier !== 'free'" @click="exportCSV('convertingPages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
+                </div>
+                <div x-show="ga4.convertingPages.length > 0">
+                  <div class="space-y-3">
+                    <template x-for="(item, idx) in ga4.convertingPages.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="idx">
+                      <div class="glass rounded-xl p-3 space-y-1">
+                        <div class="text-sm font-medium break-words" x-text="item.dimensions[1] || item.dimensions[0]"></div>
+                        <div class="text-xs text-gray-500">
+                          <span>Key Events: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span>
+                        </div>
+                        <div class="text-xs text-gray-500">
+                          <span>Conv Rate: <span class="font-medium text-gray-900 dark:text-white" x-text="(item.metrics[0] / (item.metrics[1] || 1) * 100).toFixed(1) + '%'"></span></span>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                  <div x-show="ga4.convertingPages.length > ga4.topPageSize" class="mt-3 flex items-center justify-center gap-2">
+                    <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)" :disabled="ga4.topOffset === 0">← Previous</button>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                      <span x-text="Math.floor(ga4.topOffset / ga4.topPageSize) + 1"></span> /
+                      <span x-text="Math.ceil(ga4.convertingPages.length / ga4.topPageSize)"></span>
+                    </span>
+                    <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.convertingPages.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)" :disabled="ga4.topOffset + ga4.topPageSize >= ga4.convertingPages.length">Next →</button>
+                  </div>
+                </div>
+                <div x-show="ga4.convertingPages.length === 0 && ga4.connected" class="text-center text-gray-500 py-4">No conversion data available.</div>
+              </div>
 
-            </div><!-- end !loading -->
+            </div>
           </div>
           <div class="text-center mt-8">
-  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#analytics-tab" 
-     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
-    📖 Read the Analytics Help Guide →
-  </a>
-</div>
-<!-- Share -->
- <section class="share-block" aria-label="Share options">
-     <div class="share-row">
-        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
-        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-         </div>
-        <p class="share-status" aria-live="polite"></p>
-   </section>
+            <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#analytics-tab"
+               class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
+              📖 Read the Analytics Help Guide →
+            </a>
+          </div>
+          <section class="share-block" aria-label="Share options">
+            <div class="share-row">
+              <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+              <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+            </div>
+            <p class="share-status" aria-live="polite"></p>
+          </section>
         </div>
 
-        <!-- ===== REAL‑TIME TAB (Enterprise only) ===== -->
+        <!-- ===== REAL‑TIME TAB ===== -->
         <div x-show="activeDashboardTab === 'realtime'" x-cloak>
           <div class="glass rounded-2xl p-2 max-w-6xl mx-auto">
-<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 mb-4">
-  <h3 class="text-xl font-bold">🔴 Real‑time <span class="text-sm font-normal text-gray-500">(last 30 min, auto‑updates every 15s)</span></h3>
-  <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
-</div>
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 mb-4">
+              <h3 class="text-xl font-bold">🔴 Real‑time <span class="text-sm font-normal text-gray-500">(last 30 min, auto‑updates every 15s)</span></h3>
+              <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
+            </div>
             <div x-show="user.tier !== 'enterprise'" class="text-center py-8 text-gray-500">
               Real‑time is available for Enterprise users. <a href="/upgrade/" class="text-orange-500 hover:underline">Upgrade here</a>.
             </div>
@@ -697,26 +1006,23 @@
             </template>
           </div>
           <div class="text-center mt-8">
-  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#realtime-tab" 
-     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
-    📖 Read the Real‑time Help Guide →
-  </a>
-</div>
-<!-- Share -->
- <section class="share-block" aria-label="Share options">
-     <div class="share-row">
-        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
-        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-         </div>
-        <p class="share-status" aria-live="polite"></p>
-   </section>
+            <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#realtime-tab"
+               class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
+              📖 Read the Real‑time Help Guide →
+            </a>
+          </div>
+          <section class="share-block" aria-label="Share options">
+            <div class="share-row">
+              <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+              <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+            </div>
+            <p class="share-status" aria-live="polite"></p>
+          </section>
         </div>
-        
 
-        <!-- ===== SEARCH CONSOLE TAB (GSC) – WITH DEMO DATA ===== -->
+        <!-- ===== GSC TAB ===== -->
         <div x-show="activeDashboardTab === 'gsc'" x-cloak>
           <div class="glass rounded-2xl p-2 max-w-6xl mx-auto">
-            <!-- Header -->
             <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
               <h3 class="text-xl font-bold">🔍 Search Console</h3>
               <div class="flex flex-wrap items-center gap-3">
@@ -752,7 +1058,6 @@
             </div>
 
             <div x-show="!gsc.loading">
-              <!-- Stats Cards -->
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="text-center">
                   <p class="text-sm text-gray-500">Total Clicks</p>
@@ -776,10 +1081,8 @@
                 </div>
               </div>
 
-              <!-- Trend Chart -->
               <div><canvas id="gscTrendChart" height="150"></canvas></div>
 
-              <!-- Top Queries -->
               <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <div class="flex justify-between items-center mb-3">
                   <h4 class="text-lg font-semibold">🔎 Top Queries</h4>
@@ -803,7 +1106,6 @@
                 <div x-show="gsc.queries.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No query data available.</div>
               </div>
 
-              <!-- Top Pages -->
               <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <div class="flex justify-between items-center mb-3">
                   <h4 class="text-lg font-semibold">📄 Top Pages</h4>
@@ -827,7 +1129,6 @@
                 <div x-show="gsc.pages.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No page data available.</div>
               </div>
 
-              <!-- Countries & Devices -->
               <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h4 class="text-lg font-semibold mb-3 text-center">🌍 Top Countries</h4>
@@ -836,16 +1137,15 @@
                 </div>
                 <div>
                   <h4 class="text-lg font-semibold mb-3 text-center">📱 Devices</h4>
-<div x-show="gsc.devices.length > 0" class="flex justify-center items-center">
-  <div class="w-full max-w-[300px] h-72">
-    <canvas id="gscDevicesChart"></canvas>
-  </div>
-</div>
+                  <div x-show="gsc.devices.length > 0" class="flex justify-center items-center">
+                    <div class="w-full max-w-[300px] h-72">
+                      <canvas id="gscDevicesChart"></canvas>
+                    </div>
+                  </div>
                   <div x-show="gsc.devices.length === 0 && gsc.connected" class="text-center text-gray-500 py-4">No device data.</div>
                 </div>
               </div>
 
-              <!-- Guest / not connected CTA -->
               <div x-show="!isAuthenticated" class="mt-6 text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <p class="text-sm text-gray-700 dark:text-gray-300">Sign up to connect your Search Console and see your data.</p>
                 <a href="/login/" class="mt-2 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Create Account</a>
@@ -854,372 +1154,348 @@
                 <p class="text-sm text-gray-700 dark:text-gray-300">Connect your Search Console property to see your data.</p>
                 <button @click="connectGSC()" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Connect GSC</button>
               </div>
-            </div><!-- end !loading -->
+            </div>
           </div>
           <div class="text-center mt-8">
-  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#gsc-tab" 
-     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
-    📖 Read the GSC Help Guide →
-  </a>
-</div>
-<!-- Share -->
- <section class="share-block" aria-label="Share options">
-     <div class="share-row">
-        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
-        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-         </div>
-        <p class="share-status" aria-live="polite"></p>
-   </section>
-        </div>
-
- <!-- ===== INTEGRATIONS TAB ===== -->
-<div x-show="activeDashboardTab === 'integrations'" x-cloak>
-  <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
-    <h3 class="text-xl font-bold mb-6">🔗 Integrations</h3>
-
-    <!-- ===== GA4 CONNECTION CARD ===== -->
-    <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl mb-4 transition hover:bg-white/5 dark:hover:bg-white/5">
-      <div class="flex-1 min-w-[150px]">
-        <div class="flex items-center gap-4 mb-1">
-          <span class="text-2xl">📊</span>
-          <span class="font-bold text-lg">GA4</span>
-          <span x-show="ga4.connected" class="inline-flex items-center px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
-          <span x-show="!ga4.connected && isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
-          <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
-        </div>
-        <div class="text-sm text-gray-500 dark:text-gray-400 space-y-0.5">
-          <template x-if="ga4.connected">
-            <div>
-              <span class="font-medium">Property ID:</span>
-              <span x-text="user.ga4_property_id || '—'"></span>
+            <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#gsc-tab"
+               class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
+              📖 Read the GSC Help Guide →
+            </a>
+          </div>
+          <section class="share-block" aria-label="Share options">
+            <div class="share-row">
+              <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+              <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
             </div>
-          </template>
-          <div x-show="ga4.lastUpdated" class="text-xs">
-            Last sync: <span x-text="ga4.lastUpdated"></span>
-          </div>
-          <div x-show="!ga4.lastUpdated && !ga4.connected && !isAuthenticated" class="text-xs">
-            Last sync: demo data
-          </div>
+            <p class="share-status" aria-live="polite"></p>
+          </section>
         </div>
-      </div>
-      <div class="flex gap-2 mt-3 sm:mt-0">
-        <button x-show="!ga4.connected && isAuthenticated" @click="connectGA4()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">Connect</button>
-        <button x-show="ga4.connected" @click="disconnectGA4()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition">Disconnect</button>
-        <button x-show="ga4.connected" @click="refreshGA4()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">↻ Refresh</button>
-      </div>
-    </div>
 
+        <!-- ===== INTEGRATIONS TAB ===== -->
+        <div x-show="activeDashboardTab === 'integrations'" x-cloak>
+          <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
+            <h3 class="text-xl font-bold mb-6">🔗 Integrations</h3>
 
-    <!-- ===== GSC CONNECTION CARD ===== -->
-    <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl mb-6 transition hover:bg-white/5 dark:hover:bg-white/5">
-      <div class="flex-1 min-w-[150px]">
-        <div class="flex items-center gap-4 mb-1">
-          <span class="text-2xl">🔍</span>
-          <span class="font-bold text-lg">GSC</span>
-          <span x-show="gsc.connected" class="inline-flex items-center px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
-          <span x-show="!gsc.connected && isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
-          <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
-        </div>
-        <div class="text-sm text-gray-500 dark:text-gray-400 space-y-0.5">
-          <template x-if="gsc.connected">
-            <div>
-              <span class="font-medium">Site URL:</span>
-              <span x-text="user.gscSiteUrl || '—'"></span>
+            <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl mb-4 transition hover:bg-white/5 dark:hover:bg-white/5">
+              <div class="flex-1 min-w-[150px]">
+                <div class="flex items-center gap-4 mb-1">
+                  <span class="text-2xl">📊</span>
+                  <span class="font-bold text-lg">GA4</span>
+                  <span x-show="ga4.connected" class="inline-flex items-center px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
+                  <span x-show="!ga4.connected && isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
+                  <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400 space-y-0.5">
+                  <template x-if="ga4.connected">
+                    <div>
+                      <span class="font-medium">Property ID:</span>
+                      <span x-text="user.ga4_property_id || '—'"></span>
+                    </div>
+                  </template>
+                  <div x-show="ga4.lastUpdated" class="text-xs">
+                    Last sync: <span x-text="ga4.lastUpdated"></span>
+                  </div>
+                  <div x-show="!ga4.lastUpdated && !ga4.connected && !isAuthenticated" class="text-xs">
+                    Last sync: demo data
+                  </div>
+                </div>
+              </div>
+              <div class="flex gap-2 mt-3 sm:mt-0">
+                <button x-show="!ga4.connected && isAuthenticated" @click="connectGA4()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">Connect</button>
+                <button x-show="ga4.connected" @click="disconnectGA4()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition">Disconnect</button>
+                <button x-show="ga4.connected" @click="refreshGA4()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">↻ Refresh</button>
+              </div>
             </div>
-          </template>
-          <div x-show="gsc.lastUpdated" class="text-xs">
-            Last sync: <span x-text="gsc.lastUpdated"></span>
-          </div>
-          <div x-show="!gsc.lastUpdated && !gsc.connected && !isAuthenticated" class="text-xs">
-            Last sync: demo data
+
+            <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl mb-6 transition hover:bg-white/5 dark:hover:bg-white/5">
+              <div class="flex-1 min-w-[150px]">
+                <div class="flex items-center gap-4 mb-1">
+                  <span class="text-2xl">🔍</span>
+                  <span class="font-bold text-lg">GSC</span>
+                  <span x-show="gsc.connected" class="inline-flex items-center px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
+                  <span x-show="!gsc.connected && isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
+                  <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
+                </div>
+                <div class="text-sm text-gray-500 dark:text-gray-400 space-y-0.5">
+                  <template x-if="gsc.connected">
+                    <div>
+                      <span class="font-medium">Site URL:</span>
+                      <span x-text="user.gscSiteUrl || '—'"></span>
+                    </div>
+                  </template>
+                  <div x-show="gsc.lastUpdated" class="text-xs">
+                    Last sync: <span x-text="gsc.lastUpdated"></span>
+                  </div>
+                  <div x-show="!gsc.lastUpdated && !gsc.connected && !isAuthenticated" class="text-xs">
+                    Last sync: demo data
+                  </div>
+                </div>
+              </div>
+              <div class="flex gap-2 mt-3 sm:mt-0">
+                <button x-show="!gsc.connected && isAuthenticated" @click="connectGSC()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">Connect</button>
+                <button x-show="gsc.connected" @click="disconnectGSC()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition">Disconnect</button>
+                <button x-show="gsc.connected" @click="fetchGSCReport()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">↻ Refresh</button>
+              </div>
+            </div>
+
+            <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+              <h4 class="text-lg font-semibold mb-3">🔌 API Integration Details</h4>
+              <p class="text-sm text-gray-500 mb-4">REST API endpoints for developers – integrate Traffic Torch into your own tools and workflows.</p>
+
+              <div class="overflow-x-auto mb-6">
+                <table class="w-full text-sm text-left">
+                  <thead class="border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                      <th class="py-2 pr-4 font-semibold">Endpoint</th>
+                      <th class="py-2 pr-4 font-semibold">Method</th>
+                      <th class="py-2 pr-4 font-semibold">Description</th>
+                      <th class="py-2 font-semibold">Auth</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="border-t border-gray-100 dark:border-gray-800">
+                      <td class="py-2 pr-4 font-mono text-xs">/api/check-rate</td>
+                      <td class="py-2 pr-4">POST</td>
+                      <td class="py-2 pr-4">Check daily run limit &amp; increment usage</td>
+                      <td class="py-2">Bearer token</td>
+                    </tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800">
+                      <td class="py-2 pr-4 font-mono text-xs">/api/account-info</td>
+                      <td class="py-2 pr-4">GET</td>
+                      <td class="py-2 pr-4">Get user account status, tier, daily usage</td>
+                      <td class="py-2">Bearer token</td>
+                    </tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800">
+                      <td class="py-2 pr-4 font-mono text-xs">/api/ga4/cached-report</td>
+                      <td class="py-2 pr-4">GET</td>
+                      <td class="py-2 pr-4">Fetch GA4 data (overview, top content, sources, etc.)</td>
+                      <td class="py-2">Bearer token</td>
+                    </tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800">
+                      <td class="py-2 pr-4 font-mono text-xs">/api/gsc/cached-report</td>
+                      <td class="py-2 pr-4">GET</td>
+                      <td class="py-2 pr-4">Fetch GSC data (overview, queries, pages, etc.)</td>
+                      <td class="py-2">Bearer token</td>
+                    </tr>
+                    <tr class="border-t border-gray-100 dark:border-gray-800">
+                      <td class="py-2 pr-4 font-mono text-xs">/api/audit-history</td>
+                      <td class="py-2 pr-4">GET / POST</td>
+                      <td class="py-2 pr-4">Retrieve or save audit history</td>
+                      <td class="py-2">Bearer token</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-4">
+                <h5 class="font-semibold mb-2">📊 Rate Limits (per day)</h5>
+                <div class="grid grid-cols-3 gap-4 text-sm">
+                  <div><span class="text-gray-500">Free:</span> <span class="font-bold">3</span> requests</div>
+                  <div><span class="text-gray-500">Pro:</span> <span class="font-bold">25</span> requests</div>
+                  <div><span class="text-gray-500">Enterprise:</span> <span class="font-bold">300</span> requests</div>
+                </div>
+              </div>
+
+              <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-4">
+                <h5 class="font-semibold mb-2">🔐 Authentication</h5>
+                <p class="text-sm text-gray-600 dark:text-gray-300">All API requests require a Bearer token obtained after login.</p>
+                <pre class="mt-2 text-xs bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>Authorization: Bearer YOUR_JWT_TOKEN</code></pre>
+              </div>
+
+              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl transition hover:bg-white/5 dark:hover:bg-white/5 gap-4 sm:gap-0">
+                  <div class="w-full sm:flex-1">
+                    <div class="flex items-center gap-4 mb-1">
+                      <span class="text-2xl flex-shrink-0">🧑‍💻</span>
+                      <span class="font-bold text-lg break-words">Developer API</span>
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 break-words">
+                      Programmatically run all 15 audit tools, retrieve results, and manage your API keys.
+                    </p>
+                  </div>
+                  <a href="/integrations/developer/api/" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition whitespace-nowrap w-full sm:w-auto text-center">
+                    Go to API Docs →
+                  </a>
+                </div>
+              </div>
+
+              <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 class="text-lg font-semibold mb-3">🛠️ Tool Access</h4>
+                <p class="text-sm text-gray-500 mb-3">All tools are available for every plan. Your daily run limit depends on your tier.</p>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm text-left">
+                    <thead class="border-b border-gray-200 dark:border-gray-700">
+                      <tr><th class="py-2 pr-4">Tool</th><th class="py-2 pr-4">Free</th><th class="py-2 pr-4">Pro</th><th class="py-2">Enterprise</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">OFUX Tool</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Lighthouse Plus</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">AEO Performance</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">SEO Intent</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">SEO + UX</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Local SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Product SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Entity Extractor</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Topical Authority</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Schema Generator</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">AEO / AI Search</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Voice Search</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">AI Content Audit</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Quit Risk</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Research</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Placement</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                      <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword vs</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Daily run limits: Free = 3, Pro = 25, Enterprise = 300</p>
+              </div>
+
           </div>
         </div>
-      </div>
-      <div class="flex gap-2 mt-3 sm:mt-0">
-        <button x-show="!gsc.connected && isAuthenticated" @click="connectGSC()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">Connect</button>
-        <button x-show="gsc.connected" @click="disconnectGSC()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition">Disconnect</button>
-        <button x-show="gsc.connected" @click="fetchGSCReport()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">↻ Refresh</button>
-      </div>
-    </div>
-
-    <!-- ===== API INTEGRATION DETAILS (for developers) ===== -->
-    <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-      <h4 class="text-lg font-semibold mb-3">🔌 API Integration Details</h4>
-      <p class="text-sm text-gray-500 mb-4">REST API endpoints for developers – integrate Traffic Torch into your own tools and workflows.</p>
-
-      <!-- API Endpoints Table -->
-      <div class="overflow-x-auto mb-6">
-        <table class="w-full text-sm text-left">
-          <thead class="border-b border-gray-200 dark:border-gray-700">
-            <tr>
-              <th class="py-2 pr-4 font-semibold">Endpoint</th>
-              <th class="py-2 pr-4 font-semibold">Method</th>
-              <th class="py-2 pr-4 font-semibold">Description</th>
-              <th class="py-2 font-semibold">Auth</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="border-t border-gray-100 dark:border-gray-800">
-              <td class="py-2 pr-4 font-mono text-xs">/api/check-rate</td>
-              <td class="py-2 pr-4">POST</td>
-              <td class="py-2 pr-4">Check daily run limit &amp; increment usage</td>
-              <td class="py-2">Bearer token</td>
-            </tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800">
-              <td class="py-2 pr-4 font-mono text-xs">/api/account-info</td>
-              <td class="py-2 pr-4">GET</td>
-              <td class="py-2 pr-4">Get user account status, tier, daily usage</td>
-              <td class="py-2">Bearer token</td>
-            </tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800">
-              <td class="py-2 pr-4 font-mono text-xs">/api/ga4/cached-report</td>
-              <td class="py-2 pr-4">GET</td>
-              <td class="py-2 pr-4">Fetch GA4 data (overview, top content, sources, etc.)</td>
-              <td class="py-2">Bearer token</td>
-            </tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800">
-              <td class="py-2 pr-4 font-mono text-xs">/api/gsc/cached-report</td>
-              <td class="py-2 pr-4">GET</td>
-              <td class="py-2 pr-4">Fetch GSC data (overview, queries, pages, etc.)</td>
-              <td class="py-2">Bearer token</td>
-            </tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800">
-              <td class="py-2 pr-4 font-mono text-xs">/api/audit-history</td>
-              <td class="py-2 pr-4">GET / POST</td>
-              <td class="py-2 pr-4">Retrieve or save audit history</td>
-              <td class="py-2">Bearer token</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Rate Limits -->
-      <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-4">
-        <h5 class="font-semibold mb-2">📊 Rate Limits (per day)</h5>
-        <div class="grid grid-cols-3 gap-4 text-sm">
-          <div><span class="text-gray-500">Free:</span> <span class="font-bold">3</span> requests</div>
-          <div><span class="text-gray-500">Pro:</span> <span class="font-bold">25</span> requests</div>
-          <div><span class="text-gray-500">Enterprise:</span> <span class="font-bold">300</span> requests</div>
+        <div class="text-center mt-8">
+          <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#connect-analytics"
+             class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
+            📖 Read the Integrations Help Guide →
+          </a>
         </div>
+        <section class="share-block" aria-label="Share options">
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </section>
       </div>
 
-      <!-- Authentication -->
-      <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-4">
-        <h5 class="font-semibold mb-2">🔐 Authentication</h5>
-        <p class="text-sm text-gray-600 dark:text-gray-300">All API requests require a Bearer token obtained after login.</p>
-        <pre class="mt-2 text-xs bg-gray-900 text-white p-3 rounded-lg overflow-x-auto"><code>Authorization: Bearer YOUR_JWT_TOKEN</code></pre>
-      </div>
-    
-<!-- ===== DEVELOPER API ===== -->
-<div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl transition hover:bg-white/5 dark:hover:bg-white/5 gap-4 sm:gap-0">
-    <div class="w-full sm:flex-1">
-      <div class="flex items-center gap-4 mb-1">
-        <span class="text-2xl flex-shrink-0">🧑‍💻</span>
-        <span class="font-bold text-lg break-words">Developer API</span>
-      </div>
-      <p class="text-sm text-gray-500 dark:text-gray-400 break-words">
-        Programmatically run all 15 audit tools, retrieve results, and manage your API keys.
-      </p>
-    </div>
-    <a href="/integrations/developer/api/" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition whitespace-nowrap w-full sm:w-auto text-center">
-      Go to API Docs →
-    </a>
-  </div>
-</div>
+        <!-- ===== UPGRADE TAB ===== -->
+        <div x-show="activeDashboardTab === 'upgrade'" x-cloak>
+          <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
+            <h3 class="text-2xl font-bold mb-6 text-center">🚀 Choose Your Plan</h3>
 
-    <!-- ===== TOOL ACCESS TABLE (keep for now) ===== -->
-    <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-      <h4 class="text-lg font-semibold mb-3">🛠️ Tool Access</h4>
-      <p class="text-sm text-gray-500 mb-3">All tools are available for every plan. Your daily run limit depends on your tier.</p>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left">
-          <thead class="border-b border-gray-200 dark:border-gray-700">
-            <tr><th class="py-2 pr-4">Tool</th><th class="py-2 pr-4">Free</th><th class="py-2 pr-4">Pro</th><th class="py-2">Enterprise</th></tr>
-          </thead>
-          <tbody>
-			<tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">OFUX Tool</td><td>✅</td><td>✅</td><td>✅</td></tr>
-			<tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Lighthouse Plus</td><td>✅</td><td>✅</td><td>✅</td></tr>
-   			<tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">AEO Performance</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">SEO Intent</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">SEO + UX</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Local SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Product SEO</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Entity Extractor</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Topical Authority</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Schema Generator</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">AEO / AI Search</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Voice Search</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">AI Content Audit</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Quit Risk</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Research</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword Placement</td><td>✅</td><td>✅</td><td>✅</td></tr>
-            <tr class="border-t border-gray-100 dark:border-gray-800"><td class="py-2 pr-4">Keyword vs</td><td>✅</td><td>✅</td><td>✅</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="text-xs text-gray-500 mt-2">Daily run limits: Free = 3, Pro = 25, Enterprise = 300</p>
-    </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-  </div>
-</div>
-<div class="text-center mt-8">
-  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#connect-analytics" 
-     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
-    📖 Read the Integrations Help Guide →
-  </a>
-</div>
-<!-- Share -->
- <section class="share-block" aria-label="Share options">
-     <div class="share-row">
-        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
-        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-         </div>
-        <p class="share-status" aria-live="polite"></p>
-   </section>
-</div>
+              <div class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
+                <h3 class="text-xl font-bold">Free</h3>
+                <p class="text-3xl font-black mt-2">$0</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Forever free</p>
+                <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
+                  <li>✓ 3 audits per day</li>
+                  <li>✓ All 17 tools</li>
+                  <li>✓ 7‑day GA4 &amp; GSC data</li>
+                  <li>✓ Basic dashboard</li>
+                  <li>✗ Real‑time analytics</li>
+                  <li>✗ Custom date ranges</li>
+                  <li>✗ CSV exports</li>
+                  <li>✗ Priority support</li>
+                </ul>
+                <a href="/login/?tab=register" class="mt-6 inline-block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">
+                  Create Account →
+                </a>
+              </div>
 
-<!-- ===== UPGRADE TAB ===== -->
-<div x-show="activeDashboardTab === 'upgrade'" x-cloak>
-<div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
-    <h3 class="text-2xl font-bold mb-6 text-center">🚀 Choose Your Plan</h3>
+              <div class="glass rounded-2xl p-6 text-center border-2 border-orange-500/50 shadow-lg shadow-orange-500/20 flex flex-col relative">
+                <h3 class="text-xl font-bold mt-4">Pro</h3>
+                <p class="text-3xl font-black mt-2">$6</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">per month</p>
+                <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
+                  <li>✓ 25 audits per day</li>
+                  <li>✓ All 17 tools</li>
+                  <li>✓ 30‑day GA4 data</li>
+                  <li>✓ 28‑day GSC data</li>
+                  <li>✓ CSV exports</li>
+                  <li>✓ Priority support</li>
+                  <li>✗ Real‑time analytics</li>
+                  <li>✗ Custom date ranges</li>
+                </ul>
+                <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">
+                  Upgrade →
+                </a>
+              </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
+                <h3 class="text-xl font-bold">Enterprise</h3>
+                <p class="text-3xl font-black mt-2">$68</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">per month</p>
+                <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
+                  <li>✓ 300 audits per day</li>
+                  <li>✓ All 17 tools</li>
+                  <li>✓ 365‑day GA4 &amp; GSC data</li>
+                  <li>✓ Real‑time analytics</li>
+                  <li>✓ Custom date ranges</li>
+                  <li>✓ CSV exports</li>
+                  <li>✓ Dedicated support</li>
+                </ul>
+                <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">
+                  Upgrade →
+                </a>
+              </div>
 
-         <!-- ===== FREE ===== -->
-    <div class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
-      <h3 class="text-xl font-bold">Free</h3>
-      <p class="text-3xl font-black mt-2">$0</p>
-      <p class="text-sm text-gray-500 dark:text-gray-400">Forever free</p>
-      <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
-        <li>✓ 3 audits per day</li>
-        <li>✓ All 17 tools</li>
-        <li>✓ 7‑day GA4 &amp; GSC data</li>
-        <li>✓ Basic dashboard</li>
-        <li>✗ Real‑time analytics</li>
-        <li>✗ Custom date ranges</li>
-        <li>✗ CSV exports</li>
-        <li>✗ Priority support</li>
-      </ul>
-      <a href="/login/?tab=register" class="mt-6 inline-block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">
-        Create Account →
-      </a>
-    </div>
+            </div>
 
-    <!-- ===== PRO ===== -->
-    <div class="glass rounded-2xl p-6 text-center border-2 border-orange-500/50 shadow-lg shadow-orange-500/20 flex flex-col relative">
-      <h3 class="text-xl font-bold mt-4">Pro</h3>
-      <p class="text-3xl font-black mt-2">$6</p>
-      <p class="text-sm text-gray-500 dark:text-gray-400">per month</p>
-      <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
-        <li>✓ 25 audits per day</li>
-        <li>✓ All 17 tools</li>
-        <li>✓ 30‑day GA4 data</li>
-        <li>✓ 28‑day GSC data</li>
-        <li>✓ CSV exports</li>
-        <li>✓ Priority support</li>
-        <li>✗ Real‑time analytics</li>
-        <li>✗ Custom date ranges</li>
-      </ul>
-      <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">
-        Upgrade →
-      </a>
-    </div>
-
-    <!-- ===== ENTERPRISE ===== -->
-    <div class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
-      <h3 class="text-xl font-bold">Enterprise</h3>
-      <p class="text-3xl font-black mt-2">$68</p>
-      <p class="text-sm text-gray-500 dark:text-gray-400">per month</p>
-      <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
-        <li>✓ 300 audits per day</li>
-        <li>✓ All 17 tools</li>
-        <li>✓ 365‑day GA4 &amp; GSC data</li>
-        <li>✓ Real‑time analytics</li>
-        <li>✓ Custom date ranges</li>
-        <li>✓ CSV exports</li>
-        <li>✓ Dedicated support</li>
-      </ul>
-      <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">
-        Upgrade →
-      </a>
-    </div>
-
-  </div>
-
-  <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
-    All plans include all 17 tools. <a href="/pro/" class="text-orange-500 hover:underline">See full details →</a>
-  </p>
-</div>
-<div class="text-center mt-8">
-  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#conclusion" 
-     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
-    📖 Read the Upgrade Help Guide →
-  </a>
-</div>
-<!-- Share -->
- <section class="share-block" aria-label="Share options">
-     <div class="share-row">
-        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
-        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
-         </div>
-        <p class="share-status" aria-live="polite"></p>
-   </section>
-</div>
+            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
+              All plans include all 17 tools. <a href="/pro/" class="text-orange-500 hover:underline">See full details →</a>
+            </p>
+          </div>
+          <div class="text-center mt-8">
+            <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#conclusion"
+               class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
+              📖 Read the Upgrade Help Guide →
+            </a>
+          </div>
+          <section class="share-block" aria-label="Share options">
+            <div class="share-row">
+              <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+              <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+            </div>
+            <p class="share-status" aria-live="polite"></p>
+          </section>
+        </div>
 
         <!-- ===== SETTINGS TAB ===== -->
         <div x-show="activeDashboardTab === 'settings'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-6">⚙️ Account Settings</h3>
 
-<!-- Account Details -->
-<div class="space-y-4">
-  <!-- Email – stacked -->
-  <div class="flex flex-col items-start p-4 border-b border-gray-200 dark:border-gray-700">
-    <span class="font-medium">Email</span>
-    <span class="break-all" x-text="isAuthenticated ? user.email : 'Not logged in'"></span>
-  </div>
-  <!-- Plan – side‑by‑side -->
-  <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-    <span class="font-medium">Plan</span>
-    <span x-text="isAuthenticated ? (user.tier || 'free').charAt(0).toUpperCase() + (user.tier || 'free').slice(1) : 'Guest'"></span>
-  </div>
-  <!-- Member since – side‑by‑side -->
-  <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-    <span class="font-medium">Member since</span>
-    <span x-text="isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—'"></span>
-  </div>
-</div>
+            <div class="space-y-4">
+              <div class="flex flex-col items-start p-4 border-b border-gray-200 dark:border-gray-700">
+                <span class="font-medium">Email</span>
+                <span class="break-all" x-text="isAuthenticated ? user.email : 'Not logged in'"></span>
+              </div>
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <span class="font-medium">Plan</span>
+                <span x-text="isAuthenticated ? (user.tier || 'free').charAt(0).toUpperCase() + (user.tier || 'free').slice(1) : 'Guest'"></span>
+              </div>
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <span class="font-medium">Member since</span>
+                <span x-text="isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—'"></span>
+              </div>
+            </div>
 
-            <!-- Billing -->
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-2">💳 Billing & Subscription</h4>
               <button x-show="isAuthenticated && user.tier !== 'free'" @click="manageBilling()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Manage Subscription</button>
               <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade here</button>
             </div>
 
-            <!-- Password Reset (send email) -->
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-3">🔒 Change Password</h4>
               <p class="text-sm text-gray-500 mb-3">We'll send a password reset link to your email address.</p>
               <button @click="sendPasswordReset()" class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" :disabled="!isAuthenticated">Send Reset Email</button>
             </div>
-            
-             <!-- Delete Account -->
+
             <div class="mt-8 text-center p-4 border border-red-500 rounded-lg">
               <h4 class="font-semibold text-red-500 mb-2">⚠️</h4>
               <button @click="openDeleteModal()" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition" :disabled="!isAuthenticated">Delete Account</button>
             </div>
-            
-                        
-<div class="text-center mt-8">
-  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#settings" 
-     class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
-    📖 Read the Settings Help Guide →
-  </a>
-</div>
 
-            <!-- Logout -->
+            <div class="text-center mt-8">
+              <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#settings"
+                 class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
+                📖 Read the Settings Help Guide →
+              </a>
+            </div>
+
             <template x-if="isAuthenticated">
               <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
             </template>
@@ -1243,77 +1519,74 @@
       <p class="text-gray-600 dark:text-gray-300 mb-6">Log in or upgrade to Traffic Torch Pro for unlimited audits, analytics, and more.</p>
       <div class="flex flex-col gap-3">
         <a href="/login/" class="px-6 py-3 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition">Login / Register</a>
-<a href="/upgrade/" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg font-bold hover:opacity-90 transition text-center block">See Plans</a>
+        <a href="/upgrade/" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg font-bold hover:opacity-90 transition text-center block">See Plans</a>
         <button @click="closeUpgradeModal()" class="text-sm text-gray-500 hover:underline">Close</button>
       </div>
     </div>
   </div>
 
-<!-- Delete Account Confirmation Modal -->
-<div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-[10001] flex items-center justify-center modal-overlay">
-  <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
-    <button @click="closeDeleteModal()" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
-    <h3 class="text-2xl font-bold text-red-600 mb-4">⚠️ Permanently Delete Account</h3>
-    <p class="text-gray-600 dark:text-gray-300 mb-4">This action <strong>cannot</strong> be undone. All your data, audits, and connections will be erased forever.</p>
-    <p class="text-sm text-gray-500 mb-4">Please type your email address to confirm:</p>
-    <input type="email" x-model="deleteEmail" placeholder="your@email.com" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 mb-4">
-    <div class="flex gap-3">
-      <button @click="confirmDeleteAccount()" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg" :disabled="deleteEmail !== user.email">Delete Permanently</button>
-      <button @click="closeDeleteModal()" class="flex-1 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition">Cancel</button>
+  <!-- Delete Account Confirmation Modal -->
+  <div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-[10001] flex items-center justify-center modal-overlay">
+    <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
+      <button @click="closeDeleteModal()" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
+      <h3 class="text-2xl font-bold text-red-600 mb-4">⚠️ Permanently Delete Account</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">This action <strong>cannot</strong> be undone. All your data, audits, and connections will be erased forever.</p>
+      <p class="text-sm text-gray-500 mb-4">Please type your email address to confirm:</p>
+      <input type="email" x-model="deleteEmail" placeholder="your@email.com" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 mb-4">
+      <div class="flex gap-3">
+        <button @click="confirmDeleteAccount()" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg" :disabled="deleteEmail !== user.email">Delete Permanently</button>
+        <button @click="closeDeleteModal()" class="flex-1 py-2 bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition">Cancel</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ===== RESET PASSWORD MODAL (FIXED) ===== -->
-<div x-show="showResetModal" x-cloak class="fixed inset-0 z-[10003] modal-overlay h-screen max-h-screen overflow-hidden flex items-center justify-center">
-  <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-    <button @click="showResetModal = false; resetToken = null" class="top-3 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
-    <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white pr-10">Reset Your Password</h3>
-    <p class="text-gray-600 dark:text-gray-300 mb-4">Enter a new password (min 8 characters).</p>
+  <!-- Reset Password Modal -->
+  <div x-show="showResetModal" x-cloak class="fixed inset-0 z-[10003] modal-overlay h-screen max-h-screen overflow-hidden flex items-center justify-center">
+    <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button @click="showResetModal = false; resetToken = null" class="top-3 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
+      <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white pr-10">Reset Your Password</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">Enter a new password (min 8 characters).</p>
 
-    <!-- New password -->
-    <div class="relative mb-4">
-      <input type="password" x-bind:type="showPassword ? 'text' : 'password'" x-model="newPassword" placeholder="New password" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none pr-12">
-      <button type="button" @click="showPassword = !showPassword" class="password-toggle" aria-label="Toggle password visibility">
-        <svg viewBox="0 0 24 24" x-show="!showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-          <circle cx="12" cy="12" r="3"/>
-        </svg>
-        <svg viewBox="0 0 24 24" x-show="showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
-          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-          <line x1="1" y1="1" x2="23" y2="23"/>
-        </svg>
+      <div class="relative mb-4">
+        <input type="password" x-bind:type="showPassword ? 'text' : 'password'" x-model="newPassword" placeholder="New password" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none pr-12">
+        <button type="button" @click="showPassword = !showPassword" class="password-toggle" aria-label="Toggle password visibility">
+          <svg viewBox="0 0 24 24" x-show="!showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <svg viewBox="0 0 24 24" x-show="showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="relative mb-4">
+        <input type="password" x-bind:type="showPassword ? 'text' : 'password'" x-model="confirmPassword" placeholder="Confirm password" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none pr-12">
+        <button type="button" @click="showPassword = !showPassword" class="password-toggle" aria-label="Toggle password visibility">
+          <svg viewBox="0 0 24 24" x-show="!showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <svg viewBox="0 0 24 24" x-show="showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+        </button>
+      </div>
+
+      <div x-show="resetError" class="text-red-500 text-sm mb-2" x-text="resetError"></div>
+      <div x-show="resetSuccess" class="text-green-500 text-sm mb-2" x-text="resetSuccess"></div>
+
+      <button @click="submitResetPassword()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition" :disabled="loadingReset">
+        <span x-show="!loadingReset">Reset Password</span>
+        <span x-show="loadingReset">Processing...</span>
       </button>
     </div>
-
-    <!-- Confirm password -->
-    <div class="relative mb-4">
-      <input type="password" x-bind:type="showPassword ? 'text' : 'password'" x-model="confirmPassword" placeholder="Confirm password" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none pr-12">
-      <button type="button" @click="showPassword = !showPassword" class="password-toggle" aria-label="Toggle password visibility">
-        <svg viewBox="0 0 24 24" x-show="!showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-          <circle cx="12" cy="12" r="3"/>
-        </svg>
-        <svg viewBox="0 0 24 24" x-show="showPassword" style="width:22px;height:22px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
-          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-          <line x1="1" y1="1" x2="23" y2="23"/>
-        </svg>
-      </button>
-    </div>
-
-    <div x-show="resetError" class="text-red-500 text-sm mb-2" x-text="resetError"></div>
-    <div x-show="resetSuccess" class="text-green-500 text-sm mb-2" x-text="resetSuccess"></div>
-
-    <button @click="submitResetPassword()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition" :disabled="loadingReset">
-      <span x-show="!loadingReset">Reset Password</span>
-      <span x-show="loadingReset">Processing...</span>
-    </button>
   </div>
+
 </div>
 
-<!-- ========================================================== -->
-<!-- SCRIPTS -->
-<!-- ========================================================== -->
 <script src="/main-v1.1.js" type="module"></script>
 
 <script>
@@ -1331,9 +1604,9 @@ function dashboardApp() {
     loadingReset: false,
     showPassword: false,
     isAuthenticated: false,
-    user: { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null },
-    activeDashboardTab: 'dashboard',
-    dailyLimit: 3, // will be updated from account-info
+    user: { id: null, email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null },
+    activeDashboardTab: 'profile',
+    dailyLimit: 3,
     dailyUsedCount: 0,
     selectedTool: '/',
     quickUrl: '',
@@ -1346,7 +1619,9 @@ function dashboardApp() {
     deleteEmail: '',
 
     tabs: [
+      { id: 'profile', label: 'Profile' },
       { id: 'dashboard', label: 'Dashboard' },
+      { id: 'network', label: 'Network' },
       { id: 'audits', label: 'Audits' },
       { id: 'analytics', label: 'Analytics' },
       { id: 'realtime', label: 'Real‑time' },
@@ -1355,6 +1630,56 @@ function dashboardApp() {
       { id: 'upgrade', label: 'Upgrade' },
       { id: 'settings', label: 'Settings' }
     ],
+
+    // ---- Profile / Network / Feed state ----
+    networkSubTab: 'feed',
+
+    profile: {
+      loading: false,
+      saving: false,
+      error: null,
+      success: null,
+      username: '',
+      display_name: '',
+      avatar_preset: 'owner',
+      role: 'owner',
+      bio: '',
+      website_url: '',
+      website_approved: 0,
+      social1_url: '',
+      social2_url: '',
+      job_title: '',
+      company: '',
+      location: '',
+      auto_share: 0,
+      show_network: 1,
+      allow_adds: 1,
+      profile_public: 1,
+      created_at: null
+    },
+
+    network: {
+      loading: false,
+      list: [],
+      addLoading: {},
+      inviteEmail: '',
+      inviteStatus: '',
+      search: ''
+    },
+
+    feed: {
+      loading: false,
+      loadingMore: false,
+      category: 'ux',
+      posts: [],
+      cursor: null,
+      hasMore: true,
+      error: null,
+      commentDrafts: {},
+      openComments: {},
+      commentLists: {},
+      slots: { used: 0, max: 5 }
+    },
 
     get displayedAudits() { return this.recentAudits.slice(0, this.displayCount); },
 
@@ -1417,7 +1742,6 @@ function dashboardApp() {
 
     // ---- Init ----
     async initDashboard() {
-    // add the hash-reading code here, at the very top
       const hash = window.location.hash.replace('#', '');
       if (hash && this.tabs.some(t => t.id === hash)) {
         this.activeDashboardTab = hash;
@@ -1427,14 +1751,16 @@ function dashboardApp() {
         await this.fetchAccountInfo();
         this.dailyUsedCount = this.user.dailyUsed || 0;
         this.checkGA4Connection();
-       if (this.user.gscConnected) {
-  this.gsc.connected = true;
-  this.gsc.siteUrl = this.user.gscSiteUrl || '';
-  // 👇 Fetch GSC data for the dashboard card
-  this.fetchGSCReport();
-} else {
-  this.loadGSCDemoData();
-}
+        if (this.user.gscConnected) {
+          this.gsc.connected = true;
+          this.gsc.siteUrl = this.user.gscSiteUrl || '';
+          this.fetchGSCReport();
+        } else {
+          this.loadGSCDemoData();
+        }
+        this.loadProfile();
+        this.loadNetwork();
+        this.loadFeed(true);
       } else {
         this.displayCount = 5;
         this.loadDemoData();
@@ -1447,27 +1773,27 @@ function dashboardApp() {
 
       const urlParams = new URLSearchParams(window.location.search);
       const ga4Code = urlParams.get('ga4_code');
-      const ga4State = urlParams.get('state');                                    // ← NEW
+      const ga4State = urlParams.get('state');
       if (ga4Code) {
         const newUrl = window.location.pathname + window.location.search
           .replace(/[?&]ga4_code=[^&]*/, '')
-          .replace(/[?&]state=[^&]*/, '')                                         // ← NEW
+          .replace(/[?&]state=[^&]*/, '')
           .replace(/^&/, '?');
         window.history.replaceState({}, document.title, newUrl || '/dashboard/');
         const propertyId = prompt('Enter your GA4 Property ID (e.g., 123456789):');
         if (propertyId) {
-          this.finishGA4Connection(ga4Code, propertyId, ga4State);                // ← NEW arg
+          this.finishGA4Connection(ga4Code, propertyId, ga4State);
         } else {
           this.ga4.error = 'Property ID is required to connect.';
         }
       }
 
       const gscCode = urlParams.get('gsc_code');
-      const gscState = urlParams.get('state');                                    // ← NEW
+      const gscState = urlParams.get('state');
       if (gscCode) {
         const newUrl = window.location.pathname + window.location.search
           .replace(/[?&]gsc_code=[^&]*/, '')
-          .replace(/[?&]state=[^&]*/, '')                                         // ← NEW
+          .replace(/[?&]state=[^&]*/, '')
           .replace(/^&/, '?');
         window.history.replaceState({}, document.title, newUrl || '/dashboard/');
         const rawSite = prompt('Enter your GSC site URL (e.g., example.com or https://example.com/) – we\'ll auto‑convert the format:');
@@ -1479,59 +1805,50 @@ function dashboardApp() {
           if (siteUrl.startsWith('http') && !siteUrl.endsWith('/')) {
             siteUrl += '/';
           }
-          this.finishGSCConnection(gscCode, siteUrl, gscState);                   // ← NEW arg
+          this.finishGSCConnection(gscCode, siteUrl, gscState);
         } else {
           this.gsc.error = 'Site URL is required to connect.';
         }
       }
-      
-      // ---- MAGIC TOKEN DETECTION ----
-const magicToken = urlParams.get('magic_token');
-if (magicToken) {
-  // Store the token in localStorage
-  localStorage.setItem('authToken', magicToken);
-  // Remove the param from URL to keep it clean
-  const newUrl = window.location.pathname + window.location.search.replace(/[?&]magic_token=[^&]*/, '').replace(/^&/, '?');
-  window.history.replaceState({}, document.title, newUrl || '/dashboard/');
-  // Fetch account info and update the UI
-  await this.fetchAccountInfo();
-  this.checkGA4Connection();
-}
 
-      // ---- RESET TOKEN DETECTION (NEW) ----
+      // ---- MAGIC TOKEN DETECTION ----
+      const magicToken = urlParams.get('magic_token');
+      if (magicToken) {
+        localStorage.setItem('authToken', magicToken);
+        const newUrl = window.location.pathname + window.location.search.replace(/[?&]magic_token=[^&]*/, '').replace(/^&/, '?');
+        window.history.replaceState({}, document.title, newUrl || '/dashboard/');
+        await this.fetchAccountInfo();
+        this.checkGA4Connection();
+        this.loadProfile();
+        this.loadNetwork();
+        this.loadFeed(true);
+      }
+
+      // ---- RESET TOKEN DETECTION ----
       const resetToken = urlParams.get('reset_token');
       if (resetToken) {
         this.resetToken = resetToken;
         this.showResetModal = true;
       }
 
-this.$watch('activeDashboardTab', (newTab) => {
-  if (newTab === 'realtime' && this.user.tier === 'enterprise' && this.ga4.connected) {
-    this.startRealtimeInterval();
-  } else {
-    this.stopRealtimeInterval();
-  }
-  if (newTab === 'gsc' && this.gsc.connected && this.gsc.data.length === 0) {
-    this.fetchGSCReport();
-  }
+      this.$watch('activeDashboardTab', (newTab) => {
+        if (newTab === 'realtime' && this.user.tier === 'enterprise' && this.ga4.connected) {
+          this.startRealtimeInterval();
+        } else {
+          this.stopRealtimeInterval();
+        }
+        if (newTab === 'gsc' && this.gsc.connected && this.gsc.data.length === 0) {
+          this.fetchGSCReport();
+        }
 
-  // 👇 Re-render charts that were created while their tab was hidden.
-  // Wait one frame so the tab panel is actually painted before we measure.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      if (newTab === 'analytics') {
-        // Only GA4 charts that live on the analytics tab
-        this.updateCharts();
-      }
-      if (newTab === 'gsc') {
-        this.updateGSCCharts();
-      }
-      if (newTab === 'realtime' && this.user.tier === 'enterprise') {
-        this.updateRealtimeCharts();
-      }
-    });
-  });
-});
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (newTab === 'analytics') this.updateCharts();
+            if (newTab === 'gsc') this.updateGSCCharts();
+            if (newTab === 'realtime' && this.user.tier === 'enterprise') this.updateRealtimeCharts();
+          });
+        });
+      });
     },
 
     // ---- Demo data for guests ----
@@ -1628,41 +1945,46 @@ this.$watch('activeDashboardTab', (newTab) => {
     },
 
     // ---- Auth ----
-async fetchAccountInfo() {
-  const token = localStorage.getItem('authToken');
-  if (!token) return;
-  try {
-    const res = await fetch(`${API_BASE}/api/account-info`, {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    if (res.ok) {
-      const data = await res.json();
-      this.user = data;
-      this.isAuthenticated = true;
-      this.user.tier = data.tier || (data.isPro ? 'pro' : 'free');
-      // 👇 Store daily usage from server
-      this.user.dailyUsed = data.dailyUsed || 0;
-      this.dailyUsedCount = this.user.dailyUsed;
-      this.ga4.connected = data.ga4Connected || false;
-      this.user.gscConnected = data.gscConnected || false;
-      this.user.gscSiteUrl = data.gscSiteUrl || null;
-      this.dailyLimit = data.dailyLimit || 3;
-      this.updateDisplayLimit();
-    } else {
-      localStorage.removeItem('authToken');
-      this.isAuthenticated = false;
-      this.displayCount = 5;
-      this.loadDemoData();
-      this.loadGSCDemoData();
-    }
-  } catch {
-    localStorage.removeItem('authToken');
-    this.isAuthenticated = false;
-    this.displayCount = 5;
-    this.loadDemoData();
-    this.loadGSCDemoData();
-  }
-},
+    async fetchAccountInfo() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/account-info`, {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.user = data;
+          this.isAuthenticated = true;
+          this.user.tier = data.tier || (data.isPro ? 'pro' : 'free');
+          this.user.dailyUsed = data.dailyUsed || 0;
+          this.dailyUsedCount = this.user.dailyUsed;
+          this.ga4.connected = data.ga4Connected || false;
+          this.user.gscConnected = data.gscConnected || false;
+          this.user.gscSiteUrl = data.gscSiteUrl || null;
+          this.dailyLimit = data.dailyLimit || 3;
+          this.updateDisplayLimit();
+
+          // Decode JWT to get user id for network comparisons
+          try {
+            const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+            this.user.id = payload.id || null;
+          } catch {}
+        } else {
+          localStorage.removeItem('authToken');
+          this.isAuthenticated = false;
+          this.displayCount = 5;
+          this.loadDemoData();
+          this.loadGSCDemoData();
+        }
+      } catch {
+        localStorage.removeItem('authToken');
+        this.isAuthenticated = false;
+        this.displayCount = 5;
+        this.loadDemoData();
+        this.loadGSCDemoData();
+      }
+    },
 
     updateDisplayLimit() {
       const tier = this.user.tier || 'free';
@@ -1736,12 +2058,11 @@ async fetchAccountInfo() {
           body: JSON.stringify({ code, propertyId, state })
         });
         const data = await res.json();
-        
+
         if (res.ok) {
           this.ga4.connected = true;
           this.fetchCachedReport();
         } else {
-          // Friendly error messages based on worker response
           const errorMsg = (data.error || '').toLowerCase();
           if (res.status === 400 && errorMsg.includes('state')) {
             this.ga4.error = 'Your connection link expired. Please click Connect GA4 again.';
@@ -1789,7 +2110,6 @@ async fetchAccountInfo() {
       this.fetchCachedReport(true);
     },
 
-    // ---- Core GA4 fetch ----
     async fetchCachedReport(force = false) {
       if (!this.ga4.connected && this.isAuthenticated) return;
       this.ga4.loading = true;
@@ -1998,12 +2318,12 @@ async fetchAccountInfo() {
 
         const pieCtx = document.getElementById('sourcesPieChart');
         if (pieCtx && this.ga4.sources.length) {
-const fullLabels = this.ga4.sources.map(r => r.dimensions.join(' / '));
-const labels = fullLabels.map(l => {
-  const src = l.split(' / ')[0] || '';
-  return src.length > 20 ? src.slice(0, 18) + '…' : l;
-});
-const values = this.ga4.sources.map(r => r.metrics[0] || 0);
+          const fullLabels = this.ga4.sources.map(r => r.dimensions.join(' / '));
+          const labels = fullLabels.map(l => {
+            const src = l.split(' / ')[0] || '';
+            return src.length > 20 ? src.slice(0, 18) + '…' : l;
+          });
+          const values = this.ga4.sources.map(r => r.metrics[0] || 0);
           window.sourcesPie = new Chart(pieCtx, {
             type: 'doughnut',
             data: {
@@ -2013,15 +2333,15 @@ const values = this.ga4.sources.map(r => r.metrics[0] || 0);
             options: {
               responsive: true,
               maintainAspectRatio: false,
-plugins: {
-  tooltip: {
-    callbacks: {
-      title: (items) => fullLabels[items[0].dataIndex]
-    }
-  },
-  legend: { position: 'bottom' },
-  title: { display: true, text: 'Sessions by Source', color: '#6b7280', font: { size: 12 } }
-}
+              plugins: {
+                tooltip: {
+                  callbacks: {
+                    title: (items) => fullLabels[items[0].dataIndex]
+                  }
+                },
+                legend: { position: 'bottom' },
+                title: { display: true, text: 'Sessions by Source', color: '#6b7280', font: { size: 12 } }
+              }
             }
           });
         }
@@ -2188,7 +2508,7 @@ plugins: {
           body: JSON.stringify({ code, siteUrl, state })
         });
         const data = await res.json();
-        
+
         if (res.ok) {
           this.gsc.connected = true;
           this.gsc.siteUrl = siteUrl;
@@ -2196,7 +2516,6 @@ plugins: {
           this.user.gscSiteUrl = siteUrl;
           this.fetchGSCReport();
         } else {
-          // Friendly error messages based on worker response
           const errorMsg = (data.error || '').toLowerCase();
           if (res.status === 400 && errorMsg.includes('state')) {
             this.gsc.error = 'Your connection link expired. Please click Connect GSC again.';
@@ -2383,25 +2702,25 @@ plugins: {
               labels,
               datasets: [{ data: values, backgroundColor: ['#3b82f6','#f97316','#10b981'] }]
             },
-options: {
-  responsive: true,
-  maintainAspectRatio: false,
-  layout: { padding: { top: 4, right: 8, bottom: 4, left: 8 } },
-  plugins: {
-    legend: {
-      position: 'bottom',
-      labels: { boxWidth: 12, padding: 10, font: { size: 12 } }
-    },
-    title: {
-      display: true,
-      text: 'Clicks by Device',
-      color: '#6b7280',
-      font: { size: 12 },
-      padding: { top: 2, bottom: 10 }
-    }
-  },
-  cutout: '60%'
-}
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              layout: { padding: { top: 4, right: 8, bottom: 4, left: 8 } },
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: { boxWidth: 12, padding: 10, font: { size: 12 } }
+                },
+                title: {
+                  display: true,
+                  text: 'Clicks by Device',
+                  color: '#6b7280',
+                  font: { size: 12 },
+                  padding: { top: 2, bottom: 10 }
+                }
+              },
+              cutout: '60%'
+            }
           });
         }
       });
@@ -2526,7 +2845,7 @@ options: {
     scanAgain(audit) {
       const toolMap = {
         'NUSA': '/',
-		'OFUX': '/ofux-tool/',    
+        'OFUX': '/ofux-tool/',
         'Lighthouse Plus': '/lighthouse-plus-tool/',
         'AEO Performance': '/aeo-performance-tool/',
         'SEO Intent': '/seo-intent-tool/',
@@ -2562,15 +2881,15 @@ options: {
       if (!this.requireAuth()) return;
       const url = this.quickUrl.trim();
       if (!url) { alert('Please enter a valid URL'); return; }
-if ((this.user.dailyUsed || 0) >= this.dailyLimit) {
-  alert(`Daily audit limit reached (${this.dailyLimit} runs). Upgrade to Pro for more.`);
-  this.showUpgradeModal();
-  return;
-}
+      if ((this.user.dailyUsed || 0) >= this.dailyLimit) {
+        alert(`Daily audit limit reached (${this.dailyLimit} runs). Upgrade to Pro for more.`);
+        this.showUpgradeModal();
+        return;
+      }
       const tool = this.selectedTool;
       const toolMap = {
-        '/' : '/',                                 // NUSA 
-        'ofux-tool': '/ofux-tool/',                               
+        '/' : '/',
+        'ofux-tool': '/ofux-tool/',
         'lighthouse-plus-tool': '/lighthouse-plus-tool/',
         'aeo-performance-tool': '/aeo-performance-tool/',
         'seo-intent-tool': '/seo-intent-tool/',
@@ -2591,7 +2910,7 @@ if ((this.user.dailyUsed || 0) >= this.dailyLimit) {
       if (!toolPath) { alert('Tool not found'); return; }
       const toolNames = {
         '/' : 'NUSA',
-		'ofux-tool': 'OFUX',
+        'ofux-tool': 'OFUX',
         'lighthouse-plus-tool': 'Lighthouse Plus',
         'aeo-performance-tool': 'AEO Performance',
         'seo-intent-tool': 'SEO Intent',
@@ -2614,43 +2933,40 @@ if ((this.user.dailyUsed || 0) >= this.dailyLimit) {
       window.location.href = toolPath + '?url=' + encodeURIComponent(url);
     },
 
-async incrementDailyUsage() {
-  const token = localStorage.getItem('authToken');
-  // Fallback: if getOrCreateFingerprint is not defined, use a random id
-  let fingerprint;
-  try {
-    fingerprint = await getOrCreateFingerprint();
-  } catch {
-    fingerprint = 'anon_' + Date.now();
-  }
-  try {
-    const headers = {
-      'Content-Type': 'application/json'
-    };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    } else {
-      headers['x-fingerprint'] = fingerprint;
-    }
-    const res = await fetch(`${API_BASE}/api/check-rate`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ toolName: 'run-audit' })
-    });
-    const data = await res.json();
-    if (data.allowed) {
-      // Update from server response
-      this.dailyUsedCount = (this.dailyLimit - data.remaining) || 0;
-      this.user.dailyUsed = this.dailyUsedCount;
-    } else {
-      this.showUpgradeModal();
-    }
-  } catch (e) {
-    // Offline fallback (won't sync, but prevents total breakage)
-    this.dailyUsedCount = (this.dailyUsedCount || 0) + 1;
-    this.user.dailyUsed = this.dailyUsedCount;
-  }
-},
+    async incrementDailyUsage() {
+      const token = localStorage.getItem('authToken');
+      let fingerprint;
+      try {
+        fingerprint = await getOrCreateFingerprint();
+      } catch {
+        fingerprint = 'anon_' + Date.now();
+      }
+      try {
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        } else {
+          headers['x-fingerprint'] = fingerprint;
+        }
+        const res = await fetch(`${API_BASE}/api/check-rate`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ toolName: 'run-audit' })
+        });
+        const data = await res.json();
+        if (data.allowed) {
+          this.dailyUsedCount = (this.dailyLimit - data.remaining) || 0;
+          this.user.dailyUsed = this.dailyUsedCount;
+        } else {
+          this.showUpgradeModal();
+        }
+      } catch (e) {
+        this.dailyUsedCount = (this.dailyUsedCount || 0) + 1;
+        this.user.dailyUsed = this.dailyUsedCount;
+      }
+    },
 
     // ---- Settings: Billing portal ----
     async manageBilling() {
@@ -2668,7 +2984,6 @@ async incrementDailyUsage() {
       }
     },
 
-    // ---- Send password reset email ----
     sendPasswordReset() {
       if (!this.isAuthenticated) { alert('You must be logged in.'); return; }
       fetch(`${API_BASE}/api/forgot-password`, {
@@ -2683,7 +2998,6 @@ async incrementDailyUsage() {
       .catch(err => alert('Failed to send reset email.'));
     },
 
-    // ---- Reset Password (NEW) ----
     async submitResetPassword() {
       if (this.newPassword.length < 8) {
         this.resetError = 'Password must be at least 8 characters.';
@@ -2746,7 +3060,7 @@ async incrementDailyUsage() {
           alert('Account permanently deleted.');
           localStorage.removeItem('authToken');
           this.isAuthenticated = false;
-          this.user = { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null };
+          this.user = { id: null, email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null };
           this.showDeleteModal = false;
           window.location.href = '/';
         } else {
@@ -2758,19 +3072,274 @@ async incrementDailyUsage() {
       }
     },
 
-logout() {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('traffic_torch_jwt');
-  localStorage.removeItem('torch_token');
-  this.isAuthenticated = false;
-  this.user = { email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null };
-  this.stopRealtimeInterval();
-  
-  // Notify the dot script to update
-  document.dispatchEvent(new CustomEvent('loginStatusChanged'));
-  
-  window.location.href = '/login/';
-}
+    logout() {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('traffic_torch_jwt');
+      localStorage.removeItem('torch_token');
+      this.isAuthenticated = false;
+      this.user = { id: null, email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null };
+      this.stopRealtimeInterval();
+      document.dispatchEvent(new CustomEvent('loginStatusChanged'));
+      window.location.href = '/login/';
+    },
+
+    // ============ PROFILE ============
+    async loadProfile() {
+      this.profile.loading = true;
+      this.profile.error = null;
+      try {
+        const res = await fetch(`${API_BASE}/api/profile/me`, {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        if (!res.ok) throw new Error('Failed to load profile');
+        const data = await res.json();
+        Object.assign(this.profile, data.profile || {});
+      } catch (e) {
+        this.profile.error = e.message;
+      } finally {
+        this.profile.loading = false;
+      }
+    },
+
+    async saveProfile() {
+      this.profile.saving = true;
+      this.profile.error = null;
+      this.profile.success = null;
+      try {
+        const body = {
+          display_name: this.profile.display_name,
+          username: this.profile.username,
+          avatar_preset: this.profile.avatar_preset,
+          role: this.profile.role,
+          bio: this.profile.bio,
+          website_url: this.profile.website_url,
+          social1_url: this.profile.social1_url,
+          social2_url: this.profile.social2_url,
+          job_title: this.profile.job_title,
+          company: this.profile.company,
+          location: this.profile.location,
+          auto_share: this.profile.auto_share ? 1 : 0,
+          show_network: this.profile.show_network ? 1 : 0,
+          allow_adds: this.profile.allow_adds ? 1 : 0,
+          profile_public: this.profile.profile_public ? 1 : 0
+        };
+        const res = await fetch(`${API_BASE}/api/profile/me`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Save failed');
+        Object.assign(this.profile, data.profile || {});
+        this.profile.success = 'Saved ✓';
+        setTimeout(() => { this.profile.success = null; }, 2500);
+      } catch (e) {
+        this.profile.error = e.message;
+      } finally {
+        this.profile.saving = false;
+      }
+    },
+
+    // ============ NETWORK ============
+    async loadNetwork() {
+      this.network.loading = true;
+      try {
+        const res = await fetch(`${API_BASE}/api/network/list`, {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        const data = await res.json();
+        this.network.list = data.network || [];
+      } catch (e) { /* silent */ }
+      finally { this.network.loading = false; }
+    },
+
+    async addToNetwork(userId) {
+      if (this.network.addLoading[userId]) return;
+      this.network.addLoading[userId] = true;
+      try {
+        const res = await fetch(`${API_BASE}/api/network/add`, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ user_id: userId })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.feed.posts.forEach(p => { if (p.user_id === userId) p.in_network = true; });
+        } else if (data.error) {
+          console.warn('addToNetwork:', data.error);
+        }
+      } catch {}
+      finally { this.network.addLoading[userId] = false; }
+    },
+
+    async removeFromNetwork(userId) {
+      try {
+        await fetch(`${API_BASE}/api/network/remove`, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ user_id: userId })
+        });
+        this.network.list = this.network.list.filter(u => u.id !== userId);
+        this.feed.posts.forEach(p => { if (p.user_id === userId) p.in_network = false; });
+      } catch {}
+    },
+
+    async inviteColleague() {
+      if (!this.network.inviteEmail) return;
+      this.network.inviteStatus = 'Sending…';
+      try {
+        const res = await fetch(`${API_BASE}/api/network/invite`, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: this.network.inviteEmail })
+        });
+        const data = await res.json();
+        this.network.inviteStatus = data.success ? 'Invite sent ✓' : (data.error || 'Failed');
+        this.network.inviteEmail = '';
+        setTimeout(() => { this.network.inviteStatus = ''; }, 3000);
+      } catch {
+        this.network.inviteStatus = 'Failed';
+      }
+    },
+
+    // ============ FEED ============
+    async loadFeed(reset = true) {
+      if (reset) {
+        this.feed.posts = [];
+        this.feed.cursor = null;
+        this.feed.hasMore = true;
+      }
+      this.feed.loading = true;
+      this.feed.error = null;
+      try {
+        let url = `${API_BASE}/api/feed?category=${this.feed.category}&limit=20`;
+        if (this.feed.cursor) url += `&cursor=${encodeURIComponent(this.feed.cursor)}`;
+        const res = await fetch(url, {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        const data = await res.json();
+        this.feed.posts = reset ? (data.posts || []) : [...this.feed.posts, ...(data.posts || [])];
+        this.feed.cursor = data.cursor || null;
+        this.feed.hasMore = !!data.cursor;
+        this.feed.slots = data.slots || this.feed.slots;
+      } catch (e) {
+        this.feed.error = e.message;
+      } finally {
+        this.feed.loading = false;
+      }
+    },
+
+    async loadMoreFeed() {
+      if (this.feed.loadingMore || !this.feed.hasMore) return;
+      this.feed.loadingMore = true;
+      await this.loadFeed(false);
+      this.feed.loadingMore = false;
+    },
+
+    setFeedCategory(cat) {
+      this.feed.category = cat;
+      this.loadFeed(true);
+    },
+
+    async toggleComments(postId) {
+      if (this.feed.openComments[postId]) {
+        this.feed.openComments[postId] = false;
+        return;
+      }
+      this.feed.openComments[postId] = true;
+      if (!this.feed.commentLists[postId]) {
+        const res = await fetch(`${API_BASE}/api/posts/${postId}/comments`, {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        const data = await res.json();
+        this.feed.commentLists[postId] = data.comments || [];
+      }
+    },
+
+    async submitComment(postId) {
+      const body = (this.feed.commentDrafts[postId] || '').trim();
+      if (!body || body.length > 360) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/posts/${postId}/comments`, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ body })
+        });
+        const data = await res.json();
+        if (data.success) {
+          this.feed.commentLists[postId] = [...(this.feed.commentLists[postId] || []), data.comment];
+          this.feed.commentDrafts[postId] = '';
+          const p = this.feed.posts.find(x => x.id === postId);
+          if (p) p.comment_count = (p.comment_count || 0) + 1;
+        } else {
+          alert(data.error || 'Comment rejected');
+        }
+      } catch {}
+    },
+
+    async deletePost(postId) {
+      if (!confirm('Delete this post?')) return;
+      try {
+        await fetch(`${API_BASE}/api/posts/${postId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        this.feed.posts = this.feed.posts.filter(p => p.id !== postId);
+      } catch {}
+    },
+
+    async editPost(postId) {
+      const post = this.feed.posts.find(p => p.id === postId);
+      if (!post) return;
+      const newNote = prompt('Edit note (360 chars max):', post.note || '');
+      if (newNote === null) return;
+      if (newNote.length > 360) { alert('Too long'); return; }
+      const newCat = prompt('Category (ux / seo / aeo):', post.category);
+      if (!['ux','seo','aeo'].includes(newCat)) { alert('Invalid category'); return; }
+      try {
+        await fetch(`${API_BASE}/api/posts/${postId}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ note: newNote, category: newCat })
+        });
+        post.note = newNote;
+        post.category = newCat;
+      } catch {}
+    },
+
+    async reportPost(postId) {
+      const reason = prompt('Reason for report:');
+      if (!reason) return;
+      try {
+        await fetch(`${API_BASE}/api/reports`, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ type: 'post', target_id: postId, reason })
+        });
+        alert('Reported. Thank you.');
+      } catch {}
+    }
   }
 }
 
@@ -2781,23 +3350,19 @@ window.dashboardApp = dashboardApp;
   const params = new URLSearchParams(window.location.search);
   const token = params.get('reset_token');
   if (token) {
-    // Wait a bit for Alpine to init, then check if showResetModal is still false
     setTimeout(function() {
       const appEl = document.querySelector('[x-data]');
       if (appEl && appEl.__x) {
         const data = appEl.__x.$data;
         if (data && !data.showResetModal) {
-          // Alpine didn't catch it – force it
           data.resetToken = token;
           data.showResetModal = true;
         }
       } else {
-        // Alpine didn't init – show modal manually
         const modal = document.querySelector('[x-show="showResetModal"]');
         if (modal) {
           modal.style.display = 'flex';
           modal.removeAttribute('x-cloak');
-          // Set token in input (if needed)
           const tokenInput = document.querySelector('[x-model="resetToken"]');
           if (tokenInput) tokenInput.value = token;
         }
