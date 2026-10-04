@@ -518,6 +518,24 @@ async function runAnalysis({ url, inputType = 'url', rawCode = null }) {
       });
       document.body.dataset.toggleListenersAttached = 'true';
     }
+
+    // 🏆 Leaderboard submit button — final step
+    if (inputType === 'url' && url && window.TrafficTorchLeaderboard) {
+      const lbHost =
+        document.getElementById('share-dashboard-container') ||
+        document.getElementById('share-module') ||
+        document.getElementById('results') ||
+        document.querySelector('main');
+      if (lbHost) {
+        window.TrafficTorchLeaderboard.injectButton(lbHost, {
+          tool: 'seo-entity-extractor-tool',
+          url,
+          title: (data.title || pageTitle || '').trim().slice(0, 200) || 'Untitled page',
+          score: readiness.score,
+          moduleScores: modules.map(m => ({ name: m.name, score: m.result.score }))
+        });
+      }
+    }
   } catch (err) {
     clearInterval(interval);
     clearTimeout(heavyTimeout);

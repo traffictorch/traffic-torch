@@ -1339,6 +1339,31 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
+        // 🏆 Leaderboard submit button — final step, results are in DOM
+        if (isUrlMode && urlInput.value.trim() && window.TrafficTorchLeaderboard) {
+          const lbHost =
+            document.getElementById('share-dashboard-container') ||
+            document.getElementById('share-module') ||
+            document.getElementById('results') ||
+            document.querySelector('main');
+          if (lbHost) {
+            const boardUrl = urlInput.value.trim().startsWith('http')
+              ? urlInput.value.trim()
+              : 'https://' + urlInput.value.trim();
+            window.TrafficTorchLeaderboard.injectButton(lbHost, {
+              tool: 'ai-audit-tool',
+              url: boardUrl,
+              title: pageTitleSafe || 'Untitled page',
+              score: yourScore,
+              moduleScores: modules.map(m => ({
+                name: m.name,
+                // Normalize the per-module /20 to /100 so all tools share the same scale
+                score: Math.round((m.score / 20) * 100)
+              }))
+            });
+          }
+        }
+
       }, remaining);
 
     } catch (err) {

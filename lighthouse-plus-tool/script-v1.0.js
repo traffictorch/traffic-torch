@@ -12,6 +12,24 @@ import {
   extractSnippets
 } from './code-snippet-v1.0.js';
 
+// ─── Leaderboard submit helper ───────────────────────────────────
+function injectLeaderboardButton({ url, title, score, moduleScores }) {
+  if (!window.TrafficTorchLeaderboard) return;
+  const host =
+    document.getElementById('share-dashboard-container') ||
+    document.getElementById('share-module') ||
+    document.getElementById('results') ||
+    document.querySelector('main');
+  if (!host) return;
+  window.TrafficTorchLeaderboard.injectButton(host, {
+    tool: 'lighthouse-plus-tool',
+    url,
+    title: (title || '').trim().slice(0, 200) || 'Untitled page',
+    score,
+    moduleScores
+  });
+}
+
 // ─── Code block renderer ─────────────────────────────────────────
 function renderCodeBlocks(text) {
   if (text === null || text === undefined) return '';
@@ -841,6 +859,16 @@ ${(!failedItems.length && actionableWarnings.length === 0 && informationalSignal
         failedMetrics: failedMetrics.map((f) => f.name),
         aiFixes: priorityFixes.map((f) => f.name),
         shareLink: `${window.location.origin}/lighthouse-plus-tool/?url=${encodeURIComponent(url || '')}`,
+      });
+    }
+
+    // 🏆 Leaderboard submit button — final step, results are in DOM
+    if (!payload?.html && url && window.TrafficTorchLeaderboard) {
+      injectLeaderboardButton({
+        url,
+        title: pageTitle || '',
+        score: overall,
+        moduleScores: modules.map((m) => ({ name: m.name, score: m.score }))
       });
     }
   }

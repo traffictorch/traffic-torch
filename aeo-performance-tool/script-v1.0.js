@@ -778,6 +778,24 @@ document.addEventListener('DOMContentLoaded', () => {
         shareLink: `${window.location.origin}/aeo-performance-tool/?url=${encodeURIComponent(url || '')}`
       });
     }
+
+    // 🏆 Leaderboard submit button — final step, results are in DOM
+    if (!payload?.html && url && window.TrafficTorchLeaderboard) {
+      const lbHost =
+        document.getElementById('share-dashboard-container') ||
+        document.getElementById('share-module') ||
+        document.getElementById('results') ||
+        document.querySelector('main');
+      if (lbHost) {
+        window.TrafficTorchLeaderboard.injectButton(lbHost, {
+          tool: 'aeo-performance-tool',
+          url,
+          title: (pageTitle || '').trim().slice(0, 200) || 'Untitled page',
+          score: overall,
+          moduleScores: modules.map(m => ({ name: m.name, score: Math.round(m.score) }))
+        });
+      }
+    }
   }
 
   /* ─── Live Browser Metrics panel (Puppeteer) ─── */

@@ -22,6 +22,24 @@ import {
   escapeHtml
 } from './code-snippet-v1.0.js';
 
+// ─── Leaderboard submission button ───────────────────────────────
+function injectLeaderboardButton({ url, title, score, moduleScores }) {
+  if (!window.TrafficTorchLeaderboard) return;
+  const host =
+    document.getElementById('share-module') ||
+    document.getElementById('share-dashboard-container') ||
+    document.getElementById('results') ||
+    document.querySelector('main');
+  if (!host) return;
+  window.TrafficTorchLeaderboard.injectButton(host, {
+    tool: 'seo-ux-tool',
+    url,
+    title: (title || '').trim().slice(0, 200) || 'Untitled page',
+    score,
+    moduleScores
+  });
+}
+
 // ─── Code block renderer ─────────────────────────────────────────
 function renderCodeBlocks(text) {
   if (text === null || text === undefined) return '';
@@ -1203,6 +1221,26 @@ document.addEventListener('DOMContentLoaded', () => {
             newCmsBtn.disabled = false;
             newCmsBtn.textContent = originalLabel;
           }
+        });
+      }
+    }
+
+    // 🏆 Leaderboard submit button — final step, results are in DOM
+    if (currentAnalysisMode === 'url' && url && window.TrafficTorchLeaderboard) {
+      const lbHost =
+        document.getElementById('share-dashboard-container') ||
+        document.getElementById('share-module') ||
+        document.getElementById('results-wrapper') ||
+        document.querySelector('main');
+      if (lbHost) {
+        injectLeaderboardButton({
+          url: url,
+          title: doc?.title || pageTitle || '',
+          score: overallScore,
+          moduleScores: modules.map((mod, i) => ({
+            name: mod.name,
+            score: scores[i]
+          }))
         });
       }
     }

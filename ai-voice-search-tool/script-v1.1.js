@@ -1122,6 +1122,24 @@ ${topFailed.length === 0 ? `
           }
         });
 
+        // 🏆 Leaderboard submit button — final step, results are in DOM
+        if (pageUrl && window.TrafficTorchLeaderboard) {
+          const lbHost =
+            document.getElementById('share-dashboard-container') ||
+            document.getElementById('share-module') ||
+            document.getElementById('results') ||
+            document.querySelector('main');
+          if (lbHost) {
+            window.TrafficTorchLeaderboard.injectButton(lbHost, {
+              tool: 'ai-voice-search-tool',
+              url: pageUrl,
+              title: (doc?.title || '').trim().slice(0, 200) || 'Untitled page',
+              score: yourScore,
+              moduleScores: modules.map(m => ({ name: m.name, score: Math.round(m.score) }))
+            });
+          }
+        }
+
       }, remaining);
 
     } catch (err) {

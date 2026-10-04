@@ -1567,6 +1567,24 @@ ${impactHTML}
         }
       });
 
+      // 🏆 Leaderboard submit button — final step, results are already in DOM
+      if (!htmlCode && url && window.TrafficTorchLeaderboard) {
+        const lbHost =
+          document.getElementById('share-dashboard-container') ||
+          document.getElementById('share-module') ||
+          document.getElementById('results') ||
+          document.querySelector('main');
+        if (lbHost) {
+          window.TrafficTorchLeaderboard.injectButton(lbHost, {
+            tool: 'quit-risk-tool',
+            url: analyzedUrl,
+            title: (doc?.title || '').trim().slice(0, 200) || 'Untitled page',
+            score: safeScore,
+            moduleScores: moduleScores
+          });
+        }
+      }
+
     } catch (err) {
       document.getElementById('loading').classList.add('hidden');
       results.innerHTML = `

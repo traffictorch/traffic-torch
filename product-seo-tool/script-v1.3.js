@@ -1199,6 +1199,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
 
+      // 🏆 Leaderboard submit button — final step, results are in DOM
+      if (!isCode && inputUrl && inputUrl !== 'Pasted HTML Code' && inputUrl !== 'HTML Code Analysis' && window.TrafficTorchLeaderboard) {
+        const lbHost =
+          document.getElementById('share-dashboard-container') ||
+          document.getElementById('share-module') ||
+          document.getElementById('results') ||
+          document.querySelector('main');
+        if (lbHost) {
+          window.TrafficTorchLeaderboard.injectButton(lbHost, {
+            tool: 'product-seo-tool',
+            url: inputUrl,
+            title: (doc?.title || '').trim().slice(0, 200) || 'Untitled page',
+            score: safeScore,
+            moduleScores: modules.map(m => ({ name: m.name, score: Math.round(m.score) }))
+          });
+        }
+      }
+
     } catch (err) {
       loading.classList.add('hidden');
       if (results) {

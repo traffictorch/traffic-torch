@@ -481,6 +481,27 @@ ${cluster.subtopics && cluster.subtopics.length > 0
         initShareModule(shareContainer, shareData);
       }
 
+      // 🏆 Leaderboard submit button — final step, results are in DOM
+      if (inputType === 'url' && url && window.TrafficTorchLeaderboard) {
+        const lbHost =
+          document.getElementById('share-dashboard-container') ||
+          document.getElementById('share-module') ||
+          document.getElementById('results') ||
+          document.querySelector('main');
+        if (lbHost) {
+          window.TrafficTorchLeaderboard.injectButton(lbHost, {
+            tool: 'topical-authority-audit-tool',
+            url,
+            title: (pageTitle || displayTitle || '').trim().slice(0, 200) || 'Untitled page',
+            score: overallScore,
+            moduleScores: moduleScores.map(m => ({
+              name: m.name,
+              score: Math.round(m.score || 0)
+            }))
+          });
+        }
+      }
+
     } catch (err) {
       clearTimeout(heavyTimeout);
       loading.classList.add('hidden');

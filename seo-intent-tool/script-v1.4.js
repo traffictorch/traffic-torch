@@ -1186,11 +1186,29 @@ if (data.success && cmsAnswerContent) {
   if (cmsAnswerContent) {
     cmsAnswerContent.innerHTML = '❌ Failed to generate CMS fixes. Please try again. (' + renderCodeBlocks(err.message) + ')';
   }
-} finally {
+        } finally {
           cmsFixesBtn.disabled = false;
           cmsFixesBtn.textContent = originalLabel;
         }
       });
+
+      // 🏆 Leaderboard submit button — final step, results are in DOM
+      if (!customHtml && url && window.TrafficTorchLeaderboard) {
+        const lbHost =
+          document.getElementById('share-dashboard-container') ||
+          document.getElementById('share-module') ||
+          document.getElementById('results') ||
+          document.querySelector('main');
+        if (lbHost) {
+          window.TrafficTorchLeaderboard.injectButton(lbHost, {
+            tool: 'seo-intent-tool',
+            url,
+            title: (doc?.title || '').trim().slice(0, 200) || 'Untitled page',
+            score: overall,
+            moduleScores: modules.map(m => ({ name: m.name, score: m.score }))
+          });
+        }
+      }
 
     } catch (err) {
       results.innerHTML = `<p class="text-red-500 text-center text-xl p-10">Error: ${err.message}</p>`;

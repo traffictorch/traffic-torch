@@ -1296,6 +1296,20 @@ export async function runOfuxAnalysis(url, containerId, aiContainerId) {
       }
     );
 
+    // 🏆 Leaderboard submission button — below the CMS Fixes section
+    if (window.TrafficTorchLeaderboard && url) {
+      const cmsSection = document.getElementById('cms-fixes-section');
+      if (cmsSection) {
+        window.TrafficTorchLeaderboard.injectButton(cmsSection, {
+          tool: 'ofux-tool',
+          url,
+          title: (doc?.title || '').trim().slice(0, 200) || 'Untitled page',
+          score: overall,
+          moduleScores: shareResults.moduleScores
+        });
+      }
+    }
+
   } catch (err) {
     container.innerHTML = `
       <div class="text-center py-12 text-red-500">
