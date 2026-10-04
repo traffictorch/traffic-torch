@@ -591,12 +591,36 @@ document.addEventListener('DOMContentLoaded', () => {
         mobilePlaceholder.innerHTML.trim() !== '') {
       clearInterval(checkMenusLoaded);
       updateProPortalDot();
+      updatePortalCount();
     }
   }, 100);
 });
 
 // Also listen for a custom event to update when login status changes
-document.addEventListener('loginStatusChanged', updateProPortalDot);
+document.addEventListener('loginStatusChanged', () => {
+  updateProPortalDot();
+  updatePortalCount();
+});
+
+// Portal unread count badge
+async function updatePortalCount() {
+  const token = localStorage.getItem('authToken');
+  const els = document.querySelectorAll('[data-portal-count]');
+  if (!token) {
+    els.forEach(el => { el.textContent = '0'; });
+    return;
+  }
+  try {
+    const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/notifications', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const unread = data.unread || 0;
+    els.forEach(el => { el.textContent = String(unread); });
+  } catch {}
+}
+window.updatePortalCount = updatePortalCount;
 
 // ==========================================================
 // NEW: Event delegation for [data-tab] links (desktop + mobile)

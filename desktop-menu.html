@@ -1,7 +1,7 @@
-<!-- desktop-menu.html – Pro Portal dropdown (toggle) + Extras dropdown + Login at bottom -->
+<!-- desktop-menu.html – Portal dropdown (toggle) + Extras dropdown + Login at bottom -->
 <nav class="p-2 space-y-4 flex-1">
 
-  <!-- Pro Portal – dropdown (collapsible) -->
+  <!-- Portal – dropdown (collapsible) -->
   <div>
     <button
       type="button"
@@ -9,13 +9,25 @@
       aria-expanded="false"
       aria-controls="proportal-content"
       data-category="proportal"
-      title="Pro Portal – Dashboard, Analytics, Integrations, API Keys & Settings"
+      title="Portal – Notifications, Dashboard, Analytics, Integrations & Settings"
     >
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🚥</span>
-      <span class="sidebar-text font-semibold flex-1">Pro Portal</span>
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🚦</span>
+      <span class="sidebar-text font-semibold flex-1">Portal <span data-portal-count>0</span> 🔔</span>
       <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
     </button>
     <div id="proportal-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="proportal">
+      <a href="/dashboard/#portal" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="portal">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔔</span>
+        <span class="sidebar-text hidden md:block">Notifications</span>
+      </a>
+      <a href="/dashboard/#profile" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="profile">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">👤</span>
+        <span class="sidebar-text hidden md:block">Profile</span>
+      </a>
+      <a href="/dashboard/#network" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="network">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🕸️</span>
+        <span class="sidebar-text hidden md:block">Network</span>
+      </a>
       <a href="/dashboard/#dashboard" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="dashboard">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📊</span>
         <span class="sidebar-text hidden md:block">Dashboard</span>
@@ -272,12 +284,12 @@
       <span class="sidebar-text hidden md:block">Login</span>
     </a>
   </div>
-  
+
     <!-- Leader Board -->
   <div class="mt-2 border-t border-white/10 dark:border-white/5 pt-4">
     <a href="/leader-board/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition px-3 py-2 rounded-lg">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🥇</span>
       <span class="sidebar-text hidden md:block">Leader Board</span>
     </a>
-  </div> 
+  </div>
 </nav>

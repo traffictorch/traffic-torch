@@ -1,7 +1,7 @@
-<!-- mobile-menu.html – Pro Portal dropdown (collapsible) + Extras dropdown + Login at bottom -->
+<!-- mobile-menu.html – Portal dropdown (collapsible) + Extras dropdown + Login at bottom -->
 <nav class="flex flex-col gap-6 py-20 px-4 text-xl">
 
-  <!-- Pro Portal – mobile (collapsible) -->
+  <!-- Portal – mobile (collapsible) -->
   <div>
     <button
       type="button"
@@ -10,10 +10,13 @@
       aria-controls="proportal-mobile-content"
       data-category="proportal-mobile"
     >
-      🚥 Pro Portal
+      <span>🚦 Portal <span data-portal-count>0</span> 🔔</span>
       <span class="text-sm transition-transform">▼</span>
     </button>
     <div id="proportal-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="proportal-mobile">
+      <a href="/dashboard/#portal" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="portal">🔔 Notifications</a>
+      <a href="/dashboard/#profile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="profile">👤 Profile</a>
+      <a href="/dashboard/#network" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="network">🕸️ Network</a>
       <a href="/dashboard/#dashboard" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="dashboard">📊 Dashboard</a>
       <a href="/dashboard/#audits" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="audits">📋 Audits</a>
       <a href="/dashboard/#analytics" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="analytics">📈 Analytics</a>
@@ -135,7 +138,7 @@
       🔑 Login
     </a>
   </div>
-  
+
     <!-- Leader Board -->
   <div class="mt-2 pt-2 border-t border-white/10 dark:border-white/5">
     <a href="/leader-board/" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">
