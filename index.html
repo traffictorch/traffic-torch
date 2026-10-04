@@ -189,227 +189,6 @@
       overflow: hidden; clip: rect(0,0,0,0);
       white-space: nowrap; border: 0;
     }
-
-    /* ===== Carousel ===== */
-    .carousel {
-      position: relative;
-      overflow: hidden;
-      border-radius: 1.25rem;
-      background: linear-gradient(135deg, rgba(249,115,22,0.06), rgba(236,72,153,0.06));
-      box-shadow: 0 25px 60px -20px rgba(0,0,0,0.25);
-    }
-    .dark .carousel {
-      background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(236,72,153,0.08));
-      box-shadow: 0 25px 60px -20px rgba(0,0,0,0.6);
-    }
-    .carousel-track {
-      display: flex;
-      transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
-      will-change: transform;
-    }
-    .carousel-slide {
-      flex: 0 0 100%;
-      margin: 0;
-      position: relative;
-    }
-    .carousel-slide img {
-      width: 100%;
-      height: auto;
-      display: block;
-      aspect-ratio: 4 / 3;
-      object-fit: cover;
-      border-radius: 1.25rem;
-    }
-    .carousel-slide figcaption {
-      position: absolute;
-      left: 0; right: 0; bottom: 0;
-      padding: 1.25rem 1.5rem;
-      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
-      color: #fff;
-      border-radius: 0 0 1.25rem 1.25rem;
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-    .carousel-slide figcaption strong { color: #fb923c; }
-    .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.55);
-      color: #fff;
-      border: none;
-      font-size: 1.6rem;
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(6px);
-      transition: background 0.2s, transform 0.2s;
-      z-index: 3;
-    }
-    .carousel-btn:hover { background: #f97316; }
-    .carousel-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
-    .carousel-btn.prev { left: 12px; }
-    .carousel-btn.next { right: 12px; }
-    .carousel-dots {
-      position: absolute;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
-      z-index: 3;
-    }
-    .carousel-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.5);
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      transition: background 0.2s, transform 0.2s;
-    }
-    .carousel-dot.active {
-      background: #f97316;
-      transform: scale(1.25);
-    }
-    .carousel-dot:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-
-    @media (max-width: 640px) {
-      .carousel-btn { width: 38px; height: 38px; font-size: 1.3rem; }
-      .carousel-slide figcaption { font-size: 0.8rem; padding: 1rem; }
-    }
-
-    /* ===== Flow diagram ===== */
-.flow-chain {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  margin: 0 auto 2.5rem;
-  max-width: 18rem;
-  font-weight: 700;
-}
-.flow-node {
-  width: 100%;
-  text-align: center;
-  padding: 0.7rem 1rem;
-  border-radius: 0.85rem;
-  background: linear-gradient(135deg, #f97316, #ec4899);
-  color: #fff;
-  font-size: 0.95rem;
-  box-shadow: 0 6px 18px -6px rgba(249, 115, 22, 0.55);
-  line-height: 1.2;
-}
-.flow-arrow {
-  color: #f97316;
-  font-size: 1.1rem;
-  font-weight: 900;
-  line-height: 1;
-  display: inline-block;
-  transform: rotate(90deg);
-  opacity: 0.8;
-}
-
-@media (min-width: 768px) {
-  .flow-chain {
-    flex-direction: row;
-    flex-wrap: wrap;
-    max-width: none;
-    gap: 0.55rem 0.75rem;
-  }
-  .flow-node {
-    width: auto;
-    padding: 0.6rem 1.1rem;
-    font-size: 0.9rem;
-    white-space: nowrap;
-  }
-  .flow-arrow {
-    transform: none;
-    opacity: 1;
-  }
-}
-
-    /* ===== Hero ===== */
-    .hero-section {
-      padding-top: 1rem;
-      padding-bottom: 0.5rem;
-    }
-    @media (max-width: 640px) {
-      .hero-section { padding-top: 0.5rem; }
-      .hero-section h1 { font-size: 1.35rem !important; line-height: 1.2; margin-bottom: 0.5rem !important; }
-      .hero-section .hero-sub { font-size: 0.9rem; margin-bottom: 0.75rem !important; }
-    }
-
-    /* Tool card suite styling */
-    .suite-block {
-      background: rgba(255,255,255,0.55);
-      border: 1px solid rgba(0,0,0,0.06);
-      border-radius: 1rem;
-      padding: 1.25rem;
-    }
-    .dark .suite-block {
-      background: rgba(0,0,0,0.25);
-      border-color: rgba(255,255,255,0.08);
-    }
-    .suite-block h4 { font-size: 1rem; font-weight: 800; margin-bottom: 0.75rem; }
-    .suite-block a {
-      display: inline-block;
-      padding: 0.35rem 0.7rem;
-      margin: 0.15rem;
-      font-size: 0.85rem;
-      border-radius: 0.5rem;
-      background: rgba(249,115,22,0.08);
-      color: #c2410c;
-      text-decoration: none;
-      transition: background 0.2s;
-    }
-    .dark .suite-block a { background: rgba(249,115,22,0.15); color: #fb923c; }
-    .suite-block a:hover { background: rgba(249,115,22,0.2); }
-    
-    .trust-badges {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem 0.6rem;
-  list-style: none;
-  padding: 0;
-  margin: 1.25rem auto 1rem;
-  max-width: 44rem;
-}
-.trust-badges li {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: 999px;
-  background: rgba(249, 115, 22, 0.08);
-  border: 1px solid rgba(249, 115, 22, 0.18);
-  color: #c2410c;
-  font-size: 0.82rem;
-  font-weight: 500;
-  line-height: 1;
-  white-space: nowrap;
-}
-.dark .trust-badges li {
-  background: rgba(249, 115, 22, 0.12);
-  border-color: rgba(249, 115, 22, 0.28);
-  color: #fb923c;
-}
-.trust-icon {
-  font-size: 0.95rem;
-  line-height: 1;
-  display: inline-block;
-}
-@media (max-width: 640px) {
-  .trust-badges { gap: 0.45rem; }
-  .trust-badges li { font-size: 0.78rem; padding: 0.35rem 0.7rem; }
-}
   </style>
 
   <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
@@ -577,7 +356,7 @@
       </div>
 
       <div class="flex justify-between items-start mb-4">
-        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <h3 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h3>
         <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
       </div>
 
@@ -604,10 +383,18 @@
 
       <!-- CTA -->
 <div class="mt-4 text-center">
-  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
-       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
-    📊 Analytics
-  </div>
+<div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+     style="display: inline-block !important; padding: 0.6rem 1.8rem !important; 
+            background: linear-gradient(135deg, #9a3412, #831843) !important; 
+            color: white !important; font-weight: 700 !important; 
+            border-radius: 0.75rem !important; text-decoration: none !important; 
+            font-size: 0.9rem !important; opacity: 1 !important; 
+            visibility: visible !important; 
+            box-shadow: 0 4px 12px rgba(154,52,18,0.4) !important; 
+            transition: all 0.2s !important; cursor: pointer !important; 
+            z-index: 10 !important; position: relative !important;">
+  📊 Analytics
+</div>
   <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
 </div>
     </div>
@@ -620,7 +407,7 @@
       </div>
 
       <div class="flex justify-between items-start mb-4">
-        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <h3 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h3>
         <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
       </div>
 
@@ -647,10 +434,18 @@
 
       <!-- CTA -->
 <div class="mt-4 text-center">
-  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
-       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
-    🌐 Search Console
-  </div>
+<div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+     style="display: inline-block !important; padding: 0.6rem 1.8rem !important; 
+            background: linear-gradient(135deg, #9a3412, #831843) !important; 
+            color: white !important; font-weight: 700 !important; 
+            border-radius: 0.75rem !important; text-decoration: none !important; 
+            font-size: 0.9rem !important; opacity: 1 !important; 
+            visibility: visible !important; 
+            box-shadow: 0 4px 12px rgba(154,52,18,0.4) !important; 
+            transition: all 0.2s !important; cursor: pointer !important; 
+            z-index: 10 !important; position: relative !important;">
+  🌐 Search Console
+</div>
   <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
 </div>
     </div>
@@ -865,7 +660,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
             <div class="suite-block">
-              <h4>⚡ Core Platform</h4>
+              <h3>⚡ Core Platform</h3>
               <a href="/">NUSA Audit</a>
               <a href="/dashboard/">Dashboard</a>
               <a href="/ofux-tool/">OFUX</a>
@@ -874,7 +669,7 @@
             </div>
 
             <div class="suite-block">
-              <h4>🎯 SEO Suite</h4>
+              <h3>🎯 SEO Suite</h3>
               <a href="/seo-intent-tool/">SEO Intent</a>
               <a href="/seo-entity-extractor-tool/">Entity Extractor</a>
               <a href="/topical-authority-audit-tool/">Topical Authority</a>
@@ -884,27 +679,27 @@
             </div>
 
             <div class="suite-block">
-              <h4>🤖 AI Search Suite</h4>
+              <h3>🤖 AI Search Suite</h3>
               <a href="/ai-search-optimization-tool/">AEO Audit</a>
               <a href="/ai-voice-search-tool/">Voice Search</a>
               <a href="/ai-audit-tool/">AI Content Audit</a>
             </div>
 
             <div class="suite-block">
-              <h4>🔑 Keyword Suite</h4>
+              <h3>🔑 Keyword Suite</h3>
               <a href="/keyword-research-tool/">Keyword Research</a>
               <a href="/keyword-tool/">Keyword Placement</a>
               <a href="/keyword-vs-tool/">Keyword Competition</a>
             </div>
 
             <div class="suite-block">
-              <h4>📈 UX Tools</h4>
+              <h3>📈 UX Tools</h3>
               <a href="/quit-risk-tool/">Quit Risk</a>
               <a href="/seo-ux-tool/">SEO + UX</a>
             </div>
 
             <div class="suite-block">
-              <h4>📖 Learn & Integrate</h4>
+              <h3>📖 Learn & Integrate</h3>
               <a href="/ai-ux-seo-help-guides/">Help Guides</a>
               <a href="/integrations/browser-extensions/">Browser Extensions</a>
               <a href="/integrations/developer-tools/">Developer Tools</a>
