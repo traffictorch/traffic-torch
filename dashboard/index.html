@@ -58,6 +58,12 @@
     .notif-row.unread { background: rgba(249,115,22,0.08); border-color: rgba(249,115,22,0.25); }
     .dark .notif-row.unread { background: rgba(249,115,22,0.12); border-color: rgba(249,115,22,0.2); }
     .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: #f97316; flex-shrink: 0; margin-top: 0.5rem; }
+    .link-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.1rem; border-radius: 9999px; font-size: 0.9rem; font-weight: 600; transition: all 0.18s ease; border: 1px solid rgba(249,115,22,0.35); background: rgba(249,115,22,0.1); color: #ea580c; text-decoration: none; }
+    .link-btn:hover { background: rgba(249,115,22,0.2); transform: translateY(-1px); }
+    .dark .link-btn { color: #fb923c; border-color: rgba(251,146,60,0.3); background: rgba(251,146,60,0.12); }
+    .notif-link { color: #2563eb; font-weight: 600; text-decoration: none; cursor: pointer; }
+    .notif-link:hover { text-decoration: underline; }
+    .dark .notif-link { color: #60a5fa; }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -66,7 +72,7 @@
 
   <div class="flex flex-1 min-h-screen">
 
-    <!-- Desktop Sidebar -->
+    <!-- Sidebar -->
     <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
       <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
         <a href="/" class="flex items-center gap-4">
@@ -109,16 +115,245 @@
                     class="px-6 py-3 text-sm font-medium transition-all duration-200"
                     :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
               <span x-text="tab.label"></span>
-              <template x-if="tab.id === 'portal' && notifications.unread > 0">
+              <template x-if="tab.id === 'profile' && notifications.unread > 0">
                 <span class="ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full bg-orange-500 text-white" x-text="notifications.unread"></span>
               </template>
             </button>
           </template>
         </div>
 
-        <!-- ===== PORTAL TAB (Notifications) ===== -->
-        <div x-show="activeDashboardTab === 'portal'" x-cloak>
-          <div class="max-w-3xl mx-auto">
+        <!-- ===== PROFILE TAB (view + edit + notifications) ===== -->
+        <div x-show="activeDashboardTab === 'profile'" x-cloak>
+
+          <!-- === VIEW MODE === -->
+          <div x-show="profileViewMode === 'view'" class="max-w-3xl mx-auto">
+
+            <div x-show="profile.loading" class="text-center py-12">
+              <div class="spinner mx-auto"></div>
+            </div>
+
+            <div x-show="!profile.loading">
+
+              <!-- Profile preview card -->
+              <div class="glass rounded-3xl overflow-hidden mb-6">
+                <div class="h-32 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600"></div>
+                <div class="px-6 pb-6 -mt-16 relative">
+                  <div class="flex flex-col sm:flex-row sm:items-end gap-5">
+                    <img :src="`/images/avatars/${profile.avatar_preset || 'owner'}.svg`"
+                         :alt="profile.display_name"
+                         class="w-32 h-32 rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100">
+                    <div class="flex-1 sm:pb-2">
+                      <h1 class="text-3xl font-black" x-text="profile.display_name || profile.username || 'Your name'"></h1>
+                      <p class="text-gray-500 text-lg">
+                        @<span x-text="profile.username || 'username'"></span>
+                        <span class="ml-2 inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(profile.role)"></span>
+                      </p>
+                    </div>
+                    <div class="flex gap-2 sm:pb-2 flex-wrap">
+                      <button @click="profileViewMode = 'edit'"
+                              class="px-5 py-2.5 rounded-xl font-bold text-sm transition border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white">
+                        ✏️ Edit Profile
+                      </button>
+                      <a :href="'/u/' + (profile.username || '') + '/'"
+                         target="_blank"
+                         x-show="profile.username"
+                         class="px-5 py-2.5 rounded-xl font-bold text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition flex items-center">
+                        View public →
+                      </a>
+                    </div>
+                  </div>
+
+                  <p x-show="profile.bio" class="mt-5 text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
+                  <p x-show="!profile.bio" class="mt-5 text-gray-400 italic">No bio yet — click Edit Profile to add one.</p>
+
+                  <div class="mt-4 flex flex-wrap gap-3 text-sm text-gray-500">
+                    <span x-show="profile.job_title" class="inline-flex items-center gap-1.5">💼 <span x-text="profile.job_title"></span></span>
+                    <span x-show="profile.company" class="inline-flex items-center gap-1.5">🏢 <span x-text="profile.company"></span></span>
+                    <span x-show="profile.location" class="inline-flex items-center gap-1.5">📍 <span x-text="profile.location"></span></span>
+                    <span x-show="profile.created_at" class="inline-flex items-center gap-1.5">📅 Member since <span x-text="formatShortDate(profile.created_at)"></span></span>
+                  </div>
+
+                  <div class="mt-5 flex flex-wrap gap-3">
+                    <a x-show="profile.website_url && profile.website_approved"
+                       :href="profile.website_url"
+                       target="_blank"
+                       rel="ugc nofollow noopener"
+                       class="link-btn">
+                      🌐 <span x-text="domainLabel(profile.website_url)"></span>
+                    </a>
+                    <a x-show="profile.social1_url"
+                       :href="profile.social1_url"
+                       target="_blank"
+                       rel="ugc nofollow noopener"
+                       class="link-btn">
+                      🔗 <span x-text="domainLabel(profile.social1_url)"></span>
+                    </a>
+                    <a x-show="profile.social2_url"
+                       :href="profile.social2_url"
+                       target="_blank"
+                       rel="ugc nofollow noopener"
+                       class="link-btn">
+                      🔗 <span x-text="domainLabel(profile.social2_url)"></span>
+                    </a>
+                  </div>
+
+                  <div class="mt-6 grid grid-cols-3 gap-3 max-w-md">
+                    <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+                      <p class="text-2xl font-black text-orange-500" x-text="feed.slots.used"></p>
+                      <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Audits shared</p>
+                    </div>
+                    <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+                      <p class="text-2xl font-black text-orange-500" x-text="network.list.length"></p>
+                      <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Network</p>
+                    </div>
+                    <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+                      <p class="text-2xl font-black text-orange-500" x-text="monthsSince(profile.created_at)"></p>
+                      <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Months here</p>
+                    </div>
+                  </div>
+
+                  <p x-show="profile.website_url && !profile.website_approved" class="mt-4 text-xs text-orange-500">
+                    🌐 Website pending review — will appear publicly once approved.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Notifications link -->
+              <div class="text-center mb-8">
+                <a @click.prevent="scrollToNotifications()" class="notif-link text-base">
+                  🔔 <span x-text="notifications.unread"></span> unread ·
+                  <span x-text="notifications.list.length"></span>/24 total — View notifications →
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- === EDIT MODE === -->
+          <div x-show="profileViewMode === 'edit'" class="max-w-3xl mx-auto">
+            <div class="glass rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                <h3 class="text-xl font-bold">✏️ Edit Profile</h3>
+                <button @click="profileViewMode = 'view'"
+                        class="px-4 py-2 text-sm font-medium rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+                  👁 Preview
+                </button>
+              </div>
+
+              <div class="space-y-6">
+                <div>
+                  <label class="block text-sm font-medium mb-3">Avatar</label>
+                  <div class="grid grid-cols-3 gap-4">
+                    <template x-for="preset in ['owner','designer','seo']" :key="preset">
+                      <button type="button"
+                              @click="profile.avatar_preset = preset"
+                              class="p-4 rounded-2xl border-2 transition flex flex-col items-center gap-2"
+                              :class="profile.avatar_preset === preset ? 'border-orange-500 bg-orange-500/10' : 'border-gray-300 dark:border-gray-600 hover:border-orange-400'">
+                        <img :src="`/images/avatars/${preset}.svg`" :alt="preset" class="w-20 h-20 rounded-full" loading="lazy">
+                        <span class="text-sm font-medium capitalize" x-text="preset"></span>
+                      </button>
+                    </template>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Display name</label>
+                  <input type="text" x-model="profile.display_name" maxlength="60" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Username</label>
+                  <input type="text" x-model="profile.username" maxlength="30" pattern="[a-z0-9_]+" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50" placeholder="lowercase, numbers, underscore">
+                  <p class="text-xs text-gray-500 mt-1">Public URL: /u/<span x-text="profile.username || 'username'"></span>/</p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Role</label>
+                  <select x-model="profile.role" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                    <option value="owner">Website Owner</option>
+                    <option value="designer">Web Designer</option>
+                    <option value="seo">SEO Professional</option>
+                    <option value="developer">Developer</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Bio <span class="text-gray-500">(160 chars)</span></label>
+                  <textarea x-model="profile.bio" maxlength="160" rows="2" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50"></textarea>
+                  <p class="text-xs text-gray-500 mt-1 text-right"><span x-text="(profile.bio || '').length"></span> / 160</p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium mb-1">Website <span class="text-gray-500">(one link)</span></label>
+                  <input type="url" x-model="profile.website_url" placeholder="https://example.com" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                  <p class="text-xs mt-1" :class="profile.website_approved ? 'text-green-500' : 'text-orange-500'" x-text="profile.website_approved ? 'Approved ✓' : 'Pending review — will not appear publicly until approved'"></p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium mb-1">Social link 1</label>
+                    <input type="url" x-model="profile.social1_url" placeholder="https://x.com/you" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-1">Social link 2</label>
+                    <input type="url" x-model="profile.social2_url" placeholder="https://linkedin.com/in/you" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium mb-1">Job title</label>
+                    <input type="text" x-model="profile.job_title" maxlength="60" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-1">Company</label>
+                    <input type="text" x-model="profile.company" maxlength="60" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium mb-1">Location</label>
+                    <input type="text" x-model="profile.location" maxlength="60" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                  </div>
+                </div>
+
+                <div class="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <label class="flex items-center justify-between cursor-pointer">
+                    <span class="text-sm">Auto-share new audits to feed</span>
+                    <input type="checkbox" x-model="profile.auto_share" class="w-5 h-5">
+                  </label>
+                  <label class="flex items-center justify-between cursor-pointer">
+                    <span class="text-sm">Show my network on profile</span>
+                    <input type="checkbox" x-model="profile.show_network" class="w-5 h-5">
+                  </label>
+                  <label class="flex items-center justify-between cursor-pointer">
+                    <span class="text-sm">Allow others to add me to their network</span>
+                    <input type="checkbox" x-model="profile.allow_adds" class="w-5 h-5">
+                  </label>
+                  <label class="flex items-center justify-between cursor-pointer">
+                    <span class="text-sm">Public profile</span>
+                    <input type="checkbox" x-model="profile.profile_public" class="w-5 h-5">
+                  </label>
+                </div>
+
+                <div class="flex gap-3 pt-4 flex-wrap">
+                  <button @click="saveProfile()" :disabled="profile.saving"
+                          class="flex-1 min-w-[180px] py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">
+                    <span x-show="!profile.saving">Save Profile</span>
+                    <span x-show="profile.saving">Saving…</span>
+                  </button>
+                  <button @click="profileViewMode = 'view'"
+                          class="px-5 py-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm font-medium">
+                    Cancel
+                  </button>
+                </div>
+
+                <p x-show="profile.success" class="text-green-500 text-sm" x-text="profile.success"></p>
+                <p x-show="profile.error" class="text-red-500 text-sm" x-text="profile.error"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- === NOTIFICATIONS SECTION === -->
+          <div id="notifications-section" class="max-w-3xl mx-auto mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
               <h3 class="text-xl font-bold">🔔 Notifications</h3>
               <div class="flex gap-2 flex-wrap">
@@ -135,7 +370,7 @@
             </div>
 
             <p class="text-xs text-gray-500 mb-4">
-              Shows the latest 24 notifications. Older ones are removed automatically.
+              Latest 24 notifications. Older ones are removed automatically.
               <a href="#settings" @click.prevent="activeDashboardTab = 'settings'" class="text-orange-500 hover:underline ml-1">Change preferences →</a>
             </p>
 
@@ -152,185 +387,24 @@
             <div x-show="!notifications.loading && notifications.list.length > 0" class="space-y-2">
               <template x-for="n in notifications.list" :key="n.id">
                 <div class="notif-row" :class="n.is_read ? '' : 'unread'">
-                  <template x-if="!n.is_read">
-                    <span class="notif-dot"></span>
-                  </template>
-                  <template x-if="n.is_read">
-                    <span style="width:8px;flex-shrink:0;"></span>
-                  </template>
-                  <img :src="`/images/avatars/${n.actor_avatar || 'owner'}.svg`"
-                       class="w-10 h-10 rounded-full flex-shrink-0" alt="">
+                  <template x-if="!n.is_read"><span class="notif-dot"></span></template>
+                  <template x-if="n.is_read"><span style="width:8px;flex-shrink:0;"></span></template>
+                  <img :src="`/images/avatars/${n.actor_avatar || 'owner'}.svg`" class="w-10 h-10 rounded-full flex-shrink-0" alt="">
                   <div class="flex-1 min-w-0">
                     <p class="text-sm leading-snug" x-text="n.message"></p>
                     <p class="text-xs text-gray-500 mt-1" x-text="formatRelativeTime(n.created_at)"></p>
                   </div>
                   <div class="flex flex-col gap-1 items-end flex-shrink-0">
                     <template x-if="n.link">
-                      <a :href="n.link" @click="markOneRead(n.id)"
-                         class="text-xs text-orange-500 hover:underline whitespace-nowrap">Open →</a>
+                      <a :href="n.link" @click="markOneRead(n.id)" class="text-xs text-orange-500 hover:underline whitespace-nowrap">Open →</a>
                     </template>
-                    <button @click="deleteNotification(n.id)"
-                            class="text-xs text-gray-400 hover:text-red-500 transition" title="Delete">✕</button>
+                    <button @click="deleteNotification(n.id)" class="text-xs text-gray-400 hover:text-red-500 transition" title="Delete">✕</button>
                   </div>
                 </div>
               </template>
             </div>
           </div>
-        </div>
 
-        <!-- ===== PROFILE TAB ===== -->
-        <div x-show="activeDashboardTab === 'profile'" x-cloak>
-          <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
-
-            <h3 class="text-xl font-bold mb-6">👤 Your Profile</h3>
-
-            <div x-show="profile.loading" class="text-center py-8">
-              <div class="spinner mx-auto"></div>
-            </div>
-
-            <div x-show="!profile.loading" class="space-y-6">
-
-              <div>
-                <label class="block text-sm font-medium mb-3">Avatar</label>
-                <div class="grid grid-cols-3 gap-4">
-                  <template x-for="preset in ['owner','designer','seo']" :key="preset">
-                    <button type="button"
-                            @click="profile.avatar_preset = preset"
-                            class="p-4 rounded-2xl border-2 transition flex flex-col items-center gap-2"
-                            :class="profile.avatar_preset === preset
-                              ? 'border-orange-500 bg-orange-500/10'
-                              : 'border-gray-300 dark:border-gray-600 hover:border-orange-400'">
-                      <img :src="`/images/avatars/${preset}.svg`" :alt="preset" class="w-20 h-20 rounded-full" loading="lazy">
-                      <span class="text-sm font-medium capitalize" x-text="preset"></span>
-                    </button>
-                  </template>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium mb-1">Display name</label>
-                <input type="text" x-model="profile.display_name" maxlength="60" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium mb-1">Username</label>
-                <input type="text" x-model="profile.username" maxlength="30" pattern="[a-z0-9_]+" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50" placeholder="lowercase, numbers, underscore">
-                <p class="text-xs text-gray-500 mt-1">Your public URL: /u/<span x-text="profile.username || 'username'"></span>/</p>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium mb-1">Role</label>
-                <select x-model="profile.role" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                  <option value="owner">Website Owner</option>
-                  <option value="designer">Web Designer</option>
-                  <option value="seo">SEO Professional</option>
-                  <option value="developer">Developer</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium mb-1">Bio <span class="text-gray-500">(160 chars)</span></label>
-                <textarea x-model="profile.bio" maxlength="160" rows="2" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50"></textarea>
-                <p class="text-xs text-gray-500 mt-1 text-right"><span x-text="(profile.bio || '').length"></span> / 160</p>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium mb-1">Website <span class="text-gray-500">(one link)</span></label>
-                <input type="url" x-model="profile.website_url" placeholder="https://example.com" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                <p class="text-xs mt-1" :class="profile.website_approved ? 'text-green-500' : 'text-orange-500'" x-text="profile.website_approved ? 'Approved ✓' : 'Pending review — will not appear publicly until approved'"></p>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm font-medium mb-1">Social link 1</label>
-                  <input type="url" x-model="profile.social1_url" placeholder="https://x.com/you" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                </div>
-                <div>
-                  <label class="block text-sm font-medium mb-1">Social link 2</label>
-                  <input type="url" x-model="profile.social2_url" placeholder="https://linkedin.com/in/you" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label class="block text-sm font-medium mb-1">Job title</label>
-                  <input type="text" x-model="profile.job_title" maxlength="60" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                </div>
-                <div>
-                  <label class="block text-sm font-medium mb-1">Company</label>
-                  <input type="text" x-model="profile.company" maxlength="60" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                </div>
-                <div>
-                  <label class="block text-sm font-medium mb-1">Location</label>
-                  <input type="text" x-model="profile.location" maxlength="60" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                </div>
-              </div>
-
-              <div class="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <label class="flex items-center justify-between cursor-pointer">
-                  <span class="text-sm">Auto-share new audits to feed</span>
-                  <input type="checkbox" x-model="profile.auto_share" class="w-5 h-5">
-                </label>
-                <label class="flex items-center justify-between cursor-pointer">
-                  <span class="text-sm">Show my network on profile</span>
-                  <input type="checkbox" x-model="profile.show_network" class="w-5 h-5">
-                </label>
-                <label class="flex items-center justify-between cursor-pointer">
-                  <span class="text-sm">Allow others to add me to their network</span>
-                  <input type="checkbox" x-model="profile.allow_adds" class="w-5 h-5">
-                </label>
-                <label class="flex items-center justify-between cursor-pointer">
-                  <span class="text-sm">Public profile</span>
-                  <input type="checkbox" x-model="profile.profile_public" class="w-5 h-5">
-                </label>
-              </div>
-
-              <div class="flex gap-3 pt-4">
-                <button @click="saveProfile()" :disabled="profile.saving"
-                        class="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">
-                  <span x-show="!profile.saving">Save Profile</span>
-                  <span x-show="profile.saving">Saving…</span>
-                </button>
-                <a :href="'/u/' + (profile.username || '') + '/'" target="_blank" x-show="profile.username"
-                   class="px-5 py-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm font-medium flex items-center">
-                  View public →
-                </a>
-              </div>
-
-              <p x-show="profile.success" class="text-green-500 text-sm" x-text="profile.success"></p>
-              <p x-show="profile.error" class="text-red-500 text-sm" x-text="profile.error"></p>
-
-              <!-- Notifications summary -->
-              <div class="pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
-                <div class="flex items-center justify-between flex-wrap gap-3">
-                  <div>
-                    <p class="font-semibold flex items-center gap-2">
-                      🔔 Notifications
-                      <template x-if="notifications.unread > 0">
-                        <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full bg-orange-500 text-white" x-text="notifications.unread"></span>
-                      </template>
-                    </p>
-                    <p class="text-xs text-gray-500 mt-1">
-                      <span x-text="notifications.list.length"></span> total ·
-                      <span x-text="notifications.unread"></span> unread
-                    </p>
-                  </div>
-                  <div class="flex gap-2 flex-wrap">
-                    <button @click="activeDashboardTab = 'portal'"
-                            class="px-3 py-1.5 text-sm font-medium rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition">
-                      View notifications →
-                    </button>
-                    <button @click="activeDashboardTab = 'settings'"
-                            class="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                      ⚙️ Preferences
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
         </div>
 
         <!-- ===== NETWORK TAB ===== -->
@@ -464,7 +538,7 @@
 
           <div x-show="networkSubTab === 'invite'" class="max-w-md mx-auto glass rounded-2xl p-6">
             <h3 class="text-lg font-bold mb-2">Invite a colleague</h3>
-            <p class="text-sm text-gray-500 mb-4">Send them a link to sign up. No rewards, just a friendly nudge.</p>
+            <p class="text-sm text-gray-500 mb-4">Send them a link to sign up.</p>
             <div class="flex gap-2">
               <input type="email" x-model="network.inviteEmail" placeholder="colleague@example.com" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
               <button @click="inviteColleague()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-medium">Send</button>
@@ -477,7 +551,6 @@
         <div x-show="activeDashboardTab === 'dashboard'" x-cloak>
 
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-
   <div class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10"><div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div></div>
@@ -487,28 +560,11 @@
       <span x-show="!ga4.connected && isAuthenticated" class="inline-flex items-center px-2 py-1 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
       <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
     </div>
-    <div x-show="ga4.lastUpdated" class="text-xs text-gray-400 mb-4">Last updated: <span x-text="ga4.lastUpdated" class="font-mono"></span></div>
-    <div x-show="!ga4.lastUpdated && !isAuthenticated" class="text-xs text-gray-400 mb-4">Last updated: demo data</div>
     <div class="grid grid-cols-2 gap-5">
-      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-        <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
-        <p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.totalSessions ?? 0) : 0"></p>
-        <p x-show="isAuthenticated && ga4.change.sessions !== undefined" class="text-xs font-semibold" :class="ga4.change.sessions >= 0 ? 'text-green-400' : 'text-red-400'" x-text="(ga4.change.sessions >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.sessions).toFixed(1) + '%'"></p>
-      </div>
-      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-        <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
-        <p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.totalUsers ?? 0) : 0"></p>
-        <p x-show="isAuthenticated && ga4.change.users !== undefined" class="text-xs font-semibold" :class="ga4.change.users >= 0 ? 'text-green-400' : 'text-red-400'" x-text="(ga4.change.users >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.users).toFixed(1) + '%'"></p>
-      </div>
-      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-        <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
-        <p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.newUsers ?? 0) : 0"></p>
-      </div>
-      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-        <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
-        <p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.totalViews ?? 0) : 0"></p>
-        <p x-show="isAuthenticated && ga4.change.views !== undefined" class="text-xs font-semibold" :class="ga4.change.views >= 0 ? 'text-green-400' : 'text-red-400'" x-text="(ga4.change.views >= 0 ? '▲' : '▼') + ' ' + Math.abs(ga4.change.views).toFixed(1) + '%'"></p>
-      </div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5"><p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p><p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.totalSessions ?? 0) : 0"></p></div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5"><p class="text-xs uppercase tracking-wider text-gray-400">Users</p><p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.totalUsers ?? 0) : 0"></p></div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5"><p class="text-xs uppercase tracking-wider text-gray-400">New Users</p><p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.newUsers ?? 0) : 0"></p></div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5"><p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p><p class="text-3xl font-black" x-text="isAuthenticated ? (ga4.totalViews ?? 0) : 0"></p></div>
     </div>
   </div>
 
@@ -521,25 +577,11 @@
       <span x-show="!gsc.connected && isAuthenticated" class="inline-flex items-center px-2 py-1 bg-red-500/20 text-red-400 text-xs font-semibold rounded-full border border-red-500/30">● Not connected</span>
       <span x-show="!isAuthenticated" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Demo mode</span>
     </div>
-    <div x-show="gsc.lastUpdated" class="text-xs text-gray-400 mb-4">Last updated: <span x-text="gsc.lastUpdated" class="font-mono"></span></div>
-    <div x-show="!gsc.lastUpdated && !isAuthenticated" class="text-xs text-gray-400 mb-4">Last updated: demo data</div>
     <div class="grid grid-cols-2 gap-5">
-      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-        <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
-        <p class="text-3xl font-black" x-text="isAuthenticated ? (gsc.totals.clicks ?? 0) : 0"></p>
-      </div>
-      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-        <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
-        <p class="text-3xl font-black" x-text="isAuthenticated ? (gsc.totals.impressions ?? 0) : 0"></p>
-      </div>
-      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-        <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
-        <p class="text-3xl font-black" x-text="isAuthenticated ? ((gsc.totals.ctr ?? 0) * 100).toFixed(2) + '%' : '0%'"></p>
-      </div>
-      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
-        <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
-        <p class="text-3xl font-black" x-text="isAuthenticated ? (gsc.totals.position ? gsc.totals.position.toFixed(1) : '—') : '—'"></p>
-      </div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5"><p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p><p class="text-3xl font-black" x-text="isAuthenticated ? (gsc.totals.clicks ?? 0) : 0"></p></div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5"><p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p><p class="text-3xl font-black" x-text="isAuthenticated ? (gsc.totals.impressions ?? 0) : 0"></p></div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5"><p class="text-xs uppercase tracking-wider text-gray-400">CTR</p><p class="text-3xl font-black" x-text="isAuthenticated ? ((gsc.totals.ctr ?? 0) * 100).toFixed(2) + '%' : '0%'"></p></div>
+      <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5"><p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p><p class="text-3xl font-black" x-text="isAuthenticated ? (gsc.totals.position ? gsc.totals.position.toFixed(1) : '—') : '—'"></p></div>
     </div>
   </div>
 </div>
@@ -628,11 +670,6 @@
               </table>
             </div>
           </div>
-          <div class="text-center mt-8">
-            <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#dashboard-overview" class="inline-block text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium hover:underline transition">
-              📖 Read the Dashboard Help Guide →
-            </a>
-          </div>
         </div>
 
         <!-- ===== AUDITS TAB ===== -->
@@ -642,7 +679,6 @@
               <span>Daily Audits - Ask AI: <span class="font-bold text-orange-500" x-text="dailyUsedCount"></span> / <span class="font-bold" x-text="dailyLimit"></span>
                 <span class="ml-1 inline-block px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-200 dark:bg-gray-700" x-text="user.tier === 'free' ? 'Free' : user.tier === 'pro' ? 'Pro' : user.tier === 'enterprise' ? 'Enterprise' : 'Guest'"></span>
               </span>
-              <span x-show="dailyUsedCount >= dailyLimit" class="text-red-500 font-medium">🚀 Limit reached – upgrade for more</span>
             </div>
             <h3 class="text-xl font-bold mb-4">📋 Audit History</h3>
             <div class="overflow-x-auto">
@@ -695,110 +731,66 @@
                   <option value="30" x-bind:disabled="user.tier === 'free' ? true : false">Last 30 days</option>
                   <option value="custom" x-bind:disabled="user.tier !== 'enterprise' ? true : false">Custom (Enterprise)</option>
                 </select>
-                <template x-if="ga4.days === 'custom' && user.tier === 'enterprise'">
-                  <div class="flex gap-2">
-                    <input type="date" x-model="ga4.customStart" @change="changeDateRange()" class="px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm">
-                    <span class="text-sm text-gray-500">to</span>
-                    <input type="date" x-model="ga4.customEnd" @change="changeDateRange()" class="px-2 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm">
-                  </div>
-                </template>
                 <button x-show="ga4.connected || !isAuthenticated" @click="refreshGA4()" class="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600 transition">↻ Refresh</button>
                 <button x-show="!ga4.connected && isAuthenticated" @click="connectGA4()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">Connect GA4</button>
                 <button x-show="ga4.connected" @click="disconnectGA4()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition">Disconnect</button>
               </div>
             </div>
-            <div x-show="ga4.lastUpdated" class="text-xs text-gray-500 mb-4">Last updated: <span x-text="ga4.lastUpdated"></span></div>
-            <div x-show="ga4.error" class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 rounded-lg text-red-800 dark:text-red-200 text-sm" x-text="ga4.error"></div>
-            <div x-show="ga4.loading" class="text-center py-8"><div class="spinner mx-auto"></div><p class="mt-3 text-gray-500">Loading data...</p></div>
+            <div x-show="ga4.loading" class="text-center py-8"><div class="spinner mx-auto"></div></div>
             <div x-show="!ga4.loading">
               <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                 <div class="text-center"><p class="text-sm text-gray-500">Sessions</p><p class="text-2xl font-bold" x-text="ga4.totalSessions !== undefined ? ga4.totalSessions : '—'"></p></div>
                 <div class="text-center"><p class="text-sm text-gray-500">Users</p><p class="text-2xl font-bold" x-text="ga4.totalUsers !== undefined ? ga4.totalUsers : '—'"></p></div>
                 <div class="text-center"><p class="text-sm text-gray-500">New Users</p><p class="text-2xl font-bold" x-text="ga4.newUsers !== undefined ? ga4.newUsers : '—'"></p></div>
                 <div class="text-center"><p class="text-sm text-gray-500">Page Views</p><p class="text-2xl font-bold" x-text="ga4.totalViews !== undefined ? ga4.totalViews : '—'"></p></div>
-                <div class="text-center"><p class="text-sm text-gray-500">Conversion Rate</p><p class="text-2xl font-bold" x-text="ga4.conversionRate !== undefined ? (ga4.conversionRate * 100).toFixed(1) + '%' : '—'"></p></div>
+                <div class="text-center"><p class="text-sm text-gray-500">Conv. Rate</p><p class="text-2xl font-bold" x-text="ga4.conversionRate !== undefined ? (ga4.conversionRate * 100).toFixed(1) + '%' : '—'"></p></div>
               </div>
               <div><canvas id="analyticsChart" height="150"></canvas></div>
               <div class="w-full max-w-[320px] mx-auto mt-6 h-72"><canvas id="newVsReturningChart"></canvas></div>
               <div x-show="!isAuthenticated" class="mt-6 text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <p class="text-sm text-gray-700 dark:text-gray-300">Sign up to connect your own GA4 property and see real data.</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">Sign up to connect your own GA4 property.</p>
                 <a href="/login/" class="mt-2 inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Create Account</a>
               </div>
               <div x-show="isAuthenticated && !ga4.connected" class="mt-6 text-center p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                <p class="text-sm text-gray-700 dark:text-gray-300">Connect your Google Analytics 4 property to see your data.</p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">Connect GA4 to see your data.</p>
                 <button @click="connectGA4()" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Connect GA4</button>
               </div>
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')" class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-lg font-semibold">📄 Top Content</h4>
-                  <button x-show="user.tier !== 'free'" @click="exportCSV('topContent')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
-                </div>
-                <div x-show="ga4.topContent.length > 0">
-                  <div class="space-y-3">
-                    <template x-for="(item, index) in ga4.topContent.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="ga4.topOffset + index">
-                      <div class="glass rounded-xl p-3 space-y-1">
-                        <div class="text-sm font-medium break-words" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></div>
-                        <div class="text-xs text-gray-500"><span>Views: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span></div>
-                        <div class="text-xs text-gray-500"><span>Avg Duration: <span class="font-medium text-gray-900 dark:text-white" x-text="Math.round(item.metrics[1]) + 's'"></span></span></div>
-                      </div>
-                    </template>
-                  </div>
-                  <div x-show="ga4.topContent.length > ga4.topPageSize" class="mt-3 flex items-center justify-center gap-2">
-                    <button class="pagination-btn" @click="ga4.topOffset = Math.max(0, ga4.topOffset - ga4.topPageSize)" :disabled="ga4.topOffset === 0">← Previous</button>
-                    <span class="text-sm text-gray-600 dark:text-gray-400"><span x-text="Math.floor(ga4.topOffset / ga4.topPageSize) + 1"></span> / <span x-text="Math.ceil(ga4.topContent.length / ga4.topPageSize)"></span></span>
-                    <button class="pagination-btn" @click="ga4.topOffset = Math.min(ga4.topContent.length - ga4.topPageSize, ga4.topOffset + ga4.topPageSize)" :disabled="ga4.topOffset + ga4.topPageSize >= ga4.topContent.length">Next →</button>
-                  </div>
+                <h4 class="text-lg font-semibold mb-3">📄 Top Content</h4>
+                <div class="space-y-3">
+                  <template x-for="(item, index) in ga4.topContent" :key="index">
+                    <div class="glass rounded-xl p-3 space-y-1">
+                      <div class="text-sm font-medium break-words" x-text="item.dimensions[1] || item.dimensions[0] || 'Unknown'"></div>
+                      <div class="text-xs text-gray-500">Views: <span class="font-medium" x-text="item.metrics[0]"></span></div>
+                    </div>
+                  </template>
                 </div>
               </div>
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')" class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">📊 Traffic Sources</h4>
-                <div x-show="ga4.sources.length > 0">
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="flex justify-center"><div class="w-full max-w-[320px] h-72"><canvas id="sourcesPieChart"></canvas></div></div>
-                    <div x-show="ga4.hasKeyEvents" class="h-72"><canvas id="sourcesBarChart"></canvas></div>
-                  </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="flex justify-center"><div class="w-full max-w-[320px] h-72"><canvas id="sourcesPieChart"></canvas></div></div>
+                  <div x-show="ga4.hasKeyEvents" class="h-72"><canvas id="sourcesBarChart"></canvas></div>
                 </div>
               </div>
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')" class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <h4 class="text-lg font-semibold mb-3">🌍 Geographic Breakdown</h4>
-                <div x-show="ga4.countries.length > 0">
-                  <p class="text-sm text-gray-500 text-center mb-1">Sessions by Country</p>
-                  <div class="max-h-64 overflow-hidden"><canvas id="countriesBarChart" height="150"></canvas></div>
-                </div>
+                <h4 class="text-lg font-semibold mb-3">🌍 Geographic</h4>
+                <div class="max-h-64 overflow-hidden"><canvas id="countriesBarChart" height="150"></canvas></div>
               </div>
               <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')" class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <h4 class="text-lg font-semibold mb-3">📱 Device Breakdown</h4>
-                <div x-show="ga4.devices.length > 0" class="max-w-sm mx-auto"><canvas id="devicePieChart" height="120"></canvas></div>
-              </div>
-              <div x-show="(ga4.connected && user.tier !== 'free') || (!isAuthenticated && user.tier === 'free')" class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
-                <div class="flex justify-between items-center mb-3">
-                  <h4 class="text-lg font-semibold">🎯 Top Converting Pages</h4>
-                  <button x-show="user.tier !== 'free'" @click="exportCSV('convertingPages')" class="text-sm text-orange-500 hover:underline">Export CSV</button>
-                </div>
-                <div x-show="ga4.convertingPages.length > 0">
-                  <div class="space-y-3">
-                    <template x-for="(item, idx) in ga4.convertingPages.slice(ga4.topOffset, ga4.topOffset + ga4.topPageSize)" :key="idx">
-                      <div class="glass rounded-xl p-3 space-y-1">
-                        <div class="text-sm font-medium break-words" x-text="item.dimensions[1] || item.dimensions[0]"></div>
-                        <div class="text-xs text-gray-500"><span>Key Events: <span class="font-medium text-gray-900 dark:text-white" x-text="item.metrics[0]"></span></span></div>
-                      </div>
-                    </template>
-                  </div>
-                </div>
+                <h4 class="text-lg font-semibold mb-3">📱 Devices</h4>
+                <div class="max-w-sm mx-auto"><canvas id="devicePieChart" height="120"></canvas></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ===== REAL-TIME ===== -->
+        <!-- ===== REALTIME ===== -->
         <div x-show="activeDashboardTab === 'realtime'" x-cloak>
           <div class="glass rounded-2xl p-2 max-w-6xl mx-auto">
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0 mb-4">
-              <h3 class="text-xl font-bold">🔴 Real‑time <span class="text-sm font-normal text-gray-500">(last 30 min, auto‑updates every 15s)</span></h3>
-              <span x-show="ga4.connected" class="text-sm text-green-500">● Connected</span>
-            </div>
+            <h3 class="text-xl font-bold mb-4">🔴 Real‑time</h3>
             <div x-show="user.tier !== 'enterprise'" class="text-center py-8 text-gray-500">
-              Real‑time is available for Enterprise users. <a href="/upgrade/" class="text-orange-500 hover:underline">Upgrade here</a>.
+              Real‑time requires Enterprise. <a href="/upgrade/" class="text-orange-500 hover:underline">Upgrade</a>.
             </div>
             <template x-if="user.tier === 'enterprise'">
               <div>
@@ -808,9 +800,9 @@
                 </div>
                 <div><canvas id="realtimeMinutesChart" height="150"></canvas></div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                  <div><p class="text-sm text-gray-500 text-center">Active Users by Device</p><canvas id="realtimeDevicesChart" height="100"></canvas></div>
-                  <div><p class="text-sm text-gray-500 text-center">Event Count by Event Name</p><canvas id="realtimeEventsChart" height="100"></canvas></div>
-                  <div><p class="text-sm text-gray-500 text-center">Active Users by Country</p><canvas id="realtimeCountriesChart" height="100"></canvas></div>
+                  <div><p class="text-sm text-gray-500 text-center">Devices</p><canvas id="realtimeDevicesChart" height="100"></canvas></div>
+                  <div><p class="text-sm text-gray-500 text-center">Events</p><canvas id="realtimeEventsChart" height="100"></canvas></div>
+                  <div><p class="text-sm text-gray-500 text-center">Countries</p><canvas id="realtimeCountriesChart" height="100"></canvas></div>
                 </div>
               </div>
             </template>
@@ -825,31 +817,24 @@
               <div class="flex flex-wrap items-center gap-3">
                 <span x-show="gsc.connected" class="text-sm text-green-500">● Connected</span>
                 <span x-show="!gsc.connected && isAuthenticated" class="text-sm text-red-500">● Not connected</span>
-                <span x-show="!isAuthenticated" class="text-sm text-yellow-500">● Demo mode</span>
-                <select x-model="gsc.days" @change="changeGSCDateRange()" class="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm">
-                  <option value="7">Last 7 days</option>
-                  <option value="28" x-bind:disabled="user.tier === 'free' ? true : false">Last 28 days</option>
-                  <option value="90" x-bind:disabled="user.tier !== 'enterprise' ? true : false">Last 90 days</option>
-                </select>
-                <button x-show="gsc.connected || !isAuthenticated" @click="fetchGSCReport()" class="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600 transition">↻ Refresh</button>
                 <button x-show="!gsc.connected && isAuthenticated" @click="connectGSC()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition">Connect GSC</button>
                 <button x-show="gsc.connected" @click="disconnectGSC()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition">Disconnect</button>
               </div>
             </div>
             <div x-show="gsc.loading" class="text-center py-8"><div class="spinner mx-auto"></div></div>
-            <div x-show="!gsc.loading">
+            <div x-show="!gsc.loading && gsc.connected">
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div class="text-center"><p class="text-sm text-gray-500">Total Clicks</p><p class="text-2xl font-bold" x-text="gsc.totals.clicks || 0"></p></div>
+                <div class="text-center"><p class="text-sm text-gray-500">Clicks</p><p class="text-2xl font-bold" x-text="gsc.totals.clicks || 0"></p></div>
                 <div class="text-center"><p class="text-sm text-gray-500">Impressions</p><p class="text-2xl font-bold" x-text="gsc.totals.impressions || 0"></p></div>
                 <div class="text-center"><p class="text-sm text-gray-500">CTR</p><p class="text-2xl font-bold" x-text="(gsc.totals.ctr * 100).toFixed(2) + '%'"></p></div>
-                <div class="text-center"><p class="text-sm text-gray-500">Avg Position</p><p class="text-2xl font-bold" x-text="gsc.totals.position ? gsc.totals.position.toFixed(1) : '—'"></p></div>
+                <div class="text-center"><p class="text-sm text-gray-500">Avg Pos</p><p class="text-2xl font-bold" x-text="gsc.totals.position ? gsc.totals.position.toFixed(1) : '—'"></p></div>
               </div>
-              <div><canvas id="gscTrendChart" height="150"></canvas></div>
+              <canvas id="gscTrendChart" height="150"></canvas>
               <div class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
                 <h4 class="text-lg font-semibold mb-3">🔎 Top Queries</h4>
                 <div class="space-y-3">
                   <template x-for="(item, idx) in gsc.queries" :key="idx">
-                    <div class="glass rounded-xl p-3 query-card">
+                    <div class="glass rounded-xl p-3">
                       <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
                       <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-xs text-gray-500">
                         <span>Clicks: <span class="font-medium" x-text="item.clicks"></span></span>
@@ -865,7 +850,7 @@
                 <h4 class="text-lg font-semibold mb-3">📄 Top Pages</h4>
                 <div class="space-y-3">
                   <template x-for="(item, idx) in gsc.pages" :key="idx">
-                    <div class="glass rounded-xl p-3 page-card">
+                    <div class="glass rounded-xl p-3">
                       <div class="font-medium text-sm break-words mb-1" x-text="item.keys[0] || '—'"></div>
                       <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 text-xs text-gray-500">
                         <span>Clicks: <span class="font-medium" x-text="item.clicks"></span></span>
@@ -886,7 +871,7 @@
           <div class="glass rounded-2xl p-6 max-w-4xl mx-auto">
             <h3 class="text-xl font-bold mb-6">🔗 Integrations</h3>
             <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl mb-4">
-              <div class="flex items-center gap-4 mb-1">
+              <div class="flex items-center gap-4">
                 <span class="text-2xl">📊</span>
                 <span class="font-bold text-lg">GA4</span>
                 <span x-show="ga4.connected" class="inline-flex items-center px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
@@ -897,8 +882,8 @@
                 <button x-show="ga4.connected" @click="disconnectGA4()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition">Disconnect</button>
               </div>
             </div>
-            <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl mb-6">
-              <div class="flex items-center gap-4 mb-1">
+            <div class="flex flex-wrap items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-xl">
+              <div class="flex items-center gap-4">
                 <span class="text-2xl">🔍</span>
                 <span class="font-bold text-lg">GSC</span>
                 <span x-show="gsc.connected" class="inline-flex items-center px-2 py-0.5 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full border border-green-500/30">● Connected</span>
@@ -920,37 +905,24 @@
               <div class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
                 <h3 class="text-xl font-bold">Free</h3>
                 <p class="text-3xl font-black mt-2">$0</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">Forever free</p>
                 <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
-                  <li>✓ 3 audits per day</li>
-                  <li>✓ All 17 tools</li>
-                  <li>✓ 7‑day GA4 & GSC data</li>
+                  <li>✓ 3 audits per day</li><li>✓ All 17 tools</li><li>✓ 7‑day GA4 & GSC</li>
                 </ul>
                 <a href="/login/?tab=register" class="mt-6 inline-block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">Create Account →</a>
               </div>
-              <div class="glass rounded-2xl p-6 text-center border-2 border-orange-500/50 shadow-lg shadow-orange-500/20 flex flex-col relative">
+              <div class="glass rounded-2xl p-6 text-center border-2 border-orange-500/50 shadow-lg shadow-orange-500/20 flex flex-col">
                 <h3 class="text-xl font-bold mt-4">Pro</h3>
                 <p class="text-3xl font-black mt-2">$6</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">per month</p>
                 <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
-                  <li>✓ 25 audits per day</li>
-                  <li>✓ All 17 tools</li>
-                  <li>✓ 30‑day GA4 / 28‑day GSC</li>
-                  <li>✓ CSV exports</li>
-                  <li>✓ Priority support</li>
+                  <li>✓ 25 audits per day</li><li>✓ All 17 tools</li><li>✓ CSV exports</li><li>✓ Priority support</li>
                 </ul>
                 <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">Upgrade →</a>
               </div>
               <div class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
                 <h3 class="text-xl font-bold">Enterprise</h3>
                 <p class="text-3xl font-black mt-2">$68</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">per month</p>
                 <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
-                  <li>✓ 300 audits per day</li>
-                  <li>✓ All 17 tools</li>
-                  <li>✓ 365‑day data</li>
-                  <li>✓ Real‑time analytics</li>
-                  <li>✓ Custom date ranges</li>
+                  <li>✓ 300 audits per day</li><li>✓ Real‑time</li><li>✓ 365‑day data</li>
                 </ul>
                 <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">Upgrade →</a>
               </div>
@@ -958,7 +930,7 @@
           </div>
         </div>
 
-        <!-- ===== SETTINGS TAB ===== -->
+        <!-- ===== SETTINGS ===== -->
         <div x-show="activeDashboardTab === 'settings'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-6">⚙️ Account Settings</h3>
@@ -978,10 +950,9 @@
               </div>
             </div>
 
-            <!-- Notification preferences -->
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-3">🔔 Notification Preferences</h4>
-              <p class="text-xs text-gray-500 mb-4">Choose which events generate a notification. Changes save when you click Save.</p>
+              <p class="text-xs text-gray-500 mb-4">Choose which events generate a notification.</p>
               <div class="space-y-3">
                 <label class="flex items-center justify-between cursor-pointer">
                   <span class="text-sm">Comments on my posts</span>
@@ -996,13 +967,13 @@
                   <input type="checkbox" x-model="profile.notify_leaderboard" class="w-5 h-5">
                 </label>
               </div>
-              <div class="flex gap-3 mt-4">
+              <div class="flex gap-3 mt-4 flex-wrap">
                 <button @click="saveProfile()" :disabled="profile.saving"
                         class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition text-sm">
                   <span x-show="!profile.saving">Save Preferences</span>
                   <span x-show="profile.saving">Saving…</span>
                 </button>
-                <button @click="activeDashboardTab = 'portal'" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 text-sm transition">
+                <button @click="scrollToNotifications(); activeDashboardTab = 'profile';" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 text-sm transition">
                   View notifications →
                 </button>
               </div>
@@ -1010,14 +981,13 @@
             </div>
 
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-              <h4 class="font-semibold mb-2">💳 Billing & Subscription</h4>
+              <h4 class="font-semibold mb-2">💳 Billing</h4>
               <button x-show="isAuthenticated && user.tier !== 'free'" @click="manageBilling()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Manage Subscription</button>
-              <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade here</button>
+              <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade</button>
             </div>
 
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-3">🔒 Change Password</h4>
-              <p class="text-sm text-gray-500 mb-3">We'll send a password reset link to your email address.</p>
               <button @click="sendPasswordReset()" class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" :disabled="!isAuthenticated">Send Reset Email</button>
             </div>
 
@@ -1035,18 +1005,17 @@
           </div>
         </div>
 
-        <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">Privacy-first • Traffic Torch</p>
       </main>
 
       <div id="footer-placeholder"></div>
     </div>
   </div>
 
-  <!-- Upgrade Modal -->
+  <!-- Modals -->
   <div id="upgradeModal" class="fixed inset-0 z-[10000] flex items-center justify-center bg-black bg-opacity-70 hidden">
     <div class="bg-white dark:bg-gray-900 p-8 pt-12 rounded-2xl text-center max-w-sm mx-4 shadow-2xl relative">
       <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Unlock Pro Features</h3>
-      <p class="text-gray-600 dark:text-gray-300 mb-6">Log in or upgrade to Traffic Torch Pro for unlimited audits, analytics, and more.</p>
+      <p class="text-gray-600 dark:text-gray-300 mb-6">Log in or upgrade to continue.</p>
       <div class="flex flex-col gap-3">
         <a href="/login/" class="px-6 py-3 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition">Login / Register</a>
         <a href="/upgrade/" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white rounded-lg font-bold hover:opacity-90 transition text-center block">See Plans</a>
@@ -1055,13 +1024,12 @@
     </div>
   </div>
 
-  <!-- Delete Account Modal -->
   <div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-[10001] flex items-center justify-center modal-overlay">
     <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
-      <button @click="closeDeleteModal()" class="absolute top-2 right-4 text-3xl text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&times;</button>
-      <h3 class="text-2xl font-bold text-red-600 mb-4">⚠️ Permanently Delete Account</h3>
-      <p class="text-gray-600 dark:text-gray-300 mb-4">This action <strong>cannot</strong> be undone.</p>
-      <p class="text-sm text-gray-500 mb-4">Please type your email address to confirm:</p>
+      <button @click="closeDeleteModal()" class="absolute top-2 right-4 text-3xl text-gray-500">&times;</button>
+      <h3 class="text-2xl font-bold text-red-600 mb-4">⚠️ Delete Account</h3>
+      <p class="text-gray-600 dark:text-gray-300 mb-4">This cannot be undone.</p>
+      <p class="text-sm text-gray-500 mb-4">Type your email to confirm:</p>
       <input type="email" x-model="deleteEmail" placeholder="your@email.com" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 mb-4">
       <div class="flex gap-3">
         <button @click="confirmDeleteAccount()" class="flex-1 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg" :disabled="deleteEmail !== user.email">Delete Permanently</button>
@@ -1070,10 +1038,9 @@
     </div>
   </div>
 
-  <!-- Reset Password Modal -->
-  <div x-show="showResetModal" x-cloak class="fixed inset-0 z-[10003] modal-overlay h-screen max-h-screen overflow-hidden flex items-center justify-center">
-    <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-      <button @click="showResetModal = false; resetToken = null" class="top-3 right-4 text-3xl text-gray-500">&times;</button>
+  <div x-show="showResetModal" x-cloak class="fixed inset-0 z-[10003] modal-overlay flex items-center justify-center">
+    <div class="bg-white dark:bg-gray-900 p-8 rounded-2xl max-w-md w-full mx-4 shadow-2xl relative">
+      <button @click="showResetModal = false; resetToken = null" class="absolute top-3 right-4 text-3xl text-gray-500">&times;</button>
       <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white pr-10">Reset Your Password</h3>
       <div class="relative mb-4">
         <input type="password" x-bind:type="showPassword ? 'text' : 'password'" x-model="newPassword" placeholder="New password" class="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 pr-12">
@@ -1111,7 +1078,8 @@ function dashboardApp() {
     showPassword: false,
     isAuthenticated: false,
     user: { id: null, email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null },
-    activeDashboardTab: 'portal',
+    activeDashboardTab: 'profile',
+    profileViewMode: 'view',
     dailyLimit: 3,
     dailyUsedCount: 0,
     selectedTool: '/',
@@ -1123,7 +1091,6 @@ function dashboardApp() {
     deleteEmail: '',
 
     tabs: [
-      { id: 'portal',       label: '🔔 Portal' },
       { id: 'profile',      label: 'Profile' },
       { id: 'network',      label: 'Network' },
       { id: 'dashboard',    label: 'Dashboard' },
@@ -1145,52 +1112,21 @@ function dashboardApp() {
     },
 
     profile: {
-      loading: false,
-      saving: false,
-      error: null,
-      success: null,
-      username: '',
-      display_name: '',
-      avatar_preset: 'owner',
-      role: 'owner',
-      bio: '',
-      website_url: '',
-      website_approved: 0,
-      social1_url: '',
-      social2_url: '',
-      job_title: '',
-      company: '',
-      location: '',
-      auto_share: 0,
-      show_network: 1,
-      allow_adds: 1,
-      profile_public: 1,
-      notify_comments: 1,
-      notify_network: 1,
-      notify_leaderboard: 1,
+      loading: false, saving: false, error: null, success: null,
+      username: '', display_name: '', avatar_preset: 'owner', role: 'owner',
+      bio: '', website_url: '', website_approved: 0,
+      social1_url: '', social2_url: '',
+      job_title: '', company: '', location: '',
+      auto_share: 0, show_network: 1, allow_adds: 1, profile_public: 1,
+      notify_comments: 1, notify_network: 1, notify_leaderboard: 1,
       created_at: null
     },
 
-    network: {
-      loading: false,
-      list: [],
-      addLoading: {},
-      inviteEmail: '',
-      inviteStatus: '',
-      search: ''
-    },
+    network: { loading: false, list: [], addLoading: {}, inviteEmail: '', inviteStatus: '', search: '' },
 
     feed: {
-      loading: false,
-      loadingMore: false,
-      category: 'ux',
-      posts: [],
-      cursor: null,
-      hasMore: true,
-      error: null,
-      commentDrafts: {},
-      openComments: {},
-      commentLists: {},
+      loading: false, loadingMore: false, category: 'ux', posts: [], cursor: null,
+      hasMore: true, error: null, commentDrafts: {}, openComments: {}, commentLists: {},
       slots: { used: 0, max: 5 }
     },
 
@@ -1207,10 +1143,10 @@ function dashboardApp() {
     },
 
     gsc: {
-      connected: false, loading: false, error: null, siteUrl: '', startDate: '', endDate: '',
+      connected: false, loading: false, error: null, siteUrl: '',
       data: [], totals: { clicks: 0, impressions: 0, ctr: 0, position: 0 },
       change: { clicks: 0, impressions: 0, ctr: 0, position: 0 },
-      queries: [], pages: [], countries: [], devices: [], queryOffset: 0, pageOffset: 0,
+      queries: [], pages: [], countries: [], devices: [],
       pageSize: 10, days: 7, lastUpdated: null
     },
 
@@ -1260,7 +1196,6 @@ function dashboardApp() {
         if (newTab === 'realtime' && this.user.tier === 'enterprise' && this.ga4.connected) this.startRealtimeInterval();
         else this.stopRealtimeInterval();
         if (newTab === 'gsc' && this.gsc.connected && this.gsc.data.length === 0) this.fetchGSCReport();
-        if (newTab === 'portal') this.loadNotifications();
 
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
@@ -1309,19 +1244,49 @@ function dashboardApp() {
     showUpgradeModal() { document.getElementById('upgradeModal').classList.remove('hidden'); },
     closeUpgradeModal() { document.getElementById('upgradeModal').classList.add('hidden'); },
 
+    scrollToNotifications() {
+      const el = document.getElementById('notifications-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
+
+    updateSidebarBadge() {
+      const count = String(this.notifications.unread || 0);
+      document.querySelectorAll('[data-portal-count]').forEach(el => { el.textContent = count; });
+    },
+
+    roleLabel(role) {
+      const map = { owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', developer: 'Developer', other: 'Member' };
+      return map[role] || 'Member';
+    },
+
+    domainLabel(url) {
+      try {
+        const host = new URL(url).hostname.replace(/^www\./, '');
+        return host.split('.').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('.');
+      } catch { return 'Link'; }
+    },
+
+    formatShortDate(ts) {
+      try { return new Date(ts).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
+      catch { return '—'; }
+    },
+
+    monthsSince(ts) {
+      if (!ts) return 0;
+      return Math.max(0, Math.floor((Date.now() - ts) / (86400000 * 30)));
+    },
+
     // ============ NOTIFICATIONS ============
     async loadNotifications() {
       if (!this.isAuthenticated) return;
       this.notifications.loading = true;
       try {
-        const res = await fetch(`${API_BASE}/api/notifications`, {
-          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
-        });
+        const res = await fetch(`${API_BASE}/api/notifications`, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') } });
         if (!res.ok) throw new Error('Failed');
         const data = await res.json();
         this.notifications.list = data.notifications || [];
         this.notifications.unread = data.unread || 0;
-        if (typeof window.updatePortalCount === 'function') window.updatePortalCount();
+        this.updateSidebarBadge();
       } catch {}
       finally { this.notifications.loading = false; }
     },
@@ -1335,7 +1300,7 @@ function dashboardApp() {
         });
         this.notifications.list.forEach(n => n.is_read = 1);
         this.notifications.unread = 0;
-        if (typeof window.updatePortalCount === 'function') window.updatePortalCount();
+        this.updateSidebarBadge();
       } catch {}
     },
 
@@ -1348,7 +1313,7 @@ function dashboardApp() {
         });
         const n = this.notifications.list.find(x => x.id === id);
         if (n && !n.is_read) { n.is_read = 1; this.notifications.unread = Math.max(0, this.notifications.unread - 1); }
-        if (typeof window.updatePortalCount === 'function') window.updatePortalCount();
+        this.updateSidebarBadge();
       } catch {}
     },
 
@@ -1361,7 +1326,7 @@ function dashboardApp() {
         const wasUnread = this.notifications.list.find(n => n.id === id && !n.is_read);
         this.notifications.list = this.notifications.list.filter(n => n.id !== id);
         if (wasUnread) this.notifications.unread = Math.max(0, this.notifications.unread - 1);
-        if (typeof window.updatePortalCount === 'function') window.updatePortalCount();
+        this.updateSidebarBadge();
       } catch {}
     },
 
@@ -1374,7 +1339,7 @@ function dashboardApp() {
         });
         this.notifications.list = [];
         this.notifications.unread = 0;
-        if (typeof window.updatePortalCount === 'function') window.updatePortalCount();
+        this.updateSidebarBadge();
       } catch {}
     },
 
@@ -1467,7 +1432,6 @@ function dashboardApp() {
         });
         const data = await res.json();
         if (res.ok) this.feed.posts.forEach(p => { if (p.user_id === userId) p.in_network = true; });
-        else if (data.error) console.warn('addToNetwork:', data.error);
       } catch {}
       finally { this.network.addLoading[userId] = false; }
     },
@@ -1579,8 +1543,7 @@ function dashboardApp() {
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
           body: JSON.stringify({ note: newNote, category: newCat })
         });
-        post.note = newNote;
-        post.category = newCat;
+        post.note = newNote; post.category = newCat;
       } catch {}
     },
 
@@ -1807,24 +1770,6 @@ function dashboardApp() {
           });
         }
       });
-    },
-
-    exportCSV(type) {
-      let rows = [], headers = [];
-      if (type === 'topContent') {
-        headers = ['#', 'Page', 'Views', 'Avg Duration (s)'];
-        rows = this.ga4.topContent.map((item, i) => [i+1, item.dimensions[1] || item.dimensions[0], item.metrics[0], Math.round(item.metrics[1])]);
-      } else if (type === 'convertingPages') {
-        headers = ['#', 'Page', 'Key Events', 'Conv Rate (%)'];
-        rows = this.ga4.convertingPages.map((item, i) => [i+1, item.dimensions[1] || item.dimensions[0], item.metrics[0], (item.metrics[0] / (item.metrics[1] || 1) * 100).toFixed(1)]);
-      }
-      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `${type}_${new Date().toISOString().slice(0,10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(a.href);
     },
 
     // ============ GSC ============
