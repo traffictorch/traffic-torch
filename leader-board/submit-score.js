@@ -43,6 +43,12 @@
     return res.json();
   }
 
+  function refreshAllWidgets() {
+    document.querySelectorAll('.tt-lb').forEach((w) => {
+      w.dispatchEvent(new Event('tt-lb-reload'));
+    });
+  }
+
   function injectButton(container, payload) {
     if (!container) return;
     container.querySelector('.tt-lb-submit-wrap')?.remove();
@@ -73,10 +79,7 @@
         if (result.success) {
           status.innerHTML = `✅ ${result.message} <a href="#tt-lb-anchor" class="tt-lb-jump">See the leaderboard ↑</a>`;
           btn.textContent = 'Submitted ✓';
-          // Bust widget cache and refresh
-          sessionStorage.removeItem(`tt_lb_${payload.tool}`);
-          sessionStorage.removeItem('tt_lb_all');
-          document.querySelectorAll('.tt-lb').forEach((w) => w.dispatchEvent(new Event('tt-lb-reload')));
+          refreshAllWidgets();
         } else {
           status.textContent = `⚠️ ${result.error || result.message || 'Submission failed'}`;
           btn.disabled = false;
@@ -90,5 +93,5 @@
     });
   }
 
-  window.TrafficTorchLeaderboard = { submit, injectButton, getFingerprint };
+  window.TrafficTorchLeaderboard = { submit, injectButton, getFingerprint, refreshAllWidgets };
 })();

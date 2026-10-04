@@ -1,15 +1,7 @@
 // Traffic Torch — High Scores Widget (drop-in, no deps)
 (function () {
   const ENDPOINT = 'https://traffic-torch-high-scores.traffictorch.workers.dev';
-  const CACHE_TTL = 5 * 60 * 1000;
   const COLLAPSED_COUNT = 3;
-
-  const cacheKey = (tool) => `tt_lb_${tool || 'all'}`;
-  const readCache = (k) => {
-    try { const v = JSON.parse(sessionStorage.getItem(k)); return v && Date.now() - v.t < CACHE_TTL ? v.d : null; }
-    catch { return null; }
-  };
-  const writeCache = (k, d) => { try { sessionStorage.setItem(k, JSON.stringify({ t: Date.now(), d })); } catch {} };
 
   const escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -108,7 +100,6 @@
         </div>` : ''}
     `;
 
-    // Expand/collapse all
     const toggle = el.querySelector('.tt-lb-toggle');
     const moreList = el.querySelector('.tt-lb-list-more');
     if (toggle && moreList) {
@@ -120,7 +111,6 @@
       });
     }
 
-    // Details toggle
     el.querySelectorAll('.tt-lb-details-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const card = btn.closest('.tt-lb-card');
@@ -133,7 +123,6 @@
       });
     });
 
-    // Beat this score → scroll to form, focus URL
     el.querySelectorAll('.tt-lb-beat-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const urlInput = document.getElementById('page-url') || document.getElementById('url-input');
@@ -149,7 +138,6 @@
       });
     });
 
-    // Share rank
     el.querySelectorAll('.tt-lb-share-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
         const rank = btn.dataset.rank;
@@ -177,9 +165,6 @@
   async function load(el) {
     const tool = el.dataset.tool || '';
     const limit = Math.min(parseInt(el.dataset.limit || '12', 10) || 12, 12);
-    const ck = cacheKey(tool);
-    const cached = readCache(ck);
-    if (cached) return render(el, cached.slice(0, limit));
 
     el.innerHTML = `<div class="tt-lb-skel" aria-busy="true">
       <div class="tt-lb-skel-row"></div>
@@ -188,11 +173,9 @@
     </div>`;
 
     try {
-      const r = await fetch(`${ENDPOINT}/api/high-scores?tool=${encodeURIComponent(tool)}&limit=${limit}`);
+      const r = await fetch(`${ENDPOINT}/api/high-scores?tool=${encodeURIComponent(tool)}&limit=${limit}&_=${Date.now()}`);
       const data = await r.json();
-      const rows = data.results || [];
-      writeCache(ck, rows);
-      render(el, rows);
+      render(el, data.results || []);
     } catch {
       el.innerHTML = `<div class="tt-lb-empty"><p>Leaderboard unavailable right now.</p></div>`;
     }
@@ -200,7 +183,6 @@
 
   function init() {
     document.querySelectorAll('.tt-lb').forEach((el) => {
-      // Reload hook for after submission
       el.addEventListener('tt-lb-reload', () => load(el));
       const io = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) { io.disconnect(); load(el); }
