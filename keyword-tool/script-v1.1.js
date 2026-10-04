@@ -1574,6 +1574,24 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>`;
       }
     }
+    
+    // 🏆 Leaderboard submission button
+if (window.TrafficTorchLeaderboard && analysisType === 'url' && fullUrl) {
+  const submitHost = document.getElementById('share-dashboard-container')?.parentElement || results;
+  const moduleScoresForBoard = modules
+    .filter(m => ['Meta Title & Desc','H1 & Headings','Content & Readability',
+                  'Image Alts','Anchor Text','URL & Schema','Technical',
+                  'AI Semantic Audit','Semantic Coverage'].includes(m.name))
+    .map(m => ({ name: m.name, score: Math.round(m.score || 0) }));
+
+  window.TrafficTorchLeaderboard.injectButton(submitHost, {
+    tool: 'keyword-tool',
+    url: fullUrl,
+    title: (yourDoc?.title || '').trim().slice(0, 200) || 'Untitled page',
+    score: yourScore,
+    moduleScores: moduleScoresForBoard
+  });
+}
 
     const askBtn = document.getElementById('ask-ai-btn');
     const askInput = document.getElementById('ai-question-input');
