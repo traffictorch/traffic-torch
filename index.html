@@ -242,7 +242,7 @@
           <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-700 dark:hover:text-orange-400 transition mr-4" aria-label="Toggle sidebar">☰</button>
           <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl" aria-label="Toggle theme">🌙</button>
         </div>
-        <nav id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10" aria-label="Mobile menu">
+        <nav id="mobileMenu" aria-label="Mobile navigation" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10" aria-label="Mobile menu">
           <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
           <div id="mobile-menu-placeholder"></div>
         </nav>
@@ -383,12 +383,13 @@
 
       <!-- CTA -->
 <div class="mt-4 text-center">
-<div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
-     style="display:inline-block;padding:0.6rem 1.8rem;background:#7c2d12;color:#ffffff;
+<div role="link" tabindex="0"
+     onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';"
+     onkeydown="if(event.key==='Enter'||event.key===' '){window.location.href='https://traffictorch.net/dashboard/#analytics';}"
+     style="display:inline-block;padding:0.75rem 1.8rem;background:#7c2d12;color:#ffffff;
             font-weight:700;border-radius:0.75rem;text-decoration:none;font-size:0.9rem;
-            box-shadow:0 4px 12px rgba(124,45,18,0.4);transition:all 0.2s;cursor:pointer;
-            z-index:10;position:relative;min-height:44px;min-width:44px;
-            line-height:1.4;text-align:center;">
+            box-shadow:0 4px 12px rgba(124,45,18,0.4);transition:background 0.2s;cursor:pointer;
+            min-height:44px;min-width:44px;line-height:1.4;text-align:center;">
   📊 Analytics
 </div>
   <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
@@ -430,12 +431,13 @@
 
       <!-- CTA -->
 <div class="mt-4 text-center">
-<div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
-     style="display:inline-block;padding:0.6rem 1.8rem;background:#7c2d12;color:#ffffff;
+<div role="link" tabindex="0"
+     onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';"
+     onkeydown="if(event.key==='Enter'||event.key===' '){window.location.href='https://traffictorch.net/dashboard/#gsc';}"
+     style="display:inline-block;padding:0.75rem 1.8rem;background:#1e3a8a;color:#ffffff;
             font-weight:700;border-radius:0.75rem;text-decoration:none;font-size:0.9rem;
-            box-shadow:0 4px 12px rgba(124,45,18,0.4);transition:all 0.2s;cursor:pointer;
-            z-index:10;position:relative;min-height:44px;min-width:44px;
-            line-height:1.4;text-align:center;">
+            box-shadow:0 4px 12px rgba(30,58,138,0.4);transition:background 0.2s;cursor:pointer;
+            min-height:44px;min-width:44px;line-height:1.4;text-align:center;">
   🌐 Search Console
 </div>
   <div id="gsc-extra-cta" class="mt-2 text-xs"></div>

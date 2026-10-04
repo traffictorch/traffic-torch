@@ -709,8 +709,8 @@ p a:hover, li a:hover {
 /* ── Carousel dots: visible size stays 10px, hit area becomes 44px ── */
 .carousel-dot {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   padding: 0;
   border: none;
   background: transparent;
