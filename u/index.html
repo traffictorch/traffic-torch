@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile · Traffic Torch</title>
+  <meta name="description" content="Traffic Torch community profile — shared audits, network, and tools.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/u/">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style-v1.0.css"></noscript>
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <style>
+    [x-cloak] { display: none !important; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+    .dark .glass { background: rgba(0,0,0,0.3); }
+    .spinner {
+      border: 4px solid rgba(0,0,0,0.1);
+      border-left-color: #f97316;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.1rem;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.18s ease;
+      border: 1px solid rgba(249,115,22,0.35);
+      background: rgba(249,115,22,0.1);
+      color: #ea580c;
+      text-decoration: none;
+    }
+    .link-btn:hover {
+      background: rgba(249,115,22,0.2);
+      transform: translateY(-1px);
+    }
+    .dark .link-btn {
+      color: #fb923c;
+      border-color: rgba(251,146,60,0.3);
+      background: rgba(251,146,60,0.12);
+    }
+    .dark .link-btn:hover {
+      background: rgba(251,146,60,0.22);
+    }
+
+    .link-btn .link-icon {
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+
+    .tab-btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.15s;
+      color: #6b7280;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+    .dark .tab-btn { color: #9ca3af; }
+    .tab-btn:hover { color: #f97316; }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: #fff;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+
+<div x-data="profilePage()" x-init="init()" class="flex flex-1 min-h-screen">
+
+  <!-- Sidebar -->
+  <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
+    <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+        <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden md:block">Traffic Torch</span>
+      </a>
+    </div>
+    <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+    <div class="p-4 border-t border-white/10 dark:border-white/5">
+      <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
+    </div>
+  </aside>
+
+  <div class="flex-1 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+      <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span class="text-[1rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
+        </a>
+        <div class="w-10 md:hidden"></div>
+        <button id="menuToggle" class="md:hidden text-3xl text-gray-500">☰</button>
+        <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+        <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+        <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+        <div id="mobile-menu-placeholder"></div>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 flex-1 max-w-4xl">
+
+      <!-- Loading -->
+      <div x-show="loading" class="text-center py-20">
+        <div class="spinner mx-auto"></div>
+        <p class="mt-4 text-gray-500">Loading profile…</p>
+      </div>
+
+      <!-- Not found -->
+      <div x-show="!loading && notFound" x-cloak class="glass rounded-3xl p-12 text-center max-w-md mx-auto">
+        <p class="text-6xl mb-4">🔍</p>
+        <h1 class="text-2xl font-bold mb-2">Profile not found</h1>
+        <p class="text-gray-500 mb-6">This username doesn't exist or the profile is private.</p>
+        <a href="/" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">
+          Go home
+        </a>
+      </div>
+
+      <!-- Profile -->
+      <div x-show="!loading && !notFound" x-cloak>
+
+        <!-- Header card -->
+        <div class="glass rounded-3xl overflow-hidden mb-8">
+          <div class="h-32 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600"></div>
+          <div class="px-6 pb-6 -mt-16 relative">
+            <div class="flex flex-col sm:flex-row sm:items-end gap-5">
+              <img :src="`/images/avatars/${profile.avatar_preset || 'owner'}.svg`"
+                   :alt="profile.display_name"
+                   class="w-32 h-32 rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100">
+              <div class="flex-1 sm:pb-2">
+                <h1 class="text-3xl font-black" x-text="profile.display_name || profile.username"></h1>
+                <p class="text-gray-500 text-lg">
+                  @<span x-text="profile.username"></span>
+                  <span class="ml-2 inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(profile.role)"></span>
+                </p>
+              </div>
+              <div class="flex gap-2 sm:pb-2">
+                <button x-show="!isOwnProfile"
+                        @click="toggleNetwork()"
+                        class="px-5 py-2.5 rounded-xl font-bold text-sm transition border-2"
+                        :class="inNetwork ? 'border-green-500 text-green-500 bg-green-500/10' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'"
+                        x-text="inNetwork ? 'In Your Network ✓' : 'Add to Network'">
+                </button>
+              </div>
+            </div>
+
+            <!-- Bio -->
+            <p x-show="profile.bio" class="mt-5 text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
+
+            <!-- Optional meta row -->
+            <div class="mt-4 flex flex-wrap gap-3 text-sm text-gray-500">
+              <span x-show="profile.job_title" class="inline-flex items-center gap-1.5">
+                💼 <span x-text="profile.job_title"></span>
+              </span>
+              <span x-show="profile.company" class="inline-flex items-center gap-1.5">
+                🏢 <span x-text="profile.company"></span>
+              </span>
+              <span x-show="profile.location" class="inline-flex items-center gap-1.5">
+                📍 <span x-text="profile.location"></span>
+              </span>
+              <span x-show="profile.created_at" class="inline-flex items-center gap-1.5">
+                📅 Member since <span x-text="formatDate(profile.created_at)"></span>
+              </span>
+            </div>
+
+            <!-- Links -->
+            <div class="mt-5 flex flex-wrap gap-3">
+              <a x-show="profile.website_url && profile.website_approved"
+                 :href="profile.website_url"
+                 target="_blank"
+                 rel="ugc nofollow noopener"
+                 class="link-btn">
+                <span class="link-icon">🌐</span>
+                <span x-text="domainLabel(profile.website_url)"></span>
+              </a>
+              <a x-show="profile.social1_url"
+                 :href="profile.social1_url"
+                 target="_blank"
+                 rel="ugc nofollow noopener"
+                 class="link-btn">
+                <span class="link-icon">🔗</span>
+                <span x-text="domainLabel(profile.social1_url)"></span>
+              </a>
+              <a x-show="profile.social2_url"
+                 :href="profile.social2_url"
+                 target="_blank"
+                 rel="ugc nofollow noopener"
+                 class="link-btn">
+                <span class="link-icon">🔗</span>
+                <span x-text="domainLabel(profile.social2_url)"></span>
+              </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-6 grid grid-cols-3 gap-3 max-w-md">
+              <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+                <p class="text-2xl font-black text-orange-500" x-text="posts.length"></p>
+                <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Audits shared</p>
+              </div>
+              <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+                <p class="text-2xl font-black text-orange-500" x-text="network_count"></p>
+                <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Network</p>
+              </div>
+              <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+                <p class="text-2xl font-black text-orange-500" x-text="Math.floor((Date.now() - (profile.created_at || Date.now())) / (86400000 * 30))"></p>
+                <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Months here</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6 flex-wrap">
+          <button @click="activeTab = 'audits'" class="tab-btn" :class="activeTab === 'audits' ? 'active' : ''">
+            Shared Audits
+          </button>
+          <button @click="activeTab = 'network'" class="tab-btn" :class="activeTab === 'network' ? 'active' : ''">
+            Network <span x-text="network_count ? '(' + network_count + ')' : ''"></span>
+          </button>
+          <button @click="activeTab = 'about'" class="tab-btn" :class="activeTab === 'about' ? 'active' : ''">
+            About
+          </button>
+        </div>
+
+        <!-- Audits -->
+        <div x-show="activeTab === 'audits'" x-cloak>
+          <div x-show="posts.length === 0" class="glass rounded-2xl p-10 text-center">
+            <p class="text-4xl mb-3">📭</p>
+            <p class="text-gray-500">No audits shared yet.</p>
+          </div>
+
+          <div class="space-y-4">
+            <template x-for="post in posts" :key="post.id">
+              <article class="glass rounded-2xl p-5">
+                <div class="flex items-center gap-3 mb-3 text-xs flex-wrap">
+                  <span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-500 uppercase font-bold"
+                        x-text="post.category"></span>
+                  <span x-show="post.tool" class="font-medium" x-text="post.tool"></span>
+                  <span x-show="post.score !== null" class="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-500 font-bold"
+                        x-text="post.score + '/100'"></span>
+                  <span class="text-gray-500 ml-auto" x-text="formatDate(post.created_at)"></span>
+                </div>
+
+                <p class="text-xs text-gray-500 mb-2">
+                  <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
+                </p>
+
+                <p x-show="post.note" class="text-sm leading-relaxed whitespace-pre-wrap" x-text="post.note"></p>
+
+                <a x-show="post.url && post.domain_mode === 'full'"
+                   :href="post.url"
+                   target="_blank"
+                   rel="ugc nofollow noopener"
+                   class="mt-3 inline-block text-xs text-orange-500 hover:underline">
+                  Visit page →
+                </a>
+              </article>
+            </template>
+          </div>
+        </div>
+
+        <!-- Network -->
+        <div x-show="activeTab === 'network'" x-cloak>
+          <div x-show="network.length === 0" class="glass rounded-2xl p-10 text-center">
+            <p class="text-4xl mb-3">👥</p>
+            <p class="text-gray-500">Network is private or empty.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <template x-for="u in network" :key="u.id">
+              <a :href="'/u/' + u.username + '/'" class="glass rounded-2xl p-4 flex items-center gap-3 hover:bg-white/10 transition">
+                <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`"
+                     class="w-12 h-12 rounded-full flex-shrink-0" alt="">
+                <div class="flex-1 min-w-0">
+                  <p class="font-bold text-sm truncate" x-text="u.display_name || u.username"></p>
+                  <p class="text-xs text-gray-500 capitalize" x-text="roleLabel(u.role)"></p>
+                </div>
+              </a>
+            </template>
+          </div>
+        </div>
+
+        <!-- About -->
+        <div x-show="activeTab === 'about'" x-cloak class="glass rounded-2xl p-6">
+          <h2 class="text-lg font-bold mb-4">About @<span x-text="profile.username"></span></h2>
+
+          <div class="space-y-3 text-sm">
+            <p x-show="profile.bio" class="text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
+            <p x-show="!profile.bio" class="text-gray-500 italic">No bio yet.</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <div x-show="profile.role">
+                <span class="text-gray-500">Role:</span>
+                <span class="ml-2 font-medium" x-text="roleLabel(profile.role)"></span>
+              </div>
+              <div x-show="profile.job_title">
+                <span class="text-gray-500">Job title:</span>
+                <span class="ml-2 font-medium" x-text="profile.job_title"></span>
+              </div>
+              <div x-show="profile.company">
+                <span class="text-gray-500">Company:</span>
+                <span class="ml-2 font-medium" x-text="profile.company"></span>
+              </div>
+              <div x-show="profile.location">
+                <span class="text-gray-500">Location:</span>
+                <span class="ml-2 font-medium" x-text="profile.location"></span>
+              </div>
+              <div x-show="profile.created_at">
+                <span class="text-gray-500">Member since:</span>
+                <span class="ml-2 font-medium" x-text="formatDate(profile.created_at)"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+</div>
+
+<script src="/main-v1.1.js" type="module"></script>
+
+<script>
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+function profilePage() {
+  return {
+    loading: true,
+    notFound: false,
+    username: '',
+    profile: {},
+    posts: [],
+    network: [],
+    network_count: 0,
+    inNetwork: false,
+    activeTab: 'audits',
+    isOwnProfile: false,
+
+    async init() {
+      // Extract username from /u/<username>/ or /u/<username>
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      // parts[0] should be 'u', parts[1] is username
+      const username = parts[1] || '';
+      this.username = username;
+
+      if (!username) { this.notFound = true; this.loading = false; return; }
+
+      // Set page title once we know username
+      document.title = `@${username} · Traffic Torch`;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/u/${encodeURIComponent(username)}`);
+        if (!res.ok) {
+          this.notFound = true;
+          this.loading = false;
+          return;
+        }
+        const data = await res.json();
+        this.profile = data.profile || {};
+        this.posts = data.posts || [];
+        this.network = data.network || [];
+        this.network_count = data.network_count || 0;
+
+        // Update title/description now that we have the display name
+        if (this.profile.display_name) {
+          document.title = `${this.profile.display_name} (@${username}) · Traffic Torch`;
+          const metaDesc = document.querySelector('meta[name="description"]');
+          if (metaDesc) {
+            metaDesc.content = this.profile.bio || `${this.profile.display_name} on Traffic Torch — shared audits and SEO/UX/AEO contributions.`;
+          }
+        }
+
+        // Check if viewer is the profile owner or already in network
+        await this.checkOwnership();
+      } catch (e) {
+        console.error('Profile load error:', e);
+        this.notFound = true;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async checkOwnership() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+        const myId = payload.id || payload.userId || payload.sub;
+        if (myId && this.profile.id && myId === this.profile.id) {
+          this.isOwnProfile = true;
+          return;
+        }
+        // Check if this profile is already in my network
+        const res = await fetch(`${API_BASE}/api/network/list`, {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.inNetwork = (data.network || []).some(u => u.id === this.profile.id);
+        }
+      } catch {}
+    },
+
+    async toggleNetwork() {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        window.location.href = '/login/';
+        return;
+      }
+      const endpoint = this.inNetwork ? 'remove' : 'add';
+      try {
+        const res = await fetch(`${API_BASE}/api/network/${endpoint}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ user_id: this.profile.id })
+        });
+        if (res.ok) {
+          this.inNetwork = !this.inNetwork;
+          this.network_count += this.inNetwork ? 1 : -1;
+        } else {
+          const data = await res.json().catch(() => ({}));
+          alert(data.error || 'Failed');
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      }
+    },
+
+    roleLabel(role) {
+      const map = {
+        owner: 'Website Owner',
+        designer: 'Web Designer',
+        seo: 'SEO Professional',
+        developer: 'Developer',
+        other: 'Member'
+      };
+      return map[role] || 'Member';
+    },
+
+    domainLabel(url) {
+      try {
+        const host = new URL(url).hostname.replace(/^www\./, '');
+        // Capitalize first letter of each segment for a nicer button label
+        return host
+          .split('.')
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+          .join('.');
+      } catch {
+        return 'Link';
+      }
+    },
+
+    formatDate(ts) {
+      try {
+        const d = new Date(ts);
+        return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      } catch { return '—'; }
+    }
+  }
+}
+
+window.profilePage = profilePage;
+</script>
+
+</body>
+</html>
