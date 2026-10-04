@@ -152,6 +152,11 @@
     <link rel="stylesheet" href="/style-v1.0.css">
     <link rel="stylesheet" href="/nusa-tool/css/nusa.css">
   </noscript>
+  
+  <link rel="preload" as="style" href="/leader-board/high-scores-widget.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/leader-board/high-scores-widget.css"></noscript>
+  <script src="/leader-board/high-scores-widget.js" defer></script>
+  <script src="/leader-board/submit-score.js" defer></script>
 
   <link rel="stylesheet" href="/nusa-tool/print-share.css" media="print">
 
@@ -333,6 +338,10 @@
   <li><span class="trust-icon" aria-hidden="true">🌐</span><span>Runs in your browser</span></li>
 </ul>
         </section>
+        
+        <section id="tt-lb-anchor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
+  			<div class="tt-lb" data-tool="nusa-tool" data-limit="12" data-title="Top NUSA Scores"></div>
+		</section>
 
         <!-- ═══════════════════════════════════════════════════
              GA4 & GSC CARDS 

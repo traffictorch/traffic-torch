@@ -3,12 +3,21 @@
 // POST /api/high-scores/submit   { tool, url, title, overall_score, module_scores }
 
 const ALLOWED_TOOLS = [
+  'nusa-tool',
   'keyword-tool',
-  'seo-intent-tool',
-  'ai-search-optimization-tool',
+  'ofux-tool',
+  'lighthouse-plus-tool',
+  'topical-authority-audit-tool',
+  'seo-entity-extractor-tool',
+  'seo-ux-tool',
   'local-seo-tool',
+  'seo-intent-tool',
   'product-seo-tool',
-  'topical-authority-audit-tool'
+  'aeo-performance-tool',
+  'ai-search-optimization-tool',
+  'ai-voice-search-tool',
+  'ai-audit-tool',
+  'quit-risk-tool'
 ];
 const MAX_LIMIT = 12;
 

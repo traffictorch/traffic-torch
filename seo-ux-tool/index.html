@@ -303,6 +303,11 @@
     <style>html{visibility:visible;opacity:1}</style>
     <link rel="stylesheet" href="/tailwind-local-v1.0.css">
   </noscript>
+  
+  <link rel="preload" as="style" href="/leader-board/high-scores-widget.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/leader-board/high-scores-widget.css"></noscript>
+  <script src="/leader-board/high-scores-widget.js" defer></script>
+  <script src="/leader-board/submit-score.js" defer></script>
 
   <link rel="stylesheet" media="print" href="/seo-ux-tool/print-v1.1.css">
 
@@ -750,6 +755,10 @@
 <div id="share-dashboard-container" class="mt-16"></div>
 
 </div>
+
+<section id="tt-lb-anchor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
+  <div class="tt-lb" data-tool="seo-ux-tool" data-limit="12" data-title="Top SEO + UX Scores"></div>
+</section>
 
     <!-- ===== GA4 & GSC Dashboards ===== -->
 <div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">

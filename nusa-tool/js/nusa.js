@@ -498,14 +498,34 @@ async function runAudit(rawUrl) {
 
   document.body.setAttribute('data-url', url);
 
+  const overallScore = Math.round(
+    (state.ux.score + state.seo.score + state.aeo.score) / 3
+  );
+
   try {
-    const overallScore = Math.round(
-      (state.ux.score + state.seo.score + state.aeo.score) / 3
-    );
     await saveAudit({ url, tool: 'NUSA', score: overallScore });
   } catch (e) {
     console.warn('NUSA audit save failed:', e);
   }
+
+  injectLeaderboardButton(state, overallScore);
+}
+
+function injectLeaderboardButton(state, overallScore) {
+  if (!window.TrafficTorchLeaderboard) return;
+  const host = document.getElementById('share-module');
+  if (!host) return;
+  window.TrafficTorchLeaderboard.injectButton(host, {
+    tool: 'nusa-tool',
+    url: state.url,
+    title: (state.doc?.title || '').trim().slice(0, 200) || 'Untitled page',
+    score: overallScore,
+    moduleScores: [
+      { name: 'UX',  score: state.ux.score  },
+      { name: 'SEO', score: state.seo.score },
+      { name: 'AEO', score: state.aeo.score }
+    ]
+  });
 }
 
 function renderShareModule() {
