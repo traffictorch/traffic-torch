@@ -774,29 +774,6 @@ html.dark #nusa-app .sum-card[data-cat="AEO"] .sum-full-results:focus-visible{
     .carousel-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
     .carousel-btn.prev { left: 12px; }
     .carousel-btn.next { right: 12px; }
-    .carousel-dots {
-      position: absolute;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
-      z-index: 3;
-    }
-    .carousel-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.5);
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      transition: background 0.2s, transform 0.2s;
-    }
-    .carousel-dot.active {
-      background: #f97316;
-      transform: scale(1.25);
-    }
-    .carousel-dot:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 
     @media (max-width: 640px) {
       .carousel-btn { width: 38px; height: 38px; font-size: 1.3rem; }

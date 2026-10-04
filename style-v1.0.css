@@ -706,26 +706,30 @@ p a:hover, li a:hover {
   justify-content: center;
 }
 
-/* Keep carousel dots visually small but increase hit area */
+/* ── Carousel dots: visible size stays 10px, hit area becomes 44px ── */
 .carousel-dot {
   position: relative;
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .carousel-dot::before {
   content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.5);
   transition: background 0.2s, transform 0.2s;
 }
+
 .carousel-dot.active::before {
   background: #f97316;
-  transform: translate(-50%, -50%) scale(1.25);
+  transform: scale(1.25);
 }
