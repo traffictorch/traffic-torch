@@ -622,6 +622,22 @@ async function updatePortalCount() {
 }
 window.updatePortalCount = updatePortalCount;
 
+// Jump to notifications section from the sidebar Portal badge
+window.handleNotifJump = function(e) {
+  if (e) e.stopPropagation();
+  const path = window.location.pathname;
+  const onDash = path === '/dashboard/' || path === '/dashboard' || path === '/pro/' || path === '/pro';
+  if (onDash) {
+    document.dispatchEvent(new CustomEvent('switchTab', { detail: { tab: 'profile' } }));
+    setTimeout(() => {
+      const el = document.getElementById('notifications-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 250);
+  } else {
+    window.location.href = '/dashboard/#profile';
+  }
+};
+
 // ==========================================================
 // NEW: Event delegation for [data-tab] links (desktop + mobile)
 // ==========================================================

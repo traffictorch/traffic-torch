@@ -115,6 +115,14 @@
       .tt-action-links { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:0.6rem; }
       .tt-action-links a { color:#ea580c; font-weight:600; text-decoration:none; font-size:0.9rem; }
       .tt-action-links a:hover { text-decoration:underline; }
+      .tt-contribute-ratings { display:flex; gap:0.5rem; justify-content:center; margin-bottom:0.85rem; }
+      .tt-contribute-rating { font-size:1.8rem; background:transparent; border:none; cursor:pointer; transition:transform 0.15s; padding:0.15rem 0.35rem; }
+      .tt-contribute-rating:hover { transform:scale(1.15); }
+      .tt-contribute-reply-toggle { display:flex; align-items:center; gap:0.4rem; font-size:0.8rem; cursor:pointer; user-select:none; color:#9ca3af; }
+      .tt-contribute-reply-toggle input { accent-color:#f97316; cursor:pointer; }
+      .tt-contribute-email-group { margin-top:0.6rem; }
+      .tt-contribute-email-group input { width:100%; box-sizing:border-box; }
+      .tt-action-meta .tt-cont-reply-wrap { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
     `;
     document.head.appendChild(style);
   }
@@ -153,9 +161,23 @@
         <p class="tt-action-desc">Found a bug? Have a feature idea? Tell us. Each verified report earns 10 points on the contributors leaderboard.</p>
         <button type="button" class="tt-action-btn" data-act="contribute-open">Report a Bug or Feature</button>
         <div class="tt-action-form" data-form="contribute">
+          <div class="tt-contribute-ratings">
+            <button type="button" class="tt-contribute-rating" data-rating="1" title="Terrible">😡</button>
+            <button type="button" class="tt-contribute-rating" data-rating="2" title="Poor">😕</button>
+            <button type="button" class="tt-contribute-rating" data-rating="3" title="Okay">😐</button>
+            <button type="button" class="tt-contribute-rating" data-rating="4" title="Good">😊</button>
+            <button type="button" class="tt-contribute-rating" data-rating="5" title="Excellent">🤩</button>
+          </div>
           <textarea class="tt-action-note" data-note="contribute" maxlength="2000" placeholder="Describe the bug or feature… (min 10 chars)"></textarea>
           <div class="tt-action-meta">
             <span class="tt-cont-count">0 / 2000</span>
+            <label class="tt-contribute-reply-toggle">
+              <input type="checkbox" data-reply="contribute">
+              Reply requested
+            </label>
+          </div>
+          <div class="tt-contribute-email-group" data-email-group="contribute" style="display:none">
+            <input type="email" data-email="contribute" placeholder="Your email for reply" class="tt-action-note" style="min-height:auto; padding:0.6rem 0.75rem;">
           </div>
           <button type="button" class="tt-action-submit" data-act="contribute-submit">Submit Contribution (+10)</button>
         </div>
@@ -221,17 +243,56 @@
     const contributeForm = wrap.querySelector('[data-form="contribute"]');
     const contributeNote = wrap.querySelector('[data-note="contribute"]');
     const contributeCount = wrap.querySelector('.tt-cont-count');
+    const contributeReply = wrap.querySelector('[data-reply="contribute"]');
+    const contributeEmailGroup = wrap.querySelector('[data-email-group="contribute"]');
+    const contributeEmail = wrap.querySelector('[data-email="contribute"]');
+    const contributeRatingBtns = wrap.querySelectorAll('.tt-contribute-rating');
+    let contributeRating = '';
+
     wrap.querySelector('[data-act="contribute-open"]').addEventListener('click', () => {
       contributeForm.classList.toggle('open');
     });
+
     contributeNote.addEventListener('input', () => {
       contributeCount.textContent = `${contributeNote.value.length} / 2000`;
     });
+
+    contributeReply.addEventListener('change', () => {
+      contributeEmailGroup.style.display = contributeReply.checked ? 'block' : 'none';
+    });
+
+    contributeRatingBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        contributeRatingBtns.forEach(b => b.style.transform = 'scale(1)');
+        btn.style.transform = 'scale(1.4)';
+        contributeRating = btn.dataset.rating;
+      });
+    });
+
     wrap.querySelector('[data-act="contribute-submit"]').addEventListener('click', async (e) => {
       const btn = e.currentTarget;
       const message = contributeNote.value.trim();
       if (message.length < 10) { setStatus('contribute', '❌ Please describe the issue (10+ chars).', 'error'); return; }
+
       btn.disabled = true; btn.textContent = 'Submitting…';
+
+      const replyWanted = contributeReply.checked;
+      const email = replyWanted ? (contributeEmail.value.trim() || 'no-reply@traffictorch.net') : 'no-reply@traffictorch.net';
+      const ratingStr = contributeRating ? `Rating: ${contributeRating}/5\n\n` : '';
+      const emailBody = `Contribution for ${payload.tool} report on ${payload.title}\n${ratingStr}${message}`;
+
+      // 1. Send feedback email via Resend (same as share-module.js does)
+      try {
+        const formData = new FormData();
+        formData.append('name', 'Traffic Torch User');
+        formData.append('email', email);
+        formData.append('message', emailBody);
+        await fetch('/api/contact', { method: 'POST', body: formData });
+      } catch (emailErr) {
+        console.warn('Contribution email failed:', emailErr);
+      }
+
+      // 2. Submit to contributions leaderboard (+10 points)
       try {
         const data = await submitContribution({
           message,
@@ -239,12 +300,18 @@
           pageUrl: payload.url
         });
         setStatus('contribute',
-          `✅ +10 points! Total: ${data.total_points} (${data.contribution_count} contribution${data.contribution_count === 1 ? '' : 's'}).
+          `✅ Thank you! +10 points. Total: ${data.total_points} (${data.contribution_count} contribution${data.contribution_count === 1 ? '' : 's'}).
            <div class="tt-action-links">
              <a href="#tt-contrib-anchor">See contributors ↓</a>
            </div>`,
           'success');
-        contributeNote.value = ''; contributeCount.textContent = '0 / 2000';
+        contributeNote.value = '';
+        contributeCount.textContent = '0 / 2000';
+        contributeRatingBtns.forEach(b => b.style.transform = 'scale(1)');
+        contributeRating = '';
+        contributeReply.checked = false;
+        contributeEmailGroup.style.display = 'none';
+        contributeEmail.value = '';
         contributeForm.classList.remove('open');
         btn.textContent = 'Submit Contribution (+10)';
         refreshAllWidgets();
