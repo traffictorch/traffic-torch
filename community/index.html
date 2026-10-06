@@ -253,7 +253,7 @@
               <button @click="communityTab = 'mine'; loadNetwork()"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
                       :class="communityTab === 'mine' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
-                My Network <span x-text="network.list.length ? '(' + network.list.length + ')' : ''"></span>
+                Network <span x-text="network.list.length ? '(' + network.list.length + ')' : ''"></span>
               </button>
               <button @click="communityTab = 'invite'"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
@@ -282,7 +282,7 @@
 
           <!-- Category filter -->
           <div class="rounded-2xl p-3 mb-4 flex gap-2" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-            <template x-for="cat in ['ux','seo','aeo']" :key="cat">
+              <template x-for="cat in ['seo','ux','aeo']" :key="cat">
               <button @click="setFeedCategory(cat)"
                       class="flex-1 py-2 rounded-lg text-sm font-bold uppercase tracking-wide transition"
                       :class="feed.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white' : 'text-gray-500 hover:text-orange-500'"
@@ -292,7 +292,6 @@
 
           <p class="text-xs text-gray-500 mb-3 text-center">
             Audit slots used: <span class="font-bold text-orange-500" x-text="feed.slots.used"></span> / <span x-text="feed.slots.max"></span>
-            <span class="text-gray-400">· oldest post is replaced when full</span>
           </p>
 
           <div x-show="feed.loading" class="text-center py-8"><div class="spinner mx-auto"></div></div>
@@ -467,37 +466,88 @@
         </div>
 
         <!-- === MY NETWORK VIEW === -->
-        <div x-show="communityTab === 'mine'" x-cloak class="max-w-2xl mx-auto mb-16 rounded-2xl p-6"
-             style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-          <h3 class="text-lg font-bold mb-4">Your Network</h3>
+<div x-show="communityTab === 'mine'" x-cloak class="max-w-2xl mx-auto mb-16 rounded-2xl p-6"
+     style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+  <h3 class="text-lg font-bold mb-4">Your Network</h3>
 
-          <template x-if="!isAuthenticated">
-            <div class="text-center py-6">
-              <p class="text-gray-500 mb-4">Log in to see your network.</p>
-              <a href="/login/" class="inline-block px-6 py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">Login / Register</a>
-            </div>
-          </template>
+  <template x-if="!isAuthenticated">
+    <div class="text-center py-6">
+      <p class="text-gray-500 mb-4">Log in to see your network.</p>
+      <a href="/login/" class="inline-block px-6 py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">Login / Register</a>
+    </div>
+  </template>
 
-          <template x-if="isAuthenticated">
-            <div>
-              <input type="text" x-model="network.search" placeholder="Search your network…"
-                     class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-              <div class="space-y-3">
-                <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
-                  <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                    <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
-                    <div class="flex-1 min-w-0">
-                      <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
-                      <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
-                    </div>
-                    <button @click="removeFromNetwork(u.id)" class="text-xs text-red-500 hover:underline">Remove</button>
-                  </div>
-                </template>
-                <p x-show="network.list.length === 0" class="text-gray-500 text-sm text-center py-6">No one yet. Add people from the feed.</p>
+  <template x-if="isAuthenticated">
+    <div>
+      <!-- Mode toggle -->
+      <div class="flex justify-center gap-2 mb-4">
+        <button @click="setNetworkSearchMode('mine')"
+                class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
+                :class="network.searchMode === 'mine' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+          My Network
+        </button>
+        <button @click="setNetworkSearchMode('all')"
+                class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
+                :class="network.searchMode === 'all' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+          Find People
+        </button>
+      </div>
+
+      <!-- Search input -->
+      <input type="text" x-model="network.search"
+             @input="network.searchMode === 'all' && searchAllUsers()"
+             :placeholder="network.searchMode === 'mine' ? 'Search your network…' : 'Search all users… (min 2 chars)'"
+             class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+
+      <!-- MY NETWORK MODE -->
+      <template x-if="network.searchMode === 'mine'">
+        <div class="space-y-3">
+          <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
+            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
+              <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+              <div class="flex-1 min-w-0">
+                <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
               </div>
+              <button @click="removeFromNetwork(u.id)" class="text-xs text-red-500 hover:underline">Remove</button>
             </div>
           </template>
+          <p x-show="network.list.length === 0" class="text-gray-500 text-sm text-center py-6">No one yet. Add people from the feed.</p>
         </div>
+      </template>
+
+      <!-- FIND PEOPLE MODE -->
+      <template x-if="network.searchMode === 'all'">
+        <div>
+          <div x-show="network.searching" class="text-center py-6">
+            <div class="spinner mx-auto"></div>
+          </div>
+          <div x-show="!network.searching && network.search.length < 2" class="text-gray-500 text-sm text-center py-6">
+            Type at least 2 characters to search.
+          </div>
+          <div x-show="!network.searching && network.search.length >= 2 && network.searchResults.length === 0" class="text-gray-500 text-sm text-center py-6">
+            No matching users found.
+          </div>
+          <div class="space-y-3">
+            <template x-for="u in network.searchResults" :key="u.id">
+              <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
+                <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                <div class="flex-1 min-w-0">
+                  <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                  <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
+                </div>
+                <button @click="u.in_network ? removeFromNetwork(u.id) : addToNetwork(u.id).then(() => u.in_network = !u.in_network)"
+                        class="text-xs px-3 py-1 rounded-full border transition whitespace-nowrap"
+                        :class="u.in_network ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'"
+                        x-text="u.in_network ? 'In Network ✓' : '+ Add'"></button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+    </div>
+  </template>
+</div>
 
         <!-- === INVITE VIEW === -->
         <div x-show="communityTab === 'invite'" x-cloak class="max-w-md mx-auto mb-16 rounded-2xl p-6"
@@ -968,7 +1018,10 @@ function communityApp() {
       addLoading: {},
       inviteEmail: '',
       inviteStatus: '',
-      search: ''
+      search: '',
+      searchMode: 'mine', 
+      searchResults: [],  
+      searching: false
     },
 
     feed: {
@@ -1046,6 +1099,26 @@ function communityApp() {
       } catch {}
       finally { this.network.loading = false; }
     },
+    
+        async searchAllUsers() {
+      const q = (this.network.search || '').trim();
+      if (q.length < 2) { this.network.searchResults = []; return; }
+      this.network.searching = true;
+      try {
+        const res = await fetch(`${API_BASE}/api/users/search?q=${encodeURIComponent(q)}`, {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        const data = await res.json();
+        this.network.searchResults = data.users || [];
+      } catch {}
+      finally { this.network.searching = false; }
+    },
+
+    setNetworkSearchMode(mode) {
+      this.network.searchMode = mode;
+      if (mode === 'mine') { this.network.search = ''; }
+      else { this.network.search = ''; this.network.searchResults = []; }
+    },
 
     async addToNetwork(userId) {
       if (this.network.addLoading[userId]) return;
@@ -1053,10 +1126,17 @@ function communityApp() {
       try {
         const res = await fetch(`${API_BASE}/api/network/add`, {
           method: 'POST',
-          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({ user_id: userId })
         });
-        if (res.ok) this.feed.posts.forEach(p => { if (p.user_id === userId) p.in_network = true; });
+        if (res.ok) {
+          this.feed.posts.forEach(p => { if (p.user_id === userId) p.in_network = true; });
+          // Refresh the network count so the tab badge updates
+          this.loadNetwork();
+        }
       } catch {}
       finally { this.network.addLoading[userId] = false; }
     },
@@ -1075,20 +1155,23 @@ function communityApp() {
     },
 
     async inviteColleague() {
-      if (!this.isAuthenticated) return;
-      if (!this.network.inviteEmail) return;
+      const email = (this.network.inviteEmail || '').trim().toLowerCase();
+      if (!email) { this.network.inviteStatus = '⚠️ Enter an email address first'; return; }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { this.network.inviteStatus = '⚠️ Invalid email format'; return; }
       this.network.inviteStatus = 'Sending…';
       try {
         const res = await fetch(`${API_BASE}/api/network/invite`, {
           method: 'POST',
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.network.inviteEmail })
+          body: JSON.stringify({ email })
         });
         const data = await res.json();
-        this.network.inviteStatus = data.success ? 'Invite sent ✓' : (data.error || 'Failed');
-        this.network.inviteEmail = '';
-        setTimeout(() => { this.network.inviteStatus = ''; }, 3000);
-      } catch { this.network.inviteStatus = 'Failed'; }
+        this.network.inviteStatus = data.success ? '✓ Invite recorded — email sending coming soon' : ('⚠️ ' + (data.error || 'Failed'));
+        if (data.success) this.network.inviteEmail = '';
+        setTimeout(() => { this.network.inviteStatus = ''; }, 5000);
+      } catch (e) {
+        this.network.inviteStatus = '⚠️ ' + e.message;
+      }
     },
 
     async loadFeed(reset = true) {

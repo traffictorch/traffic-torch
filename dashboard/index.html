@@ -145,7 +145,7 @@
               <button @click="profileSubTab = 'mine'; loadNetwork()"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
                       :class="profileSubTab === 'mine' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
-                My Network <span x-text="network.list.length ? '(' + network.list.length + ')' : ''"></span>
+                Network <span x-text="network.list.length ? '(' + network.list.length + ')' : ''"></span>
               </button>
               <button @click="profileSubTab = 'invite'"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
@@ -187,7 +187,7 @@
                         </button>
                         <a :href="'/u/' + (profile.username || '') + '/'"
                            target="_blank"
-                           x-show="profile.username"
+                           x-show="profile.username && profile.profile_public"
                            class="px-4 py-2 rounded-xl font-bold text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition whitespace-nowrap inline-flex items-center">
                           View public →
                         </a>
@@ -333,16 +333,16 @@
                         <input type="checkbox" x-model="profile.auto_share" class="w-5 h-5">
                       </label>
                       <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Show my network on profile</span>
-                        <input type="checkbox" x-model="profile.show_network" class="w-5 h-5">
+                        <span class="text-sm">Hide my network on profile</span>
+                        <input type="checkbox" :checked="!profile.show_network" @change="profile.show_network = $event.target.checked ? 0 : 1" class="w-5 h-5">
                       </label>
                       <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Allow others to add me to their network</span>
-                        <input type="checkbox" x-model="profile.allow_adds" class="w-5 h-5">
+                        <span class="text-sm">Don't allow others to add me to their network</span>
+                        <input type="checkbox" :checked="!profile.allow_adds" @change="profile.allow_adds = $event.target.checked ? 0 : 1" class="w-5 h-5">
                       </label>
                       <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Public profile</span>
-                        <input type="checkbox" x-model="profile.profile_public" class="w-5 h-5">
+                        <span class="text-sm">Make profile private</span>
+                        <input type="checkbox" :checked="!profile.profile_public" @change="profile.profile_public = $event.target.checked ? 0 : 1" class="w-5 h-5">
                       </label>
                     </div>
 
@@ -420,7 +420,7 @@
           <!-- === Profile Feed view (reuses feed.posts) === -->
           <div x-show="profileSubTab === 'feed'" class="max-w-2xl mx-auto">
             <div class="glass rounded-2xl p-3 mb-4 flex gap-2">
-              <template x-for="cat in ['ux','seo','aeo']" :key="cat">
+              <template x-for="cat in ['seo','ux','aeo']" :key="cat">
                 <button @click="setFeedCategory(cat)"
                         class="flex-1 py-2 rounded-lg text-sm font-bold uppercase tracking-wide transition"
                         :class="feed.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white' : 'text-gray-500 hover:text-orange-500'"
@@ -429,7 +429,6 @@
             </div>
             <p class="text-xs text-gray-500 mb-3 text-center">
               Audit slots used: <span class="font-bold text-orange-500" x-text="feed.slots.used"></span> / <span x-text="feed.slots.max"></span>
-              <span class="text-gray-400">· oldest post is replaced when full</span>
             </p>
             <div x-show="feed.loading" class="text-center py-8"><div class="spinner mx-auto"></div></div>
             <div x-show="!feed.loading && feed.posts.length === 0" class="glass rounded-2xl p-8 text-center">
@@ -590,23 +589,76 @@
             <p x-show="feed.error" class="text-red-500 text-center text-sm mt-4" x-text="feed.error"></p>
           </div>
 
-          <!-- === My Network view === -->
+          <!-- === Network view === -->
           <div x-show="profileSubTab === 'mine'" class="max-w-2xl mx-auto glass rounded-2xl p-6">
             <h3 class="text-lg font-bold mb-4">Your Network</h3>
-            <input type="text" x-model="network.search" placeholder="Search your network…" class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-            <div class="space-y-3">
-              <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
-                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                  <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
-                  <div class="flex-1 min-w-0">
-                    <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
-                    <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
-                  </div>
-                  <button @click="removeFromNetwork(u.id)" class="text-xs text-red-500 hover:underline">Remove</button>
-                </div>
-              </template>
-              <p x-show="network.list.length === 0" class="text-gray-500 text-sm text-center py-6">No one yet. Add people from the feed.</p>
+
+            <!-- Search mode toggle -->
+            <div class="flex justify-center gap-2 mb-4">
+              <button @click="setNetworkSearchMode('mine')"
+                      class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
+                      :class="network.searchMode === 'mine' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+                My Network
+              </button>
+              <button @click="setNetworkSearchMode('all')"
+                      class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
+                      :class="network.searchMode === 'all' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+                Find People
+              </button>
             </div>
+
+            <!-- Search input -->
+            <input type="text" x-model="network.search"
+                   @input="network.searchMode === 'all' && searchAllUsers()"
+                   :placeholder="network.searchMode === 'mine' ? 'Search your network…' : 'Search all users… (min 2 chars)'"
+                   class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+
+            <!-- NETWORK MODE -->
+            <template x-if="network.searchMode === 'mine'">
+              <div class="space-y-3">
+                <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
+                  <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
+                    <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                    <div class="flex-1 min-w-0">
+                      <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                      <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
+                    </div>
+                    <button @click="removeFromNetwork(u.id)" class="text-xs text-red-500 hover:underline">Remove</button>
+                  </div>
+                </template>
+                <p x-show="network.list.length === 0" class="text-gray-500 text-sm text-center py-6">No one yet. Add people from the feed.</p>
+              </div>
+            </template>
+
+            <!-- FIND PEOPLE MODE -->
+            <template x-if="network.searchMode === 'all'">
+              <div>
+                <div x-show="network.searching" class="text-center py-6">
+                  <div class="spinner mx-auto"></div>
+                </div>
+                <div x-show="!network.searching && network.search.length < 2" class="text-gray-500 text-sm text-center py-6">
+                  Type at least 2 characters to search.
+                </div>
+                <div x-show="!network.searching && network.search.length >= 2 && network.searchResults.length === 0" class="text-gray-500 text-sm text-center py-6">
+                  No matching users found.
+                </div>
+                <div class="space-y-3">
+                  <template x-for="u in network.searchResults" :key="u.id">
+                    <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
+                      <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                      <div class="flex-1 min-w-0">
+                        <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                        <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
+                      </div>
+                      <button @click="u.in_network ? removeFromNetwork(u.id) : addToNetwork(u.id).then(() => u.in_network = !u.in_network)"
+                              class="text-xs px-3 py-1 rounded-full border transition whitespace-nowrap"
+                              :class="u.in_network ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'"
+                              x-text="u.in_network ? 'In Network ✓' : '+ Add'"></button>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
           </div>
 
           <!-- === Invite view === -->
@@ -768,7 +820,7 @@
               <button @click="networkSubTab = 'mine'; loadNetwork()"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
                       :class="networkSubTab === 'mine' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
-                My Network <span x-text="network.list.length ? '(' + network.list.length + ')' : ''"></span>
+                Network <span x-text="network.list.length ? '(' + network.list.length + ')' : ''"></span>
               </button>
               <button @click="networkSubTab = 'invite'"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
@@ -780,7 +832,7 @@
 
           <div x-show="networkSubTab === 'feed'" class="max-w-2xl mx-auto">
             <div class="glass rounded-2xl p-3 mb-4 flex gap-2">
-              <template x-for="cat in ['ux','seo','aeo']" :key="cat">
+              <template x-for="cat in ['seo','ux','aeo']" :key="cat">
                 <button @click="setFeedCategory(cat)"
                         class="flex-1 py-2 rounded-lg text-sm font-bold uppercase tracking-wide transition"
                         :class="feed.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white' : 'text-gray-500 hover:text-orange-500'"
@@ -956,23 +1008,75 @@
             <p x-show="feed.error" class="text-red-500 text-center text-sm mt-4" x-text="feed.error"></p>
           </div>
 
-          <div x-show="networkSubTab === 'mine'" class="max-w-2xl mx-auto glass rounded-2xl p-6">
+          <div x-show="profileSubTab === 'mine'" class="max-w-2xl mx-auto glass rounded-2xl p-6">
             <h3 class="text-lg font-bold mb-4">Your Network</h3>
-            <input type="text" x-model="network.search" placeholder="Search your network…"
-                   class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-            <div class="space-y-3">
-              <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
-                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                  <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
-                  <div class="flex-1 min-w-0">
-                    <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
-                    <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
-                  </div>
-                  <button @click="removeFromNetwork(u.id)" class="text-xs text-red-500 hover:underline">Remove</button>
-                </div>
-              </template>
-              <p x-show="network.list.length === 0" class="text-gray-500 text-sm text-center py-6">No one yet. Add people from the feed.</p>
+
+            <!-- Search mode toggle -->
+            <div class="flex justify-center gap-2 mb-4">
+              <button @click="setNetworkSearchMode('mine')"
+                      class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
+                      :class="network.searchMode === 'mine' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+                My Network
+              </button>
+              <button @click="setNetworkSearchMode('all')"
+                      class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
+                      :class="network.searchMode === 'all' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+                Find People
+              </button>
             </div>
+
+            <!-- Search input -->
+            <input type="text" x-model="network.search"
+                   @input="network.searchMode === 'all' && searchAllUsers()"
+                   :placeholder="network.searchMode === 'mine' ? 'Search your network…' : 'Search all users… (min 2 chars)'"
+                   class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+
+            <!-- NETWORK MODE -->
+            <template x-if="network.searchMode === 'mine'">
+              <div class="space-y-3">
+                <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
+                  <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
+                    <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                    <div class="flex-1 min-w-0">
+                      <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                      <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
+                    </div>
+                    <button @click="removeFromNetwork(u.id)" class="text-xs text-red-500 hover:underline">Remove</button>
+                  </div>
+                </template>
+                <p x-show="network.list.length === 0" class="text-gray-500 text-sm text-center py-6">No one yet. Add people from the feed.</p>
+              </div>
+            </template>
+
+            <!-- FIND PEOPLE MODE -->
+            <template x-if="network.searchMode === 'all'">
+              <div>
+                <div x-show="network.searching" class="text-center py-6">
+                  <div class="spinner mx-auto"></div>
+                </div>
+                <div x-show="!network.searching && network.search.length < 2" class="text-gray-500 text-sm text-center py-6">
+                  Type at least 2 characters to search.
+                </div>
+                <div x-show="!network.searching && network.search.length >= 2 && network.searchResults.length === 0" class="text-gray-500 text-sm text-center py-6">
+                  No matching users found.
+                </div>
+                <div class="space-y-3">
+                  <template x-for="u in network.searchResults" :key="u.id">
+                    <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
+                      <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                      <div class="flex-1 min-w-0">
+                        <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                        <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
+                      </div>
+                      <button @click="u.in_network ? removeFromNetwork(u.id) : addToNetwork(u.id).then(() => u.in_network = !u.in_network)"
+                              class="text-xs px-3 py-1 rounded-full border transition whitespace-nowrap"
+                              :class="u.in_network ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'"
+                              x-text="u.in_network ? 'In Network ✓' : '+ Add'"></button>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
           </div>
 
           <div x-show="networkSubTab === 'invite'" class="max-w-md mx-auto glass rounded-2xl p-6">
@@ -1645,13 +1749,16 @@ function dashboardApp() {
       addLoading: {},
       inviteEmail: '',
       inviteStatus: '',
-      search: ''
+      search: '',
+      searchMode: 'mine', 
+      searchResults: [],  
+      searching: false
     },
 
     feed: {
       loading: false,
       loadingMore: false,
-      category: 'ux',
+      category: 'seo',
       posts: [],
       cursor: null,
       hasMore: true,
@@ -2794,6 +2901,26 @@ function dashboardApp() {
       } catch (e) {}
       finally { this.network.loading = false; }
     },
+    
+        async searchAllUsers() {
+      const q = (this.network.search || '').trim();
+      if (q.length < 2) { this.network.searchResults = []; return; }
+      this.network.searching = true;
+      try {
+        const res = await fetch(`${API_BASE}/api/users/search?q=${encodeURIComponent(q)}`, {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        const data = await res.json();
+        this.network.searchResults = data.users || [];
+      } catch {}
+      finally { this.network.searching = false; }
+    },
+
+    setNetworkSearchMode(mode) {
+      this.network.searchMode = mode;
+      if (mode === 'mine') { this.network.search = ''; }
+      else { this.network.search = ''; this.network.searchResults = []; }
+    },
 
     async addToNetwork(userId) {
       if (this.network.addLoading[userId]) return;
@@ -2822,19 +2949,23 @@ function dashboardApp() {
     },
 
     async inviteColleague() {
-      if (!this.network.inviteEmail) return;
+      const email = (this.network.inviteEmail || '').trim().toLowerCase();
+      if (!email) { this.network.inviteStatus = '⚠️ Enter an email address first'; return; }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { this.network.inviteStatus = '⚠️ Invalid email format'; return; }
       this.network.inviteStatus = 'Sending…';
       try {
         const res = await fetch(`${API_BASE}/api/network/invite`, {
           method: 'POST',
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.network.inviteEmail })
+          body: JSON.stringify({ email })
         });
         const data = await res.json();
-        this.network.inviteStatus = data.success ? 'Invite sent ✓' : (data.error || 'Failed');
-        this.network.inviteEmail = '';
-        setTimeout(() => { this.network.inviteStatus = ''; }, 3000);
-      } catch { this.network.inviteStatus = 'Failed'; }
+        this.network.inviteStatus = data.success ? '✓ Invite recorded — email sending coming soon' : ('⚠️ ' + (data.error || 'Failed'));
+        if (data.success) this.network.inviteEmail = '';
+        setTimeout(() => { this.network.inviteStatus = ''; }, 5000);
+      } catch (e) {
+        this.network.inviteStatus = '⚠️ ' + e.message;
+      }
     },
 
     // ===== FEED =====
