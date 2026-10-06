@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Traffic Torch Pro – Dashboard</title>
-  <meta name="description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
+  <meta name="description" content="Manage your Traffic Torch Pro Dashboard and access advanced SEO, UX, and AI tools.">
   <meta name="robots" content="noindex, nofollow">
-  <link rel="canonical" href="https://traffictorch.net/pro/">
+  <link rel="canonical" href="https://traffictorch.net/dashboard/">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
-  <meta property="og:title" content="Traffic Torch Pro – Dashboard">
-  <meta property="og:description" content="Manage your Traffic Torch Pro subscription and access advanced SEO, UX, and AI tools.">
+  <meta property="og:title" content="Traffic Torch Pro Dashboard">
+  <meta property="og:description" content="Manage your Traffic Torch Pro Dashboard and access advanced SEO, UX, and AI tools.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://traffictorch.net/pro/">
+  <meta property="og:url" content="https://traffictorch.net/dashboard/">
   <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Traffic Torch Pro – Dashboard">
+  <meta name="twitter:title" content="Traffic Torch Pro Dashboard">
   
     <!-- Preload critical CSS -->
   <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
@@ -428,7 +428,7 @@
               </template>
             </div>
             <p class="text-xs text-gray-500 mb-3 text-center">
-              Audit slots used: <span class="font-bold text-orange-500" x-text="feed.slots.used"></span> / <span x-text="feed.slots.max"></span>
+              Audit slots: <span class="font-bold text-orange-500" x-text="feed.slots.used"></span> / <span x-text="feed.slots.max"></span>
             </p>
             <div x-show="feed.loading" class="text-center py-8"><div class="spinner mx-auto"></div></div>
             <div x-show="!feed.loading && feed.posts.length === 0" class="glass rounded-2xl p-8 text-center">
@@ -841,7 +841,7 @@
             </div>
 
             <p class="text-xs text-gray-500 mb-3 text-center">
-              Audit slots used: <span class="font-bold text-orange-500" x-text="feed.slots.used"></span> / <span x-text="feed.slots.max"></span>
+              Audit slots: <span class="font-bold text-orange-500" x-text="feed.slots.used"></span> / <span x-text="feed.slots.max"></span>
               <span class="text-gray-400">· oldest post is replaced when full</span>
             </p>
 
@@ -1604,6 +1604,15 @@
             </template>
           </div>
         </div>
+        
+        <!-- Share -->
+        <section class="share-block mt-12" aria-label="Share options">
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </section>
 
         <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">Privacy-first • Traffic Torch</p>
       </main>
@@ -1666,6 +1675,36 @@
 </div>
 
 <script src="/main-v1.1.js" type="module"></script>
+
+<script>
+  // Override share "copy link" to use the live URL (including #tab)
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-copy]');
+    if (!btn) return;
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      const status = document.querySelector('.share-status');
+      if (status) {
+        status.textContent = 'Link copied ✓';
+        setTimeout(() => { status.textContent = ''; }, 2500);
+      }
+    }).catch(() => {
+      const input = document.createElement('input');
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      const status = document.querySelector('.share-status');
+      if (status) {
+        status.textContent = 'Link copied ✓';
+        setTimeout(() => { status.textContent = ''; }, 2500);
+      }
+    });
+  }, true); // capture phase — runs before main-v1.1.js handler
+</script>
 
 <script>
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
@@ -1857,6 +1896,13 @@ function dashboardApp() {
         if (e.detail && e.detail.tab) this.activeDashboardTab = e.detail.tab;
       });
 
+      window.addEventListener('hashchange', () => {
+        const h = window.location.hash.replace('#', '');
+        if (h && this.tabs.some(t => t.id === h) && h !== this.activeDashboardTab) {
+          this.activeDashboardTab = h;
+        }
+      });
+
       const urlParams = new URLSearchParams(window.location.search);
       const ga4Code = urlParams.get('ga4_code');
       const ga4State = urlParams.get('state');
@@ -1915,6 +1961,9 @@ function dashboardApp() {
       }
 
       this.$watch('activeDashboardTab', (newTab) => {
+        if (window.location.hash.replace('#', '') !== newTab) {
+          history.replaceState(null, '', '#' + newTab);
+        }
         if (newTab === 'realtime' && this.user.tier === 'enterprise' && this.ga4.connected) {
           this.startRealtimeInterval();
         } else {
