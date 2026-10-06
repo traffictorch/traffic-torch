@@ -39,7 +39,7 @@ export function computeAIVisibility(text, doc) {
     const citableFreq = clamp(Math.round((statsCount + quotesCount + internalCites) / (text.length / 1000) * 10));
 
     // Sub-metric 3: Direct Answer Rate
-    // NOTE: text must contain paragraph breaks (\n\n) — preserved by script-v1.1.js
+    // NOTE: text must contain paragraph breaks (\n\n) — preserved by script.js?v=1.1
     const paragraphs = text
       .split(/\n{2,}/)
       .map(p => p.trim())

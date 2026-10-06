@@ -18,10 +18,10 @@
   <meta name="twitter:title" content="Traffic Torch Pro Dashboard">
   
     <!-- Preload critical CSS -->
-  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="style" href="/dashboard/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/style.css?v=1.0">
     <link rel="stylesheet" href="/dashboard/style.css?v=1.0">
   </noscript>
   
@@ -39,8 +39,8 @@
   .tab-active { border-bottom: 3px solid #f97316; color: #f97316; }
 </style>
 
-  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
-  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local.css?v=1.0"></noscript>
 
   <script>
     (function() {
@@ -1674,7 +1674,7 @@
 
 </div>
 
-<script src="/main-v1.1.js" type="module"></script>
+<script src="/main.js?v=1.1" type="module"></script>
 
 <script>
   // Override share "copy link" to use the live URL (including #tab)
@@ -1703,7 +1703,7 @@
         setTimeout(() => { status.textContent = ''; }, 2500);
       }
     });
-  }, true); // capture phase — runs before main-v1.1.js handler
+  }, true); // capture phase — runs before main.js?v=1.1 handler
 </script>
 
 <script>

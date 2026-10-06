@@ -2,7 +2,7 @@
 // Navigation scoring.
 //
 // Fixes applied:
-//   • External link count is now computed in script-v1.3.js against the
+//   • External link count is now computed in script.js?v=1.3 against the
 //     audited URL (was: window.location.host, which made every internal
 //     link look external when the audit ran from a different origin).
 //     This module simply consumes the corrected `data.externalLinkCount`.

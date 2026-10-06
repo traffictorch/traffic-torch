@@ -303,18 +303,18 @@
   <link rel="preconnect" href="https://static.cloudflareinsights.com">
 
   <!-- Preload critical CSS -->
-  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" as="style" href="/blog/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link rel="stylesheet" href="/style-v1.0.css">
-    <link rel="stylesheet" href="/blog/style-v1.0.css">
+    <link rel="stylesheet" href="/style.css?v=1.0">
+    <link rel="stylesheet" href="/blog/style.css?v=1.0">
   </noscript>
 
   <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
-  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
   <noscript>
     <style>html{visibility:visible;opacity:1}</style>
-    <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+    <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
   </noscript>
 
   <script>
@@ -681,7 +681,7 @@
       The tool uses client-side JavaScript to fetch both pages via a privacy-preserving proxy, then reads the &lt;title&gt; tag and &lt;meta name="description" content="..."&gt; on each page.
     </p>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-4 font-semibold">
-      Scoring logic (from current script-v1.1.js, module weight 14 pts):
+      Scoring logic (from current script.js?v=1.1, module weight 14 pts):
     </p>
     <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 mb-8">
       <li>Word-boundary keyword match on title text (4 pts if keyword present).</li>
@@ -783,7 +783,7 @@
       The tool fetches both pages (yours + competitor) via proxy, then checks the H1 count, whether the target keyword appears in the H1, and whether at least one H2 reinforces the topic with the keyword or a close variant.
     </p>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-4 font-semibold">
-      Scoring logic (from current script-v1.1.js, module weight 8 pts):
+      Scoring logic (from current script.js?v=1.1, module weight 8 pts):
     </p>
     <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 mb-8">
       <li>Exactly one H1 present on the page (2 pts). Multiple H1s are flagged and scored lower.</li>
@@ -876,7 +876,7 @@
       The tool extracts main content from each page (excluding nav, footer, sidebars, scripts, and cookie banners), counts words, calculates average sentence length, and compares depth and readability side-by-side. <strong>No keyword density is calculated.</strong>
     </p>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-4 font-semibold">
-      Scoring logic (from current script-v1.1.js, module weight 14 pts):
+      Scoring logic (from current script.js?v=1.1, module weight 14 pts):
     </p>
     <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 mb-6">
       <li><strong>Content depth:</strong> up to 8 pts, scaling from 300 words (1 pt) to 1,500+ words (6 pts), with a readability bonus (2 pts).</li>
@@ -1007,7 +1007,7 @@
       The tool scans every <code>&lt;img&gt;</code> tag on both pages (yours and competitor's) after fetching via proxy, and compares how many images have any alt text and how many have keyword-relevant alt text.
     </p>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-4 font-semibold">
-      Scoring logic (from current script-v1.1.js, module weight 6 pts):
+      Scoring logic (from current script.js?v=1.1, module weight 6 pts):
     </p>
     <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 mb-6">
       <li>Counts total images, images with any alt text, and images with keyword-relevant alt text on each page.</li>
@@ -1107,7 +1107,7 @@
       The tool scans all <code>&lt;a href&gt;</code> tags on both pages, filters to internal links only (same-hostname), and checks whether any internal anchor text contains the target keyword.
     </p>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-4 font-semibold">
-      Scoring logic (from current script-v1.1.js, module weight 6 pts):
+      Scoring logic (from current script.js?v=1.1, module weight 6 pts):
     </p>
     <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 mb-6">
       <li>Counts internal links only — external links, mailto:, tel:, and javascript: are excluded.</li>
@@ -1205,7 +1205,7 @@
       The tool evaluates two signals per page: URL keyword relevance and presence of valid JSON-LD structured data. It also checks for a canonical link and URL cleanliness.
     </p>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-4 font-semibold">
-      Scoring logic (from current script-v1.1.js, module weight 14 pts):
+      Scoring logic (from current script.js?v=1.1, module weight 14 pts):
     </p>
     <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 mb-6">
       <li><strong>Canonical tag</strong>: +2 pts if a valid &lt;link rel="canonical"&gt; is present.</li>
@@ -1303,7 +1303,7 @@
       The tool reads each signal directly from the parsed DOM of both pages and scores them pass/fail side-by-side.
     </p>
     <p class="text-gray-800 dark:text-gray-200 leading-relaxed mb-4 font-semibold">
-      Scoring logic (from current script-v1.1.js, module weight 8 pts):
+      Scoring logic (from current script.js?v=1.1, module weight 8 pts):
     </p>
     <ul class="list-disc pl-6 space-y-3 text-gray-800 dark:text-gray-200 mb-6">
       <li><strong>html lang attribute</strong>: +2 pts if present.</li>
@@ -1793,7 +1793,7 @@
 </div>
 
   <!-- Load JS last for speed -->
-  <script src="/main-v1.1.js" type="module"></script>
+  <script src="/main.js?v=1.1" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
   
 </body>

@@ -2,7 +2,7 @@
 // Readability scoring.
 //
 // Fixes applied:
-//   • The static text extractor in script-v1.3.js walks nested container
+//   • The static text extractor in script.js?v=1.3 walks nested container
 //     elements (p, li, article, section, main, div), so fullText contains
 //     each paragraph several times. That inflates wordCount and sentence
 //     counts and quietly distorts Flesch scores.

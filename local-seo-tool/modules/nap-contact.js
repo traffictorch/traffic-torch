@@ -1,5 +1,5 @@
 // module-nap-contact.js
-import { moduleFixes } from "../fixes-v1.0.js";
+import { moduleFixes } from "../fixes.js?v=1.0";
 
 export function analyzeNapContact(doc, city) {
   const fixes = [];

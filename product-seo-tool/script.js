@@ -1,0 +1,1296 @@
+// product-seo-tool/script.js?v=1.3
+// v1.4 — Consolidated helpers (no duplicates), fixed module anchor slugs,
+//        proper hasSocialMeta flag, logged dynamic-import failures.
+
+let renderPluginSolutions;
+import('./plugin-solutions.js?v=1.0')
+  .then(m => { renderPluginSolutions = m.renderPluginSolutions; })
+  .catch(err => console.warn('[Product SEO] plugin-solutions failed to load', err));
+
+import { canRunTool } from '/main.js?v=1.1';
+import { initShareModule } from '/share-module.js';
+import { detectCMS } from '/cms-detect.js';
+import { fixFor } from './module-explanations.js?v=1.0';
+import {
+  initCodeSnippetModal,
+  showCodeForFailure,
+  deriveSelectorsForFailure,
+  extractSnippets
+} from './code-snippet.js?v=1.0';
+
+// Single source of truth — same helpers the analysis modules use
+import {
+  countWords,
+  countMissingAlt,
+  hasViewportMeta,
+  extractProductSchema,
+  hasReviewSection,
+  hasSocialMeta,
+  getProductPageContent
+} from './modules/helpers.js';
+
+const importErrors = [];
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function renderCodeBlocks(text) {
+  if (text === null || text === undefined) return '';
+  let escaped = String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  escaped = escaped.replace(
+    /```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g,
+    (_m, lang, code) => {
+      const language = (lang || 'plaintext').toLowerCase();
+      return `<pre class="code-block"><code class="language-${language}">${code.replace(/\s+$/, '')}</code></pre>`;
+    }
+  );
+
+  escaped = escaped.replace(
+    /(<pre[\s\S]*?<\/pre>)|(\r?\n)/g,
+    (_m, pre, nl) => (pre ? pre : '<br>')
+  );
+
+  return escaped;
+}
+
+// ─── Head snapshot builder ───
+function buildHeadSnapshot(doc) {
+  if (!doc || !doc.head) return '';
+  const head = doc.head;
+  const lines = [];
+
+  const sheets = [...head.querySelectorAll('link[rel="stylesheet"]')].slice(0, 15);
+  if (sheets.length) {
+    lines.push('Stylesheets in <head>:');
+    for (const l of sheets) {
+      const href = l.getAttribute('href') || '';
+      const media = l.getAttribute('media');
+      lines.push(`- ${href}${media ? ` (media=${media})` : ''}`);
+    }
+  }
+
+  const headScripts = [...head.querySelectorAll('script[src]')].slice(0, 15);
+  if (headScripts.length) {
+    lines.push('Scripts in <head>:');
+    for (const s of headScripts) {
+      const src = s.getAttribute('src') || '';
+      const attrs = ['async','defer','type','crossorigin','fetchpriority']
+        .filter(a => s.hasAttribute(a))
+        .map(a => `${a}="${s.getAttribute(a) || ''}"`)
+        .join(' ');
+      lines.push(`- ${src}${attrs ? ' ' + attrs : ''}`);
+    }
+  }
+
+  const inlineStyles = [...head.querySelectorAll('style')].slice(0, 15);
+  if (inlineStyles.length) {
+    lines.push(`Inline <style> blocks in <head>: ${inlineStyles.length}`);
+    for (const s of inlineStyles) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const inlineScripts = [...head.querySelectorAll('script:not([src])')].slice(0, 15);
+  if (inlineScripts.length) {
+    lines.push(`Inline <script> blocks in <head>: ${inlineScripts.length}`);
+    for (const s of inlineScripts) {
+      const id = s.id ? `#${s.id}` : '(no id)';
+      const bytes = (s.textContent || '').length;
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
+      lines.push(`- ${id} — ${bytes} bytes — "${preview}…"`);
+    }
+  }
+
+  const metaTags = [...head.querySelectorAll('meta[name], meta[property]')].slice(0, 20);
+  if (metaTags.length) {
+    lines.push('Meta tags in <head>:');
+    for (const m of metaTags) {
+      const key = m.getAttribute('name') || m.getAttribute('property') || '';
+      const val = (m.getAttribute('content') || '').slice(0, 120);
+      lines.push(`- ${key}="${val}"`);
+    }
+  }
+
+  const jsonLd = [...head.querySelectorAll('script[type="application/ld+json"]')].slice(0, 5);
+  if (jsonLd.length) {
+    lines.push(`JSON-LD schema blocks in <head>: ${jsonLd.length}`);
+    for (const s of jsonLd) {
+      const preview = (s.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+      lines.push(`- "${preview}…"`);
+    }
+  }
+
+  return lines.join('\n');
+}
+
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+async function saveAuditHistory(url, toolName) {
+  const token = localStorage.getItem('authToken') || localStorage.getItem('traffic_torch_jwt');
+  const auditUrl = url || 'Pasted HTML code';
+
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/api/audit-history`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: auditUrl, tool_name: toolName, score: null })
+      });
+      return;
+    } catch { /* fall through */ }
+  }
+
+  const stored = localStorage.getItem('audit_guest');
+  let entries = [];
+  if (stored) { try { entries = JSON.parse(stored).entries || []; } catch {} }
+  entries.unshift({
+    _localId: Date.now() + '_' + Math.random(),
+    url: auditUrl, tool: toolName, score: null, timestamp: Date.now()
+  });
+  entries = entries.slice(0, 5);
+  localStorage.setItem('audit_guest', JSON.stringify({ savedAt: Date.now(), entries }));
+}
+
+function autoFillAndRunFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const inputData = params.get('input');
+  if (!inputData) return;
+  const textarea = document.getElementById('code-input');
+  if (!textarea) return;
+  textarea.value = decodeURIComponent(inputData);
+  const analyzeBtn = document.getElementById('analyze-code-btn') || document.getElementById('code-analyze-btn');
+  if (analyzeBtn) setTimeout(() => analyzeBtn.click(), 300);
+}
+document.addEventListener('DOMContentLoaded', () => setTimeout(autoFillAndRunFromUrl, 150));
+
+// Dynamic imports — with explicit error logging
+let analyzeOnPageSEO, analyzeTechnicalSEO, analyzeContentMedia, analyzeEcommerceSEO;
+
+import('./modules/on-page.js')
+  .then(m => { analyzeOnPageSEO = m.analyzeOnPageSEO; })
+  .catch(err => { importErrors.push('on-page'); console.error('[Product SEO] on-page import failed', err); });
+
+import('./modules/technical.js')
+  .then(m => { analyzeTechnicalSEO = m.analyzeTechnicalSEO; })
+  .catch(err => { importErrors.push('technical'); console.error('[Product SEO] technical import failed', err); });
+
+import('./modules/content-media.js')
+  .then(m => { analyzeContentMedia = m.analyzeContentMedia; })
+  .catch(err => { importErrors.push('content-media'); console.error('[Product SEO] content-media import failed', err); });
+
+import('./modules/ecommerce.js')
+  .then(m => { analyzeEcommerceSEO = m.analyzeEcommerceSEO; })
+  .catch(err => { importErrors.push('ecommerce'); console.error('[Product SEO] ecommerce import failed', err); });
+
+document.addEventListener('DOMContentLoaded', () => {
+  initCodeSnippetModal();
+
+  // ── factorDefinitions ───────────────────────────────────────
+  // (Thresholds & descriptions unchanged; only the wording of Keyword
+  //  Optimization reflects the prominence model.)
+  const factorDefinitions = {
+    onPage: {
+      factors: [
+        { name: "Title Tag Optimization", key: "title", threshold: 80, shortDesc: "Title length ideally 50–60 chars (max 70), includes product keywords and brand. Avoids truncation.", howToFix: "Include product name + key benefit + brand early. Target 50-60 chars. Use separator like | or -." },
+        { name: "Meta Description Relevance", key: "metaDescription", threshold: 75, shortDesc: "100–170 chars, keyword-rich, includes CTA, unique per product.", howToFix: "Write benefit-driven copy with keywords early. Add urgency or offer. Avoid duplication." },
+        { name: "Heading Structure (H1–H6)", key: "headings", threshold: 85, shortDesc: "Single H1 (product name), logical hierarchy, keywords in H1/H2.", howToFix: "Use one H1 for product name. Add H2/H3 for features, specs, benefits. Include long-tail keywords naturally." },
+        { name: "URL Structure", key: "url", threshold: 90, shortDesc: "Clean, keyword-rich slug with hyphens, no parameters, readable.", howToFix: "Use /category/product-name format. Remove session IDs. Keep readable and descriptive." },
+        { name: "Keyword Optimization", key: "keywords", threshold: 70, shortDesc: "Primary keyword prominent in title, H1, first 100 words & one H2. Semantic coverage of related product terms. No stuffing.", howToFix: "Place main keywords in title, H1, first paragraph. Add long-tail & related-term variations naturally." }
+      ],
+      moduleWhat: "On-Page SEO evaluates title, meta, headings, URL, and keyword prominence — the foundational elements that tell search engines and users what the product page is about.",
+      moduleHow: "Optimize titles and metas for CTR. Use proper heading hierarchy. Include keywords naturally in prominent places. Keep URLs clean and descriptive.",
+      moduleWhy: "Strong on-page signals improve relevance, click-through rates, and initial rankings. They help match user intent and reduce bounce from mismatched expectations."
+    },
+    technical: {
+      factors: [
+        { name: "Mobile-Friendliness", key: "mobile", threshold: 85, shortDesc: "Responsive layout + correct viewport meta + no zoom blocking + tap targets ≥44px.", howToFix: "Add <meta name='viewport' content='width=device-width, initial-scale=1'>. Use responsive CSS. Avoid fixed widths or user-scalable=no. Test with PageSpeed Insights or Chrome DevTools → Device Toolbar." },
+        { name: "HTTPS Implementation", key: "https", threshold: 95, shortDesc: "Served over HTTPS with valid cert, no mixed content (HTTP resources on HTTPS page).", howToFix: "Force HTTPS redirect. Update all images/scripts/links to https://. Fix mixed content via browser dev tools console." },
+        { name: "Canonical Tags", key: "canonical", threshold: 85, shortDesc: "Self-referencing canonical exists and exactly matches current URL (protocol + trailing slash).", howToFix: "Add <link rel='canonical' href='https://full-current-url/'>. Ensure it matches live URL 100% (case-sensitive)." },
+        { name: "Meta Robots Directives", key: "robots", threshold: 90, shortDesc: "No noindex or nofollow on live product page (unless intentional).", howToFix: "Remove <meta name='robots' content='noindex'> or similar. Use robots.txt only for blocking unwanted pages, not product pages." },
+        { name: "Sitemap Inclusion Hints", key: "sitemapHint", threshold: 70, shortDesc: "Sitemap membership cannot be verified from the DOM alone — informational signal only.", howToFix: "Add this URL pattern to sitemap.xml. Submit sitemap in Google Search Console. Use dynamic sitemaps for large catalogs." }
+      ],
+      moduleWhat: "Technical SEO checks crawlability, mobile readiness, security, and duplicate prevention — essential for product pages to be indexed and ranked properly.",
+      moduleHow: "Ensure HTTPS, proper viewport, canonicals, and indexable robots directives. Keep technical foundation clean.",
+      moduleWhy: "Technical issues can prevent indexing, hurt mobile rankings, or cause duplicate content penalties — all block traffic."
+    },
+    contentMedia: {
+      factors: [
+        { name: "Product Description Quality", key: "description", threshold: 75, shortDesc: "300+ words ideal, unique, benefit-focused, structured (bullets/headings), keyword-rich.", howToFix: "Expand to 400–800 words in competitive niches. Start with benefits, use bullets for features, add subheadings. Make it unique vs competitors." },
+        { name: "Image Optimization", key: "images", threshold: 80, shortDesc: "Meaningful images have descriptive keyword-rich alt text, lazy loading, responsive (srcset), <100KB.", howToFix: "Add alt text like 'Santa Cruz Dreadnought Quilted Mahogany Acoustic Guitar front view'. Use loading='lazy', srcset/sizes. Compress images." },
+        { name: "Video Embed Quality", key: "video", threshold: 70, shortDesc: "Relevant videos present with captions or a nearby transcript section.", howToFix: "Embed YouTube/Vimeo with captions enabled (cc_load_policy=1) or add <track kind='subtitles'>. Include a transcript section." },
+        { name: "User-Generated Content (UGC)", key: "ugc", threshold: 70, shortDesc: "Reviews/ratings visible with star aggregate and review count.", howToFix: "Install review app (Judge.me, Yotpo, Loox). Display average rating + number of reviews. Encourage photo/video reviews." },
+        { name: "Internal Linking", key: "internalLinks", threshold: 70, shortDesc: "3+ contextual in-body links to related products/categories/guides (nav & footer excluded).", howToFix: "Add 3–6 contextual internal links in the description or below (e.g. 'see matching picks', 'learn more about tonewoods'). Use keyword-rich anchors." },
+        { name: "Breadcrumb Navigation", key: "breadcrumbs", threshold: 85, shortDesc: "Clear hierarchy breadcrumbs present (Home > Category > Subcategory > Product).", howToFix: "Implement breadcrumbs with schema (BreadcrumbList JSON-LD). Use links like Home > Acoustic Guitars > Dreadnought > Santa Cruz Dreadnought." }
+      ],
+      moduleWhat: "Content & Media evaluates richness, accessibility, and engagement signals that keep users on-page and build trust.",
+      moduleHow: "Create detailed, benefit-driven descriptions. Optimize all images/videos. Encourage reviews. Add navigation aids.",
+      moduleWhy: "High-quality content reduces bounce rate, improves dwell time, and strengthens topical authority — key ranking factors."
+    },
+    ecommerce: {
+      factors: [
+        { name: "Product Schema Markup", key: "schema", threshold: 90, shortDesc: "Valid JSON-LD Product schema with name, image, description, offers, brand, sku/mpn, gtin, plus shippingDetails + hasMerchantReturnPolicy for Merchant listings.", howToFix: "Add full Product schema using JSON-LD in <script type=\"application/ld+json\">. Include: @context, @type: \"Product\", name, image (array), description, brand, sku/mpn, gtin (if available), offers {price, priceCurrency, availability, itemCondition, priceValidUntil, shippingDetails, hasMerchantReturnPolicy}. Validate with Google's Rich Results Test." },
+        { name: "Price & Availability Markup", key: "priceAvailability", threshold: 85, shortDesc: "Offers include priceCurrency, price, availability (schema.org URL), itemCondition, priceValidUntil.", howToFix: "Set offers.price as a string ('1299.00'), offers.priceCurrency ('USD'), offers.availability ('https://schema.org/InStock'), offers.itemCondition ('https://schema.org/NewCondition'), and offers.priceValidUntil." },
+        { name: "Review Schema & Aggregation", key: "reviews", threshold: 80, shortDesc: "AggregateRating present with ratingValue (1.0–5.0) and reviewCount, ideally with individual Review items.", howToFix: "Add AggregateRating inside Product schema: ratingValue (decimal), reviewCount (integer). Use real data from review app. Optional: add 2–5 Review objects." },
+        { name: "Variant Handling", key: "variants", threshold: 75, shortDesc: "Variants use single-page selectors (dropdowns/swatches) or separate URLs have self-canonical + no duplicate content.", howToFix: "Prefer single URL with JS variant switching. If separate URLs, add <link rel='canonical'> pointing to main product. Avoid thin duplicate pages per variant." },
+        { name: "Social Sharing Integration", key: "social", threshold: 70, shortDesc: "Open Graph tags (og:title, og:description, og:image 1200×630+, og:url) and optionally Twitter Cards.", howToFix: "Add <meta property='og:title' content='...'> etc. in <head>. Use high-res product image for og:image. Set og:url to canonical URL. Add twitter:card if desired." }
+      ],
+      moduleWhat: "eCommerce Signals checks structured data, pricing, reviews, variants, and social signals — essential for rich results and Merchant listings.",
+      moduleHow: "Implement complete Product + Offer + AggregateRating schema. Handle variants cleanly. Add Open Graph tags.",
+      moduleWhy: "Schema enables rich snippets (price, stars, images in SERPs). Reviews add trust. Complete Merchant-listing fields unlock Shopping eligibility."
+    }
+  };
+
+  function getHealthLabel(score) {
+    if (score >= 85) return { text: "Excellent", color: "from-green-400 to-emerald-600" };
+    if (score >= 70) return { text: "Very Good", color: "from-green-200 to-green-400" };
+    if (score >= 50) return { text: "Needs Improvement", color: "from-orange-400 to-orange-600" };
+    return { text: "Needs Work", color: "from-red-400 to-red-600" };
+  }
+
+  function getGradeInfo(score) {
+    if (score >= 90) return { grade: "A+", color: "text-green-600", emoji: "🏆" };
+    if (score >= 85) return { grade: "A", color: "text-green-600", emoji: "✅" };
+    if (score >= 80) return { grade: "B+", color: "text-green-500", emoji: "✅" };
+    if (score >= 70) return { grade: "B", color: "text-teal-500", emoji: "👍" };
+    if (score >= 60) return { grade: "C+", color: "text-yellow-600", emoji: "⚠️" };
+    if (score >= 50) return { grade: "C", color: "text-orange-600", emoji: "⚠️" };
+    return { grade: "Needs Work", color: "text-red-600", emoji: "❌" };
+  }
+
+  function getPluginGrade(score) {
+    if (score >= 90) return { grade: 'Excellent', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+    if (score >= 70) return { grade: 'Very Good', emoji: '🟢', color: 'text-green-600 dark:text-green-400' };
+    if (score >= 50) return { grade: 'Needs Improvement', emoji: '⚠️', color: 'text-orange-600 dark:text-orange-400' };
+    return { grade: 'Needs Work', emoji: '🔴', color: 'text-red-600 dark:text-red-400' };
+  }
+
+  function buildModuleHTML(moduleName, value, moduleData, factorScores = null, cmsInfo = null) {
+    const ringColor = value < 50 ? '#ef4444' : value < 70 ? '#fb923c' : value < 85 ? '#22c55e' : '#10b981';
+    const borderClass = value < 50 ? 'border-red-500' : value < 70 ? 'border-orange-500' : value < 85 ? 'border-green-500' : 'border-emerald-500';
+    const gradeInfo = getGradeInfo(value);
+
+    let statusMessage, statusEmoji;
+    if (value >= 85)      { statusMessage = 'Excellent';         statusEmoji = '🏆'; }
+    else if (value >= 70) { statusMessage = 'Very Good';         statusEmoji = '✅'; }
+    else if (value >= 50) { statusMessage = 'Needs Improvement'; statusEmoji = '⚠️'; }
+    else                  { statusMessage = 'Needs Work';        statusEmoji = '❌'; }
+
+    const failed = [], warnings = [], passed = [];
+
+    moduleData.factors.forEach(f => {
+      const individualScore = (factorScores && f.key && factorScores[f.key] && factorScores[f.key].score !== undefined)
+        ? factorScores[f.key].score
+        : value;
+      const isPass = individualScore >= f.threshold;
+      const isWarning = !isPass && individualScore >= f.threshold - 20;
+
+      const item = {
+        name: f.name,
+        score: individualScore,
+        threshold: f.threshold,
+        emoji: isPass ? '✅' : (isWarning ? '⚠️' : '❌'),
+        color: isPass
+          ? 'text-green-600 dark:text-green-400'
+          : (isWarning ? 'text-orange-500 dark:text-orange-400' : 'text-red-600 dark:text-red-400'),
+        fix: (() => {
+          // Match against factor name only — passing shortDesc caused false
+          // positives (e.g. "coverage" matching the "over" pattern in the
+          // title-too-long rule). Hand-written howToFix remains the fallback.
+          const found = fixFor(f.name);
+          return found && !found.startsWith('Review this metric') ? found : f.howToFix;
+        })()
+      };
+      if (isPass) passed.push(item);
+      else if (isWarning) warnings.push(item);
+      else failed.push(item);
+    });
+
+    const headerItems = [...failed, ...warnings, ...passed];
+    const headerHTML = headerItems.map(item => `
+      <p class="${item.color} font-semibold text-sm sm:text-base mb-1.5 leading-snug text-left">
+        ${item.emoji} ${item.name}
+      </p>
+    `).join('');
+
+    const fixableItems = [...failed, ...warnings];
+    const fixesPanelHTML = fixableItems.length > 0
+      ? fixableItems.map((item, i) => {
+          const rule = deriveSelectorsForFailure(item.name);
+          return `
+            <div class="${i > 0 ? 'border-t border-gray-200 dark:border-gray-700 pt-5 mt-5' : ''}">
+              <p class="font-bold ${item.color} mb-2 leading-snug">${item.emoji} ${escapeHtml(item.name)}</p>
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${escapeHtml(item.fix)}</p>
+              ${rule ? `
+                <button type="button"
+                        class="show-code-btn mt-2 inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                        data-failure="${escapeHtml(item.name)}">
+                  🔍 Show the code
+                </button>` : ''}
+            </div>`;
+        }).join('')
+      : '<p class="text-center text-gray-700 dark:text-gray-300 text-base py-6 font-medium">All checks passed — no fixes needed!</p>';
+
+    const failedNames = fixableItems.map(i => i.name).join(', ') || 'none';
+    const cmsLabel = cmsInfo?.name && cmsInfo.name !== 'Custom / Unknown'
+      ? ` (CMS: ${cmsInfo.name}${cmsInfo.version ? ' ' + cmsInfo.version : ''})`
+      : '';
+    const askQuestion = `How do I improve my ${moduleName} score? Failed checks: ${failedNames}${cmsLabel}`;
+
+    // Fixed: use the actual element IDs defined in module-explanations.js?v=1.0
+    const moduleSlugMap = {
+      'On-Page SEO': 'on-page-seo',
+      'Technical SEO': 'technical-seo',
+      'Content & Media': 'content-&-media',   // ← was 'content--media'
+      'E-Commerce Signals': 'e-commerce-signals'
+    };
+    const moduleSlug = moduleSlugMap[moduleName] || moduleName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const helpGuideUrl = `https://traffictorch.net/blog/posts/product-seo-help-guide/#${moduleSlug}`;
+
+    const hasFixes = fixableItems.length > 0;
+
+    return `
+      <div class="module-card score-card flex flex-col text-center p-2 sm:p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-4 ${borderClass}">
+        <div class="relative mx-auto w-32 h-32 flex-shrink-0">
+          <svg width="128" height="128" viewBox="0 0 128 128" class="transform -rotate-90">
+            <circle cx="64" cy="64" r="56" stroke="#f3f4f6" stroke-width="12" fill="none"/>
+            <circle cx="64" cy="64" r="56"
+                    stroke="${ringColor}"
+                    stroke-width="12" fill="none"
+                    stroke-dasharray="${(value / 100) * 352} 352"
+                    stroke-linecap="round"/>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center text-4xl font-black" style="color: ${ringColor};">
+            ${value}
+          </div>
+        </div>
+        <p class="mt-4 text-2xl font-bold ${gradeInfo.color}">${moduleName}</p>
+        <div class="mt-4 text-center">
+          <p class="text-4xl ${gradeInfo.color}">${statusEmoji}</p>
+          <p class="text-2xl font-bold ${gradeInfo.color} mt-2">${statusMessage}</p>
+        </div>
+        <div class="mt-6 text-left metrics-list px-1">${headerHTML}</div>
+        <div class="mt-auto pt-5">
+          <button type="button"
+                  class="fixes-toggle w-full mt-2 px-5 py-3 rounded-xl bg-green-600 dark:bg-green-700 text-white font-semibold hover:bg-green-700 dark:hover:bg-green-600 transition shadow-md disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:text-white disabled:cursor-not-allowed"
+                  data-failed-count="${fixableItems.length}"
+                  ${hasFixes ? '' : 'disabled'}>
+            ${hasFixes ? `Show Fixes (${fixableItems.length})` : 'All Checks Passed ✅'}
+          </button>
+        </div>
+        <div class="fixes-panel hidden mt-6 text-left px-2 sm:px-4 w-full">
+          ${fixesPanelHTML}
+          <div class="mt-6 pt-5 border-t-2 border-gray-200 dark:border-gray-700 space-y-3">
+            <a href="#ask-ai-section"
+               class="ask-ai-link block text-purple-600 dark:text-purple-400 hover:underline font-semibold text-base"
+               data-ai-question="${askQuestion.replace(/"/g, '&quot;')}">
+              🤖 Ask AI about this module
+            </a>
+            <a href="${helpGuideUrl}"
+               class="block text-orange-600 dark:text-orange-400 hover:underline font-semibold text-base">
+              📖 Read the full ${moduleName} guide
+            </a>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ─── UI Elements ────────────────────────────────────────────
+  const urlAnalyzeBtn = document.getElementById('url-analyze-btn');
+  const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
+  const urlInput = document.getElementById('url-input');
+  const codeInput = document.getElementById('code-input');
+  const results = document.getElementById('results');
+  const loading = document.getElementById('loading');
+  const progressText = document.getElementById('progressText');
+
+  const PROXY = 'https://product-seo.traffictorch.workers.dev/';
+
+  async function runProductSEOAnalysis(source, isCode = false) {
+    const canProceed = await canRunTool('product-seo-tool');
+    if (!canProceed) return;
+
+    results.innerHTML = '';
+    delete results.dataset.renderedHtml;
+    delete results.dataset.headSnapshot;
+    loading.classList.remove('hidden');
+    loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    const steps = [
+      { text: "Fetching product page...", delay: 1000 },
+      { text: "Extracting content & metadata", delay: 400 },
+      { text: "Analyzing on-page & technical SEO", delay: 600 },
+      { text: "Evaluating content, media & schema", delay: 300 },
+      { text: "Checking eCommerce signals", delay: 200 },
+      { text: "Calculating health score", delay: 500 },
+      { text: "Building report & fixes", delay: 1000 }
+    ];
+
+    let currentStep = 0;
+    const runStep = () => {
+      if (currentStep < steps.length) {
+        progressText.textContent = steps[currentStep].text;
+        currentStep++;
+        setTimeout(runStep, steps[currentStep - 1].delay);
+      } else {
+        progressText.textContent = "Generating SEO report";
+        setTimeout(() => performAnalysis(source, isCode), 2000);
+      }
+    };
+    runStep();
+  }
+
+  async function performAnalysis(source, isCode = false) {
+    try {
+      let html;
+      let inputUrl = '';
+      if (isCode) {
+        html = source;
+        if (!html || html.length < 100) throw new Error('Please paste valid HTML code');
+        inputUrl = 'Pasted HTML Code';
+    } else {
+      if (!source) throw new Error('Please enter a product page URL');
+      let url = source.trim();
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+        urlInput.value = url;
+      }
+      inputUrl = url;
+
+      const t0 = performance.now();
+      const controller = new AbortController();
+      const clientTimeout = setTimeout(() => controller.abort(), 20000);
+
+      let res;
+      try {
+        res = await fetch(PROXY + '?url=' + encodeURIComponent(url), {
+          signal: controller.signal,
+          headers: { 'Accept': 'text/html' }
+        });
+        clearTimeout(clientTimeout);
+      } catch (e) {
+        clearTimeout(clientTimeout);
+        const secs = ((performance.now() - t0) / 1000).toFixed(1);
+        throw new Error(`Network error after ${secs}s — ${e.name}: ${e.message}`);
+      }
+
+      const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+
+      if (!res.ok) {
+        let body = '';
+        try { body = await res.text(); } catch {}
+        throw new Error(`Worker returned ${res.status} after ${elapsed}s. ${body.slice(0, 200)}`);
+      }
+
+      const contentType = res.headers.get('content-type') || '';
+
+      // Worker reports upstream failures as JSON so we can show the real reason
+      if (contentType.includes('application/json')) {
+        const errData = await res.json().catch(() => ({}));
+        if (errData.error === 'upstream-timeout') {
+          throw new Error(`Target site timed out after ${elapsed}s. Try Code Analysis with pasted HTML instead.`);
+        }
+        throw new Error(`Upstream error: ${errData.message || errData.error || 'unknown'} (${elapsed}s)`);
+      }
+
+      html = await res.text();
+      console.log(`[Product SEO] fetched ${html.length.toLocaleString()} bytes in ${elapsed}s`);
+    }
+
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const cmsInfo = detectCMS({ doc, url: inputUrl !== 'Pasted HTML Code' ? inputUrl : '' });
+
+      results.dataset.renderedHtml = html || '';
+      results.dataset.headSnapshot = buildHeadSnapshot(doc);
+      document.body.setAttribute('data-cms-name', cmsInfo?.name || 'Custom / Unknown');
+      document.body.setAttribute('data-cms-version', cmsInfo?.version || '');
+      document.body.setAttribute('data-cms-confidence', cmsInfo?.confidence || 'unknown');
+
+      const auditSaveUrl = isCode ? 'Pasted HTML code' : (inputUrl || '');
+      await saveAuditHistory(auditSaveUrl, 'Product SEO');
+
+      // ─── Run analysis via the four modules ─────────────────
+      const seoData = getProductPageContent(doc, inputUrl);
+
+      // Surface import failures before running (silent 55s were misleading)
+      if (importErrors.length > 0) {
+        console.warn('[Product SEO] Module import errors:', importErrors);
+      }
+
+      const ready = analyzeOnPageSEO && analyzeTechnicalSEO && analyzeContentMedia && analyzeEcommerceSEO;
+      let onPageResult, technicalResult, contentMediaResult, ecommerceResult;
+
+      if (ready) {
+        onPageResult      = analyzeOnPageSEO(doc, seoData);
+        technicalResult   = analyzeTechnicalSEO(doc, seoData);
+        contentMediaResult = analyzeContentMedia(doc, seoData);
+        ecommerceResult   = analyzeEcommerceSEO(doc, seoData);
+      } else {
+        // No more silent 55s. Explicit partial-results signal.
+        const fallback = { score: 0, details: {} };
+        onPageResult = technicalResult = contentMediaResult = ecommerceResult = fallback;
+        const warn = document.createElement('div');
+        warn.className = 'max-w-3xl mx-auto my-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-xl text-red-800 dark:text-red-200 text-center';
+        warn.innerHTML = `<strong>Partial results.</strong> Some analysis modules failed to load (${importErrors.join(', ')}). Please hard-refresh and try again.`;
+        results.appendChild(warn);
+      }
+
+      const weights = { onPage: 0.30, technical: 0.25, contentMedia: 0.25, ecommerce: 0.20 };
+      const overallScore = ready
+        ? Math.round(
+            onPageResult.score * weights.onPage +
+            technicalResult.score * weights.technical +
+            contentMediaResult.score * weights.contentMedia +
+            ecommerceResult.score * weights.ecommerce
+          )
+        : 0;
+
+      const seo = {
+        score: isNaN(overallScore) ? 0 : Math.min(100, Math.max(0, overallScore)),
+        onPage: onPageResult,
+        technical: technicalResult,
+        contentMedia: contentMediaResult,
+        ecommerce: ecommerceResult
+      };
+
+      const failedFactors = [];
+      const modulesData = [
+        { name: "On-Page SEO", result: seo.onPage, definitions: factorDefinitions.onPage },
+        { name: "Technical SEO", result: seo.technical, definitions: factorDefinitions.technical },
+        { name: "Content & Media", result: seo.contentMedia, definitions: factorDefinitions.contentMedia },
+        { name: "E-Commerce Signals", result: seo.ecommerce, definitions: factorDefinitions.ecommerce }
+      ];
+      modulesData.forEach(mod => {
+        if (mod.result.details) {
+          mod.definitions.factors.forEach(f => {
+            const factorScore = mod.result.details[f.key]?.score;
+            if (factorScore !== undefined && factorScore < f.threshold) {
+              failedFactors.push({
+                module: mod.name,
+                name: f.name,
+                score: factorScore,
+                threshold: f.threshold,
+                grade: getPluginGrade(factorScore),
+                howToFix: f.howToFix,
+                isPro: mod.name.includes("(Pro)")
+              });
+            }
+          });
+        }
+      });
+
+      const health = getHealthLabel(seo.score);
+      loading.classList.add('hidden');
+      if (results) { results.classList.remove('hidden'); results.classList.add('block'); }
+
+      const safeScore = isNaN(seo.score) ? 0 : seo.score;
+      const overallGrade = getGradeInfo(safeScore);
+      const ringColor = safeScore < 50 ? '#ef4444' : safeScore < 70 ? '#fb923c' : safeScore < 85 ? '#22c55e' : '#10b981';
+
+      const onPageHTML        = buildModuleHTML('On-Page SEO', seo.onPage.score, factorDefinitions.onPage, seo.onPage.details, cmsInfo);
+      const technicalHTML     = buildModuleHTML('Technical SEO', seo.technical.score, factorDefinitions.technical, seo.technical.details, cmsInfo);
+      const contentMediaHTML  = buildModuleHTML('Content & Media', seo.contentMedia.score, factorDefinitions.contentMedia, seo.contentMedia.details, cmsInfo);
+      const ecommerceHTML     = buildModuleHTML('E-Commerce Signals', seo.ecommerce.score, factorDefinitions.ecommerce, seo.ecommerce.details, cmsInfo);
+
+      const modulePriority = [
+        { name: 'On-Page SEO', score: seo.onPage.score, threshold: 70 },
+        { name: 'Technical SEO', score: seo.technical.score, threshold: 80 },
+        { name: 'Content & Media', score: seo.contentMedia.score, threshold: 70 },
+        { name: 'E-Commerce Signals', score: seo.ecommerce.score, threshold: 75 }
+      ];
+      const failedModules = modulePriority.filter(m => m.score < m.threshold);
+
+      const priorityFixes = failedFactors.sort((a, b) => a.score - b.score).slice(0, 3);
+
+      let priorityFixesHTML = '';
+      if (priorityFixes.length > 0) {
+        priorityFixesHTML = priorityFixes.map((fix, index) => `
+          <div class="flex items-start gap-4 p-1 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 rounded-2xl border border-purple-500/30 hover:border-purple-500/60 transition-all">
+            <div class="text-5xl font-black text-purple-600">${index + 1}</div>
+            <div class="flex-1">
+              <p class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
+                ${fix.module} → ${fix.name}
+                <span class="text-sm font-normal text-purple-600 dark:text-purple-400 ml-3">(${Math.round(fix.score)}/${fix.threshold})</span>
+              </p>
+              <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200">${fix.howToFix}</p>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        priorityFixesHTML = `
+          <div class="p-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-3xl border border-green-500/50 text-center">
+            <p class="text-5xl mb-6">🎉</p>
+            <p class="text-4xl font-black text-green-600 dark:text-green-400 mb-4">Strong Product Page SEO!</p>
+            <p class="text-2xl text-gray-800 dark:text-gray-200">No critical metric failures detected.</p>
+          </div>`;
+      }
+
+      const failedCount = failedModules.length;
+      const impactHTML = `
+        <div class="max-w-4xl mx-auto my-20 px-2">
+          <div class="p-2 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl border border-cyan-400/30">
+            <h3 class="text-3xl md:text-4xl font-black mb-10 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent text-center">
+              Potential Gains After Fixes
+            </h3>
+            <ul class="space-y-10">
+              <li class="flex items-center gap-6">
+                <span class="text-4xl">📈</span>
+                <div class="flex-1">
+                  <p class="font-bold text-2xl text-gray-800 dark:text-gray-200 mb-2">Organic CTR Lift</p>
+                  <p class="text-lg text-gray-700 dark:text-gray-300 mb-3">Potential ${failedCount === 0 ? 'Very strong baseline' : failedCount * 10 + '-' + failedCount * 20 + '%'} from rich snippets & better titles/metas</p>
+                  <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-5">
+                    <div class="bg-cyan-600 h-5 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : 100 - failedCount * 20 + '%'}"></div>
+                  </div>
+                </div>
+              </li>
+              <li class="flex items-center gap-6">
+                <span class="text-4xl">🔍</span>
+                <div class="flex-1">
+                  <p class="font-bold text-2xl text-gray-800 dark:text-gray-200 mb-2">Ranking Potential</p>
+                  <p class="text-lg text-gray-700 dark:text-gray-300 mb-3">Potential ${failedCount === 0 ? 'Top-tier positions' : 'Significant climb'} in SERPs</p>
+                  <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-5">
+                    <div class="bg-blue-600 h-5 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : Math.max(20, 85 - failedCount * 15) + '%'}"></div>
+                  </div>
+                </div>
+              </li>
+              <li class="flex items-center gap-6">
+                <span class="text-4xl">🛒</span>
+                <div class="flex-1">
+                  <p class="font-bold text-2xl text-gray-800 dark:text-gray-200 mb-2">Conversion Rate Lift</p>
+                  <p class="text-lg text-gray-700 dark:text-gray-300 mb-3">Potential ${failedCount === 0 ? 'Strong baseline' : failedCount * 10 + '-' + failedCount * 25 + '%'} from improved trust & UX</p>
+                  <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-5">
+                    <div class="bg-indigo-600 h-5 rounded-full transition-all" style="width: ${failedCount === 0 ? '100%' : Math.max(20, 75 - failedCount * 15) + '%'}"></div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <p class="text-center text-base text-gray-600 dark:text-gray-400 mt-10 italic">
+              Estimates based on current eCommerce SEO benchmarks. Schema, content, and technical fixes usually deliver the fastest visible gains.
+            </p>
+          </div>
+        </div>`;
+
+      const modules = [
+        { name: 'On-Page SEO', score: seo.onPage.score },
+        { name: 'Technical SEO', score: seo.technical.score },
+        { name: 'Content & Media', score: seo.contentMedia.score },
+        { name: 'E-Commerce Signals', score: seo.ecommerce.score }
+      ];
+      const scores = modules.map(m => m.score);
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'container mx-auto px-2 py-8';
+
+      const scoreCard = document.createElement('div');
+      scoreCard.innerHTML = `
+        <div class="flex justify-center my-8 sm:my-12 px-0 sm:px-6">
+          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-2 sm:p-8 md:p-10 w-full max-w-sm sm:max-w-md border-4 ${safeScore >= 85 ? 'border-emerald-500' : safeScore >= 70 ? 'border-teal-500' : safeScore >= 50 ? 'border-orange-500' : 'border-red-500'}">
+            <p class="text-center text-lg sm:text-xl font-medium text-gray-600 dark:text-gray-400 mb-6">Product Page Health Score</p>
+            <div class="relative aspect-square w-full max-w-[240px] sm:max-w-[280px] mx-auto">
+              <svg viewBox="0 0 200 200" class="w-full h-full transform -rotate-90">
+                <circle cx="100" cy="100" r="90" stroke="#f3f4f6" stroke-width="16" fill="none"/>
+                <circle cx="100" cy="100" r="90" stroke="${ringColor}" stroke-width="16" fill="none" stroke-dasharray="${(safeScore / 100) * 565} 565" stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center">
+                  <div class="text-5xl sm:text-6xl font-black drop-shadow-lg" style="color: ${ringColor};">${safeScore}</div>
+                  <div class="text-lg sm:text-xl opacity-80 -mt-1" style="color: ${ringColor};">/100</div>
+                </div>
+              </div>
+            </div>
+            ${(() => {
+              const pageTitle = doc?.title?.trim() || '';
+              const truncated = pageTitle.length > 65 ? pageTitle.substring(0, 65) + '...' : pageTitle;
+              const displayUrl = inputUrl === 'Pasted HTML Code' ? 'HTML Code Analysis' : inputUrl;
+              return truncated
+                ? `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${escapeHtml(truncated)}</p>`
+                : `<p class="mt-6 text-base sm:text-lg text-gray-600 dark:text-gray-200 text-center px-3 sm:px-4 leading-tight">${escapeHtml(displayUrl)}</p>`;
+            })()}
+            <div class="mt-6 text-center">
+              <p class="text-6xl sm:text-5xl md:text-6xl font-bold ${overallGrade.color} drop-shadow-lg">${overallGrade.emoji}</p>
+              <p class="text-4xl sm:text-5xl font-bold ${overallGrade.color} mt-3 sm:mt-4">${overallGrade.grade}</p>
+              <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400 mt-3 sm:mt-4">Product Page Health</p>
+            </div>
+          </div>
+        </div>
+        <div class="text-center mb-12">
+          <p class="text-4xl font-bold text-gray-800 mb-8">Health Status:</p>
+          <div class="flex flex-col items-center gap-6">
+            <div class="flex items-center gap-6 text-4xl">
+              <span class="${health.text === 'Excellent' ? 'text-emerald-600' :
+                            health.text === 'Very Good' ? 'text-green-600' :
+                            health.text === 'Needs Improvement' ? 'text-orange-600' : 'text-red-600'}">
+                ${health.text === 'Excellent' ? '🏆' : health.text === 'Very Good' ? '✅' : health.text === 'Needs Improvement' ? '⚠️' : '❌'}
+              </span>
+            </div>
+            <p class="${health.text === 'Excellent' ? 'text-emerald-600' :
+                       health.text === 'Very Good' ? 'text-green-600' :
+                       health.text === 'Needs Improvement' ? 'text-orange-600' : 'text-red-600'} text-4xl font-black">
+              ${health.text}
+            </p>
+          </div>
+          <p class="text-xl text-gray-800 mt-10">Analyzed ${seoData.wordCount} words + ${seoData.imageCount} images</p>
+        </div>
+      `;
+      wrapper.appendChild(scoreCard);
+
+      const radarSection = document.createElement('div');
+      radarSection.innerHTML = `
+        <div class="max-w-5xl mx-auto my-16 px-4">
+          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8">
+            <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">SEO Health Radar</h3>
+            <div class="hidden md:block w-full"><canvas id="health-radar" class="mx-auto w-full max-w-4xl h-[600px]"></canvas></div>
+            <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:hidden">Radar chart available on desktop/tablet</p>
+            <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 hidden md:block">Visual overview of your product page across key SEO areas</p>
+          </div>
+        </div>`;
+      wrapper.appendChild(radarSection);
+
+      const modulesGrid = document.createElement('div');
+      modulesGrid.className = 'grid gap-8 my-16 max-w-7xl mx-auto px-0';
+      modulesGrid.innerHTML = `
+        <div class="grid md:grid-cols-2 gap-8">${onPageHTML}${technicalHTML}</div>
+        <div class="grid md:grid-cols-2 gap-8">${contentMediaHTML}${ecommerceHTML}</div>`;
+      wrapper.appendChild(modulesGrid);
+
+      const prioritySection = document.createElement('div');
+      prioritySection.className = 'text-center my-20';
+      prioritySection.innerHTML = `
+        <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent mb-12">
+          Top Priority Fixes
+        </h2>
+        <div class="max-w-4xl mx-auto space-y-8">${priorityFixesHTML}</div>
+        ${priorityFixes.length > 0 ? `
+          <p class="mt-12 text-xl text-gray-800 dark:text-gray-200">
+            Prioritized by impact — focus on lowest-scoring areas first for biggest ranking & conversion gains.
+          </p>` : ''}
+      `;
+      wrapper.appendChild(prioritySection);
+
+      const impactSection = document.createElement('div');
+      impactSection.innerHTML = impactHTML;
+      wrapper.appendChild(impactSection);
+
+      const pluginSection = document.createElement('div');
+      pluginSection.id = 'plugin-solutions-section';
+      pluginSection.className = 'mt-16 px-1';
+      wrapper.appendChild(pluginSection);
+
+      // ─── CMS Fixes section ─────────────────────────────────
+      const cmsSection = document.createElement('div');
+      cmsSection.id = 'cms-fixes-section';
+      cmsSection.className = 'mt-20 max-w-4xl mx-auto px-2';
+      cmsSection.innerHTML = `
+        <h2 class="text-3xl font-black text-center mb-2">🛠️ Generate CMS Fixes</h2>
+        <p class="text-center text-gray-600 dark:text-gray-400 mb-6">Get step-by-step product SEO fix instructions tailored to your CMS.</p>
+        <div class="flex items-center justify-center gap-3 mb-4 flex-wrap">
+          <span class="text-sm text-gray-600 dark:text-gray-400">Detected:</span>
+          <span id="cms-detected-badge" class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm font-medium border border-gray-300 dark:border-gray-700">
+            <span id="cms-badge-dot" class="inline-block w-2.5 h-2.5 rounded-full bg-gray-400 mr-2"></span>
+            <span id="cms-badge-name">Custom / Unknown</span>
+          </span>
+          <button id="cms-override-toggle" class="text-sm text-purple-600 dark:text-purple-400 underline hover:no-underline bg-transparent border-none cursor-pointer">Change</button>
+        </div>
+        <div id="cms-override-panel" class="hidden max-w-md mx-auto mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">CMS</label>
+          <select id="cms-override-select" class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <option value="Custom / Unknown">Custom / Unknown</option>
+            <option value="WordPress">WordPress</option>
+            <option value="Shopify">Shopify</option>
+            <option value="Wix">Wix</option>
+            <option value="Squarespace">Squarespace</option>
+            <option value="Webflow">Webflow</option>
+            <option value="Drupal">Drupal</option>
+            <option value="Joomla">Joomla</option>
+            <option value="Ghost">Ghost</option>
+            <option value="HubSpot CMS">HubSpot CMS</option>
+            <option value="Magento">Magento</option>
+            <option value="BigCommerce">BigCommerce</option>
+            <option value="PrestaShop">PrestaShop</option>
+          </select>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Version (optional)</label>
+          <input id="cms-override-version" type="text" placeholder="e.g. 6.4.2" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
+        </div>
+        <div class="text-center">
+          <button id="cms-fixes-btn" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Generate CMS Fixes</button>
+          <p id="cms-fixes-no-fixes" class="hidden mt-4 text-lg text-green-600 dark:text-green-400 font-medium">No fixes needed — your product page is well-optimized. 🎉</p>
+        </div>
+        <div id="cms-fixes-answer-container" class="mt-6 hidden">
+          <div id="cms-fixes-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+        </div>
+      `;
+      wrapper.appendChild(cmsSection);
+
+      const askAISection = document.createElement('div');
+      askAISection.id = 'ask-ai-section';
+      askAISection.className = 'mt-20 max-w-4xl mx-auto px-2';
+      askAISection.innerHTML = `
+        <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI About Product SEO</h2>
+        <p class="text-center text-gray-600 dark:text-gray-400 mb-6">Get tailored answers about product SEO, schema, content, and specific improvement steps.</p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <textarea id="ai-question-input" placeholder="e.g., Why is my schema score low? How do I improve product descriptions?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
+          <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask AI</button>
+        </div>
+        <div id="ai-answer-container" class="mt-6 hidden">
+          <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+        </div>
+      `;
+      wrapper.appendChild(askAISection);
+
+      const pdfSection = document.createElement('div');
+      pdfSection.className = 'text-center my-16';
+      pdfSection.innerHTML = `<div id="share-dashboard-container" class="mt-16"></div>`;
+      wrapper.appendChild(pdfSection);
+
+      results.appendChild(wrapper);
+
+      if (typeof renderPluginSolutions === 'function') {
+        renderPluginSolutions(failedFactors, 'plugin-solutions-section');
+      } else {
+        setTimeout(() => {
+          if (typeof renderPluginSolutions === 'function') {
+            renderPluginSolutions(failedFactors, 'plugin-solutions-section');
+          }
+        }, 500);
+      }
+
+      setTimeout(() => {
+        const canvas = document.getElementById('health-radar');
+        if (!canvas) return;
+        try {
+          const ctx = canvas.getContext('2d');
+          const labelColor = '#9ca3af';
+          const gridColor = 'rgba(156, 163, 175, 0.3)';
+          const borderColor = '#22c55e';
+          const fillColor = 'rgba(34, 197, 94, 0.15)';
+          window.myChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+              labels: modules.map(m => m.name),
+              datasets: [{
+                label: 'Health Score',
+                data: scores,
+                backgroundColor: fillColor,
+                borderColor: borderColor,
+                borderWidth: 4,
+                pointRadius: 8,
+                pointHoverRadius: 12,
+                pointBackgroundColor: scores.map(s => s >= 85 ? '#10b981' : s >= 70 ? '#22c55e' : s >= 50 ? '#fb923c' : '#ef4444'),
+                pointBorderColor: '#fff',
+                pointBorderWidth: 3
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                r: {
+                  beginAtZero: true, min: 0, max: 100,
+                  ticks: { stepSize: 20, color: labelColor },
+                  grid: { color: gridColor },
+                  angleLines: { color: gridColor },
+                  pointLabels: { color: labelColor, font: { size: 15, weight: '600' } }
+                }
+              },
+              plugins: { legend: { display: false } }
+            }
+          });
+        } catch {}
+      }, 150);
+
+      const analyzedUrl = inputUrl === 'Pasted HTML Code' ? 'HTML Code Analysis' : inputUrl;
+      document.body.setAttribute('data-url', analyzedUrl);
+
+      const moduleScores = modules.map(m => ({ name: m.name, score: m.score }));
+      const passedMetrics = [], failedMetrics = [];
+      modules.forEach(mod => {
+        if (mod.score >= 70) passedMetrics.push(mod.name);
+        else failedMetrics.push(mod.name);
+      });
+      failedFactors.forEach(fix => {
+        if (!failedMetrics.includes(fix.name)) failedMetrics.push(fix.name);
+      });
+
+      let shareLink = '';
+      if (inputUrl !== 'Pasted HTML Code' && inputUrl !== 'HTML Code Analysis') {
+        shareLink = `${window.location.origin}/product-seo-tool/?url=${encodeURIComponent(inputUrl)}`;
+      }
+
+      const shareData = {
+        toolName: 'Product SEO Tool',
+        url: analyzedUrl,
+        pageTitle: doc?.title || 'Product Page',
+        overallScore: safeScore,
+        moduleScores,
+        passedMetrics,
+        failedMetrics,
+        aiFixes: priorityFixes.map(f => f.name + ': ' + f.howToFix),
+        rawData: { seo, seoData, modulesData, priorityFixes },
+        shareLink
+      };
+
+      const shareContainer = document.getElementById('share-dashboard-container');
+      if (shareContainer && inputUrl !== 'Pasted HTML Code' && inputUrl !== 'HTML Code Analysis') {
+        initShareModule(shareContainer, shareData);
+      } else if (shareContainer) {
+        shareContainer.innerHTML = `
+          <div class="text-center text-gray-500 dark:text-gray-400 p-4 border border-gray-300 dark:border-gray-600 rounded-xl">
+            <p>Sharing is available for live URLs only. Please run the analysis with a URL to share this report.</p>
+          </div>`;
+      }
+
+      // ─── Ask AI wiring ─────────────────────────────────────
+      const askBtn = document.getElementById('ask-ai-btn');
+      const askInput = document.getElementById('ai-question-input');
+      const answerContainer = document.getElementById('ai-answer-container');
+      const answerContent = document.getElementById('ai-answer-content');
+
+      if (askBtn) {
+        const newAskBtn = askBtn.cloneNode(true);
+        askBtn.parentNode.replaceChild(newAskBtn, askBtn);
+
+        newAskBtn.addEventListener('click', async () => {
+          const canProceed = await canRunTool('product-seo-tool');
+          if (!canProceed) return;
+
+          const question = askInput?.value?.trim();
+          if (!question) { alert('Please enter a question.'); return; }
+
+          newAskBtn.disabled = true;
+          newAskBtn.textContent = 'Thinking...';
+          answerContainer.classList.remove('hidden');
+          answerContent.innerHTML = '⏳ Traffic Torching...';
+
+          try {
+            const excerptDoc = doc.cloneNode(true);
+            excerptDoc.querySelectorAll('nav, header, footer, aside, script, style, .sidebar, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(el => el.remove());
+            const contentRoot = excerptDoc.querySelector('main, article, [role="main"]') || excerptDoc.body;
+            const paragraphs = Array.from(contentRoot?.querySelectorAll('p') || [])
+              .map(p => p.textContent.replace(/\s+/g, ' ').trim())
+              .filter(t => t.length > 60);
+            const pageExcerpt = (paragraphs[0] || contentRoot?.textContent || '')
+              .replace(/\s+/g, ' ').trim().slice(0, 300);
+
+            const metaDescription = doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() || '';
+            const h1Text = doc.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim() || '';
+            const headSnapshot = results.dataset.headSnapshot || '';
+            const langAttribute = doc.documentElement?.getAttribute('lang') || '';
+            const viewportContent = seoData.viewportContent || '';
+
+            const ctaCount = (() => {
+              const textPattern = /\b(buy|add to (cart|bag)|shop now|purchase|checkout|get started|subscribe|sign up|learn more|contact us|get a quote|book now|order now|request a demo)\b/i;
+              let n = 0;
+              doc.querySelectorAll('a, button').forEach(el => {
+                const t = (el.textContent || '').replace(/\s+/g, ' ').trim();
+                const cls = (el.className || '').toString().toLowerCase();
+                if (textPattern.test(t) || /\b(btn|cta|button|add-to-cart|buy-now|add_to_cart)\b/.test(cls)) n++;
+              });
+              return n;
+            })();
+
+            const affectedSnippets = {};
+            if (html) {
+              const snippetSources = priorityFixes.map(f => f.name);
+              failedFactors.slice(0, 5).forEach(f => {
+                if (!snippetSources.includes(f.name)) snippetSources.push(f.name);
+              });
+              for (const item of snippetSources.slice(0, 5)) {
+                try {
+                  const rule = deriveSelectorsForFailure(item);
+                  if (rule?.selectors?.length) {
+                    const snips = extractSnippets(html, rule.selectors, { limit: 2, maxLen: 400 });
+                    if (snips.length) affectedSnippets[item] = snips.map(s => s.html);
+                  }
+                } catch {}
+              }
+            }
+
+            const auditPayload = {
+              question,
+              auditData: {
+                url: inputUrl || document.getElementById('url-input')?.value?.trim() || 'Custom HTML',
+                pageTitle: doc?.title || 'Analyzed Product Page',
+                metaDescription,
+                h1: h1Text,
+                pageExcerpt,
+                headSnapshot,
+                langAttribute,
+                viewportContent,
+                linkCount: seoData.linkCount,
+                imageCount: seoData.imageCount,
+                headingCount: seoData.headingCount,
+                ctaCount,
+                wordCount: seoData.wordCount,
+                overallScore: safeScore,
+                scores: {
+                  onPage: seo.onPage.score,
+                  technical: seo.technical.score,
+                  contentMedia: seo.contentMedia.score,
+                  ecommerce: seo.ecommerce.score
+                },
+                cms: {
+                  name: cmsInfo?.name || 'Custom / Unknown',
+                  version: cmsInfo?.version || null,
+                  confidence: cmsInfo?.confidence || 'low'
+                },
+                flags: {
+                  hasViewport: seoData.hasViewport,
+                  hasCanonical: seo.technical.details?.canonical?.score >= 50 || false,
+                  hasHttps: seo.technical.details?.https?.score >= 50 || false,
+                  hasSchema: seo.ecommerce.details?.schema?.score >= 50 || false,
+                  hasPriceMarkup: seo.ecommerce.details?.priceAvailability?.score >= 50 || false,
+                  hasReviewSchema: seo.ecommerce.details?.reviews?.score >= 50 || false,
+                  hasSocialMeta: seoData.hasSocialMeta || false   // ← now a real value
+                },
+                failedItems: failedMetrics,
+                priorityFixes: priorityFixes.map(f => ({
+                  name: f.name, module: f.module, score: f.score ?? 0, impact: '', desc: f.howToFix || ''
+                })),
+                snippets: affectedSnippets,
+                browserMetrics: null
+              }
+            };
+
+            const response = await fetch('https://product-seo-ai.traffictorch.workers.dev/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(auditPayload)
+            });
+
+            if (!response.ok) throw new Error(`Server error (${response.status})`);
+            const data = await response.json();
+
+            if (data.success) {
+              let html2 = `🧠 <strong>Traffic Torch AI</strong><br><br>${renderCodeBlocks(data.answer)}`;
+              if (Array.isArray(data.warnings) && data.warnings.length) {
+                const warningText = data.warnings.join(' ');
+                html2 = `<div style="margin-bottom:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;">${warningText}</div>` + html2;
+              }
+              answerContent.innerHTML = html2;
+            } else {
+              answerContent.innerHTML = `❌ Error: ${renderCodeBlocks(data.error || 'Unknown error')}`;
+            }
+          } catch (err) {
+            answerContent.innerHTML = `❌ Failed to get AI response. Please try again later. (${renderCodeBlocks(err.message)})`;
+          } finally {
+            newAskBtn.disabled = false;
+            newAskBtn.textContent = 'Ask AI';
+          }
+        });
+      }
+
+      // ─── CMS Fixes wiring ─────────────────────────────────
+      const cmsFixesBtn        = document.getElementById('cms-fixes-btn');
+      const cmsBadgeDot        = document.getElementById('cms-badge-dot');
+      const cmsBadgeName       = document.getElementById('cms-badge-name');
+      const cmsOverrideToggle  = document.getElementById('cms-override-toggle');
+      const cmsOverridePanel   = document.getElementById('cms-override-panel');
+      const cmsOverrideSelect  = document.getElementById('cms-override-select');
+      const cmsOverrideVersion = document.getElementById('cms-override-version');
+      const cmsNoFixes         = document.getElementById('cms-fixes-no-fixes');
+      const cmsAnswerContainer = document.getElementById('cms-fixes-answer-container');
+      const cmsAnswerContent   = document.getElementById('cms-fixes-answer-content');
+
+      if (cmsBadgeName) {
+        let label = cmsInfo.name || 'Custom / Unknown';
+        if (cmsInfo.version) label += ' ' + cmsInfo.version;
+        cmsBadgeName.textContent = label;
+      }
+      if (cmsBadgeDot) {
+        let dotClass = 'bg-gray-400';
+        if (cmsInfo.confidence === 'high')        dotClass = 'bg-green-500';
+        else if (cmsInfo.confidence === 'medium') dotClass = 'bg-yellow-500';
+        else if (cmsInfo.confidence === 'low')    dotClass = 'bg-orange-500';
+        cmsBadgeDot.className = 'inline-block w-2.5 h-2.5 rounded-full mr-2 ' + dotClass;
+      }
+      if (cmsOverrideSelect) {
+        const known = Array.from(cmsOverrideSelect.options).map(o => o.value);
+        cmsOverrideSelect.value = known.includes(cmsInfo.name) ? cmsInfo.name : 'Custom / Unknown';
+      }
+      if (cmsOverrideVersion && cmsInfo.version) cmsOverrideVersion.value = cmsInfo.version;
+
+      cmsOverrideToggle?.addEventListener('click', () => cmsOverridePanel?.classList.toggle('hidden'));
+
+      if (priorityFixes.length === 0) {
+        if (cmsFixesBtn) { cmsFixesBtn.disabled = true; cmsFixesBtn.classList.add('opacity-50', 'cursor-not-allowed'); }
+        cmsNoFixes?.classList.remove('hidden');
+      }
+
+      cmsFixesBtn?.addEventListener('click', async () => {
+        if (priorityFixes.length === 0) return;
+        const canProceed = await canRunTool('product-seo-tool');
+        if (!canProceed) return;
+
+        const selectedCms     = cmsOverrideSelect?.value?.trim() || cmsInfo.name || 'Custom / Unknown';
+        const selectedVersion = cmsOverrideVersion?.value?.trim() || cmsInfo.version || null;
+
+        cmsFixesBtn.disabled = true;
+        const originalLabel = cmsFixesBtn.textContent;
+        cmsFixesBtn.textContent = 'Generating...';
+        cmsAnswerContainer?.classList.remove('hidden');
+        if (cmsAnswerContent) cmsAnswerContent.textContent = '⏳ Traffic Torching...';
+
+        try {
+          const payload = {
+            cms: selectedCms,
+            cmsVersion: selectedVersion,
+            cmsConfidence: cmsInfo.confidence,
+            cmsSignals: cmsInfo.signals,
+            url: (inputUrl && inputUrl !== 'Pasted HTML Code' && inputUrl !== 'HTML Code Analysis') ? inputUrl : null,
+            pageTitle: doc?.title || null,
+            overallScore: safeScore,
+            scores: {
+              onPage: seo.onPage.score, technical: seo.technical.score,
+              contentMedia: seo.contentMedia.score, ecommerce: seo.ecommerce.score
+            },
+            priorityFixes: priorityFixes.slice(0, 3).map(f => ({ module: f.module, name: f.name, howToFix: f.howToFix })),
+            mode: isCode ? 'pasted-code' : 'live-url'
+          };
+
+          const response = await fetch('https://product-seo-cms-fixes.traffictorch.workers.dev/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) throw new Error(`Server error (${response.status})`);
+          const data = await response.json();
+
+          if (data.success && cmsAnswerContent) {
+            cmsAnswerContent.innerHTML = '';
+            const header = document.createElement('div');
+            header.style.fontWeight = 'bold';
+            header.style.marginBottom = '0.75rem';
+            header.textContent = '🛠️ CMS Fixes for ' +
+              (data.cms || selectedCms) + (data.cmsVersion ? ' ' + data.cmsVersion : '');
+            const body = document.createElement('div');
+            body.innerHTML = renderCodeBlocks(data.answer || '');
+            cmsAnswerContent.appendChild(header);
+            cmsAnswerContent.appendChild(body);
+            if (Array.isArray(data.warnings) && data.warnings.length) {
+              const w = document.createElement('div');
+              w.style.cssText = 'margin-top:0.75rem;padding:0.5rem 0.75rem;border-radius:0.5rem;background:#fef3c7;color:#92400e;font-size:0.85rem;';
+              w.textContent = data.warnings.join(' ');
+              cmsAnswerContent.appendChild(w);
+            }
+          } else if (cmsAnswerContent) {
+            cmsAnswerContent.innerHTML = '❌ Error: ' + renderCodeBlocks(data.error || 'Unknown error');
+          }
+        } catch (err) {
+          if (cmsAnswerContent) {
+            cmsAnswerContent.innerHTML = '❌ Failed to generate CMS fixes. Please try again. (' + renderCodeBlocks(err.message) + ')';
+          }
+        } finally {
+          cmsFixesBtn.disabled = false;
+          cmsFixesBtn.textContent = originalLabel;
+        }
+      });
+
+      const offset = 140;
+      const targetY = results.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+
+      // 🏆 Leaderboard submit button — final step, results are in DOM
+      if (!isCode && inputUrl && inputUrl !== 'Pasted HTML Code' && inputUrl !== 'HTML Code Analysis' && window.TrafficTorchLeaderboard) {
+        const lbHost =
+          document.getElementById('share-dashboard-container') ||
+          document.getElementById('share-module') ||
+          document.getElementById('results') ||
+          document.querySelector('main');
+        if (lbHost) {
+          window.TrafficTorchLeaderboard.injectButton(lbHost, {
+            tool: 'product-seo-tool',
+            url: inputUrl,
+            title: (doc?.title || '').trim().slice(0, 200) || 'Untitled page',
+            score: safeScore,
+            moduleScores: modules.map(m => ({ name: m.name, score: Math.round(m.score) }))
+          });
+        }
+      }
+
+    } catch (err) {
+      loading.classList.add('hidden');
+      if (results) {
+        results.classList.remove('hidden');
+        results.classList.add('block');
+        results.innerHTML = `
+          <div class="text-center py-16 px-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-red-400 dark:border-red-600 max-w-2xl mx-auto">
+            <p class="text-3xl font-bold text-red-600 dark:text-red-400 mb-6">Analysis Failed</p>
+            <p class="text-xl text-gray-700 dark:text-gray-300 mb-6">${escapeHtml(err.message || 'Could not fetch or parse the page')}</p>
+            <p class="text-lg text-gray-600 dark:text-gray-400">Please try a different public product page URL or valid HTML code.</p>
+          </div>`;
+      }
+    }
+  }
+
+  // Button handlers
+  if (urlAnalyzeBtn) {
+    urlAnalyzeBtn.addEventListener('click', () => {
+      codeInput.value = '';
+      const url = urlInput.value.trim();
+      runProductSEOAnalysis(url, false);
+    });
+  }
+  if (codeAnalyzeBtn) {
+    codeAnalyzeBtn.addEventListener('click', () => {
+      urlInput.value = '';
+      const code = codeInput.value.trim();
+      runProductSEOAnalysis(code, true);
+    });
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const sharedUrl = urlParams.get('url');
+  if (sharedUrl && urlInput) {
+    const cleanUrl = sharedUrl.trim().replace(/^https?:\/\//i, '').replace(/\/$/, '');
+    urlInput.value = cleanUrl;
+    if (cleanUrl && cleanUrl.length > 5) {
+      setTimeout(() => { if (urlAnalyzeBtn) urlAnalyzeBtn.click(); }, 100);
+    }
+  }
+
+  // Delegated click handlers (module cards + Ask AI)
+  document.addEventListener('click', (e) => {
+    const toggle = e.target.closest('.fixes-toggle');
+    if (toggle) {
+      const card = toggle.closest('.score-card') || toggle.closest('.module-card');
+      if (!card) return;
+      const panel = card.querySelector('.fixes-panel');
+      if (!panel) return;
+      const nowHidden = panel.classList.toggle('hidden');
+      const count = toggle.dataset.failedCount || '0';
+      toggle.textContent = nowHidden ? `Show Fixes (${count})` : `Hide Fixes (${count})`;
+      return;
+    }
+
+    const askLink = e.target.closest('.ask-ai-link');
+    if (askLink) {
+      e.preventDefault();
+      const question = askLink.dataset.aiQuestion || '';
+      const section = document.getElementById('ask-ai-section');
+      const textarea = document.getElementById('ai-question-input');
+      if (textarea && question) textarea.value = question;
+      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => { if (textarea) textarea.focus(); }, 700);
+      return;
+    }
+
+    const showCodeBtn = e.target.closest('.show-code-btn');
+    if (showCodeBtn) {
+      e.preventDefault();
+      const failureText = showCodeBtn.dataset.failure || '';
+      const html = results?.dataset.renderedHtml || '';
+      showCodeForFailure(failureText, html, { title: 'Affected code' });
+      return;
+    }
+  });
+});

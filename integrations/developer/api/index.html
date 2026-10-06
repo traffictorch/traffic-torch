@@ -163,11 +163,11 @@
   </script>
 
   <!-- Preload CSS -->
-  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/style-v1.0.css"></noscript>
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style.css?v=1.0"></noscript>
   <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
-  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
-  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local-v1.0.css"></noscript>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local.css?v=1.0"></noscript>
 
   <script>
     (function() {
@@ -787,7 +787,7 @@ echo $response;</code></pre>
 <!-- ========================================================== -->
 <!-- SCRIPTS -->
 <!-- ========================================================== -->
-<script src="/main-v1.1.js" type="module"></script>
+<script src="/main.js?v=1.1" type="module"></script>
 
 <script>
 document.addEventListener('alpine:init', () => {

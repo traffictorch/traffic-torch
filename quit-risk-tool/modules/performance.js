@@ -18,7 +18,7 @@
 //   • Font count now uses real unique families (data.fontCount from
 //     metrics-adapter), not the number of font stylesheet links.
 //   • Render-blocking is trusted from the head-only count produced by
-//     script-v1.3.js (bottom-of-body scripts no longer count).
+//     script.js?v=1.3 (bottom-of-body scripts no longer count).
 
 // ── helpers ────────────────────────────────────────────────────────
 function bytesToScore(bytes, good, ok) {

@@ -4,7 +4,7 @@
 //   • Added "Full Results →" chip to UX / SEO / AEO cards, deep-linking
 //     to the standalone tools with the audited URL pre-filled via ?url=
 // UX scoring: quit-risk-tool factor tiers (copied verbatim)
-// SEO scoring: lighthouse-plus-tool/script-v1.0.js (copied verbatim:
+// SEO scoring: lighthouse-plus-tool/script.js?v=1.0 (copied verbatim:
 //              MODULE_WEIGHTS, applyIssueCap, recomputeOverall, gradeFromScore)
 // AEO scoring: raw worker overall + module.score (aeo-performance-tool does the same)
 // Informational signals: rendered as ⚠️ like the standalone tools do.
@@ -29,7 +29,7 @@ const scoreClass = s => s >= 80 ? 'good' : s >= 60 ? 'mid' : 'bad';
 const TIER_SCORE = { pass: 100, warn: 55, fail: 15 };
 
 /* ═════════════════════════════════════════════════════════════════
-   VERBATIM COPY — lighthouse-plus-tool/script-v1.0.js
+   VERBATIM COPY — lighthouse-plus-tool/script.js?v=1.0
    ═════════════════════════════════════════════════════════════════ */
 const MODULE_WEIGHTS = {
   'Core Web Vitals': 15,
@@ -82,7 +82,7 @@ function gradeFromScore(score) {
 /* ── end of Lighthouse Plus verbatim copy ── */
 
 /* ═════════════════════════════════════════════════════════════════
-   UX factor tiers — copied from quit-risk-tool/script-v1.3.js
+   UX factor tiers — copied from quit-risk-tool/script.js?v=1.3
    ═════════════════════════════════════════════════════════════════ */
 const UX_FACTORS = {
   Readability: [

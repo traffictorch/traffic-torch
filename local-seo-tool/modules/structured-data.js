@@ -1,5 +1,5 @@
 // module-structured-data.js
-import { moduleFixes } from "../fixes-v1.0.js";
+import { moduleFixes } from "../fixes.js?v=1.0";
 
 export function analyzeStructuredData(doc) {
   const fixes = [];
