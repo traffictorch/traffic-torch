@@ -318,22 +318,22 @@
                       <p class="text-[11px] font-bold text-gray-400 mt-1">/100</p>
                     </div>
                     <div class="flex-1 min-w-0">
-                      <h3 class="font-bold text-base leading-snug mb-1.5">
-                        <template x-if="post.url">
-                          <a :href="post.url" target="_blank" rel="ugc nofollow noopener"
-                             class="hover:text-orange-500 underline decoration-1 underline-offset-2"
-                             x-text="post.title || post.note || post.tool || 'Audit'"></a>
-                        </template>
-                        <template x-if="!post.url">
-                          <span x-text="post.title || post.note || post.tool || 'Audit'"></span>
-                        </template>
-                      </h3>
+<h3 class="font-bold text-base leading-snug mb-1.5">
+  <template x-if="post.url && post.tool">
+    <a :href="toolRunUrl(post.tool, post.url)" target="_blank" rel="noopener"
+       class="hover:text-orange-500 underline decoration-1 underline-offset-2"
+       x-text="(post.page_title && post.page_title.trim()) || toolDisplayName(post.tool)"></a>
+  </template>
+  <template x-if="!post.url || !post.tool">
+    <span x-text="(post.page_title && post.page_title.trim()) || toolDisplayName(post.tool)"></span>
+  </template>
+</h3>
                       <p class="text-xs text-gray-500">
                         <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
                         · by <a :href="'/u/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
                         · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                       </p>
-                      <p x-show="post.note && post.note !== post.title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
+                      <p x-show="post.note && post.note !== post.page_title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
                     </div>
                     <img :src="`/images/avatars/${post.avatar_preset || 'owner'}.svg`"
                          :alt="post.display_name"
@@ -350,10 +350,10 @@
                           class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">
                     <span x-text="post._showDetails ? 'Hide details ▲' : 'More details ▼'"></span>
                   </button>
-                  <template x-if="post.url">
-                    <a :href="post.url" target="_blank" rel="ugc nofollow noopener"
-                       class="px-4 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white hover:opacity-90 transition">Visit →</a>
-                  </template>
+<template x-if="post.url && post.tool">
+  <a :href="toolRunUrl(post.tool, post.url)" target="_blank" rel="noopener"
+     class="px-4 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white hover:opacity-90 transition">Run audit →</a>
+</template>
                   <button @click="toggleComments(post.id)"
                           class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">
                     <span x-text="(post.comment_count || 0) > 0 ? (post.comment_count + ' Comment' + (post.comment_count === 1 ? '' : 's') + ' 💬') : 'Leave a Comment 💬'"></span>
@@ -503,7 +503,7 @@
         <div x-show="communityTab === 'invite'" x-cloak class="max-w-md mx-auto mb-16 rounded-2xl p-6"
              style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
           <h3 class="text-lg font-bold mb-2">Invite a colleague</h3>
-          <p class="text-sm text-gray-500 mb-4">Send them a link to sign up.</p>
+          <p class="text-sm text-gray-500 mb-4">Send them a nudge to discover Traffic Torch.</p>
           <template x-if="!isAuthenticated">
             <div class="text-center py-4">
               <p class="text-gray-500 mb-4">Log in to send invites.</p>
@@ -974,7 +974,7 @@ function communityApp() {
     feed: {
       loading: false,
       loadingMore: false,
-      category: 'ux',
+      category: 'seo',
       posts: [],
       cursor: null,
       hasMore: true,
@@ -1200,24 +1200,96 @@ function communityApp() {
       } catch {}
     },
 
-    async editPost(postId) {
-      if (!this.isAuthenticated) return;
-      const post = this.feed.posts.find(p => p.id === postId);
-      if (!post) return;
-      const newNote = prompt('Edit note (360 chars max):', post.note || '');
-      if (newNote === null) return;
-      if (newNote.length > 360) { alert('Too long'); return; }
-      const newCat = prompt('Category (ux / seo / aeo):', post.category);
-      if (!['ux','seo','aeo'].includes(newCat)) { alert('Invalid category'); return; }
-      try {
-        await fetch(`${API_BASE}/api/posts/${postId}`, {
-          method: 'PATCH',
-          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ note: newNote, category: newCat })
-        });
-        post.note = newNote; post.category = newCat;
-      } catch {}
-    },
+async editPost(postId) {
+  if (!this.isAuthenticated) return;
+  const post = this.feed.posts.find(p => p.id === postId);
+  if (!post) return;
+
+  const result = await this.openPostEditModal(post);
+  if (!result) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/posts/${postId}`, {
+      method: 'PATCH',
+      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ note: result.note, category: result.category })
+    });
+    if (res.ok) {
+      post.note = result.note;
+      post.category = result.category;
+    } else {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error || 'Failed to save');
+    }
+  } catch (e) { alert('Error: ' + e.message); }
+},
+
+openPostEditModal(post) {
+  return new Promise((resolve) => {
+    let modal = document.getElementById('tt-edit-post-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'tt-edit-post-modal';
+      modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:1rem;';
+      modal.innerHTML = `
+        <div style="max-width:480px; width:100%; border-radius:1rem; padding:1.5rem; box-shadow:0 20px 40px rgba(0,0,0,0.3);" class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+          <h3 style="font-size:1.1rem; font-weight:700; margin:0 0 1rem;">✏️ Edit post</h3>
+          <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Note</label>
+          <textarea id="tt-edit-post-note" maxlength="360" rows="6"
+            style="width:100%; box-sizing:border-box; padding:0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; resize:vertical; font-family:inherit; background:transparent; color:inherit;"></textarea>
+          <p style="font-size:0.75rem; color:#9ca3af; text-align:right; margin:0.25rem 0 0.9rem;"><span id="tt-edit-post-count">0</span> / 360</p>
+          <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Category</label>
+          <select id="tt-edit-post-cat" style="width:100%; padding:0.55rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:1.25rem; background:transparent; color:inherit;">
+            <option value="ux">UX</option>
+            <option value="seo">SEO</option>
+            <option value="aeo">AEO</option>
+          </select>
+          <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
+            <button type="button" id="tt-edit-post-cancel"
+              style="padding:0.55rem 1.2rem; border-radius:0.5rem; border:1px solid #d1d5db; background:transparent; font-weight:600; cursor:pointer; color:inherit; font-family:inherit;">Cancel</button>
+            <button type="button" id="tt-edit-post-save"
+              style="padding:0.55rem 1.4rem; border-radius:0.5rem; border:none; background:linear-gradient(135deg,#f97316,#ec4899); color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Save</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    const note = modal.querySelector('#tt-edit-post-note');
+    const count = modal.querySelector('#tt-edit-post-count');
+    const cat = modal.querySelector('#tt-edit-post-cat');
+    const saveBtn = modal.querySelector('#tt-edit-post-save');
+    const cancelBtn = modal.querySelector('#tt-edit-post-cancel');
+
+    note.value = post.note || '';
+    cat.value = post.category || 'ux';
+    count.textContent = note.value.length;
+    modal.style.display = 'flex';
+
+    const updateCount = () => { count.textContent = note.value.length; };
+    const onCancel = () => { cleanup(); resolve(null); };
+    const onSave = () => { cleanup(); resolve({ note: note.value.trim(), category: cat.value }); };
+    const onKey = (e) => {
+      if (e.key === 'Escape') onCancel();
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') onSave();
+    };
+
+    const cleanup = () => {
+      note.removeEventListener('input', updateCount);
+      cancelBtn.removeEventListener('click', onCancel);
+      saveBtn.removeEventListener('click', onSave);
+      document.removeEventListener('keydown', onKey);
+      modal.style.display = 'none';
+    };
+
+    note.addEventListener('input', updateCount);
+    cancelBtn.addEventListener('click', onCancel);
+    saveBtn.addEventListener('click', onSave);
+    document.addEventListener('keydown', onKey);
+
+    setTimeout(() => { note.focus(); note.setSelectionRange(0, 0); }, 50);
+  });
+},
 
     async reportPost(postId) {
       if (!this.isAuthenticated) return;
@@ -1232,6 +1304,54 @@ function communityApp() {
         alert('Reported. Thank you.');
       } catch {}
     },
+    
+    toolDisplayName(key) {
+  if (!key) return 'Audit';
+  const map = {
+    'keyword-tool': 'Keyword Placement Tool',
+    'nusa-tool': 'NUSA Tool',
+    'ofux-tool': 'OFUX Tool',
+    'lighthouse-plus-tool': 'Lighthouse Plus',
+    'topical-authority-audit-tool': 'Topical Authority Audit Tool',
+    'seo-entity-extractor-tool': 'Entity Extractor',
+    'seo-ux-tool': 'SEO + UX Tool',
+    'local-seo-tool': 'Local SEO Tool',
+    'seo-intent-tool': 'SEO Intent Tool',
+    'product-seo-tool': 'Product SEO Tool',
+    'aeo-performance-tool': 'AEO Performance Tool',
+    'ai-search-optimization-tool': 'AEO / AI Search Tool',
+    'ai-voice-search-tool': 'AI Voice Search Tool',
+    'ai-audit-tool': 'AI Content Audit Tool',
+    'quit-risk-tool': 'Quit Risk Tool'
+  };
+  return map[key] || key.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+},
+
+toolPath(key) {
+  const map = {
+    'keyword-tool': '/keyword-tool/',
+    'nusa-tool': '/',
+    'ofux-tool': '/ofux-tool/',
+    'lighthouse-plus-tool': '/lighthouse-plus-tool/',
+    'topical-authority-audit-tool': '/topical-authority-audit-tool/',
+    'seo-entity-extractor-tool': '/seo-entity-extractor-tool/',
+    'seo-ux-tool': '/seo-ux-tool/',
+    'local-seo-tool': '/local-seo-tool/',
+    'seo-intent-tool': '/seo-intent-tool/',
+    'product-seo-tool': '/product-seo-tool/',
+    'aeo-performance-tool': '/aeo-performance-tool/',
+    'ai-search-optimization-tool': '/ai-search-optimization-tool/',
+    'ai-voice-search-tool': '/ai-voice-search-tool/',
+    'ai-audit-tool': '/ai-audit-tool/',
+    'quit-risk-tool': '/quit-risk-tool/'
+  };
+  return map[key] || '/';
+},
+
+toolRunUrl(key, testedUrl) {
+  if (!key || !testedUrl) return '#';
+  return this.toolPath(key) + '?url=' + encodeURIComponent(testedUrl);
+},
 
     parseModuleScores(raw) {
       if (!raw) return [];
