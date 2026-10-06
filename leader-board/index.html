@@ -146,6 +146,11 @@
   <noscript><link rel="stylesheet" href="/leader-board/high-scores-widget.css"></noscript>
   <script src="/leader-board/high-scores-widget.js" defer></script>
 
+  <!-- Contributions widget -->
+  <link rel="preload" as="style" href="/leader-board/contributions-widget.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/leader-board/contributions-widget.css"></noscript>
+  <script src="/leader-board/contributions-widget.js" defer></script>
+
   <style>
     /* Leaderboard page styles */
     .lb-hero { text-align: center; }
@@ -361,6 +366,18 @@
             Hall of Fame — Top 12
           </h2>
           <div class="tt-lb" data-limit="12" data-title="All Tools · All Time"></div>
+        </section>
+        
+        <!-- TOP CONTRIBUTORS -->
+        <section class="my-16 px-4">
+          <h2 class="text-2xl md:text-3xl font-black text-center mb-3 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+            🏅 Top Contributors
+          </h2>
+          <p class="text-center text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8 text-sm">
+            Community members who've submitted bug reports, feature requests, and feedback.
+            Each verified contribution earns 10 points. Updated live.
+          </p>
+          <div class="tt-contrib max-w-4xl mx-auto" data-limit="12" data-title="All-Time Contributors"></div>
         </section>
 
         <!-- FILTER TABS + PER-TOOL BOARDS -->
