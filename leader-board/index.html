@@ -540,7 +540,7 @@
           }
           const medals = ['🥇', '🥈', '🥉'];
           // Arrange so #1 is visually center on desktop
-          const order = rows.length >= 3 ? [1, 0, 2] : rows.map((_, i) => i);
+          const order = rows.map((_, i) => i);
           host.innerHTML = order.map((idx) => {
             const e = rows[idx];
             if (!e) return '';

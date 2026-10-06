@@ -54,6 +54,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .tt-contrib-rank {
@@ -76,9 +77,11 @@
 .tt-contrib-name {
   font-weight: 700;
   font-size: 0.95rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
 }
 .tt-contrib-name a { color: inherit; text-decoration: none; }
 .tt-contrib-name a:hover { color: #f97316; }
@@ -94,7 +97,6 @@
   border-radius: 999px;
   background: rgba(249,115,22,0.15);
   color: #ea580c;
-  margin-left: 0.35rem;
   vertical-align: middle;
 }
 .dark .tt-contrib-role { color: #fb923c; background: rgba(251,146,60,0.15); }
@@ -199,4 +201,33 @@
   .tt-contrib-points { font-size: 1rem; }
   .tt-contrib-rank { font-size: 1.2rem; min-width: 32px; }
   .tt-contrib-avatar { width: 34px; height: 34px; }
+
+  .tt-contrib-top {
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+  }
+  .tt-contrib-body {
+    flex: 1 1 100%;
+    order: 3;
+    min-width: 0;
+  }
+  .tt-contrib-stats {
+    order: 2;
+    margin-left: auto;
+    text-align: right;
+  }
+  .tt-contrib-rank { order: 1; }
+  .tt-contrib-avatar { order: 1; }
+  .tt-contrib-name {
+    font-size: 0.9rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+  .tt-contrib-role {
+    flex: 1 0 100%;
+    margin-left: 0;
+    margin-bottom: 4px;
+  }
+  .tt-contrib-username { font-size: 0.7rem; }
 }
