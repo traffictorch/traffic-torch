@@ -792,9 +792,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const doc = new DOMParser().parseFromString(html, 'text/html');
       let uxData = getUXContent(doc, metrics, url);
+      uxData.auditMode = htmlCode ? 'html' : 'live';
       uxData = mergeMetricsIntoUX(uxData, metrics);
       uxData.renderedLoadTime = renderedLoadTime;
-
+      
       if (uxData.renderedWordCount && uxData.renderedWordCount > 50) {
         uxData.wordCount = uxData.renderedWordCount;
       }

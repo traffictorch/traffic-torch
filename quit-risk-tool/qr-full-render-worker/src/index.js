@@ -355,7 +355,36 @@ export default {
         })();
 
         // ---------- visible text ----------
-        const visibleText = document.body.innerText || '';
+        const visibleText = document.body.innerText || "";
+
+        // ─── Post-JS navigation structure ───
+        // main.js fetches the shared menus and injects them into these
+        // placeholders, so by the time Puppeteer captures the page the
+        // nav is fully rendered. Count top-level items from the live DOM
+        // so the audit sees the real menu, not the empty placeholder.
+        const navRoot =
+          document.querySelector('#desktop-menu-placeholder nav') ||
+          document.querySelector('#mobile-menu-placeholder nav') ||
+          document.querySelector('header nav') ||
+          document.querySelector('aside nav') ||
+          document.querySelector('nav');
+
+        let topLevelItems = 0;
+        let hasMainNav = false;
+        let hasDropdowns = false;
+
+        if (navRoot) {
+          hasMainNav = true;
+          const categoryButtons = navRoot.querySelectorAll('button[data-category]');
+          if (categoryButtons.length > 0) {
+            topLevelItems = categoryButtons.length;
+          } else {
+            topLevelItems = navRoot.querySelectorAll(
+              ':scope > ul > li, :scope > li, :scope > a'
+            ).length;
+          }
+          hasDropdowns = !!navRoot.querySelector('[aria-expanded], [aria-haspopup]');
+        }
 
         return {
           viewport: {
@@ -385,8 +414,11 @@ export default {
           imageFormat: { total: images.length, modern: modernImages },
           fonts: { uniqueFamilies: fontFamilies.size, families: Array.from(fontFamilies).slice(0, 10) },
           structure: {
-            h1Count: document.querySelectorAll('h1').length,
-            headingCount: document.querySelectorAll('h1, h2, h3, h4, h5, h6').length,
+            h1Count: document.querySelectorAll("h1").length,
+            headingCount: document.querySelectorAll("h1, h2, h3, h4, h5, h6").length,
+            topLevelItems,
+            hasMainNav,
+            hasDropdowns,
           },
           url: location.href,
           wordCount: visibleText.trim().split(/\s+/).filter((w) => w.length > 0).length,

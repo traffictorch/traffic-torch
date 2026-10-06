@@ -91,6 +91,27 @@ export function mergeMetricsIntoUX(uxData, metrics) {
   if (Array.isArray(metrics.complexSentences)) {
     m.complexSentences = metrics.complexSentences;
   }
+  
+  // ── Structure (post-JS nav, headings) ─────────────────────────
+  if (metrics.structure) {
+    const s = metrics.structure;
+    if (typeof s.topLevelItems === 'number' && s.topLevelItems > 0) {
+      m.topLevelItems = s.topLevelItems;
+    }
+    if (s.hasMainNav === true && !m.mainNav) {
+      // navigation.js only checks truthiness of mainNav.
+      m.mainNav = true;
+    }
+    if (typeof s.hasDropdowns === 'boolean') {
+      m.hasDropdowns = s.hasDropdowns;
+    }
+    if (typeof s.headingCount === 'number' && s.headingCount > 0) {
+      m.headingCount = s.headingCount;
+    }
+    if (typeof s.h1Count === 'number') {
+      m.h1Count = s.h1Count;
+    }
+  }
 
   return m;
 }

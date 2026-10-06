@@ -303,8 +303,8 @@ function showLoginModal() {
         <input id="email" type="email" placeholder="Email" class="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
         <input id="password" type="password" placeholder="Password" class="w-full p-3 mb-6 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
         <div class="flex flex-col sm:flex-row gap-4">
-          <button onclick="handleAuth('login')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition">Login</button>
-          <button onclick="handleAuth('register')" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition">Register</button>
+<button onclick="handleAuth('login', event)" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition">Login</button>
+<button onclick="handleAuth('register', event)" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition">Register</button>
         </div>
         <button onclick="this.closest('.fixed').remove()" class="mt-6 text-center w-full text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400">Close</button>
       </div>
@@ -312,8 +312,8 @@ function showLoginModal() {
   document.body.appendChild(modal);
 }
 
-async function handleAuth(mode) {
-  const button = event.target;
+async function handleAuth(mode, evt) {
+  const button = evt?.currentTarget || window.event?.target;
   const originalText = button.textContent;
   button.textContent = 'Logging in...';
   button.disabled = true;
@@ -332,12 +332,12 @@ async function handleAuth(mode) {
       body: JSON.stringify({ email, password })
     });
     const data = await response.json();
-    if (response.ok && data.token) {
-      localStorage.setItem('authToken', data.token);
-      // Refresh token code...
-      alert(mode === 'login' ? 'Logged in successfully!' : 'Registered & logged in!');
-      document.querySelector('.fixed')?.remove();
-    } else {
+if (response.ok && data.token) {
+  localStorage.setItem('authToken', data.token);
+  document.dispatchEvent(new CustomEvent('loginStatusChanged'));
+  alert(mode === 'login' ? 'Logged in successfully!' : 'Registered & logged in!');
+  document.querySelector('.fixed')?.remove();
+} else {
       alert(data.error || 'Authentication failed');
       document.querySelector('.fixed')?.remove();
     }
@@ -583,15 +583,21 @@ function updateProPortalDot() {
 
 // Run on page load (after menus load)
 document.addEventListener('DOMContentLoaded', () => {
+  const start = Date.now();
   const checkMenusLoaded = setInterval(() => {
     const desktopPlaceholder = document.getElementById('desktop-menu-placeholder');
     const mobilePlaceholder = document.getElementById('mobile-menu-placeholder');
-    if (desktopPlaceholder && mobilePlaceholder &&
-        desktopPlaceholder.innerHTML.trim() !== '' &&
-        mobilePlaceholder.innerHTML.trim() !== '') {
+    const ready =
+      desktopPlaceholder && mobilePlaceholder &&
+      desktopPlaceholder.innerHTML.trim() !== '' &&
+      mobilePlaceholder.innerHTML.trim() !== '';
+    if (ready) {
       clearInterval(checkMenusLoaded);
       updateProPortalDot();
       updatePortalCount();
+    } else if (Date.now() - start > 8000) {
+      // Menus failed to load (offline, 404, etc.) — stop polling.
+      clearInterval(checkMenusLoaded);
     }
   }, 100);
 });
@@ -718,17 +724,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // showUpgradeModal
-function showUpgradeModal() {
+function showUpgradeModal(message) {
   const modal = document.getElementById('upgradeModal');
-  if (modal) {
-    modal.classList.remove('hidden');
-    const content = document.getElementById('upgradeModalContent');
-    // Trigger animation
-    requestAnimationFrame(() => {
-      content.classList.remove('scale-95', 'opacity-0');
-      content.classList.add('scale-100', 'opacity-100');
-    });
-  }
+  if (!modal) return;
+
+  // Optionally override the default "Daily Limit Reached" subtitle
+  const msgEl = modal.querySelector('#upgradeModalContent p');
+  if (msgEl && message) msgEl.textContent = message;
+
+  modal.classList.remove('hidden');
+  const content = document.getElementById('upgradeModalContent');
+  requestAnimationFrame(() => {
+    content.classList.remove('scale-95', 'opacity-0');
+    content.classList.add('scale-100', 'opacity-100');
+  });
 }
 
 function closeUpgradeModal() {

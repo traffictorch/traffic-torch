@@ -1,4 +1,4 @@
-/* Traffic Torch Global CSS – Cleaned & Fixed */
+/* Traffic Torch Global CSS */
 
 /* Prevent FOUC / plain text flash on gradient titles – earliest possible */
 /* Light mode (default) */
@@ -732,4 +732,70 @@ p a:hover, li a:hover {
 .carousel-dot.active::before {
   background: #f97316;
   transform: scale(1.25);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   QR audit tuning — mobile tap targets, forced-colors fallback
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Standalone interactive elements — mobile 44px tap targets ── */
+@media (max-width: 768px) {
+  .suite-block a,
+  .trust-badges li,
+  .share-btn,
+  footer a:not(.inline-link),
+  #nusa-app .sum-full-results,
+  #nusa-app .sum-more-btn,
+  #nusa-app .nusa-url-btn,
+  #nusa-app .ask button,
+  #nusa-app .chamber-form button,
+  .carousel-btn,
+  .carousel-dot {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Suite-block links stay as chips, just taller. */
+  .suite-block a {
+    padding: 0.5rem 0.85rem;
+    line-height: 1.2;
+  }
+
+  /* Trust badges get a slightly taller pill. */
+  .trust-badges li {
+    padding: 0.5rem 0.9rem;
+  }
+
+  /* Pricing CTA buttons (they are already big; keep padding, enforce
+     min height for accessibility). */
+  #upgrade-short a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ── 2. Forced-colors fallback for gradient text ── */
+@media (forced-colors: active) {
+  .bg-clip-text,
+  .text-transparent,
+  [class*="bg-gradient-to-r"][class*="text-transparent"] {
+    color: CanvasText !important;
+    -webkit-text-fill-color: CanvasText !important;
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+  }
+}
+
+/* ── 3. Slightly stronger contrast for small gray labels on cards ── */
+.dark #ga4-card .text-gray-400,
+.dark #gsc-card .text-gray-400,
+.dark #trust .text-gray-400,
+.dark #problem .text-gray-400,
+.dark #built-for .text-gray-400 {
+  color: #9ca3af; /* gray-400 in Tailwind — slightly brighter than default */
 }

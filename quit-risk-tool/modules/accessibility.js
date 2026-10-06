@@ -1,21 +1,13 @@
 // quit-risk-tool/modules/accessibility.js
 // Accessibility scoring.
 //
-// Fixes applied:
-//   • The old contrast check only inspected inline styles on <body>,
-//     which almost never exist on real sites — so the score was a
-//     constant 72 (fail). Now we prefer the worker's real WCAG
-//     coverage (`data.contrastCoverage`, a 0..1 ratio computed from
-//     computed styles in the live browser) and only fall back to the
-//     proxy when auditing pasted HTML with no metrics.
-//   • Alt-text handling is unchanged, but we now report the raw counts
-//     so downstream UI can show them.
-//   • Semantic strength gives more weight to a real <main> and to a
-//     heading hierarchy that includes multiple heading levels, not just
-//     any heading count.
+// Tuning applied:
+//   • In HTML mode we have no computed styles, so contrast is
+//     unmeasurable. Return neutral (no warning, no penalty).
+//   • Live mode still uses the worker's real WCAG coverage when
+//     available and the fallback otherwise.
 
 function estimateColorContrastScore() {
-  // Fallback only — used when auditing pasted HTML (no rendered metrics).
   const body = document.body;
   if (!body) return 72;
   const hasCustomColors = body.style.color || body.style.backgroundColor;
@@ -24,6 +16,7 @@ function estimateColorContrastScore() {
 
 export function calculateAccessibility(data) {
   let score = 60;
+  const isHtmlMode = data.auditMode === 'html';
 
   // ── Alt text coverage ─────────────────────────────────────────────
   let altCoverage = 100;
@@ -37,11 +30,11 @@ export function calculateAccessibility(data) {
         ? Math.round(((meaningfulCount - missingCount) / meaningfulCount) * 100)
         : (totalImages > 0 ? 30 : 100);
 
-      if (altCoverage >= 98) score += 22;
+      if (altCoverage >= 98)      score += 22;
       else if (altCoverage >= 90) score += 14;
       else if (altCoverage >= 70) score += 6;
-      else if (altCoverage < 50) score -= 30;
-      else score -= 18;
+      else if (altCoverage < 50)  score -= 30;
+      else                        score -= 18;
     }
   }
 
@@ -54,24 +47,30 @@ export function calculateAccessibility(data) {
   if (data.hasAriaLabels) score += 8;
 
   // ── Contrast ──────────────────────────────────────────────────────
-  // Real WCAG coverage from the qr-full-render-worker takes priority.
   let contrastProxy;
   let contrastSource;
+  let contrastUnknown = false;
+
   if (typeof data.contrastCoverage === 'number' && data.contrastTotal >= 3) {
+    // Real rendered WCAG coverage from the worker.
     contrastProxy = Math.round(data.contrastCoverage * 100);
     contrastSource = 'rendered';
+  } else if (isHtmlMode) {
+    // No computed styles — cannot verify. Neutral, no warning.
+    contrastProxy = 70;
+    contrastSource = 'unmeasured';
+    contrastUnknown = true;
   } else {
+    // Live but the worker didn't return contrast samples — use proxy.
     contrastProxy = estimateColorContrastScore();
     contrastSource = 'estimated';
   }
-  // Apply contrast influence on score, only counting when we have real data.
-  // Blend toward neutral 70 rather than adding/subtracting raw points, so a
-  // perfect score doesn't over-inflate and a poor one is proportional.
-  score += (contrastProxy - 70) * 0.8;
 
-  // ── Semantic strength (0..100) ────────────────────────────────────
-  // <main> carries the most weight; article/section and landmarks next;
-  // heading hierarchy and ARIA fill the rest.
+  if (!contrastUnknown) {
+    score += (contrastProxy - 70) * 0.8;
+  }
+
+  // ── Semantic strength ─────────────────────────────────────────────
   let semanticStrength = 0;
   if (data.hasMain) semanticStrength += 30;
   if (data.hasArticleOrSection) semanticStrength += 22;
@@ -83,13 +82,16 @@ export function calculateAccessibility(data) {
 
   score = Math.max(30, Math.min(98, Math.round(score)));
 
+  const notMeasured = contrastUnknown ? ['contrastProxy'] : [];
+
   const details = {
     altCoverage,
     contrastProxy,
-    contrastSource,                       // 'rendered' | 'estimated'
+    contrastSource,
     contrastTotalSamples: data.contrastTotal || 0,
     contrastPassingSamples: data.contrastPassing || 0,
     semanticStrength,
+    notMeasured,
   };
 
   return { score, details };
