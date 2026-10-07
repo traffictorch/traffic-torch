@@ -1,3 +1,4 @@
+import { TOOL_PATH } from './tools.js';
 const SITE = 'https://traffictorch.net';
 
 export function profileJsonLd(profile, username) {
@@ -52,43 +53,69 @@ export function torchJsonLd(post, author, id) {
   const domain = post.domain_mode === 'hidden'
     ? (post.domain_label || 'Hidden site')
     : (post.url ? new URL(post.url).hostname.replace(/^www\./, '') : 'Unknown');
+  const headline = (post.page_title && post.page_title.trim()) || `Torch #${id}`;
+  const toolLabel = (post.tool || '').replace(/-tool$/, '').replace(/-/g, ' ');
+  const toolPath = TOOL_PATH[post.tool] || '/';
+  const summary = `${author.display_name || author.username} scored ${post.score}/100 on ${domain} using the ${toolLabel} audit.`;
 
-  const graph = [
-    {
-      '@type': 'Review',
-      '@id': url,
-      url,
-      name: (post.page_title && post.page_title.trim()) || domain,
-      reviewBody: post.note || `Scored ${post.score}/100 on the ${post.tool} audit.`,
-      datePublished: new Date(post.created_at).toISOString(),
-      reviewRating: {
-        '@type': 'Rating',
-        ratingValue: post.score,
-        bestRating: 100,
-        worstRating: 0,
-      },
-      author: {
-        '@type': 'Person',
-        name: author.display_name || author.username,
-        url: `${SITE}/torcher/${author.username}/`,
-      },
-      itemReviewed: {
-        '@type': 'WebSite',
-        name: domain,
-        url: post.url || undefined,
-      },
+  const article = {
+    '@type': 'TechArticle',
+    '@id': url + '#article',
+    url,
+    headline,
+    description: summary,
+    datePublished: new Date(post.created_at).toISOString(),
+    dateModified: new Date(post.created_at).toISOString(),
+    author: {
+      '@type': 'Person',
+      name: author.display_name || author.username,
+      url: `${SITE}/torcher/${author.username}/`,
     },
-    {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
-        { '@type': 'ListItem', position: 2, name: 'Community', item: SITE + '/community/' },
-        { '@type': 'ListItem', position: 3, name: `@${author.username}`, item: `${SITE}/torcher/${author.username}/` },
-        { '@type': 'ListItem', position: 4, name: `Torch #${id}`, item: url },
-      ],
+    publisher: {
+      '@type': 'Organization',
+      name: 'Traffic Torch',
+      url: SITE + '/',
+      logo: { '@type': 'ImageObject', url: SITE + '/logo-512.webp' },
     },
-  ];
-  return { '@context': 'https://schema.org', '@graph': graph };
+    about: {
+      '@type': 'WebSite',
+      name: domain,
+      url: post.url || undefined,
+    },
+    mentions: {
+      '@type': 'SoftwareApplication',
+      name: toolLabel.charAt(0).toUpperCase() + toolLabel.slice(1),
+      applicationCategory: 'SEO',
+      url: SITE + toolPath,
+    },
+    keywords: [post.category, toolLabel, domain].filter(Boolean),
+    isPartOf: {
+      '@type': 'CollectionPage',
+      name: 'Community Torches',
+      url: SITE + '/community/',
+    },
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['h1'],
+    },
+  };
+  if (post.note) article.articleBody = post.note;
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      article,
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+          { '@type': 'ListItem', position: 2, name: 'Community', item: SITE + '/community/' },
+          { '@type': 'ListItem', position: 3, name: '@' + author.username, item: `${SITE}/torcher/${author.username}/` },
+          { '@type': 'ListItem', position: 4, name: `Torch #${id}`, item: url },
+        ],
+      },
+    ],
+  };
 }
 
 export function communityJsonLd(posts, tool) {

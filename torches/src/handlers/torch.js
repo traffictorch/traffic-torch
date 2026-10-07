@@ -4,8 +4,11 @@ import { buildTorchMeta, renderHeadTags } from '../lib/meta.js';
 import { torchJsonLd, jsonLdScript } from '../lib/jsonld.js';
 import { htmlHeaders, CACHE } from '../lib/cache.js';
 import { htmlEscape } from '../lib/escape.js';
+import { toolDisplay, toolRunUrl } from '../lib/tools.js';
 
-function injectShell(html, { headTags, jsonLd }) {
+const SITE = 'https://traffictorch.net';
+
+function injectHead(html, { headTags, jsonLd }) {
   let out = html;
   out = out.replace(/<title>[^<]*<\/title>/i, '');
   out = out.replace(/<meta\s+name="description"[^>]*>/gi, '');
@@ -15,17 +18,20 @@ function injectShell(html, { headTags, jsonLd }) {
   return out.includes('</head>') ? out.replace('</head>', block) : out;
 }
 
-function scoreColor(score) {
-  return score >= 80 ? '#22c55e' : score >= 60 ? '#eab308' : '#ef4444';
+function stripProfileShell(html) {
+  html = html.replace(/ x-data="profilePage\(\)"/, '');
+  html = html.replace(/ x-init="init\(\)"/, '');
+  html = html.replace(
+    /<script>\s*const API_BASE = [\s\S]*?window\.profilePage = profilePage;\s*<\/script>/,
+    ''
+  );
+  return html;
 }
 
-function scoreClass(score) {
-  return score >= 80 ? 'text-green-500' : score >= 60 ? 'text-yellow-500' : 'text-red-500';
-}
-
-function torchUrl(post) {
-  return `/torch/${post.id}/`;
-}
+function scoreColor(s) { return s >= 80 ? '#22c55e' : s >= 60 ? '#eab308' : '#ef4444'; }
+function scoreClass(s) { return s >= 80 ? 'text-green-500' : s >= 60 ? 'text-yellow-500' : 'text-red-500'; }
+function monthsSince(ts) { return ts ? Math.max(0, Math.floor((Date.now() - ts) / (86400000 * 30))) : 0; }
+function fmtDate(ts) { try { return new Date(ts).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }); } catch { return '—'; } }
 
 function torchLabel(post) {
   if (post.page_title && post.page_title.trim()) return post.page_title;
@@ -34,27 +40,90 @@ function torchLabel(post) {
   return `Torch #${post.id}`;
 }
 
+function domainOf(post) {
+  if (post.domain_mode === 'hidden') return post.domain_label || 'Hidden site';
+  if (post.url) return new URL(post.url).hostname.replace(/^www\./, '');
+  return 'Unknown';
+}
+
+function roleLabel(role) {
+  const m = { owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', developer: 'Developer', other: 'Member' };
+  return m[role] || 'Member';
+}
+
 function renderMiniCard(post, { showAuthor } = {}) {
   const sc = Number(post.score) || 0;
   const author = showAuthor && post.username
     ? `<a href="/torcher/${htmlEscape(post.username)}/" class="text-xs text-gray-500 hover:text-orange-500">@${htmlEscape(post.username)}</a>`
     : '';
-  return `<a href="${torchUrl(post)}" class="glass rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition">
-    <span class="text-2xl font-black ${scoreClass(sc)} flex-shrink-0" style="min-width:2.5rem;text-align:center;">${sc}</span>
-    <span class="flex-1 min-w-0">
-      <span class="block text-sm font-medium truncate">${htmlEscape(torchLabel(post))}</span>
+  return `<a href="/torch/${post.id}/" class="glass rounded-xl overflow-hidden flex hover:bg-white/10 transition">
+    <img src="/og/torch/${post.id}.png"
+         alt=""
+         width="120" height="63"
+         loading="lazy"
+         class="flex-shrink-0 object-cover bg-gray-100 dark:bg-gray-800"
+         style="width:120px;height:63px;">
+    <span class="flex-1 min-w-0 p-3 flex flex-col justify-center">
+      <span class="flex items-center gap-2">
+        <span class="text-lg font-black ${scoreClass(sc)}">${sc}</span>
+        <span class="block text-sm font-medium truncate flex-1">${htmlEscape(torchLabel(post))}</span>
+      </span>
       ${author}
     </span>
   </a>`;
 }
 
-function renderTorchHero(post, author, id, moreByAuthor, related) {
+function renderComments() {
+  return `
+  <section class="glass rounded-2xl p-5 mt-6">
+    <h2 class="text-lg font-bold mb-4">Comments <span class="text-sm font-normal text-gray-500">(<span x-text="comments.length">0</span>)</span></h2>
+    <div x-show="commentsLoading" class="text-center py-6"><div class="spinner mx-auto"></div></div>
+    <div x-show="!commentsLoading && comments.length === 0" class="text-center text-sm text-gray-500 py-4">No comments yet — be the first.</div>
+    <div class="space-y-3" x-show="!commentsLoading">
+      <template x-for="c in comments" :key="c.id">
+        <div class="flex gap-3 items-start">
+          <img :src="'/images/avatars/' + (c.avatar_preset || 'owner') + '.svg'" width="36" height="36" style="width:36px;height:36px;" class="rounded-full flex-shrink-0 object-cover" alt="">
+          <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
+            <div class="flex items-baseline gap-2 flex-wrap">
+              <a :href="'/torcher/' + (c.username || '') + '/'" class="text-xs font-bold hover:text-orange-500" x-text="c.display_name || c.username"></a>
+              <span class="text-[10px] text-gray-500" x-text="formatTime(c.created_at)"></span>
+              <template x-if="c.user_id === myUserId">
+                <div class="ml-auto flex gap-2 text-[10px]">
+                  <button @click="editComment(c)" class="text-gray-400 hover:text-orange-500">Edit</button>
+                  <button @click="deleteComment(c.id)" class="text-gray-400 hover:text-red-500">Delete</button>
+                </div>
+              </template>
+            </div>
+            <p class="text-sm mt-1 leading-snug break-words" x-text="c.body"></p>
+          </div>
+        </div>
+      </template>
+    </div>
+    <div x-show="!isAuthenticated" class="mt-5 text-center text-sm text-gray-500">
+      <a href="/login/" class="text-orange-500 hover:underline">Log in</a> to comment.
+    </div>
+    <div x-show="isAuthenticated" class="mt-5 flex gap-2 items-start">
+      <img :src="'/images/avatars/' + (myAvatar || 'owner') + '.svg'" width="36" height="36" style="width:36px;height:36px;" class="rounded-full flex-shrink-0 object-cover" alt="">
+      <div class="flex-1 flex gap-2">
+        <input type="text" maxlength="360" x-model="draft" @keydown.enter.prevent="submitComment()" placeholder="Leave a comment… (360 chars) · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
+        <button type="button" @click="submitComment()" :disabled="submitting || !draft.trim()" class="px-4 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition disabled:opacity-50">
+          <span x-show="!submitting">Post +5</span>
+          <span x-show="submitting">…</span>
+        </button>
+      </div>
+    </div>
+    <p x-show="commentError" class="text-red-500 text-sm mt-2" x-text="commentError"></p>
+  </section>`;
+}
+
+function renderTorchBody(data) {
+  const { post, author, more_by_author, related, author_network } = data;
   const sc = Number(post.score) || 0;
-  const domain = post.domain_mode === 'hidden'
-    ? (post.domain_label || 'Hidden site')
-    : (post.url ? new URL(post.url).hostname.replace(/^www\./, '') : 'Unknown');
+  const domain = domainOf(post);
   const titleText = htmlEscape(torchLabel(post));
-  const date = new Date(post.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  const date = fmtDate(post.created_at);
+  const toolName = toolDisplay(post.tool);
+  const runUrl = post.url && post.tool ? toolRunUrl(post.tool, post.url) : null;
 
   let modules = [];
   try {
@@ -68,27 +137,37 @@ function renderTorchHero(post, author, id, moreByAuthor, related) {
     return `<div class="mod-row"><span class="mod-label">${htmlEscape(m.name)}</span><span class="mod-track"><span class="mod-fill ${cls}" style="width:${s}%"></span></span><span class="mod-score">${s}</span></div>`;
   }).join('');
 
-  const moreHtml = (moreByAuthor || []).length
+  const moreHtml = (more_by_author || []).length
     ? `<section class="mt-8">
         <h2 class="text-lg font-bold mb-3">More by <a href="/torcher/${htmlEscape(author.username)}/" class="hover:text-orange-500">@${htmlEscape(author.username)}</a></h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${moreByAuthor.map(p => renderMiniCard(p)).join('')}</div>
-      </section>`
-    : '';
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${more_by_author.map(p => renderMiniCard(p)).join('')}</div>
+      </section>` : '';
 
   const relatedHtml = (related || []).length
     ? `<section class="mt-8">
-        <h2 class="text-lg font-bold mb-3">Similar scores with ${htmlEscape(post.tool)}</h2>
+        <h2 class="text-lg font-bold mb-3">Similar scores with ${htmlEscape(toolName)}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${related.map(p => renderMiniCard(p, { showAuthor: true })).join('')}</div>
-      </section>`
-    : '';
+      </section>` : '';
+
+  const socials = [
+    author.website_url ? `<a href="${htmlEscape(author.website_url)}" target="_blank" rel="ugc nofollow noopener" class="link-btn">🔗 ${htmlEscape(domainOf({ url: author.website_url, domain_mode: 'full' }))}</a>` : '',
+    author.social1_url ? `<a href="${htmlEscape(author.social1_url)}" target="_blank" rel="ugc nofollow noopener" class="link-btn">🔗 ${htmlEscape(domainOf({ url: author.social1_url, domain_mode: 'full' }))}</a>` : '',
+    author.social2_url ? `<a href="${htmlEscape(author.social2_url)}" target="_blank" rel="ugc nofollow noopener" class="link-btn">🔗 ${htmlEscape(domainOf({ url: author.social2_url, domain_mode: 'full' }))}</a>` : '',
+  ].filter(Boolean).join('');
+
+  const networkCount = author.network_count || 0;
+  const networkHtml = (author_network || []).length
+    ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${author_network.map(u => `<a href="/torcher/${htmlEscape(u.username)}/" class="glass rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition"><img src="/images/avatars/${htmlEscape(u.avatar_preset || 'owner')}.svg" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover" alt=""><div class="flex-1 min-w-0"><p class="font-bold text-sm truncate">${htmlEscape(u.display_name || u.username)}</p><p class="text-xs text-gray-500 capitalize">${htmlEscape(roleLabel(u.role))}</p></div></a>`).join('')}</div>`
+    : `<div class="glass rounded-2xl p-8 text-center"><p class="text-4xl mb-3">👥</p><p class="text-gray-500">Network is private or empty.</p></div>`;
 
   return `<main class="container mx-auto px-4 py-8 flex-1 max-w-3xl" data-ssr="torch">
   <nav aria-label="breadcrumb" class="text-sm text-gray-500 mb-4">
     <a href="/" class="hover:underline">Home</a> ›
     <a href="/community/" class="hover:underline">Community</a> ›
     <a href="/torcher/${htmlEscape(author.username)}/" class="hover:underline">@${htmlEscape(author.username)}</a> ›
-    <span>Torch #${id}</span>
+    <span>Torch #${post.id}</span>
   </nav>
+
   <article class="glass rounded-2xl overflow-hidden border-l-4" style="border-left-color:${scoreColor(sc)}">
     <div class="p-6">
       <div class="flex items-start gap-6 flex-wrap">
@@ -97,6 +176,7 @@ function renderTorchHero(post, author, id, moreByAuthor, related) {
           <p class="text-xs font-bold text-gray-400 mt-1">/100</p>
         </div>
         <div class="flex-1 min-w-0">
+          <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">${htmlEscape(toolName)}</p>
           <h1 class="text-2xl font-black leading-tight mb-2">${titleText}</h1>
           <p class="text-sm text-gray-500">${htmlEscape(domain)} · <time datetime="${new Date(post.created_at).toISOString()}">${date}</time></p>
           ${post.note ? `<p class="text-base leading-relaxed mt-3 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">${htmlEscape(post.note)}</p>` : ''}
@@ -105,17 +185,210 @@ function renderTorchHero(post, author, id, moreByAuthor, related) {
     </div>
     ${modulesHtml ? `<div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div><div class="px-6 py-4 space-y-2">${modulesHtml}</div>` : ''}
   </article>
-  <div class="glass rounded-2xl p-5 mt-6 flex items-center gap-4">
-    <img src="/images/avatars/${htmlEscape(author.avatar_preset || 'owner')}.svg" alt="" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover">
+
+  <!-- Action row: author chip + share/copy/report -->
+  <div class="glass rounded-2xl p-5 mt-6 flex flex-wrap items-center gap-3">
+    <img src="/images/avatars/${htmlEscape(author.avatar_preset || 'owner')}.svg" alt="" width="48" height="48" style="width:48px;height:48px;" class="rounded-full object-cover flex-shrink-0">
     <div class="flex-1 min-w-0">
       <p class="font-bold truncate"><a href="/torcher/${htmlEscape(author.username)}/" class="hover:text-orange-500">${htmlEscape(author.display_name || author.username)}</a></p>
-      <p class="text-xs text-gray-500">@${htmlEscape(author.username)}${author.total_points ? ' · 🏅 ' + author.total_points : ''}</p>
+      <p class="text-xs text-gray-500">@${htmlEscape(author.username)} · 🏅 ${author.total_points || 0}</p>
     </div>
-    <a href="/torcher/${htmlEscape(author.username)}/" class="px-4 py-2 rounded-xl font-bold text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition">View profile →</a>
+    <div class="flex gap-2 flex-wrap w-full sm:w-auto">
+      <button x-show="!isOwnTorch" type="button" @click="toggleNetwork()" class="px-3 py-2 rounded-xl font-bold text-xs transition border-2" :class="inNetwork ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'" x-text="inNetwork ? 'In Network ✓' : '+ Add to Network'"></button>
+      <button type="button" @click="share()" class="px-3 py-2 rounded-xl font-bold text-xs bg-gradient-to-r from-orange-500 to-pink-600 text-white hover:opacity-90 transition">📤 Share</button>
+      <button type="button" @click="copyLink()" class="px-3 py-2 rounded-xl font-bold text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition" x-text="copyLabel">Copy 🔗</button>
+      <button x-show="!isOwnTorch" type="button" @click="report()" class="px-3 py-2 rounded-xl font-bold text-xs border border-gray-300 dark:border-gray-600 hover:border-red-500 hover:text-red-500 transition">⚑</button>
+    </div>
   </div>
+
+  <!-- Tabs -->
+  <nav class="flex gap-2 mt-6 flex-wrap justify-center" aria-label="Torch sections">
+    <button class="tab-btn" :class="activeTab === 'torch' ? 'active' : ''" @click="activeTab = 'torch'">Torch</button>
+    <button class="tab-btn" :class="activeTab === 'author' ? 'active' : ''" @click="activeTab = 'author'">Author</button>
+    <button class="tab-btn" :class="activeTab === 'network' ? 'active' : ''" @click="activeTab = 'network'">Network (${networkCount})</button>
+  </nav>
+
+  <!-- Tab: Torch -->
+  <section x-show="activeTab === 'torch'">
+    <div class="glass rounded-2xl p-6 mt-4">
+      <h2 class="text-lg font-bold mb-3">About this audit</h2>
+      <div class="grid grid-cols-2 gap-3 text-sm">
+        <div><span class="text-gray-500">Tool:</span> <span class="font-medium">${htmlEscape(toolName)}</span></div>
+        <div><span class="text-gray-500">Category:</span> <span class="font-medium uppercase">${htmlEscape(post.category || '')}</span></div>
+        <div><span class="text-gray-500">Score:</span> <span class="font-medium">${sc}/100</span></div>
+        <div><span class="text-gray-500">Audited:</span> <span class="font-medium">${date}</span></div>
+      </div>
+      ${runUrl ? `<div class="mt-5"><a href="${runUrl}" target="_blank" rel="noopener" class="inline-block px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold rounded-xl hover:opacity-90 transition">▶ Run this audit yourself</a></div>` : ''}
+    </div>
+    ${renderComments()}
+  </section>
+
+  <!-- Tab: Author -->
+  <section x-show="activeTab === 'author'" x-cloak>
+    <div class="glass rounded-2xl p-6 mt-4">
+      <div class="flex flex-col sm:flex-row sm:items-end gap-5">
+        <img src="/images/avatars/${htmlEscape(author.avatar_preset || 'owner')}.svg" alt="" width="96" height="96" style="width:96px;height:96px;" class="rounded-full object-cover flex-shrink-0">
+        <div class="flex-1 min-w-0">
+          <h2 class="text-2xl font-black truncate">${htmlEscape(author.display_name || author.username)}</h2>
+          <p class="text-gray-500 flex items-center gap-2 flex-wrap">
+            <span>@${htmlEscape(author.username)}</span>
+            <span class="inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500">${htmlEscape(roleLabel(author.role))}</span>
+          </p>
+        </div>
+        <a href="/torcher/${htmlEscape(author.username)}/" class="px-4 py-2 rounded-xl font-bold text-sm border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition whitespace-nowrap">View full profile →</a>
+      </div>
+      ${author.bio ? `<p class="mt-5 text-center text-gray-700 dark:text-gray-300 leading-relaxed">${htmlEscape(author.bio)}</p>` : ''}
+      <div class="mt-5 flex flex-wrap items-center justify-center gap-y-2 text-sm text-gray-500">
+        ${author.job_title ? `<span class="meta-item"><span class="emoji">💼</span>${htmlEscape(author.job_title)}</span>` : ''}
+        ${author.company ? `<span class="meta-item"><span class="emoji">🏢</span>${htmlEscape(author.company)}</span>` : ''}
+        ${author.location ? `<span class="meta-item"><span class="emoji">📍</span>${htmlEscape(author.location)}</span>` : ''}
+        ${author.created_at ? `<span class="meta-item"><span class="emoji">📅</span>Member since ${fmtDate(author.created_at)}</span>` : ''}
+      </div>
+      ${socials ? `<div class="mt-5 flex flex-wrap items-center justify-center gap-3">${socials}</div>` : ''}
+      <div class="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60"><p class="text-2xl font-black text-orange-500">${author.audit_count || 0}</p><p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Audits shared</p></div>
+        <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60"><p class="text-2xl font-black text-orange-500">${networkCount}</p><p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Network</p></div>
+        <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60"><p class="text-2xl font-black text-orange-500">${author.total_points || 0}</p><p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Points</p></div>
+        <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60"><p class="text-2xl font-black text-orange-500">${monthsSince(author.created_at)}</p><p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Months here</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tab: Network -->
+  <section x-show="activeTab === 'network'" x-cloak>
+    <div class="mt-4">${networkHtml}</div>
+  </section>
+
   ${moreHtml}
   ${relatedHtml}
+
+  <div class="mt-8 text-center text-xs text-gray-500">
+    <a href="/torches/feed.xml" class="hover:underline">RSS: all torches</a>
+  </div>
 </main>`;
+}
+
+function torchPageScript() {
+  return `<script>
+const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+function torchPage() {
+  return {
+    torchId: null, authorId: null, authorUsername: '',
+    activeTab: 'torch',
+    comments: [], commentsLoading: false, draft: '', submitting: false, commentError: '',
+    isAuthenticated: false, inNetwork: false, isOwnTorch: false, myUserId: null, myAvatar: 'owner',
+    copyLabel: 'Copy 🔗',
+    async init() {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      this.torchId = parseInt(parts[1], 10) || null;
+      const dataEl = document.getElementById('torch-data');
+      if (dataEl) { try { const d = JSON.parse(dataEl.textContent); this.authorId = d.author_id; this.authorUsername = d.author_username; } catch {} }
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        this.isAuthenticated = true;
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+          this.myUserId = payload.id || payload.userId || payload.sub || null;
+          this.isOwnTorch = this.myUserId && this.authorId && String(this.myUserId) === String(this.authorId);
+        } catch {}
+      }
+      if (!this.isOwnTorch && this.authorId && this.isAuthenticated) this.checkNetwork();
+      await this.loadComments();
+    },
+    async checkNetwork() {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+        const res = await fetch(API_BASE + '/api/network/list', { headers: { 'Authorization': 'Bearer ' + token } });
+        if (!res.ok) return;
+        const data = await res.json();
+        this.inNetwork = (data.network || []).some(u => u.id === this.authorId);
+      } catch {}
+    },
+    async toggleNetwork() {
+      const token = localStorage.getItem('authToken');
+      if (!token) { window.location.href = '/login/'; return; }
+      const ep = this.inNetwork ? 'remove' : 'add';
+      try {
+        const res = await fetch(API_BASE + '/api/network/' + ep, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify({ user_id: this.authorId }) });
+        if (res.ok) this.inNetwork = !this.inNetwork;
+        else { const d = await res.json().catch(() => ({})); alert(d.error || 'Failed'); }
+      } catch {}
+    },
+    async loadComments() {
+      if (!this.torchId) return;
+      this.commentsLoading = true;
+      try {
+        const res = await fetch(API_BASE + '/api/posts/' + this.torchId + '/comments');
+        if (res.ok) { const d = await res.json(); this.comments = d.comments || []; }
+      } catch {}
+      finally { this.commentsLoading = false; }
+    },
+    async submitComment() {
+      const body = (this.draft || '').trim();
+      if (!body || body.length > 360) return;
+      this.submitting = true; this.commentError = '';
+      try {
+        const res = await fetch(API_BASE + '/api/posts/' + this.torchId + '/comments', { method: 'POST', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' }, body: JSON.stringify({ body }) });
+        const data = await res.json();
+        if (data.success) { this.comments = [...this.comments, data.comment]; this.draft = ''; }
+        else this.commentError = data.error || 'Failed';
+      } catch { this.commentError = 'Network error'; }
+      finally { this.submitting = false; }
+    },
+    async editComment(c) {
+      const nb = prompt('Edit comment (360 chars max):', c.body);
+      if (nb === null) return;
+      if (!nb.trim() || nb.length > 360) { alert('Must be 1–360 chars'); return; }
+      try {
+        const res = await fetch(API_BASE + '/api/comments/' + c.id, { method: 'PATCH', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' }, body: JSON.stringify({ body: nb.trim() }) });
+        if (res.ok) c.body = nb.trim();
+      } catch {}
+    },
+    async deleteComment(id) {
+      if (!confirm('Delete this comment?')) return;
+      try {
+        const res = await fetch(API_BASE + '/api/comments/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') } });
+        if (res.ok) this.comments = this.comments.filter(c => c.id !== id);
+      } catch {}
+    },
+    async share() {
+      const url = window.location.href;
+      const text = document.querySelector('h1')?.textContent || 'Traffic Torch audit';
+      try {
+        if (navigator.share) await navigator.share({ title: document.title, text, url });
+        else await this.copyLink();
+      } catch {}
+    },
+    async copyLink() {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        this.copyLabel = 'Copied ✓';
+        setTimeout(() => { this.copyLabel = 'Copy 🔗'; }, 1800);
+      } catch {}
+    },
+    async report() {
+      const reason = prompt('Reason for report:');
+      if (!reason) return;
+      try {
+        await fetch(API_BASE + '/api/reports', { method: 'POST', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'post', target_id: this.torchId, reason }) });
+        alert('Reported. Thank you.');
+      } catch {}
+    },
+    formatTime(ts) {
+      const now = Date.now(), diff = now - ts, min = Math.floor(diff / 60000);
+      if (min < 1) return 'Just now';
+      if (min < 60) return min + 'm ago';
+      const hr = Math.floor(min / 60);
+      if (hr < 24) return hr + 'h ago';
+      const d = Math.floor(hr / 24);
+      if (d < 7) return d + 'd ago';
+      return new Date(ts).toLocaleDateString();
+    },
+  };
+}
+window.torchPage = torchPage;
+</script>`;
 }
 
 export async function handleTorch(request, env) {
@@ -142,8 +415,7 @@ export async function handleTorch(request, env) {
     throw err;
   }
 
-  const post = data.post;
-  const author = data.author;
+  const { post, author } = data;
   const isHidden = post.domain_mode === 'hidden';
 
   const meta = buildTorchMeta(post, author, id);
@@ -151,13 +423,15 @@ export async function handleTorch(request, env) {
   const headTags = renderHeadTags(meta, { index: !isHidden, type: 'article' });
 
   const shell = await getShell(env, '/profile.html');
-  let html = injectShell(shell, { headTags, jsonLd });
+  let html = injectHead(shell, { headTags, jsonLd });
+  html = stripProfileShell(html);
 
   const mainStart = html.indexOf('<main ');
   const mainEnd = html.indexOf('</main>');
   if (mainStart !== -1 && mainEnd !== -1) {
-    const replacement = renderTorchHero(post, author, id, data.more_by_author, data.related);
-    html = html.slice(0, mainStart) + replacement + html.slice(mainEnd + '</main>'.length);
+    const embedded = `<script id="torch-data" type="application/json">${JSON.stringify({ torch_id: id, author_id: author.id, author_username: author.username })}</script>`;
+    const wrapped = `<div x-data="torchPage()" x-init="init()">\n${renderTorchBody(data)}\n${embedded}\n</div>\n${torchPageScript()}`;
+    html = html.slice(0, mainStart) + wrapped + html.slice(mainEnd + '</main>'.length);
   }
 
   return new Response(html, {
