@@ -1,5 +1,5 @@
 // seo-entity-extractor-tool/script.js?v=1.1
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 
 import { analyzeCoverage } from './modules/coverage.js';

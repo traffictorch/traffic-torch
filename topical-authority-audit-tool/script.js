@@ -1,7 +1,7 @@
 // script.js?v=1.1 — Topical Authority Audit Tool (refactored from entity extractor)
 // Single-file version — modules inlined/minimized; heavy logic in Worker AI
 
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';

@@ -1,6 +1,6 @@
 // script.js?v=1.0 – Traffic Torch Schema Generator & Detector
 
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 import { prettyJsonLd } from './modules/schema-base.js';
 import { detectCMS } from '/cms-detect.js';

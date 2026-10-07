@@ -8,7 +8,7 @@ import('/quit-risk-tool/plugin-solutions.js?v=1.0')
   .catch(err => {
     // Silent fail in production - plugin solutions will be skipped gracefully
   });
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 import { fixFor } from './module-explanations.js?v=1.0';
 import { mergeMetricsIntoUX } from './metrics-adapter.js';

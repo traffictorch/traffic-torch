@@ -1,7 +1,7 @@
 // Keyword VS Tool Script v1.1
 // Hybrid: 70 deterministic + 30 AI semantic per page, side-by-side comparison.
 
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';

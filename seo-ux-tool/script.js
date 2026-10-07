@@ -11,7 +11,7 @@ import { analyzeUXDesign } from './modules/analyze-ux.js?v=1.0';
 import { analyzeSecurity } from './modules/analyze-security.js?v=1.0';
 import { analyzeIndexability } from './modules/analyze-indexability.js?v=1.0';
 import { detectCMS } from '/cms-detect.js';
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 
 // ── Edit 1: import the code-snippet modal helpers + extractSnippets ──
 import {

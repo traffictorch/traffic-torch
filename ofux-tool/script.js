@@ -43,7 +43,7 @@ function labelFor(name) {
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/ofux-tool/cms-detect.js';
 import { saveAudit } from '/audit-history.js';
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 
 // ─── Quit Risk imports ───────────────────────────────────────────────
 import { calculateReadability } from '/quit-risk-tool/modules/readability.js';

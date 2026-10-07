@@ -10,7 +10,7 @@ import { analyzeReadability } from './modules/readability.js';
 import { analyzeSchema } from './modules/schema.js';
 import { renderModuleCards } from './module-cards.js?v=1.0';
 import { fixFor, metricPoints } from './module-explanations.js?v=1.0';
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import {

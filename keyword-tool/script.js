@@ -2,7 +2,7 @@
 // Hybrid: Deterministic 55 pts + AI Semantic 15 pts + Semantic Coverage 30 pts
 
 import { renderPluginSolutions } from './plugin-solutions.js?v=1.0';
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import { fixFor } from './module-explanations.js?v=1.0';

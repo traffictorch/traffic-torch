@@ -9,7 +9,7 @@ import { analyzeMapsVisuals } from './modules/maps-visuals.js';
 import { analyzeStructuredData } from './modules/structured-data.js';
 import { analyzeReviewsStructure } from './modules/reviews-structure.js';
 //import { analyzeLocalIntent } from './modules/ai-local-seo.js';
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import {

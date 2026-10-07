@@ -24,7 +24,7 @@ import { extractSnippets, openCodeModal, ruleKey } from './code-snippets.js';
 import { detectCMS } from './cms-detect.js';
 import { initShareModule } from '/share-module.js';
 import { saveAudit } from '/audit-history.js';
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 
 const $   = id => document.getElementById(id);
 const el  = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };

@@ -7,7 +7,7 @@ import('./plugin-solutions.js?v=1.0')
   .then(m => { renderPluginSolutions = m.renderPluginSolutions; })
   .catch(err => console.warn('[Product SEO] plugin-solutions failed to load', err));
 
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import { fixFor } from './module-explanations.js?v=1.0';

@@ -5,7 +5,7 @@ import { computeContentQuality } from './modules/content-quality.js';
 import { computeSnippetVisibility } from './modules/snippet-visibility.js';
 import { computeSentimentQuality } from './modules/sentiment-quality.js';
 import { computeTraditionalKeywords } from './modules/traditional-keywords.js';
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import {

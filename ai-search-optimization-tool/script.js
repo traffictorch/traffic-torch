@@ -10,7 +10,7 @@ import { computeConversational } from './modules/conversationalTone.js';
 import { computeReadability } from './modules/readability.js';
 import { computeUniqueInsights } from './modules/uniqueInsights.js';
 import { computeAntiAiSafety } from './modules/antiAiSafety.js';
-import { canRunTool } from '/main.js?v=1.1';
+import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/cms-detect.js';
 import {
