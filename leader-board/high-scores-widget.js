@@ -1,12 +1,21 @@
 // Traffic Torch — High Scores Widget (drop-in, no deps)
 (function () {
   const ENDPOINT = 'https://traffic-torch-high-scores.traffictorch.workers.dev';
+  const AUTH_ENDPOINT = 'https://traffic-torch-auth.traffictorch.workers.dev';
   const COLLAPSED_COUNT = 3;
 
   const escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   const getMedal = (i) => ['🥇', '🥈', '🥉'][i] || '#' + (i + 1);
+
+  const roleLabel = (role) => ({
+    owner: 'Website Owner',
+    designer: 'Web Designer',
+    seo: 'SEO Professional',
+    developer: 'Developer',
+    other: 'Member'
+  }[role] || '');
 
   function renderModules(moduleScores) {
     if (!moduleScores) return '';
@@ -25,6 +34,22 @@
     }).join('');
   }
 
+  function renderProfile(entry) {
+    if (!entry.username) return '';
+    const displayName = entry.display_name || entry.username;
+    const avatar = entry.avatar_preset || 'owner';
+    return `
+      <div class="tt-lb-profile">
+        <img class="tt-lb-profile-avatar" src="/images/avatars/${escapeHtml(avatar)}.svg" alt="" loading="lazy">
+        <div class="tt-lb-profile-meta">
+          <a class="tt-lb-profile-name" href="/torcher/${escapeHtml(entry.username)}/">${escapeHtml(displayName)}</a>
+          <span class="tt-lb-profile-handle">@${escapeHtml(entry.username)}</span>
+          <span class="tt-lb-points" data-username="${escapeHtml(entry.username)}" hidden></span>
+        </div>
+      </div>
+    `;
+  }
+
   function renderCard(entry, index) {
     const medal = getMedal(index);
     const score = entry.overall_score;
@@ -40,6 +65,7 @@
           <div class="tt-lb-score-label">/100</div>
         </div>
         <div class="tt-lb-info">
+          ${renderProfile(entry)}
           <a class="tt-lb-title" href="${escapeHtml(entry.url)}" target="_blank" rel="noopener">${escapeHtml(title)}</a>
           <div class="tt-lb-domain">${escapeHtml(entry.domain)} <span class="tt-lb-date">· ${dateStr}</span></div>
         </div>
@@ -58,6 +84,25 @@
         </div>
       </div>
     </li>`;
+  }
+
+  async function hydratePoints(el) {
+    const spans = el.querySelectorAll('.tt-lb-points[data-username]');
+    if (!spans.length) return;
+    await Promise.all([...spans].map(async (span) => {
+      const username = span.dataset.username;
+      if (!username) return;
+      try {
+        const r = await fetch(`${AUTH_ENDPOINT}/api/torcher/${encodeURIComponent(username)}`);
+        if (!r.ok) return;
+        const data = await r.json();
+        const pts = data.profile && data.profile.total_points;
+        if (typeof pts === 'number' && pts > 0) {
+          span.textContent = `🏅 ${pts}`;
+          span.hidden = false;
+        }
+      } catch {}
+    }));
   }
 
   function render(el, entries) {
@@ -105,6 +150,8 @@
         <a href="/leader-board/" class="tt-lb-leaderboard-link">View leaderboard →</a>
       </div>
     `;
+
+    hydratePoints(el);
 
     const toggle = el.querySelector('.tt-lb-toggle');
     const moreList = el.querySelector('.tt-lb-list-more');

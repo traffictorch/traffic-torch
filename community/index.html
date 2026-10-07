@@ -33,7 +33,6 @@
   <meta name="twitter:image:alt" content="Traffic Torch Community – feed, network and discussions for SEO and UX">
   <meta name="twitter:site" content="@Guitaralize">
 
-  <!-- Structured data: WebPage -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -57,12 +56,11 @@
       "target": "https://github.com/traffictorch/traffic-torch-discussions/discussions"
     },
     "datePublished": "2026-02-20T10:30:00+11:00",
-    "dateModified": "2026-10-06T09:00:00+11:00",
+    "dateModified": "2026-10-07T09:00:00+11:00",
     "author": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" }
   }
   </script>
 
-  <!-- Structured data: DiscussionForumPosting (community feed) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -80,7 +78,6 @@
   }
   </script>
 
-  <!-- Structured data: WebSite -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -98,7 +95,6 @@
   }
   </script>
 
-  <!-- Structured data: Organization -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -160,7 +156,6 @@
     })();
   </script>
 
-  <!-- Alpine for community tabs -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
   <style>
@@ -168,7 +163,6 @@
     .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: #f97316; border-radius: 50%; width: 36px; height: 36px; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Community feed card — leaderboard style */
     .feed-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; overflow: hidden; }
     .dark .feed-card { background: rgba(0,0,0,0.3); }
     .feed-card.b-green  { border-left: 4px solid #22c55e; }
@@ -186,6 +180,20 @@
     .mod-fill.bad  { background: #ef4444; }
     .mod-score { flex-shrink: 0; min-width: 28px; text-align: right; font-weight: 700; color: #374151; }
     .dark .mod-score { color: #d1d5db; }
+
+    .points-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.1rem 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+      border-radius: 9999px;
+      background: rgba(249,115,22,0.15);
+      color: #ea580c;
+      line-height: 1.2;
+    }
+    .dark .points-badge { background: rgba(251,146,60,0.2); color: #fb923c; }
   </style>
 </head>
 
@@ -195,7 +203,6 @@
 
   <div class="flex flex-1 min-h-screen">
 
-    <!-- Desktop Sidebar -->
     <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex-col self-start">
       <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
         <a href="/" class="flex items-center gap-4">
@@ -210,7 +217,6 @@
     </aside>
 
     <div class="flex-1 flex flex-col">
-      <!-- Header -->
       <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
           <a href="/" class="flex items-center gap-4 md:hidden">
@@ -230,7 +236,6 @@
 
       <main class="container mx-auto px-4 py-4 max-w-7xl">
 
-        <!-- Hero -->
         <section class="text-center py-2">
           <h1 class="text-3xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             Join the Traffic Torch Community
@@ -241,7 +246,6 @@
           </p>
         </section>
 
-        <!-- Tab bar: Feed | My Network | Invite | Forum (scroll) -->
         <div class="max-w-3xl mx-auto mb-8">
           <div class="bg-white/5 dark:bg-black/40 backdrop-blur-xl border border-white/10 dark:border-white/5 rounded-2xl p-3">
             <div class="flex justify-center gap-2 flex-wrap">
@@ -271,7 +275,6 @@
         <!-- === FEED VIEW === -->
         <div x-show="communityTab === 'feed'" x-cloak class="max-w-2xl mx-auto mb-16">
 
-          <!-- Logged-out notice -->
           <template x-if="!isAuthenticated">
             <div class="glass rounded-2xl p-6 mb-6 text-center border border-orange-500/30" style="background: rgba(255,255,255,0.05);">
               <p class="text-lg font-bold mb-2">👋 Sign in to post and comment</p>
@@ -280,9 +283,8 @@
             </div>
           </template>
 
-          <!-- Category filter -->
           <div class="rounded-2xl p-3 mb-4 flex gap-2" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-              <template x-for="cat in ['seo','ux','aeo']" :key="cat">
+            <template x-for="cat in ['seo','ux','aeo']" :key="cat">
               <button @click="setFeedCategory(cat)"
                       class="flex-1 py-2 rounded-lg text-sm font-bold uppercase tracking-wide transition"
                       :class="feed.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white' : 'text-gray-500 hover:text-orange-500'"
@@ -307,7 +309,6 @@
               <article class="feed-card"
                        :class="post.score >= 80 ? 'b-green' : post.score >= 60 ? 'b-yellow' : 'b-red'">
 
-                <!-- Header -->
                 <div class="p-4 pb-3">
                   <div class="flex items-start gap-4">
                     <div class="text-center flex-shrink-0" style="min-width:64px;">
@@ -317,19 +318,20 @@
                       <p class="text-[11px] font-bold text-gray-400 mt-1">/100</p>
                     </div>
                     <div class="flex-1 min-w-0">
-<h3 class="font-bold text-base leading-snug mb-1.5">
-  <template x-if="post.url && post.tool">
-    <a :href="toolRunUrl(post.tool, post.url)" target="_blank" rel="noopener"
-       class="hover:text-orange-500 underline decoration-1 underline-offset-2"
-       x-text="(post.page_title && post.page_title.trim()) || toolDisplayName(post.tool)"></a>
-  </template>
-  <template x-if="!post.url || !post.tool">
-    <span x-text="(post.page_title && post.page_title.trim()) || toolDisplayName(post.tool)"></span>
-  </template>
-</h3>
+                      <h3 class="font-bold text-base leading-snug mb-1.5">
+                        <template x-if="post.url && post.tool">
+                          <a :href="toolRunUrl(post.tool, post.url)" target="_blank" rel="noopener"
+                             class="hover:text-orange-500 underline decoration-1 underline-offset-2"
+                             x-text="(post.page_title && post.page_title.trim()) || toolDisplayName(post.tool)"></a>
+                        </template>
+                        <template x-if="!post.url || !post.tool">
+                          <span x-text="(post.page_title && post.page_title.trim()) || toolDisplayName(post.tool)"></span>
+                        </template>
+                      </h3>
                       <p class="text-xs text-gray-500">
                         <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
-                        · by <a :href="'/u/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                        · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                        <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
                         · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                       </p>
                       <p x-show="post.note && post.note !== post.page_title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
@@ -343,16 +345,15 @@
 
                 <div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div>
 
-                <!-- Actions -->
                 <div class="px-4 py-3 flex items-center gap-2 flex-wrap">
                   <button @click="post._showDetails = !post._showDetails"
                           class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">
                     <span x-text="post._showDetails ? 'Hide details ▲' : 'More details ▼'"></span>
                   </button>
-<template x-if="post.url && post.tool">
-  <a :href="toolRunUrl(post.tool, post.url)" target="_blank" rel="noopener"
-     class="px-4 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white hover:opacity-90 transition">Run audit →</a>
-</template>
+                  <template x-if="post.url && post.tool">
+                    <a :href="toolRunUrl(post.tool, post.url)" target="_blank" rel="noopener"
+                       class="px-4 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white hover:opacity-90 transition">Run audit →</a>
+                  </template>
                   <button @click="toggleComments(post.id)"
                           class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">
                     <span x-text="(post.comment_count || 0) > 0 ? (post.comment_count + ' Comment' + (post.comment_count === 1 ? '' : 's') + ' 💬') : 'Leave a Comment 💬'"></span>
@@ -372,7 +373,6 @@
                   </template>
                 </div>
 
-                <!-- Expandable details -->
                 <div x-show="post._showDetails" x-cloak>
                   <div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div>
                   <template x-if="parseModuleScores(post.module_scores).length > 0">
@@ -400,7 +400,6 @@
                   </div>
                 </div>
 
-                <!-- Comments -->
                 <div x-show="feed.openComments[post.id]" x-cloak>
                   <div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div>
                   <div class="px-4 py-4 space-y-3">
@@ -414,7 +413,8 @@
                              class="rounded-full flex-shrink-0 object-cover" alt="">
                         <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
                           <div class="flex items-baseline gap-2 flex-wrap">
-                            <a :href="'/u/' + (c.username || '') + '/'" class="text-xs font-bold hover:text-orange-500" x-text="c.display_name || c.username"></a>
+                            <a :href="'/torcher/' + (c.username || '') + '/'" class="text-xs font-bold hover:text-orange-500" x-text="c.display_name || c.username"></a>
+                            <span x-show="c.total_points > 0" class="points-badge" x-text="'🏅 ' + c.total_points"></span>
                             <span class="text-[10px] text-gray-500" x-text="formatRelativeTime(c.created_at)"></span>
                             <template x-if="isAuthenticated && c.user_id === user.id">
                               <div class="ml-auto flex gap-2 text-[10px]">
@@ -438,10 +438,10 @@
                           <input type="text" maxlength="360"
                                  x-model="feed.commentDrafts[post.id]"
                                  @keydown.enter.prevent="submitComment(post.id)"
-                                 placeholder="Leave a comment… (360 chars)"
+                                 placeholder="Leave a comment… (360 chars) · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
                           <button @click="submitComment(post.id)"
-                                  class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post</button>
+                                  class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
                     </template>
@@ -466,88 +466,90 @@
         </div>
 
         <!-- === MY NETWORK VIEW === -->
-<div x-show="communityTab === 'mine'" x-cloak class="max-w-2xl mx-auto mb-16 rounded-2xl p-6"
-     style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-  <h3 class="text-lg font-bold mb-4">Your Network</h3>
+        <div x-show="communityTab === 'mine'" x-cloak class="max-w-2xl mx-auto mb-16 rounded-2xl p-6"
+             style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+          <h3 class="text-lg font-bold mb-4">Your Network</h3>
 
-  <template x-if="!isAuthenticated">
-    <div class="text-center py-6">
-      <p class="text-gray-500 mb-4">Log in to see your network.</p>
-      <a href="/login/" class="inline-block px-6 py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">Login / Register</a>
-    </div>
-  </template>
-
-  <template x-if="isAuthenticated">
-    <div>
-      <!-- Mode toggle -->
-      <div class="flex justify-center gap-2 mb-4">
-        <button @click="setNetworkSearchMode('mine')"
-                class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
-                :class="network.searchMode === 'mine' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
-          My Network
-        </button>
-        <button @click="setNetworkSearchMode('all')"
-                class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
-                :class="network.searchMode === 'all' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
-          Find People
-        </button>
-      </div>
-
-      <!-- Search input -->
-      <input type="text" x-model="network.search"
-             @input="network.searchMode === 'all' && searchAllUsers()"
-             :placeholder="network.searchMode === 'mine' ? 'Search your network…' : 'Search all users… (min 2 chars)'"
-             class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-
-      <!-- MY NETWORK MODE -->
-      <template x-if="network.searchMode === 'mine'">
-        <div class="space-y-3">
-          <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
-            <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-              <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
-              <div class="flex-1 min-w-0">
-                <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
-                <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
-              </div>
-              <button @click="removeFromNetwork(u.id)" class="text-xs text-red-500 hover:underline">Remove</button>
+          <template x-if="!isAuthenticated">
+            <div class="text-center py-6">
+              <p class="text-gray-500 mb-4">Log in to see your network.</p>
+              <a href="/login/" class="inline-block px-6 py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">Login / Register</a>
             </div>
           </template>
-          <p x-show="network.list.length === 0" class="text-gray-500 text-sm text-center py-6">No one yet. Add people from the feed.</p>
-        </div>
-      </template>
 
-      <!-- FIND PEOPLE MODE -->
-      <template x-if="network.searchMode === 'all'">
-        <div>
-          <div x-show="network.searching" class="text-center py-6">
-            <div class="spinner mx-auto"></div>
-          </div>
-          <div x-show="!network.searching && network.search.length < 2" class="text-gray-500 text-sm text-center py-6">
-            Type at least 2 characters to search.
-          </div>
-          <div x-show="!network.searching && network.search.length >= 2 && network.searchResults.length === 0" class="text-gray-500 text-sm text-center py-6">
-            No matching users found.
-          </div>
-          <div class="space-y-3">
-            <template x-for="u in network.searchResults" :key="u.id">
-              <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
-                <div class="flex-1 min-w-0">
-                  <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
-                  <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
-                </div>
-                <button @click="u.in_network ? removeFromNetwork(u.id) : addToNetwork(u.id).then(() => u.in_network = !u.in_network)"
-                        class="text-xs px-3 py-1 rounded-full border transition whitespace-nowrap"
-                        :class="u.in_network ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'"
-                        x-text="u.in_network ? 'In Network ✓' : '+ Add'"></button>
+          <template x-if="isAuthenticated">
+            <div>
+              <div class="flex justify-center gap-2 mb-4">
+                <button @click="setNetworkSearchMode('mine')"
+                        class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
+                        :class="network.searchMode === 'mine' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+                  My Network
+                </button>
+                <button @click="setNetworkSearchMode('all')"
+                        class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
+                        :class="network.searchMode === 'all' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
+                  Find People
+                </button>
               </div>
-            </template>
-          </div>
+
+              <input type="text" x-model="network.search"
+                     @input="network.searchMode === 'all' && searchAllUsers()"
+                     :placeholder="network.searchMode === 'mine' ? 'Search your network…' : 'Search all users… (min 2 chars)'"
+                     class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+
+              <template x-if="network.searchMode === 'mine'">
+                <div class="space-y-3">
+                  <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
+                    <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
+                      <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                      <div class="flex-1 min-w-0">
+                        <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                        <p class="text-xs text-gray-500 capitalize">
+                          <span x-text="u.role"></span>
+                          <span x-show="u.total_points > 0" class="points-badge ml-2" x-text="'🏅 ' + u.total_points"></span>
+                        </p>
+                      </div>
+                      <button @click="removeFromNetwork(u.id)" class="text-xs text-red-500 hover:underline">Remove</button>
+                    </div>
+                  </template>
+                  <p x-show="network.list.length === 0" class="text-gray-500 text-sm text-center py-6">No one yet. Add people from the feed.</p>
+                </div>
+              </template>
+
+              <template x-if="network.searchMode === 'all'">
+                <div>
+                  <div x-show="network.searching" class="text-center py-6">
+                    <div class="spinner mx-auto"></div>
+                  </div>
+                  <div x-show="!network.searching && network.search.length < 2" class="text-gray-500 text-sm text-center py-6">
+                    Type at least 2 characters to search.
+                  </div>
+                  <div x-show="!network.searching && network.search.length >= 2 && network.searchResults.length === 0" class="text-gray-500 text-sm text-center py-6">
+                    No matching users found.
+                  </div>
+                  <div class="space-y-3">
+                    <template x-for="u in network.searchResults" :key="u.id">
+                      <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
+                        <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                        <div class="flex-1 min-w-0">
+                          <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                          <p class="text-xs text-gray-500 capitalize">
+                            <span x-text="u.role"></span>
+                            <span x-show="u.total_points > 0" class="points-badge ml-2" x-text="'🏅 ' + u.total_points"></span>
+                          </p>
+                        </div>
+                        <button @click="u.in_network ? removeFromNetwork(u.id) : addToNetwork(u.id).then(() => u.in_network = !u.in_network)"
+                                class="text-xs px-3 py-1 rounded-full border transition whitespace-nowrap"
+                                :class="u.in_network ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'"
+                                x-text="u.in_network ? 'In Network ✓' : '+ Add'"></button>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
         </div>
-      </template>
-    </div>
-  </template>
-</div>
 
         <!-- === INVITE VIEW === -->
         <div x-show="communityTab === 'invite'" x-cloak class="max-w-md mx-auto mb-16 rounded-2xl p-6"
@@ -571,8 +573,7 @@
             </div>
           </template>
         </div>
-        
-         <!-- Share -->
+
         <section class="share-block" aria-label="Share options">
           <div class="share-row">
             <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
@@ -581,11 +582,10 @@
           <p class="share-status" aria-live="polite"></p>
         </section>
 
-          <h3 class="text-lg text-center font-bold mb-2">AI SEO Tools FB Group</h3>
-        
-<div class="sk-ww-facebook-group-posts" data-embed-id="25719883"></div><script src="https://widgets.sociablekit.com/facebook-group-posts/widget.js" defer></script>
+        <h3 class="text-lg text-center font-bold mb-2">AI SEO Tools FB Group</h3>
 
-        <!-- ===== FORUM SECTION (existing Giscus) ===== -->
+        <div class="sk-ww-facebook-group-posts" data-embed-id="25719883"></div><script src="https://widgets.sociablekit.com/facebook-group-posts/widget.js" defer></script>
+
         <section id="forum-section" class="my-20 scroll-mt-24">
           <h2 class="text-3xl md:text-3xl font-black text-center mb-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
             Community Forum (GitHub Discussions)
@@ -618,7 +618,6 @@
           </p>
         </section>
 
-        <!-- Expandable Instructions -->
         <div class="max-w-4xl mx-auto mb-12">
           <details class="group bg-white dark:bg-gray-950 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
             <summary class="flex justify-between items-center text-center cursor-pointer px-8 py-6 text-2xl font-bold text-gray-800 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400 transition">
@@ -682,7 +681,6 @@
           </details>
         </div>
 
-        <!-- Benefits -->
         <section class="grid md:grid-cols-3 gap-8 my-20">
           <div class="bg-gray-50 dark:bg-gray-900 p-8 rounded-3xl shadow-lg border border-gray-200 dark:border-gray-800">
             <h3 class="text-2xl font-semibold mb-4 text-orange-600 dark:text-orange-400">Live SEO & UX Audits</h3>
@@ -698,7 +696,6 @@
           </div>
         </section>
 
-        <!-- FAQ -->
         <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 my-20">
           <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             Frequently Asked Questions
@@ -752,7 +749,6 @@
           </div>
         </section>
 
-        <!-- Tools Grid -->
         <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
           SEO - UX - AEO Tools
         </h2>
@@ -917,7 +913,6 @@
           </div>
         </div>
 
-        <!-- Author Bio -->
         <section class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
           <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
             <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
@@ -965,14 +960,13 @@
                 </p>
                 <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
                   <p>Published: 2026-02-20</p>
-                  <p>Last updated: 2026-10-06</p>
+                  <p>Last updated: 2026-10-07</p>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- Share -->
         <section class="share-block" aria-label="Share options">
           <div class="share-row">
             <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
@@ -981,7 +975,6 @@
           <p class="share-status" aria-live="polite"></p>
         </section>
 
-        <!-- Breadcrumbs -->
         <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
           <div class="inline-block">
             <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
@@ -1010,7 +1003,6 @@
 </div>
 
 <script src="/main.js?v=1.2" type="module"></script>
-
 <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
 
 <script>
@@ -1033,8 +1025,8 @@ function communityApp() {
       inviteEmail: '',
       inviteStatus: '',
       search: '',
-      searchMode: 'mine', 
-      searchResults: [],  
+      searchMode: 'mine',
+      searchResults: [],
       searching: false
     },
 
@@ -1060,7 +1052,6 @@ function communityApp() {
         this.loadNetwork();
         this.loadFeed(true);
       } else {
-        // Guests: try to load public feed anyway
         this.loadFeed(true);
       }
     },
@@ -1113,8 +1104,8 @@ function communityApp() {
       } catch {}
       finally { this.network.loading = false; }
     },
-    
-        async searchAllUsers() {
+
+    async searchAllUsers() {
       const q = (this.network.search || '').trim();
       if (q.length < 2) { this.network.searchResults = []; return; }
       this.network.searching = true;
@@ -1148,7 +1139,6 @@ function communityApp() {
         });
         if (res.ok) {
           this.feed.posts.forEach(p => { if (p.user_id === userId) p.in_network = true; });
-          // Refresh the network count so the tab badge updates
           this.loadNetwork();
         }
       } catch {}
@@ -1180,7 +1170,7 @@ function communityApp() {
           body: JSON.stringify({ email })
         });
         const data = await res.json();
-        this.network.inviteStatus = data.success ? '✓ Invite recorded — email sending coming soon' : ('⚠️ ' + (data.error || 'Failed'));
+        this.network.inviteStatus = data.success ? '✓ Invite sent to ' + email : ('⚠️ ' + (data.error || 'Failed'));
         if (data.success) this.network.inviteEmail = '';
         setTimeout(() => { this.network.inviteStatus = ''; }, 5000);
       } catch (e) {
@@ -1297,96 +1287,98 @@ function communityApp() {
       } catch {}
     },
 
-async editPost(postId) {
-  if (!this.isAuthenticated) return;
-  const post = this.feed.posts.find(p => p.id === postId);
-  if (!post) return;
+    async editPost(postId) {
+      if (!this.isAuthenticated) return;
+      const post = this.feed.posts.find(p => p.id === postId);
+      if (!post) return;
 
-  const result = await this.openPostEditModal(post);
-  if (!result) return;
+      const result = await this.openPostEditModal(post);
+      if (!result) return;
 
-  try {
-    const res = await fetch(`${API_BASE}/api/posts/${postId}`, {
-      method: 'PATCH',
-      headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ note: result.note, category: result.category })
-    });
-    if (res.ok) {
-      post.note = result.note;
-      post.category = result.category;
-    } else {
-      const data = await res.json().catch(() => ({}));
-      alert(data.error || 'Failed to save');
-    }
-  } catch (e) { alert('Error: ' + e.message); }
-},
+      try {
+        const res = await fetch(`${API_BASE}/api/posts/${postId}`, {
+          method: 'PATCH',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ note: result.note, category: result.category, page_title: result.title })
+        });
+        if (res.ok) {
+          post.note = result.note;
+          post.category = result.category;
+          post.page_title = result.title;
+        } else {
+          const data = await res.json().catch(() => ({}));
+          alert(data.error || 'Failed to save');
+        }
+      } catch (e) { alert('Error: ' + e.message); }
+    },
 
-openPostEditModal(post) {
-  return new Promise((resolve) => {
-    let modal = document.getElementById('tt-edit-post-modal');
-    if (!modal) {
-      modal = document.createElement('div');
-      modal.id = 'tt-edit-post-modal';
-      modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:1rem;';
-      modal.innerHTML = `
-        <div style="max-width:480px; width:100%; border-radius:1rem; padding:1.5rem; box-shadow:0 20px 40px rgba(0,0,0,0.3);" class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-          <h3 style="font-size:1.1rem; font-weight:700; margin:0 0 1rem;">✏️ Edit post</h3>
-          <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Note</label>
-          <textarea id="tt-edit-post-note" maxlength="360" rows="6"
-            style="width:100%; box-sizing:border-box; padding:0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; resize:vertical; font-family:inherit; background:transparent; color:inherit;"></textarea>
-          <p style="font-size:0.75rem; color:#9ca3af; text-align:right; margin:0.25rem 0 0.9rem;"><span id="tt-edit-post-count">0</span> / 360</p>
-          <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Category</label>
-          <select id="tt-edit-post-cat" style="width:100%; padding:0.55rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:1.25rem; background:transparent; color:inherit;">
-            <option value="ux">UX</option>
-            <option value="seo">SEO</option>
-            <option value="aeo">AEO</option>
-          </select>
-          <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
-            <button type="button" id="tt-edit-post-cancel"
-              style="padding:0.55rem 1.2rem; border-radius:0.5rem; border:1px solid #d1d5db; background:transparent; font-weight:600; cursor:pointer; color:inherit; font-family:inherit;">Cancel</button>
-            <button type="button" id="tt-edit-post-save"
-              style="padding:0.55rem 1.4rem; border-radius:0.5rem; border:none; background:linear-gradient(135deg,#f97316,#ec4899); color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Save</button>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(modal);
-    }
+    openPostEditModal(post) {
+      return new Promise((resolve) => {
+        let modal = document.getElementById('tt-edit-post-modal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'tt-edit-post-modal';
+          modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:1rem;';
+          modal.innerHTML = `
+            <div style="max-width:480px; width:100%; border-radius:1rem; padding:1.5rem; box-shadow:0 20px 40px rgba(0,0,0,0.3);" class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+              <h3 style="font-size:1.1rem; font-weight:700; margin:0 0 1rem;">✏️ Edit post</h3>
+              <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Title</label>
+              <input id="tt-edit-post-title" type="text" maxlength="60" placeholder="Optional title (60 chars)" style="width:100%; box-sizing:border-box; padding:0.55rem 0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:0.9rem; background:transparent; color:inherit; font-family:inherit;">
+              <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Note</label>
+              <textarea id="tt-edit-post-note" maxlength="360" rows="6" style="width:100%; box-sizing:border-box; padding:0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; resize:vertical; font-family:inherit; background:transparent; color:inherit;"></textarea>
+              <p style="font-size:0.75rem; color:#9ca3af; text-align:right; margin:0.25rem 0 0.9rem;"><span id="tt-edit-post-count">0</span> / 360</p>
+              <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Category</label>
+              <select id="tt-edit-post-cat" style="width:100%; padding:0.55rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:1.25rem; background:transparent; color:inherit;">
+                <option value="ux">UX</option>
+                <option value="seo">SEO</option>
+                <option value="aeo">AEO</option>
+              </select>
+              <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
+                <button type="button" id="tt-edit-post-cancel" style="padding:0.55rem 1.2rem; border-radius:0.5rem; border:1px solid #d1d5db; background:transparent; font-weight:600; cursor:pointer; color:inherit; font-family:inherit;">Cancel</button>
+                <button type="button" id="tt-edit-post-save" style="padding:0.55rem 1.4rem; border-radius:0.5rem; border:none; background:linear-gradient(135deg,#f97316,#ec4899); color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Save</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(modal);
+        }
 
-    const note = modal.querySelector('#tt-edit-post-note');
-    const count = modal.querySelector('#tt-edit-post-count');
-    const cat = modal.querySelector('#tt-edit-post-cat');
-    const saveBtn = modal.querySelector('#tt-edit-post-save');
-    const cancelBtn = modal.querySelector('#tt-edit-post-cancel');
+        const titleIn = modal.querySelector('#tt-edit-post-title');
+        const note = modal.querySelector('#tt-edit-post-note');
+        const count = modal.querySelector('#tt-edit-post-count');
+        const cat = modal.querySelector('#tt-edit-post-cat');
+        const saveBtn = modal.querySelector('#tt-edit-post-save');
+        const cancelBtn = modal.querySelector('#tt-edit-post-cancel');
 
-    note.value = post.note || '';
-    cat.value = post.category || 'ux';
-    count.textContent = note.value.length;
-    modal.style.display = 'flex';
+        titleIn.value = post.page_title || '';
+        note.value = post.note || '';
+        cat.value = post.category || 'ux';
+        count.textContent = note.value.length;
+        modal.style.display = 'flex';
 
-    const updateCount = () => { count.textContent = note.value.length; };
-    const onCancel = () => { cleanup(); resolve(null); };
-    const onSave = () => { cleanup(); resolve({ note: note.value.trim(), category: cat.value }); };
-    const onKey = (e) => {
-      if (e.key === 'Escape') onCancel();
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') onSave();
-    };
+        const updateCount = () => { count.textContent = note.value.length; };
+        const onCancel = () => { cleanup(); resolve(null); };
+        const onSave = () => { cleanup(); resolve({ title: titleIn.value.trim(), note: note.value.trim(), category: cat.value }); };
+        const onKey = (e) => {
+          if (e.key === 'Escape') onCancel();
+          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') onSave();
+        };
 
-    const cleanup = () => {
-      note.removeEventListener('input', updateCount);
-      cancelBtn.removeEventListener('click', onCancel);
-      saveBtn.removeEventListener('click', onSave);
-      document.removeEventListener('keydown', onKey);
-      modal.style.display = 'none';
-    };
+        const cleanup = () => {
+          note.removeEventListener('input', updateCount);
+          cancelBtn.removeEventListener('click', onCancel);
+          saveBtn.removeEventListener('click', onSave);
+          document.removeEventListener('keydown', onKey);
+          modal.style.display = 'none';
+        };
 
-    note.addEventListener('input', updateCount);
-    cancelBtn.addEventListener('click', onCancel);
-    saveBtn.addEventListener('click', onSave);
-    document.addEventListener('keydown', onKey);
+        note.addEventListener('input', updateCount);
+        cancelBtn.addEventListener('click', onCancel);
+        saveBtn.addEventListener('click', onSave);
+        document.addEventListener('keydown', onKey);
 
-    setTimeout(() => { note.focus(); note.setSelectionRange(0, 0); }, 50);
-  });
-},
+        setTimeout(() => { titleIn.focus(); titleIn.setSelectionRange(titleIn.value.length, titleIn.value.length); }, 50);
+      });
+    },
 
     async reportPost(postId) {
       if (!this.isAuthenticated) return;
@@ -1401,54 +1393,54 @@ openPostEditModal(post) {
         alert('Reported. Thank you.');
       } catch {}
     },
-    
+
     toolDisplayName(key) {
-  if (!key) return 'Audit';
-  const map = {
-    'keyword-tool': 'Keyword Placement Tool',
-    'nusa-tool': 'NUSA Tool',
-    'ofux-tool': 'OFUX Tool',
-    'lighthouse-plus-tool': 'Lighthouse Plus',
-    'topical-authority-audit-tool': 'Topical Authority Audit Tool',
-    'seo-entity-extractor-tool': 'Entity Extractor',
-    'seo-ux-tool': 'SEO + UX Tool',
-    'local-seo-tool': 'Local SEO Tool',
-    'seo-intent-tool': 'SEO Intent Tool',
-    'product-seo-tool': 'Product SEO Tool',
-    'aeo-performance-tool': 'AEO Performance Tool',
-    'ai-search-optimization-tool': 'AEO / AI Search Tool',
-    'ai-voice-search-tool': 'AI Voice Search Tool',
-    'ai-audit-tool': 'AI Content Audit Tool',
-    'quit-risk-tool': 'Quit Risk Tool'
-  };
-  return map[key] || key.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-},
+      if (!key) return 'Audit';
+      const map = {
+        'keyword-tool': 'Keyword Placement Tool',
+        'nusa-tool': 'NUSA Tool',
+        'ofux-tool': 'OFUX Tool',
+        'lighthouse-plus-tool': 'Lighthouse Plus',
+        'topical-authority-audit-tool': 'Topical Authority Audit Tool',
+        'seo-entity-extractor-tool': 'Entity Extractor',
+        'seo-ux-tool': 'SEO + UX Tool',
+        'local-seo-tool': 'Local SEO Tool',
+        'seo-intent-tool': 'SEO Intent Tool',
+        'product-seo-tool': 'Product SEO Tool',
+        'aeo-performance-tool': 'AEO Performance Tool',
+        'ai-search-optimization-tool': 'AEO / AI Search Tool',
+        'ai-voice-search-tool': 'AI Voice Search Tool',
+        'ai-audit-tool': 'AI Content Audit Tool',
+        'quit-risk-tool': 'Quit Risk Tool'
+      };
+      return map[key] || key.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    },
 
-toolPath(key) {
-  const map = {
-    'keyword-tool': '/keyword-tool/',
-    'nusa-tool': '/',
-    'ofux-tool': '/ofux-tool/',
-    'lighthouse-plus-tool': '/lighthouse-plus-tool/',
-    'topical-authority-audit-tool': '/topical-authority-audit-tool/',
-    'seo-entity-extractor-tool': '/seo-entity-extractor-tool/',
-    'seo-ux-tool': '/seo-ux-tool/',
-    'local-seo-tool': '/local-seo-tool/',
-    'seo-intent-tool': '/seo-intent-tool/',
-    'product-seo-tool': '/product-seo-tool/',
-    'aeo-performance-tool': '/aeo-performance-tool/',
-    'ai-search-optimization-tool': '/ai-search-optimization-tool/',
-    'ai-voice-search-tool': '/ai-voice-search-tool/',
-    'ai-audit-tool': '/ai-audit-tool/',
-    'quit-risk-tool': '/quit-risk-tool/'
-  };
-  return map[key] || '/';
-},
+    toolPath(key) {
+      const map = {
+        'keyword-tool': '/keyword-tool/',
+        'nusa-tool': '/',
+        'ofux-tool': '/ofux-tool/',
+        'lighthouse-plus-tool': '/lighthouse-plus-tool/',
+        'topical-authority-audit-tool': '/topical-authority-audit-tool/',
+        'seo-entity-extractor-tool': '/seo-entity-extractor-tool/',
+        'seo-ux-tool': '/seo-ux-tool/',
+        'local-seo-tool': '/local-seo-tool/',
+        'seo-intent-tool': '/seo-intent-tool/',
+        'product-seo-tool': '/product-seo-tool/',
+        'aeo-performance-tool': '/aeo-performance-tool/',
+        'ai-search-optimization-tool': '/ai-search-optimization-tool/',
+        'ai-voice-search-tool': '/ai-voice-search-tool/',
+        'ai-audit-tool': '/ai-audit-tool/',
+        'quit-risk-tool': '/quit-risk-tool/'
+      };
+      return map[key] || '/';
+    },
 
-toolRunUrl(key, testedUrl) {
-  if (!key || !testedUrl) return '#';
-  return this.toolPath(key) + '?url=' + encodeURIComponent(testedUrl);
-},
+    toolRunUrl(key, testedUrl) {
+      if (!key || !testedUrl) return '#';
+      return this.toolPath(key) + '?url=' + encodeURIComponent(testedUrl);
+    },
 
     parseModuleScores(raw) {
       if (!raw) return [];

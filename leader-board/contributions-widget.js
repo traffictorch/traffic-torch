@@ -31,7 +31,7 @@
     const medal = getMedal(index);
     const username = entry.username || '';
     const displayName = entry.display_name || username || 'Anonymous';
-    const profileUrl = '/u/' + username + '/';
+    const profileUrl = '/torcher/' + username + '/';
     const avatar = `/images/avatars/${entry.avatar_preset || 'owner'}.svg`;
 
     const websiteLink = (entry.website_url && entry.website_approved)
@@ -89,7 +89,7 @@
         <div class="tt-contrib-empty">
           <div class="tt-contrib-empty-icon">🏁</div>
           <p>No contributions yet — be the first!</p>
-          <p style="font-size:0.8rem;margin-top:0.35rem;opacity:0.7;">Submit feedback from any audit to earn 10 points.</p>
+          <p style="font-size:0.8rem;margin-top:0.35rem;opacity:0.7;">Submit feedback from any audit to earn 25 points.</p>
           <div class="tt-contrib-leaderboard-cta">
             <a href="/leader-board/" class="tt-contrib-leaderboard-link">View leaderboard →</a>
           </div>

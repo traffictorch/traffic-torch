@@ -276,6 +276,11 @@
   <noscript><link rel="stylesheet" href="/leader-board/high-scores-widget.css?v=1.0"></noscript>
   <script src="/leader-board/high-scores-widget.js?v=1.0" defer></script>
   <script src="/leader-board/submit-score.js?v=1.0" defer></script>
+  
+    <link rel="preload" as="style" href="/leader-board/contributions-widget.css?v=1.0"
+      onload="this.onload=null;this.rel='stylesheet'">
+	<noscript><link rel="stylesheet" href="/leader-board/contributions-widget.css?v=1.0"></noscript>
+	<script src="/leader-board/contributions-widget.js?v=1.0" defer></script>
 
   <link rel="stylesheet" media="print" href="/seo-intent-tool/print.css?v=1.1">
 
@@ -463,6 +468,13 @@
 
 <section id="tt-lb-anchor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
   <div class="tt-lb" data-tool="seo-intent-tool" data-limit="12" data-title="Top SEO Intent Scores"></div>
+</section>
+
+<!-- 🏅 Top Contributors -->
+<section id="tt-contrib-anchor" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mt-8 mb-8">
+  <div class="tt-contrib"
+       data-limit="12"
+       data-title="Top Contributors"></div>
 </section>
 
     <!-- ===== GA4 & GSC Dashboards ===== -->

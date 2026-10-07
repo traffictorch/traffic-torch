@@ -6,7 +6,7 @@
   <title>Profile · Traffic Torch</title>
   <meta name="description" content="Traffic Torch community profile — shared audits, network, and tools.">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://traffictorch.net/u/">
+  <link rel="canonical" href="https://traffictorch.net/torcher/">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
 
@@ -306,7 +306,7 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <template x-for="u in network" :key="u.id">
-              <a :href="'/u/' + u.username + '/'" class="glass rounded-2xl p-4 flex items-center gap-3 hover:bg-white/10 transition">
+              <a :href="'/torcher/' + u.username + '/'" class="glass rounded-2xl p-4 flex items-center gap-3 hover:bg-white/10 transition">
                 <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`"
                      width="48" height="48" style="width:48px;height:48px;"
                      class="rounded-full flex-shrink-0 object-cover" alt="">
@@ -384,12 +384,12 @@ function profilePage() {
       const username = parts[1] || '';
       this.username = username;
 
-      if (!username) { this.notFound = true; this.loading = false; return; }
+      if (!username || username === 'torcher') { this.notFound = true; this.loading = false; return; }
 
       document.title = `@${username} · Traffic Torch`;
 
       try {
-        const res = await fetch(`${API_BASE}/api/u/${encodeURIComponent(username)}`);
+        const res = await fetch(`${API_BASE}/api/torcher/${encodeURIComponent(username)}`);
         if (!res.ok) {
           this.notFound = true;
           this.loading = false;

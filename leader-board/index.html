@@ -73,7 +73,7 @@
             "name": "What is the Traffic Torch leaderboard?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The Traffic Torch leaderboard is a public, all-time ranking of the highest-scoring websites audited by any Traffic Torch tool — NUSA, Keyword, Lighthouse Plus, AEO Performance, AI Search, Voice Search and more. Every entry is opt-in: a site only appears after its owner clicks 'Submit to Leaderboard' on a completed audit."
+              "text": "The Traffic Torch leaderboard is a public, all-time ranking of the highest-scoring websites audited by any Traffic Torch tool. Every entry is opt-in: a site only appears after its owner clicks 'Submit to Leaderboard' on a completed audit."
             }
           },
           {
@@ -81,7 +81,7 @@
             "name": "How are leaderboard scores calculated?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Each Traffic Torch tool produces a 0–100 score. The leaderboard displays that same score exactly as the tool reported it — no averaging, no editorial tweaks. When a URL is re-audited, the higher of the two scores is kept, so a site's best result always stands."
+              "text": "Each Traffic Torch tool produces a 0–100 score. The leaderboard displays that same score exactly as the tool reported it — no averaging, no editorial tweaks. When a URL is re-audited, the higher of the two scores is kept."
             }
           },
           {
@@ -89,7 +89,7 @@
             "name": "How do I get my site on the leaderboard?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Run any Traffic Torch audit on your page, wait for the results, then click 'Submit to Leaderboard' below the share panel. One entry per URL per tool. No account required to appear."
+              "text": "Run any Traffic Torch audit on your page, wait for the results, then click 'Submit to Leaderboard' below the share panel. One entry per URL per tool. Log in to link a public profile to your score."
             }
           },
           {
@@ -97,7 +97,7 @@
             "name": "What data is stored on the leaderboard?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Only the audited URL, page title, overall score and per-module score breakdown. No personal data, no IP addresses, no analytics. Audits you run but don't submit never leave your browser."
+              "text": "Only the audited URL, page title, overall score and per-module score breakdown. If you are logged in when you submit, your username, display name and avatar preset are also stored so your profile can be linked to the score. No emails, no IP addresses, no analytics."
             }
           },
           {
@@ -122,7 +122,6 @@
   <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
   <meta name="apple-mobile-web-app-title" content="Torch">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
@@ -141,18 +140,15 @@
     <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
   </noscript>
 
-  <!-- Leaderboard widget -->
   <link rel="preload" as="style" href="/leader-board/high-scores-widget.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/leader-board/high-scores-widget.css?v=1.0"></noscript>
   <script src="/leader-board/high-scores-widget.js?v=1.0" defer></script>
 
-  <!-- Contributions widget -->
   <link rel="preload" as="style" href="/leader-board/contributions-widget.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/leader-board/contributions-widget.css?v=1.0"></noscript>
   <script src="/leader-board/contributions-widget.js?v=1.0" defer></script>
 
   <style>
-    /* Leaderboard page styles */
     .lb-hero { text-align: center; }
     .lb-tabs {
       display: flex; flex-wrap: wrap; justify-content: center;
@@ -178,7 +174,6 @@
     .dark .lb-tab { background: rgba(30,41,59,0.6); border-color: rgba(255,255,255,0.1); color: #e5e7eb; }
     .dark .lb-tab:hover { color: #fb923c; }
 
-    /* Podium cards */
     .lb-podium-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -212,8 +207,39 @@
       -webkit-text-fill-color: transparent; color: transparent;
     }
     .lb-podium-score small { font-size: 1rem; -webkit-text-fill-color: #6b7280; color: #6b7280; }
+
+    .lb-podium-profile {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.6rem; margin: 0.85rem 0 0.5rem;
+      flex-wrap: wrap;
+    }
+    .lb-podium-profile-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      flex-shrink: 0; background: rgba(249,115,22,0.1);
+    }
+    .lb-podium-profile-meta { text-align: left; min-width: 0; }
+    .lb-podium-profile-name {
+      display: block; font-weight: 800; font-size: 0.95rem;
+      color: #1f2937; text-decoration: none;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .dark .lb-podium-profile-name { color: #f3f4f6; }
+    .lb-podium-profile-name:hover { color: #ea580c; }
+    .dark .lb-podium-profile-name:hover { color: #fb923c; }
+    .lb-podium-profile-handle { font-size: 0.72rem; color: #9ca3af; }
+    .lb-podium-points {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      margin-top: 0.25rem;
+      padding: 0.1rem 0.5rem;
+      font-size: 0.7rem; font-weight: 800;
+      border-radius: 9999px;
+      background: rgba(249,115,22,0.15);
+      color: #ea580c;
+    }
+    .dark .lb-podium-points { background: rgba(251,146,60,0.2); color: #fb923c; }
+
     .lb-podium-title {
-      font-size: 1rem; font-weight: 700; margin-top: 0.6rem;
+      font-size: 1rem; font-weight: 700; margin-top: 0.35rem;
       color: #1f2937; overflow: hidden; text-overflow: ellipsis;
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
       word-break: break-word;
@@ -235,7 +261,6 @@
     }
     .lb-podium-cta:hover { filter: brightness(1.05); }
 
-    /* Badge box */
     .lb-badge-box {
       max-width: 780px;
       margin: 2rem auto;
@@ -287,7 +312,6 @@
   </a>
 
   <div class="flex flex-1 min-h-screen">
-    <!-- Desktop sidebar -->
     <aside id="desktopSidebar"
            class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start"
            aria-label="Primary navigation">
@@ -327,7 +351,6 @@
 
       <main id="main-content" class="container mx-auto px-3 py-2 max-w-7xl" tabindex="-1">
 
-        <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="max-w-7xl mx-auto px-4 py-4 text-sm">
           <ol class="flex flex-wrap items-center gap-2 text-gray-600 dark:text-gray-400">
             <li><a href="/" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Home</a></li>
@@ -336,7 +359,6 @@
           </ol>
         </nav>
 
-        <!-- HERO -->
         <section id="lb-hero" class="lb-hero my-10 md:my-14 px-4">
           <h1 class="text-3xl md:text-5xl font-black bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500 bg-clip-text text-transparent mb-4 max-w-4xl mx-auto leading-tight">
             Traffic Torch All-Time Leaderboard
@@ -346,41 +368,34 @@
           </p>
           <p id="lb-live-count" class="text-sm font-medium text-gray-500 dark:text-gray-400">Loading live stats…</p>
           <p class="mt-4 text-xs text-gray-500 dark:text-gray-500 max-w-2xl mx-auto">
-            Entries are opt-in. Audits you run but don't submit never leave your browser.
+            Entries are opt-in. Log in when you submit to link your public profile and points to the score.
           </p>
         </section>
 
-        <!-- PODIUM (Top 3, JS-rendered) -->
         <section class="my-12 px-4">
           <h2 class="text-2xl md:text-3xl font-black text-center mb-6 bg-gradient-to-r from-amber-500 to-pink-600 bg-clip-text text-transparent">
             🏆 Podium
           </h2>
-          <div id="lb-podium" class="lb-podium-grid" aria-live="polite">
-            <!-- filled by JS -->
-          </div>
+          <div id="lb-podium" class="lb-podium-grid" aria-live="polite"></div>
         </section>
 
-        <!-- HALL OF FAME TOP 12 -->
         <section class="my-16 px-4">
           <h2 class="text-2xl md:text-3xl font-black text-center mb-8 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
             Hall of Fame — Top 12
           </h2>
           <div class="tt-lb" data-limit="12" data-title="All Tools · All Time"></div>
         </section>
-        
-        <!-- TOP CONTRIBUTORS -->
+
         <section class="my-16 px-4">
           <h2 class="text-2xl md:text-3xl font-black text-center mb-3 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
             🏅 Top Contributors
           </h2>
           <p class="text-center text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8 text-sm">
-            Community members who've submitted bug reports, feature requests, and feedback.
-            Each verified contribution earns 10 points. Updated live.
+            Community members earning points from comments (5), posts (10), leaderboard submissions (10), and development contributions (25). Updated live.
           </p>
           <div class="tt-contrib max-w-4xl mx-auto" data-limit="12" data-title="All-Time Contributors"></div>
         </section>
 
-        <!-- FILTER TABS + PER-TOOL BOARDS -->
         <section class="my-16 px-4">
           <h2 class="text-2xl md:text-3xl font-black text-center mb-6 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
             Leaderboard by Tool
@@ -427,7 +442,6 @@
           </div>
         </section>
 
-        <!-- EMBEDDABLE BADGE (for #1 site) -->
         <section class="my-16 px-4">
           <h2 class="text-2xl md:text-3xl font-black text-center mb-4 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
             🥇 Are You #1? Grab Your Badge
@@ -444,7 +458,6 @@
           </div>
         </section>
 
-        <!-- SHARE -->
         <section class="share-block my-16" aria-label="Share options">
           <div class="share-row">
             <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
@@ -453,7 +466,6 @@
           <p class="share-status" aria-live="polite"></p>
         </section>
 
-        <!-- FAQ -->
         <section id="faq" class="max-w-4xl mx-auto my-16 px-4">
           <h2 class="text-3xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500">
             Frequently Asked Questions
@@ -466,7 +478,7 @@
                 <span class="text-2xl transition-transform duration-300 group-open:rotate-180" aria-hidden="true">↓</span>
               </summary>
               <div class="px-6 pb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
-                A public, all-time ranking of the highest-scoring websites audited by any Traffic Torch tool — NUSA, Keyword, Lighthouse Plus, AEO Performance, AI Search, Voice Search and more. Every entry is opt-in: a site only appears after its owner clicks <strong>Submit to Leaderboard</strong> on a completed audit.
+                A public, all-time ranking of the highest-scoring websites audited by any Traffic Torch tool. Every entry is opt-in: a site only appears after its owner clicks <strong>Submit to Leaderboard</strong> on a completed audit.
               </div>
             </details>
 
@@ -476,7 +488,7 @@
                 <span class="text-2xl transition-transform duration-300 group-open:rotate-180" aria-hidden="true">↓</span>
               </summary>
               <div class="px-6 pb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
-                Each Traffic Torch tool produces a 0–100 score. The leaderboard displays that same score exactly as the tool reported it — no averaging, no editorial tweaks. When a URL is re-audited, the higher of the two scores is kept, so a site's best result always stands.
+                Each Traffic Torch tool produces a 0–100 score. The leaderboard displays that same score exactly as the tool reported it — no averaging, no editorial tweaks. When a URL is re-audited, the higher of the two scores is kept.
               </div>
             </details>
 
@@ -486,7 +498,7 @@
                 <span class="text-2xl transition-transform duration-300 group-open:rotate-180" aria-hidden="true">↓</span>
               </summary>
               <div class="px-6 pb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
-                Run any Traffic Torch audit on your page, wait for the results, then click <strong>Submit to Leaderboard</strong> below the share panel. One entry per URL per tool. No account required to appear.
+                Run any Traffic Torch audit on your page, wait for the results, then click <strong>Submit to Leaderboard</strong> below the share panel. One entry per URL per tool. Log in first if you want your profile linked to the score.
               </div>
             </details>
 
@@ -496,7 +508,7 @@
                 <span class="text-2xl transition-transform duration-300 group-open:rotate-180" aria-hidden="true">↓</span>
               </summary>
               <div class="px-6 pb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
-                Only the audited URL, page title, overall score and per-module score breakdown. No personal data, no IP addresses, no analytics. Audits you run but don't submit never leave your browser.
+                Only the audited URL, page title, overall score and per-module score breakdown. If you are logged in when you submit, your username, display name and avatar preset are also stored so your profile can be linked. No emails, no IP addresses, no analytics.
               </div>
             </details>
 
@@ -519,10 +531,10 @@
     </div>
   </div>
 
-  <!-- Podium + badge + live count script -->
   <script>
     (function () {
       const ENDPOINT = 'https://traffic-torch-high-scores.traffictorch.workers.dev';
+      const AUTH_ENDPOINT = 'https://traffic-torch-auth.traffictorch.workers.dev';
       const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
         ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -538,18 +550,43 @@
             host.innerHTML = `<p class="text-center text-gray-500 dark:text-gray-400 py-6">No scores yet — be the first 🏁</p>`;
             return;
           }
+
+          // Fetch live total_points for top 3 profiles in parallel
+          const pointsMap = {};
+          await Promise.all(rows.map(async (e) => {
+            if (!e.username) return;
+            try {
+              const res = await fetch(`${AUTH_ENDPOINT}/api/torcher/${encodeURIComponent(e.username)}`);
+              if (!res.ok) return;
+              const data = await res.json();
+              if (data.profile && typeof data.profile.total_points === 'number') {
+                pointsMap[e.username] = data.profile.total_points;
+              }
+            } catch {}
+          }));
+
           const medals = ['🥇', '🥈', '🥉'];
-          // Arrange so #1 is visually center on desktop
-          const order = rows.map((_, i) => i);
-          host.innerHTML = order.map((idx) => {
-            const e = rows[idx];
-            if (!e) return '';
+          host.innerHTML = rows.map((e, idx) => {
             const place = idx + 1;
             const pClass = `p${place}`;
+            const points = e.username ? pointsMap[e.username] : null;
+
+            const profileBlock = e.username ? `
+              <div class="lb-podium-profile">
+                <img class="lb-podium-profile-avatar" src="/images/avatars/${esc(e.avatar_preset || 'owner')}.svg" alt="" loading="lazy">
+                <div class="lb-podium-profile-meta">
+                  <a class="lb-podium-profile-name" href="/torcher/${esc(e.username)}/">${esc(e.display_name || e.username)}</a>
+                  <span class="lb-podium-profile-handle">@${esc(e.username)}</span>
+                  ${typeof points === 'number' ? `<span class="lb-podium-points">🏅 ${points}</span>` : ''}
+                </div>
+              </div>
+            ` : '';
+
             return `
               <article class="lb-podium-card ${pClass}">
                 <div class="lb-podium-medal">${medals[idx] || '#' + place}</div>
                 <div class="lb-podium-score">${e.overall_score}<small>/100</small></div>
+                ${profileBlock}
                 <a class="lb-podium-title" href="${esc(e.url)}" target="_blank" rel="noopener nofollow">
                   ${esc(e.title || e.domain || 'Untitled page')}
                 </a>
@@ -623,12 +660,10 @@
         document.querySelectorAll('.lb-panel').forEach(p => {
           p.classList.toggle('hidden', p.dataset.tool !== target);
         });
-        // Fire reload on the newly visible widget so it fetches if it hasn't yet
         const active = document.querySelector(`.lb-panel[data-tool="${target}"] .tt-lb`);
         if (active) active.dispatchEvent(new Event('tt-lb-reload'));
       });
 
-      /* ---------- Boot ---------- */
       function boot() {
         renderPodium();
         renderLiveCount();
@@ -639,7 +674,6 @@
     })();
   </script>
 
-  <!-- Core scripts (same as homepage) -->
   <script src="/main.js?v=1.2" type="module"></script>
   <script type="module" src="/shared/google-analytics.js"></script>
 

@@ -3,6 +3,8 @@
   const LB_ENDPOINT = 'https://traffic-torch-high-scores.traffictorch.workers.dev';
   const AUTH_ENDPOINT = 'https://traffic-torch-auth.traffictorch.workers.dev';
   const FP_KEY = 'tt_lb_fp';
+  const PROFILE_CACHE_KEY = 'tt_my_profile';
+  const PROFILE_CACHE_TTL = 5 * 60 * 1000; // 5 min
 
   async function getFingerprint() {
     let fp = localStorage.getItem(FP_KEY);
@@ -28,18 +30,72 @@
     return fp;
   }
 
+  async function getMyProfile() {
+    const cached = localStorage.getItem(PROFILE_CACHE_KEY);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (Date.now() - parsed.ts < PROFILE_CACHE_TTL) return parsed.profile;
+      } catch {}
+    }
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+    try {
+      const res = await fetch(`${AUTH_ENDPOINT}/api/profile/me`, {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      const profile = data.profile || null;
+      if (profile) {
+        localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify({ ts: Date.now(), profile }));
+      }
+      return profile;
+    } catch { return null; }
+  }
+
   async function submitLeaderboard({ tool, url, title, score, moduleScores }) {
     const fp = await getFingerprint();
+    const profile = await getMyProfile();
+
+    const body = {
+      tool, url, title,
+      overall_score: Math.round(score),
+      module_scores: moduleScores || null
+    };
+
+    if (profile && profile.id && profile.username) {
+      body.user_id = profile.id;
+      body.username = profile.username;
+      body.display_name = profile.display_name || profile.username;
+      body.avatar_preset = profile.avatar_preset || 'owner';
+    }
+
     const res = await fetch(`${LB_ENDPOINT}/api/high-scores/submit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-fingerprint': fp },
-      body: JSON.stringify({
-        tool, url, title,
-        overall_score: Math.round(score),
-        module_scores: moduleScores || null
-      })
+      body: JSON.stringify(body)
     });
-    return res.json();
+    const data = await res.json();
+
+    // Award +10 points on successful leaderboard submit (only on insert or update)
+    if (data.success && (data.inserted || data.updated)) {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        try {
+          await fetch(`${AUTH_ENDPOINT}/api/user-points/leaderboard-award`, {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ reference_id: null })
+          });
+        } catch (e) { console.warn('Points award failed:', e); }
+      }
+    }
+
+    return data;
   }
 
   async function submitContribution({ message, tool, pageUrl }) {
@@ -127,10 +183,9 @@
     const wrap = document.createElement('div');
     wrap.className = 'tt-actions-wrap';
     wrap.innerHTML = `
-      <!-- 1. Post to Community -->
       <div class="tt-action-block" id="tt-action-community">
         <div class="tt-action-title">🗣️ Share with the community</div>
-        <p class="tt-action-desc">Post this audit to the UX / SEO / AEO feed. Add a short note. Shows up in the dashboard Network feed.</p>
+        <p class="tt-action-desc">Post this audit to the UX / SEO / AEO feed. Add a short note. Shows up in the dashboard Network feed and community page.</p>
         <button type="button" class="tt-action-btn" data-act="community-open">Post to Community</button>
         <div class="tt-action-form" data-form="community">
           <div class="tt-action-cats">
@@ -142,16 +197,16 @@
           <textarea class="tt-action-note" data-note="community" maxlength="360" placeholder="What did you learn? (360 chars max)"></textarea>
           <div class="tt-action-meta">
             <span class="tt-pc-count">0 / 360</span>
+            <span style="color:#f97316; font-weight:700;">+10 points</span>
           </div>
-          <button type="button" class="tt-action-submit" data-act="community-submit">Publish to Feed</button>
+          <button type="button" class="tt-action-submit" data-act="community-submit">Publish to Feed (+10)</button>
         </div>
         <div class="tt-action-status" data-status="community"></div>
       </div>
 
-      <!-- 2. Contribute to Development -->
       <div class="tt-action-block" id="tt-action-contribute">
         <div class="tt-action-title">🏅 Contribute to Development</div>
-        <p class="tt-action-desc">Found a bug? Have a feature idea? Tell us. Each verified report earns 10 points on the contributors leaderboard.</p>
+        <p class="tt-action-desc">Found a bug? Have a feature idea? Tell us. Each verified report earns 25 points on the contributors leaderboard.</p>
         <button type="button" class="tt-action-btn" data-act="contribute-open">Report a Bug or Feature</button>
         <div class="tt-action-form" data-form="contribute">
           <div class="tt-contribute-rating" style="display:flex; gap:0.5rem; margin-bottom:0.8rem; justify-content:center;">
@@ -165,23 +220,23 @@
           <textarea class="tt-action-note" data-note="contribute" maxlength="2000" placeholder="Describe the bug or feature…"></textarea>
           <div class="tt-action-meta">
             <span class="tt-cont-count">0 / 2000</span>
-            <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.85rem; color:#6b7280; cursor:pointer;">
-              <input type="checkbox" data-reply="contribute"> Reply requested
-            </label>
+            <span style="color:#f97316; font-weight:700;">+25 points</span>
           </div>
+          <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.85rem; color:#6b7280; cursor:pointer; margin-top:0.5rem;">
+            <input type="checkbox" data-reply="contribute"> Reply requested
+          </label>
           <div data-email-group="contribute" style="display:none; margin-top:0.6rem;">
             <input type="email" data-email="contribute" placeholder="Your email for reply" class="tt-action-note" style="min-height:auto; padding:0.6rem 0.75rem;">
           </div>
-          <button type="button" class="tt-action-submit" data-act="contribute-submit">Submit Contribution (+10)</button>
+          <button type="button" class="tt-action-submit" data-act="contribute-submit">Submit Contribution (+25)</button>
         </div>
         <div class="tt-action-status" data-status="contribute"></div>
       </div>
 
-      <!-- 3. Leaderboard -->
       <div class="tt-action-block" id="tt-action-leaderboard">
         <div class="tt-action-title">🏆 Want to be on the leaderboard?</div>
         <p class="tt-action-desc">Submit this audit to the public high-scores board. Only the URL, page title, score and module breakdown are stored. One entry per URL per tool — a higher re-audit replaces the old one.</p>
-        <button type="button" class="tt-action-btn" data-act="lb-submit">Submit to Leaderboard</button>
+        <button type="button" class="tt-action-btn" data-act="lb-submit">Submit to Leaderboard (+10)</button>
         <div class="tt-action-status" data-status="leaderboard"></div>
       </div>
     `;
@@ -212,14 +267,15 @@
       if (!note) { setStatus('community', '❌ Add a short note before publishing.', 'error'); return; }
       btn.disabled = true; btn.textContent = 'Publishing…';
       try {
-        await submitPost({
+        const result = await submitPost({
           category, note,
           tool: payload.tool, url: payload.url,
-          title: userTitle, // empty string when not provided; feed card will fallback to tool name
+          title: userTitle,
           score: payload.score, moduleScores: payload.moduleScores
         });
+        const pointsMsg = result.total_points ? ` Total: ${result.total_points} pts.` : '';
         setStatus('community',
-          `✅ Posted to the feed!
+          `✅ Posted to the feed! +10 points.${pointsMsg}
            <div class="tt-action-links">
              <a href="/dashboard/#network">View in Network feed →</a>
              <a href="/community/">Browse community →</a>
@@ -228,11 +284,11 @@
         communityNote.value = ''; communityCount.textContent = '0 / 360';
         communityTitle.value = '';
         communityForm.classList.remove('open');
-        btn.textContent = 'Publish to Feed';
+        btn.textContent = 'Publish to Feed (+10)';
         refreshAllWidgets();
       } catch (err) {
         setStatus('community', `❌ ${err.message}`, 'error');
-        btn.textContent = 'Publish to Feed';
+        btn.textContent = 'Publish to Feed (+10)';
       } finally { btn.disabled = false; }
     });
 
@@ -278,7 +334,6 @@
 
       btn.disabled = true; btn.textContent = 'Submitting…';
 
-      // Bundle rating + reply info into the message body so the server keeps everything
       const enrichedMessage = [
         `Rating: ${rating}`,
         wantsReply ? `Reply requested: yes (${email})` : 'Reply requested: no',
@@ -293,13 +348,12 @@
           pageUrl: payload.url
         });
         setStatus('contribute',
-          `✅ +10 points! Total: ${data.total_points} (${data.contribution_count} contribution${data.contribution_count === 1 ? '' : 's'}).
+          `✅ +25 points! Total: ${data.total_points} (${data.contribution_count} contribution${data.contribution_count === 1 ? '' : 's'}).
            <div class="tt-action-links">
              <a href="#tt-contrib-anchor">See contributors ↓</a>
            </div>`,
           'success');
 
-        // Reset
         contributeNote.value = '';
         contributeCount.textContent = '0 / 2000';
         contributeRatingEls.forEach(b => b.style.transform = 'scale(1)');
@@ -308,11 +362,11 @@
         contributeEmail.value = '';
         contributeEmailGrp.style.display = 'none';
         contributeForm.classList.remove('open');
-        btn.textContent = 'Submit Contribution (+10)';
+        btn.textContent = 'Submit Contribution (+25)';
         refreshAllWidgets();
       } catch (err) {
         setStatus('contribute', `❌ ${err.message}`, 'error');
-        btn.textContent = 'Submit Contribution (+10)';
+        btn.textContent = 'Submit Contribution (+25)';
       } finally { btn.disabled = false; }
     });
 
@@ -323,8 +377,11 @@
       try {
         const result = await submitLeaderboard(payload);
         if (result.success) {
+          const pointsLine = (result.inserted || result.updated)
+            ? '<br>🏅 +10 points added to your total.'
+            : '';
           setStatus('leaderboard',
-            `✅ ${result.message}
+            `✅ ${result.message}${pointsLine}
              <div class="tt-action-links">
                <a href="#tt-lb-anchor">See the leaderboard ↑</a>
              </div>`,

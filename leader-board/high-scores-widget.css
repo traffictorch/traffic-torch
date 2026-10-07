@@ -93,6 +93,32 @@
 }
 
 .tt-lb-info { min-width: 0; }
+
+.tt-lb-profile {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+.tt-lb-profile-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  flex-shrink: 0; background: rgba(249,115,22,0.1);
+}
+.tt-lb-profile-meta {
+  display: flex; align-items: baseline; gap: 0.4rem;
+  flex-wrap: wrap; min-width: 0;
+}
+.tt-lb-profile-name {
+  font-weight: 700; font-size: 0.85rem;
+  color: #1f2937; text-decoration: none;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  max-width: 100%;
+}
+.dark .tt-lb-profile-name { color: #f3f4f6; }
+.tt-lb-profile-name:hover { color: #ea580c; }
+.dark .tt-lb-profile-name:hover { color: #fb923c; }
+.tt-lb-profile-handle {
+  font-size: 0.72rem; color: #9ca3af;
+}
+
 .tt-lb-title {
   display: block;
   font-weight: 700; font-size: 0.95rem;
@@ -212,7 +238,6 @@
 }
 .tt-lb-toggle:hover { filter: brightness(1.08); transform: translateY(-1px); }
 
-/* Skeleton */
 .tt-lb-skel { display: flex; flex-direction: column; gap: 0.75rem; }
 .tt-lb-skel-row {
   height: 72px; border-radius: 1rem;
@@ -229,21 +254,18 @@
   100% { background-position: -200% 0; }
 }
 
-/* Empty */
 .tt-lb-empty { text-align: center; padding: 2rem 1rem; }
 .tt-lb-empty-icon { font-size: 2.6rem; margin-bottom: 0.5rem; }
 .tt-lb-empty-title { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem; }
 .tt-lb-empty-sub { font-size: 0.85rem; color: #6b7280; margin: 0; }
 .dark .tt-lb-empty-sub { color: #9ca3af; }
 
-/* Pulse for "Beat this score" scroll target */
 .tt-lb-pulse { animation: tt-lb-pulse-anim 1.5s ease; }
 @keyframes tt-lb-pulse-anim {
   0%, 100% { box-shadow: 0 0 0 0 rgba(249,115,22,0.6); }
   50%      { box-shadow: 0 0 0 12px rgba(249,115,22,0); }
 }
 
-/* Submit button block */
 .tt-lb-submit-wrap {
   margin: 2rem auto 0; max-width: 720px;
   padding: 1.25rem 1.5rem;
@@ -284,6 +306,9 @@
   .tt-lb-btn { padding: 0.35rem 0.6rem; font-size: 0.72rem; }
   .tt-lb-modules { grid-template-columns: 1fr; }
   .tt-lb-submit-wrap { padding: 1rem; }
+  .tt-lb-profile-avatar { width: 24px; height: 24px; }
+  .tt-lb-profile-name { font-size: 0.8rem; }
+  .tt-lb-profile-handle { font-size: 0.68rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -291,7 +316,6 @@
   .tt-lb-skel-row { animation: none; }
 }
 
-/* Shared "View leaderboard" CTA at the bottom of both widgets */
 .tt-lb-leaderboard-cta,
 .tt-contrib-leaderboard-cta {
   margin-top: 1.1rem;

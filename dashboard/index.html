@@ -16,20 +16,18 @@
   <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Traffic Torch Pro Dashboard">
-  
-    <!-- Preload critical CSS -->
+
   <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" as="style" href="/dashboard/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
     <link rel="stylesheet" href="/style.css?v=1.0">
     <link rel="stylesheet" href="/dashboard/style.css?v=1.0">
   </noscript>
-  
+
   <style>
   html { visibility: hidden; opacity: 0; transition: opacity 0.4s ease; }
   [x-cloak] { display: none !important; }
 
-  /* First-paint: header sub-nav + profile card must not flash unstyled */
   .glass {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);
@@ -37,7 +35,28 @@
   }
   .dark .glass { background: rgba(0, 0, 0, 0.3); }
   .tab-active { border-bottom: 3px solid #f97316; color: #f97316; }
-</style>
+
+  .points-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    border-radius: 9999px;
+    background: rgba(249,115,22,0.15);
+    color: #ea580c;
+    line-height: 1.2;
+  }
+  .dark .points-badge { background: rgba(251,146,60,0.2); color: #fb923c; }
+  .points-badge-lg {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.9rem;
+    background: linear-gradient(135deg, #f97316, #ec4899);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(249,115,22,0.35);
+  }
+  </style>
 
   <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
   <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local.css?v=1.0"></noscript>
@@ -56,12 +75,10 @@
 
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
 <div x-data="dashboardApp()" x-init="initDashboard()" class="flex flex-1 min-h-screen">
-
   <div class="flex flex-1 min-h-screen">
 
     <!-- Desktop Sidebar -->
@@ -98,65 +115,60 @@
         </div>
       </header>
 
-      <!-- Main Content -->
       <main class="container mx-auto px-4 py-4 flex-1">
 
-        <!-- Horizontal Tabs -->
-<!-- Desktop tabs -->
-<div class="hidden md:flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
-  <template x-for="tab in tabs" :key="'d-' + tab.id">
-    <button @click="activeDashboardTab = tab.id"
-            class="px-2 py-2 text-sm font-medium transition-all duration-200"
-            :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
-      <span x-text="tab.label"></span>
-      <template x-if="tab.id === 'profile' && notifications.unread > 0">
-        <span class="ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full bg-orange-500 text-white" x-text="notifications.unread"></span>
-      </template>
-    </button>
-  </template>
-</div>
+        <!-- Desktop tabs -->
+        <div class="hidden md:flex flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
+          <template x-for="tab in tabs" :key="'d-' + tab.id">
+            <button @click="activeDashboardTab = tab.id"
+                    class="px-2 py-2 text-sm font-medium transition-all duration-200"
+                    :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
+              <span x-text="tab.label"></span>
+              <template x-if="tab.id === 'profile' && notifications.unread > 0">
+                <span class="ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full bg-orange-500 text-white" x-text="notifications.unread"></span>
+              </template>
+            </button>
+          </template>
+        </div>
 
-<!-- Mobile tabs -->
-<div x-data="{ mobileTabsOpen: false }" class="flex md:hidden flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
-  <template x-for="tab in tabs.slice(0, 3)" :key="'m-' + tab.id">
-    <button @click="activeDashboardTab = tab.id"
-            class="px-2 py-2 text-sm font-medium transition-all duration-200"
-            :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
-      <span x-text="tab.label"></span>
-      <template x-if="tab.id === 'profile' && notifications.unread > 0">
-        <span class="ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full bg-orange-500 text-white" x-text="notifications.unread"></span>
-      </template>
-    </button>
-  </template>
-
-  <template x-for="tab in tabs.slice(3)" :key="'mx-' + tab.id">
-    <button x-show="mobileTabsOpen"
-            @click="activeDashboardTab = tab.id; mobileTabsOpen = false"
-            class="px-2 py-2 text-sm font-medium transition-all duration-200"
-            :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
-      <span x-text="tab.label"></span>
-    </button>
-  </template>
-
-  <button type="button"
-          @click="mobileTabsOpen = !mobileTabsOpen"
-          class="px-2 py-2 text-sm font-medium text-gray-500 dark:text-gray-400"
-          x-text="mobileTabsOpen ? 'Show less ▲' : 'More ▼'"></button>
-</div>
+        <!-- Mobile tabs -->
+        <div x-data="{ mobileTabsOpen: false }" class="flex md:hidden flex-wrap gap-2 border-b border-gray-200 dark:border-gray-700 mb-8">
+          <template x-for="tab in tabs.slice(0, 3)" :key="'m-' + tab.id">
+            <button @click="activeDashboardTab = tab.id"
+                    class="px-2 py-2 text-sm font-medium transition-all duration-200"
+                    :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
+              <span x-text="tab.label"></span>
+              <template x-if="tab.id === 'profile' && notifications.unread > 0">
+                <span class="ml-2 inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold rounded-full bg-orange-500 text-white" x-text="notifications.unread"></span>
+              </template>
+            </button>
+          </template>
+          <template x-for="tab in tabs.slice(3)" :key="'mx-' + tab.id">
+            <button x-show="mobileTabsOpen"
+                    @click="activeDashboardTab = tab.id; mobileTabsOpen = false"
+                    class="px-2 py-2 text-sm font-medium transition-all duration-200"
+                    :class="activeDashboardTab === tab.id ? 'tab-active' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'">
+              <span x-text="tab.label"></span>
+            </button>
+          </template>
+          <button type="button"
+                  @click="mobileTabsOpen = !mobileTabsOpen"
+                  class="px-2 py-2 text-sm font-medium text-gray-500 dark:text-gray-400"
+                  x-text="mobileTabsOpen ? 'Show less ▲' : 'More ▼'"></button>
+        </div>
 
         <!-- ===== PROFILE TAB ===== -->
         <div x-show="activeDashboardTab === 'profile'" x-cloak>
 
-          <!-- Notifications link -->
-<div class="text-center mb-4">
-  <a @click.prevent="scrollToNotifications()" class="notif-link text-base inline-flex flex-col items-center gap-1">
-    <span>
-      <span class="emoji">🔔</span><span x-text="notifications.unread"></span> unread ·
-      <span x-text="notifications.list.length"></span> total
-    </span>
-    <span>View notifications →</span>
-  </a>
-</div>
+          <div class="text-center mb-4">
+            <a @click.prevent="scrollToNotifications()" class="notif-link text-base inline-flex flex-col items-center gap-1">
+              <span>
+                <span class="emoji">🔔</span><span x-text="notifications.unread"></span> unread ·
+                <span x-text="notifications.list.length"></span> total
+              </span>
+              <span>View notifications →</span>
+            </a>
+          </div>
 
           <!-- Sub-nav -->
           <div class="glass rounded-2xl p-3 mb-6 max-w-3xl mx-auto">
@@ -203,7 +215,12 @@
                            width="128" height="128" style="width:128px;height:128px;"
                            class="rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100 object-cover">
                       <div class="flex-1 min-w-0 sm:pb-2">
-                        <h1 class="text-3xl font-black truncate" x-text="profile.display_name || profile.username || 'Your name'"></h1>
+                        <h1 class="text-3xl font-black truncate flex items-center gap-3 flex-wrap">
+                          <span x-text="profile.display_name || profile.username || 'Your name'"></span>
+                          <span x-show="profile.total_points > 0"
+                                class="points-badge points-badge-lg"
+                                x-text="'🏅 ' + profile.total_points"></span>
+                        </h1>
                         <p class="text-gray-500 text-lg flex items-center gap-2 flex-wrap">
                           <span>@<span x-text="profile.username || 'username'"></span></span>
                           <span class="inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(profile.role)"></span>
@@ -214,7 +231,7 @@
                                 class="px-4 py-2 rounded-xl font-bold text-sm transition border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white whitespace-nowrap">
                           ✏️ Edit Profile
                         </button>
-                        <a :href="'/u/' + (profile.username || '') + '/'"
+                        <a :href="'/torcher/' + (profile.username || '') + '/'"
                            target="_blank"
                            x-show="profile.username && profile.profile_public"
                            class="px-4 py-2 rounded-xl font-bold text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition whitespace-nowrap inline-flex items-center">
@@ -226,20 +243,20 @@
                     <p x-show="profile.bio" class="mt-5 mb-2 text-center text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
                     <p x-show="!profile.bio" class="mt-5 text-gray-400 italic">No bio yet — click Edit Profile to add one.</p>
 
-<div class="mt-5 mb-4 flex flex-wrap items-center justify-center gap-y-2 text-sm text-gray-500">
-  <span x-show="profile.job_title" class="meta-item">
-    <span class="emoji">💼</span><span x-text="profile.job_title"></span>
-  </span>
-  <span x-show="profile.company" class="meta-item">
-    <span class="emoji">🏢</span><span x-text="profile.company"></span>
-  </span>
-  <span x-show="profile.location" class="meta-item">
-    <span class="emoji">📍</span><span x-text="profile.location"></span>
-  </span>
-  <span x-show="profile.created_at" class="meta-item">
-    <span class="emoji">📅</span><span>Member since <span x-text="formatShortDate(profile.created_at)"></span></span>
-  </span>
-</div>
+                    <div class="mt-5 mb-4 flex flex-wrap items-center justify-center gap-y-2 text-sm text-gray-500">
+                      <span x-show="profile.job_title" class="meta-item">
+                        <span class="emoji">💼</span><span x-text="profile.job_title"></span>
+                      </span>
+                      <span x-show="profile.company" class="meta-item">
+                        <span class="emoji">🏢</span><span x-text="profile.company"></span>
+                      </span>
+                      <span x-show="profile.location" class="meta-item">
+                        <span class="emoji">📍</span><span x-text="profile.location"></span>
+                      </span>
+                      <span x-show="profile.created_at" class="meta-item">
+                        <span class="emoji">📅</span><span>Member since <span x-text="formatShortDate(profile.created_at)"></span></span>
+                      </span>
+                    </div>
 
                     <div class="mt-5 mb-4 flex flex-wrap items-center justify-center gap-4">
                       <a x-show="profile.website_url" :href="profile.website_url" target="_blank" rel="ugc nofollow noopener" class="link-btn">
@@ -253,7 +270,7 @@
                       </a>
                     </div>
 
-                    <div class="mt-7 grid grid-cols-3 gap-3 max-w-md mx-auto">
+                    <div class="mt-7 grid grid-cols-4 gap-3 max-w-lg mx-auto">
                       <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
                         <p class="text-2xl font-black text-orange-500" x-text="feed.slots.used"></p>
                         <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Audits shared</p>
@@ -261,6 +278,10 @@
                       <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
                         <p class="text-2xl font-black text-orange-500" x-text="network.list.length"></p>
                         <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Network</p>
+                      </div>
+                      <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+                        <p class="text-2xl font-black text-orange-500" x-text="profile.total_points || 0"></p>
+                        <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Points</p>
                       </div>
                       <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
                         <p class="text-2xl font-black text-orange-500" x-text="monthsSince(profile.created_at)"></p>
@@ -305,7 +326,7 @@
                     <div>
                       <label class="block text-sm font-medium mb-1">Username</label>
                       <input type="text" x-model="profile.username" maxlength="30" pattern="[a-z0-9_]+" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50" placeholder="lowercase, numbers, underscore">
-                      <p class="text-xs text-gray-500 mt-1">Public URL: /u/<span x-text="profile.username || 'username'"></span>/</p>
+                      <p class="text-xs text-gray-500 mt-1">Public URL: /torcher/<span x-text="profile.username || 'username'"></span>/</p>
                     </div>
 
                     <div>
@@ -430,7 +451,10 @@
                       <template x-if="n.is_read"><span style="width:8px;flex-shrink:0;"></span></template>
                       <img :src="`/images/avatars/${n.actor_avatar || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover" alt="">
                       <div class="flex-1 min-w-0">
-                        <p class="text-sm leading-snug" x-text="n.message"></p>
+                        <p class="text-sm leading-snug">
+                          <span x-text="n.message"></span>
+                          <span x-show="n.actor_total_points > 0" class="points-badge ml-2" x-text="'🏅 ' + n.actor_total_points"></span>
+                        </p>
                         <p class="text-xs text-gray-500 mt-1" x-text="formatRelativeTime(n.created_at)"></p>
                       </div>
                       <div class="flex flex-col gap-1 items-end flex-shrink-0">
@@ -446,7 +470,7 @@
             </div>
           </div>
 
-          <!-- === Profile Feed view (reuses feed.posts) === -->
+          <!-- === Profile Feed view === -->
           <div x-show="profileSubTab === 'feed'" class="max-w-2xl mx-auto">
             <div class="glass rounded-2xl p-3 mb-4 flex gap-2">
               <template x-for="cat in ['seo','ux','aeo']" :key="cat">
@@ -490,7 +514,8 @@
                         </h3>
                         <p class="text-xs text-gray-500">
                           <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
-                          · by <a :href="'/u/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                          · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                          <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
                           · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                         </p>
                         <p x-show="post.note && post.note !== post.page_title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
@@ -572,9 +597,10 @@
                                class="rounded-full flex-shrink-0 object-cover" alt="">
                           <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
                             <div class="flex items-baseline gap-2 flex-wrap">
-                              <a :href="'/u/' + (c.username || '') + '/'"
+                              <a :href="'/torcher/' + (c.username || '') + '/'"
                                  class="text-xs font-bold hover:text-orange-500"
                                  x-text="c.display_name || c.username"></a>
+                              <span x-show="c.total_points > 0" class="points-badge" x-text="'🏅 ' + c.total_points"></span>
                               <span class="text-[10px] text-gray-500" x-text="formatRelativeTime(c.created_at)"></span>
                               <template x-if="c.user_id === user.id">
                                 <div class="ml-auto flex gap-2 text-[10px]">
@@ -597,10 +623,10 @@
                           <input type="text" maxlength="360"
                                  x-model="feed.commentDrafts[post.id]"
                                  @keydown.enter.prevent="submitComment(post.id)"
-                                 placeholder="Leave a comment… (360 chars)"
+                                 placeholder="Leave a comment… (360 chars) · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
                           <button @click="submitComment(post.id)"
-                                  class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post</button>
+                                  class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
                     </div>
@@ -622,7 +648,6 @@
           <div x-show="profileSubTab === 'mine'" class="max-w-2xl mx-auto glass rounded-2xl p-6">
             <h3 class="text-lg font-bold mb-4">Your Network</h3>
 
-            <!-- Search mode toggle -->
             <div class="flex justify-center gap-2 mb-4">
               <button @click="setNetworkSearchMode('mine')"
                       class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
@@ -636,21 +661,22 @@
               </button>
             </div>
 
-            <!-- Search input -->
             <input type="text" x-model="network.search"
                    @input="network.searchMode === 'all' && searchAllUsers()"
                    :placeholder="network.searchMode === 'mine' ? 'Search your network…' : 'Search all users… (min 2 chars)'"
                    class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
 
-            <!-- NETWORK MODE -->
             <template x-if="network.searchMode === 'mine'">
               <div class="space-y-3">
                 <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
                   <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
                     <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                     <div class="flex-1 min-w-0">
-                      <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
-                      <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
+                      <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                      <p class="text-xs text-gray-500 capitalize">
+                        <span x-text="u.role"></span>
+                        <span x-show="u.total_points > 0" class="points-badge ml-2" x-text="'🏅 ' + u.total_points"></span>
+                      </p>
                     </div>
                     <button @click="removeFromNetwork(u.id)" class="text-xs text-red-500 hover:underline">Remove</button>
                   </div>
@@ -659,25 +685,21 @@
               </div>
             </template>
 
-            <!-- FIND PEOPLE MODE -->
             <template x-if="network.searchMode === 'all'">
               <div>
-                <div x-show="network.searching" class="text-center py-6">
-                  <div class="spinner mx-auto"></div>
-                </div>
-                <div x-show="!network.searching && network.search.length < 2" class="text-gray-500 text-sm text-center py-6">
-                  Type at least 2 characters to search.
-                </div>
-                <div x-show="!network.searching && network.search.length >= 2 && network.searchResults.length === 0" class="text-gray-500 text-sm text-center py-6">
-                  No matching users found.
-                </div>
+                <div x-show="network.searching" class="text-center py-6"><div class="spinner mx-auto"></div></div>
+                <div x-show="!network.searching && network.search.length < 2" class="text-gray-500 text-sm text-center py-6">Type at least 2 characters to search.</div>
+                <div x-show="!network.searching && network.search.length >= 2 && network.searchResults.length === 0" class="text-gray-500 text-sm text-center py-6">No matching users found.</div>
                 <div class="space-y-3">
                   <template x-for="u in network.searchResults" :key="u.id">
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
                       <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                       <div class="flex-1 min-w-0">
-                        <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
-                        <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
+                        <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                        <p class="text-xs text-gray-500 capitalize">
+                          <span x-text="u.role"></span>
+                          <span x-show="u.total_points > 0" class="points-badge ml-2" x-text="'🏅 ' + u.total_points"></span>
+                        </p>
                       </div>
                       <button @click="u.in_network ? removeFromNetwork(u.id) : addToNetwork(u.id).then(() => u.in_network = !u.in_network)"
                               class="text-xs px-3 py-1 rounded-full border transition whitespace-nowrap"
@@ -838,14 +860,11 @@
 
         <!-- ===== NETWORK TAB ===== -->
         <div x-show="activeDashboardTab === 'network'" x-cloak>
-
           <div class="glass rounded-2xl p-4 mb-6 max-w-3xl mx-auto">
             <div class="flex justify-center gap-2 flex-wrap">
               <button @click="networkSubTab = 'feed'"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
-                      :class="networkSubTab === 'feed' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
-                Feed
-              </button>
+                      :class="networkSubTab === 'feed' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">Feed</button>
               <button @click="networkSubTab = 'mine'; loadNetwork()"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
                       :class="networkSubTab === 'mine' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
@@ -853,9 +872,7 @@
               </button>
               <button @click="networkSubTab = 'invite'"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
-                      :class="networkSubTab === 'invite' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
-                Invite
-              </button>
+                      :class="networkSubTab === 'invite' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">Invite</button>
             </div>
           </div>
 
@@ -907,7 +924,8 @@
                         </h3>
                         <p class="text-xs text-gray-500">
                           <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
-                          · by <a :href="'/u/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                          · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                          <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
                           · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                         </p>
                         <p x-show="post.note && post.note !== post.page_title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
@@ -989,9 +1007,10 @@
                                class="rounded-full flex-shrink-0 object-cover" alt="">
                           <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
                             <div class="flex items-baseline gap-2 flex-wrap">
-                              <a :href="'/u/' + (c.username || '') + '/'"
+                              <a :href="'/torcher/' + (c.username || '') + '/'"
                                  class="text-xs font-bold hover:text-orange-500"
                                  x-text="c.display_name || c.username"></a>
+                              <span x-show="c.total_points > 0" class="points-badge" x-text="'🏅 ' + c.total_points"></span>
                               <span class="text-[10px] text-gray-500" x-text="formatRelativeTime(c.created_at)"></span>
                               <template x-if="c.user_id === user.id">
                                 <div class="ml-auto flex gap-2 text-[10px]">
@@ -1014,10 +1033,10 @@
                           <input type="text" maxlength="360"
                                  x-model="feed.commentDrafts[post.id]"
                                  @keydown.enter.prevent="submitComment(post.id)"
-                                 placeholder="Leave a comment… (360 chars)"
+                                 placeholder="Leave a comment… (360 chars) · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
                           <button @click="submitComment(post.id)"
-                                  class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post</button>
+                                  class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
                     </div>
@@ -1040,7 +1059,6 @@
           <div x-show="networkSubTab === 'mine'" class="max-w-2xl mx-auto glass rounded-2xl p-6">
             <h3 class="text-lg font-bold mb-4">Your Network</h3>
 
-            <!-- Search mode toggle -->
             <div class="flex justify-center gap-2 mb-4">
               <button @click="setNetworkSearchMode('mine')"
                       class="px-4 py-1.5 rounded-lg text-sm font-medium transition"
@@ -1054,21 +1072,22 @@
               </button>
             </div>
 
-            <!-- Search input -->
             <input type="text" x-model="network.search"
                    @input="network.searchMode === 'all' && searchAllUsers()"
                    :placeholder="network.searchMode === 'mine' ? 'Search your network…' : 'Search all users… (min 2 chars)'"
                    class="w-full p-2 mb-4 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
 
-            <!-- NETWORK MODE -->
             <template x-if="network.searchMode === 'mine'">
               <div class="space-y-3">
                 <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
                   <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
                     <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                     <div class="flex-1 min-w-0">
-                      <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
-                      <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
+                      <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                      <p class="text-xs text-gray-500 capitalize">
+                        <span x-text="u.role"></span>
+                        <span x-show="u.total_points > 0" class="points-badge ml-2" x-text="'🏅 ' + u.total_points"></span>
+                      </p>
                     </div>
                     <button @click="removeFromNetwork(u.id)" class="text-xs text-red-500 hover:underline">Remove</button>
                   </div>
@@ -1077,25 +1096,21 @@
               </div>
             </template>
 
-            <!-- FIND PEOPLE MODE -->
             <template x-if="network.searchMode === 'all'">
               <div>
-                <div x-show="network.searching" class="text-center py-6">
-                  <div class="spinner mx-auto"></div>
-                </div>
-                <div x-show="!network.searching && network.search.length < 2" class="text-gray-500 text-sm text-center py-6">
-                  Type at least 2 characters to search.
-                </div>
-                <div x-show="!network.searching && network.search.length >= 2 && network.searchResults.length === 0" class="text-gray-500 text-sm text-center py-6">
-                  No matching users found.
-                </div>
+                <div x-show="network.searching" class="text-center py-6"><div class="spinner mx-auto"></div></div>
+                <div x-show="!network.searching && network.search.length < 2" class="text-gray-500 text-sm text-center py-6">Type at least 2 characters to search.</div>
+                <div x-show="!network.searching && network.search.length >= 2 && network.searchResults.length === 0" class="text-gray-500 text-sm text-center py-6">No matching users found.</div>
                 <div class="space-y-3">
                   <template x-for="u in network.searchResults" :key="u.id">
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
                       <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                       <div class="flex-1 min-w-0">
-                        <a :href="'/u/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
-                        <p class="text-xs text-gray-500 capitalize" x-text="u.role"></p>
+                        <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
+                        <p class="text-xs text-gray-500 capitalize">
+                          <span x-text="u.role"></span>
+                          <span x-show="u.total_points > 0" class="points-badge ml-2" x-text="'🏅 ' + u.total_points"></span>
+                        </p>
                       </div>
                       <button @click="u.in_network ? removeFromNetwork(u.id) : addToNetwork(u.id).then(() => u.in_network = !u.in_network)"
                               class="text-xs px-3 py-1 rounded-full border transition whitespace-nowrap"
@@ -1115,9 +1130,7 @@
               <input type="email" x-model="network.inviteEmail" placeholder="colleague@example.com"
                      class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
               <button @click="inviteColleague()"
-                      class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-medium">
-                Send
-              </button>
+                      class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-medium">Send</button>
             </div>
             <p x-show="network.inviteStatus" class="text-sm mt-3" x-text="network.inviteStatus"></p>
           </div>
@@ -1574,6 +1587,7 @@
         <div x-show="activeDashboardTab === 'settings'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-6">⚙️ Account Settings</h3>
+
             <div class="space-y-4">
               <div class="flex flex-col items-start p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Email</span>
@@ -1582,6 +1596,10 @@
               <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Plan</span>
                 <span x-text="isAuthenticated ? (user.tier || 'free').charAt(0).toUpperCase() + (user.tier || 'free').slice(1) : 'Guest'"></span>
+              </div>
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <span class="font-medium">Total points</span>
+                <span class="points-badge points-badge-lg" x-text="'🏅 ' + (profile.total_points || 0)"></span>
               </div>
               <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Member since</span>
@@ -1633,7 +1651,7 @@
             </template>
           </div>
         </div>
-        
+
         <!-- Share -->
         <section class="share-block mt-12" aria-label="Share options">
           <div class="share-row">
@@ -1704,9 +1722,7 @@
 </div>
 
 <script src="/main.js?v=1.2" type="module"></script>
-
 <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
-
 
 <script>
   // Override share "copy link" to use the live URL (including #tab)
@@ -1735,7 +1751,7 @@
         setTimeout(() => { status.textContent = ''; }, 2500);
       }
     });
-  }, true); // capture phase — runs before main.js?v=1.1 handler
+  }, true);
 </script>
 
 <script>
@@ -1811,6 +1827,7 @@ function dashboardApp() {
       notify_comments: 1,
       notify_network: 1,
       notify_leaderboard: 1,
+      total_points: 0,
       created_at: null
     },
 
@@ -1821,8 +1838,8 @@ function dashboardApp() {
       inviteEmail: '',
       inviteStatus: '',
       search: '',
-      searchMode: 'mine', 
-      searchResults: [],  
+      searchMode: 'mine',
+      searchResults: [],
       searching: false
     },
 
@@ -2174,8 +2191,8 @@ function dashboardApp() {
         return name.charAt(0).toUpperCase() + name.slice(1);
       } catch { return 'Link'; }
     },
-    
-        toolDisplayName(key) {
+
+    toolDisplayName(key) {
       if (!key) return 'Audit';
       const map = {
         'keyword-tool': 'Keyword Placement Tool',
@@ -2931,6 +2948,9 @@ function dashboardApp() {
         if (!res.ok) throw new Error('Failed to load profile');
         const data = await res.json();
         Object.assign(this.profile, data.profile || {});
+        if (data.profile?.total_points !== undefined) {
+          this.profile.total_points = data.profile.total_points;
+        }
       } catch (e) { this.profile.error = e.message; }
       finally { this.profile.loading = false; }
     },
@@ -2982,8 +3002,8 @@ function dashboardApp() {
       } catch (e) {}
       finally { this.network.loading = false; }
     },
-    
-        async searchAllUsers() {
+
+    async searchAllUsers() {
       const q = (this.network.search || '').trim();
       if (q.length < 2) { this.network.searchResults = []; return; }
       this.network.searching = true;
@@ -3012,7 +3032,10 @@ function dashboardApp() {
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: userId })
         });
-        if (res.ok) this.feed.posts.forEach(p => { if (p.user_id === userId) p.in_network = true; });
+        if (res.ok) {
+          this.feed.posts.forEach(p => { if (p.user_id === userId) p.in_network = true; });
+          this.loadNetwork();
+        }
       } catch {}
       finally { this.network.addLoading[userId] = false; }
     },
@@ -3102,6 +3125,7 @@ function dashboardApp() {
           this.feed.commentDrafts[postId] = '';
           const p = this.feed.posts.find(x => x.id === postId);
           if (p) p.comment_count = (p.comment_count || 0) + 1;
+          if (data.total_points !== undefined) this.profile.total_points = data.total_points;
         } else alert(data.error || 'Comment rejected');
       } catch {}
     },
@@ -3154,11 +3178,12 @@ function dashboardApp() {
         const res = await fetch(`${API_BASE}/api/posts/${postId}`, {
           method: 'PATCH',
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ note: result.note, category: result.category })
+          body: JSON.stringify({ note: result.note, category: result.category, page_title: result.title })
         });
         if (res.ok) {
           post.note = result.note;
           post.category = result.category;
+          post.page_title = result.title;
         } else {
           const data = await res.json().catch(() => ({}));
           alert(data.error || 'Failed to save');
@@ -3168,18 +3193,18 @@ function dashboardApp() {
 
     openPostEditModal(post) {
       return new Promise((resolve) => {
-        // Reuse a single injected modal element
         let modal = document.getElementById('tt-edit-post-modal');
         if (!modal) {
           modal = document.createElement('div');
           modal.id = 'tt-edit-post-modal';
           modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:1rem;';
           modal.innerHTML = `
-            <div style="background:var(--tw-bg, #fff); max-width:480px; width:100%; border-radius:1rem; padding:1.5rem; box-shadow:0 20px 40px rgba(0,0,0,0.3);" class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+            <div style="max-width:480px; width:100%; border-radius:1rem; padding:1.5rem; box-shadow:0 20px 40px rgba(0,0,0,0.3);" class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
               <h3 style="font-size:1.1rem; font-weight:700; margin:0 0 1rem;">✏️ Edit post</h3>
+              <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Title</label>
+              <input id="tt-edit-post-title" type="text" maxlength="60" placeholder="Optional title (60 chars)" style="width:100%; box-sizing:border-box; padding:0.55rem 0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:0.9rem; background:transparent; color:inherit; font-family:inherit;">
               <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Note</label>
-              <textarea id="tt-edit-post-note" maxlength="360" rows="6"
-                style="width:100%; box-sizing:border-box; padding:0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; resize:vertical; font-family:inherit; background:transparent; color:inherit;"></textarea>
+              <textarea id="tt-edit-post-note" maxlength="360" rows="6" style="width:100%; box-sizing:border-box; padding:0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; resize:vertical; font-family:inherit; background:transparent; color:inherit;"></textarea>
               <p style="font-size:0.75rem; color:#9ca3af; text-align:right; margin:0.25rem 0 0.9rem;"><span id="tt-edit-post-count">0</span> / 360</p>
               <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Category</label>
               <select id="tt-edit-post-cat" style="width:100%; padding:0.55rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:1.25rem; background:transparent; color:inherit;">
@@ -3188,23 +3213,22 @@ function dashboardApp() {
                 <option value="aeo">AEO</option>
               </select>
               <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
-                <button type="button" id="tt-edit-post-cancel"
-                  style="padding:0.55rem 1.2rem; border-radius:0.5rem; border:1px solid #d1d5db; background:transparent; font-weight:600; cursor:pointer; color:inherit; font-family:inherit;">Cancel</button>
-                <button type="button" id="tt-edit-post-save"
-                  style="padding:0.55rem 1.4rem; border-radius:0.5rem; border:none; background:linear-gradient(135deg,#f97316,#ec4899); color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Save</button>
+                <button type="button" id="tt-edit-post-cancel" style="padding:0.55rem 1.2rem; border-radius:0.5rem; border:1px solid #d1d5db; background:transparent; font-weight:600; cursor:pointer; color:inherit; font-family:inherit;">Cancel</button>
+                <button type="button" id="tt-edit-post-save" style="padding:0.55rem 1.4rem; border-radius:0.5rem; border:none; background:linear-gradient(135deg,#f97316,#ec4899); color:#fff; font-weight:700; cursor:pointer; font-family:inherit;">Save</button>
               </div>
             </div>
           `;
           document.body.appendChild(modal);
         }
 
+        const titleIn = modal.querySelector('#tt-edit-post-title');
         const note = modal.querySelector('#tt-edit-post-note');
         const count = modal.querySelector('#tt-edit-post-count');
         const cat = modal.querySelector('#tt-edit-post-cat');
         const saveBtn = modal.querySelector('#tt-edit-post-save');
         const cancelBtn = modal.querySelector('#tt-edit-post-cancel');
 
-        // Populate
+        titleIn.value = post.page_title || '';
         note.value = post.note || '';
         cat.value = post.category || 'ux';
         count.textContent = note.value.length;
@@ -3212,7 +3236,7 @@ function dashboardApp() {
 
         const updateCount = () => { count.textContent = note.value.length; };
         const onCancel = () => { cleanup(); resolve(null); };
-        const onSave = () => { cleanup(); resolve({ note: note.value.trim(), category: cat.value }); };
+        const onSave = () => { cleanup(); resolve({ title: titleIn.value.trim(), note: note.value.trim(), category: cat.value }); };
         const onKey = (e) => {
           if (e.key === 'Escape') onCancel();
           if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') onSave();
@@ -3231,7 +3255,7 @@ function dashboardApp() {
         saveBtn.addEventListener('click', onSave);
         document.addEventListener('keydown', onKey);
 
-        setTimeout(() => { note.focus(); note.setSelectionRange(0, 0); }, 50);
+        setTimeout(() => { titleIn.focus(); titleIn.setSelectionRange(titleIn.value.length, titleIn.value.length); }, 50);
       });
     },
 
