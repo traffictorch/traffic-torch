@@ -11,7 +11,7 @@ import { handleGlobalRss as handleGlobalRssReal, handleUserRss as handleUserRssR
 import { handleOgTorch as handleOgTorchReal, handleOgProfile as handleOgProfileReal } from './handlers/og.js';
 import { handlePurge as handlePurgeReal } from './handlers/purge.js';
 
-export default {
+export default { 
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
