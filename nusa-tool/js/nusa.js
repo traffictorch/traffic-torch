@@ -18,7 +18,7 @@ import { calculateMobile }        from '/quit-risk-tool/modules/mobile.js';
 import { calculatePerformance }   from '/quit-risk-tool/modules/performance.js';
 import { mergeMetricsIntoUX }     from '/quit-risk-tool/metrics-adapter.js';
 
-import { renderSummaryCards, collectFindings, evaluateModule } from './summary-cards.js';
+import { renderSummaryCards, collectFindings, evaluateModule, categoryScore } from './summary-cards.js';
 import { whyMatters } from './why-matters.js';
 import { extractSnippets, openCodeModal, ruleKey } from './code-snippets.js';
 import { detectCMS } from './cms-detect.js';
@@ -73,6 +73,34 @@ function looksLikeRealFix(prose) {
   const hasSteps = /(?:^|\n)\s*(?:\d+[.)]\s|[-*•]\s)\S/.test(t);
   const hasCode  = /```/.test(t);
   return hasSteps || hasCode;
+}
+
+/* ── Lighthouse dedupe ─────────────────────────────────────────
+   The local UX pass already scores Accessibility, Performance,
+   Mobile and PWA. Anything the UX pass owns is removed from the
+   Lighthouse module list *before* the SEO score is computed, so
+   the same problem isn't penalised in both UX and SEO and doesn't
+   appear twice in the fix list. */
+const UX_OWNED_MODULES = new Set([
+  'accessibility',
+  'performance',
+  'performance score',
+  'core web vitals',
+  'mobile',
+  'mobile ux',
+  'pwa readiness',
+  'resource optimisation',
+  'resource optimization'
+]);
+
+function dedupeLighthouse(lh, uxModules) {
+  if (!lh || !Array.isArray(lh.modules)) return lh;
+  const uxNames = new Set(uxModules.map(m => (m.name || '').toLowerCase().trim()));
+  const kept = lh.modules.filter(m => {
+    const n = (m.name || '').toLowerCase().trim();
+    return !UX_OWNED_MODULES.has(n) && !uxNames.has(n);
+  });
+  return { ...lh, modules: kept, _removedByDedupe: lh.modules.length - kept.length };
 }
 
 /* ── narration ─────────────────────────────────────────────── */
@@ -452,6 +480,11 @@ async function runAudit(rawUrl) {
   ];
   const uxScore = Math.round(uxModules.reduce((s, m) => s + m.score, 0) / uxModules.length);
 
+  lh = dedupeLighthouse(lh, uxModules);
+  if (lh._removedByDedupe) {
+    narrate(`Dedupe: folded ${lh._removedByDedupe} Lighthouse module(s) into UX.`);
+  }
+
   let cms = null;
   try { cms = detectCMS(html, { url }); } catch (_) { cms = null; }
 
@@ -498,9 +531,10 @@ async function runAudit(rawUrl) {
 
   document.body.setAttribute('data-url', url);
 
-  const overallScore = Math.round(
-    (state.ux.score + state.seo.score + state.aeo.score) / 3
-  );
+  // Use deduped/capped scores everywhere downstream (share, save, leaderboard)
+  const seoScore = categoryScore('SEO', state.seo);
+  const aeoScore = categoryScore('AEO', state.aeo);
+  const overallScore = Math.round((uxScore + seoScore + aeoScore) / 3);
 
   try {
     await saveAudit({ url, tool: 'NUSA', score: overallScore });
@@ -521,9 +555,9 @@ function injectLeaderboardButton(state, overallScore) {
     title: (state.doc?.title || '').trim().slice(0, 200) || 'Untitled page',
     score: overallScore,
     moduleScores: [
-      { name: 'UX',  score: state.ux.score  },
-      { name: 'SEO', score: state.seo.score },
-      { name: 'AEO', score: state.aeo.score }
+      { name: 'UX',  score: categoryScore('UX',  state.ux)  },
+      { name: 'SEO', score: categoryScore('SEO', state.seo) },
+      { name: 'AEO', score: categoryScore('AEO', state.aeo) }
     ]
   });
 }
@@ -550,15 +584,17 @@ function renderShareModule() {
     }
   }
 
+  const uxScore  = categoryScore('UX',  state.ux);
+  const seoScore = categoryScore('SEO', state.seo);
+  const aeoScore = categoryScore('AEO', state.aeo);
+
   const moduleScores = [
-    { name: 'UX',  score: state.ux.score  },
-    { name: 'SEO', score: state.seo.score },
-    { name: 'AEO', score: state.aeo.score }
+    { name: 'UX',  score: uxScore  },
+    { name: 'SEO', score: seoScore },
+    { name: 'AEO', score: aeoScore }
   ];
 
-  const overallScore = Math.round(
-    (state.ux.score + state.seo.score + state.aeo.score) / 3
-  );
+  const overallScore = Math.round((uxScore + seoScore + aeoScore) / 3);
 
   const dedupe = arr => Array.from(new Set(arr));
 
@@ -584,7 +620,7 @@ function renderShareModule() {
     aiFixes,
     shareLink: `https://traffictorch.net/?url=${encodeURIComponent(state.url)}`,
     rawData: {
-      scores: { ux: state.ux.score, seo: state.seo.score, aeo: state.aeo.score },
+      scores: { ux: uxScore, seo: seoScore, aeo: aeoScore },
       url: state.url,
       cms: state.cms,
       checks: allChecks

@@ -162,7 +162,7 @@ function moduleDisplayScore(cat, m) {
 }
 
 // ── category scores ──
-function categoryScore(cat, data) {
+export function categoryScore(cat, data) {
   const mods = data?.modules || [];
   if (cat === 'UX') {
     if (!mods.length) return Math.round(data?.score || 0);
