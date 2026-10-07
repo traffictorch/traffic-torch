@@ -303,8 +303,17 @@
 
           <form id="ofux-audit-form" class="max-w-2xl mx-auto flex flex-col sm:flex-row gap-4 mb-12" aria-label="OFUX audit form">
             <label for="ofux-url-input" class="sr-only">Website URL to audit</label>
-            <input type="url" id="ofux-url-input" placeholder="https://example.com/your-page"
+            <input type="text" id="ofux-url-input"
+                   placeholder="example.com or https://example.com"
+                   inputmode="url"
+                   autocomplete="off"
+                   spellcheck="false"
+                   autocapitalize="off"
+                   autocorrect="off"
+                   list="ofux-url-history-list"
+                   required
                    class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 focus:ring-4 focus:ring-orange-500 text-lg">
+            <datalist id="ofux-url-history-list"></datalist>
             <button type="submit" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-2xl hover:opacity-90 whitespace-nowrap">
               Analyze OFUX
             </button>

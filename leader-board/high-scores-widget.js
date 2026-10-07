@@ -66,6 +66,9 @@
         <div class="tt-lb-empty-icon">🏁</div>
         <p class="tt-lb-empty-title">No scores yet — be the first!</p>
         <p class="tt-lb-empty-sub">Run an audit above and submit your score to claim spot #1.</p>
+        <div class="tt-lb-leaderboard-cta">
+          <a href="/leader-board/" class="tt-lb-leaderboard-link">View leaderboard →</a>
+        </div>
       </div>`;
       return;
     }
@@ -98,6 +101,9 @@
             Show all ${entries.length} scores ↓
           </button>
         </div>` : ''}
+      <div class="tt-lb-leaderboard-cta">
+        <a href="/leader-board/" class="tt-lb-leaderboard-link">View leaderboard →</a>
+      </div>
     `;
 
     const toggle = el.querySelector('.tt-lb-toggle');

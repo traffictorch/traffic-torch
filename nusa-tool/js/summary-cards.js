@@ -274,6 +274,16 @@ export function renderSummaryCards(state) {
     const catScoreVal = cat === 'UX' ? uxScore : cat === 'SEO' ? seoScore : aeoScore;
     const modules  = data.modules || [];
 
+    // SEO-only note 
+    const dedupeNote = cat === 'SEO'
+      ? `<div class="sum-cat-note">
+           <span class="sum-cat-note-icon" aria-hidden="true">ⓘ</span>
+           <span>Note: NUSA scores may vary from the
+             <a href="https://traffictorch.net/lighthouse-plus-tool/" target="_blank" rel="noopener">Lighthouse Plus Audit</a>
+             due to fewer metrics.</span>
+         </div>`
+      : '';
+
     const blocks = modules.map((m, i) => {
       const moduleScore = moduleDisplayScore(cat, m);
       const status = moduleScore >= 80 ? 'pass' : moduleScore >= 60 ? 'warn' : 'fail';
@@ -347,6 +357,7 @@ export function renderSummaryCards(state) {
         <span class="sum-overall-score ${scoreClass(catScoreVal)}" style="font-size:22px">${catScoreVal}</span>
         <span class="sum-overall-label" style="margin-left:6px">/100</span>
       </div>
+      ${dedupeNote}
       <div class="sum-pass-list">${bodyHtml}</div>
       ${footerHtml}
     </div>`;

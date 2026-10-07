@@ -147,10 +147,10 @@
   <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 
   <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" as="style" href="/nusa-tool/css/nusa.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/nusa-tool/css/nusa.css?v=1.1" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
     <link rel="stylesheet" href="/style.css?v=1.0">
-    <link rel="stylesheet" href="/nusa-tool/css/nusa.css?v=1.0">
+    <link rel="stylesheet" href="/nusa-tool/css/nusa.css?v=1.1">
   </noscript>
   
   <link rel="preload" as="style" href="/leader-board/high-scores-widget.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
@@ -272,11 +272,15 @@
             <div id="nusa-app">
               <form id="url-form" class="nusa-url-form" autocomplete="off" aria-label="NUSA audit form">
                 <label for="url-input" class="sr-only">Website URL to audit</label>
-                <input id="url-input" type="url" inputmode="url"
-                       placeholder="https://example.com/your-page" required
-                       class="nusa-url-input"
-                       list="url-history-list"
-                       autocomplete="off">
+<input id="url-input" type="text" inputmode="url"
+       placeholder="example.com or https://example.com"
+       required
+       class="nusa-url-input"
+       list="url-history-list"
+       autocomplete="off"
+       spellcheck="false"
+       autocapitalize="off"
+       autocorrect="off">
                 <datalist id="url-history-list"></datalist>
                 <button type="submit" class="nusa-url-btn" aria-label="Run NUSA audit">
                   Analyze NUSA

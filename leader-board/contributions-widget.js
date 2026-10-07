@@ -90,6 +90,9 @@
           <div class="tt-contrib-empty-icon">🏁</div>
           <p>No contributions yet — be the first!</p>
           <p style="font-size:0.8rem;margin-top:0.35rem;opacity:0.7;">Submit feedback from any audit to earn 10 points.</p>
+          <div class="tt-contrib-leaderboard-cta">
+            <a href="/leader-board/" class="tt-contrib-leaderboard-link">View leaderboard →</a>
+          </div>
         </div>`;
       return;
     }
@@ -102,6 +105,9 @@
       <ol class="tt-contrib-list">
         ${entries.map((e, i) => renderCard(e, i)).join('')}
       </ol>
+      <div class="tt-contrib-leaderboard-cta">
+        <a href="/leader-board/" class="tt-contrib-leaderboard-link">View leaderboard →</a>
+      </div>
     `;
 
     el.querySelectorAll('.tt-contrib-expand').forEach((btn) => {

@@ -39,6 +39,35 @@ function labelFor(name) {
     .trim();
 }
 
+// ─── URL history (localStorage) ──────────────────────────────────────────
+const URL_HISTORY_KEY = 'ofux-url-history';
+const URL_HISTORY_MAX = 10;
+
+function loadUrlHistory() {
+  try {
+    const raw = localStorage.getItem(URL_HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveUrlToHistory(url) {
+  if (!url || typeof url !== 'string') return;
+  const clean = url.trim();
+  if (!clean) return;
+  const list = loadUrlHistory().filter(u => u !== clean);
+  list.unshift(clean);
+  localStorage.setItem(URL_HISTORY_KEY, JSON.stringify(list.slice(0, URL_HISTORY_MAX)));
+}
+
+function populateUrlDatalist() {
+  const dl = document.getElementById('ofux-url-history-list');
+  if (!dl) return;
+  const urls = loadUrlHistory();
+  dl.innerHTML = urls.map(u =>
+    `<option value="${u.replace(/"/g, '&quot;')}"></option>`
+  ).join('');
+}
+
 // ─── Imports ─────────────────────────────────────────────────────────
 import { initShareModule } from '/share-module.js';
 import { detectCMS } from '/ofux-tool/cms-detect.js';
@@ -1098,7 +1127,12 @@ function renderHomepageCmsFixes(anchor, cmsInfo, priorityFixes, doc, url, overal
 }
 
 // ─── Main Orchestration ──────────────────────────────────────────────────
-export async function runOfuxAnalysis(url, containerId, aiContainerId) {
+export async function runOfuxAnalysis(rawUrl, containerId, aiContainerId) {
+  // Accept scheme-less input like "example.com" and normalise to https://
+  const url = /^https?:\/\//i.test(rawUrl || '') ? rawUrl.trim() : 'https://' + (rawUrl || '').trim();
+
+  saveUrlToHistory(url);
+
   const container = document.getElementById(containerId);
   if (!container) return;
 
@@ -1415,24 +1449,6 @@ function renderCards(container, summaries, url) {
   `;
 }
 
-// ─── Auto-run from ?url= parameter ───────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  const params = new URLSearchParams(window.location.search);
-  const urlParam = params.get('url');
-  if (urlParam) {
-    const form = document.getElementById('homepage-audit-form');
-    const input = document.getElementById('homepage-url-input');
-    if (form && input) {
-      let cleanUrl = decodeURIComponent(urlParam.trim());
-      if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = 'https://' + cleanUrl;
-      input.value = cleanUrl;
-      setTimeout(() => {
-        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-      }, 500);
-    }
-  }
-});
-
 // ─── Ask AI Listener ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const askBtn = document.getElementById('ask-ai-btn');
@@ -1549,4 +1565,11 @@ document.addEventListener('DOMContentLoaded', () => {
       newAskBtn.textContent = 'Ask Traffic Torch AI';
     }
   });
+});
+
+/* ── URL history: populate datalist on load + focus ── */
+document.addEventListener('DOMContentLoaded', () => {
+  populateUrlDatalist();
+  const input = document.getElementById('ofux-url-input');
+  if (input) input.addEventListener('focus', populateUrlDatalist);
 });
