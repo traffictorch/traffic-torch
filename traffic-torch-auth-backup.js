@@ -1,5 +1,5 @@
 // ============================================================
-// TRAFFIC TORCH – AUTH WORKER (FULL GA4 + REALTIME + CACHE + NOTIFICATIONS)
+// TRAFFIC TORCH – AUTH WORKER (FULL GA4 + REALTIME + CACHE + NOTIFICATIONS + POINTS)
 // ============================================================
 // Env: JWT_SECRET, RESEND_API_KEY, STRIPE_SECRET_KEY,
 //      STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_ID,
@@ -356,11 +356,10 @@ async function ensureTables(env) {
       tool TEXT,
       page_url TEXT,
       status TEXT DEFAULT 'published',
-      points INTEGER DEFAULT 10,
+      points INTEGER DEFAULT 25,
       created_at INTEGER NOT NULL
     )`
   ).run();
-  // ---- Notifications (new) ----
   await env.MY_BINDING.prepare(
     `CREATE TABLE IF NOT EXISTS notifications (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -380,6 +379,18 @@ async function ensureTables(env) {
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN notify_comments INTEGER DEFAULT 1`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN notify_network INTEGER DEFAULT 1`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN notify_leaderboard INTEGER DEFAULT 1`).run(); } catch (e) {}
+  await env.MY_BINDING.prepare(
+    `CREATE TABLE IF NOT EXISTS user_points (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      event_type TEXT NOT NULL,
+      points INTEGER NOT NULL,
+      reference_id INTEGER,
+      created_at INTEGER NOT NULL
+    )`
+  ).run();
+  try { await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_user_points_user ON user_points(user_id)`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_user_points_event ON user_points(user_id, event_type)`).run(); } catch (e) {}
 }
 
 async function getCachedReport(userId, reportType, days, startDate, endDate, env) {
@@ -402,12 +413,17 @@ async function setCachedReport(userId, reportType, days, startDate, endDate, dat
 }
 
 // ============================================================
-// Profile + Network + Feed + Contributions + Notifications
+// Shared constants + helpers
 // ============================================================
 const SLOT_MAP = { free: 5, pro: 10, enterprise: 300, guest: 5 };
 const AVATARS = ['owner', 'designer', 'seo'];
 const ROLES = ['owner', 'designer', 'seo', 'developer', 'other'];
 const CATEGORIES = ['ux', 'seo', 'aeo'];
+
+const POINTS_COMMENT      = 5;
+const POINTS_POST         = 10;
+const POINTS_LEADERBOARD  = 10;
+const POINTS_CONTRIBUTION = 25;
 
 const FEED_CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -489,11 +505,6 @@ function shapeProfile(user) {
 // ============================================================
 // Points system
 // ============================================================
-const POINTS_COMMENT       = 5;
-const POINTS_POST          = 10;
-const POINTS_LEADERBOARD   = 10;
-const POINTS_CONTRIBUTION  = 25;
-
 async function awardPoints(env, { userId, type, points, referenceId }) {
   try {
     await env.MY_BINDING.prepare(
@@ -512,6 +523,9 @@ async function getUserTotalPoints(env, userId) {
   } catch { return 0; }
 }
 
+// ============================================================
+// Profile routes
+// ============================================================
 async function handleProfileRoutes(request, env, url) {
   const user = await getUserFromToken(request, env);
 
@@ -519,7 +533,9 @@ async function handleProfileRoutes(request, env, url) {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     await ensureUsername(env, user);
     const fresh = await env.MY_BINDING.prepare('SELECT * FROM users WHERE id = ?').bind(user.id).first();
-    return feedJson({ profile: shapeProfile(fresh) });
+    const profile = shapeProfile(fresh);
+    profile.total_points = await getUserTotalPoints(env, user.id);
+    return feedJson({ profile });
   }
 
   if (url.pathname === '/api/profile/me' && request.method === 'PATCH') {
@@ -543,7 +559,6 @@ async function handleProfileRoutes(request, env, url) {
     if (typeof body.bio === 'string') { fields.push('bio = ?'); params.push(body.bio.slice(0, 160)); }
     if (typeof body.website_url === 'string') {
       fields.push('website_url = ?'); params.push(body.website_url.slice(0, 300));
-      // Auto-approve on save (worker AI validation can be layered in later)
       fields.push('website_approved = 1');
     }
     if (typeof body.social1_url === 'string') { fields.push('social1_url = ?'); params.push(body.social1_url.slice(0, 300)); }
@@ -564,26 +579,29 @@ async function handleProfileRoutes(request, env, url) {
     params.push(user.id);
     await env.MY_BINDING.prepare(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`).bind(...params).run();
     const fresh = await env.MY_BINDING.prepare('SELECT * FROM users WHERE id = ?').bind(user.id).first();
-    return feedJson({ success: true, profile: shapeProfile(fresh) });
+    const profile = shapeProfile(fresh);
+    profile.total_points = await getUserTotalPoints(env, user.id);
+    return feedJson({ success: true, profile });
   }
 
-  if (url.pathname.startsWith('/api/u/') && request.method === 'GET') {
-    const username = decodeURIComponent(url.pathname.replace('/api/u/', '').replace(/\/$/, ''));
+  if (url.pathname.startsWith('/api/torcher/') && request.method === 'GET') {
+    const username = decodeURIComponent(url.pathname.replace('/api/torcher/', '').replace(/\/$/, ''));
     const target = await env.MY_BINDING.prepare('SELECT * FROM users WHERE username = ?').bind(username).first();
     if (!target || !target.profile_public) return feedJson({ error: 'Not found' }, 404);
 
     const profile = shapeProfile(target);
+    profile.total_points = await getUserTotalPoints(env, target.id);
     delete profile.allow_adds;
     delete profile.auto_share;
     delete profile.notify_comments;
     delete profile.notify_network;
     delete profile.notify_leaderboard;
 
-const posts = await env.MY_BINDING.prepare(
-  `SELECT id, category, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, created_at
-     FROM posts WHERE user_id = ? AND status = 'published'
-     ORDER BY created_at DESC LIMIT 30`
-).bind(target.id).all();
+    const posts = await env.MY_BINDING.prepare(
+      `SELECT id, category, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, created_at
+         FROM posts WHERE user_id = ? AND status = 'published'
+         ORDER BY created_at DESC LIMIT 30`
+    ).bind(target.id).all();
 
     let networkCount = 0;
     let networkList = [];
@@ -603,6 +621,9 @@ const posts = await env.MY_BINDING.prepare(
   return null;
 }
 
+// ============================================================
+// Network routes
+// ============================================================
 async function handleNetworkRoutes(request, env, url) {
   const user = await getUserFromToken(request, env);
 
@@ -620,7 +641,6 @@ async function handleNetworkRoutes(request, env, url) {
     await env.MY_BINDING.prepare('INSERT OR IGNORE INTO network (user_id, network_user_id, created_at) VALUES (?, ?, ?)')
       .bind(user.id, targetId, Date.now()).run();
 
-    // Notify the target user
     const me = await env.MY_BINDING.prepare('SELECT name, username FROM users WHERE id = ?').bind(user.id).first();
     const actorName = me?.name || me?.username || 'Someone';
     await createNotification(env, {
@@ -630,7 +650,7 @@ async function handleNetworkRoutes(request, env, url) {
       subjectType: 'user',
       subjectId: user.id,
       message: `${actorName} added you to their network`,
-      link: `/u/${me?.username || ''}/`
+      link: `/torcher/${me?.username || ''}/`
     });
 
     return feedJson({ success: true });
@@ -648,21 +668,20 @@ async function handleNetworkRoutes(request, env, url) {
   if (url.pathname === '/api/network/list' && request.method === 'GET') {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     const rows = await env.MY_BINDING.prepare(
-      `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.role, n.created_at
+      `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.role, n.created_at,
+              COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = u.id), 0) AS total_points
          FROM network n JOIN users u ON u.id = n.network_user_id
         WHERE n.user_id = ? ORDER BY n.created_at DESC`
     ).bind(user.id).all();
     return feedJson({ network: rows.results || [] });
   }
 
-  // POST /api/network/invite
   if (url.pathname === '/api/network/invite' && request.method === 'POST') {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const email = String(body.email || '').trim().toLowerCase();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return feedJson({ error: 'Invalid email' }, 400);
 
-    // Basic rate limit: max 10 invites per user per day
     const today = new Date().toISOString().split('T')[0];
     const countRow = await env.MY_BINDING.prepare(
       `SELECT COUNT(*) AS c FROM usage_logs WHERE user_id = ? AND tool_name = 'invite' AND tool_run_date = ?`
@@ -671,7 +690,7 @@ async function handleNetworkRoutes(request, env, url) {
 
     const inviterName = user.name || user.username || 'A Traffic Torch user';
     const inviterUsername = user.username || '';
-    const profileUrl = inviterUsername ? `https://traffictorch.net/u/${inviterUsername}/` : 'https://traffictorch.net';
+    const profileUrl = inviterUsername ? `https://traffictorch.net/torcher/${inviterUsername}/` : 'https://traffictorch.net';
     const signupUrl = 'https://traffictorch.net/login/?tab=register';
 
     try {
@@ -717,7 +736,6 @@ async function handleNetworkRoutes(request, env, url) {
       return feedJson({ error: 'Failed to send invite' }, 500);
     }
 
-    // Log for rate limit
     await env.MY_BINDING.prepare(
       `INSERT INTO usage_logs (user_id, tool_run_date, run_count, tool_name, identifier) VALUES (?, ?, ?, 'invite', ?)`
     ).bind(user.id, today, 1, String(user.id)).run().catch(() => {});
@@ -733,7 +751,8 @@ async function handleNetworkRoutes(request, env, url) {
 
     const like = '%' + q.replace(/[%_]/g, '') + '%';
     const rows = await env.MY_BINDING.prepare(
-      `SELECT id, username, name AS display_name, avatar_preset, role
+      `SELECT id, username, name AS display_name, avatar_preset, role,
+              COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = users.id), 0) AS total_points
          FROM users
         WHERE profile_public = 1
           AND username IS NOT NULL
@@ -759,6 +778,9 @@ async function handleNetworkRoutes(request, env, url) {
   return null;
 }
 
+// ============================================================
+// Notification helper
+// ============================================================
 async function createNotification(env, { userId, type, actorId, subjectType, subjectId, message, link }) {
   try {
     const col = type === 'comment' ? 'notify_comments'
@@ -789,6 +811,9 @@ async function createNotification(env, { userId, type, actorId, subjectType, sub
   }
 }
 
+// ============================================================
+// Feed + comments + notifications + points routes
+// ============================================================
 async function handleFeedRoutes(request, env, url) {
   const user = await getUserFromToken(request, env);
 
@@ -816,6 +841,7 @@ async function handleFeedRoutes(request, env, url) {
             SELECT p.id, p.user_id, p.category, p.note, p.tool, p.url, p.page_title, p.score,
              p.domain_mode, p.domain_label, p.module_scores, p.created_at,
              u.username, u.name AS display_name, u.avatar_preset, u.role,
+             COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = p.user_id), 0) AS total_points,
              (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id AND c.status = 'published') AS comment_count
         FROM posts p
         JOIN users u ON u.id = p.user_id
@@ -877,7 +903,11 @@ async function handleFeedRoutes(request, env, url) {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`
     ).bind(user.id, category, note, tool, urlVal, pageTitle, score, domainMode, domainLabel, moduleScores, now).run();
 
-    return feedJson({ success: true, post_id: ins.meta?.last_row_id || null });
+    const postId = ins.meta?.last_row_id || null;
+    await awardPoints(env, { userId: user.id, type: 'post', points: POINTS_POST, referenceId: postId });
+    const total = await getUserTotalPoints(env, user.id);
+
+    return feedJson({ success: true, post_id: postId, total_points: total });
   }
 
   // PATCH /api/posts/:id
@@ -889,6 +919,7 @@ async function handleFeedRoutes(request, env, url) {
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const fields = []; const params = [];
     if (typeof body.note === 'string') { fields.push('note = ?'); params.push(body.note.slice(0, 360)); }
+    if (typeof body.page_title === 'string') { fields.push('page_title = ?'); params.push(body.page_title.slice(0, 200)); }
     if (CATEGORIES.includes(body.category)) { fields.push('category = ?'); params.push(body.category); }
     if (typeof body.domain_mode === 'string' && ['domain','hidden','full'].includes(body.domain_mode)) {
       fields.push('domain_mode = ?'); params.push(body.domain_mode);
@@ -915,7 +946,8 @@ async function handleFeedRoutes(request, env, url) {
     const id = parseInt(url.pathname.split('/')[3], 10);
     const rows = await env.MY_BINDING.prepare(
       `SELECT c.id, c.post_id, c.user_id, c.body, c.created_at,
-              u.username, u.name AS display_name, u.avatar_preset
+              u.username, u.name AS display_name, u.avatar_preset,
+              COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = c.user_id), 0) AS total_points
          FROM comments c JOIN users u ON u.id = c.user_id
         WHERE c.post_id = ? AND c.status = 'published'
         ORDER BY c.created_at ASC LIMIT 100`
@@ -938,7 +970,9 @@ async function handleFeedRoutes(request, env, url) {
       'INSERT INTO comments (post_id, user_id, body, status, created_at) VALUES (?, ?, ?, ?, ?)'
     ).bind(id, user.id, text, 'published', now).run();
 
-    // Notify post owner
+    await awardPoints(env, { userId: user.id, type: 'comment', points: POINTS_COMMENT, referenceId: ins.meta?.last_row_id || null });
+    const total = await getUserTotalPoints(env, user.id);
+
     const postOwner = await env.MY_BINDING.prepare('SELECT user_id, page_title FROM posts WHERE id = ?').bind(id).first();
     if (postOwner && postOwner.user_id !== user.id) {
       const actorName = user.name || user.username || 'Someone';
@@ -955,9 +989,10 @@ async function handleFeedRoutes(request, env, url) {
 
     const comment = {
       id: ins.meta?.last_row_id, post_id: id, user_id: user.id, body: text, created_at: now,
-      username: user.username, display_name: user.name || user.username, avatar_preset: user.avatar_preset || 'owner'
+      username: user.username, display_name: user.name || user.username, avatar_preset: user.avatar_preset || 'owner',
+      total_points: total
     };
-    return feedJson({ success: true, comment });
+    return feedJson({ success: true, comment, total_points: total });
   }
 
   // PATCH /api/comments/:id
@@ -1023,17 +1058,22 @@ async function handleFeedRoutes(request, env, url) {
     const now = Date.now();
     const ins = await env.MY_BINDING.prepare(
       `INSERT INTO contributions (user_id, type, subject, message, tool, page_url, status, points, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, 'published', 10, ?)`
-    ).bind(user.id, type, subject, message, tool, pageUrl, now).run();
-    const sum = await env.MY_BINDING.prepare(
-      `SELECT COALESCE(SUM(points), 0) AS total, COUNT(*) AS count
-         FROM contributions WHERE user_id = ? AND status = 'published'`
+       VALUES (?, ?, ?, ?, ?, ?, 'published', ?, ?)`
+    ).bind(user.id, type, subject, message, tool, pageUrl, POINTS_CONTRIBUTION, now).run();
+
+    const contributionId = ins.meta?.last_row_id || null;
+    await awardPoints(env, { userId: user.id, type: 'contribution', points: POINTS_CONTRIBUTION, referenceId: contributionId });
+
+    const total = await getUserTotalPoints(env, user.id);
+    const countRow = await env.MY_BINDING.prepare(
+      `SELECT COUNT(*) AS c FROM user_points WHERE user_id = ? AND event_type = 'contribution'`
     ).bind(user.id).first();
+
     return feedJson({
       success: true,
-      contribution_id: ins.meta?.last_row_id || null,
-      total_points: sum?.total || 0,
-      contribution_count: sum?.count || 0
+      contribution_id: contributionId,
+      total_points: total,
+      contribution_count: countRow?.c || 0
     });
   }
 
@@ -1043,27 +1083,41 @@ async function handleFeedRoutes(request, env, url) {
     const rows = await env.MY_BINDING.prepare(
       `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.role,
               u.bio, u.website_url, u.website_approved, u.job_title, u.company, u.location,
-              COALESCE(SUM(c.points), 0) AS total_points,
-              COUNT(c.id) AS contribution_count,
-              MAX(c.created_at) AS last_contribution
-         FROM contributions c
-         JOIN users u ON u.id = c.user_id
-        WHERE c.status = 'published'
-        GROUP BY u.id
-        ORDER BY total_points DESC, contribution_count DESC, MIN(c.created_at) ASC
+              COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = u.id), 0) AS total_points,
+              (SELECT COUNT(*) FROM user_points up WHERE up.user_id = u.id AND up.event_type = 'contribution') AS contribution_count,
+              (SELECT MAX(up.created_at) FROM user_points up WHERE up.user_id = u.id) AS last_contribution
+         FROM users u
+        WHERE EXISTS (SELECT 1 FROM user_points up WHERE up.user_id = u.id)
+        ORDER BY total_points DESC, contribution_count DESC, u.id ASC
         LIMIT ?`
     ).bind(limit).all();
     return feedJson({ results: rows.results || [], count: (rows.results || []).length });
   }
 
-  // ---- NOTIFICATIONS ----
+  // POST /api/user-points/leaderboard-award
+  if (url.pathname === '/api/user-points/leaderboard-award' && request.method === 'POST') {
+    if (!user) return feedJson({ error: 'Unauthorized' }, 401);
+    let body = {}; try { body = await request.json(); } catch {}
+    const refId = body.reference_id ? parseInt(body.reference_id, 10) : null;
+    await awardPoints(env, { userId: user.id, type: 'leaderboard', points: POINTS_LEADERBOARD, referenceId: refId });
+    const total = await getUserTotalPoints(env, user.id);
+    return feedJson({ success: true, total_points: total });
+  }
+
+  // GET /api/user-points/me
+  if (url.pathname === '/api/user-points/me' && request.method === 'GET') {
+    if (!user) return feedJson({ error: 'Unauthorized' }, 401);
+    const total = await getUserTotalPoints(env, user.id);
+    return feedJson({ total_points: total });
+  }
 
   // GET /api/notifications
   if (url.pathname === '/api/notifications' && request.method === 'GET') {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     const rows = await env.MY_BINDING.prepare(
       `SELECT n.id, n.type, n.actor_id, n.subject_type, n.subject_id, n.message, n.link, n.is_read, n.created_at,
-              u.username AS actor_username, u.name AS actor_display_name, u.avatar_preset AS actor_avatar
+              u.username AS actor_username, u.name AS actor_display_name, u.avatar_preset AS actor_avatar,
+              COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = n.actor_id), 0) AS actor_total_points
          FROM notifications n
          LEFT JOIN users u ON u.id = n.actor_id
         WHERE n.user_id = ?
@@ -1075,7 +1129,7 @@ async function handleFeedRoutes(request, env, url) {
     return feedJson({ notifications: list, unread });
   }
 
-  // POST /api/notifications/read  { id? }
+  // POST /api/notifications/read
   if (url.pathname === '/api/notifications/read' && request.method === 'POST') {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     let body = {};
@@ -1106,11 +1160,14 @@ async function handleFeedRoutes(request, env, url) {
   return null;
 }
 
+// ============================================================
+// Router for new routes
+// ============================================================
 async function handleNewRoutes(request, env, url) {
   const p = url.pathname;
   const isNew =
     p === '/api/profile/me' ||
-    p.startsWith('/api/u/') ||
+    p.startsWith('/api/torcher/') ||
     p.startsWith('/api/network/') ||
     p === '/api/feed' ||
     p === '/api/posts' ||
@@ -1124,6 +1181,8 @@ async function handleNewRoutes(request, env, url) {
     p === '/api/notifications/read' ||
     p === '/api/notifications/clear' ||
     p === '/api/users/search' ||
+    p === '/api/user-points/me' ||
+    p === '/api/user-points/leaderboard-award' ||
     /^\/api\/notifications\/\d+$/.test(p);
 
   if (!isNew) return null;
@@ -1139,6 +1198,9 @@ async function handleNewRoutes(request, env, url) {
   }
 }
 
+// ============================================================
+// Main export
+// ============================================================
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -1300,10 +1362,11 @@ export default {
         const today = new Date().toISOString().split('T')[0];
         const log = await env.MY_BINDING.prepare('SELECT MAX(run_count) as run_count FROM usage_logs WHERE identifier = ? AND tool_run_date = ?').bind(decoded.id.toString(), today).first();
         const used = log?.run_count || 0;
+        const totalPoints = await getUserTotalPoints(env, decoded.id);
         return corsResponse(JSON.stringify({
           email: user.email, isPro, proSince: user.pro_since, dailyUsed: used, dailyLimit: limit,
           dailyRemaining: limit - used, tier, ga4Connected: !!user.ga4_property_id,
-          gscConnected, gscSiteUrl
+          gscConnected, gscSiteUrl, total_points: totalPoints
         }));
       }
 
@@ -1914,6 +1977,7 @@ export default {
         await env.MY_BINDING.prepare('DELETE FROM blocks WHERE user_id = ? OR blocked_user_id = ?').bind(userId, userId).run();
         await env.MY_BINDING.prepare('DELETE FROM contributions WHERE user_id = ?').bind(userId).run();
         await env.MY_BINDING.prepare('DELETE FROM notifications WHERE user_id = ? OR actor_id = ?').bind(userId, userId).run();
+        await env.MY_BINDING.prepare('DELETE FROM user_points WHERE user_id = ?').bind(userId).run();
         await env.MY_BINDING.prepare('DELETE FROM users WHERE id = ?').bind(userId).run();
         return corsResponse(JSON.stringify({ success: true, message: 'Account permanently deleted' }));
       }

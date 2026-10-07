@@ -231,15 +231,10 @@
                     </div>
                     <div class="flex-1 min-w-0">
                       <h3 class="font-bold text-base leading-snug mb-1.5">
-                        <template x-if="post.url && post.tool">
-                          <a :href="toolRunUrl(post.tool, post.url)" target="_blank" rel="noopener"
-                             class="hover:text-orange-500 underline decoration-1 underline-offset-2"
-                             x-text="(post.page_title && post.page_title.trim()) || toolDisplayName(post.tool)"></a>
-                        </template>
-                        <template x-if="!post.url || !post.tool">
-                          <span x-text="(post.page_title && post.page_title.trim()) || toolDisplayName(post.tool)"></span>
-                        </template>
-                      </h3>
+  <a :href="'/torch/' + post.id + '/'"
+     class="hover:text-orange-500 underline decoration-1 underline-offset-2"
+     x-text="(post.page_title && post.page_title.trim()) || toolDisplayName(post.tool)"></a>
+</h3>
                       <p class="text-xs text-gray-500">
                         <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
                         · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
