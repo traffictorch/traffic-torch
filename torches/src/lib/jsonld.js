@@ -85,8 +85,14 @@ export function torchJsonLd(post, author, id) {
     mentions: {
       '@type': 'SoftwareApplication',
       name: toolLabel.charAt(0).toUpperCase() + toolLabel.slice(1),
-      applicationCategory: 'SEO',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web Browser',
       url: SITE + toolPath,
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
     },
     keywords: [post.category, toolLabel, domain].filter(Boolean),
     isPartOf: {

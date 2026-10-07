@@ -56,18 +56,18 @@ function renderMiniCard(post, { showAuthor } = {}) {
   const author = showAuthor && post.username
     ? `<a href="/torcher/${htmlEscape(post.username)}/" class="text-xs text-gray-500 hover:text-orange-500">@${htmlEscape(post.username)}</a>`
     : '';
-  return `<a href="/torch/${post.id}/" class="glass rounded-xl overflow-hidden flex hover:bg-white/10 transition">
+  return `<a href="/torch/${post.id}/" class="glass rounded-xl overflow-hidden flex flex-col hover:bg-white/10 transition group">
     <img src="/og/torch/${post.id}.png"
          alt=""
-         width="120" height="63"
          loading="lazy"
-         class="flex-shrink-0 object-cover bg-gray-100 dark:bg-gray-800"
-         style="width:120px;height:63px;">
-    <span class="flex-1 min-w-0 p-3 flex flex-col justify-center">
-      <span class="flex items-center gap-2">
-        <span class="text-lg font-black ${scoreClass(sc)}">${sc}</span>
-        <span class="block text-sm font-medium truncate flex-1">${htmlEscape(torchLabel(post))}</span>
+         class="w-full object-cover bg-gray-100 dark:bg-gray-800"
+         style="aspect-ratio: 1200 / 630;">
+    <span class="p-3 flex flex-col gap-2 min-w-0">
+      <span class="flex items-baseline gap-2">
+        <span class="text-3xl font-black ${scoreClass(sc)} leading-none">${sc}</span>
+        <span class="text-[10px] font-bold text-gray-400">/100</span>
       </span>
+      <span class="block text-sm font-medium leading-snug group-hover:text-orange-500 transition" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em;">${htmlEscape(torchLabel(post))}</span>
       ${author}
     </span>
   </a>`;
@@ -140,13 +140,13 @@ function renderTorchBody(data) {
   const moreHtml = (more_by_author || []).length
     ? `<section class="mt-8">
         <h2 class="text-lg font-bold mb-3">More by <a href="/torcher/${htmlEscape(author.username)}/" class="hover:text-orange-500">@${htmlEscape(author.username)}</a></h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${more_by_author.map(p => renderMiniCard(p)).join('')}</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${more_by_author.map(p => renderMiniCard(p)).join('')}</div>
       </section>` : '';
 
   const relatedHtml = (related || []).length
     ? `<section class="mt-8">
         <h2 class="text-lg font-bold mb-3">Similar scores with ${htmlEscape(toolName)}</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${related.map(p => renderMiniCard(p, { showAuthor: true })).join('')}</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${related.map(p => renderMiniCard(p, { showAuthor: true })).join('')}</div>
       </section>` : '';
 
   const socials = [
@@ -159,8 +159,40 @@ function renderTorchBody(data) {
   const networkHtml = (author_network || []).length
     ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${author_network.map(u => `<a href="/torcher/${htmlEscape(u.username)}/" class="glass rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition"><img src="/images/avatars/${htmlEscape(u.avatar_preset || 'owner')}.svg" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover" alt=""><div class="flex-1 min-w-0"><p class="font-bold text-sm truncate">${htmlEscape(u.display_name || u.username)}</p><p class="text-xs text-gray-500 capitalize">${htmlEscape(roleLabel(u.role))}</p></div></a>`).join('')}</div>`
     : `<div class="glass rounded-2xl p-8 text-center"><p class="text-4xl mb-3">👥</p><p class="text-gray-500">Network is private or empty.</p></div>`;
-
-  return `<main class="container mx-auto px-4 py-8 flex-1 max-w-3xl" data-ssr="torch">
+  
+    return `<style>
+    .score-circle {
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      background: conic-gradient(var(--color) calc(var(--sc) * 1%), rgba(148, 163, 184, 0.15) 0);
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s ease;
+    }
+    .score-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .dark .score-inner { background: rgba(15, 23, 42, 0.95); }
+    .score-num { font-size: 42px; font-weight: 900; letter-spacing: -1px; margin: 0; }
+    .score-denom { font-size: 11px; font-weight: 700; color: #94a3b8; margin: 2px 0 0; letter-spacing: 0.5px; }
+    @media (min-width: 640px) {
+      .score-circle { width: 156px; height: 156px; }
+      .score-num { font-size: 52px; }
+      .score-denom { font-size: 12px; }
+    }
+  </style>
+  <main class="container mx-auto px-4 py-8 flex-1 max-w-3xl" data-ssr="torch">
   <nav aria-label="breadcrumb" class="text-sm text-gray-500 mb-4">
     <a href="/" class="hover:underline">Home</a> ›
     <a href="/community/" class="hover:underline">Community</a> ›
@@ -170,18 +202,22 @@ function renderTorchBody(data) {
 
   <article class="glass rounded-2xl overflow-hidden border-l-4" style="border-left-color:${scoreColor(sc)}">
     <div class="p-6">
-      <div class="flex items-start gap-6 flex-wrap">
-        <div class="text-center" style="min-width:110px;">
-          <p class="text-6xl font-black leading-none" style="color:${scoreColor(sc)}">${sc}</p>
-          <p class="text-xs font-bold text-gray-400 mt-1">/100</p>
+      <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 text-center sm:text-left">${htmlEscape(toolName)}</p>
+
+      <div class="flex flex-col items-center sm:flex-row sm:items-start gap-6 mb-4">
+        <div class="flex-shrink-0 score-circle" style="--sc:${sc};--color:${scoreColor(sc)};">
+          <div class="score-inner">
+            <p class="score-num" style="color:${scoreColor(sc)};">${sc}</p>
+            <p class="score-denom">/100</p>
+          </div>
         </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">${htmlEscape(toolName)}</p>
-          <h1 class="text-2xl font-black leading-tight mb-2">${titleText}</h1>
+        <div class="flex-1 min-w-0 text-center sm:text-left">
+          <h1 class="text-2xl sm:text-3xl font-black leading-tight mb-2">${titleText}</h1>
           <p class="text-sm text-gray-500">${htmlEscape(domain)} · <time datetime="${new Date(post.created_at).toISOString()}">${date}</time></p>
-          ${post.note ? `<p class="text-base leading-relaxed mt-3 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">${htmlEscape(post.note)}</p>` : ''}
         </div>
       </div>
+
+      ${post.note ? `<p class="text-base leading-relaxed mt-3 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">${htmlEscape(post.note)}</p>` : ''}
     </div>
     ${modulesHtml ? `<div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div><div class="px-6 py-4 space-y-2">${modulesHtml}</div>` : ''}
   </article>
@@ -193,13 +229,20 @@ function renderTorchBody(data) {
       <p class="font-bold truncate"><a href="/torcher/${htmlEscape(author.username)}/" class="hover:text-orange-500">${htmlEscape(author.display_name || author.username)}</a></p>
       <p class="text-xs text-gray-500">@${htmlEscape(author.username)} · 🏅 ${author.total_points || 0}</p>
     </div>
-    <div class="flex gap-2 flex-wrap w-full sm:w-auto">
+    <div class="flex gap-2 flex-wrap w-full sm:w-auto items-center">
       <button x-show="!isOwnTorch" type="button" @click="toggleNetwork()" class="px-3 py-2 rounded-xl font-bold text-xs transition border-2" :class="inNetwork ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'" x-text="inNetwork ? 'In Network ✓' : '+ Add to Network'"></button>
-      <button type="button" @click="share()" class="px-3 py-2 rounded-xl font-bold text-xs bg-gradient-to-r from-orange-500 to-pink-600 text-white hover:opacity-90 transition">📤 Share</button>
-      <button type="button" @click="copyLink()" class="px-3 py-2 rounded-xl font-bold text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition" x-text="copyLabel">Copy 🔗</button>
-      <button x-show="!isOwnTorch" type="button" @click="report()" class="px-3 py-2 rounded-xl font-bold text-xs border border-gray-300 dark:border-gray-600 hover:border-red-500 hover:text-red-500 transition">⚑</button>
+      <button x-show="!isOwnTorch" type="button" @click="report()" class="px-3 py-2 rounded-xl font-bold text-xs border border-gray-300 dark:border-gray-600 hover:border-red-500 hover:text-red-500 transition">⚑ Report</button>
     </div>
   </div>
+  
+    <!-- Share -->
+  <section class="share-block mt-6" aria-label="Share options">
+    <div class="share-row">
+      <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+      <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+    </div>
+    <p class="share-status" aria-live="polite"></p>
+  </section>
 
   <!-- Tabs -->
   <nav class="flex gap-2 mt-6 flex-wrap justify-center" aria-label="Torch sections">
