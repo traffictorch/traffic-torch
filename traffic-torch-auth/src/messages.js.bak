@@ -507,37 +507,37 @@ export async function handleMessageRoutes(request, env, url, deps) {
   const m = request.method;
 
   try {
-    if (p === '/api/messages/send' && m === 'POST') return await handleSend(request, env, user, deps);
-    if (p === '/api/messages/inbox' && m === 'GET') return await handleInbox(request, env, user, url);
+    if (p === '/api/messages/send' && m === 'POST') return handleSend(request, env, user, deps);
+    if (p === '/api/messages/inbox' && m === 'GET') return handleInbox(request, env, user, url);
     if (p === '/api/messages/unread-count' && m === 'GET') return handleUnreadCount(request, env, user);
-    if (p === '/api/messages/read' && m === 'POST') return await handleRead(request, env, user);
-    if (p === '/api/messages/upload' && m === 'POST') return await handleUpload(request, env, user);
-    if (p === '/api/messages/settings' && m === 'PATCH') return await handleSettings(request, env, user);
+    if (p === '/api/messages/read' && m === 'POST') return handleRead(request, env, user);
+    if (p === '/api/messages/upload' && m === 'POST') return handleUpload(request, env, user);
+    if (p === '/api/messages/settings' && m === 'PATCH') return handleSettings(request, env, user);
 
     if (p.startsWith('/api/messages/thread/') && m === 'GET') {
       const username = decodeURIComponent(p.slice('/api/messages/thread/'.length));
-      return await handleThread(request, env, user, username, url);
+      return handleThread(request, env, user, username, url);
     }
 
     let match;
     if ((match = p.match(/^\/api\/messages\/(\d+)\/react$/))) {
       const id = parseInt(match[1]);
-      if (m === 'POST') return await handleReact(request, env, user, id, true);
-      if (m === 'DELETE') return await handleReact(request, env, user, id, false);
+      if (m === 'POST') return handleReact(request, env, user, id, true);
+      if (m === 'DELETE') return handleReact(request, env, user, id, false);
     }
     if ((match = p.match(/^\/api\/messages\/report\/(\d+)$/)) && m === 'POST') {
-      return await handleReport(request, env, user, parseInt(match[1]));
+      return handleReport(request, env, user, parseInt(match[1]));
     }
     if ((match = p.match(/^\/api\/messages\/mute\/(\d+)$/))) {
       const id = parseInt(match[1]);
-      if (m === 'POST') return await handleMute(request, env, user, id, true);
-      if (m === 'DELETE') return await handleMute(request, env, user, id, false);
+      if (m === 'POST') return handleMute(request, env, user, id, true);
+      if (m === 'DELETE') return handleMute(request, env, user, id, false);
     }
     if ((match = p.match(/^\/api\/messages\/attachments\/(\d+)$/)) && m === 'GET') {
-      return await handleAttachmentDownload(request, env, user, parseInt(match[1]));
+      return handleAttachmentDownload(request, env, user, parseInt(match[1]));
     }
     if ((match = p.match(/^\/api\/messages\/(\d+)$/)) && m === 'DELETE') {
-      return await handleDelete(request, env, user, parseInt(match[1]));
+      return handleDelete(request, env, user, parseInt(match[1]));
     }
 
     return json({ error: 'Not found' }, 404);

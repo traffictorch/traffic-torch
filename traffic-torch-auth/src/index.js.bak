@@ -2559,7 +2559,7 @@ export default {
       }
       
      if (url.pathname.startsWith('/api/messages/')) {
-        return await handleMessageRoutes(request, env, url, { verifyJWT, createNotification, getUserFromToken });
+        return handleMessageRoutes(request, env, url, { verifyJWT, createNotification, getUserFromToken });
       }
       if (url.pathname === '/api/internal/cleanup-messages') {
         return handleCleanupMessages(request, env);
