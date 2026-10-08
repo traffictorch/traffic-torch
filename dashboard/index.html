@@ -417,19 +417,25 @@
               <!-- Notifications section -->
               <div id="notifications-section" class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
 
-                <div x-show="push.supported && !push.subscribed && !pushBannerDismissed && isAuthenticated"
+                <div x-show="push.supported && !pushBannerDismissed && isAuthenticated"
                      x-cloak
                      class="mb-6 p-4 rounded-2xl border border-orange-500/30 bg-gradient-to-r from-orange-500/10 to-pink-500/10 flex flex-wrap items-center gap-3">
                   <span class="text-2xl flex-shrink-0">🔔</span>
                   <div class="flex-1 min-w-[200px]">
-                    <p class="font-bold text-sm">Get push notifications on this device</p>
-                    <p class="text-xs text-gray-500 mt-0.5">Instant alerts for comments, network connections, and messages — even when Traffic Torch is closed.</p>
+                    <p class="font-bold text-sm" x-show="!push.subscribed">🔔 Turn on push notifications for this device</p>
+                    <p class="font-bold text-sm text-green-600 dark:text-green-400" x-show="push.subscribed">✅ Push notifications are ON for this device</p>
+                    <p class="text-xs text-gray-500 mt-0.5" x-show="!push.subscribed">Instant alerts for comments, network connections, and messages — even when Traffic Torch is closed.</p>
+                    <p class="text-xs text-gray-500 mt-0.5" x-show="push.subscribed">You'll be notified on this device. Manage what you get below.</p>
                   </div>
                   <div class="flex gap-2 flex-shrink-0 flex-wrap">
-                    <button @click="enablePush()" :disabled="push.loading"
+                    <button @click="enablePush()" :disabled="push.loading" x-show="!push.subscribed"
                             class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-sm rounded-lg hover:opacity-90 transition disabled:opacity-50">
                       <span x-show="!push.loading">Enable now</span>
                       <span x-show="push.loading">Enabling…</span>
+                    </button>
+                    <button @click="disablePush()" :disabled="push.loading" x-show="push.subscribed"
+                            class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 transition disabled:opacity-50">
+                      Turn off
                     </button>
                     <button @click="activeDashboardTab = 'settings'; window.scrollTo({top:0,behavior:'smooth'})"
                             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">
