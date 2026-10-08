@@ -152,7 +152,7 @@ async function handleSend(request, env, user, deps) {
     return json({ error: 'Daily message limit reached (200)' }, 429);
 
   const recipient = await env.MY_BINDING.prepare(
-    `SELECT id, username, display_name FROM users WHERE id = ?`
+    `SELECT id, username, name AS display_name FROM users WHERE id = ?`
   ).bind(toId).first();
   if (!recipient) return json({ error: 'Recipient not found' }, 404);
 
@@ -246,7 +246,7 @@ async function handleInbox(request, env, user, url) {
   const ph = peerIds.map(() => '?').join(',');
 
   const peers = await env.MY_BINDING.prepare(
-    `SELECT id, username, display_name, avatar_preset FROM users WHERE id IN (${ph})`
+    `SELECT id, username, name AS display_name, avatar_preset FROM users WHERE id IN (${ph})`
   ).bind(...peerIds).all();
   const peerMap = {};
   (peers.results || []).forEach(p => { peerMap[p.id] = p; });
@@ -284,7 +284,7 @@ async function handleInbox(request, env, user, url) {
 
 async function handleThread(request, env, user, username, url) {
   const peer = await env.MY_BINDING.prepare(
-    `SELECT id, username, display_name, avatar_preset, message_policy, messages_blocked FROM users WHERE username = ?`
+    `SELECT id, username, name AS display_name, avatar_preset, message_policy, messages_blocked FROM users WHERE username = ?`
   ).bind(username).first();
   if (!peer) return json({ error: 'User not found' }, 404);
 

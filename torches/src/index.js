@@ -11,7 +11,7 @@ import { handleGlobalRss as handleGlobalRssReal, handleUserRss as handleUserRssR
 import { handleOgTorch as handleOgTorchReal, handleOgProfile as handleOgProfileReal } from './handlers/og.js';
 import { handlePurge as handlePurgeReal } from './handlers/purge.js';
 
-export default { 
+export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
@@ -42,7 +42,7 @@ export default {
       if (path.startsWith('/torcher/')) return handleProfileReal(request, env);
       if (path.startsWith('/torch/')) return handleTorchReal(request, env);
       if (/^\/community\/?$/.test(path)) return handleCommunityReal(request, env);
-            if (/^\/tools\/[^/]+\/torches\/?$/.test(path)) return handleToolFeedReal(request, env);
+      if (/^\/tools\/[^/]+\/torches\/?$/.test(path)) return handleToolFeedReal(request, env);
       if (path.startsWith('/tools/')) return fetch(request);
 
       return new Response('Not found', { status: 404 });
@@ -52,6 +52,19 @@ export default {
         status: 500,
         headers: { 'Content-Type': 'text/plain; charset=utf-8' },
       });
+    }
+  },
+
+  async scheduled(event, env, ctx) {
+    try {
+      const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/internal/cleanup-messages', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + env.PURGE_SECRET },
+      });
+      const body = await res.text();
+      console.log('[cron/cleanup-messages]', res.status, body);
+    } catch (err) {
+      console.error('[cron/cleanup-messages] error:', err.message);
     }
   },
 };

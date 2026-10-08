@@ -12,7 +12,7 @@ import { handleMessageRoutes, handleCleanupMessages } from './messages.js';
 function corsResponse(body, status = 200, headers = {}) {
   const h = new Headers(headers);
   h.set('Access-Control-Allow-Origin', '*');
-  h.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE');
+  h.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   h.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-fingerprint');
   return new Response(body, { status, headers: h });
 }
@@ -1762,7 +1762,7 @@ export default {
         status: 204,
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE',
+          'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-fingerprint',
           'Access-Control-Max-Age': '86400',
         },

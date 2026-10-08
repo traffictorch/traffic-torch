@@ -62,3 +62,6 @@ zone_name = "traffictorch.net"
 [[routes]]
 pattern = "traffictorch.net/tools/*"
 zone_name = "traffictorch.net"
+
+[triggers]
+crons = ["0 3 * * *"]

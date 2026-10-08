@@ -2065,6 +2065,55 @@
                 <span x-text="isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—'"></span>
               </div>
             </div>
+            
+                        <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <h4 class="font-semibold mb-3">✉️ Direct Messages</h4>
+              <p class="text-xs text-gray-500 mb-4">Control who can send you private messages.</p>
+
+              <div class="space-y-2">
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <input type="radio" value="all" x-model="messageSettingsPolicy" class="mt-0.5 w-4 h-4">
+                  <div>
+                    <div class="text-sm font-medium">🌍 Anyone</div>
+                    <div class="text-xs text-gray-500">Any logged-in user can message you.</div>
+                  </div>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <input type="radio" value="network" x-model="messageSettingsPolicy" class="mt-0.5 w-4 h-4">
+                  <div>
+                    <div class="text-sm font-medium">🕸️ My network only</div>
+                    <div class="text-xs text-gray-500">Only people you've added to your network can message you.</div>
+                  </div>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <input type="radio" value="none" x-model="messageSettingsPolicy" class="mt-0.5 w-4 h-4">
+                  <div>
+                    <div class="text-sm font-medium">🚫 Nobody</div>
+                    <div class="text-xs text-gray-500">Turn off direct messages completely.</div>
+                  </div>
+                </label>
+              </div>
+
+              <label class="flex items-center justify-between cursor-pointer mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div>
+                  <div class="text-sm font-medium">Hard-block all messages</div>
+                  <div class="text-xs text-gray-500">Emergency off switch — overrides the setting above.</div>
+                </div>
+                <input type="checkbox"
+                       :checked="messageSettingsBlocked === 1"
+                       @change="messageSettingsBlocked = $event.target.checked ? 1 : 0"
+                       class="w-5 h-5">
+              </label>
+
+              <div class="flex items-center gap-3 mt-4 flex-wrap">
+                <button @click="saveMessageSettings()" :disabled="messageSettingsSaving"
+                        class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition text-sm disabled:opacity-50">
+                  <span x-show="!messageSettingsSaving">Save Message Settings</span>
+                  <span x-show="messageSettingsSaving">Saving…</span>
+                </button>
+                <span x-show="messageSettingsSaved" class="text-green-500 text-sm">Saved ✓</span>
+              </div>
+            </div>
 
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-3">🔔 Notification Preferences</h4>
@@ -2336,6 +2385,12 @@ function dashboardApp() {
     discover: { loading: false, users: [], hasMore: false, error: null, addLoading: {} },
     activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, type: 'all', category: 'all', tool: 'all', time: 'all', scope: 'network', filterUser: null, filterUsername: null },
 
+    messageSettingsPolicy: 'all',
+    messageSettingsBlocked: 0,
+    messageSettingsSaving: false,
+    messageSettingsSaved: false,
+    messageSettingsLoaded: false,
+    
     notifications: {
       loading: false,
       list: [],
@@ -2487,6 +2542,7 @@ function dashboardApp() {
         this.loadNetwork();
         this.loadFeed(true);
         this.loadNotifications();
+        this.loadMessageSettings();
         this.initPush();
         this.loadDiscover();
       } else {
@@ -2835,6 +2891,48 @@ function dashboardApp() {
     },
 
     // ===== NOTIFICATIONS =====
+        async loadMessageSettings() {
+      if (this.messageSettingsLoaded || !this.isAuthenticated) return;
+      try {
+        const token = localStorage.getItem('authToken');
+        const res = await fetch(`${API_BASE}/api/profile/me`, {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const p = data.profile || {};
+        this.messageSettingsPolicy = p.message_policy || 'all';
+        this.messageSettingsBlocked = p.messages_blocked || 0;
+        this.messageSettingsLoaded = true;
+      } catch {}
+    },
+
+    async saveMessageSettings() {
+      this.messageSettingsSaving = true;
+      this.messageSettingsSaved = false;
+      try {
+        const token = localStorage.getItem('authToken');
+        const res = await fetch(`${API_BASE}/api/messages/settings`, {
+          method: 'PATCH',
+          headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message_policy: this.messageSettingsPolicy,
+            messages_blocked: this.messageSettingsBlocked
+          })
+        });
+        if (!res.ok) {
+          const d = await res.json().catch(() => ({}));
+          throw new Error(d.error || 'Save failed');
+        }
+        this.messageSettingsSaved = true;
+        setTimeout(() => { this.messageSettingsSaved = false; }, 2500);
+      } catch (e) {
+        alert('Could not save: ' + e.message);
+      } finally {
+        this.messageSettingsSaving = false;
+      }
+    },
+    
     async loadNotifications() {
       if (!this.isAuthenticated) return;
       this.notifications.loading = true;

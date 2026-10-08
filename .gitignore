@@ -65,3 +65,4 @@ workers/.cache/
 workers/.config/
 workers/.npm-cache/
 workers/.wrangler/backup-*.sql
+_backups/

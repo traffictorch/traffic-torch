@@ -162,6 +162,7 @@
     if (recipient.id === me.id) return;
     if (recipient.username && me.username && recipient.username === me.username) return;
     if (recipient.messages_blocked === 1) return;
+    if (recipient.message_policy === 'none') return;
 
     const h1 = document.querySelector('main h1') || document.querySelector('h1');
     if (!h1) return;
