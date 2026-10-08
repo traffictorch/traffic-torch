@@ -10,7 +10,7 @@
 
   <!-- SEO Title & Description -->
   <title>Traffic Torch Community Help Guide – Torches, Profiles, Leaderboard &amp; Network | Traffic Torch</title>
-  <meta name="description" content="How the Traffic Torch community works: post audit torches, discover new SEOs, follow your network's live activity feed, build your public profile, earn points, and climb the leaderboard.">
+  <meta name="description" content="How the Traffic Torch community works: post audit torches, build your public profile, connect with other SEOs, earn points, climb the leaderboard, and subscribe via RSS.">
 
   <!-- hreflang -->
   <link rel="alternate" hreflang="en" href="https://traffictorch.net/blog/posts/social-help-guide/">
@@ -21,8 +21,8 @@
   <link rel="canonical" href="https://traffictorch.net/blog/posts/social-help-guide/">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Traffic Torch Community Help Guide – Torches, Discover, Activity, Profiles &amp; Network">
-  <meta property="og:description" content="Post torches, discover new SEOs, follow live activity, build a public profile, earn points, and climb the leaderboard.">
+  <meta property="og:title" content="Traffic Torch Community Help Guide – Torches, Profiles, Leaderboard &amp; Network">
+  <meta property="og:description" content="Post audit torches, build a public profile, connect with other SEOs, earn points, and climb the leaderboard.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://traffictorch.net/blog/posts/social-help-guide/">
   <meta property="og:image" content="https://traffictorch.net/blog/images/social/social-help-guide-1200w.webp">
@@ -32,8 +32,8 @@
 
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Traffic Torch Community Help Guide – Torches, Discover, Activity, Profiles &amp; Network">
-  <meta name="twitter:description" content="Post torches, discover new SEOs, follow live activity, build a public profile, earn points, and climb the leaderboard.">
+  <meta name="twitter:title" content="Traffic Torch Community Help Guide – Torches, Profiles, Leaderboard &amp; Network">
+  <meta name="twitter:description" content="Post audit torches, build a public profile, connect with other SEOs, earn points, and climb the leaderboard.">
   <meta name="twitter:image" content="https://traffictorch.net/blog/images/social/social-help-guide-1200w.webp">
   <meta name="twitter:site" content="@Guitaralize">
 
@@ -79,7 +79,7 @@
         "@id": "https://traffictorch.net/blog/posts/social-help-guide/#webpage",
         "url": "https://traffictorch.net/blog/posts/social-help-guide/",
         "name": "Traffic Torch Community Help Guide – Torches, Profiles, Leaderboard & Network",
-        "description": "How the Traffic Torch community works: post audit torches, discover new SEOs, follow your network's activity feed, build your public profile, earn points, and climb the leaderboard.",
+        "description": "How the Traffic Torch community works: post audit torches, build your public profile, connect with other SEOs, earn points, climb the leaderboard, and subscribe via RSS.",
         "isPartOf": { "@id": "https://traffictorch.net/#website" },
         "primaryImageOfPage": {
           "@type": "ImageObject",
@@ -112,7 +112,7 @@
       {
         "@type": "BlogPosting",
         "headline": "Traffic Torch Community Help Guide – Torches, Profiles, Leaderboard & Network",
-        "description": "Post torches, discover new SEOs, follow live activity, build a public profile, earn points, and climb the leaderboard.",
+        "description": "Post audit torches, build a public profile, connect with other SEOs, earn points, and climb the leaderboard.",
         "image": "https://traffictorch.net/blog/images/social/social-help-guide-1200w.webp",
         "datePublished": "2026-10-08T10:00:00+11:00",
         "dateModified": "2026-10-08T10:00:00+11:00",
@@ -126,14 +126,10 @@
           "SEO social network",
           "audit sharing",
           "Traffic Torch profiles",
-          "Traffic Torch Discover",
-          "Traffic Torch activity feed",
-          "SEO activity feed",
-          "SEO social discovery",
           "SEO points",
           "SEO community"
         ],
-        "wordCount": 3200,
+        "wordCount": 2400,
         "inLanguage": "en",
         "articleSection": "Help Guides",
         "isPartOf": {
@@ -192,38 +188,6 @@
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "Click '+ Add to Network' on any torch page, profile page, or comment. Both users' profiles then appear in each other's Network list, and you both get a notification. You can search for users by name or username at /dashboard/ → Network → Find People."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What is Discover on Traffic Torch?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Discover is a grid of up to 24 people you're not connected to yet, shown inside your dashboard's Profile and Network tabs. The list is stable per user per day, seeded by your user ID, and reshuffles at 11:00 UTC. Users who posted a torch in the last 30 days rank first. A Randomize button lets you bypass the daily seed and load a fresh set instantly."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What is the Activity feed?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "The Activity feed is a live timeline of what everyone has been doing on Traffic Torch: posting torches, commenting, joining the leaderboard, adding people to their network, contributing, updating their profile, and hitting milestones like points tiers, leaderboard rank changes, and score improvements. It appears in your dashboard Profile and Network tabs, and on every public profile at /torcher/:username/."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Who can see my activity?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Your activity is public by default. Anyone can read it via your public profile's Activity tab, and visitors can also see your events in the Network → Activity feed when they select the 'Everyone' scope. To hide it, tick 'Keep my activity private' in Dashboard → Profile → Edit Profile. Other users will then see a lock icon and the message 'This user keeps their activity private.'"
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How far back does the Activity feed go?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Each user keeps their latest 24 events only. Older events are trimmed automatically as new ones arrive. Events are grouped by day — Today, Yesterday, then dated headers — with an 'Earlier' divider marking what's new since your last visit."
             }
           },
           {
@@ -354,13 +318,13 @@
 
             <!-- Subtitle -->
             <p class="text-xl md:text-2xl text-center font-medium text-gray-700 dark:text-gray-300 mb-10 leading-relaxed max-w-4xl">
-              How to share torches, discover new SEOs, follow live activity, build a public profile, earn points, and get your site noticed.
+              How to share audit results, build a public profile, earn points, connect with other SEOs, and get your site noticed.
             </p>
 
             <!-- Introduction -->
             <div class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12">
               <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg">
-                Traffic Torch isn't just a suite of audit tools – it's a <strong>community of SEOs, designers, and site owners</strong> who share what they find. Every time you run an audit, you can post it as a <strong>torch</strong>: a public result with its own page, share image, and permanent link. You can also <strong>discover new people</strong> in the Discover grid and follow <strong>live activity</strong> from your network in the Activity feed.
+                Traffic Torch isn't just a suite of audit tools – it's a <strong>community of SEOs, designers, and site owners</strong> who share what they find. Every time you run an audit, you can post it as a <strong>torch</strong>: a public result with its own page, share image, and permanent link.
               </p>
               <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-6">
                 This guide walks through the whole social layer: how torches work, what your profile page shows, how the leaderboard ranks you, how to build a network, and how points are earned. If you're here to use the tools, start with the tool help guides instead. If you're here to be part of the community, keep reading.
@@ -398,35 +362,27 @@
                       <td class="p-4 text-center"><a href="#profile" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
                     </tr>
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
-                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">5. Discover New People</td>
-                      <td class="p-4 text-center"><a href="#discover" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
-                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">6. Network &amp; Connections</td>
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">5. Network &amp; Connections</td>
                       <td class="p-4 text-center"><a href="#network" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
                     </tr>
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
-                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">7. Activity Feed</td>
-                      <td class="p-4 text-center"><a href="#activity" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
-                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">8. Points &amp; The Leaderboard</td>
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">6. Points &amp; The Leaderboard</td>
                       <td class="p-4 text-center"><a href="#leaderboard" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
                     </tr>
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
-                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">9. Top Contributors</td>
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">7. Top Contributors</td>
                       <td class="p-4 text-center"><a href="#contributors" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
                     </tr>
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
-                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">10. Privacy &amp; Domain Modes</td>
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">8. Privacy &amp; Domain Modes</td>
                       <td class="p-4 text-center"><a href="#privacy" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
                     </tr>
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
-                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">11. RSS &amp; Staying Updated</td>
+                      <td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">9. RSS &amp; Staying Updated</td>
                       <td class="p-4 text-center"><a href="#rss" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
                     </tr>
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
-                      <td class="p-4 font-medium">12. FAQ</td>
+                      <td class="p-4 font-medium">10. FAQ</td>
                       <td class="p-4 text-center"><a href="#faq" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td>
                     </tr>
                   </tbody>
@@ -568,7 +524,7 @@
                   <li><strong>Job title, company, location</strong> — optional, editable.</li>
                   <li><strong>Social links</strong> — one website and up to two socials.</li>
                   <li><strong>Stats</strong> — audits shared, network size, points, months on the site.</li>
-                  <li><strong>Five tabs</strong> — Shared Audits, Network, Activity, About, plus the Discover grid inside the Network tab.</li>
+                  <li><strong>Three tabs</strong> — Shared Audits, Network, About.</li>
                 </ul>
 
                 <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What you control</h3>
@@ -595,46 +551,9 @@
             </section>
 
             <!-- ================= SECTION 5 ================= -->
-            <section id="discover" class="mb-20 scroll-mt-24">
-              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-fuchsia-500 to-pink-600 bg-clip-text text-transparent">
-                5. Discover New People
-              </h2>
-              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
-                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-                  <strong>Discover</strong> is a grid of people you're not connected to yet — a way to find new SEOs, designers, and site owners to follow. It's built into your dashboard's Profile and Network tabs, and the wider grid on the Network tab shows up to 24 cards at a time.
-                </p>
-
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">How it works</h3>
-                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
-                  <li>Every day the site picks 24 users you're not connected to, seeded by your user ID.</li>
-                  <li>You see the same 24 all day. The list reshuffles at <strong>11:00 UTC</strong> (21:00 AEST).</li>
-                  <li>Users who posted a torch in the last 30 days rank first.</li>
-                  <li>Click <strong>🎲 Randomize</strong> to bypass the daily seed and get a fresh set instantly.</li>
-                </ul>
-
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What's on each card</h3>
-                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-                  Avatar, display name, @username, role badge, points (🏅), torch count (🔥), and a <strong>+ Add</strong> button. Clicking <strong>+ Add</strong> sends a network request and removes the card from your grid.
-                </p>
-
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Who you'll see</h3>
-                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
-                  <li>Public profiles only — users who set their profile to private are excluded.</li>
-                  <li>Users you're not already connected to.</li>
-                  <li>Users who haven't blocked you and who you haven't blocked.</li>
-                  <li>You never see yourself.</li>
-                </ul>
-
-                <p class="mt-8 text-center md:text-left">
-                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
-                </p>
-              </div>
-            </section>
-
-            <!-- ================= SECTION 6 ================= -->
             <section id="network" class="mb-20 scroll-mt-24">
               <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                6. Network &amp; Connections
+                5. Network &amp; Connections
               </h2>
               <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
                 <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
@@ -671,96 +590,10 @@
               </div>
             </section>
 
-            <!-- ================= SECTION 7 ================= -->
-            <section id="activity" class="mb-20 scroll-mt-24">
-              <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
-                7. Activity Feed
-              </h2>
-              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
-                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-                  The <strong>Activity feed</strong> is a live timeline of what everyone has been doing on Traffic Torch. It's a lightweight social signal: you can see who's active, what they're posting, and what they're commenting on — without having to search for it.
-                </p>
-
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What gets logged</h3>
-                <div class="not-prose overflow-x-auto mt-4">
-                  <table class="w-full text-left border-collapse min-w-[500px] text-sm">
-                    <thead>
-                      <tr class="bg-gray-100 dark:bg-gray-800/80">
-                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Event</th>
-                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Icon</th>
-                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Trigger</th>
-                      </tr>
-                    </thead>
-                    <tbody class="text-gray-800 dark:text-gray-200">
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Posted a torch</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">🔥</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">After posting to Community</td></tr>
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Commented on a torch</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">💬</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">After posting a comment</td></tr>
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Joined the leaderboard</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">🏆</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">After submitting a score</td></tr>
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Added someone to network</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">🤝</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">After + Add to Network</td></tr>
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Made a contribution</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">🛠️</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">After submitting feedback / bug / docs</td></tr>
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Profile updated</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">✏️</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">After saving profile changes</td></tr>
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Reached a milestone</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">🏅</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">At 100 / 500 / 1k / 5k / 10k / 25k / 50k points</td></tr>
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Moved up the leaderboard</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">📈</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">When rank improves (e.g. #8 → #5)</td></tr>
-                      <tr><td class="p-3">Improved a score</td><td class="p-3">⬆️</td><td class="p-3">When re-auditing the same URL beats the old score</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Where you'll see it</h3>
-                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
-                  <li><strong>Dashboard → Profile → Activity</strong> — your own events only.</li>
-                  <li><strong>Dashboard → Network → Activity</strong> — your network's aggregated feed with full filters.</li>
-                  <li><strong>/torcher/:username/ → Activity tab</strong> — public read-only view on any user's profile page.</li>
-                </ul>
-
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">How far back it goes</h3>
-                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-                  Each user keeps their <strong>latest 24 events</strong> only. Older events are trimmed automatically in the same transaction that inserts a new one, so the feed stays fast and never grows unbounded.
-                </p>
-
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Filters (Network tab)</h3>
-                <div class="not-prose overflow-x-auto mt-4">
-                  <table class="w-full text-left border-collapse min-w-[500px] text-sm">
-                    <thead>
-                      <tr class="bg-gray-100 dark:bg-gray-800/80">
-                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Filter</th>
-                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Options</th>
-                      </tr>
-                    </thead>
-                    <tbody class="text-gray-800 dark:text-gray-200">
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Type</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">All · Torches · Comments · Network · Contributions</td></tr>
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Category</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">All · UX · SEO · AEO</td></tr>
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Tool</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Any of the 17 audit tools</td></tr>
-                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Time</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">All time · Today · This week · This month</td></tr>
-                      <tr><td class="p-3"><strong>Scope</strong></td><td class="p-3">My Network · Everyone</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Grouping and dividers</h3>
-                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-                  Events are grouped by day — <strong>Today</strong>, <strong>Yesterday</strong>, then dated headers. When you return after being away, an <strong>"Earlier"</strong> divider marks where the new items end and the ones you've already seen begin. Rapid bursts on the same torch collapse into a single card with an <strong>× N</strong> badge.
-                </p>
-
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Click-to-filter</h3>
-                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-                  Click any username to filter the feed to just that person. Click a category pill (UX, SEO, AEO) on a torch event to filter by category. Click a tool pill to filter by tool. A chip at the top shows the active filter — click the × to clear it.
-                </p>
-
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Making it private</h3>
-                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-                  Your activity is public by default. To hide it, go to <strong>Dashboard → Profile → Edit Profile</strong> and tick <strong>"Keep my activity private"</strong>. Other users — including anonymous visitors — will see a lock icon and the message "This user keeps their activity private" instead of your timeline.
-                </p>
-
-                <p class="mt-8 text-center md:text-left">
-                  <a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a>
-                </p>
-              </div>
-            </section>
-
-            <!-- ================= SECTION 8 ================= -->
+            <!-- ================= SECTION 6 ================= -->
             <section id="leaderboard" class="mb-20 scroll-mt-24">
               <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
-                8. Points &amp; The Leaderboard
+                6. Points &amp; The Leaderboard
               </h2>
               <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
                 <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
@@ -813,7 +646,7 @@
             <!-- ================= SECTION 7 ================= -->
             <section id="contributors" class="mb-20 scroll-mt-24">
               <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent">
-                9. Top Contributors
+                7. Top Contributors
               </h2>
               <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
                 <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
@@ -846,7 +679,7 @@
             <!-- ================= SECTION 8 ================= -->
             <section id="privacy" class="mb-20 scroll-mt-24">
               <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                10. Privacy &amp; Domain Modes
+                8. Privacy &amp; Domain Modes
               </h2>
               <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
                 <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
@@ -871,11 +704,6 @@
                   </table>
                 </div>
 
-                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Hiding your Activity feed</h3>
-                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-                  In the same Edit Profile form, the <strong>"Keep my activity private"</strong> toggle hides your Activity timeline from every other user — including anonymous visitors to your public profile. Your own dashboard keeps working normally.
-                </p>
-
                 <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What is never stored</h3>
                 <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
                   <li>Your email address is never public.</li>
@@ -898,7 +726,7 @@
             <!-- ================= SECTION 9 ================= -->
             <section id="rss" class="mb-20 scroll-mt-24">
               <h2 class="text-4xl md:text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent">
-                11. RSS &amp; Staying Updated
+                9. RSS &amp; Staying Updated
               </h2>
               <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
                 <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
@@ -941,7 +769,7 @@
             <!-- ================= SECTION 10 ================= -->
             <section id="faq" class="mb-20 scroll-mt-24">
               <h2 class="text-3xl md:text-4xl font-black mt-16 mb-12 text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-                12. Frequently Asked Questions
+                10. Frequently Asked Questions
               </h2>
               <div class="max-w-4xl mx-auto space-y-4">
 
@@ -1012,46 +840,6 @@
                   </summary>
                   <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
                     <p>Yes. There are three: a global feed of all torches at <a href="/torches/feed.xml">/torches/feed.xml</a>, a per-user feed at <code>/torcher/:username/feed.xml</code>, and a per-tool feed at <code>/tools/:tool/torches/feed.xml</code>. Subscribe in any feed reader to get new torches as they're posted.</p>
-                  </div>
-                </details>
-
-                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
-                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
-                    What is Discover on Traffic Torch?
-                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-                  </summary>
-                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
-                    <p>Discover is a grid of up to 24 people you're not connected to yet, shown inside your dashboard's Profile and Network tabs. The list is stable per user per day, seeded by your user ID, and reshuffles at <strong>11:00 UTC</strong>. Users who posted a torch in the last 30 days rank first. A <strong>🎲 Randomize</strong> button lets you bypass the daily seed and load a fresh set instantly.</p>
-                  </div>
-                </details>
-
-                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
-                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
-                    What is the Activity feed?
-                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-                  </summary>
-                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
-                    <p>The Activity feed is a live timeline of what everyone has been doing on Traffic Torch: posting torches, commenting, joining the leaderboard, adding people to their network, contributing, updating their profile, and hitting milestones like points tiers, leaderboard rank changes, and score improvements. It appears in your dashboard Profile and Network tabs, and on every public profile at <code>/torcher/:username/</code>.</p>
-                  </div>
-                </details>
-
-                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
-                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
-                    Who can see my activity?
-                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-                  </summary>
-                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
-                    <p>Your activity is public by default. Anyone can read it via your public profile's Activity tab, and visitors can also see your events in the Network → Activity feed when they select the <strong>Everyone</strong> scope. To hide it, tick <strong>"Keep my activity private"</strong> in Dashboard → Profile → Edit Profile. Other users will then see a lock icon and the message "This user keeps their activity private."</p>
-                  </div>
-                </details>
-
-                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden transition-all duration-300">
-                  <summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 dark:hover:text-orange-400 transition">
-                    How far back does the Activity feed go?
-                    <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
-                  </summary>
-                  <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
-                    <p>Each user keeps their latest <strong>24 events</strong> only. Older events are trimmed automatically as new ones arrive. Events are grouped by day — <strong>Today</strong>, <strong>Yesterday</strong>, then dated headers — with an <strong>"Earlier"</strong> divider marking what's new since your last visit.</p>
                   </div>
                 </details>
 
