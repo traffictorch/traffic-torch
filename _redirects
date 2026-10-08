@@ -1,0 +1,17 @@
+/u/*  /u/index.html  200
+
+# .html → clean URL (for files that don't exist in build output)
+/blog/posts/ubi-is-coming.html /blog/posts/ubi-is-coming/ 301
+/blog/posts/ai-content-detection-guide.html /blog/posts/ai-content-detection-guide/ 301
+/blog/posts/ai-voice-search-help-guide.html /blog/posts/ai-voice-search-help-guide/ 301
+/news.html /news/ 301
+/state-of-seo-geo-2026.html /blog/posts/state-of-seo-geo-2026/ 301
+/seo-entity-extractor-tool// /seo-entity-extractor-tool/ 301
+
+# Legacy top-level paths → current locations
+/state-of-seo-geo-2026/ /blog/posts/state-of-seo-geo-2026/ 301
+/tools/ /ai-seo-ux-tools/ 301
+
+# Legacy blog slugs → current blog posts
+/blog/posts/how-to-detect-ai-content/ /blog/posts/ai-content-detection-guide/ 301
+/blog/posts/mastering-seo-intent /blog/posts/seo-intent-help-guide/ 301
