@@ -25,16 +25,39 @@ function json(body, status, origin) {
 }
 
 // Verify a user's JWT by asking the auth worker. Returns user_id or null.
+function decodeJwtPayload(token) {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+    const json = atob(padded);
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
 async function verifyUser(request, env) {
   const auth = request.headers.get('Authorization') || '';
   if (!auth.startsWith('Bearer ')) return null;
+  const token = auth.slice(7);
   try {
+    // Auth worker verifies signature + expiry. If it returns 200, the token is valid.
     const res = await env.AUTH.fetch('https://auth.internal/api/account-info', {
       headers: { Authorization: auth },
     });
     if (!res.ok) return null;
-    const data = await res.json();
-    return data && data.id ? data.id : null;
+
+    // Prefer id from the response body if present; otherwise decode from the JWT.
+    const data = await res.json().catch(() => null);
+    if (data && Number.isInteger(data.id) && data.id > 0) return data.id;
+
+    const claims = decodeJwtPayload(token);
+    if (claims && Number.isInteger(claims.id) && claims.id > 0) return claims.id;
+
+    console.error('verifyUser: no id in response or JWT');
+    return null;
   } catch (err) {
     console.error('verifyUser failed', err);
     return null;
@@ -145,10 +168,36 @@ async function handleTest(request, env, origin) {
     title: 'Traffic Torch test',
     body: 'If you can see this, push is wired up correctly.',
     url: '/dashboard/#settings',
-    tag: 'tt-test',
+    tag: 'tt-test-' + Date.now(),
   });
 
   return json({ ok: true, ...result }, 200, origin);
+}
+
+
+async function handleDebugAuth(request, env, origin) {
+  const auth = request.headers.get('Authorization') || '';
+  const out = {
+    hasAuthHeader: !!auth,
+    authHeaderPrefix: auth.slice(0, 20),
+    hasAuthBinding: !!env.AUTH,
+    bindingType: env.AUTH ? typeof env.AUTH : 'missing',
+    authWorkerResponse: null,
+  };
+  if (!out.hasAuthHeader || !out.hasAuthBinding) {
+    return json(out, 200, origin);
+  }
+  try {
+    const res = await env.AUTH.fetch('https://auth.internal/api/account-info', {
+      headers: { Authorization: auth },
+    });
+    out.authWorkerResponse = { status: res.status, ok: res.ok };
+    const text = await res.text();
+    out.authWorkerBodySnippet = text.slice(0, 300);
+  } catch (err) {
+    out.authWorkerError = String(err && err.message || err);
+  }
+  return json(out, 200, origin);
 }
 
 export default {
@@ -172,6 +221,7 @@ export default {
     if (path === '/push-api/subscribe'   && request.method === 'POST') return handleSubscribe(request, env, origin);
     if (path === '/push-api/unsubscribe' && request.method === 'POST') return handleUnsubscribe(request, env, origin);
     if (path === '/push-api/send'        && request.method === 'POST') return handleSend(request, env, origin);
+    if (path === '/push-api/debug-auth' && request.method === 'POST') return handleDebugAuth(request, env, origin);
     if (path === '/push-api/test'        && request.method === 'POST') return handleTest(request, env, origin);
 
     return json({ error: 'not_found' }, 404, origin);

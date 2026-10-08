@@ -96,19 +96,28 @@ export async function sendToUser(env, userId, payload) {
     data: payload.data && typeof payload.data === 'object' ? payload.data : undefined,
   };
 
-  const { delivered, gone, failed } = await sendPushBatch(subs, cleanPayload, vapid);
+  // @mmmike/web-push expects the browser shape: { endpoint, keys: { p256dh, auth } }.
+  // Our DB stores flat columns, so remap before sending.
+  const subsForLib = subs.map((s) => ({
+    endpoint: s.endpoint,
+    keys: { p256dh: s.p256dh, auth: s.auth },
+  }));
 
-  // Prune the dead ones from the table
-  await markGone(env, gone);
+  const { delivered, gone, failed } = await sendPushBatch(subsForLib, cleanPayload, vapid);
 
-  // Bump last_seen for successful ones
+  // Normalise: gone may be strings or objects depending on library version.
+  const goneEndpoints = (gone || []).map((g) => (typeof g === 'string' ? g : g.endpoint));
+  const failedEndpoints = (failed || []).map((f) => f.endpoint);
+
+  await markGone(env, goneEndpoints);
+
   const deliveredEndpoints = subs
     .map((s) => s.endpoint)
-    .filter((e) => !gone.includes(e) && !failed.some((f) => f.endpoint === e));
+    .filter((e) => !goneEndpoints.includes(e) && !failedEndpoints.includes(e));
   await bumpLastSeen(env, deliveredEndpoints);
 
   // Log failures for observability — but never log endpoints themselves
-  for (const { error } of failed) {
+  for (const { error } of (failed || [])) {
     if (error instanceof WebPushError) {
       console.log(JSON.stringify({
         event: 'push_failed',
