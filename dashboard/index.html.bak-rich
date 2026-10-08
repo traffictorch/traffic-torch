@@ -791,53 +791,23 @@
               <p class="text-sm text-gray-400 mt-2">Share a torch, comment, or connect with someone.</p>
             </div>
 
-            <div x-show="activity.items.length > 0" class="space-y-3">
-              <template x-for="group in groupActivityByDay(activity.items)" :key="'pg-'+group.label">
-                <div class="space-y-2">
-                  <div class="text-xs font-bold uppercase tracking-wider text-gray-500 px-1 pt-2" x-text="group.label"></div>
-                  <template x-for="item in group.items" :key="'pa-'+item.id">
-                <div class="glass rounded-2xl p-4 flex gap-3 hover:bg-white/5 transition">
-                  <div class="relative flex-shrink-0">
-                    <img :src="`/images/avatars/${item.avatar_preset || 'owner'}.svg`"
-                         width="44" height="44" style="width:44px;height:44px;"
-                         class="rounded-full object-cover" alt="">
-                    <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
-                          x-text="activityIcon(item.event_type)"></span>
-                  </div>
-                  <div class="flex-1 min-w-0">
+            <div x-show="activity.items.length > 0" class="relative pl-6">
+              <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-gray-200 dark:bg-gray-700"></div>
+              <template x-for="item in activity.items" :key="'pa-'+item.id">
+                <div class="relative pb-5 flex items-start gap-3">
+                  <div class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-orange-500 border-2 border-white dark:border-gray-950 flex items-center justify-center text-[9px]"></div>
+                  <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
                     <p class="text-sm leading-snug">
-                      <a :href="'/torcher/' + item.username + '/'" class="font-bold hover:text-orange-500" x-text="item.display_name || item.username"></a>
-                      <span class="text-gray-600 dark:text-gray-400" x-text="activityVerb(item)"></span>
+                      <span class="mr-1" x-text="activityIcon(item.event_type)"></span>
+                      <span x-text="activityText(item)"></span>
                     </p>
-                    <template x-if="item.event_type === 'comment' && item.target_label">
-                      <blockquote class="mt-2 pl-3 border-l-2 border-orange-500/40 text-sm italic text-gray-600 dark:text-gray-400 break-words" x-text="'“' + item.target_label + (item.target_label.length >= 60 ? '…' : '') + '”'"></blockquote>
-                    </template>
-                    <template x-if="item.event_type === 'torch' && item.target_label">
-                      <div class="mt-2 flex flex-wrap items-center gap-2">
-                        <span class="text-sm font-medium break-words" x-text="item.target_label"></span>
-                        <template x-if="item.category">
-                          <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-orange-500/15 text-orange-500" x-text="item.category"></span>
-                        </template>
-                        <template x-if="item.tool">
-                          <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" x-text="item.tool"></span>
-                        </template>
-                      </div>
-                    </template>
-                    <template x-if="item.event_type === 'network' && item.target_label">
-                      <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400">→ <span class="font-medium" x-text="item.target_label"></span></p>
-                    </template>
-                    <template x-if="item.event_type === 'contribution' && item.target_label">
-                      <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400 break-words" x-text="item.target_label"></p>
-                    </template>
-                    <div class="flex items-center justify-between gap-2 mt-2.5">
+                    <div class="flex items-center justify-between gap-2 mt-1">
                       <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
                       <template x-if="item.link">
-                        <a :href="item.link" class="text-xs font-semibold text-orange-500 hover:underline" x-text="activityLinkText(item)"></a>
+                        <a :href="item.link" class="text-[11px] text-orange-500 hover:underline">Open →</a>
                       </template>
                     </div>
                   </div>
-                </div>
-                  </template>
                 </div>
               </template>
             </div>
@@ -1352,53 +1322,27 @@
               <p class="text-sm text-gray-400 mt-2">Try switching scope to "Everyone" or invite someone.</p>
             </div>
 
-            <div x-show="activity.items.length > 0" class="space-y-3">
-              <template x-for="group in groupActivityByDay(activity.items)" :key="'ng-'+group.label">
-                <div class="space-y-2">
-                  <div class="text-xs font-bold uppercase tracking-wider text-gray-500 px-1 pt-2" x-text="group.label"></div>
-                  <template x-for="item in group.items" :key="'na-'+item.id">
-                <div class="glass rounded-2xl p-4 flex gap-3 hover:bg-white/5 transition">
-                  <div class="relative flex-shrink-0">
-                    <img :src="`/images/avatars/${item.avatar_preset || 'owner'}.svg`"
-                         width="44" height="44" style="width:44px;height:44px;"
-                         class="rounded-full object-cover" alt="">
-                    <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
-                          x-text="activityIcon(item.event_type)"></span>
-                  </div>
-                  <div class="flex-1 min-w-0">
+            <div x-show="activity.items.length > 0" class="relative pl-6">
+              <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-gray-200 dark:bg-gray-700"></div>
+              <template x-for="item in activity.items" :key="'na-'+item.id">
+                <div class="relative pb-5 flex items-start gap-3">
+                  <div class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-orange-500 border-2 border-white dark:border-gray-950"></div>
+                  <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
+                    <div class="flex items-center gap-2 mb-1">
+                      <img :src="`/images/avatars/${item.avatar_preset || 'owner'}.svg`" width="24" height="24" style="width:24px;height:24px;" class="rounded-full" alt="">
+                      <a :href="'/torcher/' + item.username + '/'" class="text-xs font-bold hover:text-orange-500" x-text="item.display_name || item.username"></a>
+                    </div>
                     <p class="text-sm leading-snug">
-                      <a :href="'/torcher/' + item.username + '/'" class="font-bold hover:text-orange-500" x-text="item.display_name || item.username"></a>
-                      <span class="text-gray-600 dark:text-gray-400" x-text="activityVerb(item)"></span>
+                      <span class="mr-1" x-text="activityIcon(item.event_type)"></span>
+                      <span x-text="activityText(item)"></span>
                     </p>
-                    <template x-if="item.event_type === 'comment' && item.target_label">
-                      <blockquote class="mt-2 pl-3 border-l-2 border-orange-500/40 text-sm italic text-gray-600 dark:text-gray-400 break-words" x-text="'“' + item.target_label + (item.target_label.length >= 60 ? '…' : '') + '”'"></blockquote>
-                    </template>
-                    <template x-if="item.event_type === 'torch' && item.target_label">
-                      <div class="mt-2 flex flex-wrap items-center gap-2">
-                        <span class="text-sm font-medium break-words" x-text="item.target_label"></span>
-                        <template x-if="item.category">
-                          <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-orange-500/15 text-orange-500" x-text="item.category"></span>
-                        </template>
-                        <template x-if="item.tool">
-                          <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" x-text="item.tool"></span>
-                        </template>
-                      </div>
-                    </template>
-                    <template x-if="item.event_type === 'network' && item.target_label">
-                      <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400">→ <span class="font-medium" x-text="item.target_label"></span></p>
-                    </template>
-                    <template x-if="item.event_type === 'contribution' && item.target_label">
-                      <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400 break-words" x-text="item.target_label"></p>
-                    </template>
-                    <div class="flex items-center justify-between gap-2 mt-2.5">
+                    <div class="flex items-center justify-between gap-2 mt-1">
                       <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
                       <template x-if="item.link">
-                        <a :href="item.link" class="text-xs font-semibold text-orange-500 hover:underline" x-text="activityLinkText(item)"></a>
+                        <a :href="item.link" class="text-[11px] text-orange-500 hover:underline">Open →</a>
                       </template>
                     </div>
                   </div>
-                </div>
-                  </template>
                 </div>
               </template>
             </div>
@@ -3885,50 +3829,7 @@ function dashboardApp() {
         case 'profile':      return `${who} updated their profile`;
         default:             return `${who} did something`;
       }
-    },
-
-    activityVerb(item) {
-      return ({
-        torch:        ' shared a torch',
-        comment:      ' commented on a torch',
-        leaderboard:  ' joined the leaderboard',
-        network:      ' added someone to their network',
-        contribution: ' made a contribution',
-        profile:      ' updated their profile'
-      })[item.event_type] || ' did something';
-    },
-
-    activityLinkText(item) {
-      return ({
-        torch:        'View torch →',
-        comment:      'Read thread →',
-        network:      'View profile →',
-        contribution: 'View contribution →',
-        leaderboard:  'View leaderboard →',
-        profile:      'View profile →'
-      })[item.event_type] || 'Open →';
-    },
-
-    groupActivityByDay(items) {
-      if (!Array.isArray(items) || !items.length) return [];
-      const now = new Date();
-      const todayMs = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-      const yesterdayMs = todayMs - 86400000;
-      const currentYear = now.getFullYear();
-      const groups = [];
-      let lastLabel = null;
-      for (const item of items) {
-        const d = new Date(item.created_at);
-        const dayMs = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-        let label;
-        if (dayMs === todayMs) label = 'Today';
-        else if (dayMs === yesterdayMs) label = 'Yesterday';
-        else label = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: d.getFullYear() !== currentYear ? 'numeric' : undefined });
-        if (label !== lastLabel) { groups.push({ label, items: [] }); lastLabel = label; }
-        groups[groups.length - 1].items.push(item);
-      }
-      return groups;
-    },
+    }
   }
 }
 

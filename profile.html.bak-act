@@ -206,9 +206,6 @@
           <button @click="activeTab = 'network'" class="tab-btn" :class="activeTab === 'network' ? 'active' : ''">
             Network <span x-text="network_count ? '(' + network_count + ')' : ''"></span>
           </button>
-          <button @click="activeTab = 'activity'; loadActivity(true)" class="tab-btn" :class="activeTab === 'activity' ? 'active' : ''">
-            Activity
-          </button>
           <button @click="activeTab = 'about'" class="tab-btn" :class="activeTab === 'about' ? 'active' : ''">
             About
           </button>
@@ -356,102 +353,6 @@
           </div>
         </div> 
 
-        <!-- Activity -->
-        <div x-show="activeTab === 'activity'" x-cloak>
-          <div class="glass rounded-2xl p-3 mb-4">
-            <div class="flex flex-wrap items-center gap-2 mb-2">
-              <span class="text-xs font-bold text-gray-500 uppercase tracking-wider px-2">Type</span>
-              <template x-for="t in [['all','All'],['torch','🔥 Torches'],['comment','💬 Comments'],['network','🤝 Network'],['contribution','🛠️ Contributions']]" :key="'pt2-'+t[0]">
-                <button @click="resetActivity('type', t[0])"
-                        class="px-3 py-1 text-xs font-semibold rounded-full border transition"
-                        :class="activity.type === t[0] ? 'bg-orange-500 text-white border-orange-500' : 'border-gray-300 dark:border-gray-600 text-gray-500 hover:border-orange-500 hover:text-orange-500'"
-                        x-text="t[1]"></button>
-              </template>
-            </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="text-xs font-bold text-gray-500 uppercase tracking-wider px-2">Category</span>
-              <template x-for="c in [['all','All'],['ux','UX'],['seo','SEO'],['aeo','AEO']]" :key="'pc2-'+c[0]">
-                <button @click="resetActivity('category', c[0])"
-                        class="px-3 py-1 text-xs font-semibold rounded-full border transition"
-                        :class="activity.category === c[0] ? 'bg-orange-500 text-white border-orange-500' : 'border-gray-300 dark:border-gray-600 text-gray-500 hover:border-orange-500 hover:text-orange-500'"
-                        x-text="c[1]"></button>
-              </template>
-            </div>
-          </div>
-
-          <div x-show="activity.loading && activity.items.length === 0" class="text-center py-10"><div class="spinner mx-auto"></div></div>
-
-          <div x-show="activity.private" class="glass rounded-2xl p-10 text-center">
-            <p class="text-4xl mb-3">🔒</p>
-            <p class="text-gray-500">This user keeps their activity private.</p>
-          </div>
-
-          <div x-show="!activity.private && !activity.loading && activity.items.length === 0" class="glass rounded-2xl p-10 text-center">
-            <p class="text-4xl mb-3">📭</p>
-            <p class="text-gray-500">No activity yet.</p>
-          </div>
-
-            <div x-show="activity.items.length > 0" class="space-y-3">
-              <template x-for="group in groupActivityByDay(activity.items)" :key="'pg-'+group.label">
-                <div class="space-y-2">
-                  <div class="text-xs font-bold uppercase tracking-wider text-gray-500 px-1 pt-2" x-text="group.label"></div>
-                  <template x-for="item in group.items" :key="'pa-'+item.id">
-                <div class="glass rounded-2xl p-4 flex gap-3 hover:bg-white/5 transition">
-                  <div class="relative flex-shrink-0">
-                    <img :src="`/images/avatars/${item.avatar_preset || 'owner'}.svg`"
-                         width="44" height="44" style="width:44px;height:44px;"
-                         class="rounded-full object-cover" alt="">
-                    <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
-                          x-text="activityIcon(item.event_type)"></span>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm leading-snug">
-                      <a :href="'/torcher/' + item.username + '/'" class="font-bold hover:text-orange-500" x-text="item.display_name || item.username"></a>
-                      <span class="text-gray-600 dark:text-gray-400" x-text="activityVerb(item)"></span>
-                    </p>
-                    <template x-if="item.event_type === 'comment' && item.target_label">
-                      <blockquote class="mt-2 pl-3 border-l-2 border-orange-500/40 text-sm italic text-gray-600 dark:text-gray-400 break-words" x-text="'“' + item.target_label + (item.target_label.length >= 60 ? '…' : '') + '”'"></blockquote>
-                    </template>
-                    <template x-if="item.event_type === 'torch' && item.target_label">
-                      <div class="mt-2 flex flex-wrap items-center gap-2">
-                        <span class="text-sm font-medium break-words" x-text="item.target_label"></span>
-                        <template x-if="item.category">
-                          <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-orange-500/15 text-orange-500" x-text="item.category"></span>
-                        </template>
-                        <template x-if="item.tool">
-                          <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" x-text="item.tool"></span>
-                        </template>
-                      </div>
-                    </template>
-                    <template x-if="item.event_type === 'network' && item.target_label">
-                      <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400">→ <span class="font-medium" x-text="item.target_label"></span></p>
-                    </template>
-                    <template x-if="item.event_type === 'contribution' && item.target_label">
-                      <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400 break-words" x-text="item.target_label"></p>
-                    </template>
-                    <div class="flex items-center justify-between gap-2 mt-2.5">
-                      <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
-                      <template x-if="item.link">
-                        <a :href="item.link" class="text-xs font-semibold text-orange-500 hover:underline" x-text="activityLinkText(item)"></a>
-                      </template>
-                    </div>
-                  </div>
-                </div>
-                  </template>
-                </div>
-              </template>
-            </div>
-
-          <div x-show="activity.hasMore" class="text-center mt-4">
-            <button @click="loadActivity()" :disabled="activity.loading"
-                    class="px-6 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 text-sm transition disabled:opacity-50">
-              Load more
-            </button>
-          </div>
-
-          <p x-show="activity.error" class="text-red-500 text-xs text-center mt-3" x-text="activity.error"></p>
-        </div>
-
         <!-- About -->
         <div x-show="activeTab === 'about'" x-cloak class="glass rounded-2xl p-6">
           <h2 class="text-lg font-bold mb-4">About @<span x-text="profile.username"></span></h2>
@@ -512,7 +413,6 @@ function profilePage() {
     activeTab: 'audits',
     isOwnProfile: false,
     discover: { loading: false, users: [], hasMore: false, error: null, addLoading: {} },
-    activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, private: false, type: 'all', category: 'all' },
 
     async init() {
       const parts = window.location.pathname.split('/').filter(Boolean);
@@ -725,90 +625,7 @@ function profilePage() {
         else { const d = await res.json().catch(() => ({})); alert(d.error || 'Failed to add'); }
       } catch (e) { alert('Network error: ' + e.message); }
       finally { this.discover.addLoading[u.id] = false; }
-    },
-
-    async loadActivity(fresh = false) {
-      if (fresh) { this.activity.items = []; this.activity.cursor = null; }
-      this.activity.loading = true;
-      this.activity.error = null;
-      try {
-        const params = new URLSearchParams({ type: this.activity.type, category: this.activity.category, limit: '20' });
-        if (this.activity.cursor) params.set('cursor', this.activity.cursor);
-        const token = localStorage.getItem('authToken');
-        const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
-        const res = await fetch(`${API_BASE}/api/activity/user/${encodeURIComponent(this.username)}?${params}`, { headers });
-        if (!res.ok) throw new Error('Failed to load activity');
-        const data = await res.json();
-        if (data.private) {
-          this.activity.private = true;
-          this.activity.items = [];
-          this.activity.hasMore = false;
-          this.activity.cursor = null;
-        } else {
-          this.activity.private = false;
-          this.activity.items = this.activity.cursor
-            ? [...this.activity.items, ...(data.items || [])]
-            : (data.items || []);
-          this.activity.cursor = data.cursor || null;
-          this.activity.hasMore = !!data.has_more;
-        }
-      } catch (e) { this.activity.error = e.message; }
-      finally { this.activity.loading = false; }
-    },
-
-    resetActivity(field, value) {
-      this.activity[field] = value;
-      this.activity.cursor = null;
-      this.activity.items = [];
-      this.loadActivity();
-    },
-
-    activityIcon(t) {
-      return ({ torch: '🔥', comment: '💬', leaderboard: '🏆', network: '🤝', contribution: '🛠️', profile: '✏️' })[t] || '•';
-    },
-
-    activityVerb(item) {
-      return ({
-        torch:        ' shared a torch',
-        comment:      ' commented on a torch',
-        leaderboard:  ' joined the leaderboard',
-        network:      ' added someone to their network',
-        contribution: ' made a contribution',
-        profile:      ' updated their profile'
-      })[item.event_type] || ' did something';
-    },
-
-    activityLinkText(item) {
-      return ({
-        torch:        'View torch →',
-        comment:      'Read thread →',
-        network:      'View profile →',
-        contribution: 'View contribution →',
-        leaderboard:  'View leaderboard →',
-        profile:      'View profile →'
-      })[item.event_type] || 'Open →';
-    },
-
-    groupActivityByDay(items) {
-      if (!Array.isArray(items) || !items.length) return [];
-      const now = new Date();
-      const todayMs = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-      const yesterdayMs = todayMs - 86400000;
-      const currentYear = now.getFullYear();
-      const groups = [];
-      let lastLabel = null;
-      for (const item of items) {
-        const d = new Date(item.created_at);
-        const dayMs = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-        let label;
-        if (dayMs === todayMs) label = 'Today';
-        else if (dayMs === yesterdayMs) label = 'Yesterday';
-        else label = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: d.getFullYear() !== currentYear ? 'numeric' : undefined });
-        if (label !== lastLabel) { groups.push({ label, items: [] }); lastLabel = label; }
-        groups[groups.length - 1].items.push(item);
-      }
-      return groups;
-    },
+    }
   }
 }
 
