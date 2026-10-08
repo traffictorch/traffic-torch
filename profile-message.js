@@ -1,28 +1,14 @@
 // Traffic Torch — Send Message button on /torcher/:username/
-// Self-installing, no framework. Loaded by profile.html.
+// Reads window.__ttProfile (injected by the render worker). No API call.
 (function () {
   const API = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
-  function getToken() { return localStorage.getItem('authToken'); }
-
-  function decodeJwt(t) {
+  const getToken = () => localStorage.getItem('authToken');
+  const decodeJwt = t => {
     try { return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); }
     catch { return null; }
-  }
-
-  function currentUsername() {
-    const m = window.location.pathname.match(/^\/torcher\/([^\/]+)\/?$/);
-    return m ? decodeURIComponent(m[1]) : null;
-  }
-
-  async function fetchProfile(username) {
-    try {
-      const r = await fetch(`${API}/api/profile/${encodeURIComponent(username)}`);
-      if (!r.ok) return null;
-      const d = await r.json();
-      return d.profile || null;
-    } catch { return null; }
-  }
+  };
+  const esc = s => String(s ?? '').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
 
   function toast(text, ok = true) {
     const el = document.createElement('div');
@@ -52,7 +38,7 @@
                   padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.35);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <h3 style="margin:0;font-size:18px;font-weight:700;">
-            Message ${(recipient.display_name || recipient.username || '').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]))}
+            Message ${esc(recipient.display_name || recipient.username)}
           </h3>
           <button type="button" data-tt-close style="background:none;border:none;font-size:26px;
                   cursor:pointer;color:${fg};line-height:1;padding:0 4px;">&times;</button>
@@ -125,9 +111,9 @@
     });
   }
 
-  async function install() {
-    const username = currentUsername();
-    if (!username) return;
+  function install() {
+    const recipient = window.__ttProfile;
+    if (!recipient || !recipient.id) return;
     if (document.getElementById('tt-send-message-btn')) return;
 
     const token = getToken();
@@ -136,15 +122,14 @@
     const me = decodeJwt(token);
     if (!me || !me.id) return;
 
-    const recipient = await fetchProfile(username);
-    if (!recipient || !recipient.id) return;
-
     // Don't show on own profile
-    if (recipient.username && me.username && recipient.username === me.username) return;
     if (recipient.id === me.id) return;
+    if (recipient.username && me.username && recipient.username === me.username) return;
 
-    // Block check: if recipient blocks messages, still show button but it'll error gracefully
-    // Find a good anchor — try the h1 with display name
+    // Respect recipient's "no DMs" setting — hide button entirely if they've blocked all
+    if (recipient.messages_blocked === 1) return;
+
+    // Anchor: prefer main h1, fallback to any h1
     const h1 = document.querySelector('main h1') || document.querySelector('h1');
     if (!h1) return;
 
@@ -167,7 +152,6 @@
       document.body.appendChild(m);
     });
 
-    // Insert after h1 (or its wrapper)
     const target = h1.parentElement || h1;
     target.insertAdjacentElement('afterend', btn);
   }
@@ -177,4 +161,7 @@
   } else {
     install();
   }
+
+  // Re-run if login status changes without a full reload
+  document.addEventListener('loginStatusChanged', install);
 })();
