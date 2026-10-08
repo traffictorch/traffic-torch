@@ -232,7 +232,7 @@ window.addEventListener('appinstalled', () => {
 // Minimal service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=2')
+    navigator.serviceWorker.register('/sw.js?v=3')
       .then(reg => {})
       .catch(err => {});
   });
