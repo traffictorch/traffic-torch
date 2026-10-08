@@ -125,10 +125,15 @@
     const mph = document.getElementById('mobile-menu-placeholder');
     if (mph && !mph.querySelector('[data-tt-open-inbox]')) {
       const nav = mph.querySelector('nav') || mph;
+      const portal = nav.querySelector('[data-category="proportal-mobile"]');
       const wrapper = document.createElement('div');
       wrapper.innerHTML = menuEnvelopeHTML('mobile');
       const node = wrapper.firstElementChild;
-      nav.insertBefore(node, nav.firstChild);
+      if (portal && portal.parentElement) {
+        portal.parentElement.insertAdjacentElement('afterend', node);
+      } else {
+        nav.insertBefore(node, nav.firstChild);
+      }
       node.addEventListener('click', () => {
         const mm = document.getElementById('mobileMenu');
         if (mm) mm.classList.add('hidden');
