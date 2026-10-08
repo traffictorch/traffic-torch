@@ -12,7 +12,17 @@
   const EMOJI = ['👍', '❤️', '😂', '🎉', '👀', '🙏'];
   const MAX_LEN = 2000;
   const MAX_FILE = 5 * 1024 * 1024;
-  const ALLOWED_TYPES = ['image/jpeg','image/png','image/gif','image/webp','application/pdf'];
+  const ALLOWED_TYPES = [
+    'image/jpeg','image/png','image/gif','image/webp','image/svg+xml',
+    'application/pdf','text/plain','text/markdown','text/csv',
+    'text/html','text/css','text/javascript','application/javascript',
+    'application/json','application/xml','text/xml',
+    'application/zip','application/x-zip-compressed',
+  ];
+  const ACCEPT_ATTR = [
+    'image/*','application/pdf','.txt','.md','.csv',
+    '.html','.htm','.css','.js','.mjs','.json','.xml','.svg','.zip'
+  ].join(',');
 
   // ---------- auth ----------
   const getToken = () => localStorage.getItem('authToken');
@@ -86,15 +96,15 @@
     if (variant === 'desktop') {
       return `<button type="button" data-tt-open-inbox
         class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-        aria-label="Messages">
+        aria-label="Beams">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">✉️</span>
-        <span class="sidebar-text font-semibold flex-1 text-left">Messages</span>
+        <span class="sidebar-text font-semibold flex-1 text-left">Beams 🔦</span>
         ${badge}
       </button>`;
     }
     return `<button type="button" data-tt-open-inbox
       class="flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none">
-      <span>✉️ Messages</span>
+      <span>✉️ Beams 🔦</span>
       ${badge}
     </button>`;
   }
@@ -235,7 +245,7 @@
         </button>`;
       }).join('');
     }
-    return headerHTML('Messages', false) + `<div style="flex:1;overflow-y:auto;">${body}</div>`;
+    return headerHTML('Beams 🔦', false) + `<div style="flex:1;overflow-y:auto;">${body}</div>`;
   }
 
   function renderThreadView(th) {
@@ -298,7 +308,7 @@
         ${th.attachments && th.attachments.length ? th.attachments.map(a => `<div style="font-size:12px;margin-bottom:6px;">📎 ${esc(a.filename)} <button data-tt-remove-att="${esc(a.key)}" style="background:none;border:none;color:#ef4444;cursor:pointer;font-family:inherit;">×</button></div>`).join('') : ''}
         <div style="display:flex;gap:8px;align-items:flex-end;">
           <label style="cursor:pointer;padding:8px;border-radius:8px;background:${T('#1f2937','#f3f4f6')};color:inherit;font-size:16px;">
-            📎<input data-tt-file type="file" style="display:none;" accept="${ALLOWED_TYPES.join(',')}">
+            📎<input data-tt-file type="file" style="display:none;" accept="${ACCEPT_ATTR}">
           </label>
           <textarea data-tt-input maxlength="${MAX_LEN}" rows="1" placeholder="Message…" style="flex:1;padding:8px;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;background:${T('#0f172a','#ffffff')};color:inherit;font-family:inherit;font-size:14px;resize:none;outline:none;"></textarea>
           <button data-tt-send style="padding:8px 16px;border:none;border-radius:8px;background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;">Send</button>

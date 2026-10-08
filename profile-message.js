@@ -72,7 +72,7 @@
       <div data-tt-attachments style="margin:8px 0;"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0 16px;font-size:12px;color:#9ca3af;">
         <label style="cursor:pointer;padding:4px 8px;border-radius:6px;border:1px solid ${inputBd};color:${fg};">
-          📎 Attach<input data-tt-file type="file" style="display:none;" accept="image/jpeg,image/png,image/gif,image/webp,application/pdf">
+          📎 Attach<input data-tt-file type="file" style="display:none;" accept="image/*,application/pdf,.txt,.md,.csv,.html,.htm,.css,.js,.mjs,.json,.xml,.svg,.zip">
         </label>
         <span><span data-tt-count>0</span> / 2000</span>
       </div>

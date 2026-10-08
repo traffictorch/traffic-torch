@@ -9,7 +9,16 @@ const MAX_BODY = 2000;
 const RATE_PER_MIN = 20;
 const RATE_PER_DAY = 200;
 const ALLOWED_EMOJI = ['👍', '❤️', '😂', '🎉', '👀', '🙏'];
-const ALLOWED_UPLOAD_TYPES = ['image/jpeg','image/png','image/gif','image/webp','application/pdf'];
+const ALLOWED_UPLOAD_TYPES = [
+  // Images (rendered inline in chat)
+  'image/jpeg','image/png','image/gif','image/webp','image/svg+xml',
+  // Documents
+  'application/pdf','text/plain','text/markdown','text/csv',
+  // Code / markup (downloaded, never rendered)
+  'text/html','text/css','text/javascript','application/javascript',
+  'application/json','application/xml','text/xml',
+  'application/zip','application/x-zip-compressed',
+];
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 const MAX_ATTACHMENTS = 3;
 
@@ -418,10 +427,16 @@ async function handleAttachmentDownload(request, env, user, attachmentId) {
   const obj = await env.ATTACHMENTS.get(att.r2_key);
   if (!obj) return json({ error: 'File missing' }, 404);
 
+  // Only render inline for safe image types. Everything else = force download
+  // to prevent HTML/SVG/JS from executing as XSS in the recipient's browser.
+  const INLINE_OK = new Set(['image/jpeg','image/png','image/gif','image/webp','application/pdf']);
+  const disposition = INLINE_OK.has(att.content_type) ? 'inline' : 'attachment';
+  const safeName = (att.filename || 'file').replace(/["\r\n]/g, '');
   return new Response(obj.body, {
     headers: {
       'Content-Type': att.content_type,
-      'Content-Disposition': `inline; filename="${att.filename}"`,
+      'Content-Disposition': `${disposition}; filename="${safeName}"`,
+      'X-Content-Type-Options': 'nosniff',
       'Cache-Control': 'private, max-age=3600'
     }
   });
