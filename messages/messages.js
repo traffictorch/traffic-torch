@@ -1,7 +1,6 @@
 // ============================================================
 // Traffic Torch — Messages (vanilla JS, works on every page)
 // Self-injects into desktop + mobile menus, self-injects drawer.
-// No Alpine, no framework. Safe no-op when logged out.
 // ============================================================
 (function () {
   'use strict';
@@ -24,7 +23,6 @@
     '.html','.htm','.css','.js','.mjs','.json','.xml','.svg','.zip'
   ].join(',');
 
-  // ---------- auth ----------
   const getToken = () => localStorage.getItem('authToken');
   const decodeJwt = t => { try { return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); } catch { return null; } };
   const isAuthed = () => {
@@ -34,7 +32,6 @@
     return p && p.exp && p.exp * 1000 > Date.now();
   };
 
-  // ---------- style helpers ----------
   const esc = s => String(s ?? '').replace(/[<>&"']/g, c => ({ '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;' }[c]));
   const isDark = () => document.documentElement.classList.contains('dark');
   const T = (dark, light) => isDark() ? dark : light;
@@ -48,8 +45,8 @@
     return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   };
   const avatarFor = u => `/images/avatars/${(u && u.avatar_preset) || 'owner'}.svg`;
+  const truncate = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n) + '…' : s; };
 
-  // ---------- state ----------
   let me = null;
   let unreadCount = 0;
   let threads = [];
@@ -59,8 +56,8 @@
   let ws = null;
   let wsReconnectTimer = null;
   let wsBackoff = 1000;
+  let drawerBuilt = false;
 
-  // ---------- API ----------
   async function api(path, opts = {}) {
     const headers = Object.assign({}, opts.headers || {});
     const t = getToken();
@@ -73,7 +70,6 @@
     return data;
   }
 
-  // ---------- badge ----------
   async function refreshUnread() {
     if (!isAuthed()) { unreadCount = 0; paintBadges(); return; }
     try { const d = await api('/api/messages/unread-count'); unreadCount = d.count || 0; }
@@ -93,7 +89,6 @@
     });
   }
 
-  // ---------- menu injection ----------
   function menuEnvelopeHTML(variant) {
     const badge = `<span data-tt-msg-badge style="display:none;min-width:20px;height:20px;padding:0 6px;margin-left:auto;font-size:11px;font-weight:800;border-radius:9999px;background:#f97316;color:#fff;align-items:center;justify-content:center;"></span>`;
     if (variant === 'desktop') {
@@ -155,9 +150,6 @@
       else if (Date.now() - start > 8000) { clearInterval(iv); cb(); }
     }, 100);
   }
-
-  // ---------- drawer ----------
-  let drawerBuilt = false;
 
   function buildDrawer() {
     if (drawerBuilt) return;
@@ -267,7 +259,7 @@
       const bubbleBg = mine ? '#f97316' : T('#1f2937','#f3f4f6');
       const bubbleFg = mine ? '#ffffff' : T('#f3f4f6','#111827');
       const attachments = (m.attachments || []).map(a =>
-        `<a href="${API}${a.url}" target="_blank" rel="noopener" style="display:block;font-size:12px;text-decoration:underline;color:inherit;margin-top:4px;">📎 ${esc(a.filename)}</a>`
+        `<a data-tt-att="${a.id}" data-tt-filename="${esc(a.filename)}" href="#" style="display:block;font-size:12px;text-decoration:underline;color:inherit;margin-top:4px;cursor:pointer;">📎 ${esc(a.filename)}</a>`
       ).join('');
       const reactions = (m.reactions || []).length
         ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">` + m.reactions.map(r =>
@@ -324,14 +316,12 @@
       composeBar;
   }
 
-  function truncate(s, n) { s = String(s || ''); return s.length > n ? s.slice(0, n) + '…' : s; }
-
   function showEmojiPicker(anchor, messageId) {
     const existing = document.getElementById('tt-emoji-picker');
     if (existing) existing.remove();
     const picker = document.createElement('div');
     picker.id = 'tt-emoji-picker';
-    const dark = document.documentElement.classList.contains('dark');
+    const dark = isDark();
     picker.style.cssText = `position:fixed;background:${dark ? '#1f2937' : '#ffffff'};border:1px solid ${dark ? '#374151' : '#e5e7eb'};border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.25);padding:6px;display:flex;gap:4px;z-index:2147483647;`;
     EMOJI.forEach(em => {
       const btn = document.createElement('button');
@@ -392,6 +382,12 @@
         showEmojiPicker(b, msgId);
       });
     });
+    panel.querySelectorAll('[data-tt-att]').forEach(a => {
+      a.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await downloadAttachment(parseInt(a.getAttribute('data-tt-att')), a.getAttribute('data-tt-filename'));
+      });
+    });
     const cancelReply = panel.querySelector('[data-tt-cancel-reply]');
     if (cancelReply) cancelReply.addEventListener('click', () => { activeThread.reply_to_id = null; renderPanelContent(); });
     panel.querySelectorAll('[data-tt-remove-att]').forEach(b => b.addEventListener('click', () => {
@@ -413,7 +409,6 @@
     if (body) requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
   }
 
-  // ---------- actions ----------
   async function loadThreads() {
     try {
       const d = await api('/api/messages/inbox?limit=50');
@@ -479,6 +474,30 @@
     }
   }
 
+  async function downloadAttachment(id, filename) {
+    try {
+      const t = getToken();
+      const res = await fetch(`${API}/api/messages/attachments/${id}`, {
+        headers: { Authorization: 'Bearer ' + t }
+      });
+      if (!res.ok) {
+        let msg = 'HTTP ' + res.status;
+        try { const j = await res.json(); if (j.error) msg = j.error; } catch {}
+        throw new Error(msg);
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename || 'file';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
+    } catch (e) {
+      alert('Could not download: ' + e.message);
+    }
+  }
+
   async function deleteMsg(id) {
     if (!confirm('Delete this message?')) return;
     try {
@@ -532,11 +551,10 @@
     } catch (e) { alert(e.message); }
   }
 
-  // ---------- toast (new inbound message) ----------
   function showToast(peer, msg) {
     const existing = document.getElementById('tt-msg-toast');
     if (existing) existing.remove();
-    const dark = document.documentElement.classList.contains('dark');
+    const dark = isDark();
     const el = document.createElement('div');
     el.id = 'tt-msg-toast';
     el.style.cssText = `position:fixed;bottom:24px;right:24px;width:380px;max-width:calc(100vw - 32px);
@@ -564,27 +582,23 @@
     setTimeout(() => el.remove(), 8000);
   }
 
-  // ---------- poll for new inbound messages ----------
   async function pollForNew() {
     if (!isAuthed()) return;
     const panel = document.getElementById('tt-msg-panel');
-    if (panel && panel.style.display === 'flex') return; // don't toast while drawer is open
+    if (panel && panel.style.display === 'flex') return;
     try {
       const d = await api('/api/messages/unread-count');
       const c = d.count || 0;
       if (c > unreadCount) {
         const inbox = await api('/api/messages/inbox?limit=1');
         const t = (inbox.threads || [])[0];
-        if (t && t.last_message) {
-          showToast(t.peer, t.last_message);
-        }
+        if (t && t.last_message) showToast(t.peer, t.last_message);
       }
       unreadCount = c;
       paintBadges();
     } catch {}
   }
 
-  // ---------- WebSocket client ----------
   async function connectWS() {
     if (!isAuthed()) return;
     if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
@@ -595,28 +609,18 @@
       const wsUrl = API.replace(/^https/, 'wss') + '/api/messages/connect?ticket=' + encodeURIComponent(t.ticket);
       ws = new WebSocket(wsUrl);
 
-      ws.addEventListener('open', () => {
-        wsBackoff = 1000;
-      });
+      ws.addEventListener('open', () => { wsBackoff = 1000; });
 
       ws.addEventListener('message', (ev) => {
         let data;
         try { data = JSON.parse(ev.data); } catch { return; }
         if (data.type === 'new_message' && data.message && data.peer) {
           handleInboundMessage(data.message, data.peer);
-        } else if (data.type === 'pong') {
-          // keepalive ack — no-op
         }
       });
 
-      ws.addEventListener('close', () => {
-        ws = null;
-        scheduleReconnect();
-      });
-
-      ws.addEventListener('error', () => {
-        try { ws.close(); } catch {}
-      });
+      ws.addEventListener('close', () => { ws = null; scheduleReconnect(); });
+      ws.addEventListener('error', () => { try { ws.close(); } catch {} });
     } catch (e) {
       scheduleReconnect();
     }
@@ -639,7 +643,6 @@
     const panel = document.getElementById('tt-msg-panel');
     const drawerOpen = panel && panel.style.display === 'flex';
 
-    // If active thread is with this peer → append + mark read + scroll
     if (activeThread && activeThread.peer.id === peer.id) {
       activeThread.messages.push(msg);
       renderPanelContent();
@@ -650,17 +653,10 @@
       return;
     }
 
-    // Drawer is open but showing a different thread — just refresh the list
-    if (drawerOpen) {
-      loadThreads();
-      return;
-    }
-
-    // Drawer closed → show toast
+    if (drawerOpen) { loadThreads(); return; }
     showToast(peer, msg);
   }
 
-  // ---------- init ----------
   async function init() {
     if (!isAuthed()) return;
     me = decodeJwt(getToken());
@@ -680,13 +676,10 @@
     });
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(refreshUnread, 60000);
-    // Fallback poll — only fires if the WS is not connected
     if (newMsgTimer) clearInterval(newMsgTimer);
     newMsgTimer = setInterval(() => {
       if (!ws || ws.readyState !== WebSocket.OPEN) pollForNew();
     }, 30000);
-
-    // Open WebSocket for real-time delivery
     connectWS();
   }
 

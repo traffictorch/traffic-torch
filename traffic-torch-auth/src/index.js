@@ -1059,6 +1059,7 @@ async function createNotification(env, { userId, type, actorId, subjectType, sub
     const col = type === 'comment' ? 'notify_comments'
               : type === 'network' ? 'notify_network'
               : type === 'leaderboard' ? 'notify_leaderboard'
+              : type === 'message' ? 'notify_messages'
               : null;
     if (col) {
       const u = await env.MY_BINDING.prepare(`SELECT ${col} AS pref FROM users WHERE id = ?`).bind(userId).first();
