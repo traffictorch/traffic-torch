@@ -30,12 +30,16 @@
 
     const modal = document.createElement('div');
     modal.id = 'tt-compose-modal';
-    modal.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.6);
-      backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;
-      z-index:999998;padding:16px;`;
+    // Bulletproof centering: grid + place-items. Ignores parent transforms/filters.
+    modal.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;
+      background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);
+      display:grid;place-items:center;z-index:2147483646;
+      padding:16px;overflow:auto;box-sizing:border-box;`;
+
     modal.innerHTML = `
-      <div style="background:${bg};color:${fg};max-width:520px;width:100%;border-radius:16px;
-                  padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.35);">
+      <div style="background:${bg};color:${fg};max-width:520px;width:100%;
+                  border-radius:16px;padding:24px;box-sizing:border-box;
+                  box-shadow:0 20px 50px rgba(0,0,0,0.35);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
           <h3 style="margin:0;font-size:18px;font-weight:700;">
             Message ${esc(recipient.display_name || recipient.username)}
@@ -111,6 +115,19 @@
     });
   }
 
+  function findActionAnchor() {
+    // Look for the "In Your Network" / "Add to Network" / "Follow" button —
+    // that's the top-right action area where our button belongs.
+    const nodes = document.querySelectorAll('a, button');
+    for (const el of nodes) {
+      const t = (el.textContent || '').trim().toLowerCase();
+      if (t.includes('in your network')) return el;
+      if (t.includes('add to network')) return el;
+      if (t === 'follow' || t === 'unfollow') return el;
+    }
+    return null;
+  }
+
   function install() {
     const recipient = window.__ttProfile;
     if (!recipient || !recipient.id) return;
@@ -122,14 +139,10 @@
     const me = decodeJwt(token);
     if (!me || !me.id) return;
 
-    // Don't show on own profile
     if (recipient.id === me.id) return;
     if (recipient.username && me.username && recipient.username === me.username) return;
-
-    // Respect recipient's "no DMs" setting — hide button entirely if they've blocked all
     if (recipient.messages_blocked === 1) return;
 
-    // Anchor: prefer main h1, fallback to any h1
     const h1 = document.querySelector('main h1') || document.querySelector('h1');
     if (!h1) return;
 
@@ -139,11 +152,12 @@
     btn.innerHTML = '✉️ <span>Send Message</span>';
     btn.style.cssText = `
       display:inline-flex;align-items:center;gap:6px;
-      margin:12px 0 0;padding:10px 18px;border-radius:12px;border:none;
+      padding:10px 18px;border-radius:12px;border:none;
       background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;
       font-weight:700;cursor:pointer;font-size:14px;font-family:inherit;
       box-shadow:0 4px 14px rgba(249,115,22,0.35);
-      transition:transform 0.15s ease,opacity 0.15s ease;`;
+      transition:transform 0.15s ease,opacity 0.15s ease;
+      white-space:nowrap;`;
     btn.addEventListener('mouseenter', () => { btn.style.transform = 'translateY(-1px)'; });
     btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
     btn.addEventListener('click', () => {
@@ -152,8 +166,20 @@
       document.body.appendChild(m);
     });
 
-    const target = h1.parentElement || h1;
-    target.insertAdjacentElement('afterend', btn);
+    // Preferred: sit next to the "In Your Network" button
+    const anchor = findActionAnchor();
+    if (anchor && anchor.parentElement) {
+      // If anchor is in a flex row, prepend our button so it lands to the left
+      anchor.parentElement.insertBefore(btn, anchor);
+      return;
+    }
+
+    // Fallback: insert after the h1 (name) — right side of the name column
+    if (h1.parentElement && h1.parentElement.tagName === 'H1') {
+      h1.insertAdjacentElement('afterend', btn);
+    } else {
+      h1.insertAdjacentElement('afterend', btn);
+    }
   }
 
   if (document.readyState === 'loading') {
@@ -162,6 +188,5 @@
     install();
   }
 
-  // Re-run if login status changes without a full reload
   document.addEventListener('loginStatusChanged', install);
 })();
