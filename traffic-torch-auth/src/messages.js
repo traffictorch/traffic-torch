@@ -35,15 +35,15 @@ function preflight() {
 async function rateLimit(env, userId, bucket, limit, windowSec) {
   const since = Date.now() - windowSec * 1000;
   const row = await env.MY_BINDING.prepare(
-    `SELECT COUNT(*) AS c FROM usage_logs WHERE user_id = ? AND tool_name = ? AND created_at > ?`
-  ).bind(userId, bucket, since).first();
+    `SELECT COUNT(*) AS c FROM dm_rate_log WHERE user_id = ? AND created_at > ?`
+  ).bind(userId, since).first();
   return (row?.c || 0) < limit;
 }
 
 async function logUsage(env, userId, bucket) {
   await env.MY_BINDING.prepare(
-    `INSERT INTO usage_logs (user_id, tool_name, created_at) VALUES (?, ?, ?)`
-  ).bind(userId, bucket, Date.now()).run();
+    `INSERT INTO dm_rate_log (user_id, created_at) VALUES (?, ?)`
+  ).bind(userId, Date.now()).run();
 }
 
 async function getBlocks(env, a, b) {
@@ -556,6 +556,7 @@ export async function handleCleanupMessages(request, env) {
   const now = Date.now();
   const softCutoff = now - 7 * 24 * 60 * 60 * 1000;
   const readCutoff = now - 30 * 24 * 60 * 60 * 1000;
+  const rateCutoff = now - 48 * 60 * 60 * 1000;
 
   const hard1 = await env.MY_BINDING.prepare(
     `DELETE FROM messages WHERE is_deleted = 1 AND deleted_at < ?`
@@ -565,9 +566,14 @@ export async function handleCleanupMessages(request, env) {
     `DELETE FROM messages WHERE is_read = 1 AND read_at IS NOT NULL AND read_at < ? AND is_deleted = 0`
   ).bind(readCutoff).run();
 
+  const rate = await env.MY_BINDING.prepare(
+    `DELETE FROM dm_rate_log WHERE created_at < ?`
+  ).bind(rateCutoff).run();
+
   return json({
     success: true,
     purged_soft_deleted: hard1.meta.changes || 0,
-    purged_old_read: hard2.meta.changes || 0
+    purged_old_read: hard2.meta.changes || 0,
+    purged_rate_rows: rate.meta.changes || 0
   });
 }
