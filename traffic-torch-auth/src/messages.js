@@ -142,6 +142,16 @@ async function attachReactionsAndFiles(env, messages, viewerId) {
 
 // ---------- endpoints ----------
 
+async function handleWsTicket(request, env, user, deps) {
+  // 60-second, single-purpose ticket. Bound to user ID. Cannot be used for API auth.
+  const ticket = await deps.signJWT(
+    { uid: user.id, purpose: 'ws' },
+    env.JWT_SECRET,
+    60
+  );
+  return json({ ticket, expires_in: 60 });
+}
+
 async function handleSend(request, env, user, deps) {
   let body;
   try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
@@ -225,6 +235,28 @@ async function handleSend(request, env, user, deps) {
   ).bind(messageId).first();
 
   const [withMeta] = await attachReactionsAndFiles(env, [inserted], user.id);
+
+  // Fire-and-forget: push to recipient's DO for real-time delivery
+  if (env.USER_INBOX) {
+    try {
+      const doId = env.USER_INBOX.idFromName(String(recipient.id));
+      const stub = env.USER_INBOX.get(doId);
+      const peer = {
+        id: user.id,
+        username: user.username || null,
+        name: user.name || null,
+        avatar_preset: user.avatar_preset || 'owner'
+      };
+      stub.fetch('https://do/push', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'new_message', message: withMeta, peer })
+      }).catch((e) => console.error('[messages] DO push error:', e.message));
+    } catch (e) {
+      console.error('[messages] DO push setup error:', e.message);
+    }
+  }
+
   return json({ success: true, message: withMeta }, 201);
 }
 
@@ -515,13 +547,32 @@ async function handleMute(request, env, user, targetId, mute) {
 export async function handleMessageRoutes(request, env, url, deps) {
   if (request.method === 'OPTIONS') return preflight();
 
+  const p = url.pathname;
+
+  // ---- WebSocket upgrade — no Bearer header possible, uses short-lived ticket ----
+  if (p === '/api/messages/connect') {
+    const upgrade = (request.headers.get('Upgrade') || '').toLowerCase();
+    if (upgrade !== 'websocket') return json({ error: 'Expected WebSocket upgrade' }, 426);
+    const ticket = url.searchParams.get('ticket');
+    if (!ticket) return json({ error: 'Missing ticket' }, 401);
+    const payload = await deps.verifyJWT(ticket, env.JWT_SECRET);
+    if (!payload || payload.purpose !== 'ws' || !payload.uid) {
+      return json({ error: 'Invalid or expired ticket' }, 401);
+    }
+    if (!env.USER_INBOX) return json({ error: 'WebSocket unavailable' }, 503);
+    const id = env.USER_INBOX.idFromName(String(payload.uid));
+    const stub = env.USER_INBOX.get(id);
+    return await stub.fetch(request);
+  }
+
+  // ---- Everything below requires Bearer auth ----
   const user = await deps.getUserFromToken(request, env);
   if (!user) return json({ error: 'Unauthorized' }, 401);
 
-  const p = url.pathname;
   const m = request.method;
 
   try {
+    if (p === '/api/messages/ws-ticket' && m === 'POST') return await handleWsTicket(request, env, user, deps);
     if (p === '/api/messages/send' && m === 'POST') return await handleSend(request, env, user, deps);
     if (p === '/api/messages/inbox' && m === 'GET') return await handleInbox(request, env, user, url);
     if (p === '/api/messages/unread-count' && m === 'GET') return handleUnreadCount(request, env, user);

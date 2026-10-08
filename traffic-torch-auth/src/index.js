@@ -1,4 +1,7 @@
 import { handleMessageRoutes, handleCleanupMessages } from './messages.js';
+import { UserInbox } from './durable/UserInbox.js';
+
+export { UserInbox };
 
 // ============================================================
 // TRAFFIC TORCH – AUTH WORKER (FULL GA4 + REALTIME + CACHE + NOTIFICATIONS + POINTS)
@@ -2558,8 +2561,8 @@ export default {
         return corsResponse(JSON.stringify({ success: true }));
       }
       
-     if (url.pathname.startsWith('/api/messages/')) {
-        return await handleMessageRoutes(request, env, url, { verifyJWT, createNotification, getUserFromToken });
+      if (url.pathname.startsWith('/api/messages/')) {
+        return await handleMessageRoutes(request, env, url, { verifyJWT, signJWT, createNotification, getUserFromToken });
       }
       if (url.pathname === '/api/internal/cleanup-messages') {
         return handleCleanupMessages(request, env);

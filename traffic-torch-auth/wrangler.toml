@@ -17,3 +17,11 @@ enabled = true
 [[r2_buckets]]
 binding = "ATTACHMENTS"
 bucket_name = "tt-message-attachments"
+
+[[durable_objects.bindings]]
+name = "USER_INBOX"
+class_name = "UserInbox"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["UserInbox"]

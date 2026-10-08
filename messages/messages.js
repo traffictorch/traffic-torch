@@ -56,6 +56,9 @@
   let activeThread = null;
   let pollTimer = null;
   let newMsgTimer = null;
+  let ws = null;
+  let wsReconnectTimer = null;
+  let wsBackoff = 1000;
 
   // ---------- API ----------
   async function api(path, opts = {}) {
@@ -581,6 +584,82 @@
     } catch {}
   }
 
+  // ---------- WebSocket client ----------
+  async function connectWS() {
+    if (!isAuthed()) return;
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+
+    try {
+      const t = await api('/api/messages/ws-ticket', { method: 'POST' });
+      if (!t.ticket) throw new Error('no ticket');
+      const wsUrl = API.replace(/^https/, 'wss') + '/api/messages/connect?ticket=' + encodeURIComponent(t.ticket);
+      ws = new WebSocket(wsUrl);
+
+      ws.addEventListener('open', () => {
+        wsBackoff = 1000;
+      });
+
+      ws.addEventListener('message', (ev) => {
+        let data;
+        try { data = JSON.parse(ev.data); } catch { return; }
+        if (data.type === 'new_message' && data.message && data.peer) {
+          handleInboundMessage(data.message, data.peer);
+        } else if (data.type === 'pong') {
+          // keepalive ack — no-op
+        }
+      });
+
+      ws.addEventListener('close', () => {
+        ws = null;
+        scheduleReconnect();
+      });
+
+      ws.addEventListener('error', () => {
+        try { ws.close(); } catch {}
+      });
+    } catch (e) {
+      scheduleReconnect();
+    }
+  }
+
+  function scheduleReconnect() {
+    if (wsReconnectTimer) return;
+    if (!isAuthed()) return;
+    wsReconnectTimer = setTimeout(() => {
+      wsReconnectTimer = null;
+      connectWS();
+    }, wsBackoff);
+    wsBackoff = Math.min(wsBackoff * 2, 60000);
+  }
+
+  function handleInboundMessage(msg, peer) {
+    unreadCount = (unreadCount || 0) + 1;
+    paintBadges();
+
+    const panel = document.getElementById('tt-msg-panel');
+    const drawerOpen = panel && panel.style.display === 'flex';
+
+    // If active thread is with this peer → append + mark read + scroll
+    if (activeThread && activeThread.peer.id === peer.id) {
+      activeThread.messages.push(msg);
+      renderPanelContent();
+      api('/api/messages/read', {
+        method: 'POST',
+        body: JSON.stringify({ from_user_id: peer.id })
+      }).then(refreshUnread).catch(() => {});
+      return;
+    }
+
+    // Drawer is open but showing a different thread — just refresh the list
+    if (drawerOpen) {
+      loadThreads();
+      return;
+    }
+
+    // Drawer closed → show toast
+    showToast(peer, msg);
+  }
+
   // ---------- init ----------
   async function init() {
     if (!isAuthed()) return;
@@ -588,11 +667,27 @@
     buildDrawer();
     await refreshUnread();
     waitForMenus(injectIntoMenus);
-    document.addEventListener('loginStatusChanged', async () => { await refreshUnread(); waitForMenus(injectIntoMenus); });
+    document.addEventListener('loginStatusChanged', async () => {
+      if (!isAuthed() && ws) {
+        try { ws.close(); } catch {}
+        ws = null;
+        if (wsReconnectTimer) { clearTimeout(wsReconnectTimer); wsReconnectTimer = null; }
+      } else if (isAuthed() && !ws) {
+        connectWS();
+      }
+      await refreshUnread();
+      waitForMenus(injectIntoMenus);
+    });
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(refreshUnread, 60000);
+    // Fallback poll — only fires if the WS is not connected
     if (newMsgTimer) clearInterval(newMsgTimer);
-    newMsgTimer = setInterval(pollForNew, 30000);
+    newMsgTimer = setInterval(() => {
+      if (!ws || ws.readyState !== WebSocket.OPEN) pollForNew();
+    }, 30000);
+
+    // Open WebSocket for real-time delivery
+    connectWS();
   }
 
   const mo = new MutationObserver(() => {
