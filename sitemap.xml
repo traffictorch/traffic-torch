@@ -189,124 +189,129 @@
 
   <!-- Blog posts -->
   
+  <url>
+    <loc>https://traffictorch.net/blog/posts/social-help-guide/</loc>
+    <lastmod>2026-10-08</lastmod>
+    </url>
+  
    <url>
     <loc>https://traffictorch.net/blog/posts/nusa-tool-help-guide/</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
    
     <url>
     <loc>https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/aeo-performance-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
 
     <url>
     <loc>https://traffictorch.net/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/ofux-dashboard-announcement/</loc>
-    <lastmod>2026-08-30</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/ubi-is-coming/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/roach-startup-help-guide/</loc>
-    <lastmod>2026-06-04</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/topical-authority-help-guide/</loc>
-    <lastmod>2026-05-19</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/semantic-entity-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url> 
   
     <url>
     <loc>https://traffictorch.net/blog/posts/ai-voice-search-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>  
   
     <url>
     <loc>https://traffictorch.net/blog/posts/schema-markup-help-guide/</loc>
-    <lastmod>2026-05-19</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>  
   
     <url>
     <loc>https://traffictorch.net/blog/posts/state-of-seo-geo-2026/</loc>
-    <lastmod>2026-05-19</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/seo-ux-audit-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
     
     <url>
     <loc>https://traffictorch.net/blog/posts/local-seo-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/seo-intent-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
     
     <url>
     <loc>https://traffictorch.net/blog/posts/product-seo-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/user-experience-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
     
     <url>
     <loc>https://traffictorch.net/blog/posts/seo-keyword-help-guide/</loc>
-    <lastmod>2026-10-03</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
     
     <url>
     <loc>https://traffictorch.net/blog/posts/seo-keyword-competition-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
     </url>
   
     <url>
     <loc>https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
   </url>
   
   <url>
     <loc>https://traffictorch.net/blog/posts/ai-content-detection-guide/</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-08</lastmod>
   </url>
   
   <url>
     <loc>https://traffictorch.net/blog/posts/developing-traffic-torch-tools/</loc>
-    <lastmod>2026-05-19</lastmod>
+    <lastmod>2026-10-08</lastmod>
   </url>
 
   <url>
     <loc>https://traffictorch.net/blog/posts/traffic-torch-seo-ux-analysis-tool-build/</loc>
-    <lastmod>2026-05-19</lastmod>
+    <lastmod>2026-10-08</lastmod>
   </url>
 
 </urlset>
