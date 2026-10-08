@@ -512,7 +512,7 @@ function profilePage() {
     activeTab: 'audits',
     isOwnProfile: false,
     discover: { loading: false, users: [], hasMore: false, error: null, addLoading: {} },
-    activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, private: false, type: 'all', category: 'all', filterUser: null, filterUsername: null },
+    activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, private: false, type: 'all', category: 'all' },
 
     async init() {
       const parts = window.location.pathname.split('/').filter(Boolean);
@@ -752,7 +752,6 @@ function profilePage() {
           this.activity.cursor = data.cursor || null;
           this.activity.hasMore = !!data.has_more;
         }
-        this._markNewItems('public:' + (this.username || ''));
       } catch (e) { this.activity.error = e.message; }
       finally { this.activity.loading = false; }
     },
@@ -765,78 +764,29 @@ function profilePage() {
     },
 
     activityIcon(t) {
-      return ({ torch: '🔥', comment: '💬', leaderboard: '🏆', network: '🤝', contribution: '🛠️', profile: '✏️',
-                points_milestone: '🏅', rank_change: '📈', score_up: '⬆️' })[t] || '•';
+      return ({ torch: '🔥', comment: '💬', leaderboard: '🏆', network: '🤝', contribution: '🛠️', profile: '✏️' })[t] || '•';
     },
 
     activityVerb(item) {
       return ({
-        torch: ' shared a torch', comment: ' commented on a torch',
-        leaderboard: ' joined the leaderboard', network: ' added someone to their network',
-        contribution: ' made a contribution', profile: ' updated their profile',
-        points_milestone: ' reached a milestone', rank_change: ' moved up the leaderboard',
-        score_up: ' improved a score'
+        torch:        ' shared a torch',
+        comment:      ' commented on a torch',
+        leaderboard:  ' joined the leaderboard',
+        network:      ' added someone to their network',
+        contribution: ' made a contribution',
+        profile:      ' updated their profile'
       })[item.event_type] || ' did something';
     },
 
     activityLinkText(item) {
       return ({
-        torch: 'View torch →', comment: 'Read thread →', network: 'View profile →',
-        contribution: 'View contribution →', leaderboard: 'View leaderboard →', profile: 'View profile →',
-        points_milestone: 'View leaderboard →', rank_change: 'View leaderboard →', score_up: 'Re-run audit →'
+        torch:        'View torch →',
+        comment:      'Read thread →',
+        network:      'View profile →',
+        contribution: 'View contribution →',
+        leaderboard:  'View leaderboard →',
+        profile:      'View profile →'
       })[item.event_type] || 'Open →';
-    },
-
-    collapseBursts(items) {
-      if (!Array.isArray(items) || !items.length) return [];
-      const out = [];
-      for (const item of items) {
-        const last = out[out.length - 1];
-        if (last
-            && last.user_id === item.user_id
-            && last.event_type === item.event_type
-            && last.target_id === item.target_id
-            && Number.isFinite(last.target_id)
-            && (last.created_at - item.created_at) < 10 * 60 * 1000) {
-          last.burst_count = (last.burst_count || 1) + 1;
-        } else {
-          out.push({ ...item, burst_count: 1 });
-        }
-      }
-      return out;
-    },
-
-    activityFiltered() {
-      return this.activity.filterUser
-        ? this.activity.items.filter(i => i.user_id === this.activity.filterUser)
-        : this.activity.items;
-    },
-
-    filterActivityByUser(item) {
-      this.activity.filterUser = item.user_id;
-      this.activity.filterUsername = item.username;
-    },
-
-    clearUserFilter() {
-      this.activity.filterUser = null;
-      this.activity.filterUsername = null;
-    },
-
-    _markNewItems(mode) {
-      const key = 'activity_' + mode;
-      const lastSeen = parseInt(localStorage.getItem('tt_activity_last_seen_' + key) || '0', 10);
-      let lastNewIdx = -1;
-      this.activity.items.forEach((item, i) => {
-        item._is_new = lastSeen > 0 && item.created_at > lastSeen;
-        delete item._show_after_divider;
-        if (item._is_new) lastNewIdx = i;
-      });
-      if (lastNewIdx >= 0 && lastNewIdx < this.activity.items.length - 1) {
-        this.activity.items[lastNewIdx]._show_after_divider = true;
-      }
-      setTimeout(() => {
-        localStorage.setItem('tt_activity_last_seen_' + key, String(Date.now()));
-      }, 3000);
     },
 
     groupActivityByDay(items) {

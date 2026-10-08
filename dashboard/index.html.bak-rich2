@@ -791,117 +791,52 @@
               <p class="text-sm text-gray-400 mt-2">Share a torch, comment, or connect with someone.</p>
             </div>
 
-            <template x-if="activity.filterUser">
-              <div class="flex items-center gap-2 mb-3">
-                <span class="text-xs text-gray-500">Filtered by</span>
-                <button @click="clearUserFilter()" class="px-3 py-1 text-xs font-bold rounded-full bg-orange-500 text-white hover:opacity-90">
-                  @<span x-text="activity.filterUsername"></span> ×
-                </button>
-              </div>
-            </template>
             <div x-show="activity.items.length > 0" class="space-y-3">
-              <template x-for="group in groupActivityByDay(activityFiltered())" :key="'pg-'+group.label">
+              <template x-for="group in groupActivityByDay(activity.items)" :key="'pg-'+group.label">
                 <div class="space-y-2">
                   <div class="text-xs font-bold uppercase tracking-wider text-gray-500 px-1 pt-2" x-text="group.label"></div>
-                  <template x-for="item in collapseBursts(group.items)" :key="'pa-'+item.id">
-                    <div>
-                      <div class="glass rounded-2xl p-4 flex gap-3 hover:bg-white/5 transition"
-                           :class="item.is_your_target ? 'ring-2 ring-orange-500/40' : ''">
-                        <div class="relative flex-shrink-0">
-                          <img :src="`/images/avatars/${item.avatar_preset || 'owner'}.svg`"
-                               width="44" height="44" style="width:44px;height:44px;"
-                               class="rounded-full object-cover" alt="">
-                          <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
-                                x-text="activityIcon(item.event_type)"></span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                          <p class="text-sm leading-snug">
-                            <a href="#" @click.prevent="filterActivityByUser(item)"
-                               class="font-bold hover:text-orange-500 hover:underline"
-                               x-text="item.display_name || item.username"></a>
-                            <span class="text-gray-600 dark:text-gray-400" x-text="activityVerb(item)"></span>
-                            <template x-if="item.burst_count > 1">
-                              <span class="ml-1 inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-orange-500/20 text-orange-500"
-                                    x-text="'× ' + item.burst_count"></span>
-                            </template>
-                            <template x-if="item.is_your_target">
-                              <span class="ml-1 inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-orange-500 text-white">Your torch</span>
-                            </template>
-                          </p>
-
-                          <template x-if="item.event_type === 'comment' && item.target_label">
-                            <blockquote class="mt-2 pl-3 border-l-2 border-orange-500/40 text-sm italic text-gray-600 dark:text-gray-400 break-words"
-                                        x-text="'“' + item.target_label + (item.target_label.length >= 60 ? '…' : '') + '”'"></blockquote>
-                          </template>
-
-                          <template x-if="item.event_type === 'torch' && item.target_label">
-                            <div class="mt-2 flex flex-wrap items-center gap-2">
-                              <span class="text-sm font-medium break-words" x-text="item.target_label"></span>
-                              <template x-if="item.category">
-                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-orange-500/15 text-orange-500" x-text="item.category"></span>
-                              </template>
-                              <template x-if="item.tool">
-                                <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" x-text="item.tool"></span>
-                              </template>
-                            </div>
-                          </template>
-
-                          <template x-if="(item.event_type === 'comment' || item.event_type === 'torch') && item.target_title && item.target_title !== item.target_label">
-                            <a :href="'/torch/' + item.target_id + '/'"
-                               class="mt-2 flex items-center gap-3 p-2 rounded-lg bg-gray-100 dark:bg-gray-800/60 hover:bg-gray-200 dark:hover:bg-gray-800 transition">
-                              <div class="text-center flex-shrink-0" style="min-width:34px;">
-                                <p class="text-lg font-black leading-none"
-                                   :class="item.target_score >= 80 ? 'text-green-500' : item.target_score >= 60 ? 'text-yellow-500' : 'text-red-500'"
-                                   x-text="item.target_score ?? '—'"></p>
-                              </div>
-                              <div class="flex-1 min-w-0">
-                                <p class="text-xs font-medium truncate" x-text="item.target_title"></p>
-                                <p class="text-[10px] text-gray-500 truncate">
-                                  <span x-text="item.target_domain_mode === 'hidden' ? (item.target_domain_label || 'Hidden') : (item.target_domain_label || '')"></span>
-                                  <template x-if="item.target_author_name && item.target_author_username !== item.username">
-                                    <span> · by <span x-text="item.target_author_name"></span></span>
-                                  </template>
-                                </p>
-                              </div>
-                            </a>
-                          </template>
-
-                          <template x-if="item.event_type === 'network' && item.target_label">
-                            <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400">→ <span class="font-medium" x-text="item.target_label"></span></p>
-                          </template>
-
-                          <template x-if="item.event_type === 'contribution' && item.target_label">
-                            <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400 break-words" x-text="item.target_label"></p>
-                          </template>
-
-                          <template x-if="item.event_type === 'points_milestone' && item.target_label">
-                            <p class="mt-1.5 text-sm font-bold text-orange-500">🏅 Reached <span x-text="item.target_label"></span></p>
-                          </template>
-
-                          <template x-if="item.event_type === 'rank_change' && item.target_label">
-                            <p class="mt-1.5 text-sm font-bold text-green-500">📈 <span x-text="item.target_label"></span> on the leaderboard</p>
-                          </template>
-
-                          <template x-if="item.event_type === 'score_up' && item.target_label">
-                            <p class="mt-1.5 text-sm font-bold text-green-500">⬆️ Score improved: <span x-text="item.target_label"></span></p>
-                          </template>
-
-                          <div class="flex items-center justify-between gap-2 mt-2.5">
-                            <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
-                            <template x-if="item.link && item.link !== '#'">
-                              <a :href="item.link" class="text-xs font-semibold text-orange-500 hover:underline" x-text="activityLinkText(item)"></a>
-                            </template>
-                          </div>
-                        </div>
+                  <template x-for="item in group.items" :key="'pa-'+item.id">
+                <div class="glass rounded-2xl p-4 flex gap-3 hover:bg-white/5 transition">
+                  <div class="relative flex-shrink-0">
+                    <img :src="`/images/avatars/${item.avatar_preset || 'owner'}.svg`"
+                         width="44" height="44" style="width:44px;height:44px;"
+                         class="rounded-full object-cover" alt="">
+                    <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
+                          x-text="activityIcon(item.event_type)"></span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm leading-snug">
+                      <a :href="'/torcher/' + item.username + '/'" class="font-bold hover:text-orange-500" x-text="item.display_name || item.username"></a>
+                      <span class="text-gray-600 dark:text-gray-400" x-text="activityVerb(item)"></span>
+                    </p>
+                    <template x-if="item.event_type === 'comment' && item.target_label">
+                      <blockquote class="mt-2 pl-3 border-l-2 border-orange-500/40 text-sm italic text-gray-600 dark:text-gray-400 break-words" x-text="'“' + item.target_label + (item.target_label.length >= 60 ? '…' : '') + '”'"></blockquote>
+                    </template>
+                    <template x-if="item.event_type === 'torch' && item.target_label">
+                      <div class="mt-2 flex flex-wrap items-center gap-2">
+                        <span class="text-sm font-medium break-words" x-text="item.target_label"></span>
+                        <template x-if="item.category">
+                          <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-orange-500/15 text-orange-500" x-text="item.category"></span>
+                        </template>
+                        <template x-if="item.tool">
+                          <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" x-text="item.tool"></span>
+                        </template>
                       </div>
-                      <template x-if="item._show_after_divider">
-                        <div class="flex items-center gap-3 my-4">
-                          <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
-                          <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Earlier</span>
-                          <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
-                        </div>
+                    </template>
+                    <template x-if="item.event_type === 'network' && item.target_label">
+                      <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400">→ <span class="font-medium" x-text="item.target_label"></span></p>
+                    </template>
+                    <template x-if="item.event_type === 'contribution' && item.target_label">
+                      <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400 break-words" x-text="item.target_label"></p>
+                    </template>
+                    <div class="flex items-center justify-between gap-2 mt-2.5">
+                      <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
+                      <template x-if="item.link">
+                        <a :href="item.link" class="text-xs font-semibold text-orange-500 hover:underline" x-text="activityLinkText(item)"></a>
                       </template>
                     </div>
+                  </div>
+                </div>
                   </template>
                 </div>
               </template>
@@ -1417,117 +1352,52 @@
               <p class="text-sm text-gray-400 mt-2">Try switching scope to "Everyone" or invite someone.</p>
             </div>
 
-            <template x-if="activity.filterUser">
-              <div class="flex items-center gap-2 mb-3">
-                <span class="text-xs text-gray-500">Filtered by</span>
-                <button @click="clearUserFilter()" class="px-3 py-1 text-xs font-bold rounded-full bg-orange-500 text-white hover:opacity-90">
-                  @<span x-text="activity.filterUsername"></span> ×
-                </button>
-              </div>
-            </template>
             <div x-show="activity.items.length > 0" class="space-y-3">
-              <template x-for="group in groupActivityByDay(activityFiltered())" :key="'ng-'+group.label">
+              <template x-for="group in groupActivityByDay(activity.items)" :key="'ng-'+group.label">
                 <div class="space-y-2">
                   <div class="text-xs font-bold uppercase tracking-wider text-gray-500 px-1 pt-2" x-text="group.label"></div>
-                  <template x-for="item in collapseBursts(group.items)" :key="'na-'+item.id">
-                    <div>
-                      <div class="glass rounded-2xl p-4 flex gap-3 hover:bg-white/5 transition"
-                           :class="item.is_your_target ? 'ring-2 ring-orange-500/40' : ''">
-                        <div class="relative flex-shrink-0">
-                          <img :src="`/images/avatars/${item.avatar_preset || 'owner'}.svg`"
-                               width="44" height="44" style="width:44px;height:44px;"
-                               class="rounded-full object-cover" alt="">
-                          <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
-                                x-text="activityIcon(item.event_type)"></span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                          <p class="text-sm leading-snug">
-                            <a href="#" @click.prevent="filterActivityByUser(item)"
-                               class="font-bold hover:text-orange-500 hover:underline"
-                               x-text="item.display_name || item.username"></a>
-                            <span class="text-gray-600 dark:text-gray-400" x-text="activityVerb(item)"></span>
-                            <template x-if="item.burst_count > 1">
-                              <span class="ml-1 inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-orange-500/20 text-orange-500"
-                                    x-text="'× ' + item.burst_count"></span>
-                            </template>
-                            <template x-if="item.is_your_target">
-                              <span class="ml-1 inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-orange-500 text-white">Your torch</span>
-                            </template>
-                          </p>
-
-                          <template x-if="item.event_type === 'comment' && item.target_label">
-                            <blockquote class="mt-2 pl-3 border-l-2 border-orange-500/40 text-sm italic text-gray-600 dark:text-gray-400 break-words"
-                                        x-text="'“' + item.target_label + (item.target_label.length >= 60 ? '…' : '') + '”'"></blockquote>
-                          </template>
-
-                          <template x-if="item.event_type === 'torch' && item.target_label">
-                            <div class="mt-2 flex flex-wrap items-center gap-2">
-                              <span class="text-sm font-medium break-words" x-text="item.target_label"></span>
-                              <template x-if="item.category">
-                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-orange-500/15 text-orange-500" x-text="item.category"></span>
-                              </template>
-                              <template x-if="item.tool">
-                                <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" x-text="item.tool"></span>
-                              </template>
-                            </div>
-                          </template>
-
-                          <template x-if="(item.event_type === 'comment' || item.event_type === 'torch') && item.target_title && item.target_title !== item.target_label">
-                            <a :href="'/torch/' + item.target_id + '/'"
-                               class="mt-2 flex items-center gap-3 p-2 rounded-lg bg-gray-100 dark:bg-gray-800/60 hover:bg-gray-200 dark:hover:bg-gray-800 transition">
-                              <div class="text-center flex-shrink-0" style="min-width:34px;">
-                                <p class="text-lg font-black leading-none"
-                                   :class="item.target_score >= 80 ? 'text-green-500' : item.target_score >= 60 ? 'text-yellow-500' : 'text-red-500'"
-                                   x-text="item.target_score ?? '—'"></p>
-                              </div>
-                              <div class="flex-1 min-w-0">
-                                <p class="text-xs font-medium truncate" x-text="item.target_title"></p>
-                                <p class="text-[10px] text-gray-500 truncate">
-                                  <span x-text="item.target_domain_mode === 'hidden' ? (item.target_domain_label || 'Hidden') : (item.target_domain_label || '')"></span>
-                                  <template x-if="item.target_author_name && item.target_author_username !== item.username">
-                                    <span> · by <span x-text="item.target_author_name"></span></span>
-                                  </template>
-                                </p>
-                              </div>
-                            </a>
-                          </template>
-
-                          <template x-if="item.event_type === 'network' && item.target_label">
-                            <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400">→ <span class="font-medium" x-text="item.target_label"></span></p>
-                          </template>
-
-                          <template x-if="item.event_type === 'contribution' && item.target_label">
-                            <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400 break-words" x-text="item.target_label"></p>
-                          </template>
-
-                          <template x-if="item.event_type === 'points_milestone' && item.target_label">
-                            <p class="mt-1.5 text-sm font-bold text-orange-500">🏅 Reached <span x-text="item.target_label"></span></p>
-                          </template>
-
-                          <template x-if="item.event_type === 'rank_change' && item.target_label">
-                            <p class="mt-1.5 text-sm font-bold text-green-500">📈 <span x-text="item.target_label"></span> on the leaderboard</p>
-                          </template>
-
-                          <template x-if="item.event_type === 'score_up' && item.target_label">
-                            <p class="mt-1.5 text-sm font-bold text-green-500">⬆️ Score improved: <span x-text="item.target_label"></span></p>
-                          </template>
-
-                          <div class="flex items-center justify-between gap-2 mt-2.5">
-                            <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
-                            <template x-if="item.link && item.link !== '#'">
-                              <a :href="item.link" class="text-xs font-semibold text-orange-500 hover:underline" x-text="activityLinkText(item)"></a>
-                            </template>
-                          </div>
-                        </div>
+                  <template x-for="item in group.items" :key="'na-'+item.id">
+                <div class="glass rounded-2xl p-4 flex gap-3 hover:bg-white/5 transition">
+                  <div class="relative flex-shrink-0">
+                    <img :src="`/images/avatars/${item.avatar_preset || 'owner'}.svg`"
+                         width="44" height="44" style="width:44px;height:44px;"
+                         class="rounded-full object-cover" alt="">
+                    <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
+                          x-text="activityIcon(item.event_type)"></span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm leading-snug">
+                      <a :href="'/torcher/' + item.username + '/'" class="font-bold hover:text-orange-500" x-text="item.display_name || item.username"></a>
+                      <span class="text-gray-600 dark:text-gray-400" x-text="activityVerb(item)"></span>
+                    </p>
+                    <template x-if="item.event_type === 'comment' && item.target_label">
+                      <blockquote class="mt-2 pl-3 border-l-2 border-orange-500/40 text-sm italic text-gray-600 dark:text-gray-400 break-words" x-text="'“' + item.target_label + (item.target_label.length >= 60 ? '…' : '') + '”'"></blockquote>
+                    </template>
+                    <template x-if="item.event_type === 'torch' && item.target_label">
+                      <div class="mt-2 flex flex-wrap items-center gap-2">
+                        <span class="text-sm font-medium break-words" x-text="item.target_label"></span>
+                        <template x-if="item.category">
+                          <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-orange-500/15 text-orange-500" x-text="item.category"></span>
+                        </template>
+                        <template x-if="item.tool">
+                          <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" x-text="item.tool"></span>
+                        </template>
                       </div>
-                      <template x-if="item._show_after_divider">
-                        <div class="flex items-center gap-3 my-4">
-                          <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
-                          <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Earlier</span>
-                          <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
-                        </div>
+                    </template>
+                    <template x-if="item.event_type === 'network' && item.target_label">
+                      <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400">→ <span class="font-medium" x-text="item.target_label"></span></p>
+                    </template>
+                    <template x-if="item.event_type === 'contribution' && item.target_label">
+                      <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400 break-words" x-text="item.target_label"></p>
+                    </template>
+                    <div class="flex items-center justify-between gap-2 mt-2.5">
+                      <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
+                      <template x-if="item.link">
+                        <a :href="item.link" class="text-xs font-semibold text-orange-500 hover:underline" x-text="activityLinkText(item)"></a>
                       </template>
                     </div>
+                  </div>
+                </div>
                   </template>
                 </div>
               </template>
@@ -2334,7 +2204,7 @@ function dashboardApp() {
     networkSubTab: 'feed',
     profileSubTab: 'profile',
     discover: { loading: false, users: [], hasMore: false, error: null, addLoading: {} },
-    activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, type: 'all', category: 'all', tool: 'all', time: 'all', scope: 'network', filterUser: null, filterUsername: null },
+    activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, type: 'all', category: 'all', tool: 'all', time: 'all', scope: 'network' },
 
     notifications: {
       loading: false,
@@ -3988,7 +3858,6 @@ function dashboardApp() {
           : (data.items || []);
         this.activity.cursor = data.cursor || null;
         this.activity.hasMore = !!data.has_more;
-        this._markNewItems('me');
       } catch (e) { this.activity.error = e.message; }
       finally { this.activity.loading = false; }
     },
@@ -4001,8 +3870,7 @@ function dashboardApp() {
     },
 
     activityIcon(t) {
-      return ({ torch: '🔥', comment: '💬', leaderboard: '🏆', network: '🤝', contribution: '🛠️', profile: '✏️',
-                points_milestone: '🏅', rank_change: '📈', score_up: '⬆️' })[t] || '•';
+      return ({ torch: '🔥', comment: '💬', leaderboard: '🏆', network: '🤝', contribution: '🛠️', profile: '✏️' })[t] || '•';
     },
 
     activityText(item) {
@@ -4021,72 +3889,24 @@ function dashboardApp() {
 
     activityVerb(item) {
       return ({
-        torch: ' shared a torch', comment: ' commented on a torch',
-        leaderboard: ' joined the leaderboard', network: ' added someone to their network',
-        contribution: ' made a contribution', profile: ' updated their profile',
-        points_milestone: ' reached a milestone', rank_change: ' moved up the leaderboard',
-        score_up: ' improved a score'
+        torch:        ' shared a torch',
+        comment:      ' commented on a torch',
+        leaderboard:  ' joined the leaderboard',
+        network:      ' added someone to their network',
+        contribution: ' made a contribution',
+        profile:      ' updated their profile'
       })[item.event_type] || ' did something';
     },
 
     activityLinkText(item) {
       return ({
-        torch: 'View torch →', comment: 'Read thread →', network: 'View profile →',
-        contribution: 'View contribution →', leaderboard: 'View leaderboard →', profile: 'View profile →',
-        points_milestone: 'View leaderboard →', rank_change: 'View leaderboard →', score_up: 'Re-run audit →'
+        torch:        'View torch →',
+        comment:      'Read thread →',
+        network:      'View profile →',
+        contribution: 'View contribution →',
+        leaderboard:  'View leaderboard →',
+        profile:      'View profile →'
       })[item.event_type] || 'Open →';
-    },
-
-    collapseBursts(items) {
-      if (!Array.isArray(items) || !items.length) return [];
-      const out = [];
-      for (const item of items) {
-        const last = out[out.length - 1];
-        if (last
-            && last.user_id === item.user_id
-            && last.event_type === item.event_type
-            && last.target_id === item.target_id
-            && Number.isFinite(last.target_id)
-            && (last.created_at - item.created_at) < 10 * 60 * 1000) {
-          last.burst_count = (last.burst_count || 1) + 1;
-        } else {
-          out.push({ ...item, burst_count: 1 });
-        }
-      }
-      return out;
-    },
-
-    activityFiltered() {
-      return this.activity.filterUser
-        ? this.activity.items.filter(i => i.user_id === this.activity.filterUser)
-        : this.activity.items;
-    },
-
-    filterActivityByUser(item) {
-      this.activity.filterUser = item.user_id;
-      this.activity.filterUsername = item.username;
-    },
-
-    clearUserFilter() {
-      this.activity.filterUser = null;
-      this.activity.filterUsername = null;
-    },
-
-    _markNewItems(mode) {
-      const key = 'activity_' + mode;
-      const lastSeen = parseInt(localStorage.getItem('tt_activity_last_seen_' + key) || '0', 10);
-      let lastNewIdx = -1;
-      this.activity.items.forEach((item, i) => {
-        item._is_new = lastSeen > 0 && item.created_at > lastSeen;
-        delete item._show_after_divider;
-        if (item._is_new) lastNewIdx = i;
-      });
-      if (lastNewIdx >= 0 && lastNewIdx < this.activity.items.length - 1) {
-        this.activity.items[lastNewIdx]._show_after_divider = true;
-      }
-      setTimeout(() => {
-        localStorage.setItem('tt_activity_last_seen_' + key, String(Date.now()));
-      }, 3000);
     },
 
     groupActivityByDay(items) {
