@@ -1,5 +1,6 @@
 // Traffic Torch — Send Message button on /torcher/:username/
-// Reads window.__ttProfile (injected by the render worker). No API call.
+// Uses native <dialog> + showModal() so the popup always centers on the viewport,
+// regardless of ancestor transforms/filters/containing blocks.
 (function () {
   const API = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
@@ -10,14 +11,27 @@
   };
   const esc = s => String(s ?? '').replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
 
+  function ensureDialogStyle() {
+    if (document.getElementById('tt-dialog-style')) return;
+    const st = document.createElement('style');
+    st.id = 'tt-dialog-style';
+    st.textContent = `
+      dialog#tt-compose-modal { border:none; padding:0; background:transparent; max-width:none; max-height:none; }
+      dialog#tt-compose-modal::backdrop { background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); }
+      dialog#tt-compose-modal .tt-card { animation: tt-dlg-in 0.18s ease-out; }
+      @keyframes tt-dlg-in { from { opacity:0; transform:translateY(8px) scale(0.98); } to { opacity:1; transform:none; } }
+    `;
+    document.head.appendChild(st);
+  }
+
   function toast(text, ok = true) {
     const el = document.createElement('div');
     el.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
       background:${ok ? '#111827' : '#ef4444'};color:#fff;padding:12px 20px;border-radius:12px;
-      z-index:999999;font-size:14px;font-family:system-ui,sans-serif;
+      z-index:2147483647;font-size:14px;font-family:system-ui,sans-serif;
       box-shadow:0 10px 30px rgba(0,0,0,0.3);`;
     el.textContent = text;
-    document.body.appendChild(el);
+    document.documentElement.appendChild(el);
     setTimeout(() => el.remove(), 3000);
   }
 
@@ -28,67 +42,68 @@
     const inputBg = dark ? '#1f2937' : '#ffffff';
     const inputBd = dark ? '#4b5563' : '#d1d5db';
 
-    const modal = document.createElement('div');
-    modal.id = 'tt-compose-modal';
-    // Bulletproof centering: grid + place-items. Ignores parent transforms/filters.
-    modal.style.cssText = `position:fixed;top:0;left:0;right:0;bottom:0;
-      background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);
-      display:grid;place-items:center;z-index:2147483646;
-      padding:16px;overflow:auto;box-sizing:border-box;`;
+    ensureDialogStyle();
 
-    modal.innerHTML = `
-      <div style="background:${bg};color:${fg};max-width:520px;width:100%;
-                  border-radius:16px;padding:24px;box-sizing:border-box;
-                  box-shadow:0 20px 50px rgba(0,0,0,0.35);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-          <h3 style="margin:0;font-size:18px;font-weight:700;">
-            Message ${esc(recipient.display_name || recipient.username)}
-          </h3>
-          <button type="button" data-tt-close style="background:none;border:none;font-size:26px;
-                  cursor:pointer;color:${fg};line-height:1;padding:0 4px;">&times;</button>
-        </div>
-        <textarea data-tt-body maxlength="2000" rows="6" placeholder="Write a message…"
-          style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;
-                 border:1px solid ${inputBd};background:${inputBg};color:${fg};
-                 font-family:inherit;font-size:14px;resize:vertical;outline:none;"></textarea>
-        <p style="font-size:12px;color:#9ca3af;text-align:right;margin:6px 0 16px;">
-          <span data-tt-count>0</span> / 2000
-        </p>
-        <div style="display:flex;gap:8px;justify-content:flex-end;">
-          <button type="button" data-tt-cancel
-            style="padding:10px 20px;border-radius:10px;border:1px solid ${inputBd};
-                   background:transparent;color:${fg};cursor:pointer;font-weight:600;">Cancel</button>
-          <button type="button" data-tt-send
-            style="padding:10px 24px;border-radius:10px;border:none;
-                   background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;
-                   font-weight:700;cursor:pointer;">Send</button>
-        </div>
-        <p data-tt-error style="color:#ef4444;font-size:13px;margin:12px 0 0;"></p>
-      </div>`;
-    return modal;
+    const dlg = document.createElement('dialog');
+    dlg.id = 'tt-compose-modal';
+    dlg.setAttribute('aria-label', 'Send message');
+
+    const card = document.createElement('div');
+    card.className = 'tt-card';
+    card.style.cssText = `background:${bg};color:${fg};width:min(520px, calc(100vw - 32px));
+      border-radius:16px;padding:24px;box-sizing:border-box;
+      box-shadow:0 20px 50px rgba(0,0,0,0.35);font-family:inherit;`;
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="margin:0;font-size:18px;font-weight:700;">
+          Message ${esc(recipient.display_name || recipient.username)}
+        </h3>
+        <button type="button" data-tt-close style="background:none;border:none;font-size:26px;
+                cursor:pointer;color:${fg};line-height:1;padding:0 4px;">&times;</button>
+      </div>
+      <textarea data-tt-body maxlength="2000" rows="6" placeholder="Write a message…"
+        style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;
+               border:1px solid ${inputBd};background:${inputBg};color:${fg};
+               font-family:inherit;font-size:14px;resize:vertical;outline:none;"></textarea>
+      <p style="font-size:12px;color:#9ca3af;text-align:right;margin:6px 0 16px;">
+        <span data-tt-count>0</span> / 2000
+      </p>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button type="button" data-tt-cancel
+          style="padding:10px 20px;border-radius:10px;border:1px solid ${inputBd};
+                 background:transparent;color:${fg};cursor:pointer;font-weight:600;">Cancel</button>
+        <button type="button" data-tt-send
+          style="padding:10px 24px;border-radius:10px;border:none;
+                 background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;
+                 font-weight:700;cursor:pointer;">Send</button>
+      </div>
+      <p data-tt-error style="color:#ef4444;font-size:13px;margin:12px 0 0;"></p>`;
+    dlg.appendChild(card);
+    return dlg;
   }
 
-  function wireModal(modal, recipient) {
-    const body = modal.querySelector('[data-tt-body]');
-    const count = modal.querySelector('[data-tt-count]');
-    const send = modal.querySelector('[data-tt-send]');
-    const cancel = modal.querySelector('[data-tt-cancel]');
-    const close = modal.querySelector('[data-tt-close]');
-    const err = modal.querySelector('[data-tt-error]');
+  function wireModal(dlg, recipient) {
+    const body = dlg.querySelector('[data-tt-body]');
+    const count = dlg.querySelector('[data-tt-count]');
+    const send = dlg.querySelector('[data-tt-send]');
+    const cancel = dlg.querySelector('[data-tt-cancel]');
+    const close = dlg.querySelector('[data-tt-close]');
+    const err = dlg.querySelector('[data-tt-error]');
 
     body.addEventListener('input', () => { count.textContent = body.value.length; });
-    body.focus();
 
     const dismiss = () => {
-      modal.remove();
-      document.removeEventListener('keydown', onEsc);
+      try { dlg.close(); } catch {}
+      dlg.remove();
     };
-    const onEsc = e => { if (e.key === 'Escape') dismiss(); };
+
+    // Native <dialog> fires 'cancel' on Esc — treat as dismiss
+    dlg.addEventListener('cancel', (e) => { e.preventDefault(); dismiss(); });
+    // Click on ::backdrop = click on the dialog element itself (outside card)
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dismiss(); });
 
     cancel.addEventListener('click', dismiss);
     close.addEventListener('click', dismiss);
-    modal.addEventListener('click', e => { if (e.target === modal) dismiss(); });
-    document.addEventListener('keydown', onEsc);
 
     send.addEventListener('click', async () => {
       const text = body.value.trim();
@@ -113,11 +128,12 @@
         send.textContent = orig;
       }
     });
+
+    // Focus textarea after dialog is in top layer
+    requestAnimationFrame(() => body.focus());
   }
 
   function findActionAnchor() {
-    // Look for the "In Your Network" / "Add to Network" / "Follow" button —
-    // that's the top-right action area where our button belongs.
     const nodes = document.querySelectorAll('a, button');
     for (const el of nodes) {
       const t = (el.textContent || '').trim().toLowerCase();
@@ -138,7 +154,6 @@
 
     const me = decodeJwt(token);
     if (!me || !me.id) return;
-
     if (recipient.id === me.id) return;
     if (recipient.username && me.username && recipient.username === me.username) return;
     if (recipient.messages_blocked === 1) return;
@@ -161,20 +176,17 @@
     btn.addEventListener('mouseenter', () => { btn.style.transform = 'translateY(-1px)'; });
     btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
     btn.addEventListener('click', () => {
-      const m = buildModal(recipient);
-      wireModal(m, recipient);
-      document.body.appendChild(m);
+      const dlg = buildModal(recipient);
+      wireModal(dlg, recipient);
+      document.documentElement.appendChild(dlg);
+      dlg.showModal();
     });
 
-    // Preferred: sit next to the "In Your Network" button
     const anchor = findActionAnchor();
     if (anchor && anchor.parentElement) {
-      // If anchor is in a flex row, prepend our button so it lands to the left
       anchor.parentElement.insertBefore(btn, anchor);
       return;
     }
-
-    // Fallback: insert after the h1 (name) — right side of the name column
     if (h1.parentElement && h1.parentElement.tagName === 'H1') {
       h1.insertAdjacentElement('afterend', btn);
     } else {
@@ -187,6 +199,5 @@
   } else {
     install();
   }
-
   document.addEventListener('loginStatusChanged', install);
 })();
