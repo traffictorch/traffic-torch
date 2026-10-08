@@ -2,8 +2,13 @@
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
-// Messages module — self-injecting, works on every page. No-op when logged out.
-import('/messages.js?v=1').catch(() => {});
+// Messages module — script-tag injected so Vite doesn't try to bundle it
+(function () {
+  const s = document.createElement('script');
+  s.src = '/messages.js?v=1';
+  s.defer = true;
+  document.head.appendChild(s);
+})();
 
 // Day Night Mode
 document.addEventListener('DOMContentLoaded', () => {
