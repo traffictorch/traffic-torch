@@ -313,44 +313,6 @@
               </a>
             </template>
           </div>
-
-          <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-            <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
-              <div>
-                <h3 class="text-lg font-bold">🌟 Discover more people</h3>
-                <p class="text-xs text-gray-500 mt-0.5">Random people you're not connected to yet — reshuffles daily</p>
-              </div>
-              <button @click="randomizeDiscover()" :disabled="discover.loading"
-                      class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition disabled:opacity-50">
-                🎲 Randomize
-              </button>
-            </div>
-            <div x-show="discover.loading" class="text-center py-8"><div class="spinner mx-auto"></div></div>
-            <div x-show="!discover.loading && discover.users.length === 0" class="glass rounded-2xl p-6 text-center">
-              <p class="text-3xl mb-2">🌱</p>
-              <p class="text-sm text-gray-500">No new people to discover right now.</p>
-            </div>
-            <div x-show="!discover.loading && discover.users.length > 0" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <template x-for="u in discover.users" :key="'disc-' + u.id">
-                <div class="glass rounded-2xl p-3 flex flex-col items-center text-center hover:bg-white/10 transition">
-                  <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover mb-2" alt="" loading="lazy">
-                  <a :href="'/torcher/' + u.username + '/'" class="font-bold text-sm hover:text-orange-500 truncate w-full" x-text="u.display_name || u.username"></a>
-                  <p class="text-xs text-gray-500 truncate w-full">@<span x-text="u.username"></span></p>
-                  <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(u.role)"></span>
-                  <div class="flex items-center gap-2 mt-1.5 text-[10px] text-gray-500">
-                    <span x-show="u.total_points > 0">🏅 <span x-text="u.total_points"></span></span>
-                    <span x-show="u.torch_count > 0">🔥 <span x-text="u.torch_count"></span></span>
-                  </div>
-                  <button @click="addDiscoverUser(u)" :disabled="discover.addLoading[u.id]"
-                          class="mt-2 w-full py-1.5 text-xs font-bold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition disabled:opacity-50">
-                    <span x-show="!discover.addLoading[u.id]">+ Add</span>
-                    <span x-show="discover.addLoading[u.id]">…</span>
-                  </button>
-                </div>
-              </template>
-            </div>
-            <p x-show="discover.error" class="text-red-500 text-xs text-center mt-3" x-text="discover.error"></p>
-          </div>
         </div>
 
         <!-- About -->
@@ -412,7 +374,6 @@ function profilePage() {
     inNetwork: false,
     activeTab: 'audits',
     isOwnProfile: false,
-    discover: { loading: false, users: [], hasMore: false, error: null, addLoading: {} },
 
     async init() {
       const parts = window.location.pathname.split('/').filter(Boolean);
@@ -448,7 +409,6 @@ function profilePage() {
         }
 
         await this.checkOwnership();
-        this.loadDiscover();
       } catch (e) {
         console.error('Profile load error:', e);
         this.notFound = true;
@@ -590,41 +550,6 @@ function profilePage() {
         const d = new Date(ts);
         return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
       } catch { return '—'; }
-    },
-
-    async loadDiscover(fresh = false) {
-      const token = localStorage.getItem('authToken');
-      if (!token) return;
-      this.discover.loading = true;
-      this.discover.error = null;
-      try {
-        const res = await fetch(`${API_BASE}/api/users/discover?seed=${fresh ? 'fresh' : 'today'}&limit=24&offset=0`,
-          { headers: { 'Authorization': 'Bearer ' + token } });
-        if (!res.ok) throw new Error('Failed to load Discover');
-        const data = await res.json();
-        this.discover.users = data.users || [];
-        this.discover.hasMore = !!data.has_more;
-      } catch (e) { this.discover.error = e.message; }
-      finally { this.discover.loading = false; }
-    },
-
-    async randomizeDiscover() { return this.loadDiscover(true); },
-
-    async addDiscoverUser(u) {
-      if (this.discover.addLoading[u.id]) return;
-      this.discover.addLoading[u.id] = true;
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) { window.location.href = '/login/'; return; }
-        const res = await fetch(`${API_BASE}/api/network/add`, {
-          method: 'POST',
-          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: u.id })
-        });
-        if (res.ok) this.discover.users = this.discover.users.filter(x => x.id !== u.id);
-        else { const d = await res.json().catch(() => ({})); alert(d.error || 'Failed to add'); }
-      } catch (e) { alert('Network error: ' + e.message); }
-      finally { this.discover.addLoading[u.id] = false; }
     }
   }
 }

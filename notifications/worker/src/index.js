@@ -174,32 +174,6 @@ async function handleTest(request, env, origin) {
   return json({ ok: true, ...result }, 200, origin);
 }
 
-
-async function handleDebugAuth(request, env, origin) {
-  const auth = request.headers.get('Authorization') || '';
-  const out = {
-    hasAuthHeader: !!auth,
-    authHeaderPrefix: auth.slice(0, 20),
-    hasAuthBinding: !!env.AUTH,
-    bindingType: env.AUTH ? typeof env.AUTH : 'missing',
-    authWorkerResponse: null,
-  };
-  if (!out.hasAuthHeader || !out.hasAuthBinding) {
-    return json(out, 200, origin);
-  }
-  try {
-    const res = await env.AUTH.fetch('https://auth.internal/api/account-info', {
-      headers: { Authorization: auth },
-    });
-    out.authWorkerResponse = { status: res.status, ok: res.ok };
-    const text = await res.text();
-    out.authWorkerBodySnippet = text.slice(0, 300);
-  } catch (err) {
-    out.authWorkerError = String(err && err.message || err);
-  }
-  return json(out, 200, origin);
-}
-
 export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
@@ -221,7 +195,6 @@ export default {
     if (path === '/push-api/subscribe'   && request.method === 'POST') return handleSubscribe(request, env, origin);
     if (path === '/push-api/unsubscribe' && request.method === 'POST') return handleUnsubscribe(request, env, origin);
     if (path === '/push-api/send'        && request.method === 'POST') return handleSend(request, env, origin);
-    if (path === '/push-api/debug-auth' && request.method === 'POST') return handleDebugAuth(request, env, origin);
     if (path === '/push-api/test'        && request.method === 'POST') return handleTest(request, env, origin);
 
     return json({ error: 'not_found' }, 404, origin);
