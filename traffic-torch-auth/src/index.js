@@ -1,3 +1,5 @@
+import { handleMessageRoutes, handleCleanupMessages } from './messages.js';
+
 // ============================================================
 // TRAFFIC TORCH – AUTH WORKER (FULL GA4 + REALTIME + CACHE + NOTIFICATIONS + POINTS)
 // ============================================================
@@ -391,6 +393,22 @@ async function ensureTables(env) {
   ).run();
   try { await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_user_points_user ON user_points(user_id)`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_user_points_event ON user_points(user_id, event_type)`).run(); } catch (e) {}
+  await env.MY_BINDING.prepare(
+    `CREATE TABLE IF NOT EXISTS user_activity (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      event_type TEXT NOT NULL,
+      category TEXT,
+      tool TEXT,
+      target_id INTEGER,
+      target_label TEXT,
+      link TEXT,
+      created_at INTEGER NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`
+  ).run();
+  try { await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_activity_user ON user_activity(user_id, created_at DESC)`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN activity_public INTEGER DEFAULT 1`).run(); } catch (e) {}
 }
 
 async function getCachedReport(userId, reportType, days, startDate, endDate, env) {
@@ -438,6 +456,23 @@ function feedJson(data, status = 200) {
   });
 }
 
+async function purgeRenderWorker(env, paths) {
+  if (!env.PURGE_SECRET || !paths || !paths.length) return;
+  const url = 'https://torches-page-render.traffictorch.workers.dev/api/internal/purge';
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${env.PURGE_SECRET}`,
+      },
+      body: JSON.stringify({ paths }),
+    });
+  } catch (err) {
+    console.error('purgeRenderWorker error:', err.message);
+  }
+}
+
 async function getUserFromToken(request, env) {
   const auth = request.headers.get('Authorization') || '';
   const token = auth.replace('Bearer ', '').trim();
@@ -458,6 +493,22 @@ function slugifyUsername(str) {
     .replace(/[^a-z0-9_]+/g, '_')
     .replace(/^_+|_+$/g, '')
     .slice(0, 30) || 'user';
+}
+
+// ============================================================
+// Feature B — Discover: daily seed (resets 11:00 UTC)
+// ============================================================
+function _discoverSeed(viewerId, fresh = false) {
+  const nowMs = Date.now();
+  const key = fresh
+    ? `${viewerId}:${nowMs}`
+    : `${viewerId}:${Math.floor((nowMs - 11 * 3600 * 1000) / 86400000)}`;
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < key.length; i++) {
+    h ^= key.charCodeAt(i);
+    h = Math.imul(h, 16777619) >>> 0;
+  }
+  return h >>> 0;
 }
 
 async function ensureUsername(env, user) {
@@ -498,6 +549,8 @@ function shapeProfile(user) {
     notify_comments: user.notify_comments !== 0 ? 1 : 0,
     notify_network: user.notify_network !== 0 ? 1 : 0,
     notify_leaderboard: user.notify_leaderboard !== 0 ? 1 : 0,
+    notify_messages: user.notify_messages !== 0 ? 1 : 0,
+    activity_public: user.activity_public !== 0 ? 1 : 0,
     created_at: user.created_at ? new Date(user.created_at).getTime() : null
   };
 }
@@ -511,6 +564,19 @@ async function awardPoints(env, { userId, type, points, referenceId }) {
       `INSERT INTO user_points (user_id, event_type, points, reference_id, created_at)
        VALUES (?, ?, ?, ?, ?)`
     ).bind(userId, type, points, referenceId || null, Date.now()).run();
+
+    const newTotal = await getUserTotalPoints(env, userId);
+    const prevTotal = newTotal - points;
+    const THRESHOLDS = [100, 500, 1000, 5000, 10000, 25000, 50000];
+    for (const t of THRESHOLDS) {
+      if (newTotal >= t && prevTotal < t) {
+        await logActivity(env, userId, 'points_milestone', {
+          targetLabel: `${t.toLocaleString()} points`,
+          link: '/leader-board/'
+        });
+        break;
+      }
+    }
   } catch (e) { console.error('awardPoints error:', e.message); }
 }
 
@@ -521,6 +587,44 @@ async function getUserTotalPoints(env, userId) {
     ).bind(userId).first();
     return row?.total || 0;
   } catch { return 0; }
+}
+
+async function getUserLeaderboardRank(env, userId) {
+  try {
+    const me = await getUserTotalPoints(env, userId);
+    if (!me) return null;
+    const row = await env.MY_BINDING.prepare(
+      `SELECT COUNT(*) AS higher FROM (
+         SELECT user_id, SUM(points) AS total FROM user_points GROUP BY user_id
+       ) WHERE total > ?`
+    ).bind(me).first();
+    return (row?.higher || 0) + 1;
+  } catch { return null; }
+}
+
+// ============================================================
+// Feature C — Activity logger
+// ============================================================
+async function logActivity(env, userId, eventType, opts = {}) {
+  try {
+    const now = Date.now();
+    await env.MY_BINDING.batch([
+      env.MY_BINDING.prepare(
+        `INSERT INTO user_activity (user_id, event_type, category, tool, target_id, target_label, link, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      ).bind(
+        userId, eventType,
+        opts.category || null, opts.tool || null,
+        opts.targetId || null, opts.targetLabel || null, opts.link || null,
+        now
+      ),
+      env.MY_BINDING.prepare(
+        `DELETE FROM user_activity WHERE user_id = ? AND id NOT IN (
+           SELECT id FROM user_activity WHERE user_id = ? ORDER BY created_at DESC LIMIT 24
+         )`
+      ).bind(userId, userId)
+    ]);
+  } catch (e) { console.error('logActivity error:', e.message); }
 }
 
 // ============================================================
@@ -573,11 +677,17 @@ async function handleProfileRoutes(request, env, url) {
     if (body.notify_comments !== undefined) { fields.push('notify_comments = ?'); params.push(body.notify_comments ? 1 : 0); }
     if (body.notify_network !== undefined) { fields.push('notify_network = ?'); params.push(body.notify_network ? 1 : 0); }
     if (body.notify_leaderboard !== undefined) { fields.push('notify_leaderboard = ?'); params.push(body.notify_leaderboard ? 1 : 0); }
+    if (body.notify_messages !== undefined) { fields.push('notify_messages = ?'); params.push(body.notify_messages ? 1 : 0); }
+    if (body.activity_public !== undefined) { fields.push('activity_public = ?'); params.push(body.activity_public ? 1 : 0); }
 
     if (!fields.length) return feedJson({ error: 'Nothing to update' }, 400);
 
     params.push(user.id);
     await env.MY_BINDING.prepare(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`).bind(...params).run();
+    await logActivity(env, user.id, 'profile', {
+      targetLabel: 'updated profile',
+      link: `/torcher/${user.username || ''}/`
+    });
     const fresh = await env.MY_BINDING.prepare('SELECT * FROM users WHERE id = ?').bind(user.id).first();
     const profile = shapeProfile(fresh);
     profile.total_points = await getUserTotalPoints(env, user.id);
@@ -621,6 +731,142 @@ async function handleProfileRoutes(request, env, url) {
   return null;
 }
 
+async function handleTorchRoutes(request, env, url) {
+  if (url.pathname.match(/^\/api\/torch\/\d+$/) && request.method === 'GET') {
+    const id = parseInt(url.pathname.split('/').pop(), 10);
+    const post = await env.MY_BINDING.prepare(
+      `SELECT p.id, p.user_id, p.category, p.note, p.tool, p.url, p.page_title, p.score,
+              p.domain_mode, p.domain_label, p.module_scores, p.status, p.created_at,
+              u.username, u.name AS display_name, u.avatar_preset, u.role, u.bio,
+              u.website_url, u.website_approved, u.social1_url, u.social2_url,
+              u.job_title, u.company, u.location, u.show_network, u.allow_adds,
+              u.created_at AS author_created_at,
+              COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = u.id), 0) AS total_points,
+              (SELECT COUNT(*) FROM posts p2 WHERE p2.user_id = u.id AND p2.status = 'published') AS audit_count
+         FROM posts p
+         JOIN users u ON u.id = p.user_id
+        WHERE p.id = ? AND p.status = 'published'`
+    ).bind(id).first();
+
+    if (!post) return feedJson({ error: 'Not found' }, 404);
+
+    if (post.domain_mode === 'hidden' && post.domain_label) {
+      post.url = null;
+    }
+
+    const networkCountRow = await env.MY_BINDING.prepare(
+      'SELECT COUNT(*) AS c FROM network WHERE user_id = ?'
+    ).bind(post.user_id).first();
+    const networkCount = networkCountRow?.c || 0;
+
+    let networkList = [];
+    if (post.show_network) {
+      const net = await env.MY_BINDING.prepare(
+        `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.role
+           FROM network n JOIN users u ON u.id = n.network_user_id
+          WHERE n.user_id = ? LIMIT 30`
+      ).bind(post.user_id).all();
+      networkList = net.results || [];
+    }
+
+    const moreByAuthor = await env.MY_BINDING.prepare(
+      `SELECT id, tool, url, page_title, score, domain_mode, domain_label, created_at
+         FROM posts
+        WHERE user_id = ? AND status = 'published' AND id != ?
+        ORDER BY created_at DESC LIMIT 3`
+    ).bind(post.user_id, id).all();
+
+    const since = Date.now() - 90 * 86400 * 1000;
+    const related = await env.MY_BINDING.prepare(
+      `SELECT p.id, p.tool, p.url, p.page_title, p.score, p.domain_mode, p.domain_label, p.created_at,
+              u.username, u.name AS display_name, u.avatar_preset
+         FROM posts p
+         JOIN users u ON u.id = p.user_id
+        WHERE p.tool = ? AND p.status = 'published'
+          AND p.id != ? AND p.user_id != ?
+          AND p.score BETWEEN ? AND ?
+          AND p.created_at >= ?
+        ORDER BY p.created_at DESC LIMIT 4`
+    ).bind(
+      post.tool, id, post.user_id,
+      Math.max(0, post.score - 15), Math.min(100, post.score + 15),
+      since
+    ).all();
+
+    return feedJson({
+      post,
+      author: {
+        id: post.user_id, username: post.username, display_name: post.display_name,
+        avatar_preset: post.avatar_preset, role: post.role, bio: post.bio,
+        website_url: post.website_url, website_approved: post.website_approved,
+        social1_url: post.social1_url, social2_url: post.social2_url,
+        job_title: post.job_title, company: post.company, location: post.location,
+        show_network: post.show_network, allow_adds: post.allow_adds,
+        total_points: post.total_points, created_at: post.author_created_at,
+        audit_count: post.audit_count, network_count: networkCount,
+      },
+      author_network: networkList,
+      more_by_author: moreByAuthor.results || [],
+      related: related.results || [],
+    });
+  }
+  return null;
+}
+
+// ============================================================
+// Sitemap data routes
+// ============================================================
+async function handleSitemapRoutes(request, env, url) {
+  if (url.pathname === '/api/sitemap/profiles' && request.method === 'GET') {
+    const rows = await env.MY_BINDING.prepare(
+      `SELECT u.username,
+              MAX(COALESCE(p.created_at, 0)) AS last_torch,
+              u.created_at
+         FROM users u
+         LEFT JOIN posts p ON p.user_id = u.id AND p.status = 'published'
+        WHERE u.profile_public = 1 AND u.username IS NOT NULL
+        GROUP BY u.id
+        ORDER BY u.created_at DESC
+        LIMIT 45000`
+    ).all();
+    return feedJson({ rows: rows.results || [] });
+  }
+
+  if (url.pathname === '/api/sitemap/torches' && request.method === 'GET') {
+    const rows = await env.MY_BINDING.prepare(
+      `SELECT id, created_at
+         FROM posts
+        WHERE status = 'published' AND domain_mode != 'hidden'
+        ORDER BY created_at DESC
+        LIMIT 45000`
+    ).all();
+    return feedJson({ rows: rows.results || [] });
+  }
+
+  if (url.pathname === '/api/sitemap/static' && request.method === 'GET') {
+    return feedJson({
+      rows: [
+        { loc: '/', priority: '1.0' },
+        { loc: '/community/', priority: '0.9' },
+        { loc: '/leader-board/', priority: '0.9' },
+        { loc: '/about/', priority: '0.6' },
+        { loc: '/contact/', priority: '0.5' },
+        { loc: '/pro/', priority: '0.7' },
+        { loc: '/upgrade/', priority: '0.6' },
+        { loc: '/privacy/', priority: '0.3' },
+        { loc: '/terms/', priority: '0.3' },
+        { loc: '/integrations/', priority: '0.6' },
+        { loc: '/integrations/developer/api/', priority: '0.6' },
+        { loc: '/integrations/developer-tools/', priority: '0.5' },
+        { loc: '/integrations/browser-extensions/', priority: '0.5' },
+        { loc: '/integrations/plugins/', priority: '0.5' },
+      ],
+    });
+  }
+
+  return null;
+}
+
 // ============================================================
 // Network routes
 // ============================================================
@@ -651,6 +897,13 @@ async function handleNetworkRoutes(request, env, url) {
       subjectId: user.id,
       message: `${actorName} added you to their network`,
       link: `/torcher/${me?.username || ''}/`
+    });
+
+    const targetUser = await env.MY_BINDING.prepare('SELECT name, username FROM users WHERE id = ?').bind(targetId).first();
+    await logActivity(env, user.id, 'network', {
+      targetId,
+      targetLabel: targetUser?.name || targetUser?.username || 'someone',
+      link: `/torcher/${targetUser?.username || ''}/`
     });
 
     return feedJson({ success: true });
@@ -778,6 +1031,23 @@ async function handleNetworkRoutes(request, env, url) {
   return null;
 }
 
+// ---------- Push fan-out ----------
+async function firePush(env, { userId, type, title, body, url, tag, data }) {
+  if (!env.PUSH_SECRET) return;
+  try {
+    await fetch('https://traffictorch.net/push-api/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${env.PUSH_SECRET}`,
+      },
+      body: JSON.stringify({ user_id: userId, type, title, body, url, tag, data }),
+    });
+  } catch (err) {
+    console.error('firePush error:', err.message);
+  }
+}
+
 // ============================================================
 // Notification helper
 // ============================================================
@@ -798,6 +1068,23 @@ async function createNotification(env, { userId, type, actorId, subjectType, sub
        VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)`
     ).bind(userId, type, actorId || null, subjectType || null, subjectId || null, message, link || null, Date.now()).run();
 
+        // Fan out to Web Push (fire-and-forget; honours notify_* prefs on the push worker too)
+    const pushType = type === 'comment' ? 'comment'
+                   : type === 'network' ? 'network'
+                   : type === 'leaderboard' ? 'leaderboard'
+                   : 'message';
+    await firePush(env, {
+      userId,
+      type: pushType,
+      title: pushType === 'comment' ? 'New comment on your torch'
+           : pushType === 'network' ? 'New network connection'
+           : pushType === 'leaderboard' ? 'Leaderboard update'
+           : 'Traffic Torch',
+      body: message,
+      url: link || '/dashboard/#profile',
+      tag: pushType + '-' + (subjectId || userId),
+    }); 
+    
     const count = await env.MY_BINDING.prepare('SELECT COUNT(*) AS c FROM notifications WHERE user_id = ?').bind(userId).first();
     if ((count?.c || 0) > 24) {
       await env.MY_BINDING.prepare(
@@ -812,8 +1099,191 @@ async function createNotification(env, { userId, type, actorId, subjectType, sub
 }
 
 // ============================================================
-// Feed + comments + notifications + points routes
+// Feature B — Discover: GET /api/users/discover
 // ============================================================
+async function handleDiscoverRoutes(request, env, url) {
+  if (url.pathname !== '/api/users/discover' || request.method !== 'GET') return null;
+
+  const user = await getUserFromToken(request, env);
+  if (!user) return feedJson({ error: 'Unauthorized' }, 401);
+
+  const seedMode = (url.searchParams.get('seed') || 'today').toLowerCase();
+  const limit    = Math.min(Math.max(parseInt(url.searchParams.get('limit')  || '24', 10) || 24, 1), 48);
+  const offset   = Math.max(parseInt(url.searchParams.get('offset') || '0', 10) || 0, 0);
+
+  const seed        = _discoverSeed(user.id, seedMode === 'fresh');
+  const activeSince = Date.now() - 30 * 86400 * 1000;
+  const viewerId    = user.id;
+
+  const sql = `
+    WITH exclude_ids AS (
+      SELECT ? AS id
+      UNION SELECT network_user_id FROM network WHERE user_id = ?
+      UNION SELECT user_id         FROM network WHERE network_user_id = ?
+      UNION SELECT blocked_user_id FROM blocks  WHERE user_id = ?
+      UNION SELECT user_id         FROM blocks  WHERE blocked_user_id = ?
+    ),
+    candidates AS (
+      SELECT
+        u.id,
+        u.username,
+        COALESCE(u.name, u.username)       AS display_name,
+        COALESCE(u.avatar_preset, 'owner') AS avatar_preset,
+        COALESCE(u.role, 'owner')          AS role,
+        COALESCE((SELECT SUM(points) FROM user_points WHERE user_id = u.id), 0) AS total_points,
+        COALESCE((SELECT COUNT(*) FROM posts WHERE user_id = u.id AND status = 'published'), 0) AS torch_count,
+        (SELECT MAX(created_at) FROM posts WHERE user_id = u.id AND status = 'published') AS last_post_at
+      FROM users u
+      WHERE u.profile_public = 1
+        AND u.username IS NOT NULL
+        AND u.id NOT IN (SELECT id FROM exclude_ids)
+    )
+    SELECT * FROM candidates
+    ORDER BY
+      CASE WHEN last_post_at > ? THEN 0 ELSE 1 END,
+      ((id * 2654435761 + ?) % 2147483647),
+      id
+    LIMIT ? OFFSET ?
+  `;
+
+  const rows = await env.MY_BINDING.prepare(sql).bind(
+    viewerId, viewerId, viewerId, viewerId, viewerId,
+    activeSince,
+    seed,
+    limit + 1,
+    offset
+  ).all();
+
+  const results = rows.results || [];
+  const hasMore = results.length > limit;
+  if (hasMore) results.pop();
+
+  return feedJson({
+    users: results,
+    seed: seedMode,
+    limit,
+    offset,
+    has_more: hasMore
+  });
+}
+
+// ============================================================
+// Feature C — Activity endpoints
+// ============================================================
+async function handleActivityRoutes(request, env, url) {
+  if (request.method !== 'GET') return null;
+  const path = url.pathname;
+  const isMe      = path === '/api/activity/me';
+  const isNetwork = path === '/api/activity/network';
+  const isUser    = path.startsWith('/api/activity/user/');
+  if (!isMe && !isNetwork && !isUser) return null;
+
+  const user = await getUserFromToken(request, env);
+  if (!user && !isUser) return feedJson({ error: 'Unauthorized' }, 401);
+
+  const type     = (url.searchParams.get('type')     || 'all').toLowerCase();
+  const category = (url.searchParams.get('category') || 'all').toLowerCase();
+  const tool     = (url.searchParams.get('tool')     || 'all').toLowerCase();
+  const time     = (url.searchParams.get('time')     || 'all').toLowerCase();
+  const cursor   = parseInt(url.searchParams.get('cursor') || '0', 10) || 0;
+  const limit    = Math.min(Math.max(parseInt(url.searchParams.get('limit') || '20', 10) || 20, 1), 50);
+
+  const now = Date.now();
+  let since = 0;
+  if (time === 'today') since = now - 24 * 3600 * 1000;
+  else if (time === 'week') since = now - 7 * 86400 * 1000;
+  else if (time === 'month') since = now - 30 * 86400 * 1000;
+
+  let userIds = [];
+  let scope = 'network';
+
+  if (isMe) {
+    userIds = [user.id];
+    scope = 'me';
+  } else if (isNetwork) {
+    scope = (url.searchParams.get('scope') || 'network').toLowerCase();
+    if (scope === 'everyone') {
+      const rows = await env.MY_BINDING.prepare(
+        `SELECT id FROM users WHERE profile_public = 1 AND activity_public = 1`
+      ).all();
+      const blockRows = await env.MY_BINDING.prepare(
+        `SELECT blocked_user_id AS x FROM blocks WHERE user_id = ?
+         UNION SELECT user_id AS x FROM blocks WHERE blocked_user_id = ?`
+      ).bind(user.id, user.id).all();
+      const blocked = new Set((blockRows.results || []).map(r => r.x));
+      userIds = (rows.results || []).map(r => r.id).filter(id => !blocked.has(id));
+    } else {
+      const net = await env.MY_BINDING.prepare(
+        `SELECT network_user_id FROM network WHERE user_id = ?`
+      ).bind(user.id).all();
+      userIds = [user.id, ...(net.results || []).map(r => r.network_user_id)];
+    }
+  } else {
+    const username = decodeURIComponent(path.replace('/api/activity/user/', '').replace(/\/$/, ''));
+    const target = await env.MY_BINDING.prepare(
+      'SELECT id, activity_public FROM users WHERE username = ?'
+    ).bind(username).first();
+    if (!target) return feedJson({ error: 'Not found' }, 404);
+       if (target.id !== (user?.id || 0) && target.activity_public === 0) {
+      return feedJson({ private: true, items: [], has_more: false, cursor: null });
+    }
+    userIds = [target.id];
+    scope = 'user';
+  }
+
+  if (!userIds.length) return feedJson({ items: [], has_more: false, cursor: null, scope });
+
+  const ph = userIds.map(() => '?').join(',');
+  const args = [...userIds];
+  let where = `a.user_id IN (${ph})`;
+  if (type !== 'all')     { where += ' AND a.event_type = ?'; args.push(type); }
+  if (category !== 'all') { where += ' AND a.category = ?';   args.push(category); }
+  if (tool !== 'all')     { where += ' AND a.tool = ?';       args.push(tool); }
+  if (since > 0)          { where += ' AND a.created_at > ?'; args.push(since); }
+  if (cursor > 0)         { where += ' AND a.created_at < ?'; args.push(cursor); }
+
+  const sql = `
+    SELECT a.id, a.user_id, a.event_type, a.category, a.tool,
+           a.target_id, a.target_label, a.link, a.created_at,
+           u.username,
+           COALESCE(u.name, u.username)       AS display_name,
+           COALESCE(u.avatar_preset, 'owner') AS avatar_preset,
+           tp.page_title         AS target_title,
+           tp.score              AS target_score,
+           tp.domain_mode        AS target_domain_mode,
+           tp.domain_label       AS target_domain_label,
+           tp.user_id            AS target_user_id,
+           tu.username           AS target_author_username,
+           COALESCE(tu.name, tu.username) AS target_author_name
+      FROM user_activity a
+      JOIN users u ON u.id = a.user_id
+      LEFT JOIN posts tp ON tp.id = a.target_id AND a.event_type IN ('torch', 'comment')
+      LEFT JOIN users tu ON tu.id = tp.user_id
+     WHERE ${where}
+     ORDER BY a.created_at DESC
+     LIMIT ?
+  `;
+  args.push(limit + 1);
+
+  const rows = await env.MY_BINDING.prepare(sql).bind(...args).all();
+  const items = rows.results || [];
+  let nextCursor = null;
+  if (items.length > limit) { items.pop(); nextCursor = items[items.length - 1].created_at; }
+
+  const viewerId = user?.id || 0;
+  items.forEach(item => {
+    item.is_your_target = !!(viewerId && item.target_user_id === viewerId && item.user_id !== viewerId);
+  });
+
+  return new Response(JSON.stringify({ items, cursor: nextCursor, has_more: !!nextCursor, scope }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json', ...FEED_CORS, 'Cache-Control': 'public, max-age=60' }
+  });
+}
+
+// ============================================================
+// Feed + comments + notifications + points routes
+// ===========================================================
 async function handleFeedRoutes(request, env, url) {
   const user = await getUserFromToken(request, env);
 
@@ -822,10 +1292,12 @@ async function handleFeedRoutes(request, env, url) {
     const category = url.searchParams.get('category');
     const cursor = parseInt(url.searchParams.get('cursor') || '0', 10) || 0;
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10) || 20, 30);
+    const toolFilter = url.searchParams.get('tool');
 
     const args = [];
     let where = "p.status = 'published'";
     if (CATEGORIES.includes(category)) { where += ' AND p.category = ?'; args.push(category); }
+    if (toolFilter) { where += ' AND p.tool = ?'; args.push(toolFilter); }
     if (cursor) { where += ' AND p.created_at < ?'; args.push(cursor); }
 
     if (user) {
@@ -905,7 +1377,26 @@ async function handleFeedRoutes(request, env, url) {
 
     const postId = ins.meta?.last_row_id || null;
     await awardPoints(env, { userId: user.id, type: 'post', points: POINTS_POST, referenceId: postId });
+    await logActivity(env, user.id, 'torch', {
+      category, tool,
+      targetId: postId,
+      targetLabel: pageTitle || tool,
+      link: `/torch/${postId}/`
+    });
     const total = await getUserTotalPoints(env, user.id);
+
+    if (postId) {
+      await purgeRenderWorker(env, [
+        `/torch/${postId}/`,
+        `/og/torch/${postId}.png`,
+        `/torcher/${user.username}/`,
+        `/torcher/${user.username}/feed.xml`,
+        '/community/',
+        '/torches/feed.xml',
+        '/sitemap-torches.xml',
+        '/sitemap-profiles.xml',
+      ]);
+    }
 
     return feedJson({ success: true, post_id: postId, total_points: total });
   }
@@ -928,6 +1419,16 @@ async function handleFeedRoutes(request, env, url) {
     if (!fields.length) return feedJson({ error: 'Nothing to update' }, 400);
     params.push(id);
     await env.MY_BINDING.prepare(`UPDATE posts SET ${fields.join(', ')} WHERE id = ?`).bind(...params).run();
+
+    const owner = await env.MY_BINDING.prepare('SELECT username FROM users WHERE id = ?').bind(user.id).first();
+    await purgeRenderWorker(env, [
+      `/torch/${id}/`,
+      `/og/torch/${id}.png`,
+      `/torcher/${owner?.username || user.username}/`,
+      '/community/',
+      '/torches/feed.xml',
+    ]);
+
     return feedJson({ success: true });
   }
 
@@ -938,6 +1439,16 @@ async function handleFeedRoutes(request, env, url) {
     const post = await env.MY_BINDING.prepare('SELECT user_id FROM posts WHERE id = ?').bind(id).first();
     if (!post || post.user_id !== user.id) return feedJson({ error: 'Not found' }, 404);
     await env.MY_BINDING.prepare("UPDATE posts SET status = 'removed' WHERE id = ?").bind(id).run();
+
+    await purgeRenderWorker(env, [
+      `/torch/${id}/`,
+      `/og/torch/${id}.png`,
+      `/torcher/${user.username}/`,
+      '/community/',
+      '/torches/feed.xml',
+      '/sitemap-torches.xml',
+    ]);
+
     return feedJson({ success: true });
   }
 
@@ -971,6 +1482,11 @@ async function handleFeedRoutes(request, env, url) {
     ).bind(id, user.id, text, 'published', now).run();
 
     await awardPoints(env, { userId: user.id, type: 'comment', points: POINTS_COMMENT, referenceId: ins.meta?.last_row_id || null });
+    await logActivity(env, user.id, 'comment', {
+      targetId: id,
+      targetLabel: text.slice(0, 60),
+      link: `/torch/${id}/`
+    });
     const total = await getUserTotalPoints(env, user.id);
 
     const postOwner = await env.MY_BINDING.prepare('SELECT user_id, page_title FROM posts WHERE id = ?').bind(id).first();
@@ -983,7 +1499,7 @@ async function handleFeedRoutes(request, env, url) {
         subjectType: 'post',
         subjectId: id,
         message: `${actorName} commented on your post: "${text.slice(0, 80)}${text.length > 80 ? '…' : ''}"`,
-        link: `/dashboard/#network`
+          link: `/torch/${id}/`
       });
     }
 
@@ -1063,6 +1579,11 @@ async function handleFeedRoutes(request, env, url) {
 
     const contributionId = ins.meta?.last_row_id || null;
     await awardPoints(env, { userId: user.id, type: 'contribution', points: POINTS_CONTRIBUTION, referenceId: contributionId });
+    await logActivity(env, user.id, 'contribution', {
+      targetId: contributionId,
+      targetLabel: subject || type,
+      link: '/contributions/'
+    });
 
     const total = await getUserTotalPoints(env, user.id);
     const countRow = await env.MY_BINDING.prepare(
@@ -1099,7 +1620,19 @@ async function handleFeedRoutes(request, env, url) {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     let body = {}; try { body = await request.json(); } catch {}
     const refId = body.reference_id ? parseInt(body.reference_id, 10) : null;
+    const beforeRank = await getUserLeaderboardRank(env, user.id);
     await awardPoints(env, { userId: user.id, type: 'leaderboard', points: POINTS_LEADERBOARD, referenceId: refId });
+    await logActivity(env, user.id, 'leaderboard', {
+      targetLabel: refId ? `entry #${refId}` : 'leaderboard',
+      link: '/leader-board/'
+    });
+    const afterRank = await getUserLeaderboardRank(env, user.id);
+    if (beforeRank && afterRank && beforeRank !== afterRank) {
+      await logActivity(env, user.id, 'rank_change', {
+        targetLabel: `#${beforeRank} → #${afterRank}`,
+        link: '/leader-board/'
+      });
+    }
     const total = await getUserTotalPoints(env, user.id);
     return feedJson({ success: true, total_points: total });
   }
@@ -1168,6 +1701,10 @@ async function handleNewRoutes(request, env, url) {
   const isNew =
     p === '/api/profile/me' ||
     p.startsWith('/api/torcher/') ||
+    /^\/api\/torch\/\d+$/.test(p) ||
+    p === '/api/sitemap/static' ||
+    p === '/api/sitemap/profiles' ||
+    p === '/api/sitemap/torches' ||
     p.startsWith('/api/network/') ||
     p === '/api/feed' ||
     p === '/api/posts' ||
@@ -1181,6 +1718,10 @@ async function handleNewRoutes(request, env, url) {
     p === '/api/notifications/read' ||
     p === '/api/notifications/clear' ||
     p === '/api/users/search' ||
+    p === '/api/users/discover' ||
+    p === '/api/activity/me' ||
+    p === '/api/activity/network' ||
+    p.startsWith('/api/activity/user/') ||
     p === '/api/user-points/me' ||
     p === '/api/user-points/leaderboard-award' ||
     /^\/api\/notifications\/\d+$/.test(p);
@@ -1190,13 +1731,17 @@ async function handleNewRoutes(request, env, url) {
 
   try {
     return (await handleProfileRoutes(request, env, url))
+        || (await handleTorchRoutes(request, env, url))
+        || (await handleDiscoverRoutes(request, env, url))
+        || (await handleActivityRoutes(request, env, url))
         || (await handleNetworkRoutes(request, env, url))
-        || (await handleFeedRoutes(request, env, url));
+        || (await handleFeedRoutes(request, env, url))
+        || (await handleSitemapRoutes(request, env, url));
   } catch (err) {
     console.error('handleNewRoutes error:', err.message, err.stack);
     return feedJson({ error: 'Server error: ' + err.message }, 500);
   }
-}
+} 
 
 // ============================================================
 // Main export
@@ -1809,9 +2354,22 @@ export default {
             'DELETE FROM audit_history WHERE user_id = ? AND id = (SELECT id FROM audit_history WHERE user_id = ? ORDER BY timestamp ASC LIMIT 1)'
           ).bind(userId, userId).run();
         }
+
+        const prevAudit = await env.MY_BINDING.prepare(
+          'SELECT score FROM audit_history WHERE user_id = ? AND url = ? AND tool_name = ? AND score IS NOT NULL ORDER BY timestamp DESC LIMIT 1'
+        ).bind(userId, auditUrl, tool_name).first();
+        const newScore = (score !== undefined && score !== null) ? parseInt(score, 10) : null;
+        if (prevAudit && newScore !== null && prevAudit.score !== null && newScore > prevAudit.score) {
+          await logActivity(env, userId, 'score_up', {
+            tool: tool_name,
+            targetLabel: `${prevAudit.score} → ${newScore}`,
+            link: '#'
+          });
+        }
+
         const result = await env.MY_BINDING.prepare(
           'INSERT INTO audit_history (user_id, url, tool_name, score, timestamp) VALUES (?, ?, ?, ?, ?) RETURNING id'
-        ).bind(userId, auditUrl, tool_name, score !== undefined ? score : null, now).first();
+        ).bind(userId, auditUrl, tool_name, newScore, now).first();
         return corsResponse(JSON.stringify({ id: result.id }));
       }
 
@@ -1998,6 +2556,13 @@ export default {
         });
         if (!resendRes.ok) return corsResponse(JSON.stringify({ success: false, error: await resendRes.text() }), 500);
         return corsResponse(JSON.stringify({ success: true }));
+      }
+      
+     if (url.pathname.startsWith('/api/messages/')) {
+        return handleMessageRoutes(request, env, url, { verifyJWT, createNotification, getUserFromToken });
+      }
+      if (url.pathname === '/api/internal/cleanup-messages') {
+        return handleCleanupMessages(request, env);
       }
 
       return corsResponse('Not found', 404);

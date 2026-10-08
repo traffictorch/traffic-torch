@@ -64,4 +64,4 @@ Desktop.ini
 workers/.cache/
 workers/.config/
 workers/.npm-cache/
-workers/.wrangler/
+workers/.wrangler/backup-*.sql

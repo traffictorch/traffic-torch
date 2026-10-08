@@ -2,6 +2,9 @@
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
+// Messages module — self-injecting, works on every page. No-op when logged out.
+import('/messages.js?v=1').catch(() => {});
+
 // Day Night Mode
 document.addEventListener('DOMContentLoaded', () => {
   const html = document.documentElement;

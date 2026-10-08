@@ -1,0 +1,19 @@
+name = "traffic-torch-auth"
+main = "src/index.js"
+compatibility_date = "2026-10-07"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "MY_BINDING"
+database_name = "traffic-torch-db"
+database_id = "d5c9fa6f-178f-4a5b-ae07-eebd161c6371"
+
+[observability]
+enabled = true
+
+# ⚠️ Do NOT add [vars] for secrets — use `wrangler secret put` for JWT_SECRET, PURGE_SECRET, STRIPE_*, etc.
+# Check the dashboard Settings → Variables for anything you need to re-add as a secret.
+
+[[r2_buckets]]
+binding = "ATTACHMENTS"
+bucket_name = "tt-message-attachments"
