@@ -1,6 +1,5 @@
 // Traffic Torch — Send Message button on /torcher/:username/
-// Uses native <dialog> + showModal() so the popup always centers on the viewport,
-// regardless of ancestor transforms/filters/containing blocks.
+// Uses native <dialog> + showModal() so the popup always centers on the viewport.
 (function () {
   const API = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
@@ -22,7 +21,7 @@
         inset: 0; margin: auto;
         width: fit-content; height: fit-content;
       }
-            dialog#tt-compose-modal::backdrop { background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); }
+      dialog#tt-compose-modal::backdrop { background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); }
       dialog#tt-compose-modal .tt-card { animation: tt-dlg-in 0.18s ease-out; }
       @keyframes tt-dlg-in { from { opacity:0; transform:translateY(8px) scale(0.98); } to { opacity:1; transform:none; } }
     `;
@@ -70,9 +69,13 @@
         style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;
                border:1px solid ${inputBd};background:${inputBg};color:${fg};
                font-family:inherit;font-size:14px;resize:vertical;outline:none;"></textarea>
-      <p style="font-size:12px;color:#9ca3af;text-align:right;margin:6px 0 16px;">
-        <span data-tt-count>0</span> / 2000
-      </p>
+      <div data-tt-attachments style="margin:8px 0;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0 16px;font-size:12px;color:#9ca3af;">
+        <label style="cursor:pointer;padding:4px 8px;border-radius:6px;border:1px solid ${inputBd};color:${fg};">
+          📎 Attach<input data-tt-file type="file" style="display:none;" accept="image/jpeg,image/png,image/gif,image/webp,application/pdf">
+        </label>
+        <span><span data-tt-count>0</span> / 2000</span>
+      </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;">
         <button type="button" data-tt-cancel
           style="padding:10px 20px;border-radius:10px;border:1px solid ${inputBd};
@@ -94,17 +97,52 @@
     const cancel = dlg.querySelector('[data-tt-cancel]');
     const close = dlg.querySelector('[data-tt-close]');
     const err = dlg.querySelector('[data-tt-error]');
+    const fileInput = dlg.querySelector('[data-tt-file]');
+    const attachWrap = dlg.querySelector('[data-tt-attachments]');
+    const uploads = [];
 
     body.addEventListener('input', () => { count.textContent = body.value.length; });
+
+    function renderAttachments() {
+      attachWrap.innerHTML = uploads.map((a, i) =>
+        `<div style="display:flex;justify-content:space-between;font-size:12px;padding:2px 0;">
+          <span>📎 ${esc(a.filename)}</span>
+          <button type="button" data-tt-rm="${i}" style="background:none;border:none;color:#ef4444;cursor:pointer;font-family:inherit;">×</button>
+        </div>`
+      ).join('');
+      attachWrap.querySelectorAll('[data-tt-rm]').forEach(b => b.addEventListener('click', () => {
+        uploads.splice(parseInt(b.getAttribute('data-tt-rm')), 1);
+        renderAttachments();
+      }));
+    }
+
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files?.[0];
+      fileInput.value = '';
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { err.textContent = 'Max 5 MB'; return; }
+      if (uploads.length >= 3) { err.textContent = 'Max 3 files'; return; }
+      const fd = new FormData(); fd.append('file', file);
+      try {
+        const r = await fetch(`${API}/api/messages/upload`, {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + getToken() },
+          body: fd
+        });
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.error || 'Upload failed');
+        uploads.push(d);
+        renderAttachments();
+        err.textContent = '';
+      } catch (e) { err.textContent = e.message; }
+    });
 
     const dismiss = () => {
       try { dlg.close(); } catch {}
       dlg.remove();
     };
 
-    // Native <dialog> fires 'cancel' on Esc — treat as dismiss
     dlg.addEventListener('cancel', (e) => { e.preventDefault(); dismiss(); });
-    // Click on ::backdrop = click on the dialog element itself (outside card)
     dlg.addEventListener('click', (e) => { if (e.target === dlg) dismiss(); });
 
     cancel.addEventListener('click', dismiss);
@@ -121,7 +159,7 @@
         const r = await fetch(`${API}/api/messages/send`, {
           method: 'POST',
           headers: { Authorization: 'Bearer ' + getToken(), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ to_user_id: recipient.id, body: text })
+          body: JSON.stringify({ to_user_id: recipient.id, body: text, attachment_keys: uploads.map(a => a.key) })
         });
         const d = await r.json();
         if (!r.ok) throw new Error(d.error || 'Send failed');
@@ -134,7 +172,6 @@
       }
     });
 
-    // Focus textarea after dialog is in top layer
     requestAnimationFrame(() => body.focus());
   }
 

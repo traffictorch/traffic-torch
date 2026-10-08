@@ -38,15 +38,14 @@
     return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   };
   const avatarFor = u => `/images/avatars/${(u && u.avatar_preset) || 'owner'}.svg`;
-  const esc0 = s => String(s ?? '');
 
   // ---------- state ----------
   let me = null;
   let unreadCount = 0;
   let threads = [];
-  let activeThread = null;   // { peer, messages, hasMore, cursor, muted }
-  let composeTo = null;      // peer for compose (used in both drawer & standalone)
+  let activeThread = null;
   let pollTimer = null;
+  let newMsgTimer = null;
 
   // ---------- API ----------
   async function api(path, opts = {}) {
@@ -65,7 +64,7 @@
   async function refreshUnread() {
     if (!isAuthed()) { unreadCount = 0; paintBadges(); return; }
     try { const d = await api('/api/messages/unread-count'); unreadCount = d.count || 0; }
-    catch { /* offline is fine */ }
+    catch {}
     paintBadges();
   }
 
@@ -101,7 +100,6 @@
   }
 
   function injectIntoMenus() {
-    // Desktop sidebar — inject as top-level item, right after the Portal group
     const dph = document.getElementById('desktop-menu-placeholder');
     if (dph && !dph.querySelector('[data-tt-open-inbox]')) {
       const nav = dph.querySelector('nav') || dph;
@@ -116,7 +114,6 @@
       }
       node.addEventListener('click', () => openInbox());
     }
-    // Mobile menu — inject as the very first item
     const mph = document.getElementById('mobile-menu-placeholder');
     if (mph && !mph.querySelector('[data-tt-open-inbox]')) {
       const nav = mph.querySelector('nav') || mph;
@@ -125,7 +122,6 @@
       const node = wrapper.firstElementChild;
       nav.insertBefore(node, nav.firstChild);
       node.addEventListener('click', () => {
-        // Close mobile menu first
         const mm = document.getElementById('mobileMenu');
         if (mm) mm.classList.add('hidden');
         document.body.classList.remove('overflow-hidden');
@@ -142,13 +138,8 @@
       const mph = document.getElementById('mobile-menu-placeholder');
       const dReady = dph && dph.innerHTML.trim().length > 0;
       const mReady = mph && mph.innerHTML.trim().length > 0;
-      if ((dReady || mReady) && dph === null ? mReady : (dReady && mReady)) {
-        clearInterval(iv); cb();
-      } else if (dReady || mReady) {
-        clearInterval(iv); cb();
-      } else if (Date.now() - start > 8000) {
-        clearInterval(iv); cb();
-      }
+      if (dReady || mReady) { clearInterval(iv); cb(); }
+      else if (Date.now() - start > 8000) { clearInterval(iv); cb(); }
     }, 100);
   }
 
@@ -165,20 +156,10 @@
       <aside id="tt-msg-panel" role="dialog" aria-label="Messages" style="display:none;position:fixed;top:0;right:0;bottom:0;width:100%;max-width:420px;z-index:99999;display:none;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,0.3);transform:translateX(100%);transition:transform 0.22s ease-out, background 0.2s;"></aside>
     `;
     document.body.appendChild(root);
-
     document.getElementById('tt-msg-overlay').addEventListener('click', closeInbox);
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && document.getElementById('tt-msg-panel').style.display !== 'none') closeInbox();
     });
-  }
-
-  function panelStyle() {
-    return `background:${T('#111827','#ffffff')};color:${T('#f3f4f6','#111827')};`;
-  }
-
-  function renderPanel() {
-    const panel = document.getElementById('tt-msg-panel');
-    panel.setAttribute('style', panel.getAttribute('style').replace(/background:[^;]+;color:[^;]+;/, '') + panelStyle());
   }
 
   function openInbox() {
@@ -279,11 +260,18 @@
         ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">` + m.reactions.map(r =>
             `<button data-tt-react="${m.id}" data-tt-emoji="${esc(r.emoji)}" style="padding:2px 8px;font-size:11px;border-radius:9999px;border:1px solid ${r.mine ? 'rgba(255,255,255,0.7)' : 'transparent'};background:rgba(0,0,0,0.15);color:inherit;cursor:pointer;font-family:inherit;">${esc(r.emoji)} ${r.count}</button>`
           ).join('') + `</div>` : '';
+      const replyIndicator = m.reply_to_id
+        ? `<div style="font-size:10px;opacity:0.7;margin-bottom:4px;border-left:2px solid currentColor;padding-left:6px;">↩ reply</div>`
+        : '';
       listHTML += `<div style="display:flex;justify-content:${mine ? 'flex-end' : 'flex-start'};">
         <div style="max-width:80%;background:${bubbleBg};color:${bubbleFg};padding:8px 12px;border-radius:16px;${mine ? 'border-bottom-right-radius:4px;' : 'border-bottom-left-radius:4px;'}">
+          ${replyIndicator}
           <div style="font-size:14px;white-space:pre-wrap;word-break:break-word;">${esc(m.body)}</div>
           ${attachments}
           ${reactions}
+          <div style="position:relative;margin-top:4px;">
+            <button data-tt-picker="${m.id}" style="background:none;border:none;color:inherit;opacity:0.6;cursor:pointer;font-size:12px;padding:2px 4px;font-family:inherit;">+😀</button>
+          </div>
           <div style="display:flex;gap:8px;align-items:center;margin-top:6px;font-size:10px;opacity:0.7;">
             <span>${relTime(m.created_at)}</span>
             ${mine && m.is_read ? '<span>✓</span>' : ''}
@@ -294,9 +282,19 @@
       </div>`;
     });
 
+    let replyQuote = '';
+    if (th.reply_to_id) {
+      const parent = (th.messages || []).find(x => x.id === th.reply_to_id);
+      const preview = parent ? (parent.body || '').slice(0, 80) : '(message)';
+      replyQuote = `<div style="font-size:11px;color:${T('#9ca3af','#6b7280')};margin-bottom:6px;padding:6px 8px;background:${T('#1f2937','#f3f4f6')};border-left:3px solid #f97316;border-radius:4px;display:flex;justify-content:space-between;gap:8px;">
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><strong>Replying:</strong> ${esc(preview)}</span>
+        <button data-tt-cancel-reply style="background:none;border:none;color:#f97316;cursor:pointer;font-family:inherit;font-size:11px;flex-shrink:0;">Cancel</button>
+      </div>`;
+    }
+
     const composeBar = `
       <div style="border-top:1px solid ${T('#374151','#e5e7eb')};padding:12px;">
-        ${th.reply_to_id ? `<div style="font-size:11px;color:${T('#9ca3af','#6b7280')};margin-bottom:6px;display:flex;justify-content:space-between;"><span>Replying</span><button data-tt-cancel-reply style="background:none;border:none;color:#f97316;cursor:pointer;font-family:inherit;font-size:11px;">Cancel</button></div>` : ''}
+        ${replyQuote}
         ${th.attachments && th.attachments.length ? th.attachments.map(a => `<div style="font-size:12px;margin-bottom:6px;">📎 ${esc(a.filename)} <button data-tt-remove-att="${esc(a.key)}" style="background:none;border:none;color:#ef4444;cursor:pointer;font-family:inherit;">×</button></div>`).join('') : ''}
         <div style="display:flex;gap:8px;align-items:flex-end;">
           <label style="cursor:pointer;padding:8px;border-radius:8px;background:${T('#1f2937','#f3f4f6')};color:inherit;font-size:16px;">
@@ -314,6 +312,38 @@
   }
 
   function truncate(s, n) { s = String(s || ''); return s.length > n ? s.slice(0, n) + '…' : s; }
+
+  function showEmojiPicker(anchor, messageId) {
+    const existing = document.getElementById('tt-emoji-picker');
+    if (existing) existing.remove();
+    const picker = document.createElement('div');
+    picker.id = 'tt-emoji-picker';
+    const dark = document.documentElement.classList.contains('dark');
+    picker.style.cssText = `position:fixed;background:${dark ? '#1f2937' : '#ffffff'};border:1px solid ${dark ? '#374151' : '#e5e7eb'};border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.25);padding:6px;display:flex;gap:4px;z-index:2147483647;`;
+    EMOJI.forEach(em => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = em;
+      btn.style.cssText = `background:none;border:none;font-size:22px;cursor:pointer;padding:4px 6px;border-radius:6px;font-family:inherit;`;
+      btn.addEventListener('mouseenter', () => { btn.style.background = dark ? '#374151' : '#f3f4f6'; });
+      btn.addEventListener('mouseleave', () => { btn.style.background = 'none'; });
+      btn.addEventListener('click', async () => {
+        picker.remove();
+        await toggleReaction(messageId, em);
+      });
+      picker.appendChild(btn);
+    });
+    const r = anchor.getBoundingClientRect();
+    picker.style.top = Math.max(8, r.top - 52) + 'px';
+    picker.style.left = Math.min(r.left, window.innerWidth - 260) + 'px';
+    document.documentElement.appendChild(picker);
+    setTimeout(() => {
+      const close = (ev) => {
+        if (!picker.contains(ev.target)) { picker.remove(); document.removeEventListener('click', close); }
+      };
+      document.addEventListener('click', close);
+    }, 10);
+  }
 
   function wireThreadList(panel) {
     panel.querySelector('[data-tt-close]').addEventListener('click', closeInbox);
@@ -342,6 +372,13 @@
     panel.querySelectorAll('[data-tt-react]').forEach(b => b.addEventListener('click', () => {
       toggleReaction(parseInt(b.getAttribute('data-tt-react')), b.getAttribute('data-tt-emoji'));
     }));
+    panel.querySelectorAll('[data-tt-picker]').forEach(b => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const msgId = parseInt(b.getAttribute('data-tt-picker'));
+        showEmojiPicker(b, msgId);
+      });
+    });
     const cancelReply = panel.querySelector('[data-tt-cancel-reply]');
     if (cancelReply) cancelReply.addEventListener('click', () => { activeThread.reply_to_id = null; renderPanelContent(); });
     panel.querySelectorAll('[data-tt-remove-att]').forEach(b => b.addEventListener('click', () => {
@@ -359,7 +396,6 @@
       });
       input.focus();
     }
-    // Scroll to bottom
     const body = panel.querySelector('[data-tt-thread-body]');
     if (body) requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
   }
@@ -483,6 +519,58 @@
     } catch (e) { alert(e.message); }
   }
 
+  // ---------- toast (new inbound message) ----------
+  function showToast(peer, msg) {
+    const existing = document.getElementById('tt-msg-toast');
+    if (existing) existing.remove();
+    const dark = document.documentElement.classList.contains('dark');
+    const el = document.createElement('div');
+    el.id = 'tt-msg-toast';
+    el.style.cssText = `position:fixed;bottom:24px;right:24px;width:380px;max-width:calc(100vw - 32px);
+      background:${dark ? 'rgba(17,24,39,0.95)' : 'rgba(255,255,255,0.98)'};
+      color:${dark ? '#f3f4f6' : '#111827'};
+      border:1px solid ${dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'};
+      border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;
+      box-shadow:0 20px 50px rgba(0,0,0,0.35);backdrop-filter:blur(14px);
+      z-index:2147483647;font-family:inherit;opacity:0;transform:translateY(12px);
+      transition:opacity 0.2s,transform 0.2s;`;
+    el.innerHTML = `
+      <img src="${avatarFor(peer)}" width="40" height="40" style="width:40px;height:40px;border-radius:50%;flex-shrink:0;object-fit:cover;" alt="">
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(peer.display_name || peer.username)}</div>
+        <div style="font-size:13px;opacity:0.75;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;">${esc((msg.body || '').slice(0, 80))}</div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button data-tt-toast-view style="padding:4px 12px;border-radius:6px;border:none;background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;font-weight:700;cursor:pointer;font-size:12px;font-family:inherit;">View</button>
+          <button data-tt-toast-close style="padding:4px 8px;border-radius:6px;border:none;background:transparent;color:inherit;opacity:0.6;cursor:pointer;font-size:12px;font-family:inherit;">×</button>
+        </div>
+      </div>`;
+    document.documentElement.appendChild(el);
+    requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
+    el.querySelector('[data-tt-toast-view]').addEventListener('click', () => { el.remove(); openThread(peer); });
+    el.querySelector('[data-tt-toast-close]').addEventListener('click', () => el.remove());
+    setTimeout(() => el.remove(), 8000);
+  }
+
+  // ---------- poll for new inbound messages ----------
+  async function pollForNew() {
+    if (!isAuthed()) return;
+    const panel = document.getElementById('tt-msg-panel');
+    if (panel && panel.style.display === 'flex') return; // don't toast while drawer is open
+    try {
+      const d = await api('/api/messages/unread-count');
+      const c = d.count || 0;
+      if (c > unreadCount) {
+        const inbox = await api('/api/messages/inbox?limit=1');
+        const t = (inbox.threads || [])[0];
+        if (t && t.last_message) {
+          showToast(t.peer, t.last_message);
+        }
+      }
+      unreadCount = c;
+      paintBadges();
+    } catch {}
+  }
+
   // ---------- init ----------
   async function init() {
     if (!isAuthed()) return;
@@ -493,9 +581,10 @@
     document.addEventListener('loginStatusChanged', async () => { await refreshUnread(); waitForMenus(injectIntoMenus); });
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(refreshUnread, 60000);
+    if (newMsgTimer) clearInterval(newMsgTimer);
+    newMsgTimer = setInterval(pollForNew, 30000);
   }
 
-  // Watch for menu re-injection (e.g., after theme change or nav)
   const mo = new MutationObserver(() => {
     if (!isAuthed()) return;
     const dph = document.getElementById('desktop-menu-placeholder');
