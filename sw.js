@@ -14,6 +14,7 @@ self.addEventListener('message', (event) => {
 });
 
 const BYPASS = [
+  'traffic-torch-auth.traffictorch.workers.dev',
   'traffictorch.workers.dev',
   'static.cloudflareinsights.com',
   'stripe.network',

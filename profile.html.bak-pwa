@@ -64,25 +64,6 @@
     .tab-btn.active { background: linear-gradient(135deg, #f97316, #ec4899); color: #fff; }
   </style>
 <link rel="alternate" type="application/rss+xml" title="Traffic Torch — all torches" href="/torches/feed.xml">
-  <!-- PWA + Icons + Colour scheme -->
-  <meta name="color-scheme" content="dark light">
-  <link rel="icon" href="/favicon.ico">
-  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
-  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
-  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
-  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
-  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
-  <meta name="apple-mobile-web-app-title" content="Torch">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="manifest" href="/manifest.json">
-
-  <!-- Perf: preconnect critical origins -->
-  <link rel="preconnect" href="https://traffic-torch-auth.traffictorch.workers.dev" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link rel="preconnect" href="https://static.cloudflareinsights.com">
-  <link rel="dns-prefetch" href="https://js.stripe.com">
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
