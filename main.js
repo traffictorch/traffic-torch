@@ -113,6 +113,21 @@ function isIOS() {
          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 }
 
+window.triggerPWAInstall = () => {
+  const btn = document.getElementById('pwa-install-btn');
+  if (isIOS()) {
+    showIOSInstallInstructions();
+  } else if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      btn?.remove();
+    });
+  } else {
+    alert('Installation ready! Check your browser menu (usually in address bar) for Install option.');
+  }
+};
+
 function createInstallButton() {
   if (isInStandaloneMode()) return;
   document.querySelectorAll('#pwa-install-btn').forEach(el => el.remove());
@@ -132,19 +147,7 @@ function createInstallButton() {
   btn.style.zIndex = '9999';
   btn.style.transform = 'translate3d(0,0,0)';
   btn.style.willChange = 'transform';
-  btn.addEventListener('click', () => {
-    if (isIOS()) {
-      showIOSInstallInstructions();
-    } else if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        deferredPrompt = null;
-        btn.remove();
-      });
-    } else {
-      alert('Installation ready! Check your browser menu (usually in address bar) for Install option.');
-    }
-  });
+btn.addEventListener('click', () => window.triggerPWAInstall());
   document.documentElement.appendChild(btn);
 }
 
