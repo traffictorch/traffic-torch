@@ -680,6 +680,7 @@ async function handleProfileRoutes(request, env, url) {
     if (body.notify_comments !== undefined) { fields.push('notify_comments = ?'); params.push(body.notify_comments ? 1 : 0); }
     if (body.notify_network !== undefined) { fields.push('notify_network = ?'); params.push(body.notify_network ? 1 : 0); }
     if (body.notify_leaderboard !== undefined) { fields.push('notify_leaderboard = ?'); params.push(body.notify_leaderboard ? 1 : 0); }
+    if (body.notify_messages !== undefined) { fields.push('notify_messages = ?'); params.push(body.notify_messages ? 1 : 0); }  
     if (body.notify_messages !== undefined) { fields.push('notify_messages = ?'); params.push(body.notify_messages ? 1 : 0); }
     if (body.activity_public !== undefined) { fields.push('activity_public = ?'); params.push(body.activity_public ? 1 : 0); }
 
