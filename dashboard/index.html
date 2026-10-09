@@ -240,9 +240,10 @@
                   <div class="px-6 pb-6 -mt-14 relative">
 
                     <div class="flex flex-col sm:flex-row sm:items-end gap-5">
-                      <img :src="avatarSrc(profile)"
-                           :alt="profile.display_name"
-                           width="128" height="128" style="width:128px;height:128px;"
+                        <img src="/images/avatars/owner.svg"
+                             :src="avatarSrc(profile)"
+                             :alt="profile.display_name"
+                             width="72" height="72" style="width:72px;height:72px;"
                            class="rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                       <div class="flex-1 min-w-0 sm:pb-2">
                         <h1 class="text-3xl font-black truncate flex items-center gap-3 flex-wrap">
@@ -351,10 +352,11 @@
                     <div>
                       <label class="block text-sm font-medium mb-2">Or upload a custom photo</label>
                       <div class="flex items-center gap-4 flex-wrap">
-                        <img :src="avatarSrc(profile)"
-                             :alt="profile.display_name"
-                             width="72" height="72" style="width:72px;height:72px;"
-                             class="rounded-full object-cover border-2 border-gray-200 dark:border-gray-700" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                      <img src="/images/avatars/owner.svg"
+                           :src="avatarSrc(profile)"
+                           :alt="profile.display_name"
+                           width="128" height="128" style="width:128px;height:128px;"
+                           class="rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                         <div class="flex flex-col gap-2">
                           <label class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg cursor-pointer hover:opacity-90 transition text-sm">
                             <span x-show="!avatarUploading">Choose image</span>
