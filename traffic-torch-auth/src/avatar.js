@@ -134,7 +134,7 @@ async function handleGet(env, userId) {
     return new Response(null, {
       status: 302,
       headers: {
-        'Location': `/images/avatars/${fallbackPreset}.svg`,
+        'Location': `https://traffictorch.net/images/avatars/${fallbackPreset}.svg`,
         'Cache-Control': 'public, max-age=300',
         'Access-Control-Allow-Origin': '*',
       },
@@ -147,7 +147,7 @@ async function handleGet(env, userId) {
     return new Response(null, {
       status: 302,
       headers: {
-        'Location': `/images/avatars/${fallbackPreset}.svg`,
+        'Location': `https://traffictorch.net/images/avatars/${fallbackPreset}.svg`,
         'Cache-Control': 'public, max-age=60',
         'Access-Control-Allow-Origin': '*',
       },

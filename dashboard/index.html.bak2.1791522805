@@ -2497,6 +2497,61 @@ function dashboardApp() {
       username: '',
       display_name: '',
       avatar_preset: 'owner',
+
+    avatarUploading: false,
+    avatarError: null,
+    avatarSrc(o) {
+      if (!o) return '/images/avatars/owner.svg';
+      if (typeof o === 'string') return '/images/avatars/' + o + '.svg';
+      if (o.avatar_url) return o.avatar_url;
+      const uid = o.id != null ? o.id : o.user_id;
+      if (uid) return '/api/profile/avatar/' + uid;
+      return '/images/avatars/' + (o.avatar_preset || 'owner') + '.svg';
+    },
+    async uploadAvatar(ev) {
+      const input = ev.target;
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (!file) return;
+      this.avatarError = null;
+      if (!['image/jpeg','image/png','image/webp'].includes(file.type)) {
+        this.avatarError = 'Only JPEG, PNG or WebP.'; return;
+      }
+      if (file.size > 2 * 1024 * 1024) { this.avatarError = 'Max 2 MB.'; return; }
+      this.avatarUploading = true;
+      try {
+        const blob = await processAvatarFile(file);
+        const fd = new FormData();
+        fd.append('file', blob, 'avatar.' + (blob.type === 'image/webp' ? 'webp' : 'jpg'));
+        const res = await fetch(API_BASE + '/api/profile/avatar', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') },
+          body: fd
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        this.profile.avatar_r2_key = data.avatar_r2_key;
+        this.profile.avatar_updated_at = data.avatar_updated_at;
+        this.profile.avatar_url = data.avatar_url;
+      } catch (e) {
+        this.avatarError = e.message;
+      } finally {
+        this.avatarUploading = false;
+      }
+    },
+    async removeAvatar() {
+      if (!confirm('Remove custom photo and go back to the preset avatar?')) return;
+      try {
+        const res = await fetch(API_BASE + '/api/profile/avatar', {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        if (!res.ok) throw new Error('Delete failed');
+        this.profile.avatar_r2_key = null;
+        this.profile.avatar_updated_at = null;
+        this.profile.avatar_url = null;
+      } catch (e) { alert(e.message); }
+    },
       role: 'owner',
       bio: '',
       website_url: '',
@@ -4316,75 +4371,6 @@ function dashboardApp() {
 }
 
 window.dashboardApp = dashboardApp;
-
-// ---- avatar helpers (installed by patch) ----
-(function(){
-  window.__avatarHelpersInstalled = true;
-  const _orig = window.dashboardApp;
-  window.dashboardApp = function() {
-    const obj = _orig.apply(this, arguments);
-
-    obj.avatarUploading = false;
-    obj.avatarError = null;
-
-    // ONLY use the API endpoint when the server explicitly says a custom avatar exists.
-    // Never guess from user id — that caused the white-circle bug (302 to wrong origin).
-    obj.avatarSrc = function(o) {
-      if (!o) return '/images/avatars/owner.svg';
-      if (typeof o === 'string') return '/images/avatars/' + o + '.svg';
-      if (o.avatar_url) return o.avatar_url;
-      return '/images/avatars/' + (o.avatar_preset || 'owner') + '.svg';
-    };
-
-    obj.uploadAvatar = async function(ev) {
-      const input = ev.target;
-      const file = input.files && input.files[0];
-      input.value = '';
-      if (!file) return;
-      this.avatarError = null;
-      if (!['image/jpeg','image/png','image/webp'].includes(file.type)) {
-        this.avatarError = 'Only JPEG, PNG or WebP.'; return;
-      }
-      if (file.size > 2 * 1024 * 1024) { this.avatarError = 'Max 2 MB.'; return; }
-      this.avatarUploading = true;
-      try {
-        const blob = await processAvatarFile(file);
-        const fd = new FormData();
-        fd.append('file', blob, 'avatar.' + (blob.type === 'image/webp' ? 'webp' : 'jpg'));
-        const res = await fetch(API_BASE + '/api/profile/avatar', {
-          method: 'POST',
-          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') },
-          body: fd
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Upload failed');
-        this.profile.avatar_r2_key = data.avatar_r2_key;
-        this.profile.avatar_updated_at = data.avatar_updated_at;
-        this.profile.avatar_url = data.avatar_url;
-      } catch (e) {
-        this.avatarError = e.message;
-      } finally {
-        this.avatarUploading = false;
-      }
-    };
-
-    obj.removeAvatar = async function() {
-      if (!confirm('Remove custom photo and go back to the preset avatar?')) return;
-      try {
-        const res = await fetch(API_BASE + '/api/profile/avatar', {
-          method: 'DELETE',
-          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
-        });
-        if (!res.ok) throw new Error('Delete failed');
-        this.profile.avatar_r2_key = null;
-        this.profile.avatar_updated_at = null;
-        this.profile.avatar_url = null;
-      } catch (e) { alert(e.message); }
-    };
-
-    return obj;
-  };
-})();
 
 (function() {
   const params = new URLSearchParams(window.location.search);
