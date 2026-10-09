@@ -82,7 +82,7 @@ function renderComments() {
     <div class="space-y-3" x-show="!commentsLoading">
       <template x-for="c in comments" :key="c.id">
         <div class="flex gap-3 items-start">
-          <img :src="'/images/avatars/' + (c.avatar_preset || 'owner') + '.svg'" width="36" height="36" style="width:36px;height:36px;" class="rounded-full flex-shrink-0 object-cover" alt="">
+          <img :src="(c.avatar_url || '/images/avatars/' + (c.avatar_preset || 'owner') + '.svg')" width="36" height="36" style="width:36px;height:36px;" class="rounded-full flex-shrink-0 object-cover" alt="">
           <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
             <div class="flex items-baseline gap-2 flex-wrap">
               <a :href="'/torcher/' + (c.username || '') + '/'" class="text-xs font-bold hover:text-orange-500" x-text="c.display_name || c.username"></a>
@@ -103,7 +103,7 @@ function renderComments() {
       <a href="/login/" class="text-orange-500 hover:underline">Log in</a> to comment.
     </div>
     <div x-show="isAuthenticated" class="mt-5 flex gap-2 items-start">
-      <img :src="'/images/avatars/' + (myAvatar || 'owner') + '.svg'" width="36" height="36" style="width:36px;height:36px;" class="rounded-full flex-shrink-0 object-cover" alt="">
+      <img :src="(window.__ttProfile && window.__ttProfile.avatar_url) || ('/images/avatars/' + (myAvatar || 'owner') + '.svg')" width="36" height="36" style="width:36px;height:36px;" class="rounded-full flex-shrink-0 object-cover" alt="">
       <div class="flex-1 flex gap-2">
         <input type="text" maxlength="360" x-model="draft" @keydown.enter.prevent="submitComment()" placeholder="Leave a comment… (360 chars) · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
         <button type="button" @click="submitComment()" :disabled="submitting || !draft.trim()" class="px-4 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition disabled:opacity-50">
@@ -157,7 +157,7 @@ function renderTorchBody(data) {
 
   const networkCount = author.network_count || 0;
   const networkHtml = (author_network || []).length
-    ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${author_network.map(u => `<a href="/torcher/${htmlEscape(u.username)}/" class="glass rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition"><img src="/images/avatars/${htmlEscape(u.avatar_preset || 'owner')}.svg" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover" alt=""><div class="flex-1 min-w-0"><p class="font-bold text-sm truncate">${htmlEscape(u.display_name || u.username)}</p><p class="text-xs text-gray-500 capitalize">${htmlEscape(roleLabel(u.role))}</p></div></a>`).join('')}</div>`
+    ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${author_network.map(u => `<a href="/torcher/${htmlEscape(u.username)}/" class="glass rounded-xl p-3 flex items-center gap-3 hover:bg-white/10 transition"><img src="${htmlEscape((u.avatar_url) || '/images/avatars/' + (u.avatar_preset || 'owner') + '.svg')}" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover" alt=""><div class="flex-1 min-w-0"><p class="font-bold text-sm truncate">${htmlEscape(u.display_name || u.username)}</p><p class="text-xs text-gray-500 capitalize">${htmlEscape(roleLabel(u.role))}</p></div></a>`).join('')}</div>`
     : `<div class="glass rounded-2xl p-8 text-center"><p class="text-4xl mb-3">👥</p><p class="text-gray-500">Network is private or empty.</p></div>`;
   
     return `<style>
@@ -224,7 +224,7 @@ function renderTorchBody(data) {
 
   <!-- Action row: author chip + share/copy/report -->
   <div class="glass rounded-2xl p-5 mt-6 flex flex-wrap items-center gap-3">
-    <img src="/images/avatars/${htmlEscape(author.avatar_preset || 'owner')}.svg" alt="" width="48" height="48" style="width:48px;height:48px;" class="rounded-full object-cover flex-shrink-0">
+    <img src="${htmlEscape((author.avatar_url) || '/images/avatars/' + (author.avatar_preset || 'owner') + '.svg')}" alt="" width="48" height="48" style="width:48px;height:48px;" class="rounded-full object-cover flex-shrink-0">
     <div class="flex-1 min-w-0">
       <p class="font-bold truncate"><a href="/torcher/${htmlEscape(author.username)}/" class="hover:text-orange-500">${htmlEscape(author.display_name || author.username)}</a></p>
       <p class="text-xs text-gray-500">@${htmlEscape(author.username)} · 🏅 ${author.total_points || 0}</p>
@@ -270,7 +270,7 @@ function renderTorchBody(data) {
   <section x-show="activeTab === 'author'" x-cloak>
     <div class="glass rounded-2xl p-6 mt-4">
       <div class="flex flex-col sm:flex-row sm:items-end gap-5">
-        <img src="/images/avatars/${htmlEscape(author.avatar_preset || 'owner')}.svg" alt="" width="96" height="96" style="width:96px;height:96px;" class="rounded-full object-cover flex-shrink-0">
+        <img src="${htmlEscape((author.avatar_url) || '/images/avatars/' + (author.avatar_preset || 'owner') + '.svg')}" alt="" width="96" height="96" style="width:96px;height:96px;" class="rounded-full object-cover flex-shrink-0">
         <div class="flex-1 min-w-0">
           <h2 class="text-2xl font-black truncate">${htmlEscape(author.display_name || author.username)}</h2>
           <p class="text-gray-500 flex items-center gap-2 flex-wrap">

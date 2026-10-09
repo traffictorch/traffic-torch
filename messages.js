@@ -44,7 +44,12 @@
     const dd = Math.floor(h / 24); if (dd < 7) return dd + 'd';
     return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   };
-  const avatarFor = u => `/images/avatars/${(u && u.avatar_preset) || 'owner'}.svg`;
+  const avatarFor = u => {
+    if (!u) return '/images/avatars/owner.svg';
+    if (u.avatar_url) return u.avatar_url;
+    if (u.id) return '/api/profile/avatar/' + u.id;
+    return '/images/avatars/' + (u.avatar_preset || 'owner') + '.svg';
+  };
   const truncate = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n) + '…' : s; };
 
   let me = null;

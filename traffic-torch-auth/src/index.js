@@ -1,5 +1,6 @@
 import { handleMessageRoutes, handleCleanupMessages } from './messages.js';
 import { UserInbox } from './durable/UserInbox.js';
+import { handleAvatarRoutes } from './avatar.js';
 
 export { UserInbox };
 
@@ -417,6 +418,8 @@ async function ensureTables(env) {
   ).run();
   try { await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_activity_user ON user_activity(user_id, created_at DESC)`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN activity_public INTEGER DEFAULT 1`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN avatar_r2_key TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN avatar_updated_at INTEGER`).run(); } catch (e) {}
 }
 
 async function getCachedReport(userId, reportType, days, startDate, endDate, env) {
@@ -535,12 +538,31 @@ async function ensureUsername(env, user) {
   return candidate;
 }
 
+function withAvatarUrl(row) {
+  if (!row) return row;
+  const id = row.user_id != null ? row.user_id : row.id;
+  if (id && row.avatar_r2_key) {
+    row.avatar_url = `/api/profile/avatar/${id}?v=${row.avatar_updated_at || 0}`;
+  }
+  if (row.actor_id && row.actor_avatar_r2_key) {
+    row.actor_avatar_url = `/api/profile/avatar/${row.actor_id}?v=${row.actor_avatar_updated_at || 0}`;
+  }
+  return row;
+}
+
+function withAvatars(rows) { return (rows || []).map(withAvatarUrl); }
+
 function shapeProfile(user) {
   return {
     id: user.id,
     username: user.username,
     display_name: user.name || user.username,
     avatar_preset: user.avatar_preset || 'owner',
+    avatar_r2_key: user.avatar_r2_key || null,
+    avatar_updated_at: user.avatar_updated_at || null,
+    avatar_url: user.avatar_r2_key
+      ? `/api/profile/avatar/${user.id}?v=${user.avatar_updated_at || 0}`
+      : null,
     role: user.role || 'owner',
     bio: user.bio || '',
     website_url: user.website_url || '',
@@ -737,7 +759,7 @@ async function handleProfileRoutes(request, env, url) {
            FROM network n JOIN users u ON u.id = n.network_user_id
           WHERE n.user_id = ? LIMIT 60`
       ).bind(target.id).all();
-      networkList = net.results || [];
+      networkList = withAvatars(net.results);
       networkCount = networkList.length;
     }
 
@@ -753,7 +775,7 @@ async function handleTorchRoutes(request, env, url) {
     const post = await env.MY_BINDING.prepare(
       `SELECT p.id, p.user_id, p.category, p.note, p.tool, p.url, p.page_title, p.score,
               p.domain_mode, p.domain_label, p.module_scores, p.status, p.created_at,
-              u.username, u.name AS display_name, u.avatar_preset, u.role, u.bio,
+              u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.bio,
               u.website_url, u.website_approved, u.social1_url, u.social2_url,
               u.job_title, u.company, u.location, u.show_network, u.allow_adds,
               u.created_at AS author_created_at,
@@ -795,7 +817,7 @@ async function handleTorchRoutes(request, env, url) {
     const since = Date.now() - 90 * 86400 * 1000;
     const related = await env.MY_BINDING.prepare(
       `SELECT p.id, p.tool, p.url, p.page_title, p.score, p.domain_mode, p.domain_label, p.created_at,
-              u.username, u.name AS display_name, u.avatar_preset
+              u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at
          FROM posts p
          JOIN users u ON u.id = p.user_id
         WHERE p.tool = ? AND p.status = 'published'
@@ -937,12 +959,12 @@ async function handleNetworkRoutes(request, env, url) {
   if (url.pathname === '/api/network/list' && request.method === 'GET') {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     const rows = await env.MY_BINDING.prepare(
-      `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.role, n.created_at,
+      `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, n.created_at,
               COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = u.id), 0) AS total_points
          FROM network n JOIN users u ON u.id = n.network_user_id
         WHERE n.user_id = ? ORDER BY n.created_at DESC`
     ).bind(user.id).all();
-    return feedJson({ network: rows.results || [] });
+    return feedJson({ network: withAvatars(rows.results) });
   }
 
   if (url.pathname === '/api/network/invite' && request.method === 'POST') {
@@ -1020,7 +1042,7 @@ async function handleNetworkRoutes(request, env, url) {
 
     const like = '%' + q.replace(/[%_]/g, '') + '%';
     const rows = await env.MY_BINDING.prepare(
-      `SELECT id, username, name AS display_name, avatar_preset, role,
+      `SELECT id, username, name AS display_name, avatar_preset, avatar_r2_key, avatar_updated_at, role,
               COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = users.id), 0) AS total_points
          FROM users
         WHERE profile_public = 1
@@ -1030,7 +1052,7 @@ async function handleNetworkRoutes(request, env, url) {
         LIMIT ?`
     ).bind(like, like, limit).all();
 
-    const list = rows.results || [];
+    const list = withAvatars(rows.results);
 
     if (user && list.length) {
       const ids = list.map(u => u.id);
@@ -1146,6 +1168,8 @@ async function handleDiscoverRoutes(request, env, url) {
         u.username,
         COALESCE(u.name, u.username)       AS display_name,
         COALESCE(u.avatar_preset, 'owner') AS avatar_preset,
+        u.avatar_r2_key AS avatar_r2_key,
+        u.avatar_updated_at AS avatar_updated_at,
         COALESCE(u.role, 'owner')          AS role,
         COALESCE((SELECT SUM(points) FROM user_points WHERE user_id = u.id), 0) AS total_points,
         COALESCE((SELECT COUNT(*) FROM posts WHERE user_id = u.id AND status = 'published'), 0) AS torch_count,
@@ -1265,6 +1289,8 @@ async function handleActivityRoutes(request, env, url) {
            u.username,
            COALESCE(u.name, u.username)       AS display_name,
            COALESCE(u.avatar_preset, 'owner') AS avatar_preset,
+           u.avatar_r2_key AS avatar_r2_key,
+           u.avatar_updated_at AS avatar_updated_at,
            tp.page_title         AS target_title,
            tp.score              AS target_score,
            tp.domain_mode        AS target_domain_mode,
@@ -1283,7 +1309,7 @@ async function handleActivityRoutes(request, env, url) {
   args.push(limit + 1);
 
   const rows = await env.MY_BINDING.prepare(sql).bind(...args).all();
-  const items = rows.results || [];
+  const items = withAvatars(rows.results);
   let nextCursor = null;
   if (items.length > limit) { items.pop(); nextCursor = items[items.length - 1].created_at; }
 
@@ -1329,7 +1355,7 @@ async function handleFeedRoutes(request, env, url) {
     const sql = `
             SELECT p.id, p.user_id, p.category, p.note, p.tool, p.url, p.page_title, p.score,
              p.domain_mode, p.domain_label, p.module_scores, p.created_at,
-             u.username, u.name AS display_name, u.avatar_preset, u.role,
+             u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role,
              COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = p.user_id), 0) AS total_points,
              (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id AND c.status = 'published') AS comment_count
         FROM posts p
@@ -1340,7 +1366,7 @@ async function handleFeedRoutes(request, env, url) {
     args.push(limit + 1);
 
     const rows = await env.MY_BINDING.prepare(sql).bind(...args).all();
-    const results = rows.results || [];
+    const results = withAvatars(rows.results);
     let nextCursor = null;
     if (results.length > limit) { results.pop(); nextCursor = results[results.length - 1].created_at; }
 
@@ -1474,13 +1500,13 @@ async function handleFeedRoutes(request, env, url) {
     const id = parseInt(url.pathname.split('/')[3], 10);
     const rows = await env.MY_BINDING.prepare(
       `SELECT c.id, c.post_id, c.user_id, c.body, c.created_at,
-              u.username, u.name AS display_name, u.avatar_preset,
+              u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at,
               COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = c.user_id), 0) AS total_points
          FROM comments c JOIN users u ON u.id = c.user_id
         WHERE c.post_id = ? AND c.status = 'published'
         ORDER BY c.created_at ASC LIMIT 100`
     ).bind(id).all();
-    return feedJson({ comments: rows.results || [] });
+    return feedJson({ comments: withAvatars(rows.results) });
   }
 
   // POST /api/posts/:id/comments
@@ -1619,7 +1645,7 @@ async function handleFeedRoutes(request, env, url) {
   if (url.pathname === '/api/contributions/leaderboard' && request.method === 'GET') {
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '12', 10) || 12, 30);
     const rows = await env.MY_BINDING.prepare(
-      `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.role,
+      `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role,
               u.bio, u.website_url, u.website_approved, u.job_title, u.company, u.location,
               COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = u.id), 0) AS total_points,
               (SELECT COUNT(*) FROM user_points up WHERE up.user_id = u.id AND up.event_type = 'contribution') AS contribution_count,
@@ -1667,6 +1693,7 @@ async function handleFeedRoutes(request, env, url) {
     const rows = await env.MY_BINDING.prepare(
       `SELECT n.id, n.type, n.actor_id, n.subject_type, n.subject_id, n.message, n.link, n.is_read, n.created_at,
               u.username AS actor_username, u.name AS actor_display_name, u.avatar_preset AS actor_avatar,
+              u.avatar_r2_key AS actor_avatar_r2_key, u.avatar_updated_at AS actor_avatar_updated_at,
               COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = n.actor_id), 0) AS actor_total_points
          FROM notifications n
          LEFT JOIN users u ON u.id = n.actor_id
@@ -1674,7 +1701,7 @@ async function handleFeedRoutes(request, env, url) {
         ORDER BY n.created_at DESC
         LIMIT 24`
     ).bind(user.id).all();
-    const list = rows.results || [];
+    const list = withAvatars(rows.results);
     const unread = list.filter(n => !n.is_read).length;
     return feedJson({ notifications: list, unread });
   }
@@ -1773,6 +1800,9 @@ export default {
     const method = request.method;
 
     await ensureTables(env);
+
+    const avatarResponse = await handleAvatarRoutes(request, env, url);
+    if (avatarResponse) return avatarResponse;
 
     if (method === 'OPTIONS') {
       return new Response(null, {

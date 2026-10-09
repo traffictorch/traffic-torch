@@ -26,6 +26,7 @@ function injectShell(html, { headTags, jsonLd, profile }) {
       username: profile.username || null,
       display_name: profile.display_name || null,
       avatar_preset: profile.avatar_preset || 'owner',
+      avatar_url: profile.avatar_url || null,
       role: profile.role || null,
       message_policy: profile.message_policy || 'all',
       messages_blocked: profile.messages_blocked || 0,

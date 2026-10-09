@@ -89,7 +89,7 @@ function renderCard(post) {
           </p>
           ${post.note && post.note !== post.page_title ? `<p class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300">${htmlEscape(post.note)}</p>` : ''}
         </div>
-        <img src="/images/avatars/${htmlEscape(post.avatar_preset || 'owner')}.svg" alt="" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover">
+        <img src="${htmlEscape((post.avatar_url) || "/images/avatars/" + (post.avatar_preset || "owner") + ".svg")}" alt="" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover">
       </div>
     </div>
   </article>`;
