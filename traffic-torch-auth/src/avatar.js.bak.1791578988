@@ -5,10 +5,10 @@
 // DELETE /api/profile/avatar           (revert to preset)
 // ============================================================
 
-const MAX_BYTES = 15 * 1024 * 1024;
+const MAX_BYTES = 2 * 1024 * 1024;
 const ALLOWED   = ['image/jpeg', 'image/png', 'image/webp'];
 const IMMUTABLE = 'public, max-age=31536000, immutable';
-const RATE_PER_DAY = 30;
+const RATE_PER_DAY = 10;
 const PRESETS = ['owner', 'designer', 'seo'];
 
 function json(data, status = 200, extra = {}) {
@@ -60,19 +60,17 @@ async function ensureRateTable(env) {
   ).run().catch(() => {});
 }
 
-async function rateCheck(env, userId) {
+async function rateOk(env, userId) {
   await ensureRateTable(env);
   const since = Date.now() - 86400 * 1000;
   const row = await env.MY_BINDING.prepare(
     `SELECT COUNT(*) AS c FROM avatar_rate_log WHERE user_id = ? AND bucket = 'day' AND created_at > ?`
   ).bind(userId, since).first();
-  return (row?.c || 0) < RATE_PER_DAY;
-}
-
-async function rateLog(env, userId) {
+  if ((row?.c || 0) >= RATE_PER_DAY) return false;
   await env.MY_BINDING.prepare(
     `INSERT INTO avatar_rate_log (user_id, created_at, bucket) VALUES (?, ?, 'day')`
   ).bind(userId, Date.now()).run();
+  return true;
 }
 
 // ============ handlers ============
@@ -82,23 +80,20 @@ async function handleUpload(request, env) {
   if (!user) return json({ error: 'Unauthorized' }, 401);
   if (!env.ATTACHMENTS) return json({ error: 'Storage not configured' }, 503);
 
+  if (!(await rateOk(env, user.id))) return json({ error: 'Daily upload limit reached (10)' }, 429);
+
   const ct = request.headers.get('content-type') || '';
   if (!ct.includes('multipart/form-data')) return json({ error: 'Expected multipart/form-data' }, 400);
 
   const form = await request.formData();
   const file = form.get('file');
   if (!file || typeof file === 'string') return json({ error: 'No file' }, 400);
-  if (file.size > MAX_BYTES) return json({ error: 'File too large (max 15 MB)' }, 413);
+  if (file.size > MAX_BYTES) return json({ error: 'File too large (max 2 MB)' }, 413);
 
   const buf = new Uint8Array(await file.arrayBuffer());
   const sniffed = sniff(buf);
   if (!sniffed || !ALLOWED.includes(sniffed)) {
     return json({ error: 'Only JPEG, PNG, or WebP allowed' }, 415);
-  }
-
-  // Rate check runs AFTER validation — only files that pass reach this point.
-  if (!(await rateCheck(env, user.id))) {
-    return json({ error: 'Daily upload limit reached (30)' }, 429);
   }
 
   const ext = sniffed === 'image/webp' ? 'webp' : sniffed === 'image/png' ? 'png' : 'jpg';
@@ -117,9 +112,6 @@ async function handleUpload(request, env) {
   if (prevKey && prevKey !== key) {
     env.ATTACHMENTS.delete(prevKey).catch(() => {});
   }
-
-  // Only count SUCCESSFUL uploads toward the daily limit.
-  await rateLog(env, user.id).catch(() => {});
 
   return json({
     success: true,

@@ -359,13 +359,13 @@
                           <label class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg cursor-pointer hover:opacity-90 transition text-sm">
                             <span x-show="!avatarUploading">Choose image</span>
                             <span x-show="avatarUploading">Uploading…</span>
-                            <input type="file" accept="image/*" class="hidden" @change="uploadAvatar($event)" :disabled="avatarUploading">
+                            <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden" @change="uploadAvatar($event)" :disabled="avatarUploading">
                           </label>
                           <button type="button" x-show="profile.avatar_r2_key" @click="removeAvatar()"
                                   class="px-4 py-1.5 text-xs font-medium rounded-lg border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition">
                             Remove custom photo
                           </button>
-                          <p class="text-xs text-gray-500">Any image · max 15 MB · we resize to 400×400</p>
+                          <p class="text-xs text-gray-500">JPEG, PNG or WebP · max 2 MB · we resize to 400×400</p>
                           <p x-show="avatarError" class="text-xs text-red-500" x-text="avatarError"></p>
                         </div>
                       </div>
@@ -4412,8 +4412,10 @@ window.dashboardApp = dashboardApp;
       input.value = '';
       if (!file) return;
       this.avatarError = null;
-      // No MIME check — try to decode whatever the user picked. Handles HEIC, HEIF, AVIF, etc.
-      if (file.size > 15 * 1024 * 1024) { this.avatarError = 'Max 15 MB.'; return; }
+      if (!['image/jpeg','image/png','image/webp'].includes(file.type)) {
+        this.avatarError = 'Only JPEG, PNG or WebP.'; return;
+      }
+      if (file.size > 2 * 1024 * 1024) { this.avatarError = 'Max 2 MB.'; return; }
       this.avatarUploading = true;
       try {
         const blob = await processAvatarFile(file);
