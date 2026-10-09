@@ -337,7 +337,7 @@
                       <label class="block text-sm font-medium mb-3">Avatar</label>
                       <div class="grid grid-cols-3 gap-4">
                         <template x-for="preset in ['owner','designer','seo']" :key="preset">
-                          <button type="button" @click="pickPreset(preset)"
+                          <button type="button" @click="profile.avatar_preset = preset; profile._forcePreset = true"
                                   class="p-4 rounded-2xl border-2 transition flex flex-col items-center gap-2"
                                   :class="profile.avatar_preset === preset ? 'border-orange-500 bg-orange-500/10' : 'border-gray-300 dark:border-gray-600 hover:border-orange-400'">
                             <img :src="`/images/avatars/${preset}.svg`" :alt="preset" width="80" height="80" style="width:80px;height:80px;" class="rounded-full object-cover" loading="lazy">
@@ -4317,45 +4317,6 @@ function dashboardApp() {
 
 window.dashboardApp = dashboardApp;
 
-// ============================================================
-// Avatar behavior — final, no _forcePreset flag
-// ============================================================
-(function(){
-  if (window.__ttAvatarFinal) return;
-  window.__ttAvatarFinal = true;
-  const _orig = window.dashboardApp;
-
-  window.dashboardApp = function() {
-    const obj = _orig.apply(this, arguments);
-
-    // Simple, correct: use avatar_url if present, else fall back to preset SVG.
-    obj.avatarSrc = function(o) {
-      if (!o) return '/images/avatars/owner.svg';
-      if (typeof o === 'string') return '/images/avatars/' + o + '.svg';
-      if (o.avatar_url) return o.avatar_url.startsWith('http') ? o.avatar_url : (API_BASE + o.avatar_url);
-      return '/images/avatars/' + (o.avatar_preset || 'owner') + '.svg';
-    };
-
-    // Clicking a preset immediately deletes any custom photo server-side.
-    obj.pickPreset = async function(preset) {
-      this.profile.avatar_preset = preset;
-      if (!this.profile.avatar_r2_key) return;
-      try {
-        await fetch(API_BASE + '/api/profile/avatar', {
-          method: 'DELETE',
-          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
-        });
-        this.profile.avatar_r2_key = null;
-        this.profile.avatar_updated_at = null;
-        this.profile.avatar_url = null;
-        console.log('[avatar] custom photo removed, using preset:', preset);
-      } catch (e) { console.warn('[avatar] preset-clear failed', e); }
-    };
-
-    return obj;
-  };
-})();
-
 // ---- avatar helpers (installed by patch) ----
 (function(){
   window.__avatarHelpersInstalled = true;
@@ -4373,11 +4334,6 @@ window.dashboardApp = dashboardApp;
       if (!o) return '/images/avatars/owner.svg';
       if (typeof o === 'string') return '/images/avatars/' + o + '.svg';
       if (o.avatar_url) return o.avatar_url.startsWith('http') ? o.avatar_url : (API_BASE + o.avatar_url);
-      // Belt-and-braces: server told us a custom avatar exists but didn't send the URL
-      if (o.avatar_r2_key) {
-        const id = o.id != null ? o.id : o.user_id;
-        if (id) return API_BASE + '/api/profile/avatar/' + id + '?v=' + (o.avatar_updated_at || 0);
-      }
       return '/images/avatars/' + (o.avatar_preset || 'owner') + '.svg';
     };
 
@@ -4431,7 +4387,44 @@ window.dashboardApp = dashboardApp;
   };
 })();
 
+// ---- outer wrapper: preset-vs-custom reconciliation on save ----
+(function(){
+  const _orig3 = window.dashboardApp;
+  window.dashboardApp = function() {
+    const obj = _orig3.apply(this, arguments);
+    const _origSaveProfile = obj.saveProfile;
+    obj.saveProfile = async function() {
+      if (this.profile._forcePreset && this.profile.avatar_r2_key) {
+        try {
+          await fetch(API_BASE + '/api/profile/avatar', {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+          });
+        } catch {}
+        this.profile.avatar_r2_key = null;
+        this.profile.avatar_updated_at = null;
+        this.profile.avatar_url = null;
+      }
+      await _origSaveProfile.call(this);
+      this.profile._forcePreset = false;
+    };
+    return obj;
+  };
+})();
 
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('reset_token');
+  if (token) {
+    setTimeout(function() {
+      const appEl = document.querySelector('[x-data]');
+      if (appEl && appEl.__x) {
+        const data = appEl.__x.$data;
+        if (data && !data.showResetModal) { data.resetToken = token; data.showResetModal = true; }
+      }
+    }, 1000);
+  }
+})();
 </script>
 
 </body>

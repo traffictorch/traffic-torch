@@ -1794,15 +1794,23 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // === AVATAR ROUTES — run first ===
+    if (url.pathname.startsWith('/api/profile/avatar')) {
+      try {
+        const r = await handleAvatarRoutes(request, env, url);
+        if (r) return r;
+      } catch (e) {
+        return new Response(JSON.stringify({ error: 'avatar threw: ' + e.message }),
+          { status: 500, headers: { 'Content-Type': 'application/json' } });
+      }
+    }
+
     const newRouteResponse = await handleNewRoutes(request, env, url);
     if (newRouteResponse) return newRouteResponse;
 
     const method = request.method;
 
     await ensureTables(env);
-
-    const avatarResponse = await handleAvatarRoutes(request, env, url);
-    if (avatarResponse) return avatarResponse;
 
     if (method === 'OPTIONS') {
       return new Response(null, {

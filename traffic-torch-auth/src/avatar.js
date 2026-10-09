@@ -122,6 +122,7 @@ async function handleUpload(request, env) {
 }
 
 async function handleGet(env, userId) {
+  console.log('[avatar] get userId=', userId);
   if (!Number.isFinite(userId)) return new Response('Bad request', { status: 400 });
   const u = await env.MY_BINDING.prepare(
     'SELECT id, avatar_r2_key, avatar_preset FROM users WHERE id = ?'
@@ -135,7 +136,7 @@ async function handleGet(env, userId) {
       status: 302,
       headers: {
         'Location': `https://traffictorch.net/images/avatars/${fallbackPreset}.svg`,
-        'Cache-Control': 'public, max-age=300',
+        'Cache-Control': 'no-store',
         'Access-Control-Allow-Origin': '*',
       },
     });
@@ -148,7 +149,7 @@ async function handleGet(env, userId) {
       status: 302,
       headers: {
         'Location': `https://traffictorch.net/images/avatars/${fallbackPreset}.svg`,
-        'Cache-Control': 'public, max-age=60',
+        'Cache-Control': 'no-store',
         'Access-Control-Allow-Origin': '*',
       },
     });
@@ -178,23 +179,28 @@ async function handleDelete(request, env) {
 
 export async function handleAvatarRoutes(request, env, url) {
   const p = url.pathname;
-  if (!p.startsWith('/api/profile/avatar')) return null;
+  const parts = p.split('/').filter(Boolean);
+  if (parts[0] !== 'api' || parts[1] !== 'profile' || parts[2] !== 'avatar') return null;
+
+  console.log('[avatar]', request.method, p);
 
   if (request.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      },
-    });
+    return new Response(null, { headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    }});
   }
 
-  const m = p.match(/^\/api\/profile\/avatar\/(\d+)$/);
-  if (m && request.method === 'GET') return handleGet(env, parseInt(m[1], 10));
+  if (parts.length === 4 && request.method === 'GET') {
+    const uid = parseInt(parts[3], 10);
+    if (Number.isFinite(uid)) return handleGet(env, uid);
+  }
 
-  if (p === '/api/profile/avatar' && request.method === 'POST')   return handleUpload(request, env);
-  if (p === '/api/profile/avatar' && request.method === 'DELETE') return handleDelete(request, env);
+  if (parts.length === 3) {
+    if (request.method === 'POST')   return handleUpload(request, env);
+    if (request.method === 'DELETE') return handleDelete(request, env);
+  }
 
-  return json({ error: 'Not found' }, 404);
+  return json({ error: 'Not found', path: p }, 404);
 }
