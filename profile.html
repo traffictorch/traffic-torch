@@ -147,12 +147,13 @@
         <div class="glass rounded-3xl overflow-hidden mb-6">
           <div class="px-6 pb-6 -mt-14 relative">
             <div class="flex flex-col sm:flex-row sm:items-end gap-5">
-              <img src="/images/avatars/owner.svg"
-                   :src="avatarSrc(profile)"
-                   :alt="profile.display_name"
-                   width="128" height="128" style="width:128px;height:128px;"
-                   class="rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100 object-cover"
-                   onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+              <template x-if="profile.id">
+                <img :src="avatarSrc(profile)"
+                     :alt="profile.display_name"
+                     width="128" height="128" style="width:128px;height:128px;"
+                     class="rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100 object-cover"
+                     onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+              </template>
               <div class="flex-1 min-w-0 sm:pb-2">
                 <h1 class="text-3xl font-black truncate" x-text="profile.display_name || profile.username"></h1>
                 <p class="text-gray-500 text-lg flex items-center gap-2 flex-wrap">

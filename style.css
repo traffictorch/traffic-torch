@@ -190,7 +190,7 @@ header, footer {
 
 /* Collapsed state */
 #desktopSidebar.collapsed {
-  width: 5rem !important;
+  width: 8rem !important;
 }
 
 /* Hide text, titles and arrows ONLY when collapsed */

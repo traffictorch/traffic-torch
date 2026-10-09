@@ -77,20 +77,59 @@
 }
 .tt-lb-medal { font-size: 1.8rem; line-height: 1; }
 
+/* Circular Graded Score Block */
 .tt-lb-score-block {
-  display: flex; flex-direction: column; align-items: center;
+  display: flex; align-items: center; justify-content: center;
   min-width: 62px;
 }
-.tt-lb-score { font-size: 1.8rem; font-weight: 900; line-height: 1; }
-.tt-lb-score-gold   { color: #eab308; }
-.tt-lb-score-silver { color: #94a3b8; }
-.tt-lb-score-bronze { color: #f97316; }
-.tt-lb-score-plain  { color: #6b7280; }
-.dark .tt-lb-score-plain { color: #9ca3af; }
-.tt-lb-score-label {
-  font-size: 0.68rem; font-weight: 700;
-  color: #9ca3af; margin-top: 2px;
+
+.tt-lb-score-circle {
+  --score: 0;
+  --ring-color: #ef4444; /* default red */
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: conic-gradient(var(--ring-color) calc(var(--score) * 1%), rgba(0,0,0,0.08) 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
 }
+
+.dark .tt-lb-score-circle {
+  background: conic-gradient(var(--ring-color) calc(var(--score) * 1%), rgba(255,255,255,0.1) 0);
+}
+
+.tt-lb-score-circle::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.dark .tt-lb-score-circle::before {
+  background: #1e293b; /* matches dark card background */
+}
+
+.tt-lb-score-val {
+  position: relative;
+  z-index: 1;
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+.dark .tt-lb-score-val {
+  color: #f3f4f6;
+}
+
+/* Color Grading */
+.tt-lb-score-circle.good { --ring-color: #22c55e; } /* 80+ = Green */
+.tt-lb-score-circle.ok   { --ring-color: #f97316; } /* 60-79 = Orange */
+.tt-lb-score-circle.bad  { --ring-color: #ef4444; } /* <60 = Red */
 
 .tt-lb-info { min-width: 0; }
 
@@ -299,9 +338,32 @@
 
 @media (max-width: 640px) {
   .tt-lb { padding: 1rem; border-radius: 1rem; }
-  .tt-lb-card-top { grid-template-columns: auto auto 1fr; gap: 0.5rem; }
+  
+  /* Two-row layout for mobile */
+  .tt-lb-card-top {
+    grid-template-columns: auto auto;
+    grid-template-areas:
+      "rank score"
+      "info info";
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  .tt-lb-rank-block { grid-area: rank; }
+  .tt-lb-score-block { grid-area: score; }
+  .tt-lb-info { 
+    grid-area: info; 
+    width: 100%; 
+    text-align: center; 
+    margin-top: 0.5rem; 
+  }
+  .tt-lb-profile { justify-content: center; }
+  .tt-lb-title { text-align: center; }
+  .tt-lb-domain { text-align: center; }
+  
   .tt-lb-medal { font-size: 1.4rem; }
-  .tt-lb-score { font-size: 1.4rem; }
+  .tt-lb-score-circle { width: 48px; height: 48px; }
+  .tt-lb-score-circle::before { width: 34px; height: 34px; }
+  .tt-lb-score-val { font-size: 0.95rem; }
   .tt-lb-card-actions { gap: 0.35rem; }
   .tt-lb-btn { padding: 0.35rem 0.6rem; font-size: 0.72rem; }
   .tt-lb-modules { grid-template-columns: 1fr; }

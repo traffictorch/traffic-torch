@@ -53,7 +53,12 @@
   function renderCard(entry, index) {
     const medal = getMedal(index);
     const score = entry.overall_score;
-    const scoreClass = score >= 90 ? 'gold' : score >= 80 ? 'silver' : score >= 70 ? 'bronze' : 'plain';
+    
+    // Determine the color grade for the score circle
+    let scoreClass = 'bad';
+    if (score >= 80) scoreClass = 'good'; // Green
+    else if (score >= 60) scoreClass = 'ok'; // Orange
+
     const title = entry.title || entry.domain || 'Untitled page';
     const dateStr = new Date(entry.submitted_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 
@@ -61,8 +66,9 @@
       <div class="tt-lb-card-top">
         <div class="tt-lb-rank-block"><span class="tt-lb-medal">${medal}</span></div>
         <div class="tt-lb-score-block">
-          <div class="tt-lb-score tt-lb-score-${scoreClass}">${score}</div>
-          <div class="tt-lb-score-label">/100</div>
+          <div class="tt-lb-score-circle ${scoreClass}" style="--score: ${score};">
+            <span class="tt-lb-score-val">${score}</span>
+          </div>
         </div>
         <div class="tt-lb-info">
           ${renderProfile(entry)}

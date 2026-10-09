@@ -200,13 +200,49 @@
     .lb-podium-card.p2 { border-color: #cbd5e1; }
     .lb-podium-card.p3 { border-color: #fb923c; }
     .lb-podium-medal { font-size: 2.5rem; line-height: 1; margin-bottom: 0.35rem; }
-    .lb-podium-score {
-      font-size: 3.25rem; font-weight: 900; line-height: 1;
-      background: linear-gradient(135deg,#f97316,#ec4899);
-      -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent; color: transparent;
+    
+    /* Circular Graded Score Block for Podium */
+    .lb-podium-score-circle {
+      --score: 0;
+      --ring-color: #ef4444; /* default red */
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: conic-gradient(var(--ring-color) calc(var(--score) * 1%), rgba(0,0,0,0.08) 0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0.5rem auto;
     }
-    .lb-podium-score small { font-size: 1rem; -webkit-text-fill-color: #6b7280; color: #6b7280; }
+    .dark .lb-podium-score-circle {
+      background: conic-gradient(var(--ring-color) calc(var(--score) * 1%), rgba(255,255,255,0.1) 0);
+    }
+    .lb-podium-score-circle::before {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: #fff;
+      border-radius: 50%;
+    }
+    .dark .lb-podium-score-circle::before {
+      background: #1e293b; /* matches dark card background */
+    }
+    .lb-podium-score-val {
+      position: relative;
+      z-index: 1;
+      font-weight: 900;
+      font-size: 1.75rem;
+      color: #1f2937;
+    }
+    .dark .lb-podium-score-val {
+      color: #f3f4f6;
+    }
+    /* Color Grading */
+    .lb-podium-score-circle.good { --ring-color: #22c55e; } /* 80+ = Green */
+    .lb-podium-score-circle.ok   { --ring-color: #f97316; } /* 60-79 = Orange */
+    .lb-podium-score-circle.bad  { --ring-color: #ef4444; } /* <60 = Red */
 
     .lb-podium-profile {
       display: flex; align-items: center; justify-content: center;
@@ -571,6 +607,11 @@
             const pClass = `p${place}`;
             const points = e.username ? pointsMap[e.username] : null;
 
+            // Determine score color grade
+            let scoreClass = 'bad';
+            if (e.overall_score >= 80) scoreClass = 'good';
+            else if (e.overall_score >= 60) scoreClass = 'ok';
+
             const profileBlock = e.username ? `
               <div class="lb-podium-profile">
                 <img class="lb-podium-profile-avatar" src="/images/avatars/${esc(e.avatar_preset || 'owner')}.svg" alt="" loading="lazy">
@@ -585,7 +626,9 @@
             return `
               <article class="lb-podium-card ${pClass}">
                 <div class="lb-podium-medal">${medals[idx] || '#' + place}</div>
-                <div class="lb-podium-score">${e.overall_score}<small>/100</small></div>
+                <div class="lb-podium-score-circle ${scoreClass}" style="--score: ${e.overall_score};">
+                  <span class="lb-podium-score-val">${e.overall_score}</span>
+                </div>
                 ${profileBlock}
                 <a class="lb-podium-title" href="${esc(e.url)}" target="_blank" rel="noopener nofollow">
                   ${esc(e.title || e.domain || 'Untitled page')}
