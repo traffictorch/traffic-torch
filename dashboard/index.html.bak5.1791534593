@@ -242,7 +242,7 @@
                       <img :src="avatarSrc(profile)"
                            :alt="profile.display_name"
                            width="128" height="128" style="width:128px;height:128px;"
-                           class="rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                           class="rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100 object-cover">
                       <div class="flex-1 min-w-0 sm:pb-2">
                         <h1 class="text-3xl font-black truncate flex items-center gap-3 flex-wrap">
                           <span x-text="profile.display_name || profile.username || 'Your name'"></span>
@@ -337,7 +337,7 @@
                       <label class="block text-sm font-medium mb-3">Avatar</label>
                       <div class="grid grid-cols-3 gap-4">
                         <template x-for="preset in ['owner','designer','seo']" :key="preset">
-                          <button type="button" @click="profile.avatar_preset = preset; profile._forcePreset = true"
+                          <button type="button" @click="profile.avatar_preset = preset"
                                   class="p-4 rounded-2xl border-2 transition flex flex-col items-center gap-2"
                                   :class="profile.avatar_preset === preset ? 'border-orange-500 bg-orange-500/10' : 'border-gray-300 dark:border-gray-600 hover:border-orange-400'">
                             <img :src="`/images/avatars/${preset}.svg`" :alt="preset" width="80" height="80" style="width:80px;height:80px;" class="rounded-full object-cover" loading="lazy">
@@ -353,7 +353,7 @@
                         <img :src="avatarSrc(profile)"
                              :alt="profile.display_name"
                              width="72" height="72" style="width:72px;height:72px;"
-                             class="rounded-full object-cover border-2 border-gray-200 dark:border-gray-700" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                             class="rounded-full object-cover border-2 border-gray-200 dark:border-gray-700">
                         <div class="flex flex-col gap-2">
                           <label class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg cursor-pointer hover:opacity-90 transition text-sm">
                             <span x-show="!avatarUploading">Choose image</span>
@@ -546,7 +546,7 @@
                     <div class="notif-row" :class="n.is_read ? '' : 'unread'">
                       <template x-if="!n.is_read"><span class="notif-dot"></span></template>
                       <template x-if="n.is_read"><span style="width:8px;flex-shrink:0;"></span></template>
-                      <img :src="avatarSrc({id:n.actor_id, avatar_preset:n.actor_avatar, avatar_url:n.actor_avatar_url})" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                      <img :src="avatarSrc({id:n.actor_id, avatar_preset:n.actor_avatar, avatar_url:n.actor_avatar_url})" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover" alt="">
                        <div class="flex-1 min-w-0">
                         <p class="text-sm leading-snug">
                           <span x-show="n.type === 'message'" class="mr-1">✉️</span>
@@ -622,7 +622,7 @@
                       <img :src="avatarSrc(post)"
                            :alt="post.display_name"
                            width="40" height="40" style="width:40px;height:40px;"
-                           class="rounded-full flex-shrink-0 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                           class="rounded-full flex-shrink-0 object-cover">
                     </div>
                   </div>
 
@@ -693,7 +693,7 @@
                         <div class="flex gap-2 items-start">
                           <img :src="avatarSrc(c)"
                                width="32" height="32" style="width:32px;height:32px;"
-                               class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                               class="rounded-full flex-shrink-0 object-cover" alt="">
                           <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
                             <div class="flex items-baseline gap-2 flex-wrap">
                               <a :href="'/torcher/' + (c.username || '') + '/'"
@@ -717,7 +717,7 @@
                       <div class="flex gap-2 items-start pt-1">
                         <img :src="avatarSrc(profile)"
                              width="32" height="32" style="width:32px;height:32px;"
-                             class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                             class="rounded-full flex-shrink-0 object-cover" alt="">
                         <div class="flex-1 flex gap-2">
                           <input type="text" maxlength="360"
                                  x-model="feed.commentDrafts[post.id]"
@@ -769,7 +769,7 @@
               <div class="space-y-3">
                 <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
                   <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                    <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                    <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                     <div class="flex-1 min-w-0">
                       <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                       <p class="text-xs text-gray-500 capitalize">
@@ -792,7 +792,7 @@
                 <div class="space-y-3">
                   <template x-for="u in network.searchResults" :key="u.id">
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                      <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                      <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                       <div class="flex-1 min-w-0">
                         <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                         <p class="text-xs text-gray-500 capitalize">
@@ -859,7 +859,7 @@
                         <div class="relative flex-shrink-0">
                           <img :src="avatarSrc(item)"
                                width="44" height="44" style="width:44px;height:44px;"
-                               class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                               class="rounded-full object-cover" alt="">
                           <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
                                 x-text="activityIcon(item.event_type)"></span>
                         </div>
@@ -987,7 +987,7 @@
             <div x-show="!discover.loading && discover.users.length > 0" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               <template x-for="u in discover.users" :key="'prof-disc-' + u.id">
                 <div class="glass rounded-2xl p-3 flex flex-col items-center text-center hover:bg-white/10 transition">
-                  <img :src="avatarSrc(u)" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover mb-2" alt="" loading="lazy" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                  <img :src="avatarSrc(u)" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover mb-2" alt="" loading="lazy">
                   <a :href="'/torcher/' + u.username + '/'" class="font-bold text-sm hover:text-orange-500 truncate w-full" x-text="u.display_name || u.username"></a>
                   <p class="text-xs text-gray-500 truncate w-full">@<span x-text="u.username"></span></p>
                   <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(u.role)"></span>
@@ -1228,7 +1228,7 @@
                       <img :src="avatarSrc(post)"
                            :alt="post.display_name"
                            width="40" height="40" style="width:40px;height:40px;"
-                           class="rounded-full flex-shrink-0 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                           class="rounded-full flex-shrink-0 object-cover">
                     </div>
                   </div>
 
@@ -1299,7 +1299,7 @@
                         <div class="flex gap-2 items-start">
                           <img :src="avatarSrc(c)"
                                width="32" height="32" style="width:32px;height:32px;"
-                               class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                               class="rounded-full flex-shrink-0 object-cover" alt="">
                           <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
                             <div class="flex items-baseline gap-2 flex-wrap">
                               <a :href="'/torcher/' + (c.username || '') + '/'"
@@ -1323,7 +1323,7 @@
                       <div class="flex gap-2 items-start pt-1">
                         <img :src="avatarSrc(profile)"
                              width="32" height="32" style="width:32px;height:32px;"
-                             class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                             class="rounded-full flex-shrink-0 object-cover" alt="">
                         <div class="flex-1 flex gap-2">
                           <input type="text" maxlength="360"
                                  x-model="feed.commentDrafts[post.id]"
@@ -1376,7 +1376,7 @@
               <div class="space-y-3">
                 <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
                   <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                    <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                    <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                     <div class="flex-1 min-w-0">
                       <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                       <p class="text-xs text-gray-500 capitalize">
@@ -1399,7 +1399,7 @@
                 <div class="space-y-3">
                   <template x-for="u in network.searchResults" :key="u.id">
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                      <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                      <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                       <div class="flex-1 min-w-0">
                         <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                         <p class="text-xs text-gray-500 capitalize">
@@ -1485,7 +1485,7 @@
                         <div class="relative flex-shrink-0">
                           <img :src="avatarSrc(item)"
                                width="44" height="44" style="width:44px;height:44px;"
-                               class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                               class="rounded-full object-cover" alt="">
                           <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
                                 x-text="activityIcon(item.event_type)"></span>
                         </div>
@@ -1612,7 +1612,7 @@
             <div x-show="!discover.loading && discover.users.length > 0" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               <template x-for="u in discover.users" :key="'dash-disc-' + u.id">
                 <div class="glass rounded-2xl p-3 flex flex-col items-center text-center hover:bg-white/10 transition">
-                  <img :src="avatarSrc(u)" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover mb-2" alt="" loading="lazy" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                  <img :src="avatarSrc(u)" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover mb-2" alt="" loading="lazy">
                   <a :href="'/torcher/' + u.username + '/'" class="font-bold text-sm hover:text-orange-500 truncate w-full" x-text="u.display_name || u.username"></a>
                   <p class="text-xs text-gray-500 truncate w-full">@<span x-text="u.username"></span></p>
                   <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(u.role)"></span>
@@ -4330,10 +4330,9 @@ window.dashboardApp = dashboardApp;
     // ONLY use the API endpoint when the server explicitly says a custom avatar exists.
     // Never guess from user id — that caused the white-circle bug (302 to wrong origin).
     obj.avatarSrc = function(o) {
-      if (o && o._forcePreset) return '/images/avatars/' + (o.avatar_preset || 'owner') + '.svg';
       if (!o) return '/images/avatars/owner.svg';
       if (typeof o === 'string') return '/images/avatars/' + o + '.svg';
-      if (o.avatar_url) return o.avatar_url.startsWith('http') ? o.avatar_url : (API_BASE + o.avatar_url);
+      if (o.avatar_url) return o.avatar_url;
       return '/images/avatars/' + (o.avatar_preset || 'owner') + '.svg';
     };
 
@@ -4383,31 +4382,6 @@ window.dashboardApp = dashboardApp;
       } catch (e) { alert(e.message); }
     };
 
-    return obj;
-  };
-})();
-
-// ---- outer wrapper: preset-vs-custom reconciliation on save ----
-(function(){
-  const _orig3 = window.dashboardApp;
-  window.dashboardApp = function() {
-    const obj = _orig3.apply(this, arguments);
-    const _origSaveProfile = obj.saveProfile;
-    obj.saveProfile = async function() {
-      if (this.profile._forcePreset && this.profile.avatar_r2_key) {
-        try {
-          await fetch(API_BASE + '/api/profile/avatar', {
-            method: 'DELETE',
-            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
-          });
-        } catch {}
-        this.profile.avatar_r2_key = null;
-        this.profile.avatar_updated_at = null;
-        this.profile.avatar_url = null;
-      }
-      await _origSaveProfile.call(this);
-      this.profile._forcePreset = false;
-    };
     return obj;
   };
 })();
