@@ -2124,7 +2124,7 @@
             </div>
 
             <!-- ========== SECTION: Communication Preferences ========== -->
-            <h4 class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">💬 Communication Preferences</h4>
+            <h4 id="communication-preferences" class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">💬 Communication Preferences</h4>
 
             <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-3">✉️ Direct Messages</h4>
@@ -2621,6 +2621,12 @@ function dashboardApp() {
       const hash = window.location.hash.replace('#', '');
       if (hash && this.tabs.some(t => t.id === hash)) {
         this.activeDashboardTab = hash;
+      } else if (hash === 'communication-preferences') {
+        this.activeDashboardTab = 'settings';
+        this.$nextTick(() => {
+          const el = document.getElementById('communication-preferences');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
       }
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -2655,6 +2661,12 @@ function dashboardApp() {
         const h = window.location.hash.replace('#', '');
         if (h && this.tabs.some(t => t.id === h) && h !== this.activeDashboardTab) {
           this.activeDashboardTab = h;
+        } else if (h === 'communication-preferences') {
+          this.activeDashboardTab = 'settings';
+          this.$nextTick(() => {
+            const el = document.getElementById('communication-preferences');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
         }
       });
 
