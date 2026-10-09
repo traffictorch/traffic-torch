@@ -1,24 +1,21 @@
-<!-- mobile-menu.html – Portal dropdown (collapsible) + Extras dropdown + Login at bottom -->
+<!-- mobile-menu.html – Portal + Beams dropdowns + tools + account links -->
 <nav class="flex flex-col gap-6 py-20 px-4 text-xl">
 
-  <!-- Portal – mobile (collapsible) -->
+  <!-- ═══ Portal dropdown ═══ -->
   <div>
     <button
-      type="button"
-      role="menuitem"
+      type="button" role="menuitem"
       class="pro-menu-link group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-      aria-expanded="false"
-      aria-controls="proportal-mobile-content"
-      data-category="proportal-mobile"
-    >
+      aria-expanded="false" aria-controls="proportal-mobile-content" data-category="proportal-mobile">
       <span class="flex items-center gap-2">🚦 Portal</span>
       <span class="flex items-center gap-2">
         <span data-pro-badge-slot></span>
         <span class="text-sm transition-transform">▼</span>
-        <span class="text-base font-bold text-blue-500 dark:text-blue-400 hover:underline cursor-pointer"
+        <span class="text-base font-bold text-orange-500 dark:text-orange-400 hover:underline cursor-pointer flex items-center gap-1"
               title="View notifications"
               onclick="window.handleNotifJump(event); return false;">
-          <span data-portal-count>0</span> 🔔
+          <span>🔔</span>
+          <span data-portal-count class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
         </span>
       </span>
     </button>
@@ -35,40 +32,34 @@
       <a href="/dashboard/#settings" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="settings">⚙️ Settings</a>
     </div>
   </div>
-  
-    <!-- Beams -->
-  <button
-    type="button"
-    role="menuitem"
-    id="tt-beams-link-mobile"
-    class="pro-menu-link group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-    title="Beams – private messages and chat"
-  >
-    <span class="flex items-center gap-2">🔦 Beams</span>
-    <span class="flex items-center gap-2">
-      <span id="tt-beams-count-mobile" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
-      <span class="text-base">✉</span>
-    </span>
-  </button>
 
-  <a
-    href="/dashboard/#communication-preferences"
-    class="text-gray-600 dark:text-gray-400 hover:text-orange-400 transition block py-1.5 pl-8 text-[1rem]"
-  >
-    → Message settings
-  </a>
+  <!-- ═══ Beams dropdown ═══ -->
+  <div>
+    <button
+      type="button" role="menuitem"
+      class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
+      aria-expanded="false" aria-controls="beams-mobile-content" data-category="beams-mobile">
+      <span class="flex items-center gap-2">🔦 Beams</span>
+      <span class="flex items-center gap-2">
+        <span class="text-sm transition-transform">▼</span>
+        <span class="text-base font-bold text-orange-500 dark:text-orange-400 flex items-center gap-1">
+          <span id="tt-beams-count-mobile" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
+          <span>✉️</span>
+        </span>
+      </span>
+    </button>
+    <div id="beams-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="beams-mobile">
+      <a href="#" id="tt-beams-inbox-link-mobile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📬 Inbox</a>
+      <a href="/dashboard/#profile" onclick="window.handleNotifJump(event); return false;" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🔔 Message notifications</a>
+      <a href="/dashboard/#communication-preferences" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚙️ Beam settings</a>
+    </div>
+  </div>
 
-  <!-- UX Tools group -->
-  <button
-    type="button"
-    role="menuitem"
+  <!-- UX Tools -->
+  <button type="button" role="menuitem"
     class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    aria-controls="ux-mobile-content"
-    data-category="ux-mobile"
-  >
-    🛠 UX Tools
-    <span class="text-sm transition-transform">▼</span>
+    aria-expanded="false" aria-controls="ux-mobile-content" data-category="ux-mobile">
+    🛠 UX Tools <span class="text-sm transition-transform">▼</span>
   </button>
   <div id="ux-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="ux-mobile">
     <a href="/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📈 NUSA Tool</a>
@@ -77,17 +68,11 @@
     <a href="/seo-ux-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚖️ SEO + UX</a>
   </div>
 
-  <!-- SEO Tools group -->
-  <button
-    type="button"
-    role="menuitem"
+  <!-- SEO Tools -->
+  <button type="button" role="menuitem"
     class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    aria-controls="seo-mobile-content"
-    data-category="seo-mobile"
-  >
-    🧰 SEO Tools
-    <span class="text-sm transition-transform">▼</span>
+    aria-expanded="false" aria-controls="seo-mobile-content" data-category="seo-mobile">
+    🧰 SEO Tools <span class="text-sm transition-transform">▼</span>
   </button>
   <div id="seo-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="seo-mobile">
     <a href="/lighthouse-plus-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🗼 Lighthouse Plus</a>
@@ -99,17 +84,11 @@
     <a href="/schema-generator/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚙️ Schema Generator</a>
   </div>
 
-  <!-- AEO Tools group -->
-  <button
-    type="button"
-    role="menuitem"
+  <!-- AEO Tools -->
+  <button type="button" role="menuitem"
     class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    aria-controls="ai-mobile-content"
-    data-category="ai-mobile"
-  >
-    🤖 AEO Tools
-    <span class="text-sm transition-transform">▼</span>
+    aria-expanded="false" aria-controls="ai-mobile-content" data-category="ai-mobile">
+    🤖 AEO Tools <span class="text-sm transition-transform">▼</span>
   </button>
   <div id="ai-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="ai-mobile">
     <a href="/aeo-performance-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🚀 AEO Performance</a>
@@ -118,17 +97,11 @@
     <a href="/ai-audit-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🤖 AI Content</a>
   </div>
 
-  <!-- Keyword Tools group -->
-  <button
-    type="button"
-    role="menuitem"
+  <!-- Keywords -->
+  <button type="button" role="menuitem"
     class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    aria-controls="keywords-mobile-content"
-    data-category="keywords-mobile"
-  >
-    🔐 Keywords
-    <span class="text-sm transition-transform">▼</span>
+    aria-expanded="false" aria-controls="keywords-mobile-content" data-category="keywords-mobile">
+    🔐 Keywords <span class="text-sm transition-transform">▼</span>
   </button>
   <div id="keywords-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="keywords-mobile">
     <a href="/keyword-research-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🔑 Research</a>
@@ -136,17 +109,11 @@
     <a href="/keyword-vs-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🆚 Competition</a>
   </div>
 
-  <!-- Extras group -->
-  <button
-    type="button"
-    role="menuitem"
+  <!-- Extras -->
+  <button type="button" role="menuitem"
     class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    aria-controls="extras-mobile-content"
-    data-category="extras-mobile"
-  >
-    ➕ Extras
-    <span class="text-sm transition-transform">▼</span>
+    aria-expanded="false" aria-controls="extras-mobile-content" data-category="extras-mobile">
+    ➕ Extras <span class="text-sm transition-transform">▼</span>
   </button>
   <div id="extras-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="extras-mobile">
     <a href="/community/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🤝 Community</a>
@@ -158,26 +125,18 @@
   </div>
 
   <!-- Help Guides -->
-  <a href="/ai-ux-seo-help-guides/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">
-    📋 Help Guides
-  </a>
+  <a href="/ai-ux-seo-help-guides/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">📋 Help Guides</a>
 
   <!-- Upgrade -->
-  <a href="/upgrade/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">
-    🚦 Upgrade
-  </a>
+  <a href="/upgrade/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🚦 Upgrade</a>
 
-  <!-- Login link -->
+  <!-- Login -->
   <div class="mt-2 pt-2 border-t border-white/10 dark:border-white/5">
-    <a href="/login/" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">
-      🔑 Login
-    </a>
+    <a href="/login/" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🔑 Login</a>
   </div>
 
-    <!-- Leader Board -->
+  <!-- Leader Board -->
   <div class="mt-2 pt-2 border-t border-white/10 dark:border-white/5">
-    <a href="/leader-board/" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">
-      🥇 Leader Board
-    </a>
+    <a href="/leader-board/" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🥇 Leader Board</a>
   </div>
 </nav>

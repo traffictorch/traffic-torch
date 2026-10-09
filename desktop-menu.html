@@ -1,7 +1,7 @@
-<!-- desktop-menu.html – Portal dropdown (toggle) + Extras dropdown + Login at bottom -->
+<!-- desktop-menu.html – Portal + Beams dropdowns + tools + account links -->
 <nav class="p-2 space-y-4 flex-1">
 
-  <!-- Portal – dropdown (collapsible) -->
+  <!-- ═══ Portal dropdown ═══ -->
   <div>
     <button
       type="button"
@@ -17,10 +17,11 @@
       <span class="ml-auto flex items-center gap-2">
         <span data-pro-badge-slot></span>
         <span class="text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
-        <span class="text-base font-bold text-blue-500 dark:text-blue-400 hover:underline cursor-pointer"
+        <span class="text-base font-bold text-orange-500 dark:text-orange-400 hover:underline cursor-pointer flex items-center gap-1"
               title="View notifications"
               onclick="window.handleNotifJump(event); return false;">
-          <span data-portal-count>0</span> 🔔
+          <span>🔔</span>
+          <span data-portal-count class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
         </span>
       </span>
     </button>
@@ -67,64 +68,68 @@
       </a>
     </div>
   </div>
-  
-    <!-- Beams (messages) -->
-  <button
-    type="button"
-    role="menuitem"
-    id="tt-beams-link"
-    class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none pro-menu-link"
-    title="Beams – private messages and chat"
-  >
-    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔦</span>
-    <span class="sidebar-text font-semibold flex-1 text-left">Beams</span>
-    <span class="ml-auto flex items-center gap-2">
-      <span id="tt-beams-count" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
-      <span class="text-xl sidebar-arrow hidden md:inline">✉</span>
-    </span>
-  </button>
 
-  <!-- Beams settings anchor link -->
-  <a
-    href="/dashboard/#communication-preferences"
-    class="sidebar-link flex items-center gap-4 text-base text-gray-600 dark:text-gray-400 hover:text-orange-400 transition pl-10 hidden"
-    id="tt-beams-settings-link"
-  >
-    <span class="sidebar-text hidden md:block">→ Message settings</span>
-  </a>
+  <!-- ═══ Beams dropdown ═══ -->
+  <div>
+    <button
+      type="button"
+      role="menuitem"
+      class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
+      aria-expanded="false"
+      aria-controls="beams-content"
+      data-category="beams"
+      title="Beams – private messages and chat"
+    >
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔦</span>
+      <span class="sidebar-text font-semibold flex-1 text-left">Beams</span>
+      <span class="ml-auto flex items-center gap-2">
+        <span class="text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
+        <span class="text-base font-bold text-orange-500 dark:text-orange-400 flex items-center gap-1">
+          <span id="tt-beams-count" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
+          <span>✉️</span>
+        </span>
+      </span>
+    </button>
+    <div id="beams-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="beams">
+      <a href="#" id="tt-beams-inbox-link" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📬</span>
+        <span class="sidebar-text hidden md:block">Inbox</span>
+      </a>
+      <a href="/dashboard/#profile" onclick="window.handleNotifJump(event); return false;" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔔</span>
+        <span class="sidebar-text hidden md:block">Message notifications</span>
+      </a>
+      <a href="/dashboard/#communication-preferences" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
+        <span class="sidebar-text hidden md:block">Beam settings</span>
+      </a>
+    </div>
+  </div>
 
   <!-- UX Tools -->
   <button
-    type="button"
-    role="menuitem"
+    type="button" role="menuitem"
     class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    aria-controls="ux-content"
-    data-category="ux"
-    title="User experience analysis – quit risk, bounce rate & UX improvements"
-  >
+    aria-expanded="false" aria-controls="ux-content" data-category="ux"
+    title="User experience analysis – quit risk, bounce rate & UX improvements">
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🛠</span>
     <span class="sidebar-text font-semibold flex-1">UX Tools</span>
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div id="ux-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="ux">
-    <a href="/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="UX, SEO and AEO audit tool with friction points & fixes">
+    <a href="/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="UX, SEO and AEO audit tool with friction points & fixes">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📈</span>
       <span class="sidebar-text hidden md:block">NUSA Tool</span>
     </a>
-    <a href="/ofux-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="UX, SEO Intent and AI Search audit tool with friction points & fixes">
+    <a href="/ofux-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="UX, SEO Intent and AI Search audit tool with friction points & fixes">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📊</span>
       <span class="sidebar-text hidden md:block">OFUX Tool</span>
     </a>
-    <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Predict user quit risk – identify friction points & retention fixes">
+    <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Predict user quit risk – identify friction points & retention fixes">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚠️</span>
       <span class="sidebar-text hidden md:block">Quit Risk</span>
     </a>
-    <a href="/seo-ux-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Full SEO + UX audit tool – combined health score & actionable fixes">
+    <a href="/seo-ux-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Full SEO + UX audit tool – combined health score & actionable fixes">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚖️</span>
       <span class="sidebar-text hidden md:block">SEO + UX</span>
     </a>
@@ -132,51 +137,40 @@
 
   <!-- SEO Tools -->
   <button
-    type="button"
-    role="menuitem"
+    type="button" role="menuitem"
     class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    aria-controls="seo-content"
-    data-category="seo"
-    title="Instant 360° SEO, GEO, AEO + UX audits – health score, fix suggestions, plugin solutions & education"
-  >
+    aria-expanded="false" aria-controls="seo-content" data-category="seo"
+    title="Instant 360° SEO, GEO, AEO + UX audits">
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🧰</span>
     <span class="sidebar-text font-semibold flex-1">SEO Tools</span>
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div id="seo-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="seo">
-    <a href="/lighthouse-plus-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="10-module UX, performance, accessibility & agent-readiness audit">
+    <a href="/lighthouse-plus-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="10-module UX, performance, accessibility & agent-readiness audit">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🗼</span>
       <span class="sidebar-text hidden md:block">Lighthouse Plus</span>
     </a>
-    <a href="/topical-authority-audit-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Detect main topics, subtopics and explore subtopic suggestions">
+    <a href="/topical-authority-audit-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Detect main topics, subtopics and explore subtopic suggestions">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚜️</span>
       <span class="sidebar-text hidden md:block">Topical Authority</span>
     </a>
-    <a href="/seo-entity-extractor-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Extract entities from content tool – improve topical authority & semantic SEO">
+    <a href="/seo-entity-extractor-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Extract entities from content tool">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🧬</span>
       <span class="sidebar-text hidden md:block">Entity Extractor</span>
     </a>
-    <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Analyze search intent EEAT tool – match content to user needs">
+    <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Analyze search intent EEAT tool">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🎯</span>
       <span class="sidebar-text hidden md:block">SEO Intent</span>
     </a>
-    <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Google Maps & local pack analysis tool + optimization guide">
+    <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Google Maps & local pack analysis tool">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📍</span>
       <span class="sidebar-text hidden md:block">Local SEO</span>
     </a>
-    <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="E-commerce product page audit tool – optimize titles, descriptions, schema & UX">
+    <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="E-commerce product page audit tool">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🛒</span>
       <span class="sidebar-text hidden md:block">Product SEO</span>
     </a>
-    <a href="/schema-generator/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Generate JSON-LD structured data tool – for rich results and better for click through rates">
+    <a href="/schema-generator/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Generate JSON-LD structured data tool">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
       <span class="sidebar-text hidden md:block">Schema Generator</span>
     </a>
@@ -184,36 +178,28 @@
 
   <!-- AEO Tools -->
   <button
-    type="button"
-    role="menuitem"
+    type="button" role="menuitem"
     class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    aria-controls="ai-content"
-    data-category="ai"
-    title="GEO AEO & AIO tools for content, search optimization & automation"
-  >
+    aria-expanded="false" aria-controls="ai-content" data-category="ai"
+    title="GEO AEO & AIO tools">
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🤖</span>
     <span class="sidebar-text font-semibold flex-1">AEO Tools</span>
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div id="ai-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="ai">
-    <a href="/aeo-performance-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Optimize for how well answer engines can crawl, render, parse, extract, and trust your page">
+    <a href="/aeo-performance-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Optimize for answer engines">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🚀</span>
       <span class="sidebar-text hidden md:block">AEO Performance</span>
     </a>
-    <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Optimize content for Google AI Overviews, SGE & generative search">
+    <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Optimize for Google AI Overviews">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔍</span>
       <span class="sidebar-text hidden md:block">AEO Audit</span>
     </a>
-    <a href="/ai-voice-search-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Voice search optimization tool – conversational keywords & featured snippets">
+    <a href="/ai-voice-search-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Voice search optimization tool">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🎙️</span>
       <span class="sidebar-text hidden md:block">AI Voice Search</span>
     </a>
-    <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="AI content audit tool – detect generated text and quality">
+    <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="AI content audit tool">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🤖</span>
       <span class="sidebar-text hidden md:block">AI Content</span>
     </a>
@@ -221,98 +207,79 @@
 
   <!-- Keywords -->
   <button
-    type="button"
-    role="menuitem"
+    type="button" role="menuitem"
     class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    aria-controls="keywords-content"
-    data-category="keywords"
-    title="Keyword suggestion and audit tools – generate keyword ideas, keyword placement, compare with competition"
-  >
+    aria-expanded="false" aria-controls="keywords-content" data-category="keywords"
+    title="Keyword suggestion and audit tools">
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔐</span>
     <span class="sidebar-text font-semibold flex-1">Keywords</span>
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div id="keywords-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="keywords">
-    <a href="/keyword-research-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Keyword research and generator tool - find high impact and longtail keywords">
+    <a href="/keyword-research-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Keyword research and generator tool">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔑</span>
       <span class="sidebar-text hidden md:block">Research</span>
     </a>
-    <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Keyword placement tool – volume, difficulty, trends & clustering">
+    <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Keyword placement tool">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🗝️</span>
       <span class="sidebar-text hidden md:block">Placement</span>
     </a>
-    <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Competitor keyword gap analysis tool – find opportunities they rank for">
+    <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Competitor keyword gap analysis tool">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🆚</span>
       <span class="sidebar-text hidden md:block">Competition</span>
     </a>
   </div>
 
-  <!-- Extras group -->
+  <!-- Extras -->
   <button
-    type="button"
-    role="menuitem"
+    type="button" role="menuitem"
     class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-    aria-expanded="false"
-    aria-controls="extras-content"
-    data-category="extras"
-    title="Extras – Browser extensions, CMS plugins, developer tools & API"
-  >
+    aria-expanded="false" aria-controls="extras-content" data-category="extras"
+    title="Extras – Browser extensions, CMS plugins, developer tools & API">
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">➕</span>
     <span class="sidebar-text font-semibold flex-1">Extras</span>
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div id="extras-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="extras">
-    <a href="/community/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Traffic Torch Developer Community">
+    <a href="/community/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch Developer Community">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🤝</span>
       <span class="sidebar-text hidden md:block">Community</span>
-    </a>    
-    <a href="/integrations/browser-extensions/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Traffic Torch Browser Extensions – Chrome, Firefox & Edge">
+    </a>
+    <a href="/integrations/browser-extensions/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch Browser Extensions">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🌐</span>
       <span class="sidebar-text hidden md:block">Browser Extensions</span>
     </a>
-    <a href="/integrations/plugins/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Traffic Torch Plugins – WordPress, Figma & Framer">
+    <a href="/integrations/plugins/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch Plugins">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🎨</span>
       <span class="sidebar-text hidden md:block">Plugins</span>
     </a>
-    <a href="/integrations/developer-tools/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Traffic Torch Developer Tools – VS Code, GitHub Action & API">
+    <a href="/integrations/developer-tools/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch Developer Tools">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🛠️</span>
       <span class="sidebar-text hidden md:block">Developer Tools</span>
     </a>
-    <a href="/integrations/developer/api/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Traffic Torch Developer API – Full endpoint reference">
+    <a href="/integrations/developer/api/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch Developer API">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🧑‍💻</span>
       <span class="sidebar-text hidden md:block">Developer API</span>
     </a>
-    <a href="/research/traffic-torch-whitepaper/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Traffic Torch WhitePaper">
+    <a href="/research/traffic-torch-whitepaper/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch WhitePaper">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📝</span>
       <span class="sidebar-text hidden md:block">WhitePaper</span>
     </a>
   </div>
 
   <!-- Help Guides -->
-  <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-     title="Free guides & tutorials – master SEO, UX, AI content & optimization">
+  <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Free guides & tutorials">
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📋</span>
     <span class="sidebar-text hidden md:block">Help Guides</span>
   </a>
 
   <!-- Upgrade -->
-  <a href="/upgrade/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-     title="Traffic Torch Upgrade to Free, PRO or Enterprise">
+  <a href="/upgrade/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch Upgrade">
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🚦</span>
     <span class="sidebar-text hidden md:block">Upgrade</span>
   </a>
 
-  <!-- Login link -->
+  <!-- Login -->
   <div class="mt-2 border-t border-white/10 dark:border-white/5 pt-4">
     <a href="/login/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition px-3 py-2 rounded-lg">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔑</span>
@@ -320,7 +287,7 @@
     </a>
   </div>
 
-    <!-- Leader Board -->
+  <!-- Leader Board -->
   <div class="mt-2 border-t border-white/10 dark:border-white/5 pt-4">
     <a href="/leader-board/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition px-3 py-2 rounded-lg">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🥇</span>

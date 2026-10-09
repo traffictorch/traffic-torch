@@ -622,8 +622,13 @@ document.addEventListener('loginStatusChanged', () => {
 async function updatePortalCount() {
   const token = localStorage.getItem('authToken');
   const els = document.querySelectorAll('[data-portal-count]');
+  const applyCount = (el, n) => {
+    el.textContent = String(n);
+    if (n > 0) el.classList.remove('hidden');
+    else el.classList.add('hidden');
+  };
   if (!token) {
-    els.forEach(el => { el.textContent = '0'; });
+    els.forEach(el => applyCount(el, 0));
     return;
   }
   try {
@@ -633,7 +638,7 @@ async function updatePortalCount() {
     if (!res.ok) return;
     const data = await res.json();
     const unread = data.unread || 0;
-    els.forEach(el => { el.textContent = String(unread); });
+    els.forEach(el => applyCount(el, unread));
   } catch {}
 }
 window.updatePortalCount = updatePortalCount;
