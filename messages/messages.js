@@ -1,6 +1,8 @@
 // ============================================================
 // Traffic Torch — Messages (vanilla JS, works on every page)
-// Self-injects into desktop + mobile menus, self-injects drawer.
+// Menu markup lives in desktop-menu.html / mobile-menu.html.
+// This file wires the click handlers, updates the badge,
+// and self-injects the drawer UI.
 // ============================================================
 (function () {
   'use strict';
@@ -81,138 +83,54 @@
     paintBadges();
   }
 
+  // ---------- badge ----------
   function paintBadges() {
-    document.querySelectorAll('[data-tt-msg-badge]').forEach(el => {
+    ['tt-beams-count', 'tt-beams-count-mobile'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
       if (unreadCount > 0) {
         el.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
-        el.style.display = 'inline-flex';
+        el.classList.remove('hidden');
       } else {
         el.textContent = '';
-        el.style.display = 'none';
+        el.classList.add('hidden');
       }
     });
   }
 
-  function menuBeamsHTML(variant) {
-    const badge = `<span data-tt-msg-badge style="display:none;min-width:18px;height:18px;padding:0 5px;font-size:11px;font-weight:800;border-radius:9999px;background:#f97316;color:#fff;align-items:center;justify-content:center;"></span>`;
-    const arrow = variant === 'desktop'
-      ? `<span class="text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>`
-      : `<span class="text-sm transition-transform">▼</span>`;
-
-    if (variant === 'desktop') {
-      return `<div data-tt-beams-group>
-        <button type="button"
-          class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-          aria-expanded="false" data-tt-beams-toggle aria-label="Beams">
-          <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔦</span>
-          <span class="sidebar-text font-semibold flex-1 text-left">Beams</span>
-          <span class="ml-auto flex items-center gap-2">
-            ${arrow}
-            <span class="text-base font-bold text-orange-500 dark:text-orange-400">${badge} ✉️</span>
-          </span>
-        </button>
-        <div data-tt-beams-content class="pl-0 md:pl-10 space-y-3 mt-1 hidden">
-          <a href="#" data-tt-open-inbox class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
-            <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📬</span>
-            <span class="sidebar-text hidden md:block">Inbox</span>
-          </a>
-          <a href="/dashboard/?openbeams=1&tab=notifications" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
-            <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔔</span>
-            <span class="sidebar-text hidden md:block">Message notifications</span>
-          </a>
-          <a href="/dashboard/#settings" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
-            <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
-            <span class="sidebar-text hidden md:block">Beam settings</span>
-          </a>
-        </div>
-      </div>`;
-    }
-
-    return `<div data-tt-beams-group>
-      <button type="button"
-        class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-        aria-expanded="false" data-tt-beams-toggle aria-label="Beams">
-        <span class="flex items-center gap-2">🔦 Beams</span>
-        <span class="flex items-center gap-2">
-          ${arrow}
-          <span class="font-bold text-orange-500">${badge} ✉️</span>
-        </span>
-      </button>
-      <div data-tt-beams-content class="pl-8 flex flex-col gap-3 hidden">
-        <a href="#" data-tt-open-inbox class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📬 Inbox</a>
-        <a href="/dashboard/?openbeams=1&tab=notifications" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🔔 Message notifications</a>
-        <a href="/dashboard/#settings" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚙️ Beam settings</a>
-      </div>
-    </div>`;
-  }
-
-  function wireBeamsToggle(group) {
-    const btn = group.querySelector('[data-tt-beams-toggle]');
-    const content = group.querySelector('[data-tt-beams-content]');
-    if (!btn || !content) return;
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const expanded = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!expanded));
-      content.classList.toggle('hidden', expanded);
-      const arrow = btn.querySelector('.sidebar-arrow') || btn.querySelector('span.transition-transform');
-      if (arrow) arrow.style.transform = expanded ? '' : 'rotate(180deg)';
-    });
-  }
-
-  function injectIntoMenus() {
-    // Desktop
-    const dph = document.getElementById('desktop-menu-placeholder');
-    if (dph && !dph.querySelector('[data-tt-beams-group]')) {
-      const nav = dph.querySelector('nav') || dph;
-      const portalWrap = nav.querySelector('[data-category="proportal"]')?.parentElement;
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = menuBeamsHTML('desktop');
-      const node = wrapper.firstElementChild;
-      if (portalWrap) portalWrap.insertAdjacentElement('afterend', node);
-      else nav.insertBefore(node, nav.firstChild);
-      wireBeamsToggle(node);
-      node.querySelectorAll('[data-tt-open-inbox]').forEach(a => {
-        a.addEventListener('click', (e) => { e.preventDefault(); openInbox(); });
-      });
-    }
-
-    // Mobile
-    const mph = document.getElementById('mobile-menu-placeholder');
-    if (mph && !mph.querySelector('[data-tt-beams-group]')) {
-      const nav = mph.querySelector('nav') || mph;
-      const portalWrap = nav.querySelector('[data-category="proportal-mobile"]')?.parentElement;
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = menuBeamsHTML('mobile');
-      const node = wrapper.firstElementChild;
-      if (portalWrap) portalWrap.insertAdjacentElement('afterend', node);
-      else nav.insertBefore(node, nav.firstChild);
-      wireBeamsToggle(node);
-      node.querySelectorAll('[data-tt-open-inbox]').forEach(a => {
-        a.addEventListener('click', (e) => {
-          e.preventDefault();
-          const mm = document.getElementById('mobileMenu');
-          if (mm) mm.classList.add('hidden');
+  // ---------- wire the static sidebar links ----------
+  function wireStaticBeamsLinks() {
+    const wire = (linkId) => {
+      const btn = document.getElementById(linkId);
+      if (!btn || btn.dataset.ttWired === '1') return;
+      btn.dataset.ttWired = '1';
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const mm = document.getElementById('mobileMenu');
+        if (mm && !mm.classList.contains('hidden')) {
+          mm.classList.add('hidden');
           document.body.classList.remove('overflow-hidden');
-          openInbox();
-        });
+        }
+        openInbox();
       });
-    }
+    };
+    wire('tt-beams-link');
+    wire('tt-beams-link-mobile');
     paintBadges();
   }
 
-  function waitForMenus(cb) {
+  function waitForBeamsLinks(cb) {
     const start = Date.now();
     const iv = setInterval(() => {
-      const dph = document.getElementById('desktop-menu-placeholder');
-      const mph = document.getElementById('mobile-menu-placeholder');
-      const dReady = dph && dph.innerHTML.trim().length > 0;
-      const mReady = mph && mph.innerHTML.trim().length > 0;
-      if (dReady || mReady) { clearInterval(iv); cb(); }
-      else if (Date.now() - start > 8000) { clearInterval(iv); cb(); }
+      if (document.getElementById('tt-beams-link') || document.getElementById('tt-beams-link-mobile')) {
+        clearInterval(iv); cb();
+      } else if (Date.now() - start > 8000) {
+        clearInterval(iv); cb();
+      }
     }, 100);
   }
 
+  // ---------- drawer ----------
   function buildDrawer() {
     if (drawerBuilt) return;
     drawerBuilt = true;
@@ -220,7 +138,7 @@
     root.id = 'tt-msg-root';
     root.innerHTML = `
       <div id="tt-msg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:99998;"></div>
-      <aside id="tt-msg-panel" role="dialog" aria-label="Messages" style="display:none;position:fixed;top:0;right:0;bottom:0;width:100%;max-width:420px;z-index:99999;display:none;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,0.3);transform:translateX(100%);transition:transform 0.22s ease-out, background 0.2s;"></aside>
+      <aside id="tt-msg-panel" role="dialog" aria-label="Messages" style="display:none;position:fixed;top:0;right:0;bottom:0;width:100%;max-width:420px;z-index:99999;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,0.3);transform:translateX(100%);transition:transform 0.22s ease-out, background 0.2s;"></aside>
     `;
     document.body.appendChild(root);
     document.getElementById('tt-msg-overlay').addEventListener('click', closeInbox);
@@ -660,18 +578,16 @@
       paintBadges();
     } catch {}
   }
-  
-    // ---------- global entry point for external callers ----------
+
+  // ---------- global entry point for external callers ----------
   window.ttOpenBeams = function (peerId) {
     if (!isAuthed()) { window.location.href = '/login/'; return; }
     openInbox();
     if (peerId) {
-      // After threads load, auto-open that peer's thread
       setTimeout(async () => {
         try {
           const t = threads.find(x => x.peer.id === peerId);
           if (t) { openThread(t.peer); return; }
-          // Not in the loaded list — fetch profile and open
           const all = await api('/api/messages/inbox?limit=100');
           const match = (all.threads || []).find(x => x.peer.id === peerId);
           if (match) openThread(match.peer);
@@ -683,15 +599,12 @@
   async function connectWS() {
     if (!isAuthed()) return;
     if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
-
     try {
       const t = await api('/api/messages/ws-ticket', { method: 'POST' });
       if (!t.ticket) throw new Error('no ticket');
       const wsUrl = API.replace(/^https/, 'wss') + '/api/messages/connect?ticket=' + encodeURIComponent(t.ticket);
       ws = new WebSocket(wsUrl);
-
       ws.addEventListener('open', () => { wsBackoff = 1000; });
-
       ws.addEventListener('message', (ev) => {
         let data;
         try { data = JSON.parse(ev.data); } catch { return; }
@@ -699,7 +612,6 @@
           handleInboundMessage(data.message, data.peer);
         }
       });
-
       ws.addEventListener('close', () => { ws = null; scheduleReconnect(); });
       ws.addEventListener('error', () => { try { ws.close(); } catch {} });
     } catch (e) {
@@ -720,10 +632,8 @@
   function handleInboundMessage(msg, peer) {
     unreadCount = (unreadCount || 0) + 1;
     paintBadges();
-
     const panel = document.getElementById('tt-msg-panel');
     const drawerOpen = panel && panel.style.display === 'flex';
-
     if (activeThread && activeThread.peer.id === peer.id) {
       activeThread.messages.push(msg);
       renderPanelContent();
@@ -733,7 +643,6 @@
       }).then(refreshUnread).catch(() => {});
       return;
     }
-
     if (drawerOpen) { loadThreads(); return; }
     showToast(peer, msg);
   }
@@ -743,18 +652,16 @@
     me = decodeJwt(getToken());
     buildDrawer();
 
-    // Deep link: /dashboard/?openbeams=1 opens the drawer automatically
     try {
       const params = new URLSearchParams(window.location.search);
       if (params.get('openbeams') === '1') {
-        // Clean the URL so a refresh doesn't re-trigger
         const clean = window.location.pathname + window.location.hash;
         window.history.replaceState({}, '', clean);
         setTimeout(() => window.ttOpenBeams(), 400);
       }
     } catch {}
     await refreshUnread();
-    waitForMenus(injectIntoMenus);
+    waitForBeamsLinks(wireStaticBeamsLinks);
     document.addEventListener('loginStatusChanged', async () => {
       if (!isAuthed() && ws) {
         try { ws.close(); } catch {}
@@ -764,7 +671,7 @@
         connectWS();
       }
       await refreshUnread();
-      waitForMenus(injectIntoMenus);
+      waitForBeamsLinks(wireStaticBeamsLinks);
     });
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(refreshUnread, 60000);
@@ -777,12 +684,12 @@
 
   const mo = new MutationObserver(() => {
     if (!isAuthed()) return;
-    const dph = document.getElementById('desktop-menu-placeholder');
-    if (dph && dph.innerHTML.length > 0 && !dph.querySelector('[data-tt-beams-group]')) injectIntoMenus();
+    if (document.getElementById('tt-beams-link') || document.getElementById('tt-beams-link-mobile')) {
+      wireStaticBeamsLinks();
+    }
   });
   setTimeout(() => {
-    const t = document.body;
-    if (t) mo.observe(t, { childList: true, subtree: true });
+    if (document.body) mo.observe(document.body, { childList: true, subtree: true });
   }, 500);
 
   if (document.readyState === 'loading') {

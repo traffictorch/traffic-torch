@@ -56,6 +56,7 @@
     color: #fff;
     box-shadow: 0 2px 8px rgba(249,115,22,0.35);
   }
+  #communication-preferences { scroll-margin-top: 100px; }
   </style>
 
   <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
@@ -2623,10 +2624,10 @@ function dashboardApp() {
         this.activeDashboardTab = hash;
       } else if (hash === 'communication-preferences') {
         this.activeDashboardTab = 'settings';
-        this.$nextTick(() => {
+        setTimeout(() => {
           const el = document.getElementById('communication-preferences');
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
+        }, 300);
       }
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -2663,10 +2664,10 @@ function dashboardApp() {
           this.activeDashboardTab = h;
         } else if (h === 'communication-preferences') {
           this.activeDashboardTab = 'settings';
-          this.$nextTick(() => {
+          setTimeout(() => {
             const el = document.getElementById('communication-preferences');
             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          });
+          }, 300);
         }
       });
 
