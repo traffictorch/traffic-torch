@@ -226,7 +226,7 @@ async function handleSend(request, env, user, deps) {
       subjectType: 'message',
       subjectId: messageId,
       message: `${senderName}: ${preview}`,
-      link: `/dashboard/#messages`
+      link: `/dashboard/?openbeams=1`
     }).catch(() => {});
   } catch {}
 

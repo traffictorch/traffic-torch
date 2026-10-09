@@ -583,9 +583,11 @@ function updateProPortalDot() {
     if (!badge) {
       badge = document.createElement('span');
       badge.className = 'pro-badge';
-      link.appendChild(badge);
+      const slot = link.querySelector('[data-pro-badge-slot]');
+      if (slot) slot.appendChild(badge);
+      else link.appendChild(badge);
     }
-    badge.className = `pro-badge inline-block w-2.5 h-2.5 rounded-full ml-2 ${isLoggedIn ? 'bg-green-500' : 'bg-red-500'}`;
+    badge.className = `pro-badge inline-block w-2.5 h-2.5 rounded-full ${isLoggedIn ? 'bg-green-500' : 'bg-red-500'}`;
   });
 }
 

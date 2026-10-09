@@ -13,8 +13,16 @@
       title="Portal – Notifications, Dashboard, Analytics, Integrations & Settings"
     >
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🚦</span>
-      <span class="sidebar-text font-semibold flex-1">Portal <span data-portal-count class="text-blue-500 dark:text-blue-400 font-bold hover:underline cursor-pointer mx-0.5" title="View notifications" onclick="window.handleNotifJump(event); return false;">0</span> 🔔</span>
-      <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
+      <span class="sidebar-text font-semibold flex-1 text-left">Portal</span>
+      <span class="ml-auto flex items-center gap-2">
+        <span data-pro-badge-slot></span>
+        <span class="text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
+        <span class="text-base font-bold text-blue-500 dark:text-blue-400 hover:underline cursor-pointer"
+              title="View notifications"
+              onclick="window.handleNotifJump(event); return false;">
+          <span data-portal-count>0</span> 🔔
+        </span>
+      </span>
     </button>
     <div id="proportal-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="proportal">
       <a href="/dashboard/#profile" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="profile">
@@ -233,6 +241,11 @@
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div id="extras-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="extras">
+    <a href="/community/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
+       title="Traffic Torch Developer Community">
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🤝</span>
+      <span class="sidebar-text hidden md:block">Community</span>
+    </a>    
     <a href="/integrations/browser-extensions/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
        title="Traffic Torch Browser Extensions – Chrome, Firefox & Edge">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🌐</span>
@@ -257,11 +270,6 @@
        title="Traffic Torch WhitePaper">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📝</span>
       <span class="sidebar-text hidden md:block">WhitePaper</span>
-    </a>
-    <a href="/community/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition"
-       title="Traffic Torch Developer Community">
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🤝</span>
-      <span class="sidebar-text hidden md:block">Community</span>
     </a>
   </div>
 

@@ -89,56 +89,109 @@
     });
   }
 
-  function menuEnvelopeHTML(variant) {
-    const badge = `<span data-tt-msg-badge style="display:none;min-width:20px;height:20px;padding:0 6px;margin-left:auto;font-size:11px;font-weight:800;border-radius:9999px;background:#f97316;color:#fff;align-items:center;justify-content:center;"></span>`;
+  function menuBeamsHTML(variant) {
+    const badge = `<span data-tt-msg-badge style="display:none;min-width:18px;height:18px;padding:0 5px;font-size:11px;font-weight:800;border-radius:9999px;background:#f97316;color:#fff;align-items:center;justify-content:center;"></span>`;
+    const arrow = variant === 'desktop'
+      ? `<span class="text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>`
+      : `<span class="text-sm transition-transform">▼</span>`;
+
     if (variant === 'desktop') {
-      return `<button type="button" data-tt-open-inbox
-        class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-        aria-label="Beams">
-        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">✉️</span>
-        <span class="sidebar-text font-semibold flex-1 text-left">Beams 🔦</span>
-        ${badge}
-      </button>`;
+      return `<div data-tt-beams-group>
+        <button type="button"
+          class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
+          aria-expanded="false" data-tt-beams-toggle aria-label="Beams">
+          <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔦</span>
+          <span class="sidebar-text font-semibold flex-1 text-left">Beams</span>
+          <span class="ml-auto flex items-center gap-2">
+            ${arrow}
+            <span class="text-base font-bold text-orange-500 dark:text-orange-400">${badge} ✉️</span>
+          </span>
+        </button>
+        <div data-tt-beams-content class="pl-0 md:pl-10 space-y-3 mt-1 hidden">
+          <a href="#" data-tt-open-inbox class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
+            <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📬</span>
+            <span class="sidebar-text hidden md:block">Inbox</span>
+          </a>
+          <a href="/dashboard/?openbeams=1&tab=notifications" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
+            <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔔</span>
+            <span class="sidebar-text hidden md:block">Message notifications</span>
+          </a>
+          <a href="/dashboard/#settings" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
+            <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
+            <span class="sidebar-text hidden md:block">Beam settings</span>
+          </a>
+        </div>
+      </div>`;
     }
-    return `<button type="button" data-tt-open-inbox
-      class="flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none">
-      <span>✉️ Beams 🔦</span>
-      ${badge}
-    </button>`;
+
+    return `<div data-tt-beams-group>
+      <button type="button"
+        class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
+        aria-expanded="false" data-tt-beams-toggle aria-label="Beams">
+        <span class="flex items-center gap-2">🔦 Beams</span>
+        <span class="flex items-center gap-2">
+          ${arrow}
+          <span class="font-bold text-orange-500">${badge} ✉️</span>
+        </span>
+      </button>
+      <div data-tt-beams-content class="pl-8 flex flex-col gap-3 hidden">
+        <a href="#" data-tt-open-inbox class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📬 Inbox</a>
+        <a href="/dashboard/?openbeams=1&tab=notifications" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🔔 Message notifications</a>
+        <a href="/dashboard/#settings" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚙️ Beam settings</a>
+      </div>
+    </div>`;
+  }
+
+  function wireBeamsToggle(group) {
+    const btn = group.querySelector('[data-tt-beams-toggle]');
+    const content = group.querySelector('[data-tt-beams-content]');
+    if (!btn || !content) return;
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      content.classList.toggle('hidden', expanded);
+      const arrow = btn.querySelector('.sidebar-arrow') || btn.querySelector('span.transition-transform');
+      if (arrow) arrow.style.transform = expanded ? '' : 'rotate(180deg)';
+    });
   }
 
   function injectIntoMenus() {
+    // Desktop
     const dph = document.getElementById('desktop-menu-placeholder');
-    if (dph && !dph.querySelector('[data-tt-open-inbox]')) {
+    if (dph && !dph.querySelector('[data-tt-beams-group]')) {
       const nav = dph.querySelector('nav') || dph;
-      const portal = nav.querySelector('[data-category="proportal"]');
+      const portalWrap = nav.querySelector('[data-category="proportal"]')?.parentElement;
       const wrapper = document.createElement('div');
-      wrapper.innerHTML = menuEnvelopeHTML('desktop');
+      wrapper.innerHTML = menuBeamsHTML('desktop');
       const node = wrapper.firstElementChild;
-      if (portal && portal.parentElement) {
-        portal.parentElement.insertAdjacentElement('afterend', node);
-      } else {
-        nav.insertBefore(node, nav.firstChild);
-      }
-      node.addEventListener('click', () => openInbox());
+      if (portalWrap) portalWrap.insertAdjacentElement('afterend', node);
+      else nav.insertBefore(node, nav.firstChild);
+      wireBeamsToggle(node);
+      node.querySelectorAll('[data-tt-open-inbox]').forEach(a => {
+        a.addEventListener('click', (e) => { e.preventDefault(); openInbox(); });
+      });
     }
+
+    // Mobile
     const mph = document.getElementById('mobile-menu-placeholder');
-    if (mph && !mph.querySelector('[data-tt-open-inbox]')) {
+    if (mph && !mph.querySelector('[data-tt-beams-group]')) {
       const nav = mph.querySelector('nav') || mph;
-      const portal = nav.querySelector('[data-category="proportal-mobile"]');
+      const portalWrap = nav.querySelector('[data-category="proportal-mobile"]')?.parentElement;
       const wrapper = document.createElement('div');
-      wrapper.innerHTML = menuEnvelopeHTML('mobile');
+      wrapper.innerHTML = menuBeamsHTML('mobile');
       const node = wrapper.firstElementChild;
-      if (portal && portal.parentElement) {
-        portal.parentElement.insertAdjacentElement('afterend', node);
-      } else {
-        nav.insertBefore(node, nav.firstChild);
-      }
-      node.addEventListener('click', () => {
-        const mm = document.getElementById('mobileMenu');
-        if (mm) mm.classList.add('hidden');
-        document.body.classList.remove('overflow-hidden');
-        openInbox();
+      if (portalWrap) portalWrap.insertAdjacentElement('afterend', node);
+      else nav.insertBefore(node, nav.firstChild);
+      wireBeamsToggle(node);
+      node.querySelectorAll('[data-tt-open-inbox]').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          const mm = document.getElementById('mobileMenu');
+          if (mm) mm.classList.add('hidden');
+          document.body.classList.remove('overflow-hidden');
+          openInbox();
+        });
       });
     }
     paintBadges();
@@ -603,6 +656,25 @@
       paintBadges();
     } catch {}
   }
+  
+    // ---------- global entry point for external callers ----------
+  window.ttOpenBeams = function (peerId) {
+    if (!isAuthed()) { window.location.href = '/login/'; return; }
+    openInbox();
+    if (peerId) {
+      // After threads load, auto-open that peer's thread
+      setTimeout(async () => {
+        try {
+          const t = threads.find(x => x.peer.id === peerId);
+          if (t) { openThread(t.peer); return; }
+          // Not in the loaded list — fetch profile and open
+          const all = await api('/api/messages/inbox?limit=100');
+          const match = (all.threads || []).find(x => x.peer.id === peerId);
+          if (match) openThread(match.peer);
+        } catch {}
+      }, 300);
+    }
+  };
 
   async function connectWS() {
     if (!isAuthed()) return;
@@ -666,6 +738,17 @@
     if (!isAuthed()) return;
     me = decodeJwt(getToken());
     buildDrawer();
+
+    // Deep link: /dashboard/?openbeams=1 opens the drawer automatically
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('openbeams') === '1') {
+        // Clean the URL so a refresh doesn't re-trigger
+        const clean = window.location.pathname + window.location.hash;
+        window.history.replaceState({}, '', clean);
+        setTimeout(() => window.ttOpenBeams(), 400);
+      }
+    } catch {}
     await refreshUnread();
     waitForMenus(injectIntoMenus);
     document.addEventListener('loginStatusChanged', async () => {
@@ -691,7 +774,7 @@
   const mo = new MutationObserver(() => {
     if (!isAuthed()) return;
     const dph = document.getElementById('desktop-menu-placeholder');
-    if (dph && dph.innerHTML.length > 0 && !dph.querySelector('[data-tt-open-inbox]')) injectIntoMenus();
+    if (dph && dph.innerHTML.length > 0 && !dph.querySelector('[data-tt-beams-group]')) injectIntoMenus();
   });
   setTimeout(() => {
     const t = document.body;

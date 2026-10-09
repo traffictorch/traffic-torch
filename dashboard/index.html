@@ -505,15 +505,22 @@
                       <template x-if="!n.is_read"><span class="notif-dot"></span></template>
                       <template x-if="n.is_read"><span style="width:8px;flex-shrink:0;"></span></template>
                       <img :src="`/images/avatars/${n.actor_avatar || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover" alt="">
-                      <div class="flex-1 min-w-0">
+                       <div class="flex-1 min-w-0">
                         <p class="text-sm leading-snug">
+                          <span x-show="n.type === 'message'" class="mr-1">✉️</span>
+                          <span x-show="n.type === 'comment'" class="mr-1">💬</span>
+                          <span x-show="n.type === 'network'" class="mr-1">🤝</span>
+                          <span x-show="n.type === 'leaderboard'" class="mr-1">🏆</span>
                           <span x-text="n.message"></span>
                           <span x-show="n.actor_total_points > 0" class="points-badge ml-2" x-text="'🏅 ' + n.actor_total_points"></span>
                         </p>
                         <p class="text-xs text-gray-500 mt-1" x-text="formatRelativeTime(n.created_at)"></p>
                       </div>
                       <div class="flex flex-col gap-1 items-end flex-shrink-0">
-                        <template x-if="n.link">
+                        <template x-if="n.type === 'message'">
+                          <button @click="openBeamNotification(n)" class="text-xs text-orange-500 hover:underline whitespace-nowrap">🔦 Open Beam →</button>
+                        </template>
+                        <template x-if="n.type !== 'message' && n.link">
                           <a :href="n.link" @click="markOneRead(n.id)" class="text-xs text-orange-500 hover:underline whitespace-nowrap">Open →</a>
                         </template>
                         <button @click="deleteNotification(n.id)" class="text-xs text-gray-400 hover:text-red-500 transition" title="Delete">✕</button>
@@ -2945,6 +2952,17 @@ function dashboardApp() {
         this.updateSidebarBadge();
       } catch {}
       finally { this.notifications.loading = false; }
+    },
+    
+        openBeamNotification(n) {
+      // Mark read first, then open the drawer
+      this.markOneRead(n.id);
+      if (typeof window.ttOpenBeams === 'function') {
+        window.ttOpenBeams(n.actor_id);
+      } else {
+        // Fallback if messages.js hasn't loaded (rare)
+        window.location.href = '/dashboard/?openbeams=1';
+      }
     },
 
     async markAllRead() {
