@@ -114,15 +114,15 @@
         openInbox();
       });
     };
-    wire('tt-beams-link');
-    wire('tt-beams-link-mobile');
+    wire('tt-beams-inbox-link');
+    wire('tt-beams-inbox-link-mobile');
     paintBadges();
   }
 
   function waitForBeamsLinks(cb) {
     const start = Date.now();
     const iv = setInterval(() => {
-      if (document.getElementById('tt-beams-link') || document.getElementById('tt-beams-link-mobile')) {
+      if (document.getElementById('tt-beams-inbox-link') || document.getElementById('tt-beams-inbox-link-mobile')) {
         clearInterval(iv); cb();
       } else if (Date.now() - start > 8000) {
         clearInterval(iv); cb();
@@ -684,7 +684,7 @@
 
   const mo = new MutationObserver(() => {
     if (!isAuthed()) return;
-    if (document.getElementById('tt-beams-link') || document.getElementById('tt-beams-link-mobile')) {
+    if (document.getElementById('tt-beams-inbox-link') || document.getElementById('tt-beams-inbox-link-mobile')) {
       wireStaticBeamsLinks();
     }
   });
