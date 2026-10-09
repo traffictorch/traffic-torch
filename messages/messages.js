@@ -106,6 +106,7 @@
       btn.dataset.ttWired = '1';
       btn.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         const mm = document.getElementById('mobileMenu');
         if (mm && !mm.classList.contains('hidden')) {
           mm.classList.add('hidden');

@@ -284,9 +284,9 @@ header, footer {
 }
 
 details > div,
-.grid,
-.flex,
-.container {
+.grid:not(body),
+.flex:not(body),
+.container:not(body) {
   contain: layout paint;
 }
 
