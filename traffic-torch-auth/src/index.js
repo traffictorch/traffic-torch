@@ -384,6 +384,11 @@ async function ensureTables(env) {
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN notify_comments INTEGER DEFAULT 1`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN notify_network INTEGER DEFAULT 1`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN notify_leaderboard INTEGER DEFAULT 1`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN notify_messages INTEGER DEFAULT 1`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN push_comments INTEGER DEFAULT 1`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN push_network INTEGER DEFAULT 1`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN push_leaderboard INTEGER DEFAULT 1`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN push_messages INTEGER DEFAULT 1`).run(); } catch (e) {}
   await env.MY_BINDING.prepare(
     `CREATE TABLE IF NOT EXISTS user_points (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -553,6 +558,10 @@ function shapeProfile(user) {
     notify_network: user.notify_network !== 0 ? 1 : 0,
     notify_leaderboard: user.notify_leaderboard !== 0 ? 1 : 0,
     notify_messages: user.notify_messages !== 0 ? 1 : 0,
+    push_comments: user.push_comments !== 0 ? 1 : 0,
+    push_network: user.push_network !== 0 ? 1 : 0,
+    push_leaderboard: user.push_leaderboard !== 0 ? 1 : 0,
+    push_messages: user.push_messages !== 0 ? 1 : 0,
     activity_public: user.activity_public !== 0 ? 1 : 0,
     created_at: user.created_at ? new Date(user.created_at).getTime() : null
   };
@@ -680,8 +689,11 @@ async function handleProfileRoutes(request, env, url) {
     if (body.notify_comments !== undefined) { fields.push('notify_comments = ?'); params.push(body.notify_comments ? 1 : 0); }
     if (body.notify_network !== undefined) { fields.push('notify_network = ?'); params.push(body.notify_network ? 1 : 0); }
     if (body.notify_leaderboard !== undefined) { fields.push('notify_leaderboard = ?'); params.push(body.notify_leaderboard ? 1 : 0); }
-    if (body.notify_messages !== undefined) { fields.push('notify_messages = ?'); params.push(body.notify_messages ? 1 : 0); }  
     if (body.notify_messages !== undefined) { fields.push('notify_messages = ?'); params.push(body.notify_messages ? 1 : 0); }
+    if (body.push_comments !== undefined) { fields.push('push_comments = ?'); params.push(body.push_comments ? 1 : 0); }
+    if (body.push_network !== undefined) { fields.push('push_network = ?'); params.push(body.push_network ? 1 : 0); }
+    if (body.push_leaderboard !== undefined) { fields.push('push_leaderboard = ?'); params.push(body.push_leaderboard ? 1 : 0); }
+    if (body.push_messages !== undefined) { fields.push('push_messages = ?'); params.push(body.push_messages ? 1 : 0); }
     if (body.activity_public !== undefined) { fields.push('activity_public = ?'); params.push(body.activity_public ? 1 : 0); }
 
     if (!fields.length) return feedJson({ error: 'Nothing to update' }, 400);

@@ -4,11 +4,11 @@ import { getVapidConfig } from './vapid.js';
 // Whitelist of notification types → maps to a users.notify_<type> column.
 // Adding a new type = add here + add the DB column. Nothing else changes.
 const TYPE_TO_PREF_COLUMN = {
-  comment:     'notify_comments',
-  network:     'notify_network',
-  leaderboard: 'notify_leaderboard',
-  message:     'notify_messages',
-  system:      'notify_messages', // system notifications piggyback on the messages pref for now
+  comment:     'push_comments',
+  network:     'push_network',
+  leaderboard: 'push_leaderboard',
+  message:     'push_messages',
+  system:      'push_messages',
 };
 
 export function isKnownType(type) {

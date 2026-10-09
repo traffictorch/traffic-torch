@@ -2122,25 +2122,7 @@
               </div>
             </div>
 
-            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-              <h4 class="font-semibold mb-3">🔔 Notification Preferences</h4>
-              <p class="text-xs text-gray-500 mb-4">Choose which events generate a notification.</p>
-              <div class="space-y-3">
-                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Comments on my posts</span><input type="checkbox" x-model="profile.notify_comments" class="w-5 h-5"></label>
-                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">New network connections</span><input type="checkbox" x-model="profile.notify_network" class="w-5 h-5"></label>
-                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Leaderboard movements</span><input type="checkbox" x-model="profile.notify_leaderboard" class="w-5 h-5"></label>
-              </div>
-              <div class="flex gap-3 mt-4 flex-wrap">
-                <button @click="saveProfile()" :disabled="profile.saving"
-                        class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition text-sm">
-                  <span x-show="!profile.saving">Save Preferences</span>
-                  <span x-show="profile.saving">Saving…</span>
-                </button>
-                <button @click="scrollToNotifications(); activeDashboardTab = 'profile';" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 text-sm transition">View notifications →</button>
-              </div>
-              <p x-show="profile.success" class="text-green-500 text-sm mt-3" x-text="profile.success"></p>
-            </div>
-
+            <!-- ====== PUSH NOTIFICATIONS (device) — first ====== -->
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <h4 class="font-semibold">📲 Push Notifications (this device)</h4>
@@ -2192,32 +2174,55 @@
                     Refresh status
                   </button>
                 </div>
+
                 <div class="pt-3 border-t border-gray-200 dark:border-gray-700 space-y-2" x-show="push.subscribed">
-                  <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Notify me about</p>
+                  <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Push me about</p>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>💬 Comments on my posts</span>
-                    <input type="checkbox" x-model="profile.notify_comments" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" x-model="profile.push_comments" @change="saveProfile()" class="w-5 h-5">
                   </label>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>🤝 New network connections</span>
-                    <input type="checkbox" x-model="profile.notify_network" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" x-model="profile.push_network" @change="saveProfile()" class="w-5 h-5">
                   </label>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>🏅 Leaderboard updates</span>
-                    <input type="checkbox" x-model="profile.notify_leaderboard" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" x-model="profile.push_leaderboard" @change="saveProfile()" class="w-5 h-5">
                   </label>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>✉️ Direct messages</span>
-                    <input type="checkbox" x-model="profile.notify_messages" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" x-model="profile.push_messages" @change="saveProfile()" class="w-5 h-5">
                   </label>
                 </div>
-
 
                 <p x-show="push.message" class="text-sm"
                    :class="push.message && push.message.type === 'ok' ? 'text-green-500' : 'text-red-500'"
                    x-text="push.message ? push.message.text : ''"></p>
               </div>
             </div>
+
+            <!-- ====== NOTIFICATION PREFERENCES (in-app bell) — second ====== -->
+            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <h4 class="font-semibold mb-3">🔔 Notification Preferences</h4>
+              <p class="text-xs text-gray-500 mb-4">Choose which events show the bell badge and appear in your notifications list.</p>
+              <div class="space-y-3">
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Comments on my posts</span><input type="checkbox" x-model="profile.notify_comments" class="w-5 h-5"></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">New network connections</span><input type="checkbox" x-model="profile.notify_network" class="w-5 h-5"></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Leaderboard movements</span><input type="checkbox" x-model="profile.notify_leaderboard" class="w-5 h-5"></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Direct messages</span><input type="checkbox" x-model="profile.notify_messages" class="w-5 h-5"></label>
+              </div>
+            </div>
+
+            <!-- ====== SAVE BUTTON (shared for both cards) ====== -->
+            <div class="mt-4 flex gap-3 flex-wrap">
+              <button @click="saveProfile()" :disabled="profile.saving"
+                      class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition text-sm">
+                <span x-show="!profile.saving">Save Preferences</span>
+                <span x-show="profile.saving">Saving…</span>
+              </button>
+              <button @click="scrollToNotifications(); activeDashboardTab = 'profile';" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 text-sm transition">View notifications →</button>
+            </div>
+            <p x-show="profile.success" class="text-green-500 text-sm mt-3" x-text="profile.success"></p>
 
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-2">💳 Billing & Subscription</h4>
@@ -2440,6 +2445,10 @@ function dashboardApp() {
       notify_network: 1,
       notify_leaderboard: 1,
       notify_messages: 1,
+      push_comments: 1,
+      push_network: 1,
+      push_leaderboard: 1,
+      push_messages: 1,
       activity_public: 1,
       total_points: 0,
       created_at: null
@@ -3649,6 +3658,10 @@ function dashboardApp() {
           notify_network: this.profile.notify_network ? 1 : 0,
           notify_leaderboard: this.profile.notify_leaderboard ? 1 : 0,
           notify_messages: this.profile.notify_messages ? 1 : 0,
+          push_comments: this.profile.push_comments ? 1 : 0,
+          push_network: this.profile.push_network ? 1 : 0,
+          push_leaderboard: this.profile.push_leaderboard ? 1 : 0,
+          push_messages: this.profile.push_messages ? 1 : 0,
           activity_public: this.profile.activity_public ? 1 : 0
         };
         const res = await fetch(`${API_BASE}/api/profile/me`, {
