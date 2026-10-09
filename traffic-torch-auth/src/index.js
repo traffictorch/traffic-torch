@@ -420,6 +420,26 @@ async function ensureTables(env) {
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN activity_public INTEGER DEFAULT 1`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN avatar_r2_key TEXT`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN avatar_updated_at INTEGER`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN message_policy TEXT DEFAULT 'all'`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN messages_blocked INTEGER DEFAULT 0`).run(); } catch (e) {}
+}
+
+// ============================================================
+// ensureTables runs once per Worker instance, not per request.
+// The first request in a cold instance pays the cost; every
+// request after that gets an instant Promise.resolve().
+// If the first run fails, we clear the cache so the next
+// request retries instead of being permanently broken.
+// ============================================================
+let _tablesEnsured = null;
+function ensureTablesOnce(env) {
+  if (!_tablesEnsured) {
+    _tablesEnsured = ensureTables(env).catch(err => {
+      _tablesEnsured = null;
+      throw err;
+    });
+  }
+  return _tablesEnsured;
 }
 
 async function getCachedReport(userId, reportType, days, startDate, endDate, env) {
@@ -585,6 +605,8 @@ function shapeProfile(user) {
     push_leaderboard: user.push_leaderboard !== 0 ? 1 : 0,
     push_messages: user.push_messages !== 0 ? 1 : 0,
     activity_public: user.activity_public !== 0 ? 1 : 0,
+    message_policy: user.message_policy || 'all',
+    messages_blocked: user.messages_blocked || 0,
     created_at: user.created_at ? new Date(user.created_at).getTime() : null
   };
 }
@@ -1810,7 +1832,7 @@ export default {
 
     const method = request.method;
 
-    await ensureTables(env);
+    await ensureTablesOnce(env);
 
     if (method === 'OPTIONS') {
       return new Response(null, {

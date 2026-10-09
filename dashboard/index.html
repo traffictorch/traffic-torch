@@ -2090,20 +2090,22 @@
             <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">All plans include all 17 tools. <a href="/pro/" class="text-orange-500 hover:underline">See full details →</a></p>
           </div>
         </div>
-
+        
         <!-- ===== SETTINGS TAB ===== -->
         <div x-show="activeDashboardTab === 'settings'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-6">⚙️ Account Settings</h3>
 
+            <!-- ========== SECTION: Account ========== -->
+            <h4 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">👤 Account</h4>
             <div class="space-y-4">
               <div class="flex flex-col items-start p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Email</span>
-                <span class="break-all" x-text="isAuthenticated ? user.email : 'Not logged in'"></span>
+                <span class="break-all" x-text="!authChecked ? 'Checking…' : (isAuthenticated ? user.email : 'Not logged in')"></span>
               </div>
               <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Plan</span>
-                <span x-text="isAuthenticated ? (user.tier || 'free').charAt(0).toUpperCase() + (user.tier || 'free').slice(1) : 'Guest'"></span>
+                <span x-text="!authChecked ? '…' : (isAuthenticated ? (user.tier || 'free').charAt(0).toUpperCase() + (user.tier || 'free').slice(1) : 'Guest')"></span>
               </div>
               <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Total points</span>
@@ -2111,11 +2113,20 @@
               </div>
               <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Member since</span>
-                <span x-text="isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—'"></span>
+                <span x-text="!authChecked ? '…' : (isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—')"></span>
               </div>
             </div>
-            
-                        <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+
+            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <h4 class="font-semibold mb-2">💳 Billing & Subscription</h4>
+              <button x-show="isAuthenticated && user.tier !== 'free'" @click="manageBilling()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Manage Subscription</button>
+              <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade here</button>
+            </div>
+
+            <!-- ========== SECTION: Communication Preferences ========== -->
+            <h4 class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">💬 Communication Preferences</h4>
+
+            <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-3">✉️ Direct Messages</h4>
               <p class="text-xs text-gray-500 mb-4">Control who can send you private messages.</p>
 
@@ -2164,8 +2175,18 @@
               </div>
             </div>
 
-            <!-- ====== PUSH NOTIFICATIONS (device) — first ====== -->
-            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <div class="mt-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <h4 class="font-semibold mb-3">🔔 Notification Preferences</h4>
+              <p class="text-xs text-gray-500 mb-4">Choose which events show the bell badge and appear in your notifications list.</p>
+              <div class="space-y-3">
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Comments on my posts</span><input type="checkbox" :checked="profile.notify_comments == 1" @change="profile.notify_comments = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5"></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">New network connections</span><input type="checkbox" :checked="profile.notify_network == 1" @change="profile.notify_network = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5"></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Leaderboard movements</span><input type="checkbox" :checked="profile.notify_leaderboard == 1" @change="profile.notify_leaderboard = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5"></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Direct messages</span><input type="checkbox" :checked="profile.notify_messages == 1" @change="profile.notify_messages = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5"></label>
+              </div>
+            </div>
+
+            <div class="mt-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <h4 class="font-semibold">📲 Push Notifications (this device)</h4>
                 <span x-show="push.subscribed"
@@ -2221,19 +2242,19 @@
                   <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Push me about</p>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>💬 Comments on my posts</span>
-                    <input type="checkbox" x-model="profile.push_comments" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" :checked="profile.push_comments == 1" @change="profile.push_comments = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5">
                   </label>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>🤝 New network connections</span>
-                    <input type="checkbox" x-model="profile.push_network" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" :checked="profile.push_network == 1" @change="profile.push_network = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5">
                   </label>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>🏅 Leaderboard updates</span>
-                    <input type="checkbox" x-model="profile.push_leaderboard" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" :checked="profile.push_leaderboard == 1" @change="profile.push_leaderboard = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5">
                   </label>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>✉️ Direct messages</span>
-                    <input type="checkbox" x-model="profile.push_messages" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" :checked="profile.push_messages == 1" @change="profile.push_messages = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5">
                   </label>
                 </div>
 
@@ -2243,19 +2264,6 @@
               </div>
             </div>
 
-            <!-- ====== NOTIFICATION PREFERENCES (in-app bell) — second ====== -->
-            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-              <h4 class="font-semibold mb-3">🔔 Notification Preferences</h4>
-              <p class="text-xs text-gray-500 mb-4">Choose which events show the bell badge and appear in your notifications list.</p>
-                  <div class="space-y-3">
-                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Comments on my posts</span><input type="checkbox" x-model="profile.notify_comments" @change="saveProfile()" class="w-5 h-5"></label>
-                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">New network connections</span><input type="checkbox" x-model="profile.notify_network" @change="saveProfile()" class="w-5 h-5"></label>
-                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Leaderboard movements</span><input type="checkbox" x-model="profile.notify_leaderboard" @change="saveProfile()" class="w-5 h-5"></label>
-                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Direct messages</span><input type="checkbox" x-model="profile.notify_messages" @change="saveProfile()" class="w-5 h-5"></label>
-              </div>
-            </div>
-
-            <!-- ====== SAVE BUTTON (shared for both cards) ====== -->
             <div class="mt-4 flex gap-3 flex-wrap">
               <button @click="saveProfile()" :disabled="profile.saving"
                       class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition text-sm">
@@ -2266,32 +2274,34 @@
             </div>
             <p x-show="profile.success" class="text-green-500 text-sm mt-3" x-text="profile.success"></p>
 
-            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-              <h4 class="font-semibold mb-2">💳 Billing & Subscription</h4>
-              <button x-show="isAuthenticated && user.tier !== 'free'" @click="manageBilling()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Manage Subscription</button>
-              <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade here</button>
-            </div>
+            <!-- ========== SECTION: Security ========== -->
+            <h4 class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">🔒 Security</h4>
 
-            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-3">🔒 Change Password</h4>
               <p class="text-sm text-gray-500 mb-3">We'll send a password reset link to your email address.</p>
               <button @click="sendPasswordReset()" class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" :disabled="!isAuthenticated">Send Reset Email</button>
             </div>
 
-            <div class="mt-8 text-center p-4 border border-red-500 rounded-lg">
-              <h4 class="font-semibold text-red-500 mb-2">⚠️</h4>
-              <button @click="openDeleteModal()" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition" :disabled="!isAuthenticated">Delete Account</button>
-            </div>
-
+            <!-- Logout (benign action, neutral colour) -->
             <template x-if="isAuthenticated">
-              <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
+              <button @click="logout()" class="mt-6 w-full py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition">Log Out</button>
             </template>
             <template x-if="!isAuthenticated">
-              <button @click="showUpgradeModal()" class="mt-6 w-full py-3 bg-orange-500 text-white rounded-lg">Login / Register</button>
+              <button @click="showUpgradeModal()" class="mt-6 w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition">Login / Register</button>
             </template>
+
+            <!-- ========== SECTION: Danger Zone ========== -->
+            <h4 class="text-sm font-bold uppercase tracking-wider text-red-500 mt-10 mb-3">⚠️ Danger Zone</h4>
+
+            <div class="p-4 border border-red-500 rounded-lg">
+              <h4 class="font-semibold text-red-500 mb-2">Delete Account</h4>
+              <p class="text-sm text-gray-500 mb-3">Permanently erase your account and all associated data. This cannot be undone.</p>
+              <button @click="openDeleteModal()" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition" :disabled="!isAuthenticated">Delete My Account</button>
+            </div>
           </div>
         </div>
-
+        
         <!-- Share -->
         <section class="share-block mt-12" aria-label="Share options">
           <div class="share-row">
@@ -2435,6 +2445,7 @@ function dashboardApp() {
     loadingReset: false,
     showPassword: false,
     isAuthenticated: false,
+    authChecked: false,
     user: { id: null, email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null },
     activeDashboardTab: 'profile',
     profileViewMode: 'view',
@@ -2705,6 +2716,7 @@ function dashboardApp() {
         this.showResetModal = true;
       }
 
+      this.authChecked = true;
       this.$watch('activeDashboardTab', (newTab) => {
         if (window.location.hash.replace('#', '') !== newTab) {
           history.replaceState(null, '', '#' + newTab);
