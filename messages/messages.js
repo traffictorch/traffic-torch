@@ -67,6 +67,7 @@
   // iOS keyboard lock state
   let _savedScrollY = 0;
   let _kbLocked = false;
+  let _unlockTimer = null;
 
   async function api(path, opts = {}) {
     const headers = Object.assign({}, opts.headers || {});
@@ -136,6 +137,8 @@
   }
 
   // ---------- iOS body scroll lock ----------
+  // iOS Safari ignores overflow:hidden for scroll prevention.
+  // The only reliable pattern is position:fixed with a negative top offset.
   function _lockBody() {
     if (_kbLocked) return;
     _savedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
@@ -157,7 +160,28 @@
     document.body.style.right = '';
     document.body.style.width = '';
     document.body.style.overflow = '';
+    // Restore scroll position without jump
     window.scrollTo(0, _savedScrollY);
+  }
+
+  // Force the panel + inner scroll container back to a healthy state.
+  // iOS sometimes silently kills overflow-y on a scroll container
+  // after the body position:fixed lock is removed. This forces a reflow
+  // so the list becomes scrollable again without closing the drawer.
+  function _resetPanelGeometry() {
+    const panel = document.getElementById('tt-msg-panel');
+    if (!panel) return;
+    panel.style.height = '';
+    panel.style.transform = '';
+    const body = panel.querySelector('[data-tt-thread-body]');
+    if (body) {
+      const y = body.scrollTop;
+      body.style.overflowY = 'hidden';           // momentary force
+      void body.offsetHeight;                    // reflow
+      body.style.overflowY = 'auto';
+      body.style.webkitOverflowScrolling = 'touch';
+      body.scrollTop = y;
+    }
   }
 
   // ---------- drawer ----------
@@ -181,47 +205,70 @@
 
   function installKeyboardGuard() {
     const panel = document.getElementById('tt-msg-panel');
-    if (!panel) return;
+    if (!panel || panel.dataset.ttKbWired) return;
+    panel.dataset.ttKbWired = '1';
 
     const sync = () => {
       if (!window.visualViewport) return;
       if (panel.style.display === 'none') return;
       const vv = window.visualViewport;
+      // Only shrink when the keyboard has actually reduced the viewport
+      const keyboardOpen = vv.height < window.innerHeight * 0.85;
       panel.style.transition = 'none';
-      panel.style.height = Math.round(vv.height) + 'px';
-      panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px)';
+      if (keyboardOpen) {
+        panel.style.height = Math.round(vv.height) + 'px';
+        panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px)';
+      } else {
+        panel.style.height = '';
+        panel.style.transform = '';
+      }
       requestAnimationFrame(() => { panel.style.transition = ''; });
     };
 
-    if (!panel.dataset.ttKbWired) {
-      panel.dataset.ttKbWired = '1';
+    panel.addEventListener('focusin', (e) => {
+      const t = e.target;
+      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+        clearTimeout(_unlockTimer);
+        _lockBody();
+        sync();
+        // Multiple syncs catch the iOS keyboard animation
+        setTimeout(sync, 50);
+        setTimeout(sync, 150);
+        setTimeout(sync, 350);
+        setTimeout(sync, 600);
+      }
+    }, true);
 
-      panel.addEventListener('focusin', (e) => {
-        const t = e.target;
-        if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-          _lockBody();
-          sync();
-          setTimeout(sync, 60);
-          setTimeout(sync, 180);
-          setTimeout(sync, 400);
-          setTimeout(sync, 700);
-        }
-      }, true);
+    panel.addEventListener('focusout', (e) => {
+      const t = e.target;
+      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+        clearTimeout(_unlockTimer);
+        // Longer delay so a quick tap on a message bubble doesn't race
+        _unlockTimer = setTimeout(() => {
+          const active = document.activeElement;
+          // Still focused inside the panel → keep lock
+          if (active && panel.contains(active) &&
+              (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT')) {
+            return;
+          }
+          _unlockBody();
+          _resetPanelGeometry();
+        }, 180);
+      }
+    }, true);
 
-      panel.addEventListener('focusout', (e) => {
-        const t = e.target;
-        if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-          setTimeout(() => {
-            const active = document.activeElement;
-            if (!active || !panel.contains(active)) {
-              _unlockBody();
-              panel.style.height = '';
-              panel.style.transform = '';
-            }
-          }, 60);
+    // Also unlock cleanly when the user taps the message list while keyboard is up
+    panel.addEventListener('touchstart', (e) => {
+      const body = panel.querySelector('[data-tt-thread-body]');
+      if (body && body.contains(e.target) && _kbLocked) {
+        // Let the scroll start; blur will fire and the delayed unlock will clean up
+        const input = panel.querySelector('[data-tt-input]');
+        if (input && document.activeElement === input) {
+          // small delay so the touch can become a scroll gesture
+          setTimeout(() => { if (document.activeElement === input) input.blur(); }, 40);
         }
-      }, true);
-    }
+      }
+    }, { passive: true });
 
     if (window.visualViewport && !window.__ttVvWired) {
       window.__ttVvWired = true;
@@ -249,6 +296,7 @@
     root.style.display = 'block';
     ov.style.display = 'block';
     panel.style.display = 'flex';
+    // Reset any residual keyboard state from a previous session
     panel.style.height = '';
     panel.style.transform = '';
     _unlockBody();
@@ -263,6 +311,7 @@
     const root = document.getElementById('tt-msg-root');
     if (!panel) return;
 
+    // If the keyboard is up, blur first so iOS releases the visual viewport
     if (document.activeElement && panel.contains(document.activeElement) && document.activeElement.blur) {
       document.activeElement.blur();
     }
@@ -397,7 +446,7 @@
       </div>`;
 
     return headerHTML(peer.display_name || peer.username || 'Thread', true, th.muted) +
-      `<div data-tt-thread-body style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;">${listHTML}</div>` +
+      `<div data-tt-thread-body style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:16px;display:flex;flex-direction:column;gap:8px;">${listHTML}</div>` +
       composeBar;
   }
 
@@ -448,6 +497,7 @@
     panel.querySelector('[data-tt-close]').addEventListener('click', closeInbox);
     const back = panel.querySelector('[data-tt-back]');
     if (back) back.addEventListener('click', () => {
+      // Blur any focused input so iOS closes the keyboard before we swap content
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
       _unlockBody();
       panel.style.height = '';
@@ -496,7 +546,15 @@
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCurrent(); }
       });
-      input.focus();
+      // Auto-focus only on non-iOS (or after a short delay) so the lock doesn't fire immediately
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (!isIOS) {
+        input.focus();
+      } else {
+        // Still focus, but after the panel is fully painted so the lock is cleaner
+        setTimeout(() => input.focus(), 120);
+      }
     }
     const body = panel.querySelector('[data-tt-thread-body]');
     if (body) requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
@@ -692,6 +750,7 @@
     } catch {}
   }
 
+  // ---------- global entry point for external callers ----------
   window.ttOpenBeams = function (peerId) {
     if (!isAuthed()) { window.location.href = '/login/'; return; }
     openInbox();
