@@ -308,7 +308,8 @@
 
     // Lock the body as soon as the drawer opens (not just on focus).
     // This prevents the background from ever scrolling while the drawer is up.
-    _lockBody();
+    
+    // _lockBody();
 
     requestAnimationFrame(() => { panel.style.transform = 'translateX(0)'; });
     loadThreads();
@@ -893,76 +894,6 @@
   setTimeout(() => {
     if (document.body) mo.observe(document.body, { childList: true, subtree: true });
   }, 500);
-  
-    // ============ TEMPORARY DIAGNOSTIC — remove after debugging ============
-  (function(){
-    const box = document.createElement('div');
-    box.style.cssText = 'position:fixed;top:0;left:0;right:0;max-height:45vh;z-index:2147483647;background:rgba(0,0,0,0.92);color:#0f0;font:11px/1.35 monospace;padding:8px 8px 24px;overflow:auto;white-space:pre-wrap;border-bottom:2px solid #f97316;';
-    const hud = document.createElement('div');
-    const hide = document.createElement('button');
-    hide.textContent = 'hide';
-    hide.style.cssText = 'position:absolute;top:4px;right:4px;background:#f97316;color:#fff;border:0;padding:3px 10px;border-radius:4px;font-weight:700;';
-    hide.onclick = () => { box.style.display = 'none'; };
-    const copy = document.createElement('button');
-    copy.textContent = 'copy';
-    copy.style.cssText = 'position:absolute;top:4px;right:56px;background:#2563eb;color:#fff;border:0;padding:3px 10px;border-radius:4px;font-weight:700;';
-    copy.onclick = () => { navigator.clipboard.writeText(lines.join('\n')).then(()=>{ copy.textContent='copied'; setTimeout(()=>copy.textContent='copy',1200); }); };
-
-    const t0 = performance.now();
-    const lines = [];
-    const log = (...a) => {
-      const s = '+' + (performance.now()-t0).toFixed(0).padStart(6,' ') + 'ms  ' + a.map(x => typeof x === 'string' ? x : (x && x.message) || String(x)).join(' ');
-      lines.push(s);
-      if (lines.length > 100) lines.shift();
-      hud.textContent = lines.join('\n');
-      box.scrollTop = box.scrollHeight;
-      console.log('[TT]', ...a);
-    };
-
-    box.appendChild(hide); box.appendChild(copy); box.appendChild(hud);
-    document.documentElement.appendChild(box);
-
-    const wrap = (name, fn) => function(...a) {
-      log('→ ' + name);
-      try { const r = fn.apply(this, a); log('← ' + name + ' (ok)'); return r; }
-      catch (e) { log('✗ ' + name + ' THREW: ' + e.message); throw e; }
-    };
-    openInbox = wrap('openInbox', openInbox);
-    renderPanelContent = wrap('renderPanelContent', renderPanelContent);
-    loadThreads = wrap('loadThreads', loadThreads);
-    buildDrawer = wrap('buildDrawer', buildDrawer);
-
-    // Trace DOM writes that could be the freeze point
-    const _ih = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
-    Object.defineProperty(Element.prototype, 'innerHTML', {
-      configurable: true, get: _ih.get,
-      set: function(v){
-        if (this.id === 'tt-msg-panel') log('innerHTML=tt-msg-panel (' + (typeof v === 'string' ? v.length : '?') + ' ch)');
-        return _ih.set.call(this, v);
-      }
-    });
-
-    // Trace fetch
-    const _f = window.fetch;
-    window.fetch = function(...a){
-      const u = typeof a[0] === 'string' ? a[0] : a[0].url;
-      const short = u.split('/').slice(-3).join('/');
-      log('fetch → ' + short);
-      const p = _f.apply(this, a);
-      p.then(r => log('fetch ← ' + r.status + ' ' + short));
-      return p;
-    };
-
-    window.addEventListener('error', e => log('UNCAUGHT: ' + e.message + ' @ line ' + e.lineno));
-    window.addEventListener('unhandledrejection', e => log('REJECT: ' + ((e.reason && e.reason.message) || e.reason)));
-    document.addEventListener('click', e => {
-      const b = e.target.closest('#tt-beams-inbox-link, #tt-beams-inbox-link-mobile, [data-tt-toast-view]');
-      if (b) log('CLICK ' + (b.id || b.dataset.ttToastView || b.className.slice(0,30)));
-    }, true);
-
-    log('DIAG armed. Tap Beams / Open Beam.');
-  })();
-  // ============ END TEMPORARY DIAGNOSTIC ============
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
