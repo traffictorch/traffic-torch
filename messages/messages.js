@@ -183,67 +183,102 @@
     // and the header (with the ✕ button) stays on screen.
     installKeyboardGuard();
   }
+  
+function installKeyboardGuard() {
+  const panel = document.getElementById('tt-msg-panel');
+  if (!panel) return;
 
-  function installKeyboardGuard() {
-    const panel = document.getElementById('tt-msg-panel');
-    if (!panel) return;
+  const vv = window.visualViewport;
+  if (!vv) return; // No visualViewport support, fallback to basic behavior
 
-    const sync = () => {
-      if (!window.visualViewport) return;
-      if (panel.style.display === 'none') return;
-      const vv = window.visualViewport;
-      // Kill transition during keyboard animation so we don't fight iOS
-      panel.style.transition = 'none';
-      panel.style.height = Math.round(vv.height) + 'px';
-      panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px)';
-      requestAnimationFrame(() => { panel.style.transition = ''; });
-    };
+  // Main sync function: sets height and position based on visual viewport
+  const sync = () => {
+    if (panel.style.display === 'none') return;
 
-    if (!panel.dataset.ttKbWired) {
-      panel.dataset.ttKbWired = '1';
+    // Kill transition to avoid fighting iOS animations
+    panel.style.transition = 'none';
+    
+    // Set the height to the actual visible height
+    panel.style.height = `${Math.round(vv.height)}px`;
+    
+    // Use transform to position the panel correctly relative to the visual viewport
+    // This is the key fix: it compensates for visualViewport.offsetTop
+    panel.style.transform = `translateX(0px) translateY(${Math.round(vv.offsetTop)}px)`;
 
-      panel.addEventListener('focusin', (e) => {
-        const t = e.target;
-        if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-          _lockBody();
-          sync();
-          // iOS fires the resize event 300-700ms after focus — poll to be safe
-          setTimeout(sync, 60);
-          setTimeout(sync, 180);
-          setTimeout(sync, 400);
-          setTimeout(sync, 700);
-        }
-      }, true);
+    // Restore transition for closing animation
+    requestAnimationFrame(() => {
+      panel.style.transition = '';
+    });
+  };
 
-      panel.addEventListener('focusout', (e) => {
-        const t = e.target;
-        if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-          setTimeout(() => {
-            const active = document.activeElement;
-            if (!active || !panel.contains(active)) {
-              _unlockBody();
-              panel.style.height = '';
-              panel.style.transform = '';
-            }
-          }, 60);
-        }
-      }, true);
+  // Debounced version to avoid excessive calls during rapid changes
+  let syncTimeout;
+  const debouncedSync = () => {
+    clearTimeout(syncTimeout);
+    syncTimeout = setTimeout(sync, 50);
+  };
+
+  // Reset function specifically for when keyboard is dismissed
+  const reset = () => {
+    // Blur to ensure keyboard is dismissed
+    if (document.activeElement && panel.contains(document.activeElement) && document.activeElement.blur) {
+      document.activeElement.blur();
     }
+    setTimeout(() => {
+      // Check if the viewport has returned to normal
+      if (Math.abs(vv.offsetTop) < 2) { // Allow for minor scroll
+        panel.style.height = ''; // Reset to default 100dvh
+        panel.style.transform = ''; // Reset transform
+        _unlockBody();
+      } else {
+        // Still offset, try a subtle nudge to force iOS to recalculate
+        // We use scroll here specifically to coax the viewport back into place
+        window.scrollBy(0, -1);
+        window.scrollBy(0, 1);
+        // Schedule another check
+        setTimeout(reset, 100);
+      }
+    }, 150);
+  };
 
-    if (window.visualViewport && !window.__ttVvWired) {
-      window.__ttVvWired = true;
-      window.visualViewport.addEventListener('resize', () => {
-        const p = document.getElementById('tt-msg-panel');
-        if (!p || p.style.display === 'none') return;
+  // Wire up listeners only once
+  if (!panel.dataset.ttKbWired) {
+    panel.dataset.ttKbWired = '1';
+
+    panel.addEventListener('focusin', (e) => {
+      const t = e.target;
+      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+        _lockBody(); // Lock body scroll
+        // Force immediate sync and then several retries to catch late events
         sync();
-      });
-      window.visualViewport.addEventListener('scroll', () => {
-        const p = document.getElementById('tt-msg-panel');
-        if (!p || p.style.display === 'none') return;
-        sync();
-      });
-    }
+        setTimeout(sync, 60);
+        setTimeout(sync, 180);
+        setTimeout(sync, 400);
+        setTimeout(sync, 700);
+      }
+    }, true);
+
+    panel.addEventListener('focusout', (e) => {
+      const t = e.target;
+      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+        // Use a timeout to see if focus returns to another element in the panel
+        setTimeout(() => {
+          const active = document.activeElement;
+          if (!active || !panel.contains(active)) {
+            reset();
+          }
+        }, 60);
+      }
+    }, true);
   }
+
+  // Listen to both resize and scroll events on the visual viewport
+  if (!window.__ttVvWired) {
+    window.__ttVvWired = true;
+    vv.addEventListener('resize', debouncedSync);
+    vv.addEventListener('scroll', debouncedSync);
+  }
+}
 
   function openInbox() {
     if (!isAuthed()) { window.location.href = '/login/'; return; }
