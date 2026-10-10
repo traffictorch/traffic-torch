@@ -266,7 +266,7 @@
                         <a :href="'/torcher/' + (profile.username || '') + '/'"
                            target="_blank"
                            x-show="profile.username && profile.profile_public"
-                           class="px-4 py-2 rounded-xl font-bold text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition whitespace-nowrap inline-flex items-center">
+                           class="px-4 py-2 rounded-xl font-bold text-sm bg-green-500 hover:bg-green-600 text-white transition whitespace-nowrap inline-flex items-center shadow-md shadow-green-500/20">
                           View public →
                         </a>
                       </div>
@@ -728,12 +728,12 @@
                              width="32" height="32" style="width:32px;height:32px;"
                              class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                         <div class="flex-1 flex gap-2">
-                          <input type="text" maxlength="360"
+                                                    <textarea rows="3" maxlength="360"
                                  x-model="feed.commentDrafts[post.id]"
-                                 @keydown.enter.prevent="submitComment(post.id)"
+                                 @keydown.enter.exact.prevent="submitComment(post.id)"
                                  placeholder="Leave a comment… (360 chars) · +5 pts"
-                                 class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-                          <button @click="submitComment(post.id)"
+                                 class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
+                                 <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
@@ -991,7 +991,7 @@
             <div x-show="!discover.loading && discover.users.length === 0" class="glass rounded-2xl p-8 text-center">
               <p class="text-4xl mb-3">🌱</p>
               <p class="text-gray-500">No new people to discover yet.</p>
-              <p class="text-sm text-gray-400 mt-2">Invite a colleague or wait for the daily reshuffle.</p>
+              <p class="text-sm text-gray-400 mt-2">Invite a friend/colleague or wait for the daily reshuffle.</p>
             </div>
             <div x-show="!discover.loading && discover.users.length > 0" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               <template x-for="u in discover.users" :key="'prof-disc-' + u.id">
@@ -1004,8 +1004,9 @@
                     <span x-show="u.total_points > 0">🏅 <span x-text="u.total_points"></span></span>
                     <span x-show="u.torch_count > 0">🔥 <span x-text="u.torch_count"></span></span>
                   </div>
-                  <button @click="addDiscoverUser(u)" :disabled="discover.addLoading[u.id]"
-                          class="mt-2 w-full py-1.5 text-xs font-bold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition disabled:opacity-50">
+                  <button @click="addDiscoverUser(u)"
+                          :class="discover.addLoading[u.id] ? 'opacity-60' : ''"
+                          class="mt-2 w-full py-1.5 text-xs font-bold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition">
                     <span x-show="!discover.addLoading[u.id]">+ Add</span>
                     <span x-show="discover.addLoading[u.id]">…</span>
                   </button>
@@ -1017,7 +1018,7 @@
 
           <!-- === Invite view === -->
           <div x-show="profileSubTab === 'invite'" class="max-w-md mx-auto glass rounded-2xl p-6">
-            <h3 class="text-lg font-bold mb-2">Invite a colleague</h3>
+            <h3 class="text-lg font-bold mb-2">Invite a friend/colleague</h3>
             <p class="text-sm text-gray-500 mb-4">Send them a link to sign up.</p>
             <div class="flex gap-2">
               <input type="email" x-model="network.inviteEmail" placeholder="colleague@example.com" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
@@ -1334,12 +1335,12 @@
                              width="32" height="32" style="width:32px;height:32px;"
                              class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                         <div class="flex-1 flex gap-2">
-                          <input type="text" maxlength="360"
+                                                    <textarea rows="3" maxlength="360"
                                  x-model="feed.commentDrafts[post.id]"
-                                 @keydown.enter.prevent="submitComment(post.id)"
+                                 @keydown.enter.exact.prevent="submitComment(post.id)"
                                  placeholder="Leave a comment… (360 chars) · +5 pts"
-                                 class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-                          <button @click="submitComment(post.id)"
+                                 class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
+                                <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
@@ -1616,7 +1617,7 @@
             <div x-show="!discover.loading && discover.users.length === 0" class="glass rounded-2xl p-8 text-center">
               <p class="text-4xl mb-3">🌱</p>
               <p class="text-gray-500">No new people to discover yet.</p>
-              <p class="text-sm text-gray-400 mt-2">Invite a colleague or wait for the daily reshuffle.</p>
+              <p class="text-sm text-gray-400 mt-2">Invite a friend/colleague or wait for the daily reshuffle.</p>
             </div>
             <div x-show="!discover.loading && discover.users.length > 0" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               <template x-for="u in discover.users" :key="'dash-disc-' + u.id">
@@ -1629,8 +1630,9 @@
                     <span x-show="u.total_points > 0">🏅 <span x-text="u.total_points"></span></span>
                     <span x-show="u.torch_count > 0">🔥 <span x-text="u.torch_count"></span></span>
                   </div>
-                  <button @click="addDiscoverUser(u)" :disabled="discover.addLoading[u.id]"
-                          class="mt-2 w-full py-1.5 text-xs font-bold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition disabled:opacity-50">
+                  <button @click="addDiscoverUser(u)"
+                          :class="discover.addLoading[u.id] ? 'opacity-60' : ''"
+                          class="mt-2 w-full py-1.5 text-xs font-bold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition">
                     <span x-show="!discover.addLoading[u.id]">+ Add</span>
                     <span x-show="discover.addLoading[u.id]">…</span>
                   </button>
@@ -1641,7 +1643,7 @@
           </div>
 
           <div x-show="networkSubTab === 'invite'" class="max-w-md mx-auto glass rounded-2xl p-6">
-            <h3 class="text-lg font-bold mb-2">Invite a colleague</h3>
+            <h3 class="text-lg font-bold mb-2">Invite a friend/colleague</h3>
             <p class="text-sm text-gray-500 mb-4">Send them a nudge to discover Traffic Torch.</p>
             <div class="flex gap-2">
               <input type="email" x-model="network.inviteEmail" placeholder="colleague@example.com"
@@ -3892,6 +3894,7 @@ function dashboardApp() {
     // ===== NETWORK =====
     async loadNetwork() {
       this.network.loading = true;
+      this.network.addLoading = {};
       try {
         const res = await fetch(`${API_BASE}/api/network/list`, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') } });
         const data = await res.json();
@@ -4174,6 +4177,7 @@ function dashboardApp() {
       if (!token) return;
       this.discover.loading = true;
       this.discover.error = null;
+      this.discover.addLoading = {};
       try {
         const res = await fetch(`${API_BASE}/api/users/discover?seed=${fresh ? 'fresh' : 'today'}&limit=24&offset=0`,
           { headers: { 'Authorization': 'Bearer ' + token } });
@@ -4188,20 +4192,32 @@ function dashboardApp() {
     async randomizeDiscover() { return this.loadDiscover(true); },
 
     async addDiscoverUser(u) {
-      if (this.discover.addLoading[u.id]) return;
-      this.discover.addLoading[u.id] = true;
+      const uid = u && u.id;
+      if (!uid) { console.warn('[discover] missing id on user', u); return; }
+      if (this.discover.addLoading[uid]) return;
+      this.discover.addLoading[uid] = true;
+      console.log('[discover] add clicked, uid =', uid);
       try {
         const token = localStorage.getItem('authToken');
         if (!token) { window.location.href = '/login/'; return; }
         const res = await fetch(`${API_BASE}/api/network/add`, {
           method: 'POST',
           headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: u.id })
+          body: JSON.stringify({ user_id: uid })
         });
-        if (res.ok) this.discover.users = this.discover.users.filter(x => x.id !== u.id);
-        else { const d = await res.json().catch(() => ({})); alert(d.error || 'Failed to add'); }
-      } catch (e) { alert('Network error: ' + e.message); }
-      finally { this.discover.addLoading[u.id] = false; }
+        const data = await res.json().catch(() => ({}));
+        console.log('[discover] add response', res.status, data);
+        if (res.ok) {
+          this.discover.users = this.discover.users.filter(x => x.id !== uid);
+        } else {
+          alert(data.error || ('Failed to add (HTTP ' + res.status + ')'));
+        }
+      } catch (e) {
+        console.error('[discover] add error', e);
+        alert('Network error: ' + e.message);
+      } finally {
+        this.discover.addLoading[uid] = false;
+      }
     },
 
     async loadActivity(mode = 'me') {
