@@ -189,44 +189,47 @@ function installKeyboardGuard() {
   if (!panel) return;
 
   const vv = window.visualViewport;
+  if (!vv) return;
 
-  // Main sync: size and position the panel to match the visible viewport
-  const sync = () => {
-    if (panel.style.display === 'none' || !vv) return;
+  // 1. Resize the panel to match the visual viewport height.
+  //    This is the primary fix. We ignore offsetTop for positioning.
+  const syncHeight = () => {
+    if (panel.style.display === 'none') return;
     panel.style.transition = 'none';
     panel.style.height = Math.round(vv.height) + 'px';
-    panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px)';
+    // On iOS, we must also reset the body scroll to 0 to counter the stuck offset.
+    if (vv.offsetTop > 0) {
+      window.scrollTo(0, 0);
+    }
     requestAnimationFrame(() => { panel.style.transition = ''; });
   };
 
-  // Reset to the default open state (no keyboard)
-  const resetToOpen = () => {
-    panel.style.height = '';
-    panel.style.transform = 'translateX(0)';
-    _unlockBody();
-  };
-
-  // Force iOS to recalculate the visual viewport offset
-  const forceViewportReset = () => {
-    if (!vv) return;
-    if (vv.offsetTop > 2) {
-      window.scrollBy(0, -1);
-      window.scrollBy(0, 1);
+  // 2. Intercept focus to prevent the browser from auto-scrolling.
+  //    Using 'preventScroll: true' stops the layout viewport from being pushed up.
+  const interceptFocus = (e) => {
+    const t = e.target;
+    if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT') && panel.contains(t)) {
+      e.preventDefault();
+      t.focus({ preventScroll: true });
     }
   };
 
   if (!panel.dataset.ttKbWired) {
     panel.dataset.ttKbWired = '1';
 
+    // Use touchend to intercept the focus before the browser handles it.
+    panel.addEventListener('touchend', interceptFocus, true);
+
     panel.addEventListener('focusin', (e) => {
       const t = e.target;
       if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
         _lockBody();
-        sync();
-        setTimeout(sync, 60);
-        setTimeout(sync, 180);
-        setTimeout(sync, 400);
-        setTimeout(sync, 700);
+        syncHeight();
+        // Poll several times to catch the iOS resize event that may fire late.
+        setTimeout(syncHeight, 60);
+        setTimeout(syncHeight, 180);
+        setTimeout(syncHeight, 400);
+        setTimeout(syncHeight, 700);
       }
     }, true);
 
@@ -236,42 +239,26 @@ function installKeyboardGuard() {
         setTimeout(() => {
           const active = document.activeElement;
           if (!active || !panel.contains(active)) {
-            forceViewportReset();
-            requestAnimationFrame(() => {
-              forceViewportReset();
-              resetToOpen();
-            });
+            _unlockBody();
+            panel.style.height = '';
+            // Reset the viewport offset on iOS 26.
+            window.scrollTo(0, 0);
           }
         }, 150);
       }
     }, true);
   }
 
-  // Global blur safety net — scroll the input back into view if it's stranded
-  if (!window.__ttGlobalBlurWired) {
-    window.__ttGlobalBlurWired = true;
-    document.addEventListener('blur', (e) => {
-      const t = e.target;
-      if (!t || (t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA')) return;
-      const p = document.getElementById('tt-msg-panel');
-      if (!p || p.style.display === 'none' || !p.contains(t)) return;
-      setTimeout(() => {
-        try { t.scrollIntoView({ behavior: 'instant', block: 'nearest' }); } catch {}
-      }, 250);
-    }, true);
-  }
-
+  // 3. Listen to visualViewport scroll to continuously reset the offset.
   if (vv && !window.__ttVvWired) {
     window.__ttVvWired = true;
-    vv.addEventListener('resize', () => {
-      const p = document.getElementById('tt-msg-panel');
-      if (!p || p.style.display === 'none') return;
-      sync();
-    });
+    vv.addEventListener('resize', syncHeight);
     vv.addEventListener('scroll', () => {
-      const p = document.getElementById('tt-msg-panel');
-      if (!p || p.style.display === 'none') return;
-      sync();
+      // iOS 26 leaves offsetTop stuck; force it back to 0.
+      if (vv.offsetTop > 0) {
+        window.scrollTo(0, 0);
+      }
+      syncHeight();
     });
   }
 }
