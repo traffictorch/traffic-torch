@@ -189,67 +189,39 @@ function installKeyboardGuard() {
   if (!panel) return;
 
   const vv = window.visualViewport;
-  if (!vv) return; // No visualViewport support, fallback to basic behavior
 
-  // Main sync function: sets height and position based on visual viewport
+  // Main sync: size and position the panel to match the visible viewport
   const sync = () => {
-    if (panel.style.display === 'none') return;
-
-    // Kill transition to avoid fighting iOS animations
+    if (panel.style.display === 'none' || !vv) return;
     panel.style.transition = 'none';
-    
-    // Set the height to the actual visible height
-    panel.style.height = `${Math.round(vv.height)}px`;
-    
-    // Use transform to position the panel correctly relative to the visual viewport
-    // This is the key fix: it compensates for visualViewport.offsetTop
-    panel.style.transform = `translateX(0px) translateY(${Math.round(vv.offsetTop)}px)`;
-
-    // Restore transition for closing animation
-    requestAnimationFrame(() => {
-      panel.style.transition = '';
-    });
+    panel.style.height = Math.round(vv.height) + 'px';
+    panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px)';
+    requestAnimationFrame(() => { panel.style.transition = ''; });
   };
 
-  // Debounced version to avoid excessive calls during rapid changes
-  let syncTimeout;
-  const debouncedSync = () => {
-    clearTimeout(syncTimeout);
-    syncTimeout = setTimeout(sync, 50);
+  // Reset to the default open state (no keyboard)
+  const resetToOpen = () => {
+    panel.style.height = '';
+    panel.style.transform = 'translateX(0)';
+    _unlockBody();
   };
 
-  // Reset function specifically for when keyboard is dismissed
-  const reset = () => {
-    // Blur to ensure keyboard is dismissed
-    if (document.activeElement && panel.contains(document.activeElement) && document.activeElement.blur) {
-      document.activeElement.blur();
+  // Force iOS to recalculate the visual viewport offset
+  const forceViewportReset = () => {
+    if (!vv) return;
+    if (vv.offsetTop > 2) {
+      window.scrollBy(0, -1);
+      window.scrollBy(0, 1);
     }
-    setTimeout(() => {
-      // Check if the viewport has returned to normal
-      if (Math.abs(vv.offsetTop) < 2) { // Allow for minor scroll
-        panel.style.height = ''; // Reset to default 100dvh
-        panel.style.transform = ''; // Reset transform
-        _unlockBody();
-      } else {
-        // Still offset, try a subtle nudge to force iOS to recalculate
-        // We use scroll here specifically to coax the viewport back into place
-        window.scrollBy(0, -1);
-        window.scrollBy(0, 1);
-        // Schedule another check
-        setTimeout(reset, 100);
-      }
-    }, 150);
   };
 
-  // Wire up listeners only once
   if (!panel.dataset.ttKbWired) {
     panel.dataset.ttKbWired = '1';
 
     panel.addEventListener('focusin', (e) => {
       const t = e.target;
       if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-        _lockBody(); // Lock body scroll
-        // Force immediate sync and then several retries to catch late events
+        _lockBody();
         sync();
         setTimeout(sync, 60);
         setTimeout(sync, 180);
@@ -261,22 +233,46 @@ function installKeyboardGuard() {
     panel.addEventListener('focusout', (e) => {
       const t = e.target;
       if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-        // Use a timeout to see if focus returns to another element in the panel
         setTimeout(() => {
           const active = document.activeElement;
           if (!active || !panel.contains(active)) {
-            reset();
+            forceViewportReset();
+            requestAnimationFrame(() => {
+              forceViewportReset();
+              resetToOpen();
+            });
           }
-        }, 60);
+        }, 150);
       }
     }, true);
   }
 
-  // Listen to both resize and scroll events on the visual viewport
-  if (!window.__ttVvWired) {
+  // Global blur safety net — scroll the input back into view if it's stranded
+  if (!window.__ttGlobalBlurWired) {
+    window.__ttGlobalBlurWired = true;
+    document.addEventListener('blur', (e) => {
+      const t = e.target;
+      if (!t || (t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA')) return;
+      const p = document.getElementById('tt-msg-panel');
+      if (!p || p.style.display === 'none' || !p.contains(t)) return;
+      setTimeout(() => {
+        try { t.scrollIntoView({ behavior: 'instant', block: 'nearest' }); } catch {}
+      }, 250);
+    }, true);
+  }
+
+  if (vv && !window.__ttVvWired) {
     window.__ttVvWired = true;
-    vv.addEventListener('resize', debouncedSync);
-    vv.addEventListener('scroll', debouncedSync);
+    vv.addEventListener('resize', () => {
+      const p = document.getElementById('tt-msg-panel');
+      if (!p || p.style.display === 'none') return;
+      sync();
+    });
+    vv.addEventListener('scroll', () => {
+      const p = document.getElementById('tt-msg-panel');
+      if (!p || p.style.display === 'none') return;
+      sync();
+    });
   }
 }
 
