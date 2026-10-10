@@ -189,47 +189,48 @@ function installKeyboardGuard() {
   if (!panel) return;
 
   const vv = window.visualViewport;
-  if (!vv) return;
 
-  // 1. Resize the panel to match the visual viewport height.
-  //    This is the primary fix. We ignore offsetTop for positioning.
-  const syncHeight = () => {
+  // Set panel height to match the visible viewport exactly
+  const sizePanel = () => {
     if (panel.style.display === 'none') return;
-    panel.style.transition = 'none';
-    panel.style.height = Math.round(vv.height) + 'px';
-    // On iOS, we must also reset the body scroll to 0 to counter the stuck offset.
-    if (vv.offsetTop > 0) {
-      window.scrollTo(0, 0);
-    }
-    requestAnimationFrame(() => { panel.style.transition = ''; });
+    const h = vv ? vv.height : window.innerHeight;
+    panel.style.height = h + 'px';
+    panel.style.minHeight = h + 'px';
+    panel.style.maxHeight = h + 'px';
   };
 
-  // 2. Intercept focus to prevent the browser from auto-scrolling.
-  //    Using 'preventScroll: true' stops the layout viewport from being pushed up.
-  const interceptFocus = (e) => {
-    const t = e.target;
-    if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT') && panel.contains(t)) {
-      e.preventDefault();
-      t.focus({ preventScroll: true });
+  // Reset panel to default open state
+  const resetPanel = () => {
+    panel.style.height = '';
+    panel.style.minHeight = '';
+    panel.style.maxHeight = '';
+    _unlockBody();
+    window.scrollTo(0, 0);
+  };
+
+  // Force iOS to unstick the visual viewport offset
+  const unstickViewport = () => {
+    if (vv && vv.offsetTop > 0) {
+      // Scroll the layout viewport back to top, which forces iOS to
+      // recalculate the visual viewport offset back to 0
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
     }
   };
 
   if (!panel.dataset.ttKbWired) {
     panel.dataset.ttKbWired = '1';
 
-    // Use touchend to intercept the focus before the browser handles it.
-    panel.addEventListener('touchend', interceptFocus, true);
-
     panel.addEventListener('focusin', (e) => {
       const t = e.target;
       if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
         _lockBody();
-        syncHeight();
-        // Poll several times to catch the iOS resize event that may fire late.
-        setTimeout(syncHeight, 60);
-        setTimeout(syncHeight, 180);
-        setTimeout(syncHeight, 400);
-        setTimeout(syncHeight, 700);
+        sizePanel();
+        // Repeatedly size and unstick as iOS's keyboard animation runs
+        for (const ms of [60, 180, 350, 600, 900]) {
+          setTimeout(() => { sizePanel(); unstickViewport(); }, ms);
+        }
       }
     }, true);
 
@@ -239,26 +240,27 @@ function installKeyboardGuard() {
         setTimeout(() => {
           const active = document.activeElement;
           if (!active || !panel.contains(active)) {
-            _unlockBody();
-            panel.style.height = '';
-            // Reset the viewport offset on iOS 26.
-            window.scrollTo(0, 0);
+            unstickViewport();
+            resetPanel();
           }
-        }, 150);
+        }, 200);
       }
     }, true);
   }
 
-  // 3. Listen to visualViewport scroll to continuously reset the offset.
   if (vv && !window.__ttVvWired) {
     window.__ttVvWired = true;
-    vv.addEventListener('resize', syncHeight);
+    vv.addEventListener('resize', () => {
+      const p = document.getElementById('tt-msg-panel');
+      if (!p || p.style.display === 'none') return;
+      sizePanel();
+      unstickViewport();
+    });
     vv.addEventListener('scroll', () => {
-      // iOS 26 leaves offsetTop stuck; force it back to 0.
-      if (vv.offsetTop > 0) {
-        window.scrollTo(0, 0);
-      }
-      syncHeight();
+      const p = document.getElementById('tt-msg-panel');
+      if (!p || p.style.display === 'none') return;
+      unstickViewport();
+      sizePanel();
     });
   }
 }
