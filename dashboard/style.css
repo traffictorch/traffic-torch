@@ -14,6 +14,31 @@
 .dark .glass { background: rgba(0, 0, 0, 0.3); }
 
 /* --------------------------------------------------------------------------
+   1b. iOS Beams drawer hardening (see messages.js)
+   -------------------------------------------------------------------------- */
+#tt-msg-panel {
+  /* Contain overscroll so iOS rubber-banding doesn't leak to the page behind. */
+  overscroll-behavior: contain;
+  /* Tells iOS the panel handles its own scroll gestures. */
+  touch-action: pan-y;
+  /* Discourage Safari from auto-translating on zoom. */
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+#tt-msg-panel [data-tt-thread-body] {
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* The overlay must not scroll at all. */
+#tt-msg-overlay {
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+
+/* --------------------------------------------------------------------------
    2. Tabs
    -------------------------------------------------------------------------- */
 .tab-active { border-bottom: 3px solid #f97316; color: #f97316; }
