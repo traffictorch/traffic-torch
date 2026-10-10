@@ -196,7 +196,7 @@
     const root = document.createElement('div');
     root.id = 'tt-msg-root';
     root.innerHTML = `
-      <div id="tt-msg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:99998;"></div>
+      <div id="tt-msg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99998;"></div>
       <aside id="tt-msg-panel" role="dialog" aria-label="Messages" style="display:none;position:fixed;top:0;right:0;height:100dvh;width:100%;max-width:420px;z-index:99999;flex-direction:column;overflow:hidden;box-shadow:-10px 0 40px rgba(0,0,0,0.3);transform:translateX(100%);transition:transform 0.22s ease-out, background 0.2s;"></aside>
     `;
     document.body.appendChild(root);
