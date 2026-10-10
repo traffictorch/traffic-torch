@@ -569,7 +569,27 @@
       input.focus();
     }
     const body = panel.querySelector('[data-tt-thread-body]');
-    if (body) requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
+    if (body) {
+      requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
+
+      // iOS fallback — manual edge clamp. Prevents gesture chaining to
+      // the visual viewport when the message list is at top or bottom.
+      if (!body.dataset.ttOverscrollWired) {
+        body.dataset.ttOverscrollWired = '1';
+        let startY = 0;
+        body.addEventListener('touchstart', (e) => {
+          startY = e.touches[0].clientY;
+        }, { passive: true });
+        body.addEventListener('touchmove', (e) => {
+          const delta = e.touches[0].clientY - startY;
+          const atTop = body.scrollTop <= 0;
+          const atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 1;
+          if ((atTop && delta > 0) || (atBottom && delta < 0)) {
+            if (e.cancelable) e.preventDefault();
+          }
+        }, { passive: false });
+      }
+    }
   }
 
   async function loadThreads() {

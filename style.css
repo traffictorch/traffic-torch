@@ -800,9 +800,7 @@ p a:hover, li a:hover {
   color: #9ca3af; /* gray-400 in Tailwind — slightly brighter than default */
 }
 
-/* --------------------------------------------------------------------------
-   1b. iOS Beams drawer hardening (see messages.js)
-   -------------------------------------------------------------------------- */
+/*  iOS Beams drawer hardening (see messages.js)  */
 #tt-msg-panel {
   /* Stop iOS from chaining the drawer's scroll to the page behind it. */
   overscroll-behavior: contain;
