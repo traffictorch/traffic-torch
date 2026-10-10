@@ -17,22 +17,23 @@
    1b. iOS Beams drawer hardening (see messages.js)
    -------------------------------------------------------------------------- */
 #tt-msg-panel {
-  /* Contain overscroll so iOS rubber-banding doesn't leak to the page behind. */
+  /* Stop iOS from chaining the drawer's scroll to the page behind it. */
   overscroll-behavior: contain;
-  /* Tells iOS the panel handles its own scroll gestures. */
+  /* Declare that vertical panning is handled locally. */
   touch-action: pan-y;
-  /* Discourage Safari from auto-translating on zoom. */
-  text-size-adjust: 100%;
+  /* Prevent Safari auto-zooming / text inflating on rotate. */
   -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 #tt-msg-panel [data-tt-thread-body] {
+  /* The actual scroll container — this is the one that leaks. */
   overscroll-behavior: contain;
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
 }
 
-/* The overlay must not scroll at all. */
+/* The dim overlay should never scroll or accept gestures at all. */
 #tt-msg-overlay {
   touch-action: none;
   overscroll-behavior: contain;
