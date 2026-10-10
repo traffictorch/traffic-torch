@@ -1,8 +1,6 @@
 // ============================================================
 // Traffic Torch — Messages (vanilla JS, works on every page)
-// Menu markup lives in desktop-menu.html / mobile-menu.html.
-// This file wires the click handlers, updates the badge,
-// and self-injects the drawer UI.
+// iOS-optimized: compositor-safe drawer + inline image previews
 // ============================================================
 (function () {
   'use strict';
@@ -24,6 +22,8 @@
     'image/*','application/pdf','.txt','.md','.csv',
     '.html','.htm','.css','.js','.mjs','.json','.xml','.svg','.zip'
   ].join(',');
+
+  const IMG_EXT_RE = /\.(jpe?g|png|gif|webp|avif|heic|heif|bmp|svg)$/i;
 
   const getToken = () => localStorage.getItem('authToken');
   const decodeJwt = t => { try { return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); } catch { return null; } };
@@ -53,6 +53,13 @@
   };
   const truncate = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n) + '…' : s; };
 
+  const isImageAttachment = a => {
+    if (!a) return false;
+    const mime = (a.mime_type || a.mime || a.content_type || '').toLowerCase();
+    if (mime.startsWith('image/')) return true;
+    return IMG_EXT_RE.test(a.filename || '');
+  };
+
   let me = null;
   let unreadCount = 0;
   let threads = [];
@@ -64,10 +71,13 @@
   let wsBackoff = 1000;
   let drawerBuilt = false;
 
-  // iOS keyboard lock state
   let _savedScrollY = 0;
   let _kbLocked = false;
-  let _unlockTimer = null;
+  let _touchMoveHandler = null;
+  let _syncRafId = null;
+
+  // blob cache: attachment id -> object URL
+  const _blobCache = new Map();
 
   async function api(path, opts = {}) {
     const headers = Object.assign({}, opts.headers || {});
@@ -81,6 +91,23 @@
     return data;
   }
 
+  async function fetchAttachmentBlob(id) {
+    if (_blobCache.has(id)) return _blobCache.get(id);
+    const t = getToken();
+    const res = await fetch(`${API}/api/messages/attachments/${id}`, {
+      headers: { Authorization: 'Bearer ' + t }
+    });
+    if (!res.ok) {
+      let msg = 'HTTP ' + res.status;
+      try { const j = await res.json(); if (j.error) msg = j.error; } catch {}
+      throw new Error(msg);
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    _blobCache.set(id, url);
+    return url;
+  }
+
   async function refreshUnread() {
     if (!isAuthed()) { unreadCount = 0; paintBadges(); return; }
     try { const d = await api('/api/messages/unread-count'); unreadCount = d.count || 0; }
@@ -88,7 +115,6 @@
     paintBadges();
   }
 
-  // ---------- badge ----------
   function paintBadges() {
     ['tt-beams-count', 'tt-beams-count-mobile'].forEach(id => {
       const el = document.getElementById(id);
@@ -103,7 +129,6 @@
     });
   }
 
-  // ---------- wire the static sidebar links ----------
   function wireStaticBeamsLinks() {
     const wire = (linkId) => {
       const btn = document.getElementById(linkId);
@@ -136,63 +161,51 @@
     }, 100);
   }
 
-  // ---------- iOS body scroll lock ----------
-  // iOS Safari ignores overflow:hidden for scroll prevention.
-  // The only reliable pattern is position:fixed with a negative top offset.
+  // ---------- iOS-safe scroll lock (no position:fixed on body) ----------
   function _lockBody() {
     if (_kbLocked) return;
     _savedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
     _kbLocked = true;
-    document.body.style.position = 'fixed';
-    document.body.style.top = '-' + _savedScrollY + 'px';
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-    document.body.style.width = '100%';
+
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
+
+    if (!_touchMoveHandler) {
+      _touchMoveHandler = function (e) {
+        const panel = document.getElementById('tt-msg-panel');
+        if (panel && panel.contains(e.target)) return;
+        if (e.cancelable) e.preventDefault();
+      };
+      document.addEventListener('touchmove', _touchMoveHandler, { passive: false });
+    }
   }
 
   function _unlockBody() {
     if (!_kbLocked) return;
     _kbLocked = false;
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.left = '';
-    document.body.style.right = '';
-    document.body.style.width = '';
-    document.body.style.overflow = '';
-    // Restore scroll position without jump
-    window.scrollTo(0, _savedScrollY);
-  }
 
-  // Force the panel + inner scroll container back to a healthy state.
-  // iOS sometimes silently kills overflow-y on a scroll container
-  // after the body position:fixed lock is removed. This forces a reflow
-  // so the list becomes scrollable again without closing the drawer.
-  function _resetPanelGeometry() {
-    const panel = document.getElementById('tt-msg-panel');
-    if (!panel) return;
-    panel.style.height = '';
-    panel.style.transform = '';
-    const body = panel.querySelector('[data-tt-thread-body]');
-    if (body) {
-      const y = body.scrollTop;
-      body.style.overflowY = 'hidden';           // momentary force
-      void body.offsetHeight;                    // reflow
-      body.style.overflowY = 'auto';
-      body.style.webkitOverflowScrolling = 'touch';
-      body.scrollTop = y;
+    if (_touchMoveHandler) {
+      document.removeEventListener('touchmove', _touchMoveHandler);
+      _touchMoveHandler = null;
     }
+
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+
+    requestAnimationFrame(() => {
+      window.scrollTo(0, _savedScrollY);
+    });
   }
 
-  // ---------- drawer ----------
+  // ---------- drawer (compositor-isolated for iOS) ----------
   function buildDrawer() {
     if (drawerBuilt) return;
     drawerBuilt = true;
     const root = document.createElement('div');
     root.id = 'tt-msg-root';
     root.innerHTML = `
-      <div id="tt-msg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:99998;"></div>
-      <aside id="tt-msg-panel" role="dialog" aria-label="Messages" style="display:none;position:fixed;top:0;right:0;height:100dvh;width:100%;max-width:420px;z-index:99999;flex-direction:column;overflow:hidden;box-shadow:-10px 0 40px rgba(0,0,0,0.3);transform:translateX(100%);transition:transform 0.22s ease-out, background 0.2s;"></aside>
+      <div id="tt-msg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99998;isolation:isolate;will-change:opacity;transform:translateZ(0);"></div>
+      <aside id="tt-msg-panel" role="dialog" aria-label="Messages" style="display:none;position:fixed;top:0;right:0;height:100dvh;width:100%;max-width:420px;z-index:99999;flex-direction:column;overflow:hidden;isolation:isolate;will-change:transform;transform:translateX(100%) translateZ(0);transition:transform 0.22s ease-out;"></aside>
     `;
     document.body.appendChild(root);
     document.getElementById('tt-msg-overlay').addEventListener('click', closeInbox);
@@ -205,83 +218,73 @@
 
   function installKeyboardGuard() {
     const panel = document.getElementById('tt-msg-panel');
-    if (!panel || panel.dataset.ttKbWired) return;
-    panel.dataset.ttKbWired = '1';
+    if (!panel) return;
 
     const sync = () => {
       if (!window.visualViewport) return;
       if (panel.style.display === 'none') return;
-      const vv = window.visualViewport;
-      // Only shrink when the keyboard has actually reduced the viewport
-      const keyboardOpen = vv.height < window.innerHeight * 0.85;
-      panel.style.transition = 'none';
-      if (keyboardOpen) {
-        panel.style.height = Math.round(vv.height) + 'px';
-        panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px)';
-      } else {
-        panel.style.height = '';
-        panel.style.transform = '';
-      }
-      requestAnimationFrame(() => { panel.style.transition = ''; });
+      if (_syncRafId) return;
+      _syncRafId = requestAnimationFrame(() => {
+        _syncRafId = null;
+        const vv = window.visualViewport;
+        const fullHeight = window.innerHeight || document.documentElement.clientHeight;
+        const keyboardGone = vv.height >= fullHeight - 50 && vv.offsetTop < 5;
+
+        panel.style.transition = 'none';
+        if (keyboardGone) {
+          panel.style.height = '100dvh';
+          panel.style.transform = 'translateX(0) translateZ(0)';
+        } else {
+          panel.style.height = Math.round(vv.height) + 'px';
+          panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px) translateZ(0)';
+        }
+        requestAnimationFrame(() => { panel.style.transition = ''; });
+      });
     };
 
-    panel.addEventListener('focusin', (e) => {
-      const t = e.target;
-      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-        clearTimeout(_unlockTimer);
-        _lockBody();
-        sync();
-        // Multiple syncs catch the iOS keyboard animation
-        setTimeout(sync, 50);
-        setTimeout(sync, 150);
-        setTimeout(sync, 350);
-        setTimeout(sync, 600);
-      }
-    }, true);
+    if (!panel.dataset.ttKbWired) {
+      panel.dataset.ttKbWired = '1';
 
-    panel.addEventListener('focusout', (e) => {
-      const t = e.target;
-      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-        clearTimeout(_unlockTimer);
-        // Longer delay so a quick tap on a message bubble doesn't race
-        _unlockTimer = setTimeout(() => {
-          const active = document.activeElement;
-          // Still focused inside the panel → keep lock
-          if (active && panel.contains(active) &&
-              (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT')) {
-            return;
-          }
-          _unlockBody();
-          _resetPanelGeometry();
-        }, 180);
-      }
-    }, true);
-
-    // Also unlock cleanly when the user taps the message list while keyboard is up
-    panel.addEventListener('touchstart', (e) => {
-      const body = panel.querySelector('[data-tt-thread-body]');
-      if (body && body.contains(e.target) && _kbLocked) {
-        // Let the scroll start; blur will fire and the delayed unlock will clean up
-        const input = panel.querySelector('[data-tt-input]');
-        if (input && document.activeElement === input) {
-          // small delay so the touch can become a scroll gesture
-          setTimeout(() => { if (document.activeElement === input) input.blur(); }, 40);
+      panel.addEventListener('focusin', (e) => {
+        const t = e.target;
+        if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+          _lockBody();
+          sync();
+          setTimeout(sync, 50);
+          setTimeout(sync, 150);
+          setTimeout(sync, 300);
+          setTimeout(sync, 500);
+          setTimeout(sync, 800);
         }
-      }
-    }, { passive: true });
+      }, true);
+
+      panel.addEventListener('focusout', (e) => {
+        const t = e.target;
+        if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+          setTimeout(() => {
+            const active = document.activeElement;
+            if (!active || !panel.contains(active)) {
+              _unlockBody();
+              panel.style.height = '100dvh';
+              panel.style.transform = 'translateX(0) translateZ(0)';
+            }
+          }, 80);
+          setTimeout(() => {
+            const active = document.activeElement;
+            if (!active || !panel.contains(active)) {
+              panel.style.height = '100dvh';
+              panel.style.transform = 'translateX(0) translateZ(0)';
+              sync();
+            }
+          }, 500);
+        }
+      }, true);
+    }
 
     if (window.visualViewport && !window.__ttVvWired) {
       window.__ttVvWired = true;
-      window.visualViewport.addEventListener('resize', () => {
-        const p = document.getElementById('tt-msg-panel');
-        if (!p || p.style.display === 'none') return;
-        sync();
-      });
-      window.visualViewport.addEventListener('scroll', () => {
-        const p = document.getElementById('tt-msg-panel');
-        if (!p || p.style.display === 'none') return;
-        sync();
-      });
+      window.visualViewport.addEventListener('resize', sync);
+      window.visualViewport.addEventListener('scroll', sync);
     }
   }
 
@@ -293,15 +296,21 @@
     const root = document.getElementById('tt-msg-root');
     const ov = document.getElementById('tt-msg-overlay');
     const panel = document.getElementById('tt-msg-panel');
+
+    panel.style.height = '';
+    panel.style.transform = 'translateX(100%) translateZ(0)';
+
     root.style.display = 'block';
     ov.style.display = 'block';
     panel.style.display = 'flex';
-    // Reset any residual keyboard state from a previous session
-    panel.style.height = '';
-    panel.style.transform = '';
-    _unlockBody();
-    requestAnimationFrame(() => { panel.style.transform = 'translateX(0)'; });
-    document.body.classList.add('overflow-hidden');
+
+    void panel.offsetWidth;
+
+    _lockBody();
+
+    requestAnimationFrame(() => {
+      panel.style.transform = 'translateX(0) translateZ(0)';
+    });
     loadThreads();
   }
 
@@ -311,20 +320,27 @@
     const root = document.getElementById('tt-msg-root');
     if (!panel) return;
 
-    // If the keyboard is up, blur first so iOS releases the visual viewport
     if (document.activeElement && panel.contains(document.activeElement) && document.activeElement.blur) {
       document.activeElement.blur();
     }
-    _unlockBody();
+
+    const lb = document.getElementById('tt-lightbox');
+    if (lb) lb.remove();
+
     panel.style.height = '';
-    panel.style.transform = 'translateX(100%)';
+    panel.style.transform = 'translateX(100%) translateZ(0)';
+
+    requestAnimationFrame(() => {
+      _unlockBody();
+    });
 
     setTimeout(() => {
       panel.style.display = 'none';
       ov.style.display = 'none';
       root.style.display = 'none';
-      document.body.classList.remove('overflow-hidden');
-    }, 220);
+      panel.style.transform = 'translateX(100%) translateZ(0)';
+      panel.style.height = '';
+    }, 260);
   }
 
   function renderPanelContent() {
@@ -374,7 +390,18 @@
         </button>`;
       }).join('');
     }
-    return headerHTML('Beams 🔦', false) + `<div style="flex:1;overflow-y:auto;">${body}</div>`;
+    return headerHTML('Beams 🔦', false) + `<div style="flex:1;overflow-y:auto;contain:content;-webkit-overflow-scrolling:touch;">${body}</div>`;
+  }
+
+  function renderAttachmentHTML(a) {
+    if (isImageAttachment(a)) {
+      return `<div data-tt-img-wrap="${a.id}" style="margin-top:6px;">
+        <img data-tt-img="${a.id}" data-tt-filename="${esc(a.filename)}" alt="${esc(a.filename)}"
+             style="max-width:100%;max-height:260px;border-radius:10px;display:block;cursor:pointer;background:rgba(255,255,255,0.08);" loading="lazy">
+      </div>`;
+    }
+        const mime = a.mime_type || a.mime || a.content_type || '';
+    return `<a data-tt-att="${a.id}" data-tt-filename="${esc(a.filename)}" data-tt-mime="${esc(mime)}" href="#" style="display:block;font-size:12px;text-decoration:underline;color:inherit;margin-top:4px;cursor:pointer;">📎 ${esc(a.filename)}</a>`;
   }
 
   function renderThreadView(th) {
@@ -392,9 +419,7 @@
       const mine = m.from_user_id === myId;
       const bubbleBg = mine ? '#f97316' : T('#1f2937','#f3f4f6');
       const bubbleFg = mine ? '#ffffff' : T('#f3f4f6','#111827');
-      const attachments = (m.attachments || []).map(a =>
-        `<a data-tt-att="${a.id}" data-tt-filename="${esc(a.filename)}" href="#" style="display:block;font-size:12px;text-decoration:underline;color:inherit;margin-top:4px;cursor:pointer;">📎 ${esc(a.filename)}</a>`
-      ).join('');
+      const attachments = (m.attachments || []).map(renderAttachmentHTML).join('');
       const reactions = (m.reactions || []).length
         ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">` + m.reactions.map(r =>
             `<button data-tt-react="${m.id}" data-tt-emoji="${esc(r.emoji)}" style="padding:2px 8px;font-size:11px;border-radius:9999px;border:1px solid ${r.mine ? 'rgba(255,255,255,0.7)' : 'transparent'};background:rgba(0,0,0,0.15);color:inherit;cursor:pointer;font-family:inherit;">${esc(r.emoji)} ${r.count}</button>`
@@ -446,9 +471,54 @@
       </div>`;
 
     return headerHTML(peer.display_name || peer.username || 'Thread', true, th.muted) +
-      `<div data-tt-thread-body style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:16px;display:flex;flex-direction:column;gap:8px;">${listHTML}</div>` +
+      `<div data-tt-thread-body style="flex:1 1 0;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;contain:content;-webkit-overflow-scrolling:touch;">${listHTML}</div>` +
       composeBar;
   }
+
+  function openLightbox(url, filename) {
+    const existing = document.getElementById('tt-lightbox');
+    if (existing) existing.remove();
+    const box = document.createElement('div');
+    box.id = 'tt-lightbox';
+    box.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(0,0,0,0.94);display:flex;align-items:center;justify-content:center;padding:16px;isolation:isolate;';
+    box.innerHTML = `
+      <img src="${url}" alt="${esc(filename)}" style="max-width:100%;max-height:calc(100% - 80px);object-fit:contain;border-radius:8px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:default;">
+      <button data-tt-lb-close aria-label="Close" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.15);color:#fff;border:0;width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;">×</button>
+      <div style="position:absolute;bottom:20px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;">
+        <p style="margin:0;color:rgba(255,255,255,0.7);font-size:12px;font-family:system-ui,-apple-system,sans-serif;pointer-events:none;">Long-press the image to save to Photos</p>
+        <a href="${url}" download="${esc(filename)}" style="pointer-events:auto;background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;padding:10px 22px;border-radius:9999px;font-weight:700;text-decoration:none;font-size:14px;font-family:system-ui,-apple-system,sans-serif;">Save / Download</a>
+      </div>
+    `;
+    document.documentElement.appendChild(box);
+    box.querySelector('[data-tt-lb-close]').addEventListener('click', () => box.remove());
+    box.addEventListener('click', (e) => { if (e.target === box) box.remove(); });
+  }
+  
+  function openFileViewer(url, filename, mime) {
+  const existing = document.getElementById('tt-file-viewer');
+  if (existing) existing.remove();
+  const box = document.createElement('div');
+  box.id = 'tt-file-viewer';
+  box.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(0,0,0,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;isolation:isolate;gap:18px;';
+  box.innerHTML = `
+    <div style="background:rgba(255,255,255,0.08);border-radius:14px;padding:28px 32px;text-align:center;max-width:340px;width:100%;">
+      <div style="font-size:56px;line-height:1;margin-bottom:14px;">📎</div>
+      <p style="margin:0 0 6px;color:#fff;font-weight:700;font-size:15px;word-break:break-all;font-family:system-ui,-apple-system,sans-serif;">${esc(filename)}</p>
+      <p style="margin:0;color:rgba(255,255,255,0.5);font-size:12px;font-family:system-ui,-apple-system,sans-serif;">${esc(mime || 'file')}</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px;">
+      <a href="${url}" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;padding:13px 22px;border-radius:9999px;font-weight:700;text-decoration:none;font-size:15px;text-align:center;font-family:system-ui,-apple-system,sans-serif;">Open in new tab</a>
+      <a href="${url}" download="${esc(filename)}" style="background:rgba(255,255,255,0.15);color:#fff;padding:13px 22px;border-radius:9999px;font-weight:700;text-decoration:none;font-size:15px;text-align:center;font-family:system-ui,-apple-system,sans-serif;">Download / Save</a>
+      <button data-tt-fv-close style="background:transparent;color:rgba(255,255,255,0.65);border:0;padding:10px;font-size:14px;cursor:pointer;font-family:system-ui,-apple-system,sans-serif;">Close</button>
+    </div>
+    <button data-tt-fv-x aria-label="Close" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.15);color:#fff;border:0;width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;">×</button>
+  `;
+  document.documentElement.appendChild(box);
+  const close = () => box.remove();
+  box.querySelector('[data-tt-fv-close]').addEventListener('click', close);
+  box.querySelector('[data-tt-fv-x]').addEventListener('click', close);
+  box.addEventListener('click', (e) => { if (e.target === box) close(); });
+}
 
   function showEmojiPicker(anchor, messageId) {
     const existing = document.getElementById('tt-emoji-picker');
@@ -497,11 +567,10 @@
     panel.querySelector('[data-tt-close]').addEventListener('click', closeInbox);
     const back = panel.querySelector('[data-tt-back]');
     if (back) back.addEventListener('click', () => {
-      // Blur any focused input so iOS closes the keyboard before we swap content
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
       _unlockBody();
       panel.style.height = '';
-      panel.style.transform = '';
+      panel.style.transform = 'translateX(0) translateZ(0)';
       activeThread = null;
       renderPanelContent();
       loadThreads();
@@ -525,12 +594,44 @@
         showEmojiPicker(b, msgId);
       });
     });
+
+    // Inline image attachments: fetch blob, set src, wire lightbox
+    panel.querySelectorAll('[data-tt-img]').forEach(img => {
+      const id = parseInt(img.getAttribute('data-tt-img'));
+      const filename = img.getAttribute('data-tt-filename');
+      fetchAttachmentBlob(id).then(url => {
+        img.src = url;
+        img.addEventListener('click', () => openLightbox(url, filename));
+        img.addEventListener('error', () => {
+          img.alt = 'Image failed to load';
+          img.style.padding = '16px';
+          img.style.fontSize = '12px';
+          img.style.color = 'rgba(255,255,255,0.7)';
+        });
+      }).catch(() => {
+        img.alt = 'Failed to load ' + filename;
+        img.style.padding = '16px';
+        img.style.fontSize = '12px';
+        img.style.color = 'rgba(255,255,255,0.7)';
+      });
+    });
+
+    // Non-image attachments: download on click
     panel.querySelectorAll('[data-tt-att]').forEach(a => {
       a.addEventListener('click', async (e) => {
         e.preventDefault();
-        await downloadAttachment(parseInt(a.getAttribute('data-tt-att')), a.getAttribute('data-tt-filename'));
+        const id = parseInt(a.getAttribute('data-tt-att'));
+        const filename = a.getAttribute('data-tt-filename');
+        const mime = a.getAttribute('data-tt-mime') || '';
+        try {
+          const url = await fetchAttachmentBlob(id);
+          openFileViewer(url, filename, mime);
+        } catch (err) {
+          alert('Could not open: ' + err.message);
+        }
       });
     });
+
     const cancelReply = panel.querySelector('[data-tt-cancel-reply]');
     if (cancelReply) cancelReply.addEventListener('click', () => { activeThread.reply_to_id = null; renderPanelContent(); });
     panel.querySelectorAll('[data-tt-remove-att]').forEach(b => b.addEventListener('click', () => {
@@ -546,18 +647,28 @@
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCurrent(); }
       });
-      // Auto-focus only on non-iOS (or after a short delay) so the lock doesn't fire immediately
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      if (!isIOS) {
-        input.focus();
-      } else {
-        // Still focus, but after the panel is fully painted so the lock is cleaner
-        setTimeout(() => input.focus(), 120);
-      }
+      input.focus();
     }
     const body = panel.querySelector('[data-tt-thread-body]');
-    if (body) requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
+    if (body) {
+      requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
+
+      if (!body.dataset.ttOverscrollWired) {
+        body.dataset.ttOverscrollWired = '1';
+        let startY = 0;
+        body.addEventListener('touchstart', (e) => {
+          startY = e.touches[0].clientY;
+        }, { passive: true });
+        body.addEventListener('touchmove', (e) => {
+          const delta = e.touches[0].clientY - startY;
+          const atTop = body.scrollTop <= 0;
+          const atBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 1;
+          if ((atTop && delta > 0) || (atBottom && delta < 0)) {
+            if (e.cancelable) e.preventDefault();
+          }
+        }, { passive: false });
+      }
+    }
   }
 
   async function loadThreads() {
@@ -627,23 +738,13 @@
 
   async function downloadAttachment(id, filename) {
     try {
-      const t = getToken();
-      const res = await fetch(`${API}/api/messages/attachments/${id}`, {
-        headers: { Authorization: 'Bearer ' + t }
-      });
-      if (!res.ok) {
-        let msg = 'HTTP ' + res.status;
-        try { const j = await res.json(); if (j.error) msg = j.error; } catch {}
-        throw new Error(msg);
-      }
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
+      const url = await fetchAttachmentBlob(id);
       const a = document.createElement('a');
       a.href = url;
       a.download = filename || 'file';
       document.body.appendChild(a);
       a.click();
-      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
+      setTimeout(() => a.remove(), 500);
     } catch (e) {
       alert('Could not download: ' + e.message);
     }
@@ -709,12 +810,12 @@
     const el = document.createElement('div');
     el.id = 'tt-msg-toast';
     el.style.cssText = `position:fixed;bottom:24px;right:24px;width:380px;max-width:calc(100vw - 32px);
-      background:${dark ? 'rgba(17,24,39,0.95)' : 'rgba(255,255,255,0.98)'};
+      background:${dark ? 'rgba(17,24,39,0.96)' : 'rgba(255,255,255,0.98)'};
       color:${dark ? '#f3f4f6' : '#111827'};
       border:1px solid ${dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'};
       border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;
-      box-shadow:0 20px 50px rgba(0,0,0,0.35);backdrop-filter:blur(14px);
-      z-index:2147483647;font-family:inherit;opacity:0;transform:translateY(12px);
+      box-shadow:0 20px 50px rgba(0,0,0,0.35);
+      z-index:2147483647;font-family:inherit;opacity:0;transform:translateY(12px) translateZ(0);
       transition:opacity 0.2s,transform 0.2s;`;
     el.innerHTML = `
       <img src="${avatarFor(peer)}" width="40" height="40" style="width:40px;height:40px;border-radius:50%;flex-shrink:0;object-fit:cover;" alt="">
@@ -727,7 +828,7 @@
         </div>
       </div>`;
     document.documentElement.appendChild(el);
-    requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
+    requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0) translateZ(0)'; });
     el.querySelector('[data-tt-toast-view]').addEventListener('click', () => { el.remove(); openThread(peer); });
     el.querySelector('[data-tt-toast-close]').addEventListener('click', () => el.remove());
     setTimeout(() => el.remove(), 8000);
@@ -750,7 +851,6 @@
     } catch {}
   }
 
-  // ---------- global entry point for external callers ----------
   window.ttOpenBeams = function (peerId) {
     if (!isAuthed()) { window.location.href = '/login/'; return; }
     openInbox();

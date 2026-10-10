@@ -464,14 +464,17 @@ async function handleAttachmentDownload(request, env, user, attachmentId) {
   const INLINE_OK = new Set(['image/jpeg','image/png','image/gif','image/webp','application/pdf']);
   const disposition = INLINE_OK.has(att.content_type) ? 'inline' : 'attachment';
   const safeName = (att.filename || 'file').replace(/["\r\n]/g, '');
-  return new Response(obj.body, {
-    headers: {
-      'Content-Type': att.content_type,
-      'Content-Disposition': `${disposition}; filename="${safeName}"`,
-      'X-Content-Type-Options': 'nosniff',
-      'Cache-Control': 'private, max-age=3600'
-    }
+  const h = new Headers({
+    'Content-Type': att.content_type || 'application/octet-stream',
+    'Content-Disposition': `${disposition}; filename="${safeName}"`,
+    'X-Content-Type-Options': 'nosniff',
+    'Cache-Control': 'private, max-age=3600',
   });
+  h.set('Access-Control-Allow-Origin', '*');
+  h.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  h.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+  h.set('Access-Control-Expose-Headers', 'Content-Type, Content-Disposition, Content-Length');
+  return new Response(obj.body, { headers: h });
 }
 
 async function handleSettings(request, env, user) {
