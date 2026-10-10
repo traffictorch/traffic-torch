@@ -30,12 +30,12 @@ self.addEventListener('fetch', (event) => {
   const url = req.url;
   if (BYPASS.some(h => url.includes(h))) return;
 
-  if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req).catch(() => new Response('Offline', { status: 503, statusText: 'Offline' }))
-    );
-    return;
-  }
+if (req.mode === 'navigate') {
+  event.respondWith(
+    fetch(req, { cache: 'no-store' }).catch(() => new Response('Offline', { status: 503, statusText: 'Offline' }))
+  );
+  return;
+}
 
   event.respondWith(
     fetch(req, { cache: 'no-store' }).catch(() =>
