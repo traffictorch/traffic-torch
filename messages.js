@@ -139,13 +139,28 @@
     root.id = 'tt-msg-root';
     root.innerHTML = `
       <div id="tt-msg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:99998;"></div>
-      <aside id="tt-msg-panel" role="dialog" aria-label="Messages" style="display:none;position:fixed;top:0;right:0;bottom:0;width:100%;max-width:420px;z-index:99999;flex-direction:column;box-shadow:-10px 0 40px rgba(0,0,0,0.3);transform:translateX(100%);transition:transform 0.22s ease-out, background 0.2s;"></aside>
+      <aside id="tt-msg-panel" role="dialog" aria-label="Messages" style="display:none;position:fixed;top:0;right:0;height:100dvh;width:100%;max-width:420px;z-index:99999;flex-direction:column;overflow:hidden;box-shadow:-10px 0 40px rgba(0,0,0,0.3);transform:translateX(100%);transition:transform 0.22s ease-out, background 0.2s;"></aside>
     `;
     document.body.appendChild(root);
     document.getElementById('tt-msg-overlay').addEventListener('click', closeInbox);
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && document.getElementById('tt-msg-panel').style.display !== 'none') closeInbox();
     });
+
+    // iOS keyboard handling: visualViewport tells us the real visible height.
+    // Resize the panel to match so the compose bar sits above the keyboard
+    // and the header (with the ✕ button) stays on screen.
+    const panel = document.getElementById('tt-msg-panel');
+    if (window.visualViewport) {
+      const sync = () => {
+        if (panel.style.display === 'none') return;
+        panel.style.height = window.visualViewport.height + 'px';
+      };
+      window.visualViewport.addEventListener('resize', sync);
+      window.visualViewport.addEventListener('scroll', sync);
+      // store so we can detach on close if needed (harmless to leave)
+      panel._ttVVSync = sync;
+    }
   }
 
   function openInbox() {
@@ -343,7 +358,21 @@
   function wireThreadView(panel) {
     panel.querySelector('[data-tt-close]').addEventListener('click', closeInbox);
     const back = panel.querySelector('[data-tt-back]');
-    if (back) back.addEventListener('click', () => { activeThread = null; renderPanelContent(); loadThreads(); });
+    if (back) back.addEventListener('click', () => {
+      // Blur any focused input so iOS closes the keyboard before we swap content
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      // Reset the panel to full height immediately (iOS keyboard may still be closing)
+      if (window.visualViewport) panel.style.height = window.visualViewport.height + 'px';
+      activeThread = null;
+      renderPanelContent();
+      loadThreads();
+      // Safety: after the keyboard finishes closing, snap panel height back to dvh
+      setTimeout(() => {
+        panel.style.height = '';
+        const body = panel.querySelector('[data-tt-thread-body]');
+        if (body) body.scrollTop = 0;
+      }, 350);
+    });
     const mute = panel.querySelector('[data-tt-mute]');
     if (mute) mute.addEventListener('click', toggleMute);
     const older = panel.querySelector('[data-tt-load-older]');

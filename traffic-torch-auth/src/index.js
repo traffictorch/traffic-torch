@@ -473,6 +473,25 @@ const POINTS_COMMENT      = 5;
 const POINTS_POST         = 10;
 const POINTS_LEADERBOARD  = 10;
 const POINTS_CONTRIBUTION = 25;
+const TOOL_PATHS = {
+  'NUSA': '/',
+  'OFUX': '/ofux-tool/',
+  'Lighthouse Plus': '/lighthouse-plus-tool/',
+  'AEO Performance': '/aeo-performance-tool/',
+  'SEO Intent': '/seo-intent-tool/',
+  'SEO + UX': '/seo-ux-tool/',
+  'Local SEO': '/local-seo-tool/',
+  'Product SEO': '/product-seo-tool/',
+  'Entity Extractor': '/seo-entity-extractor-tool/',
+  'Topical Authority': '/topical-authority-audit-tool/',
+  'Schema Generator': '/schema-generator/',
+  'AEO / AI Search': '/ai-search-optimization-tool/',
+  'Voice Search': '/ai-voice-search-tool/',
+  'AI Content Audit': '/ai-audit-tool/',
+  'Quit Risk': '/quit-risk-tool/',
+  'Keyword Research': '/keyword-research-tool/',
+  'Keyword Placement': '/keyword-tool/'
+};
 
 const FEED_CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -744,10 +763,6 @@ async function handleProfileRoutes(request, env, url) {
 
     params.push(user.id);
     await env.MY_BINDING.prepare(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`).bind(...params).run();
-    await logActivity(env, user.id, 'profile', {
-      targetLabel: 'updated profile',
-      link: `/torcher/${user.username || ''}/`
-    });
     const fresh = await env.MY_BINDING.prepare('SELECT * FROM users WHERE id = ?').bind(user.id).first();
     const profile = shapeProfile(fresh);
     profile.total_points = await getUserTotalPoints(env, user.id);
@@ -1687,10 +1702,6 @@ async function handleFeedRoutes(request, env, url) {
     const refId = body.reference_id ? parseInt(body.reference_id, 10) : null;
     const beforeRank = await getUserLeaderboardRank(env, user.id);
     await awardPoints(env, { userId: user.id, type: 'leaderboard', points: POINTS_LEADERBOARD, referenceId: refId });
-    await logActivity(env, user.id, 'leaderboard', {
-      targetLabel: refId ? `entry #${refId}` : 'leaderboard',
-      link: '/leader-board/'
-    });
     const afterRank = await getUserLeaderboardRank(env, user.id);
     if (beforeRank && afterRank && beforeRank !== afterRank) {
       await logActivity(env, user.id, 'rank_change', {
@@ -2437,10 +2448,12 @@ export default {
         ).bind(userId, auditUrl, tool_name).first();
         const newScore = (score !== undefined && score !== null) ? parseInt(score, 10) : null;
         if (prevAudit && newScore !== null && prevAudit.score !== null && newScore > prevAudit.score) {
+          const toolPath = TOOL_PATHS[tool_name] || '/';
+          const rerunLink = toolPath + '?url=' + encodeURIComponent(auditUrl);
           await logActivity(env, userId, 'score_up', {
             tool: tool_name,
             targetLabel: `${prevAudit.score} → ${newScore}`,
-            link: '#'
+            link: rerunLink
           });
         }
 

@@ -4241,7 +4241,7 @@ function dashboardApp() {
     },
 
     activityIcon(t) {
-      return ({ torch: '🔥', comment: '💬', leaderboard: '🏆', network: '🤝', contribution: '🛠️', profile: '✏️',
+      return ({ torch: '🔥', comment: '💬', network: '🤝', contribution: '🛠️',
                 points_milestone: '🏅', rank_change: '📈', score_up: '⬆️' })[t] || '•';
     },
 
@@ -4262,8 +4262,8 @@ function dashboardApp() {
     activityVerb(item) {
       return ({
         torch: ' shared a torch', comment: ' commented on a torch',
-        leaderboard: ' joined the leaderboard', network: ' added someone to their network',
-        contribution: ' made a contribution', profile: ' updated their profile',
+        network: ' added someone to their network',
+        contribution: ' made a contribution',
         points_milestone: ' reached a milestone', rank_change: ' moved up the leaderboard',
         score_up: ' improved a score'
       })[item.event_type] || ' did something';
@@ -4272,7 +4272,7 @@ function dashboardApp() {
     activityLinkText(item) {
       return ({
         torch: 'View torch →', comment: 'Read thread →', network: 'View profile →',
-        contribution: 'View contribution →', leaderboard: 'View leaderboard →', profile: 'View profile →',
+        contribution: 'View contribution →',
         points_milestone: 'View leaderboard →', rank_change: 'View leaderboard →', score_up: 'Re-run audit →'
       })[item.event_type] || 'Open →';
     },
