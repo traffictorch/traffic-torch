@@ -136,8 +136,6 @@
   }
 
   // ---------- iOS body scroll lock ----------
-  // iOS Safari ignores overflow:hidden for scroll prevention.
-  // The only reliable pattern is position:fixed with a negative top offset.
   function _lockBody() {
     if (_kbLocked) return;
     _savedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
@@ -178,92 +176,67 @@
       if (e.key === 'Escape' && document.getElementById('tt-msg-panel').style.display !== 'none') closeInbox();
     });
 
-    // iOS keyboard handling: visualViewport tells us the real visible height.
-    // Resize the panel to match so the compose bar sits above the keyboard
-    // and the header (with the ✕ button) stays on screen.
     installKeyboardGuard();
   }
-  
-function installKeyboardGuard() {
-  const panel = document.getElementById('tt-msg-panel');
-  if (!panel) return;
 
-  const vv = window.visualViewport;
+  function installKeyboardGuard() {
+    const panel = document.getElementById('tt-msg-panel');
+    if (!panel) return;
 
-  // Set panel height to match the visible viewport exactly
-  const sizePanel = () => {
-    if (panel.style.display === 'none') return;
-    const h = vv ? vv.height : window.innerHeight;
-    panel.style.height = h + 'px';
-    panel.style.minHeight = h + 'px';
-    panel.style.maxHeight = h + 'px';
-  };
+    const sync = () => {
+      if (!window.visualViewport) return;
+      if (panel.style.display === 'none') return;
+      const vv = window.visualViewport;
+      panel.style.transition = 'none';
+      panel.style.height = Math.round(vv.height) + 'px';
+      panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px)';
+      requestAnimationFrame(() => { panel.style.transition = ''; });
+    };
 
-  // Reset panel to default open state
-  const resetPanel = () => {
-    panel.style.height = '';
-    panel.style.minHeight = '';
-    panel.style.maxHeight = '';
-    _unlockBody();
-    window.scrollTo(0, 0);
-  };
+    if (!panel.dataset.ttKbWired) {
+      panel.dataset.ttKbWired = '1';
 
-  // Force iOS to unstick the visual viewport offset
-  const unstickViewport = () => {
-    if (vv && vv.offsetTop > 0) {
-      // Scroll the layout viewport back to top, which forces iOS to
-      // recalculate the visual viewport offset back to 0
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }
-  };
-
-  if (!panel.dataset.ttKbWired) {
-    panel.dataset.ttKbWired = '1';
-
-    panel.addEventListener('focusin', (e) => {
-      const t = e.target;
-      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-        _lockBody();
-        sizePanel();
-        // Repeatedly size and unstick as iOS's keyboard animation runs
-        for (const ms of [60, 180, 350, 600, 900]) {
-          setTimeout(() => { sizePanel(); unstickViewport(); }, ms);
+      panel.addEventListener('focusin', (e) => {
+        const t = e.target;
+        if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+          _lockBody();
+          sync();
+          setTimeout(sync, 60);
+          setTimeout(sync, 180);
+          setTimeout(sync, 400);
+          setTimeout(sync, 700);
         }
-      }
-    }, true);
+      }, true);
 
-    panel.addEventListener('focusout', (e) => {
-      const t = e.target;
-      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-        setTimeout(() => {
-          const active = document.activeElement;
-          if (!active || !panel.contains(active)) {
-            unstickViewport();
-            resetPanel();
-          }
-        }, 200);
-      }
-    }, true);
-  }
+      panel.addEventListener('focusout', (e) => {
+        const t = e.target;
+        if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+          setTimeout(() => {
+            const active = document.activeElement;
+            if (!active || !panel.contains(active)) {
+              _unlockBody();
+              panel.style.height = '';
+              panel.style.transform = '';
+            }
+          }, 60);
+        }
+      }, true);
+    }
 
-  if (vv && !window.__ttVvWired) {
-    window.__ttVvWired = true;
-    vv.addEventListener('resize', () => {
-      const p = document.getElementById('tt-msg-panel');
-      if (!p || p.style.display === 'none') return;
-      sizePanel();
-      unstickViewport();
-    });
-    vv.addEventListener('scroll', () => {
-      const p = document.getElementById('tt-msg-panel');
-      if (!p || p.style.display === 'none') return;
-      unstickViewport();
-      sizePanel();
-    });
+    if (window.visualViewport && !window.__ttVvWired) {
+      window.__ttVvWired = true;
+      window.visualViewport.addEventListener('resize', () => {
+        const p = document.getElementById('tt-msg-panel');
+        if (!p || p.style.display === 'none') return;
+        sync();
+      });
+      window.visualViewport.addEventListener('scroll', () => {
+        const p = document.getElementById('tt-msg-panel');
+        if (!p || p.style.display === 'none') return;
+        sync();
+      });
+    }
   }
-}
 
   function openInbox() {
     if (!isAuthed()) { window.location.href = '/login/'; return; }
@@ -276,7 +249,6 @@ function installKeyboardGuard() {
     root.style.display = 'block';
     ov.style.display = 'block';
     panel.style.display = 'flex';
-    // Reset any residual keyboard state from a previous session
     panel.style.height = '';
     panel.style.transform = '';
     _unlockBody();
@@ -291,7 +263,6 @@ function installKeyboardGuard() {
     const root = document.getElementById('tt-msg-root');
     if (!panel) return;
 
-    // If the keyboard is up, blur first so iOS releases the visual viewport
     if (document.activeElement && panel.contains(document.activeElement) && document.activeElement.blur) {
       document.activeElement.blur();
     }
@@ -477,7 +448,6 @@ function installKeyboardGuard() {
     panel.querySelector('[data-tt-close]').addEventListener('click', closeInbox);
     const back = panel.querySelector('[data-tt-back]');
     if (back) back.addEventListener('click', () => {
-      // Blur any focused input so iOS closes the keyboard before we swap content
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
       _unlockBody();
       panel.style.height = '';
@@ -722,7 +692,6 @@ function installKeyboardGuard() {
     } catch {}
   }
 
-  // ---------- global entry point for external callers ----------
   window.ttOpenBeams = function (peerId) {
     if (!isAuthed()) { window.location.href = '/login/'; return; }
     openInbox();
