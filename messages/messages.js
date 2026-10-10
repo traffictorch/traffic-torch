@@ -467,7 +467,7 @@
       </div>`;
 
     return headerHTML(peer.display_name || peer.username || 'Thread', true, th.muted) +
-      `<div data-tt-thread-body style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;">${listHTML}</div>` +
+      `<div data-tt-thread-body style="flex:1 1 0;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;">${listHTML}</div>` +
       composeBar;
   }
 
