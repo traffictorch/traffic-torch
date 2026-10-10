@@ -1,8 +1,6 @@
 // ============================================================
 // Traffic Torch — Messages (vanilla JS, works on every page)
-// Menu markup lives in desktop-menu.html / mobile-menu.html.
-// This file wires the click handlers, updates the badge,
-// and self-injects the drawer UI.
+// iOS-optimized: compositor-safe drawer for older iPhones + PWAs
 // ============================================================
 (function () {
   'use strict';
@@ -64,7 +62,6 @@
   let wsBackoff = 1000;
   let drawerBuilt = false;
 
-  // iOS keyboard lock state
   let _savedScrollY = 0;
   let _kbLocked = false;
   let _touchMoveHandler = null;
@@ -89,7 +86,6 @@
     paintBadges();
   }
 
-  // ---------- badge ----------
   function paintBadges() {
     ['tt-beams-count', 'tt-beams-count-mobile'].forEach(id => {
       const el = document.getElementById(id);
@@ -104,7 +100,6 @@
     });
   }
 
-  // ---------- wire the static sidebar links ----------
   function wireStaticBeamsLinks() {
     const wire = (linkId) => {
       const btn = document.getElementById(linkId);
@@ -137,27 +132,21 @@
     }, 100);
   }
 
-  // ---------- iOS body scroll lock (bullet-proof) ----------
+  // ---------- iOS-safe scroll lock ----------
+  // Uses position:relative on body (not fixed) to avoid the WebKit
+  // compositing deadlock on older devices when combined with a fixed drawer.
   function _lockBody() {
     if (_kbLocked) return;
     _savedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
     _kbLocked = true;
 
-    // Pin the body so the page behind the drawer cannot scroll.
-    document.body.style.position = 'fixed';
-    document.body.style.top = '-' + _savedScrollY + 'px';
-    document.body.style.left = '0';
-    document.body.style.right = '0';
-    document.body.style.width = '100%';
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
 
-    // iOS Safari ignores overflow:hidden on body — this is the real fix.
-    // Block touchmove outside the drawer. Passive:false is REQUIRED or
-    // preventDefault() is silently ignored on modern iOS.
     if (!_touchMoveHandler) {
       _touchMoveHandler = function (e) {
         const panel = document.getElementById('tt-msg-panel');
-        if (panel && panel.contains(e.target)) return; // allow scroll inside drawer
+        if (panel && panel.contains(e.target)) return;
         if (e.cancelable) e.preventDefault();
       };
       document.addEventListener('touchmove', _touchMoveHandler, { passive: false });
@@ -168,36 +157,28 @@
     if (!_kbLocked) return;
     _kbLocked = false;
 
-    // Remove the touchmove blocker FIRST so the page is scrollable again.
     if (_touchMoveHandler) {
       document.removeEventListener('touchmove', _touchMoveHandler);
       _touchMoveHandler = null;
     }
 
-    // Restore body styles.
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.left = '';
-    document.body.style.right = '';
-    document.body.style.width = '';
+    document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
 
-    // Restore scroll position. iOS sometimes clamps scrollY during the
-    // fixed-body phase, so we force it back on the next frame.
     requestAnimationFrame(() => {
       window.scrollTo(0, _savedScrollY);
     });
   }
 
-  // ---------- drawer ----------
+  // ---------- drawer (compositor-isolated for iOS) ----------
   function buildDrawer() {
     if (drawerBuilt) return;
     drawerBuilt = true;
     const root = document.createElement('div');
     root.id = 'tt-msg-root';
     root.innerHTML = `
-      <div id="tt-msg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99998;"></div>
-      <aside id="tt-msg-panel" role="dialog" aria-label="Messages" style="display:none;position:fixed;top:0;right:0;height:100dvh;width:100%;max-width:420px;z-index:99999;flex-direction:column;overflow:hidden;box-shadow:-10px 0 40px rgba(0,0,0,0.3);transform:translateX(100%);transition:transform 0.22s ease-out, background 0.2s;"></aside>
+      <div id="tt-msg-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99998;isolation:isolate;will-change:opacity;transform:translateZ(0);"></div>
+      <aside id="tt-msg-panel" role="dialog" aria-label="Messages" style="display:none;position:fixed;top:0;right:0;height:100dvh;width:100%;max-width:420px;z-index:99999;flex-direction:column;overflow:hidden;isolation:isolate;will-change:transform;transform:translateX(100%) translateZ(0);transition:transform 0.22s ease-out;"></aside>
     `;
     document.body.appendChild(root);
     document.getElementById('tt-msg-overlay').addEventListener('click', closeInbox);
@@ -212,7 +193,6 @@
     const panel = document.getElementById('tt-msg-panel');
     if (!panel) return;
 
-    // Coalesce rapid visualViewport events into a single rAF tick.
     const sync = () => {
       if (!window.visualViewport) return;
       if (panel.style.display === 'none') return;
@@ -221,19 +201,16 @@
         _syncRafId = null;
         const vv = window.visualViewport;
         const fullHeight = window.innerHeight || document.documentElement.clientHeight;
-        // If viewport is back to near-full height, the keyboard has closed.
-        // Reset transform to 0 to defeat the iOS offsetTop reset bug.
         const keyboardGone = vv.height >= fullHeight - 50 && vv.offsetTop < 5;
 
         panel.style.transition = 'none';
         if (keyboardGone) {
           panel.style.height = '100dvh';
-          panel.style.transform = '';
+          panel.style.transform = 'translateX(0) translateZ(0)';
         } else {
           panel.style.height = Math.round(vv.height) + 'px';
-          panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px)';
+          panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px) translateZ(0)';
         }
-        // Re-enable transitions on the next frame so opening/closing still animates.
         requestAnimationFrame(() => { panel.style.transition = ''; });
       });
     };
@@ -245,8 +222,6 @@
         const t = e.target;
         if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
           _lockBody();
-          // Fire sync at several intervals — iOS gives us no reliable
-          // "keyboard finished animating" event.
           sync();
           setTimeout(sync, 50);
           setTimeout(sync, 150);
@@ -259,22 +234,19 @@
       panel.addEventListener('focusout', (e) => {
         const t = e.target;
         if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-          // Wait a beat for iOS to finish its dismiss animation, then hard-reset.
           setTimeout(() => {
             const active = document.activeElement;
             if (!active || !panel.contains(active)) {
               _unlockBody();
               panel.style.height = '100dvh';
-              panel.style.transform = '';
+              panel.style.transform = 'translateX(0) translateZ(0)';
             }
           }, 80);
-          // Safety pass: iOS sometimes fires focusout but keeps offsetTop stuck.
-          // Force a clean state 500ms later regardless.
           setTimeout(() => {
             const active = document.activeElement;
             if (!active || !panel.contains(active)) {
               panel.style.height = '100dvh';
-              panel.style.transform = '';
+              panel.style.transform = 'translateX(0) translateZ(0)';
               sync();
             }
           }, 500);
@@ -298,20 +270,23 @@
     const ov = document.getElementById('tt-msg-overlay');
     const panel = document.getElementById('tt-msg-panel');
 
-    // Reset any stale transform/height from a previous stuck session.
     panel.style.height = '';
-    panel.style.transform = '';
+    panel.style.transform = 'translateX(100%) translateZ(0)';
 
     root.style.display = 'block';
     ov.style.display = 'block';
     panel.style.display = 'flex';
 
-    // Lock the body as soon as the drawer opens (not just on focus).
-    // This prevents the background from ever scrolling while the drawer is up.
-    
-    // _lockBody();
+    // Force a layout read so the transform state is committed before the
+    // next frame. This prevents the iOS compositor from batching the
+    // display:none -> flex change with the transform change in one frame.
+    void panel.offsetWidth;
 
-    requestAnimationFrame(() => { panel.style.transform = 'translateX(0)'; });
+    _lockBody();
+
+    requestAnimationFrame(() => {
+      panel.style.transform = 'translateX(0) translateZ(0)';
+    });
     loadThreads();
   }
 
@@ -321,30 +296,22 @@
     const root = document.getElementById('tt-msg-root');
     if (!panel) return;
 
-    // Blur any focused input so the iOS keyboard fully dismisses
-    // BEFORE we unlock the body — otherwise the unlock races the keyboard.
     if (document.activeElement && panel.contains(document.activeElement) && document.activeElement.blur) {
       document.activeElement.blur();
     }
 
-    // Reset the visual-viewport transforms BEFORE unlocking, so we
-    // don't leave the panel in a half-shifted state.
     panel.style.height = '';
-    panel.style.transform = 'translateX(100%)';
+    panel.style.transform = 'translateX(100%) translateZ(0)';
 
-    // Unlock on the next frame — gives iOS a moment to finish keyboard dismissal.
     requestAnimationFrame(() => {
       _unlockBody();
-      // Reset any lingering state from the visualViewport sync.
-      panel.style.height = '';
     });
 
     setTimeout(() => {
       panel.style.display = 'none';
       ov.style.display = 'none';
       root.style.display = 'none';
-      // Belt-and-braces: if anything left the drawer transform set, clear it.
-      panel.style.transform = '';
+      panel.style.transform = 'translateX(100%) translateZ(0)';
       panel.style.height = '';
     }, 260);
   }
@@ -396,7 +363,7 @@
         </button>`;
       }).join('');
     }
-    return headerHTML('Beams 🔦', false) + `<div style="flex:1;overflow-y:auto;">${body}</div>`;
+    return headerHTML('Beams 🔦', false) + `<div style="flex:1;overflow-y:auto;contain:content;-webkit-overflow-scrolling:touch;">${body}</div>`;
   }
 
   function renderThreadView(th) {
@@ -468,7 +435,7 @@
       </div>`;
 
     return headerHTML(peer.display_name || peer.username || 'Thread', true, th.muted) +
-      `<div data-tt-thread-body style="flex:1 1 0;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;">${listHTML}</div>` +
+      `<div data-tt-thread-body style="flex:1 1 0;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;contain:content;-webkit-overflow-scrolling:touch;">${listHTML}</div>` +
       composeBar;
   }
 
@@ -522,7 +489,7 @@
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
       _unlockBody();
       panel.style.height = '';
-      panel.style.transform = '';
+      panel.style.transform = 'translateX(0) translateZ(0)';
       activeThread = null;
       renderPanelContent();
       loadThreads();
@@ -573,8 +540,6 @@
     if (body) {
       requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
 
-      // iOS fallback — manual edge clamp. Prevents gesture chaining to
-      // the visual viewport when the message list is at top or bottom.
       if (!body.dataset.ttOverscrollWired) {
         body.dataset.ttOverscrollWired = '1';
         let startY = 0;
@@ -742,12 +707,12 @@
     const el = document.createElement('div');
     el.id = 'tt-msg-toast';
     el.style.cssText = `position:fixed;bottom:24px;right:24px;width:380px;max-width:calc(100vw - 32px);
-      background:${dark ? 'rgba(17,24,39,0.95)' : 'rgba(255,255,255,0.98)'};
+      background:${dark ? 'rgba(17,24,39,0.96)' : 'rgba(255,255,255,0.98)'};
       color:${dark ? '#f3f4f6' : '#111827'};
       border:1px solid ${dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'};
       border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start;
-      box-shadow:0 20px 50px rgba(0,0,0,0.35);backdrop-filter:blur(14px);
-      z-index:2147483647;font-family:inherit;opacity:0;transform:translateY(12px);
+      box-shadow:0 20px 50px rgba(0,0,0,0.35);
+      z-index:2147483647;font-family:inherit;opacity:0;transform:translateY(12px) translateZ(0);
       transition:opacity 0.2s,transform 0.2s;`;
     el.innerHTML = `
       <img src="${avatarFor(peer)}" width="40" height="40" style="width:40px;height:40px;border-radius:50%;flex-shrink:0;object-fit:cover;" alt="">
@@ -760,7 +725,7 @@
         </div>
       </div>`;
     document.documentElement.appendChild(el);
-    requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
+    requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0) translateZ(0)'; });
     el.querySelector('[data-tt-toast-view]').addEventListener('click', () => { el.remove(); openThread(peer); });
     el.querySelector('[data-tt-toast-close]').addEventListener('click', () => el.remove());
     setTimeout(() => el.remove(), 8000);
