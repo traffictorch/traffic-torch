@@ -707,6 +707,57 @@ function attachMenuToggles(containerId) {
   });
 }
 
+// Guard the menu toggle: if the menu content hasn't loaded yet, load it
+// on-demand before opening so the drawer is never blank.
+document.addEventListener('DOMContentLoaded', () => {
+  const button = document.getElementById('menuToggle');
+  const menu = document.getElementById('mobileMenu');
+  const placeholder = document.getElementById('mobile-menu-placeholder');
+  if (!button || !menu || !placeholder) return;
+
+  // Remember whether the initial fetch succeeded
+  let menuLoaded = placeholder.innerHTML.trim().length > 0;
+
+  // Watch for the async fetch to land
+  const observer = new MutationObserver(() => {
+    if (placeholder.innerHTML.trim().length > 0) {
+      menuLoaded = true;
+      observer.disconnect();
+    }
+  });
+  observer.observe(placeholder, { childList: true, subtree: true });
+
+  // Intercept the open tap
+  button.addEventListener('click', async (e) => {
+    // Only block if we're opening AND content hasn't loaded
+    if (menu.classList.contains('hidden') && !menuLoaded) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+
+      // Show a tiny loading hint inside the empty menu
+      placeholder.innerHTML = '<p style="padding:2rem 1rem;text-align:center;color:#6b7280;">Loading menu…</p>';
+
+      try {
+        const r = await fetch('/mobile-menu.html', { cache: 'reload' });
+        if (r.ok) {
+          placeholder.innerHTML = await r.text();
+          attachMenuToggles('mobileMenu');
+          menuLoaded = true;
+        } else {
+          placeholder.innerHTML = '<p style="padding:2rem 1rem;text-align:center;color:#ef4444;">Menu failed to load. Close and reopen.</p>';
+        }
+      } catch {
+        placeholder.innerHTML = '<p style="padding:2rem 1rem;text-align:center;color:#ef4444;">Menu unavailable. Check your connection.</p>';
+      }
+
+      // Now actually open the menu
+      menu.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+      button.setAttribute('aria-expanded', 'true');
+    }
+  }, true);  // capture phase so this runs before the existing handler
+}, true);
+
 // ==========================================================
 // Load shared menus + attach toggles after loading
 // ==========================================================

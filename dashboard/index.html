@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
   <title>Traffic Torch Pro – Dashboard</title>
   <meta name="description" content="Manage your Traffic Torch Pro Dashboard and access advanced SEO, UX, and AI tools.">
   <meta name="robots" content="noindex, nofollow">
@@ -478,11 +478,11 @@
               <!-- Notifications section -->
               <div id="notifications-section" class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
 
-                    <div x-show="push.supported && !pushBannerDismissed && isAuthenticated"
+                <div x-show="push.supported && !pushBannerDismissed && isAuthenticated"
                      x-cloak
-                     class="mb-6 p-4 rounded-2xl border border-orange-500/30 bg-gradient-to-r from-orange-500/10 to-pink-500/10 flex flex-col sm:flex-row sm:items-center gap-3">
+                     class="mb-6 p-4 rounded-2xl border border-orange-500/30 bg-gradient-to-r from-orange-500/10 to-pink-500/10">
 
-                  <div class="flex items-start gap-3 flex-1 min-w-0">
+                  <div class="flex items-start gap-3 mb-3">
                     <span class="text-2xl flex-shrink-0">🔔</span>
                     <div class="flex-1 min-w-0">
                       <p class="font-bold text-sm" x-show="!push.subscribed">🔔 Turn on push notifications for this device</p>
@@ -492,7 +492,7 @@
                     </div>
                   </div>
 
-                  <div class="flex gap-2 flex-wrap w-full sm:w-auto sm:flex-shrink-0 sm:ml-auto items-center">
+                  <div class="flex gap-2 flex-wrap items-center">
                     <button @click="enablePush()" :disabled="push.loading" x-show="!push.subscribed"
                             class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-sm rounded-lg hover:opacity-90 transition disabled:opacity-50">
                       <span x-show="!push.loading">Enable now</span>
@@ -507,7 +507,7 @@
                       More settings
                     </button>
                     <button @click="dismissPushBanner()" type="button"
-                            class="px-2 py-2 ml-auto sm:ml-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                            class="px-2 py-2 ml-auto text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                             aria-label="Dismiss">✕</button>
                   </div>
                 </div>
@@ -2898,8 +2898,12 @@ function dashboardApp() {
     closeUpgradeModal() { document.getElementById('upgradeModal').classList.add('hidden'); },
 
     scrollToNotifications() {
-      const el = document.getElementById('notifications-section');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.activeDashboardTab = 'profile';
+      this.profileSubTab = 'profile';
+      setTimeout(() => {
+        const el = document.getElementById('notifications-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
     },
 
     updateSidebarBadge() {
