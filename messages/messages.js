@@ -227,7 +227,7 @@
 
         panel.style.transition = 'none';
         if (keyboardGone) {
-          panel.style.height = '';
+          panel.style.height = '100dvh';
           panel.style.transform = '';
         } else {
           panel.style.height = Math.round(vv.height) + 'px';
@@ -264,7 +264,7 @@
             const active = document.activeElement;
             if (!active || !panel.contains(active)) {
               _unlockBody();
-              panel.style.height = '';
+              panel.style.height = '100dvh';
               panel.style.transform = '';
             }
           }, 80);
@@ -273,7 +273,7 @@
           setTimeout(() => {
             const active = document.activeElement;
             if (!active || !panel.contains(active)) {
-              panel.style.height = '';
+              panel.style.height = '100dvh';
               panel.style.transform = '';
               sync();
             }
