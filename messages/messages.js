@@ -400,7 +400,8 @@
              style="max-width:100%;max-height:260px;border-radius:10px;display:block;cursor:pointer;background:rgba(255,255,255,0.08);" loading="lazy">
       </div>`;
     }
-    return `<a data-tt-att="${a.id}" data-tt-filename="${esc(a.filename)}" href="#" style="display:block;font-size:12px;text-decoration:underline;color:inherit;margin-top:4px;cursor:pointer;">📎 ${esc(a.filename)}</a>`;
+        const mime = a.mime_type || a.mime || a.content_type || '';
+    return `<a data-tt-att="${a.id}" data-tt-filename="${esc(a.filename)}" data-tt-mime="${esc(mime)}" href="#" style="display:block;font-size:12px;text-decoration:underline;color:inherit;margin-top:4px;cursor:pointer;">📎 ${esc(a.filename)}</a>`;
   }
 
   function renderThreadView(th) {
@@ -492,6 +493,32 @@
     box.querySelector('[data-tt-lb-close]').addEventListener('click', () => box.remove());
     box.addEventListener('click', (e) => { if (e.target === box) box.remove(); });
   }
+  
+  function openFileViewer(url, filename, mime) {
+  const existing = document.getElementById('tt-file-viewer');
+  if (existing) existing.remove();
+  const box = document.createElement('div');
+  box.id = 'tt-file-viewer';
+  box.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(0,0,0,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;isolation:isolate;gap:18px;';
+  box.innerHTML = `
+    <div style="background:rgba(255,255,255,0.08);border-radius:14px;padding:28px 32px;text-align:center;max-width:340px;width:100%;">
+      <div style="font-size:56px;line-height:1;margin-bottom:14px;">📎</div>
+      <p style="margin:0 0 6px;color:#fff;font-weight:700;font-size:15px;word-break:break-all;font-family:system-ui,-apple-system,sans-serif;">${esc(filename)}</p>
+      <p style="margin:0;color:rgba(255,255,255,0.5);font-size:12px;font-family:system-ui,-apple-system,sans-serif;">${esc(mime || 'file')}</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px;">
+      <a href="${url}" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;padding:13px 22px;border-radius:9999px;font-weight:700;text-decoration:none;font-size:15px;text-align:center;font-family:system-ui,-apple-system,sans-serif;">Open in new tab</a>
+      <a href="${url}" download="${esc(filename)}" style="background:rgba(255,255,255,0.15);color:#fff;padding:13px 22px;border-radius:9999px;font-weight:700;text-decoration:none;font-size:15px;text-align:center;font-family:system-ui,-apple-system,sans-serif;">Download / Save</a>
+      <button data-tt-fv-close style="background:transparent;color:rgba(255,255,255,0.65);border:0;padding:10px;font-size:14px;cursor:pointer;font-family:system-ui,-apple-system,sans-serif;">Close</button>
+    </div>
+    <button data-tt-fv-x aria-label="Close" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.15);color:#fff;border:0;width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;">×</button>
+  `;
+  document.documentElement.appendChild(box);
+  const close = () => box.remove();
+  box.querySelector('[data-tt-fv-close]').addEventListener('click', close);
+  box.querySelector('[data-tt-fv-x]').addEventListener('click', close);
+  box.addEventListener('click', (e) => { if (e.target === box) close(); });
+}
 
   function showEmojiPicker(anchor, messageId) {
     const existing = document.getElementById('tt-emoji-picker');
@@ -593,7 +620,15 @@
     panel.querySelectorAll('[data-tt-att]').forEach(a => {
       a.addEventListener('click', async (e) => {
         e.preventDefault();
-        await downloadAttachment(parseInt(a.getAttribute('data-tt-att')), a.getAttribute('data-tt-filename'));
+        const id = parseInt(a.getAttribute('data-tt-att'));
+        const filename = a.getAttribute('data-tt-filename');
+        const mime = a.getAttribute('data-tt-mime') || '';
+        try {
+          const url = await fetchAttachmentBlob(id);
+          openFileViewer(url, filename, mime);
+        } catch (err) {
+          alert('Could not open: ' + err.message);
+        }
       });
     });
 
