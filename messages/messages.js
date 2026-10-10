@@ -1,6 +1,6 @@
 // ============================================================
 // Traffic Torch — Messages (vanilla JS, works on every page)
-// iOS-optimized: compositor-safe drawer for older iPhones + PWAs
+// iOS-optimized: compositor-safe drawer + inline image previews
 // ============================================================
 (function () {
   'use strict';
@@ -22,6 +22,8 @@
     'image/*','application/pdf','.txt','.md','.csv',
     '.html','.htm','.css','.js','.mjs','.json','.xml','.svg','.zip'
   ].join(',');
+
+  const IMG_EXT_RE = /\.(jpe?g|png|gif|webp|avif|heic|heif|bmp|svg)$/i;
 
   const getToken = () => localStorage.getItem('authToken');
   const decodeJwt = t => { try { return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); } catch { return null; } };
@@ -51,6 +53,13 @@
   };
   const truncate = (s, n) => { s = String(s || ''); return s.length > n ? s.slice(0, n) + '…' : s; };
 
+  const isImageAttachment = a => {
+    if (!a) return false;
+    const mime = (a.mime_type || a.mime || a.content_type || '').toLowerCase();
+    if (mime.startsWith('image/')) return true;
+    return IMG_EXT_RE.test(a.filename || '');
+  };
+
   let me = null;
   let unreadCount = 0;
   let threads = [];
@@ -67,6 +76,9 @@
   let _touchMoveHandler = null;
   let _syncRafId = null;
 
+  // blob cache: attachment id -> object URL
+  const _blobCache = new Map();
+
   async function api(path, opts = {}) {
     const headers = Object.assign({}, opts.headers || {});
     const t = getToken();
@@ -77,6 +89,23 @@
     try { data = await res.json(); } catch {}
     if (!res.ok) throw new Error((data && data.error) || ('HTTP ' + res.status));
     return data;
+  }
+
+  async function fetchAttachmentBlob(id) {
+    if (_blobCache.has(id)) return _blobCache.get(id);
+    const t = getToken();
+    const res = await fetch(`${API}/api/messages/attachments/${id}`, {
+      headers: { Authorization: 'Bearer ' + t }
+    });
+    if (!res.ok) {
+      let msg = 'HTTP ' + res.status;
+      try { const j = await res.json(); if (j.error) msg = j.error; } catch {}
+      throw new Error(msg);
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    _blobCache.set(id, url);
+    return url;
   }
 
   async function refreshUnread() {
@@ -132,9 +161,7 @@
     }, 100);
   }
 
-  // ---------- iOS-safe scroll lock ----------
-  // Uses position:relative on body (not fixed) to avoid the WebKit
-  // compositing deadlock on older devices when combined with a fixed drawer.
+  // ---------- iOS-safe scroll lock (no position:fixed on body) ----------
   function _lockBody() {
     if (_kbLocked) return;
     _savedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
@@ -277,9 +304,6 @@
     ov.style.display = 'block';
     panel.style.display = 'flex';
 
-    // Force a layout read so the transform state is committed before the
-    // next frame. This prevents the iOS compositor from batching the
-    // display:none -> flex change with the transform change in one frame.
     void panel.offsetWidth;
 
     _lockBody();
@@ -299,6 +323,9 @@
     if (document.activeElement && panel.contains(document.activeElement) && document.activeElement.blur) {
       document.activeElement.blur();
     }
+
+    const lb = document.getElementById('tt-lightbox');
+    if (lb) lb.remove();
 
     panel.style.height = '';
     panel.style.transform = 'translateX(100%) translateZ(0)';
@@ -366,6 +393,16 @@
     return headerHTML('Beams 🔦', false) + `<div style="flex:1;overflow-y:auto;contain:content;-webkit-overflow-scrolling:touch;">${body}</div>`;
   }
 
+  function renderAttachmentHTML(a) {
+    if (isImageAttachment(a)) {
+      return `<div data-tt-img-wrap="${a.id}" style="margin-top:6px;">
+        <img data-tt-img="${a.id}" data-tt-filename="${esc(a.filename)}" alt="${esc(a.filename)}"
+             style="max-width:100%;max-height:260px;border-radius:10px;display:block;cursor:pointer;background:rgba(255,255,255,0.08);" loading="lazy">
+      </div>`;
+    }
+    return `<a data-tt-att="${a.id}" data-tt-filename="${esc(a.filename)}" href="#" style="display:block;font-size:12px;text-decoration:underline;color:inherit;margin-top:4px;cursor:pointer;">📎 ${esc(a.filename)}</a>`;
+  }
+
   function renderThreadView(th) {
     const peer = th.peer || {};
     const msgs = th.messages || [];
@@ -381,9 +418,7 @@
       const mine = m.from_user_id === myId;
       const bubbleBg = mine ? '#f97316' : T('#1f2937','#f3f4f6');
       const bubbleFg = mine ? '#ffffff' : T('#f3f4f6','#111827');
-      const attachments = (m.attachments || []).map(a =>
-        `<a data-tt-att="${a.id}" data-tt-filename="${esc(a.filename)}" href="#" style="display:block;font-size:12px;text-decoration:underline;color:inherit;margin-top:4px;cursor:pointer;">📎 ${esc(a.filename)}</a>`
-      ).join('');
+      const attachments = (m.attachments || []).map(renderAttachmentHTML).join('');
       const reactions = (m.reactions || []).length
         ? `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;">` + m.reactions.map(r =>
             `<button data-tt-react="${m.id}" data-tt-emoji="${esc(r.emoji)}" style="padding:2px 8px;font-size:11px;border-radius:9999px;border:1px solid ${r.mine ? 'rgba(255,255,255,0.7)' : 'transparent'};background:rgba(0,0,0,0.15);color:inherit;cursor:pointer;font-family:inherit;">${esc(r.emoji)} ${r.count}</button>`
@@ -437,6 +472,25 @@
     return headerHTML(peer.display_name || peer.username || 'Thread', true, th.muted) +
       `<div data-tt-thread-body style="flex:1 1 0;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;contain:content;-webkit-overflow-scrolling:touch;">${listHTML}</div>` +
       composeBar;
+  }
+
+  function openLightbox(url, filename) {
+    const existing = document.getElementById('tt-lightbox');
+    if (existing) existing.remove();
+    const box = document.createElement('div');
+    box.id = 'tt-lightbox';
+    box.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(0,0,0,0.94);display:flex;align-items:center;justify-content:center;padding:16px;isolation:isolate;';
+    box.innerHTML = `
+      <img src="${url}" alt="${esc(filename)}" style="max-width:100%;max-height:calc(100% - 80px);object-fit:contain;border-radius:8px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:default;">
+      <button data-tt-lb-close aria-label="Close" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.15);color:#fff;border:0;width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;">×</button>
+      <div style="position:absolute;bottom:20px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;">
+        <p style="margin:0;color:rgba(255,255,255,0.7);font-size:12px;font-family:system-ui,-apple-system,sans-serif;pointer-events:none;">Long-press the image to save to Photos</p>
+        <a href="${url}" download="${esc(filename)}" style="pointer-events:auto;background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;padding:10px 22px;border-radius:9999px;font-weight:700;text-decoration:none;font-size:14px;font-family:system-ui,-apple-system,sans-serif;">Save / Download</a>
+      </div>
+    `;
+    document.documentElement.appendChild(box);
+    box.querySelector('[data-tt-lb-close]').addEventListener('click', () => box.remove());
+    box.addEventListener('click', (e) => { if (e.target === box) box.remove(); });
   }
 
   function showEmojiPicker(anchor, messageId) {
@@ -513,12 +567,36 @@
         showEmojiPicker(b, msgId);
       });
     });
+
+    // Inline image attachments: fetch blob, set src, wire lightbox
+    panel.querySelectorAll('[data-tt-img]').forEach(img => {
+      const id = parseInt(img.getAttribute('data-tt-img'));
+      const filename = img.getAttribute('data-tt-filename');
+      fetchAttachmentBlob(id).then(url => {
+        img.src = url;
+        img.addEventListener('click', () => openLightbox(url, filename));
+        img.addEventListener('error', () => {
+          img.alt = 'Image failed to load';
+          img.style.padding = '16px';
+          img.style.fontSize = '12px';
+          img.style.color = 'rgba(255,255,255,0.7)';
+        });
+      }).catch(() => {
+        img.alt = 'Failed to load ' + filename;
+        img.style.padding = '16px';
+        img.style.fontSize = '12px';
+        img.style.color = 'rgba(255,255,255,0.7)';
+      });
+    });
+
+    // Non-image attachments: download on click
     panel.querySelectorAll('[data-tt-att]').forEach(a => {
       a.addEventListener('click', async (e) => {
         e.preventDefault();
         await downloadAttachment(parseInt(a.getAttribute('data-tt-att')), a.getAttribute('data-tt-filename'));
       });
     });
+
     const cancelReply = panel.querySelector('[data-tt-cancel-reply]');
     if (cancelReply) cancelReply.addEventListener('click', () => { activeThread.reply_to_id = null; renderPanelContent(); });
     panel.querySelectorAll('[data-tt-remove-att]').forEach(b => b.addEventListener('click', () => {
@@ -625,23 +703,13 @@
 
   async function downloadAttachment(id, filename) {
     try {
-      const t = getToken();
-      const res = await fetch(`${API}/api/messages/attachments/${id}`, {
-        headers: { Authorization: 'Bearer ' + t }
-      });
-      if (!res.ok) {
-        let msg = 'HTTP ' + res.status;
-        try { const j = await res.json(); if (j.error) msg = j.error; } catch {}
-        throw new Error(msg);
-      }
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
+      const url = await fetchAttachmentBlob(id);
       const a = document.createElement('a');
       a.href = url;
       a.download = filename || 'file';
       document.body.appendChild(a);
       a.click();
-      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
+      setTimeout(() => a.remove(), 500);
     } catch (e) {
       alert('Could not download: ' + e.message);
     }
