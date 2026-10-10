@@ -471,7 +471,10 @@
                     </div>
 
                     <p x-show="profile.success" class="text-green-500 text-sm" x-text="profile.success"></p>
-                    <p x-show="profile.error" class="text-red-500 text-sm" x-text="profile.error"></p>
+                    <div x-show="profile.error" class="text-red-500 text-sm">
+                      <span x-text="profile.error"></span>
+                      <a x-show="!isAuthenticated" href="/login/?tab=register" class="ml-1 font-bold underline hover:no-underline">Create account / Log in →</a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3836,8 +3839,16 @@ function dashboardApp() {
     // ===== PROFILE =====
     async loadProfile() {
       this.profile.loading = true; this.profile.error = null;
+      if (!this.isAuthenticated) {
+        this.profile.loading = false;
+        return;
+      }
       try {
         const res = await fetch(`${API_BASE}/api/profile/me`, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') } });
+        if (res.status === 401) {
+          this.profile.error = 'Your session expired. Please log in again to edit your profile.';
+          return;
+        }
         if (!res.ok) throw new Error('Failed to load profile');
         const data = await res.json();
         Object.assign(this.profile, data.profile || {});
@@ -3854,6 +3865,10 @@ function dashboardApp() {
     },
 
     async saveProfile() {
+      if (!this.isAuthenticated) {
+        this.profile.error = 'You need an account to save your profile. Click "Create account" below.';
+        return;
+      }
       this.profile.saving = true; this.profile.error = null; this.profile.success = null;
       try {
         const body = {
@@ -3888,6 +3903,10 @@ function dashboardApp() {
           body: JSON.stringify(body)
         });
         const data = await res.json();
+        if (res.status === 401) {
+          this.profile.error = 'Your session expired. Please log in again to save changes.';
+          return;
+        }
         if (!res.ok) throw new Error(data.error || 'Save failed');
         Object.assign(this.profile, data.profile || {});
         this.profile.success = 'Saved ✓';

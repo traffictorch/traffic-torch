@@ -60,6 +60,53 @@
     return IMG_EXT_RE.test(a.filename || '');
   };
 
+  const CODE_EXT_RE = /\.(js|mjs|cjs|jsx|ts|tsx|css|scss|less|html?|xml|json|md|markdown|py|rb|go|rs|java|c|cc|cpp|h|hpp|cs|php|sh|bash|zsh|ps1|yml|yaml|toml|ini|sql|graphql|txt|log|csv|tsv|env|gitignore|dockerfile)$/i;
+  const CODE_LANG_MAP = { js:'javascript', mjs:'javascript', cjs:'javascript', jsx:'javascript', ts:'typescript', tsx:'typescript', html:'xml', htm:'xml', xml:'xml', css:'css', scss:'scss', less:'less', json:'json', md:'markdown', markdown:'markdown', py:'python', rb:'ruby', go:'go', rs:'rust', java:'java', c:'c', cc:'cpp', cpp:'cpp', h:'c', hpp:'cpp', cs:'csharp', php:'php', sh:'bash', bash:'bash', zsh:'bash', ps1:'powershell', yml:'yaml', yaml:'yaml', toml:'ini', ini:'ini', sql:'sql', graphql:'graphql', txt:'plaintext', log:'plaintext', csv:'plaintext', tsv:'plaintext', env:'bash', gitignore:'plaintext' };
+
+  function isCodeAttachment(a) {
+    if (!a) return false;
+    const mime = (a.content_type || a.mime_type || a.mime || '').toLowerCase();
+    if (mime.startsWith('image/')) return false;
+    if (mime === 'application/pdf') return false;
+    if (mime.startsWith('text/')) return true;
+    if (mime === 'application/json' || mime === 'application/xml' || mime === 'application/javascript') return true;
+    const m = (a.filename || '').match(/\.([a-z0-9]+)$/i);
+    return m ? CODE_EXT_RE.test('.' + m[1]) : false;
+  }
+
+  function codeLangFor(filename) {
+    const m = (filename || '').match(/\.([a-z0-9]+)$/i);
+    if (!m) return 'plaintext';
+    return CODE_LANG_MAP[m[1].toLowerCase()] || 'plaintext';
+  }
+
+  async function fetchAttachmentText(id) {
+    const t = getToken();
+    const res = await fetch(`${API}/api/messages/attachments/${id}`, {
+      headers: { Authorization: 'Bearer ' + t }
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.text();
+  }
+
+  let _hljsPromise = null;
+  function loadHljs() {
+    if (_hljsPromise) return _hljsPromise;
+    _hljsPromise = new Promise((resolve, reject) => {
+      if (window.hljs) return resolve(window.hljs);
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css';
+      document.head.appendChild(link);
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js';
+      s.onload = () => resolve(window.hljs);
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+    return _hljsPromise;
+  }
+
   let me = null;
   let unreadCount = 0;
   let threads = [];
@@ -520,6 +567,87 @@
   box.addEventListener('click', (e) => { if (e.target === box) close(); });
 }
 
+  async function openCodeViewer(attachment) {
+    const existing = document.getElementById('tt-code-viewer');
+    if (existing) existing.remove();
+
+    const id = attachment.id;
+    const filename = attachment.filename || 'file';
+    const lang = codeLangFor(filename);
+
+    const box = document.createElement('div');
+    box.id = 'tt-code-viewer';
+    box.style.cssText = 'position:fixed;inset:0;z-index:2147483646;background:#1e1e1e;display:flex;flex-direction:column;isolation:isolate;';
+    box.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#141414;color:#e5e7eb;border-bottom:1px solid #333;font-family:system-ui,-apple-system,sans-serif;flex-shrink:0;">
+        <span style="font-weight:700;font-size:14px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(filename)}</span>
+        <span style="font-size:11px;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:rgba(249,115,22,0.2);color:#fb923c;font-weight:700;">${esc(lang)}</span>
+        <button data-tt-cv-copy style="background:#f97316;color:#fff;border:0;padding:6px 14px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">Copy all</button>
+        <button data-tt-cv-close aria-label="Close" style="background:rgba(255,255,255,0.12);color:#fff;border:0;width:32px;height:32px;border-radius:6px;font-size:20px;cursor:pointer;line-height:1;">×</button>
+      </div>
+      <div data-tt-cv-body style="flex:1;overflow:auto;display:flex;background:#1e1e1e;color:#e5e7eb;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:13px;line-height:1.55;user-select:text;-webkit-user-select:text;-webkit-overflow-scrolling:touch;">
+        <div data-tt-cv-gutter style="flex-shrink:0;padding:16px 12px 16px 16px;text-align:right;color:#6b7280;user-select:none;-webkit-user-select:none;white-space:pre;font-family:inherit;font-size:inherit;line-height:inherit;border-right:1px solid #2a2a2a;"></div>
+        <pre style="flex:1;margin:0;padding:16px;overflow:visible;white-space:pre;font-family:inherit;font-size:inherit;line-height:inherit;"><code data-tt-cv-code style="font-family:inherit;font-size:inherit;line-height:inherit;background:transparent;">Loading…</code></pre>
+      </div>
+    `;
+    document.documentElement.appendChild(box);
+
+    const close = () => {
+      document.removeEventListener('keydown', escClose);
+      box.remove();
+    };
+    const escClose = (e) => { if (e.key === 'Escape') close(); };
+    box.querySelector('[data-tt-cv-close]').addEventListener('click', close);
+    document.addEventListener('keydown', escClose);
+
+    let rawText = '';
+    try {
+      rawText = await fetchAttachmentText(id);
+    } catch (err) {
+      box.querySelector('[data-tt-cv-body]').innerHTML =
+        '<div style="padding:24px;color:#ef4444;font-family:system-ui,sans-serif;">Could not load file: ' + esc(err.message) + '</div>';
+      return;
+    }
+
+    const lines = rawText.split('\n');
+    box.querySelector('[data-tt-cv-gutter]').textContent = lines.map((_, i) => i + 1).join('\n');
+
+    const codeEl = box.querySelector('[data-tt-cv-code]');
+    codeEl.textContent = rawText;
+
+    try {
+      const hljs = await loadHljs();
+      if (lang !== 'plaintext' && hljs.getLanguage(lang)) {
+        codeEl.className = 'hljs language-' + lang;
+        codeEl.innerHTML = hljs.highlight(rawText, { language: lang, ignoreIllegals: true }).value;
+      } else {
+        codeEl.className = 'hljs';
+        codeEl.innerHTML = hljs.highlightAuto(rawText).value;
+      }
+    } catch {
+      codeEl.textContent = rawText;
+    }
+
+    const copyBtn = box.querySelector('[data-tt-cv-copy]');
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(rawText);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = rawText;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch {}
+        ta.remove();
+      }
+      const prev = copyBtn.textContent;
+      copyBtn.textContent = 'Copied ✓';
+      setTimeout(() => { copyBtn.textContent = prev; }, 1500);
+    });
+  }
+
   function showEmojiPicker(anchor, messageId) {
     const existing = document.getElementById('tt-emoji-picker');
     if (existing) existing.remove();
@@ -623,6 +751,12 @@
         const id = parseInt(a.getAttribute('data-tt-att'));
         const filename = a.getAttribute('data-tt-filename');
         const mime = a.getAttribute('data-tt-mime') || '';
+        const att = { id, filename, content_type: mime };
+
+        if (isCodeAttachment(att)) {
+          openCodeViewer(att);
+          return;
+        }
         try {
           const url = await fetchAttachmentBlob(id);
           openFileViewer(url, filename, mime);
