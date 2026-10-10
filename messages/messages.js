@@ -64,6 +64,10 @@
   let wsBackoff = 1000;
   let drawerBuilt = false;
 
+  // iOS keyboard lock state
+  let _savedScrollY = 0;
+  let _kbLocked = false;
+
   async function api(path, opts = {}) {
     const headers = Object.assign({}, opts.headers || {});
     const t = getToken();
@@ -131,6 +135,33 @@
     }, 100);
   }
 
+  // ---------- iOS body scroll lock ----------
+  // iOS Safari ignores overflow:hidden for scroll prevention.
+  // The only reliable pattern is position:fixed with a negative top offset.
+  function _lockBody() {
+    if (_kbLocked) return;
+    _savedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    _kbLocked = true;
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + _savedScrollY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function _unlockBody() {
+    if (!_kbLocked) return;
+    _kbLocked = false;
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, _savedScrollY);
+  }
+
   // ---------- drawer ----------
   function buildDrawer() {
     if (drawerBuilt) return;
@@ -150,16 +181,67 @@
     // iOS keyboard handling: visualViewport tells us the real visible height.
     // Resize the panel to match so the compose bar sits above the keyboard
     // and the header (with the ✕ button) stays on screen.
+    installKeyboardGuard();
+  }
+
+  function installKeyboardGuard() {
     const panel = document.getElementById('tt-msg-panel');
-    if (window.visualViewport) {
-      const sync = () => {
-        if (panel.style.display === 'none') return;
-        panel.style.height = window.visualViewport.height + 'px';
-      };
-      window.visualViewport.addEventListener('resize', sync);
-      window.visualViewport.addEventListener('scroll', sync);
-      // store so we can detach on close if needed (harmless to leave)
-      panel._ttVVSync = sync;
+    if (!panel) return;
+
+    const sync = () => {
+      if (!window.visualViewport) return;
+      if (panel.style.display === 'none') return;
+      const vv = window.visualViewport;
+      // Kill transition during keyboard animation so we don't fight iOS
+      panel.style.transition = 'none';
+      panel.style.height = Math.round(vv.height) + 'px';
+      panel.style.transform = 'translate(0px, ' + Math.round(vv.offsetTop) + 'px)';
+      requestAnimationFrame(() => { panel.style.transition = ''; });
+    };
+
+    if (!panel.dataset.ttKbWired) {
+      panel.dataset.ttKbWired = '1';
+
+      panel.addEventListener('focusin', (e) => {
+        const t = e.target;
+        if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+          _lockBody();
+          sync();
+          // iOS fires the resize event 300-700ms after focus — poll to be safe
+          setTimeout(sync, 60);
+          setTimeout(sync, 180);
+          setTimeout(sync, 400);
+          setTimeout(sync, 700);
+        }
+      }, true);
+
+      panel.addEventListener('focusout', (e) => {
+        const t = e.target;
+        if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+          setTimeout(() => {
+            const active = document.activeElement;
+            if (!active || !panel.contains(active)) {
+              _unlockBody();
+              panel.style.height = '';
+              panel.style.transform = '';
+            }
+          }, 60);
+        }
+      }, true);
+    }
+
+    if (window.visualViewport && !window.__ttVvWired) {
+      window.__ttVvWired = true;
+      window.visualViewport.addEventListener('resize', () => {
+        const p = document.getElementById('tt-msg-panel');
+        if (!p || p.style.display === 'none') return;
+        sync();
+      });
+      window.visualViewport.addEventListener('scroll', () => {
+        const p = document.getElementById('tt-msg-panel');
+        if (!p || p.style.display === 'none') return;
+        sync();
+      });
     }
   }
 
@@ -174,6 +256,10 @@
     root.style.display = 'block';
     ov.style.display = 'block';
     panel.style.display = 'flex';
+    // Reset any residual keyboard state from a previous session
+    panel.style.height = '';
+    panel.style.transform = '';
+    _unlockBody();
     requestAnimationFrame(() => { panel.style.transform = 'translateX(0)'; });
     document.body.classList.add('overflow-hidden');
     loadThreads();
@@ -184,9 +270,21 @@
     const ov = document.getElementById('tt-msg-overlay');
     const root = document.getElementById('tt-msg-root');
     if (!panel) return;
+
+    // If the keyboard is up, blur first so iOS releases the visual viewport
+    if (document.activeElement && panel.contains(document.activeElement) && document.activeElement.blur) {
+      document.activeElement.blur();
+    }
+    _unlockBody();
+    panel.style.height = '';
     panel.style.transform = 'translateX(100%)';
-    setTimeout(() => { panel.style.display = 'none'; ov.style.display = 'none'; root.style.display = 'none'; }, 220);
-    document.body.classList.remove('overflow-hidden');
+
+    setTimeout(() => {
+      panel.style.display = 'none';
+      ov.style.display = 'none';
+      root.style.display = 'none';
+      document.body.classList.remove('overflow-hidden');
+    }, 220);
   }
 
   function renderPanelContent() {
@@ -301,7 +399,7 @@
           <label style="cursor:pointer;padding:8px;border-radius:8px;background:${T('#1f2937','#f3f4f6')};color:inherit;font-size:16px;">
             📎<input data-tt-file type="file" style="display:none;" accept="${ACCEPT_ATTR}">
           </label>
-          <textarea data-tt-input maxlength="${MAX_LEN}" rows="1" placeholder="Message…" style="flex:1;padding:8px;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;background:${T('#0f172a','#ffffff')};color:inherit;font-family:inherit;font-size:14px;resize:none;outline:none;"></textarea>
+          <textarea data-tt-input maxlength="${MAX_LEN}" rows="1" placeholder="Message…" style="flex:1;padding:8px;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;background:${T('#0f172a','#ffffff')};color:inherit;font-family:inherit;font-size:16px;resize:none;outline:none;"></textarea>
           <button data-tt-send style="padding:8px 16px;border:none;border-radius:8px;background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;">Send</button>
         </div>
         <p data-tt-error style="color:#ef4444;font-size:12px;margin:6px 0 0;display:none;"></p>
@@ -361,17 +459,12 @@
     if (back) back.addEventListener('click', () => {
       // Blur any focused input so iOS closes the keyboard before we swap content
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-      // Reset the panel to full height immediately (iOS keyboard may still be closing)
-      if (window.visualViewport) panel.style.height = window.visualViewport.height + 'px';
+      _unlockBody();
+      panel.style.height = '';
+      panel.style.transform = '';
       activeThread = null;
       renderPanelContent();
       loadThreads();
-      // Safety: after the keyboard finishes closing, snap panel height back to dvh
-      setTimeout(() => {
-        panel.style.height = '';
-        const body = panel.querySelector('[data-tt-thread-body]');
-        if (body) body.scrollTop = 0;
-      }, 350);
     });
     const mute = panel.querySelector('[data-tt-mute]');
     if (mute) mute.addEventListener('click', toggleMute);
