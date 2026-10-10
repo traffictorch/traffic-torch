@@ -56,7 +56,8 @@
     color: #fff;
     box-shadow: 0 2px 8px rgba(249,115,22,0.35);
   }
-  #communication-preferences { scroll-margin-top: 100px; }
+  #communication-preferences,
+  #notifications-section { scroll-margin-top: 100px; }
   </style>
 
   <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
@@ -2725,10 +2726,11 @@ function dashboardApp() {
         this.activeDashboardTab = hash;
       } else if (hash === 'communication-preferences') {
         this.activeDashboardTab = 'settings';
-        setTimeout(() => {
-          const el = document.getElementById('communication-preferences');
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 300);
+        this._scrollToElementWithRetry('communication-preferences');
+      } else if (hash === 'notifications-section') {
+        this.activeDashboardTab = 'profile';
+        this.profileSubTab = 'profile';
+        this._scrollToElementWithRetry('notifications-section');
       }
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -2765,10 +2767,11 @@ function dashboardApp() {
           this.activeDashboardTab = h;
         } else if (h === 'communication-preferences') {
           this.activeDashboardTab = 'settings';
-          setTimeout(() => {
-            const el = document.getElementById('communication-preferences');
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }, 300);
+          this._scrollToElementWithRetry('communication-preferences');
+        } else if (h === 'notifications-section') {
+          this.activeDashboardTab = 'profile';
+          this.profileSubTab = 'profile';
+          this._scrollToElementWithRetry('notifications-section');
         }
       });
 
@@ -2993,10 +2996,21 @@ function dashboardApp() {
     scrollToNotifications() {
       this.activeDashboardTab = 'profile';
       this.profileSubTab = 'profile';
-      setTimeout(() => {
-        const el = document.getElementById('notifications-section');
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 150);
+      this._scrollToElementWithRetry('notifications-section');
+    },
+
+    _scrollToElementWithRetry(id, maxAttempts = 40, delay = 200) {
+      let attempts = 0;
+      const tick = () => {
+        attempts++;
+        const el = document.getElementById(id);
+        if (el && el.offsetHeight > 0) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+        if (attempts < maxAttempts) setTimeout(tick, delay);
+      };
+      tick();
     },
 
     updateSidebarBadge() {
