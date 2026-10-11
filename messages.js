@@ -179,13 +179,11 @@
     ['tt-beams-count', 'tt-beams-count-mobile'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      if (unreadCount > 0) {
-        el.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
-        el.classList.remove('hidden');
-      } else {
-        el.textContent = '';
-        el.classList.add('hidden');
-      }
+      const next = unreadCount > 0 ? (unreadCount > 99 ? '99+' : String(unreadCount)) : '';
+      const hide = unreadCount <= 0;
+      if (el.textContent !== next) el.textContent = next;
+      if (hide && !el.classList.contains('hidden')) el.classList.add('hidden');
+      if (!hide && el.classList.contains('hidden')) el.classList.remove('hidden');
     });
   }
 
@@ -1606,9 +1604,13 @@
     connectWS();
   }
 
+  let _moDone = false;
   const mo = new MutationObserver(() => {
+    if (_moDone) return;
     if (!isAuthed()) return;
     if (document.getElementById('tt-beams-inbox-link') || document.getElementById('tt-beams-inbox-link-mobile')) {
+      _moDone = true;
+      mo.disconnect();
       wireStaticBeamsLinks();
     }
   });
