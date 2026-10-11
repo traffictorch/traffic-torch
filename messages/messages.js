@@ -1606,18 +1606,9 @@
     connectWS();
   }
 
-  // ── FIX: one-shot MutationObserver. Wires beams links once, then disconnects.
-  //    Previously this ran forever and re-invoked wireStaticBeamsLinks →
-  //    paintBadges on every DOM change, causing an infinite loop
-  //    (mutate → observe → mutate) that pegged the main thread.
-  let _moDone = false;
-  let _moDone = false;
   const mo = new MutationObserver(() => {
-    if (_moDone) return;
     if (!isAuthed()) return;
     if (document.getElementById('tt-beams-inbox-link') || document.getElementById('tt-beams-inbox-link-mobile')) {
-      _moDone = true;
-      mo.disconnect();
       wireStaticBeamsLinks();
     }
   });
