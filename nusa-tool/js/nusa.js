@@ -480,10 +480,10 @@ async function runAudit(rawUrl) {
   ];
   const uxScore = Math.round(uxModules.reduce((s, m) => s + m.score, 0) / uxModules.length);
 
-  lh = dedupeLighthouse(lh, uxModules);
-  if (lh._removedByDedupe) {
-    narrate(`Dedupe: folded ${lh._removedByDedupe} Lighthouse module(s) into UX.`);
-  }
+lh = dedupeLighthouse(lh, uxModules);
+if (lh._removedByDedupe) {
+  console.debug(`[NUSA] dedupe: folded ${lh._removedByDedupe} Lighthouse module(s) into UX.`);
+}
 
   let cms = null;
   try { cms = detectCMS(html, { url }); } catch (_) { cms = null; }
