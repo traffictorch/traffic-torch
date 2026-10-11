@@ -514,7 +514,7 @@ export async function handleTorch(request, env) {
   const mainStart = html.indexOf('<main ');
   const mainEnd = html.indexOf('</main>');
   if (mainStart !== -1 && mainEnd !== -1) {
-    const embedded = `<script id="torch-data" type="application/json">${JSON.stringify({ torch_id: id, author_id: author.id, author_username: author.username })}</script>`;
+    const embedded = `<script id="torch-data" type="application/json">${JSON.stringify({ torch_id: id, author_id: author.id, author_username: author.username, endorse_count: post.endorse_count || 0 })}</script>`;
     const wrapped = `<div x-data="torchPage()" x-init="init()">\n${renderTorchBody(data)}\n${embedded}\n</div>\n${torchPageScript()}`;
     html = html.slice(0, mainStart) + wrapped + html.slice(mainEnd + '</main>'.length);
   }
