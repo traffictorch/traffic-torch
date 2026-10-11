@@ -857,3 +857,14 @@ p a:hover, li a:hover {
 .avatar-ring { transition: transform 0.18s ease; }
 .avatar-ring.cursor-pointer:hover { transform: scale(1.04); }
 .avatar-ring.cursor-pointer:active { transform: scale(0.98); }
+
+/* Mobile: center @username + role row on profile header */
+@media (max-width: 639px) {
+  .profile-header-flex .profile-info p {
+    justify-content: center;
+  }
+  .profile-header-flex .profile-info h1 {
+    justify-content: center;
+    text-align: center;
+  }
+}
