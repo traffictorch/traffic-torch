@@ -197,86 +197,63 @@
 }
 
 @media (max-width: 520px) {
-  .tt-contrib { padding: 1rem; }
-  .tt-contrib-points { font-size: 1rem; }
-  .tt-contrib-rank { font-size: 1.2rem; min-width: 32px; }
-  .tt-contrib-avatar { width: 34px; height: 34px; }
-
+  .tt-contrib { padding: 0.85rem; }
+  .tt-contrib-list { gap: 0.5rem; }
+  .tt-contrib-card {
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.85rem;
+  }
   .tt-contrib-top {
     flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
     row-gap: 0.4rem;
   }
-  .tt-contrib-body {
-    flex: 1 1 100%;
-    order: 3;
-    min-width: 0;
-  }
-  .tt-contrib-stats {
-    order: 2;
-    margin-left: auto;
-    text-align: right;
-  }
-  .tt-contrib-rank { order: 1; }
-  .tt-contrib-avatar { order: 1; }
-  .tt-contrib-name {
-    font-size: 0.9rem;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.3rem;
-  }
-  .tt-contrib-role {
-    flex: 1 0 100%;
-    margin-left: 0;
-    margin-bottom: 4px;
-  }
-  .tt-contrib-username { font-size: 0.7rem; }
-}
-/* Mobile fix: compact contributor rows, not full-screen cards */
-@media (max-width: 520px) {
-  .tt-contrib { padding: 0.75rem !important; }
-  .tt-contrib-list { gap: 0.4rem !important; }
-  .tt-contrib-card { padding: 0.5rem 0.75rem !important; border-radius: 0.75rem !important; }
-  .tt-contrib-top {
-    flex-wrap: nowrap !important;
-    gap: 0.5rem !important;
-    align-items: center !important;
-  }
   .tt-contrib-rank {
-    order: 1 !important;
-    font-size: 1rem !important;
-    min-width: 24px !important;
+    order: 1;
+    font-size: 1rem;
+    min-width: 24px;
   }
   .tt-contrib-avatar {
-    order: 2 !important;
-    width: 32px !important;
-    height: 32px !important;
+    order: 2;
+    width: 32px;
+    height: 32px;
   }
   .tt-contrib-body {
-    order: 3 !important;
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-  }
-  .tt-contrib-stats {
-    order: 4 !important;
-    margin-left: 0 !important;
-    text-align: right !important;
-    flex-shrink: 0 !important;
+    order: 3;
+    flex: 1 1 100%;
+    min-width: 0;
   }
   .tt-contrib-name {
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 0.35rem !important;
-    font-size: 0.85rem !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
   }
   .tt-contrib-role {
-    flex: 0 0 auto !important;
-    margin: 0 !important;
-    font-size: 0.55rem !important;
-    padding: 0.08rem 0.4rem !important;
+    font-size: 0.55rem;
+    padding: 0.08rem 0.4rem;
   }
-  .tt-contrib-username { font-size: 0.65rem !important; }
-  .tt-contrib-points { font-size: 0.95rem !important; }
-  .tt-contrib-count { font-size: 0.6rem !important; }
-  .tt-contrib-expand-row { display: none !important; }
-  .tt-contrib-details { display: none !important; }
+  .tt-contrib-username { font-size: 0.68rem; }
+
+  /* Stats move to their own row, aligned right */
+  .tt-contrib-stats {
+    order: 4;
+    flex: 1 1 100%;
+    text-align: right;
+    margin-top: 0.15rem;
+  }
+  .tt-contrib-points {
+    font-size: 1rem;
+    display: inline-block;
+    margin-right: 0.5rem;
+  }
+  .tt-contrib-count {
+    font-size: 0.65rem;
+    display: inline-block;
+    margin-top: 0;
+  }
+
+  .tt-contrib-expand-row { display: none; }
+  .tt-contrib-details { display: none; }
 }
