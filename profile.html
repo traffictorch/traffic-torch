@@ -109,8 +109,7 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-75"
-         class="max-w-[85vw] max-h-[85vh] rounded-full object-cover shadow-2xl ring-4 ring-white/20"
-         style="width: auto; height: auto;">
+         style="width: min(80vw, 320px); height: min(80vw, 320px); border-radius: 50%; object-fit: cover; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);">
     <button type="button" @click="avatarLightbox = false"
             class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/15 hover:bg-white/25 text-white text-2xl flex items-center justify-center transition"
             aria-label="Close">×</button>
