@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      ${renderRenderDiffPanel(rawHtml, renderedHtml, meta)}
+      ${renderRenderDiffPanel(rawHtml, renderedHtml, meta, data.robotsTxt || '')}
 
       <div class="grid md:grid-cols-3 gap-8 my-16 max-w-6xl mx-auto px-4">
         ${modules.map(m => {
