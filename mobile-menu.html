@@ -125,7 +125,7 @@
   </div>
 
   <!-- Apps -->
-  <a href="/apps/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">📱 Apps 🚥</a>
+  <a href="/apps/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">📱 PWA Apps</a>
 
   <!-- Help Guides -->
   <a href="/ai-ux-seo-help-guides/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">📋 Help Guides</a>
@@ -137,7 +137,23 @@
   <a href="/upgrade/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🚀 Upgrade</a>
 
   <!-- Login -->
+  <!-- ─── Auth section (dynamic) ─── -->
   <div class="mt-2 pt-2 border-t border-white/10 dark:border-white/5">
-    <a href="/login/" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🔑 Login</a>
+
+    <!-- Logged OUT -->
+    <div data-auth="out">
+      <a href="/login/" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🔑 Login / Register</a>
+    </div>
+
+    <!-- Logged IN -->
+    <div data-auth="in" class="hidden">
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-2 truncate" data-auth-email>Signed in</p>
+      <a href="/dashboard/#profile" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🧑 My Profile</a>
+      <a href="/dashboard/#settings" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">⚙️ Settings</a>
+      <button type="button" data-auth-logout
+              class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-red-400 transition font-semibold block py-1.5 text-[1.125rem] w-full text-left">
+        🚪 Log out
+      </button>
+    </div>
   </div>
 </nav>

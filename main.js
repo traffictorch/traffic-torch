@@ -663,6 +663,81 @@ window.handleNotifJump = function(e) {
 };
 
 // ==========================================================
+// Auth-aware menu (Login/Register ↔ Logout)
+// ==========================================================
+function getAuthToken() {
+  return localStorage.getItem('authToken') ||
+         localStorage.getItem('traffic_torch_jwt') ||
+         localStorage.getItem('torch_token');
+}
+
+function isLoggedIn() {
+  const t = getAuthToken();
+  return !!t && t !== 'null' && t !== 'undefined';
+}
+
+function updateAuthMenu() {
+  const loggedIn = isLoggedIn();
+
+  document.querySelectorAll('[data-auth="out"]').forEach(el => {
+    el.classList.toggle('hidden', loggedIn);
+  });
+  document.querySelectorAll('[data-auth="in"]').forEach(el => {
+    el.classList.toggle('hidden', !loggedIn);
+  });
+
+  // Show email from JWT payload (no extra API call)
+  if (loggedIn) {
+    let email = '';
+    try {
+      const t = getAuthToken();
+      const payload = JSON.parse(
+        atob(t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
+      );
+      email = payload.email || payload.sub || '';
+    } catch {}
+    document.querySelectorAll('[data-auth-email]').forEach(el => {
+      el.textContent = email || 'Signed in';
+    });
+  }
+}
+
+// Global logout — delegated, works on any page + any menu
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-auth-logout]');
+  if (!btn) return;
+  e.preventDefault();
+  if (!confirm('Log out of Traffic Torch?')) return;
+
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('traffic_torch_jwt');
+  localStorage.removeItem('torch_token');
+
+  document.dispatchEvent(new CustomEvent('loginStatusChanged'));
+  window.location.href = '/login/';
+});
+
+// Hook into existing flow — right after updateProPortalDot()
+document.addEventListener('DOMContentLoaded', () => {
+  const start = Date.now();
+  const check = setInterval(() => {
+    const dp = document.getElementById('desktop-menu-placeholder');
+    const mp = document.getElementById('mobile-menu-placeholder');
+    const ready = dp && mp && dp.innerHTML.trim() && mp.innerHTML.trim();
+    if (ready) {
+      clearInterval(check);
+      updateAuthMenu();
+    } else if (Date.now() - start > 8000) {
+      clearInterval(check);
+    }
+  }, 100);
+});
+
+// Re-run whenever login state changes anywhere
+document.addEventListener('loginStatusChanged', updateAuthMenu);
+window.updateAuthMenu = updateAuthMenu;
+
+// ==========================================================
 // NEW: Event delegation for [data-tab] links (desktop + mobile)
 // ==========================================================
 document.addEventListener('click', (e) => {

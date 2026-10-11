@@ -270,7 +270,7 @@
   <!-- Apps -->
   <a href="/apps/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Install Traffic Torch as an App">
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📱</span>
-    <span class="sidebar-text hidden md:block">Apps 🚥</span>
+    <span class="sidebar-text hidden md:block">PWA Apps</span>
   </a>
 
   <!-- Help Guides -->
@@ -293,10 +293,36 @@
   </a>
 
   <!-- Login -->
+  <!-- ─── Auth section (dynamic) ─── -->
   <div class="mt-2 border-t border-white/10 dark:border-white/5 pt-4">
-    <a href="/login/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition px-3 py-2 rounded-lg">
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔑</span>
-      <span class="sidebar-text hidden md:block">Login</span>
-    </a>
+
+    <!-- Logged OUT -->
+    <div data-auth="out" class="space-y-2">
+      <a href="/login/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition px-3 py-2 rounded-lg">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔑</span>
+        <span class="sidebar-text hidden md:block">Login / Register</span>
+      </a>
+    </div>
+
+    <!-- Logged IN -->
+    <div data-auth="in" class="hidden space-y-2">
+      <div class="px-3 py-2 flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">👋</span>
+        <span class="sidebar-text hidden md:block truncate" data-auth-email>Signed in</span>
+      </div>
+      <a href="/dashboard/#profile" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition px-3 py-2 rounded-lg">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🧑</span>
+        <span class="sidebar-text hidden md:block">My Profile</span>
+      </a>
+      <a href="/dashboard/#settings" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition px-3 py-2 rounded-lg">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
+        <span class="sidebar-text hidden md:block">Settings</span>
+      </a>
+      <button type="button" data-auth-logout
+              class="w-full sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-red-400 transition px-3 py-2 rounded-lg">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🚪</span>
+        <span class="sidebar-text hidden md:block">Log out</span>
+      </button>
+    </div>
   </div>
 </nav>
