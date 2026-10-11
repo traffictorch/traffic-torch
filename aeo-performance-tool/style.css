@@ -1,2 +1,93 @@
 /* SEO/AEO Performance Tool – minimal overrides, relies on global styles */
 /* Add any tool-specific CSS here */
+
+/* ── Render Diff Panel — word-level highlights ── */
+.diff-shared {
+  background: transparent;
+}
+.diff-injected {
+  background: rgba(59, 130, 246, 0.22);   /* blue-500 */
+  border-radius: 3px;
+  padding: 0 1px;
+}
+.dark .diff-injected {
+  background: rgba(59, 130, 246, 0.35);
+}
+.diff-removed {
+  background: rgba(239, 68, 68, 0.20);    /* red-500 */
+  border-radius: 3px;
+  padding: 0 1px;
+  text-decoration: line-through;
+  text-decoration-color: rgba(239, 68, 68, 0.6);
+}
+.dark .diff-removed {
+  background: rgba(239, 68, 68, 0.32);
+}
+
+/* ── Render Diff Panel — force 2-col grid, no Tailwind dependency ── */
+.render-diff-columns {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .render-diff-columns { grid-template-columns: minmax(0, 1fr) !important; }
+}
+
+.render-diff-col {
+  border: 1px solid rgba(156, 163, 175, 0.35);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+}
+.dark .render-diff-col { border-color: rgba(156, 163, 175, 0.2); }
+
+.render-diff-col-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  background: rgba(156, 163, 175, 0.10);
+  transition: background 0.15s ease;
+}
+.render-diff-col-head:hover { background: rgba(156, 163, 175, 0.16); }
+.render-diff-col-head::-webkit-details-marker { display: none; }
+
+.render-diff-col-meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.render-diff-col-title { font-weight: 700; color: #111827; }
+.dark .render-diff-col-title { color: #e5e7eb; }
+.render-diff-col-sub { font-size: 0.72rem; color: #6b7280; }
+.dark .render-diff-col-sub { color: #9ca3af; }
+
+.render-diff-col-badge {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  background: rgba(249, 115, 22, 0.15);
+  color: #ea580c;
+  white-space: nowrap;
+}
+.dark .render-diff-col-badge { color: #fb923c; background: rgba(251, 146, 60, 0.18); }
+
+.render-diff-col-chevron {
+  font-size: 1.1rem;
+  color: #ea580c;
+  transition: transform 0.2s ease;
+}
+.render-diff-col[open] .render-diff-col-chevron { transform: rotate(180deg); }
+
+.render-diff-col-body {
+  padding: 1rem;
+  max-height: 520px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.render-diff-col-body p { margin: 0 0 0.75rem; }
+.render-diff-col-body p:last-child { margin-bottom: 0; }
