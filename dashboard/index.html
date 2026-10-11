@@ -240,15 +240,20 @@
                 <div class="glass rounded-3xl overflow-hidden mb-6">
                   <div class="px-6 pb-6 -mt-14 relative">
 
-                    <div class="flex flex-col sm:flex-row sm:items-end gap-5">
-                        <template x-if="profile.id">
-                          <img :src="avatarSrc(profile)"
-                               :alt="profile.display_name"
-                               width="72" height="72" style="width:72px;height:72px;"
-                               class="rounded-full object-cover border-2 border-gray-200 dark:border-gray-700" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
-                        </template>
-                      <div class="flex-1 min-w-0 sm:pb-2">
-                        <h1 class="text-3xl font-black truncate flex items-center gap-3 flex-wrap">
+<div class="flex flex-col items-center sm:flex-row sm:items-end gap-5 profile-header-flex">
+  <template x-if="profile.id">
+    <div class="avatar-ring mx-auto sm:mx-0"
+         :class="'tier-' + (profile.tier || 'free')"
+         :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member'">
+      <img :src="avatarSrc(profile)"
+           :alt="profile.display_name"
+           width="72" height="72" style="width:72px;height:72px;"
+           class="object-cover"
+           onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+    </div>
+  </template>
+  <div class="flex-1 min-w-0 sm:pb-2 profile-info">
+    <h1 class="text-3xl font-black truncate flex items-center gap-3 flex-wrap">
                           <span x-text="profile.display_name || profile.username || 'Your name'"></span>
                           <span x-show="profile.total_points > 0"
                                 class="points-badge points-badge-lg"
@@ -259,8 +264,8 @@
                           <span class="inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(profile.role)"></span>
                         </p>
                       </div>
-                      <div class="flex gap-2 sm:pb-2 flex-wrap items-center flex-shrink-0">
-                        <button type="button" @click="profileViewMode = 'edit'"
+<div class="flex gap-2 sm:pb-2 flex-wrap items-center justify-center sm:justify-start flex-shrink-0 profile-actions">
+  <button type="button" @click="profileViewMode = 'edit'"
                                 class="px-4 py-2 rounded-xl font-bold text-sm transition border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white whitespace-nowrap">
                           ✏️ Edit Profile
                         </button>
@@ -303,24 +308,28 @@
                       </a>
                     </div>
 
-                    <div class="mt-7 grid grid-cols-4 gap-3 max-w-lg mx-auto">
-                      <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                        <p class="text-2xl font-black text-orange-500" x-text="feed.slots.used"></p>
-                        <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Audits shared</p>
-                      </div>
-                      <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                        <p class="text-2xl font-black text-orange-500" x-text="network.list.length"></p>
-                        <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Network</p>
-                      </div>
-                      <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                        <p class="text-2xl font-black text-orange-500" x-text="profile.total_points || 0"></p>
-                        <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Points</p>
-                      </div>
-                      <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                        <p class="text-2xl font-black text-orange-500" x-text="monthsSince(profile.created_at)"></p>
-                        <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Months here</p>
-                      </div>
-                    </div>
+<div class="mt-7 grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-2xl mx-auto">
+  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="feed.slots.used"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🔥 Audits shared</p>
+  </div>
+  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="network.list.length"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🤝 Network</p>
+  </div>
+  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="profile.total_points || 0"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🏅 Points</p>
+  </div>
+  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="profile.endorsement_count || 0"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">⭐ Endorsements</p>
+  </div>
+  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="monthsSince(profile.created_at)"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">📅 Months here</p>
+  </div>
+</div>
                   </div>
                 </div>
               </div>

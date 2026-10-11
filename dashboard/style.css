@@ -173,3 +173,21 @@
 .mod-fill.bad  { background: #ef4444; }
 .mod-score { flex-shrink: 0; min-width: 28px; text-align: right; font-weight: 700; color: #374151; }
 .dark .mod-score { color: #d1d5db; }
+/* ── Avatar tier ring (Phase A) ──────────────────────────────────────── */
+.avatar-ring {
+  display: inline-block;
+  padding: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+  flex-shrink: 0;
+  line-height: 0;
+}
+.avatar-ring.tier-free       { background: linear-gradient(135deg, #94a3b8, #cbd5e1); }
+.avatar-ring.tier-pro        { background: linear-gradient(135deg, #f97316, #ec4899); }
+.avatar-ring.tier-enterprise { background: linear-gradient(135deg, #8b5cf6, #a855f7); }
+.avatar-ring > img {
+  display: block;
+  border-radius: 9999px;
+  background: #fff;
+}
+.dark .avatar-ring > img { background: #0f172a; }

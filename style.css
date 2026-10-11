@@ -823,3 +823,31 @@ p a:hover, li a:hover {
   touch-action: none;
   overscroll-behavior: contain;
 }
+/* ── Avatar tier ring (Phase A) ──────────────────────────────────────── */
+.avatar-ring {
+  display: inline-block;
+  padding: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #94a3b8, #cbd5e1); /* default: free */
+  flex-shrink: 0;
+  line-height: 0;
+}
+.avatar-ring.tier-free       { background: linear-gradient(135deg, #94a3b8, #cbd5e1); }
+.avatar-ring.tier-pro        { background: linear-gradient(135deg, #f97316, #ec4899); }
+.avatar-ring.tier-enterprise { background: linear-gradient(135deg, #8b5cf6, #a855f7); }
+.avatar-ring > img {
+  display: block;
+  border-radius: 9999px;
+  background: #fff;
+}
+.dark .avatar-ring > img { background: #0f172a; }
+
+/* Mobile-only: center profile header */
+@media (max-width: 639px) {
+  .profile-header-flex {
+    align-items: center !important;
+    text-align: center;
+  }
+  .profile-header-flex .profile-info { width: 100%; text-align: center; }
+  .profile-header-flex .profile-actions { justify-content: center; }
+}

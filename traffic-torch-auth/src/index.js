@@ -603,6 +603,7 @@ function shapeProfile(user) {
       ? `/api/profile/avatar/${user.id}?v=${user.avatar_updated_at || 0}`
       : null,
     role: user.role || 'owner',
+    tier: user.tier || 'free',
     bio: user.bio || '',
     website_url: user.website_url || '',
     website_approved: user.website_approved || 0,

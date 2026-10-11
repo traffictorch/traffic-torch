@@ -146,22 +146,26 @@
         <!-- Header card (matches dashboard profile view) -->
         <div class="glass rounded-3xl overflow-hidden mb-6">
           <div class="px-6 pb-6 -mt-14 relative">
-            <div class="flex flex-col sm:flex-row sm:items-end gap-5">
-              <template x-if="profile.id">
-                <img :src="avatarSrc(profile)"
-                     :alt="profile.display_name"
-                     width="128" height="128" style="width:128px;height:128px;"
-                     class="rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100 object-cover"
-                     onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
-              </template>
-              <div class="flex-1 min-w-0 sm:pb-2">
-                <h1 class="text-3xl font-black truncate" x-text="profile.display_name || profile.username"></h1>
+<div class="flex flex-col items-center sm:flex-row sm:items-end gap-5 profile-header-flex">
+  <template x-if="profile.id">
+    <div class="avatar-ring mx-auto sm:mx-0"
+         :class="'tier-' + (profile.tier || 'free')"
+         :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member'">
+      <img :src="avatarSrc(profile)"
+           :alt="profile.display_name"
+           width="128" height="128" style="width:128px;height:128px;"
+           class="bg-gray-100 object-cover"
+           onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+    </div>
+  </template>
+  <div class="flex-1 min-w-0 sm:pb-2 profile-info">
+    <h1 class="text-3xl font-black truncate" x-text="profile.display_name || profile.username"></h1>
                 <p class="text-gray-500 text-lg flex items-center gap-2 flex-wrap">
                   <span>@<span x-text="profile.username"></span></span>
                   <span class="inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(profile.role)"></span>
                 </p>
               </div>
-              <div class="flex gap-2 sm:pb-2 flex-wrap items-center flex-shrink-0">
+<div class="flex gap-2 sm:pb-2 flex-wrap items-center justify-center sm:justify-start flex-shrink-0 profile-actions">
                 <button x-show="!isOwnProfile"
                         @click="toggleNetwork()"
                         class="px-4 py-2 rounded-xl font-bold text-sm transition border-2 whitespace-nowrap"
@@ -203,20 +207,24 @@
               </a>
             </div>
 
-            <div class="mt-7 grid grid-cols-3 gap-3 max-w-md mx-auto">
-              <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                <p class="text-2xl font-black text-orange-500" x-text="posts.length"></p>
-                <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Audits shared</p>
-              </div>
-              <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                <p class="text-2xl font-black text-orange-500" x-text="network_count"></p>
-                <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Network</p>
-              </div>
-              <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                <p class="text-2xl font-black text-orange-500" x-text="Math.floor((Date.now() - (profile.created_at || Date.now())) / (86400000 * 30))"></p>
-                <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Months here</p>
-              </div>
-            </div>
+<div class="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto">
+  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="posts.length"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🔥 Audits shared</p>
+  </div>
+  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="network_count"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🤝 Network</p>
+  </div>
+  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="endorsement_count || 0"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">⭐ Endorsements</p>
+  </div>
+  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="Math.floor((Date.now() - (profile.created_at || Date.now())) / (86400000 * 30))"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">📅 Months here</p>
+  </div>
+</div>
           </div>
         </div>
 
@@ -545,6 +553,7 @@ function profilePage() {
     network: [],
     network_count: 0,
     inNetwork: false,
+    endorsement_count: 0,
     activeTab: 'audits',
     isOwnProfile: false,
     discover: { loading: false, users: [], hasMore: false, error: null, addLoading: {} },
@@ -568,6 +577,7 @@ function profilePage() {
         }
         const data = await res.json();
         this.profile = data.profile || {};
+        this.endorsement_count = data.profile?.endorsement_count || 0;
         this.posts = (data.posts || []).map(p => ({
           ...p,
           _showDetails: false
