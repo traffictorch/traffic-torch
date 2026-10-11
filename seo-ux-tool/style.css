@@ -1,0 +1,249 @@
+/* ──────────────────────────────────────────────────────────────
+   FINAL WORKING CSS – SEO UX Tool Results
+   Fixes: score circles visible, numbers centred & coloured,
+   borders, spinner, alignment.
+   ────────────────────────────────────────────────────────────── */
+
+/* ── 1. SCORE CIRCLE CONTAINERS – force size ── */
+.score-circle {
+  width: 120px !important;
+  height: 120px !important;
+  margin: 0 auto 1rem auto !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+}
+.score-circle.large {
+  width: 200px !important;
+  height: 200px !important;
+}
+
+/* ── 2. SVG – fill the container ── */
+.score-circle svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: visible !important;
+}
+
+/* ── 3. NUMBER – base (no fill override) + centering ── */
+.score-circle .number {
+  font-weight: 900 !important;
+  font-size: 48px !important;
+  text-anchor: middle !important;
+  dominant-baseline: central !important;   /* best vertical centering */
+  /* no fill here – colour classes will set it */
+}
+.score-circle.large .number {
+  font-size: 80px !important;
+}
+@media (max-width: 768px) {
+  .score-circle.large .number {
+    font-size: 60px !important;
+  }
+}
+
+/* ── 4. NUMBER COLOURS (these must have !important) ── */
+.score-circle .number.text-red-400 {
+  fill: #f87171 !important;
+}
+.score-circle .number.text-orange-400 {
+  fill: #fb923c !important;
+}
+.score-circle .number.text-green-400 {
+  fill: #34d399 !important;
+}
+
+/* ── 5. RING BACKGROUND & PROGRESS ── */
+.score-circle .bg {
+  stroke: #d1d5db !important;
+  stroke-width: 10 !important;
+  fill: none !important;
+}
+.dark .score-circle .bg {
+  stroke: #374151 !important;
+}
+.score-circle .progress {
+  stroke-width: 10 !important;
+  stroke-linecap: round !important;
+  fill: none !important;
+  transition: stroke-dasharray 1.2s ease !important;
+}
+.score-circle .progress.stroke-red-400 {
+  stroke: #f87171 !important;
+}
+.score-circle .progress.stroke-orange-400 {
+  stroke: #fb923c !important;
+}
+.score-circle .progress.stroke-green-400 {
+  stroke: #34d399 !important;
+}
+
+/* ── 6. MODULE CARDS – layout, border, alignment ── */
+.score-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: center !important;
+  padding: 1.5rem 1rem !important;
+  border-width: 4px !important;
+  border-style: solid !important;
+  border-color: transparent !important;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.score-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.25);
+}
+.dark .score-card:hover {
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.6);
+}
+/* Border colours based on score */
+.score-card.red { border-color: #ef4444 !important; }
+.score-card.orange { border-color: #f97316 !important; }
+.score-card.green { border-color: #22c55e !important; }
+
+/* ── 7. OVERALL SCORE CARD ── */
+#overall-score .score-card {
+  border-width: 4px !important;
+  border-style: solid !important;
+}
+#overall-score .score-card.red { border-color: #ef4444 !important; }
+#overall-score .score-card.orange { border-color: #f97316 !important; }
+#overall-score .score-card.green { border-color: #22c55e !important; }
+#overall-score .score-circle.large {
+  margin: 0 auto 1.5rem auto !important;
+}
+
+/* ── 8. MODULE GRADE (emoji + text) ── */
+.module-grade {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+}
+.module-grade .grade-emoji {
+  font-size: 2rem !important;
+  line-height: 1 !important;
+}
+.module-grade .grade-text {
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+}
+.module-grade.text-red-500 .grade-text,
+.module-grade.text-red-500 .grade-emoji {
+  color: #ef4444 !important;
+}
+.module-grade.text-orange-500 .grade-text,
+.module-grade.text-orange-500 .grade-emoji {
+  color: #f97316 !important;
+}
+.module-grade.text-green-500 .grade-text,
+.module-grade.text-green-500 .grade-emoji {
+  color: #22c55e !important;
+}
+
+/* ── 9. CHECKLIST ── */
+.checklist {
+  width: 100% !important;
+  text-align: left !important;
+  padding: 0 0.5rem !important;
+}
+.checklist p {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-size: 0.9rem !important;
+  padding: 0.1rem 0 !important;
+  margin: 0.25rem 0 !important;
+}
+.checklist p .icon {
+  flex-shrink: 0 !important;
+  width: 1.8rem !important;
+  text-align: center !important;
+}
+
+/* ── 10. LABEL & SHORT DESCRIPTION ── */
+.score-card .label,
+.score-card .short-desc {
+  text-align: center !important;
+  width: 100% !important;
+}
+#overall-container,
+#overall-grade {
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+/* ── 11. SPINNER – visible and centred ── */
+#progress-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 3rem 0 !important;
+  min-height: 200px !important;
+}
+#progress-container.hidden {
+  display: none !important;
+}
+.spinner {
+  border: 8px solid rgba(255,255,255,0.1) !important;
+  border-top: 8px solid #f97316 !important;
+  border-radius: 50% !important;
+  width: 60px !important;
+  height: 60px !important;
+  animation: spin 1.2s linear infinite !important;
+  margin: 0 auto 1rem auto !important;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+#progress-text {
+  color: #f97316 !important;
+  font-size: 1.25rem !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+}
+
+/* ── 12. DARK MODE FALLBACK for number base (if no colour class) ── */
+.dark .score-circle .number {
+  fill: #f3f4f6 !important;   /* only if no colour class applies */
+}
+
+/* ── FIX: Mobile preview full page scrollable ── */
+#phone-frame {
+  width: min(100%, 375px);
+  height: auto;
+  aspect-ratio: 9 / 19.5;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(to bottom, #111, #000);
+  transition: all 0.6s ease;
+  position: relative;
+  overflow: hidden;
+}
+#preview-iframe {
+  border: none;
+  background: #fff;
+}
+
+/* Prevent long code tokens / URLs from blowing out score-card grid columns */
+.score-card {
+  min-width: 0;
+}
+.score-card .expand-content,
+.score-card .expand-content * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+/* Stop vertical border stripes if checklist <p> inherits any global p styling */
+.score-card .checklist p {
+  border-left: 0 !important;
+}

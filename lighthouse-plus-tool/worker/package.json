@@ -1,0 +1,22 @@
+{
+  "name": "lighthouse-audit-worker",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "dependencies": {
+    "@cloudflare/puppeteer": "^1.4.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  },
+  "allowScripts": {
+    "esbuild@0.17.19": true,
+    "sharp@0.33.5": true,
+    "workerd@1.20250718.0": true
+  }
+}

@@ -1,0 +1,24 @@
+name = "traffic-torch-push"
+main = "src/index.js"
+compatibility_date = "2025-10-01"
+account_id = "d061d4d2078ee9128b033e6d27e7c768"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "traffic-torch-db"
+database_id = "d5c9fa6f-178f-4a5b-ae07-eebd161c6371"
+
+[[services]]
+binding = "AUTH"
+service = "traffic-torch-auth"
+
+[vars]
+VAPID_PUBLIC_KEY = "BMiZXPRwKaA0t7DRkJ_2ju_setYA7EcWthpMOxjj8zg_BmEjac-RtRa2aeiELnh82cutxSK9VRfH7gNtRSB0B8w"
+VAPID_SUBJECT    = "mailto:traffictorch@gmail.com"
+
+[[routes]]
+pattern   = "traffictorch.net/push-api/*"
+zone_name = "traffictorch.net"
+
+[observability]
+enabled = true

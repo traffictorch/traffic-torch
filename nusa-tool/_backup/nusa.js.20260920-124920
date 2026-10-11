@@ -1,0 +1,1634 @@
+// NUSA — Phase 1
+// Real Citation Chamber + per-finding fix generation.
+// All Phase 0.5 module imports and narration logic preserved.
+
+const WORKERS = {
+  render: 'https://nusa-render.traffictorch.workers.dev/',
+  ask:    'https://nusa-ask.traffictorch.workers.dev/',
+  fixes:  'https://nusa-patch.traffictorch.workers.dev/'
+};
+const NUSA_PATCH = 'https://nusa-patch.traffictorch.workers.dev/';
+
+import { calculateReadability }  from './modules/quit-risk/readability.js';
+import { calculateNavigation }   from './modules/quit-risk/navigation.js';
+import { calculateAccessibility }from './modules/quit-risk/accessibility.js';
+import { calculateMobile }       from './modules/quit-risk/mobile.js';
+import { calculatePerformance }  from './modules/quit-risk/performance.js';
+
+import { analyzeExperience }         from './modules/seo-intent/experience.js';
+import { analyzeExpertise }          from './modules/seo-intent/expertise.js';
+import { analyzeAuthoritativeness }  from './modules/seo-intent/authoritativeness.js';
+import { analyzeTrustworthiness }    from './modules/seo-intent/trustworthiness.js';
+import { analyzeDepth }              from './modules/seo-intent/depth.js';
+import { analyzeReadability as analyzeSEOReadability } from './modules/seo-intent/readability.js';
+import { analyzeSchema }             from './modules/seo-intent/schema.js';
+
+import { computeAnswerability }      from './modules/aeo/answerability.js';
+import { computeStructuredData }     from './modules/aeo/structuredData.js';
+import { computeEEAT }               from './modules/aeo/eeatSignals.js';
+import { computeScannability }       from './modules/aeo/scannability.js';
+import { computeConversational }     from './modules/aeo/conversationalTone.js';
+import { computeReadability as computeAIReadability } from './modules/aeo/readability.js';
+import { computeUniqueInsights }     from './modules/aeo/uniqueInsights.js';
+import { computeAntiAiSafety }       from './modules/aeo/antiAiSafety.js';
+
+import { detectCMS } from './vendor/cms-detect.js';
+
+const $ = id => document.getElementById(id);
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const escapeHtml = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const narration = $('narration');
+const ledger = $('ledger');
+
+let t0 = performance.now();
+const ms = () => Math.round(performance.now() - t0);
+let findingSeq = 0;
+const allFindings = [];
+
+function renderCodeBlocks(text) {
+  if (text == null) return '';
+  let s = String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s = s.replace(/```([a-zA-Z0-9_+-]*)\r?\n([\s\S]*?)```/g, (_, lang, code) =>
+    `<pre><code class="language-${(lang||'plaintext').toLowerCase()}">${code.replace(/\s+$/,'')}</code></pre>`);
+  s = s.replace(/(<pre[\s\S]*?<\/pre>)|(\r?\n)/g, (_, pre) => pre || '<br>');
+  s = s.replace(/&lt;strong&gt;/g, '<strong>').replace(/&lt;\/strong&gt;/g, '</strong>');
+  return s;
+}
+
+function narrate(text, opts = {}) {
+  const { finding = null, anchor = false, ts = true } = opts;
+  const p = el('p', finding ? 'finding' : anchor ? 'anchor' : '');
+  if (ts) {
+    const t = el('span', 'ts', `[${String(ms()).padStart(5,'0')}ms]`);
+    p.appendChild(t);
+  }
+  if (finding) {
+    const bolt = el('span', 'bolt', '✦');
+    bolt.title = 'fix this';
+    bolt.addEventListener('click', ev => { ev.stopPropagation(); proposeFix(finding); });
+    p.appendChild(bolt);
+  }
+  p.appendChild(document.createTextNode(text));
+  if (finding) {
+    p.addEventListener('click', () => {
+      const row = ledger.querySelector(`[data-fid="${finding.id}"]`);
+      if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.classList.add('pulse'); setTimeout(()=>row.classList.remove('pulse'), 600); }
+    });
+  }
+  narration.appendChild(p);
+  narration.scrollTop = narration.scrollHeight;
+}
+
+function ledgerAdd({ id, status, node, label }) {
+  const row = el('div', 'ledger-row');
+  row.dataset.fid = id;
+  row.innerHTML = `<span class="ledger-dot ${status}"></span>
+    <span class="ledger-label">${escapeHtml(label)}</span>
+    <span class="ledger-node">${escapeHtml(node || '')}</span>`;
+  ledger.appendChild(row);
+  $('ledger-count').textContent = ledger.children.length;
+  return row;
+}
+
+function recordFinding({ cat, status, node, label, severity = 5 }) {
+  const id = `f${findingSeq++}`;
+  const statusClass = cat === 'AEO' ? 'aeo' : (status === 'fail' ? 'fail' : status === 'warn' ? 'warn' : 'pass');
+  ledgerAdd({ id, status: statusClass, node, label: `[${cat}] ${label}` });
+  const f = { id, cat, status, node, label, severity };
+  allFindings.push(f);
+  narrate(`${label}.`, { finding: f });
+  return f;
+}
+
+function startRuler() {
+  const ruler = $('ruler');
+  ruler.classList.remove('hidden');
+  const ph = $('playhead');
+  let pct = 0;
+  const id = setInterval(() => {
+    pct = Math.min(100, pct + 1.4 + Math.random() * 0.6);
+    ph.style.transform = `translateX(${pct}%)`;
+    if (pct >= 100) clearInterval(id);
+  }, 70);
+  return () => { clearInterval(id); ph.style.transform = 'translateX(100%)'; };
+}
+
+function getUXContent(doc) {
+  const textElements = doc.querySelectorAll('p, li, article, section, main, div');
+  let fullText = '', paragraphTexts = [], boldCount = 0, listItemCount = 0;
+  textElements.forEach(el => {
+    const t = el.textContent.trim();
+    if (t.length > 15) {
+      fullText += t + ' ';
+      if (el.tagName === 'P') paragraphTexts.push(t);
+    }
+    boldCount += el.querySelectorAll('b, strong').length;
+    if (el.tagName === 'UL' || el.tagName === 'OL') listItemCount += el.querySelectorAll('li').length;
+  });
+  const links = doc.querySelectorAll('a[href]');
+  const images = doc.querySelectorAll('img');
+  const headings = doc.querySelectorAll('h1,h2,h3,h4,h5,h6');
+  let missing = 0, decorative = 0, meaningful = 0;
+  images.forEach(img => {
+    const alt = img.getAttribute('alt');
+    const isDecorative = img.classList.contains('decorative') ||
+                         img.getAttribute('role') === 'presentation' ||
+                         (alt !== null && alt.trim() === '' && !img.hasAttribute('title'));
+    if (isDecorative) decorative++;
+    else { meaningful++; if (alt === null || alt.trim() === '') missing++; }
+  });
+  const countWords = t => t.trim().split(/\s+/).filter(w => w.length > 0).length;
+  return {
+    fullText, wordCount: countWords(fullText),
+    linkCount: links.length, imageCount: images.length,
+    altData: { missingCount: missing, meaningfulCount: meaningful, decorativeCount: decorative, totalImages: images.length },
+    headingCount: headings.length,
+    hasViewport: !!(doc.querySelector('meta[name="viewport"]')?.content || '').match(/width\s*=\s*device-width/i),
+    hasMain: !!doc.querySelector('main'),
+    hasArticleOrSection: !!doc.querySelector('article, section'),
+    paragraphTexts, boldCount, listItemCount,
+    hasBreadcrumb: !!doc.querySelector('[aria-label*="breadcrumb"], .breadcrumb, nav[aria-label="breadcrumb"]'),
+    hasLandmarks: !!doc.querySelector('header, footer, aside, [role="banner"], [role="contentinfo"], [role="complementary"]'),
+    hasAriaLabels: !!doc.querySelector('[aria-label], [aria-labelledby]'),
+    hasManifest: !!doc.querySelector('link[rel="manifest"]'),
+    hasServiceWorkerHint: doc.body.innerHTML.includes('serviceWorker') || doc.body.innerHTML.includes('register('),
+    hasAppleTouchIcon: !!doc.querySelector('link[rel*="apple-touch-icon"]'),
+    hasLazyLoading: (() => {
+      const all = doc.querySelectorAll('img[src]');
+      const lazy = doc.querySelectorAll('img[loading="lazy"]');
+      return all.length > 0 && lazy.length >= 2 && (lazy.length / all.length) * 100 >= 40;
+    })(),
+    externalScripts: doc.querySelectorAll('script[src^="http"]').length,
+    hasRenderBlocking: doc.querySelectorAll('script:not([defer]):not([async]), link[rel="stylesheet"]:not([media])').length,
+    fontCount: doc.querySelectorAll('link[href*="fonts.googleapis.com"], link[href*="fonts.gstatic.com"]').length,
+    hasFontDisplaySwap: /font-display\s*:\s*swap/.test(doc.head.innerHTML),
+    hasWebpOrAvif: !!doc.querySelector('img[src$=".webp"], img[src$=".avif"], source[type="image/webp"], source[type="image/avif"]'),
+    potentialCTAs: doc.querySelectorAll('a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="buy"], button, [role="button"], .btn, .button').length,
+    viewportContent: doc.querySelector('meta[name="viewport"]')?.content || '',
+    hasDropdowns: !!doc.querySelector('nav li ul, .dropdown, [aria-haspopup="true"]'),
+    topLevelItems: doc.querySelectorAll('nav > ul > li, .main-menu > li, header nav > ul > li').length || 0
+  };
+}
+
+function getVisibleText(root) {
+  let text = '';
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode: node => {
+      const p = node.parentElement;
+      if (!p) return NodeFilter.FILTER_REJECT;
+      const tag = p.tagName.toLowerCase();
+      if (['script','style','noscript','head','iframe','object','embed'].includes(tag)) return NodeFilter.FILTER_REJECT;
+      if (p.hasAttribute('hidden') || p.getAttribute('aria-hidden') === 'true') return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  while (walker.nextNode()) text += walker.currentNode.textContent + ' ';
+  return text.trim();
+}
+
+async function runAudit(rawUrl) {
+  const url = /^https?:\/\//i.test(rawUrl) ? rawUrl : 'https://' + rawUrl;
+  narration.innerHTML = '';
+  ledger.innerHTML = '';
+  allFindings.length = 0;
+  findingSeq = 0;
+  $('ledger-count').textContent = '0';
+  $('stage').classList.remove('hidden');
+  $('chamber').classList.add('hidden');
+  $('status').textContent = 'auditing';
+  $('foot-meta').textContent = url;
+
+  t0 = performance.now();
+  const stopRuler = startRuler();
+
+  narrate(`Opening ${url} via edge render.`, { anchor: true });
+  await sleep(200);
+
+  let html;
+  try {
+    const res = await fetch(WORKERS.render + '?url=' + encodeURIComponent(url));
+    if (!res.ok) throw new Error(`render worker ${res.status}`);
+    html = await res.text();
+  } catch (e) {
+    narrate(`Could not reach the page — ${e.message}.`, { anchor: true });
+    $('status').textContent = 'error';
+    stopRuler();
+    return;
+  }
+  narrate(`Rendered ${html.length.toLocaleString()} chars. Parsing DOM.`);
+
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const cmsInfo = detectCMS({ doc, html, url });
+  narrate(`CMS detected: ${cmsInfo.name}${cmsInfo.version ? ' ' + cmsInfo.version : ''} (${cmsInfo.confidence}).`);
+
+  narrate(`Running UX pass.`, { anchor: true });
+  await sleep(150);
+  const uxData = getUXContent(doc);
+  const uxScores = {
+    readability:   calculateReadability(uxData).score,
+    navigation:    calculateNavigation(uxData).score,
+    accessibility: calculateAccessibility(uxData).score,
+    mobile:        calculateMobile(uxData).score,
+    performance:   calculatePerformance(uxData).score
+  };
+  const uxOverall = Math.round(Object.values(uxScores).reduce((a,b)=>a+b,0) / 5);
+  narrate(`UX modules complete — readability ${uxScores.readability}, navigation ${uxScores.navigation}, accessibility ${uxScores.accessibility}, mobile ${uxScores.mobile}, performance ${uxScores.performance}.`);
+  await sleep(180);
+
+  if (uxData.altData.missingCount > 0) recordFinding({ cat:'UX', status:'fail', node:`${uxData.altData.missingCount}/${uxData.altData.totalImages} img`, label:`${uxData.altData.missingCount} image${uxData.altData.missingCount>1?'s':''} missing alt text`, severity:6 });
+  if (!uxData.hasViewport) recordFinding({ cat:'UX', status:'fail', node:'meta[viewport]', label:'No responsive viewport meta tag', severity:8 });
+  if (uxScores.readability < 60) recordFinding({ cat:'UX', status:'warn', node:'<p> content', label:`Readability weak (${uxScores.readability}/100)`, severity:5 });
+  if (uxScores.accessibility < 75) recordFinding({ cat:'UX', status:'fail', node:'a11y', label:`Accessibility below WCAG AA proxy (${uxScores.accessibility}/100)`, severity:7 });
+  if (!uxData.hasLandmarks) recordFinding({ cat:'UX', status:'warn', node:'<header>/<footer>', label:'Missing semantic landmarks', severity:4 });
+  if (uxData.hasRenderBlocking > 3) recordFinding({ cat:'UX', status:'warn', node:`${uxData.hasRenderBlocking} resources`, label:`${uxData.hasRenderBlocking} render-blocking resources`, severity:5 });
+
+  narrate(`Running SEO pass.`, { anchor: true });
+  await sleep(150);
+
+  const cleanedText = getVisibleText(doc.body).replace(/\s+/g, ' ').trim();
+  const seoConfig = {
+    parsing: {
+      authorBylineSelectors: ['meta[name="author" i]','[rel="author"]','.author','.byline','[itemprop="author"]','[class*="author" i]'],
+      authorBioSelectors: ['.author-bio','.bio','[class*="bio" i]','.about-author','.author-box','.author-info'],
+      contactLinkSelectors: ['a[href*="/contact" i]','a[href*="mailto:" i]'],
+      policyLinkSelectors: ['a[href*="/privacy" i]','a[href*="/terms" i]'],
+      updateDateSelectors: ['time[datetime]','meta[property="article:modified_time"]','meta[property="og:updated_time"]']
+    }
+  };
+  const seoModules = [
+    analyzeExperience(cleanedText, doc),
+    analyzeExpertise(doc, cleanedText, seoConfig),
+    analyzeAuthoritativeness(doc, cleanedText),
+    analyzeTrustworthiness(url, doc, seoConfig, cleanedText),
+    { score: analyzeDepth(cleanedText).normalized },
+    { score: analyzeSEOReadability(cleanedText).normalized },
+    { score: analyzeSchema(doc.documentElement.outerHTML, doc).normalized }
+  ];
+  const seoOverall = Math.round(seoModules.reduce((s, m) => s + (m.score||0), 0) / seoModules.length);
+  narrate(`SEO modules complete — overall proxy ${seoOverall}.`);
+  await sleep(180);
+
+  const title = doc.title || '';
+  if (!title) recordFinding({ cat:'SEO', status:'fail', node:'<title>', label:'Missing page title', severity:9 });
+  else if (title.length > 60) recordFinding({ cat:'SEO', status:'warn', node:'<title>', label:`Title is ${title.length} chars (60 max)`, severity:4 });
+  const desc = doc.querySelector('meta[name="description"]')?.content || '';
+  if (!desc) recordFinding({ cat:'SEO', status:'fail', node:'meta[desc]', label:'Missing meta description', severity:7 });
+  else if (desc.length > 160) recordFinding({ cat:'SEO', status:'warn', node:'meta[desc]', label:`Meta description ${desc.length} chars (160 max)`, severity:3 });
+  const h1s = doc.querySelectorAll('h1');
+  if (h1s.length === 0) recordFinding({ cat:'SEO', status:'fail', node:'<h1>', label:'No H1 on page', severity:8 });
+  else if (h1s.length > 1) recordFinding({ cat:'SEO', status:'warn', node:'<h1>', label:`${h1s.length} H1s on page (should be 1)`, severity:4 });
+  if (seoOverall < 60) recordFinding({ cat:'SEO', status:'warn', node:'E-E-A-T', label:`E-E-A-T signals thin (proxy ${seoOverall}/100)`, severity:6 });
+
+  narrate(`Running AEO pass.`, { anchor: true });
+  await sleep(150);
+
+  const candidates = [doc.querySelector('article'), doc.querySelector('main'), doc.querySelector('[role="main"]'), doc.body];
+  const mainEl = candidates.find(el => el && el.textContent.trim().length > 1000) || doc.body;
+  const mainClone = mainEl.cloneNode(true);
+  mainClone.querySelectorAll('nav, footer, aside, script, style, header, .ads, .cookie, .sidebar').forEach(el => el.remove());
+  const mainText = mainClone.textContent.replace(/\s+/g, ' ').trim();
+  const first1200 = mainText.slice(0, 1200);
+
+  const aeoModules = [
+    computeAnswerability(doc, first1200),
+    computeStructuredData(doc),
+    computeEEAT(doc, url),
+    computeScannability(doc, mainEl),
+    computeConversational(mainText),
+    computeAIReadability(mainText),
+    computeUniqueInsights(mainText, mainText.split(/\s+/).length),
+    computeAntiAiSafety(mainText, 0)
+  ];
+  const aeoWeights = [0.25, 0.15, 0.15, 0.10, 0.12, 0.10, 0.08, 0.05];
+  const aeoOverall = Math.round(aeoModules.reduce((s, m, i) => s + (m.score||0) * aeoWeights[i], 0));
+  narrate(`AEO modules complete — Citational Readiness proxy ${aeoOverall}.`);
+  await sleep(180);
+
+  const ld = doc.querySelectorAll('script[type="application/ld+json"]');
+  if (ld.length === 0) recordFinding({ cat:'AEO', status:'fail', node:'JSON-LD', label:'No structured data — answer engines can\'t parse this', severity:8 });
+  else narrate(`Found ${ld.length} JSON-LD block${ld.length>1?'s':''}.`);
+
+  try {
+    const r = await fetch(new URL('/llms.txt', url).toString(), { method: 'HEAD', mode: 'no-cors' });
+    if (r.type === 'opaque') throw new Error('cross-origin');
+    if (!r.ok) recordFinding({ cat:'AEO', status:'warn', node:'/llms.txt', label:'No llms.txt — agents will re-crawl per query', severity:5 });
+    else narrate('llms.txt present — good agent signal.');
+  } catch {
+    recordFinding({ cat:'AEO', status:'warn', node:'/llms.txt', label:'No llms.txt detected (or cross-origin block)', severity:4 });
+  }
+
+  const hasAuthor = !!doc.querySelector('[rel="author"],[itemprop="author"],meta[name="author"],.author,.byline');
+  const hasDate = !!doc.querySelector('time[datetime],meta[property="article:published_time"],meta[property="article:modified_time"]');
+  if (!hasAuthor) recordFinding({ cat:'AEO', status:'fail', node:'byline', label:'No visible author byline — E-E-A-T hit', severity:7 });
+  if (!hasDate) recordFinding({ cat:'AEO', status:'fail', node:'<time>', label:'No publish/update date', severity:6 });
+  if (!/"@type"\s*:\s*"FAQPage"/.test(html)) recordFinding({ cat:'AEO', status:'warn', node:'FAQPage', label:'No FAQPage schema — weaker answer surface', severity:5 });
+
+  narrate(`Audit settled. ${allFindings.length} finding${allFindings.length!==1?'s':''}. Ready for interrogation.`, { anchor: true });
+  $('status').textContent = 'settled';
+  stopRuler();
+  $('chamber').classList.remove('hidden');
+  $('foot-meta').textContent = `${url}  ·  ${allFindings.length} findings  ·  ${cmsInfo.name}`;
+
+  window._nusa = {
+    url, doc, html, cmsInfo,
+    findings: allFindings,
+    scores: { ux: uxScores, uxOverall, seoOverall, aeoOverall },
+    modules: {
+      UX: [
+        { name: 'Readability',   score: uxScores.readability },
+        { name: 'Navigation',    score: uxScores.navigation },
+        { name: 'Accessibility', score: uxScores.accessibility },
+        { name: 'Mobile',        score: uxScores.mobile },
+        { name: 'Performance',   score: uxScores.performance }
+      ],
+      SEO: [
+        { name: 'Experience',        score: seoModules[0].score },
+        { name: 'Expertise',         score: seoModules[1].score },
+        { name: 'Authoritativeness', score: seoModules[2].score },
+        { name: 'Trustworthiness',   score: seoModules[3].score },
+        { name: 'Depth',             score: seoModules[4].score },
+        { name: 'Readability',       score: seoModules[5].score },
+        { name: 'Schema',            score: seoModules[6].score }
+      ],
+      AEO: [
+        { name: 'Answerability',    score: aeoModules[0].score },
+        { name: 'Structured Data',  score: aeoModules[1].score },
+        { name: 'EEAT Signals',     score: aeoModules[2].score },
+        { name: 'Scannability',     score: aeoModules[3].score },
+        { name: 'Conversational',   score: aeoModules[4].score },
+        { name: 'Readability',      score: aeoModules[5].score },
+        { name: 'Unique Insights',  score: aeoModules[6].score },
+        { name: 'Anti-AI Safety',   score: aeoModules[7].score }
+      ]
+    }
+  };
+}
+
+// ---------- fix proposal (real, via CMS fixes worker) ----------
+async function proposeFix(finding) {
+  const ctx = window._nusa;
+  if (!ctx) return;
+  narrate(`✦ generating a fix for: ${finding.label}`, { ts: false });
+  try {
+    const res = await fetch(NUSA_PATCH, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: ctx.url,
+        pageTitle: ctx.doc?.title || null,
+        cms: { name: ctx.cmsInfo?.name, version: ctx.cmsInfo?.version, confidence: ctx.cmsInfo?.confidence },
+        finding: { cat: finding.cat, label: finding.label, node: finding.node, severity: finding.severity }
+      })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      narrate(`  fix worker error: ${data.error || 'unknown'}`, { ts: false });
+      return;
+    }
+    finding.patchScript = data.patchScript;
+    finding.applicable = data.applicable;
+    finding.patchReason = data.reason || null;
+    const block = el('div', 'fix-block');
+    block.dataset.findingId = finding.id;
+    block.innerHTML = `<span class="bolt-head">✦ fix · ${escapeHtml(finding.cat)} · ${escapeHtml(finding.node)}</span>${renderCodeBlocks(data.prose)}`;
+    narration.appendChild(block);
+    narration.scrollTop = narration.scrollHeight;
+  } catch (err) {
+    narrate(`  fix failed: ${err.message}`, { ts: false });
+  }
+}
+
+// ---------- Ask NUSA (unchanged) ----------
+$('ask-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const q = $('ask-input').value.trim();
+  if (!q) return;
+  $('ask-input').value = '';
+  narrate(`you: ${q}`, { ts: false });
+  const ctx = window._nusa || {};
+  try {
+    const res = await fetch(WORKERS.ask, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: q,
+        auditData: {
+          url: ctx.url || '',
+          pageTitle: ctx.doc?.title || '',
+          cms: { name: ctx.cmsInfo?.name, version: ctx.cmsInfo?.version, confidence: ctx.cmsInfo?.confidence },
+          overallScore: null,
+          failedItems: (ctx.findings || []).filter(f => f.status === 'fail').map(f => `[${f.cat}] ${f.label}`),
+          scores: ctx.scores || {}
+        }
+      })
+    });
+    const data = await res.json();
+    narrate(`nusa: ${data.answer || data.error || 'no answer returned'}`, { ts: false });
+  } catch (err) {
+    narrate(`nusa: request failed — ${err.message}`, { ts: false });
+  }
+});
+
+// ---------- Citation Chamber (real, three simulated engines) ----------
+$('chamber-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const q = $('chamber-input').value.trim();
+  const ctx = window._nusa;
+  if (!q || !ctx) return;
+  const out = $('chamber-out');
+  out.innerHTML = '';
+  const pageText = (ctx.doc?.body?.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 4000);
+  const engines = [
+    { name: 'ChatGPT',     instr: 'Strict extractor mode. Answer the question using ONLY sentences that appear verbatim in the page content. If the answer is not present verbatim, respond exactly: CANNOT ANSWER: not in extractable text.' },
+    { name: 'Perplexity',  instr: 'Citation retrieval mode. Answer the question and list the exact sentences you would cite as sources. If nothing is citable, respond exactly: CANNOT CITE: no extractable sentences.' },
+    { name: 'AI Overview', instr: 'Summariser mode. Give a short summary answer if the page mentions this at all. End your response with a line: Confidence: high | medium | low' }
+  ];
+  const results = [];
+  for (const engine of engines) {
+    const row = el('div', 'engine');
+    row.innerHTML = `<span class="name">${engine.name}</span><span class="verdict warn">…</span><span class="body">simulating</span>`;
+    out.appendChild(row);
+    const wrapped = `[SIMULATION: ${engine.name} answer engine]\n\n${engine.instr}\n\n--- PAGE CONTENT START ---\n${pageText}\n--- PAGE CONTENT END ---\n\nQuestion: ${q}`;
+    try {
+      const res = await fetch(WORKERS.ask, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: wrapped,
+          auditData: {
+            url: ctx.url,
+            pageTitle: ctx.doc?.title || '',
+            cms: { name: ctx.cmsInfo?.name, version: ctx.cmsInfo?.version, confidence: ctx.cmsInfo?.confidence },
+            failedItems: ctx.findings.filter(f => f.status === 'fail').map(f => `[${f.cat}] ${f.label}`),
+            scores: ctx.scores
+          }
+        })
+      });
+      const data = await res.json();
+      const answer = (data.answer || '').trim();
+      const isFail = /CANNOT (ANSWER|CITE)/i.test(answer) || /not in extractable/i.test(answer);
+      const isWarn = /confidence:\s*low/i.test(answer);
+      const verdict = isFail ? 'fail' : isWarn ? 'warn' : 'pass';
+      row.querySelector('.verdict').className = `verdict ${verdict}`;
+      row.querySelector('.verdict').textContent = verdict === 'pass' ? '✓' : verdict === 'warn' ? '~' : '✗';
+      row.querySelector('.body').textContent = answer.slice(0, 280) || '(empty response)';
+      results.push({ name: engine.name, verdict, answer });
+    } catch (err) {
+      row.querySelector('.verdict').className = 'verdict fail';
+      row.querySelector('.verdict').textContent = '✗';
+      row.querySelector('.body').textContent = `error: ${err.message}`;
+      results.push({ name: engine.name, verdict: 'fail', answer: err.message });
+    }
+  }
+
+  const gapBox = el('div', 'gap');
+  out.appendChild(gapBox);
+  const failCount = results.filter(r => r.verdict === 'fail').length;
+  if (failCount === 0) {
+    gapBox.innerHTML = `<span class="label">Citation ready</span>All three engines can answer this question from the page.`;
+    return;
+  }
+  gapBox.innerHTML = `<span class="label">Citation gap</span><em>Analysing…</em>`;
+  try {
+    const gapQ = `A page currently cannot answer this question: "${q}". Write ONE factual sentence in the page's existing tone that the page should add so all three engines (ChatGPT, Perplexity, AI Overview) will cite it. Output only the sentence, no preamble, no quotes.`;
+    const res = await fetch(WORKERS.ask, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question: gapQ,
+        auditData: {
+          url: ctx.url,
+          pageTitle: ctx.doc?.title || '',
+          pageExcerpt: pageText.slice(0, 1000),
+          failedItems: ctx.findings.filter(f => f.status === 'fail').map(f => `[${f.cat}] ${f.label}`)
+        }
+      })
+    });
+    const data = await res.json();
+    const sentence = (data.answer || '').trim().replace(/^["']|["']$/g, '').slice(0, 500);
+    gapBox.innerHTML = `<span class="label">Citation gap</span>${escapeHtml(sentence)}`;
+  } catch (err) {
+    gapBox.innerHTML = `<span class="label">Citation gap</span>Could not generate gap sentence: ${escapeHtml(err.message)}`;
+  }
+});
+
+// ---------- boot ----------
+$('url-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('url-input').value.trim();
+  if (v) runAudit(v);
+});
+
+// lite toggle removed — Session A
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE 2 — batch fixes, honest llms.txt, re-audit delta
+// ═══════════════════════════════════════════════════════════════════
+
+// --- honest llms.txt probe (replaces the no-cors lie) ---
+// We keep the original probe in runAudit for now, but expose a corrective
+// note when the response was opaque. Phase 2.1 will swap the whole check.
+function markLlmsUnknown(finding) {
+  if (!finding) return;
+  finding.status = 'warn';
+  finding.label = 'llms.txt status unknown (cross-origin, cannot verify)';
+}
+
+// --- batch fix generation ---
+const fixCache = new Map();  // findingId -> fix text
+
+async function runBatchFixes() {
+  const ctx = window._nusa;
+  if (!ctx || !ctx.findings.length) return;
+  const btn = $('batch-fix');
+  btn.disabled = true;
+  btn.classList.add('busy');
+  btn.textContent = '▸ generating fixes…';
+  let n = 0;
+  for (const f of ctx.findings) {
+    if (fixCache.has(f.id)) { n++; continue; }
+    narrate(`✦ [${n+1}/${ctx.findings.length}] generating fix: ${f.label}`, { ts: false });
+    try {
+      const res = await fetch(NUSA_PATCH, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url: ctx.url,
+          pageTitle: ctx.doc?.title || null,
+          cms: { name: ctx.cmsInfo?.name, version: ctx.cmsInfo?.version, confidence: ctx.cmsInfo?.confidence },
+          finding: { cat: f.cat, label: f.label, node: f.node, severity: f.severity }
+        })
+      });
+      const data = await res.json();
+      const body = data.success && data.prose ? data.prose : `worker error: ${data.error || 'unknown'}`;
+      f.patchScript = data.patchScript || null;
+      f.applicable = data.applicable || false;
+      f.patchReason = data.reason || null;
+      fixCache.set(f.id, body);
+      const block = el('div', 'fix-block');
+      block.dataset.findingId = f.id;
+      block.innerHTML = `<span class="bolt-head">✦ fix · ${escapeHtml(f.cat)} · ${escapeHtml(f.node)}</span>${renderCodeBlocks(body)}`;
+      narration.appendChild(block);
+      narration.scrollTop = narration.scrollHeight;
+    } catch (err) {
+      narrate(`  fix failed for ${f.label}: ${err.message}`, { ts: false });
+    }
+    n++;
+    await sleep(250);  // gentle pacing so we don't hammer the worker
+  }
+  btn.classList.remove('busy');
+  btn.classList.add('done');
+  btn.textContent = `▸ ${n} fixes generated`;
+  btn.disabled = false;
+}
+
+// --- re-audit + delta ---
+function snapshotFindings(findings) {
+  return findings.map(f => `${f.cat}|${f.label}`).sort();
+}
+
+async function rerunAudit() {
+  const ctx = window._nusa;
+  if (!ctx) return;
+  const btn = $('re-audit');
+  btn.disabled = true;
+  btn.classList.add('busy');
+  btn.textContent = '▸ re-running…';
+
+  const before = snapshotFindings(ctx.findings);
+  narrate(`✦ re-running audit on ${ctx.url}…`, { ts: false, anchor: true });
+
+  // re-fetch
+  let html2;
+  try {
+    const res = await fetch(WORKERS.render + '?url=' + encodeURIComponent(ctx.url));
+    if (!res.ok) throw new Error(`render worker ${res.status}`);
+    html2 = await res.text();
+  } catch (e) {
+    narrate(`  re-run failed: ${e.message}`, { ts: false });
+    btn.classList.remove('busy');
+    btn.textContent = '▸ re-run audit';
+    btn.disabled = false;
+    return;
+  }
+  const doc2 = new DOMParser().parseFromString(html2, 'text/html');
+  const findings2 = [];
+
+  // light re-check — only the fast, deterministic ones
+  const title2 = doc2.title || '';
+  if (!title2) findings2.push({ cat:'SEO', label:'Missing page title', node:'<title>', status:'fail' });
+  else if (title2.length > 60) findings2.push({ cat:'SEO', label:`Title is ${title2.length} chars (60 max)`, node:'<title>', status:'warn' });
+
+  const desc2 = doc2.querySelector('meta[name="description"]')?.content || '';
+  if (!desc2) findings2.push({ cat:'SEO', label:'Missing meta description', node:'meta[desc]', status:'fail' });
+
+  const h1s2 = doc2.querySelectorAll('h1');
+  if (h1s2.length === 0) findings2.push({ cat:'SEO', label:'No H1 on page', node:'<h1>', status:'fail' });
+  else if (h1s2.length > 1) findings2.push({ cat:'SEO', label:`${h1s2.length} H1s on page (should be 1)`, node:'<h1>', status:'warn' });
+
+  const imgs2 = doc2.querySelectorAll('img');
+  let missing2 = 0;
+  imgs2.forEach(i => { const a = i.getAttribute('alt'); if (a === null || a.trim() === '') missing2++; });
+  if (missing2 > 0) findings2.push({ cat:'UX', label:`${missing2} image${missing2>1?'s':''} missing alt text`, node:`${imgs2.length} img`, status:'fail' });
+
+  const rb2 = doc2.querySelectorAll('script:not([defer]):not([async]), link[rel="stylesheet"]:not([media])').length;
+  if (rb2 > 3) findings2.push({ cat:'UX', label:`${rb2} render-blocking resources`, node:`${rb2} resources`, status:'warn' });
+
+  const hasAuthor2 = !!doc2.querySelector('[rel="author"],[itemprop="author"],meta[name="author"],.author,.byline');
+  if (!hasAuthor2) findings2.push({ cat:'AEO', label:'No visible author byline — E-E-A-T hit', node:'byline', status:'fail' });
+
+  const hasDate2 = !!doc2.querySelector('time[datetime],meta[property="article:published_time"],meta[property="article:modified_time"]');
+  if (!hasDate2) findings2.push({ cat:'AEO', label:'No publish/update date', node:'<time>', status:'fail' });
+
+  const after = snapshotFindings(findings2);
+
+  const resolved   = before.filter(x => !after.includes(x));
+  const newOnes    = after.filter(x => !before.includes(x));
+  const persisting = before.filter(x => after.includes(x));
+
+  // annotate the ledger
+  ledger.querySelectorAll('.ledger-row').forEach(row => {
+    const fid = row.dataset.fid;
+    const f = ctx.findings.find(x => x.id === fid);
+    if (!f) return;
+    const key = `${f.cat}|${f.label}`;
+    row.classList.remove('delta-resolved','delta-new','delta-persisting');
+    if (resolved.includes(key))       row.classList.add('delta-resolved');
+    else if (persisting.includes(key))row.classList.add('delta-persisting');
+  });
+
+  narrate(`✦ delta — ${resolved.length} resolved, ${persisting.length} persisting, ${newOnes.length} new`, { ts: false, anchor: true });
+  if (newOnes.length) {
+    for (const k of newOnes) {
+      narrate(`  new: ${k.replace('|', ' · ')}`, { ts: false });
+    }
+  }
+  btn.classList.remove('busy');
+  btn.classList.add('done');
+  btn.textContent = `▸ re-run audit (Δ ${resolved.length}↓ ${newOnes.length}↑)`;
+  btn.disabled = false;
+}
+
+// --- wire buttons once DOM is ready ---
+function wirePhase2() {
+  $('actions')?.classList.remove('hidden');
+  $('batch-fix')?.addEventListener('click', runBatchFixes);
+  $('re-audit')?.addEventListener('click', rerunAudit);
+}
+// reveal #actions as soon as the audit settles (hooked via MutationObserver on status)
+const statusEl = $('status');
+if (statusEl) {
+  new MutationObserver(() => {
+    if (statusEl.textContent === 'settled') wirePhase2();
+  }).observe(statusEl, { childList: true, characterData: true, subtree: true });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE 3 — live verify via nusa-verify worker
+// ═══════════════════════════════════════════════════════════════════
+
+const VERIFY_WORKER = 'https://nusa-verify.traffictorch.workers.dev/';
+
+// Demonstration patches by finding type. Only some findings can be
+// meaningfully shown in-browser (DOM-level fixes). Server-side fixes
+// (llms.txt, headers, TTFB, etc.) return null and get an honest note.
+function derivePatch(label) {
+  const L = String(label);
+
+  if (/missing alt text/i.test(L)) {
+    return `document.querySelectorAll('img').forEach(i => { const a = i.getAttribute('alt'); if (a === null || a.trim() === '') i.setAttribute('alt', ''); });`;
+  }
+  if (/No H1 on page/i.test(L)) {
+    return `(function(){ if (document.querySelector('h1')) return; const h = document.createElement('h1'); h.textContent = document.title || 'Untitled'; document.body.insertBefore(h, document.body.firstChild); })();`;
+  }
+  if (/\d+\s*H1s on page/i.test(L)) {
+    return `(function(){ const hs = document.querySelectorAll('h1'); for (let i = 1; i < hs.length; i++) { const n = document.createElement('h2'); n.innerHTML = hs[i].innerHTML; hs[i].parentNode.replaceChild(n, hs[i]); } })();`;
+  }
+  if (/Missing meta description/i.test(L)) {
+    return `(function(){ if (document.querySelector('meta[name="description"]')) return; const m = document.createElement('meta'); m.name = 'description'; m.content = (document.body.textContent || '').replace(/\\s+/g,' ').trim().slice(0, 155); document.head.appendChild(m); })();`;
+  }
+  if (/Title is \d+ chars/i.test(L)) {
+    return `(function(){ if (document.title.length > 60) document.title = document.title.slice(0, 57).trim() + '…'; })();`;
+  }
+  if (/No visible author byline/i.test(L)) {
+    return `(function(){ if (document.querySelector('meta[name="author"]')) return; const m = document.createElement('meta'); m.name = 'author'; m.content = 'Ylia Callan'; document.head.appendChild(m); })();`;
+  }
+  if (/No publish\/update date/i.test(L)) {
+    return `(function(){ if (document.querySelector('meta[property="article:published_time"]')) return; const m = document.createElement('meta'); m.setAttribute('property','article:published_time'); m.setAttribute('content', new Date().toISOString()); document.head.appendChild(m); })();`;
+  }
+  if (/No responsive viewport/i.test(L)) {
+    return `(function(){ if (document.querySelector('meta[name="viewport"]')) return; const m = document.createElement('meta'); m.name = 'viewport'; m.content = 'width=device-width, initial-scale=1'; document.head.appendChild(m); })();`;
+  }
+  if (/No FAQPage schema/i.test(L)) {
+    return `(function(){ const s = document.createElement('script'); s.type = 'application/ld+json'; s.textContent = JSON.stringify({"@context":"https://schema.org","@type":"FAQPage","mainEntity":[]}); document.head.appendChild(s); })();`;
+  }
+  // server-side fixes cannot be verified from the browser
+  return null;
+}
+
+function attachVerify(block, finding) {
+  if (!block || block.dataset.verifyAttached === '1') return;
+  block.dataset.verifyAttached = '1';
+
+  // prefer the real patchScript from nusa-patch; fall back to demo
+  const patch = finding.patchScript || derivePatch(finding.label);
+  if (!patch) {
+    const note = el('div', 'verify-note', '▸ server-side fix — cannot be verified from the browser' + (finding.patchReason ? ' (' + finding.patchReason + ')' : ''));
+    block.appendChild(note);
+    return;
+  }
+
+  const btn = el('button', 'verify-btn', '▸ verify in live browser');
+  btn.addEventListener('click', () => runVerify(btn, finding, patch));
+  block.appendChild(btn);
+}
+
+async function runVerify(btn, finding, patchScript) {
+  const ctx = window._nusa;
+  if (!ctx) return;
+  btn.disabled = true;
+  btn.classList.add('busy');
+  btn.textContent = '▸ opening live session…';
+
+  try {
+    const res = await fetch(VERIFY_WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: ctx.url, patchScript, label: finding.label })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'verify failed');
+    renderVerifyDiff(btn.closest('.fix-block'), data);
+    btn.textContent = data.patchApplied ? '✓ verified in live browser' : '⚠ patch failed';
+    btn.classList.remove('busy');
+    btn.classList.add(data.patchApplied ? 'verified' : 'failed');
+  } catch (e) {
+    btn.textContent = `✗ ${e.message}`;
+    btn.classList.remove('busy');
+    btn.classList.add('failed');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderVerifyDiff(block, data) {
+  if (!block) return;
+  const { deltas, flags } = data.diff;
+
+  const wrap = el('div', 'verify-diff');
+  const head = `<span class="vhead">LIVE DIFF · ${escapeHtml((data.baseline.capturedAt||'').slice(11,19))} → ${escapeHtml((data.patched.capturedAt||'').slice(11,19))}</span>`;
+  const errLine = data.patchError ? `<div class="vrow bad"><span class="vk">patch error</span><span class="vd">${escapeHtml(data.patchError)}</span></div>` : '';
+
+  const rows = [];
+
+  // Numeric deltas
+  const KEY_LABEL = {
+    titleLen: 'title length',
+    descLen: 'meta description length',
+    h1s: 'H1 count',
+    missingAlt: 'images missing alt',
+    renderBlocking: 'render-blocking resources',
+    jsonLd: 'JSON-LD blocks',
+    headings: 'heading count',
+    totalNodes: 'DOM nodes'
+  };
+  // Which direction is "good"?
+  const GOOD_DIR = { titleLen: 0, descLen: 0, h1s: 0, missingAlt: -1, renderBlocking: -1, jsonLd: 1, headings: 0, totalNodes: 0 };
+
+  for (const [k, v] of Object.entries(deltas)) {
+    const good = GOOD_DIR[k] || 0;
+    const isGood = good === 0 ? false : (v.delta * good > 0);
+    const cls = isGood ? 'good' : 'bad';
+    rows.push(`<div class="vrow ${cls}"><span class="vk">${KEY_LABEL[k] || k}</span><span class="vb">${v.before}</span><span class="varrow">→</span><span class="va">${v.after}</span><span class="vd">${v.delta>0?'+':''}${v.delta}</span></div>`);
+  }
+
+  // Boolean flags
+  const FLAG_LABEL = { hasAuthor: 'author byline', hasDate: 'publish/update date', hasViewport: 'responsive viewport' };
+  for (const [k, v] of Object.entries(flags)) {
+    if (!v.changed) continue;
+    const isGood = v.after === true;
+    rows.push(`<div class="vrow ${isGood?'good':'bad'}"><span class="vk">${FLAG_LABEL[k] || k}</span><span class="vb">${v.before}</span><span class="varrow">→</span><span class="va">${v.after}</span></div>`);
+  }
+
+  if (!rows.length) rows.push('<div class="vrow flat"><span class="vk">no measurable change detected</span></div>');
+
+  wrap.innerHTML = head + errLine + rows.join('');
+  block.appendChild(wrap);
+}
+
+// Watch narration for newly inserted fix blocks and attach verify.
+const narrationEl = $('narration');
+if (narrationEl) {
+  new MutationObserver(muts => {
+    for (const m of muts) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType === 1 && node.classList && node.classList.contains('fix-block')) {
+          const fid = node.dataset.findingId;
+          const ctx = window._nusa;
+          if (!fid || !ctx) continue;
+          const finding = ctx.findings.find(x => x.id === fid);
+          if (finding) attachVerify(node, finding);
+        }
+      }
+    }
+  }).observe(narrationEl, { childList: true });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE D — twin renderer
+// ═══════════════════════════════════════════════════════════════════
+
+const TWIN = {
+  events: [],
+  frame: null,
+  svg: null,
+  byId: new Map(),
+  root: null,
+  replayed: 0,
+  findingPins: new Map(),   // findingId -> eventId
+  belowFold: 0
+};
+
+function twinEnsure() {
+  const host = $('twin');
+  if (!host) return null;
+  // If the cached svg was orphaned by a DOM clear, rebuild from scratch
+  if (TWIN.svg && !host.contains(TWIN.svg)) {
+    TWIN.svg = null;
+    TWIN.root = null;
+  }
+  // If our footer is missing (e.g. after innerHTML=''), rebuild it too
+  const footerExists = host.querySelector('#twin-time');
+  if (TWIN.svg && !footerExists) {
+    const footer = el('div', 'twin-footer');
+    footer.innerHTML = '<span id="twin-time">0ms</span><span id="twin-below" class="below-fold"></span>';
+    host.appendChild(footer);
+    return TWIN.svg;
+  }
+  if (TWIN.svg && footerExists) return TWIN.svg;
+
+  host.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMin meet');
+  svg.dataset.overflow = 'hidden';
+  host.appendChild(svg);
+  TWIN.svg = svg;
+  TWIN.root = svg;
+
+  const footer = el('div', 'twin-footer');
+  footer.innerHTML = '<span id="twin-time">0ms</span><span id="twin-below" class="below-fold"></span>';
+  host.appendChild(footer);
+  return svg;
+}
+
+function twinSetMeta() {
+  const m = $('twin-meta');
+  if (m) m.textContent = `${TWIN.drawn || 0} nodes · ${TWIN.findingPins.size} pins`;
+}
+
+function twinLoad(events, frame) {
+  TWIN.events = (events || []).slice().sort((a, b) => a.ms - b.ms);
+  TWIN.frame = frame || null;
+  TWIN.byId = new Map();
+  TWIN.replayed = 0;
+  TWIN.belowFold = 0;
+  twinEnsure();
+  // pre-index by id for later finding lookups
+  for (const e of TWIN.events) TWIN.byId.set(e.id, e);
+  // Viewport width is fixed at 390 (mobile). Document height is dynamic.
+  // Anything wider than the viewport is horizontally clipped by the SVG.
+  const docH = Math.max((frame && frame.docH) || 844, 844);
+  if (TWIN.svg) {
+    TWIN.svg.setAttribute('viewBox', `0 0 390 ${docH}`);
+    TWIN.svg.style.aspectRatio = `390 / ${docH}`;
+  }
+}
+
+function twinAddNode(ev) {
+  if (!TWIN.svg) return;
+  if (!ev.bbox) return;
+  const { x, y, w, h } = ev.bbox;
+  if (w <= 0 || h <= 0) return;
+  if (w < 2 && h < 2) return;  // skip degenerate nodes
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const r = document.createElementNS(NS, 'rect');
+  r.setAttribute('x', String(x));
+  r.setAttribute('y', String(y));
+  r.setAttribute('width', String(w));
+  r.setAttribute('height', String(h));
+  r.setAttribute('class', 'node');
+  r.dataset.id = ev.id;
+  r.dataset.tag = ev.tag;
+  TWIN.svg.appendChild(r);
+  requestAnimationFrame(() => r.classList.add('in'));
+}
+
+function twinReplay() {
+  if (!TWIN.events.length) return;
+  const maxMs = TWIN.events[TWIN.events.length - 1].ms || 1;
+  // compress any render longer than 2.2s into 2.2s of wall clock
+  const factor = Math.min(1, 2200 / Math.max(maxMs, 1));
+  let i = 0;
+  const start = performance.now();
+  const tick = () => {
+    const now = performance.now() - start;
+    const budget = now / factor;   // how many page-ms we should have replayed by now
+    while (i < TWIN.events.length && TWIN.events[i].ms <= budget) {
+      const ev = TWIN.events[i];
+      twinAddNode(ev);
+      TWIN.replayed++;
+      i++;
+    }
+    $('twin-time').textContent = Math.round(budget) + 'ms';
+    const belowEl = $('twin-below');
+    if (belowEl) belowEl.textContent = TWIN.belowFold ? `${TWIN.belowFold} nodes below fold` : '';
+    twinSetMeta();
+    if (i < TWIN.events.length) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// After findings are recorded, pin them to their nodes
+function twinPinFinding(finding) {
+  if (!TWIN.svg || !finding.twinId) return;
+  const ev = TWIN.byId.get(finding.twinId);
+  if (!ev) return;
+  const rect = TWIN.svg.querySelector(`rect[data-id="${finding.twinId}"]`);
+  if (!rect) return;
+  const cls = finding.cat === 'AEO' ? 'pin-aeo' : (finding.status === 'fail' ? 'pin-fail' : 'pin-warn');
+  rect.classList.add(cls);
+  rect.classList.add('pulse');
+  TWIN.findingPins.set(finding.id, finding.twinId);
+  // hover linkage: hovering the pinned node scrolls the narration to its sentence
+  rect.style.cursor = 'crosshair';
+  rect.addEventListener('mouseenter', () => {
+    const p = narration.querySelector(`p.finding .bolt`)?.closest('p');
+    const all = narration.querySelectorAll('p.finding');
+    for (const node of all) {
+      // match by finding id heuristic: we stored it on the narration node earlier
+      if (node.dataset.findingId === finding.id) {
+        node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        break;
+      }
+    }
+  });
+  twinSetMeta();
+}
+
+// Extend recordFinding to carry a twinId when the finding maps to a DOM element
+const _origRecord = recordFinding;
+recordFinding = function (opts) {
+  const f = _origRecord.call(this, opts);
+  // resolve a twin id from a selector against the rendered doc
+  const ctx = window._nusa;
+  if (ctx && ctx.doc && opts.selector) {
+    try {
+      const el = ctx.doc.querySelector(opts.selector);
+      const nid = el && el.getAttribute && el.getAttribute('data-nusa-id');
+      if (nid) { f.twinId = nid; }
+    } catch (_) {}
+  }
+  // tag the narration paragraph so hover linkage works
+  const ps = narration.querySelectorAll('p.finding');
+  if (ps.length) ps[ps.length - 1].dataset.findingId = f.id;
+  if (f.twinId) twinPinFinding(f);
+  return f;
+};
+
+// Intercept the audit flow: use twin mode where available.
+// We wrap the original runAudit and re-run the fetch. Rather than
+// rewriting runAudit, we expose a twinBoot() called right after it
+// settles — the worker already gave us the same HTML the audit used
+// because runAudit fetches nusa-render (twin-capable).
+async function twinBoot() {
+  const ctx = window._nusa;
+  if (!ctx || !ctx.url) return;
+  const host = $('twin-col');
+  const ledgerHost = $('ledger-col');
+  if (!host) return;
+  // Session A — always show twin; ledger only appears if twin fetch fails
+  host.classList.remove('hidden');
+  ledgerHost?.classList.add('hidden');
+  // clear cached svg so twinEnsure rebuilds against the fresh DOM
+  TWIN.svg = null;
+  TWIN.root = null;
+  $('twin').innerHTML = '<div class="twin-empty">loading twin…</div>';
+  try {
+    const res = await fetch(WORKERS.render, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: ctx.url, mode: 'twin' })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'twin fetch failed');
+    $('twin').innerHTML = '';
+    twinEnsure();
+    twinLoad(data.events || [], data.frame || null);
+    twinReplay();
+    // re-pin any findings that already had selectors resolved
+    for (const f of (ctx.findings || [])) if (f.twinId) twinPinFinding(f);
+  } catch (e) {
+    // honest fallback: show the ledger
+    $('twin').innerHTML = `<div class="twin-empty">twin unavailable — ${escapeHtml(e.message)}</div>`;
+    setTimeout(() => { host.classList.add('hidden'); ledgerHost?.classList.remove('hidden'); }, 1800);
+  }
+}
+
+// Hook twinBoot to fire whenever the audit settles
+if (statusEl) {
+  new MutationObserver(() => {
+    if (statusEl.textContent === 'settled') twinBoot();
+  }).observe(statusEl, { childList: true, characterData: true, subtree: true });
+}
+
+// ─── tag-based pinning (parsed doc has no data-nusa-id) ───────────
+// Applied retroactively after the audit settles, since findings are
+// already recorded by the time we boot the twin.
+const SELECTOR_HINTS = [
+  { match: /images? missing alt text/i,                 selector: 'img:not([alt])' },
+  { match: /^Missing page title$/i,                     selector: 'head' },
+  { match: /^Title is \d+ chars/i,                      selector: 'title' },
+  { match: /Missing meta description/i,                 selector: 'head' },
+  { match: /^No H1 on page$/i,                          selector: 'body' },
+  { match: /\d+ H1s on page/i,                          selector: 'h1' },
+  { match: /No responsive viewport meta tag/i,          selector: 'head' },
+  { match: /Missing semantic landmarks/i,               selector: 'body' },
+  { match: /render-blocking resources/i,                selector: 'head' },
+  { match: /No structured data/i,                       selector: 'head' },
+  { match: /No visible author byline/i,                 selector: 'body' },
+  { match: /No publish\/update date/i,                  selector: 'body' },
+  { match: /No FAQPage schema/i,                        selector: 'head' },
+  { match: /E-E-A-T signals thin/i,                     selector: 'body' },
+  { match: /Accessibility below WCAG AA proxy/i,        selector: 'body' },
+  { match: /Readability weak/i,                         selector: 'p' },
+  { match: /No llms\.txt/i,                             selector: null } // server-side
+];
+
+function attachSelectorsToFindings() {
+  const ctx = window._nusa;
+  if (!ctx) return;
+  for (const f of ctx.findings) {
+    if (f.twinId) continue;
+    const hint = SELECTOR_HINTS.find(h => h.match.test(f.label));
+    if (hint && hint.selector) f.selector = hint.selector;
+  }
+}
+
+// run the attachment right after the audit settles, before twinBoot reads it
+if (statusEl) {
+  new MutationObserver(() => {
+    if (statusEl.textContent === 'settled') attachSelectorsToFindings();
+  }).observe(statusEl, { childList: true, characterData: true, subtree: true });
+}
+
+
+// Tag-based pin map — matches a finding to the Nth node of a given tag
+// in the twin event stream, in document order.
+const TAG_PINS = [
+  { match: /^No H1 on page$/i,                tag: null,  anchor: 'body'   },
+  { match: /\d+ H1s on page/i,                tag: 'h1',  nth: 0           },
+  { match: /images? missing alt text/i,       tag: 'img', nth: 0           },
+  { match: /Missing semantic landmarks/i,     tag: 'body', nth: 0          },
+  { match: /Accessibility below WCAG AA proxy/i, tag: 'body', nth: 0      },
+  { match: /Readability weak/i,               tag: 'p',   nth: 0           },
+  { match: /render-blocking resources/i,      tag: 'link', nth: 0          },
+  { match: /Missing meta description/i,       tag: 'head', nth: 0          },
+  { match: /^Missing page title$/i,           tag: 'head', nth: 0          },
+  { match: /No visible author byline/i,       tag: 'body', nth: 0          },
+  { match: /No publish\/update date/i,        tag: 'body', nth: 0          },
+  { match: /No structured data/i,             tag: 'head', nth: 0          },
+  { match: /No FAQPage schema/i,              tag: 'head', nth: 0          },
+  { match: /E-E-A-T signals thin/i,           tag: 'body', nth: 0          }
+];
+
+
+// Run pinning right after replay finishes
+const _origReplay = twinReplay;
+twinReplay = function () {
+  const r = _origReplay.apply(this, arguments);
+  // schedule pin after the replay animation ends (~2.4s)
+  setTimeout(pinFindingsToTwin, 2500);
+  return r;
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE D.5 — scrub + bidirectional hover + click-to-focus
+// ═══════════════════════════════════════════════════════════════════
+
+// ─── 1. Scrub-to-rewind ───────────────────────────────────────────
+// Snapshots the twin to a target ms by hiding rects whose event.ms > target.
+// No server round-trip — we replay from the buffered TWIN.events.
+
+function twinScrubTo(targetMs) {
+  if (!TWIN.svg) return;
+  const rects = TWIN.svg.querySelectorAll('rect.node');
+  let shown = 0;
+  rects.forEach(r => {
+    const ev = TWIN.byId.get(r.dataset.id);
+    if (!ev) return;
+    if (ev.ms <= targetMs) {
+      r.style.display = '';
+      r.classList.add('in');
+      shown++;
+    } else {
+      r.style.display = 'none';
+    }
+  });
+  const t = $('twin-time');
+  if (t) t.textContent = Math.round(targetMs) + 'ms';
+  return shown;
+}
+
+// Attach scrub affordance to the ruler — drag the playhead anywhere.
+function twinAttachScrub() {
+  const ruler = $('ruler');
+  const ph = $('playhead');
+  if (!ruler || !ph || ruler.dataset.scrubReady === '1') return;
+  ruler.dataset.scrubReady = '1';
+  ruler.style.cursor = 'ew-resize';
+  ruler.style.position = 'relative';
+
+  let dragging = false;
+
+  function fromX(clientX) {
+    const rect = ruler.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    return { pct, ms: Math.round(pct * maxEventMs()) };
+  }
+  function maxEventMs() {
+    return TWIN.events.length ? TWIN.events[TWIN.events.length - 1].ms : 1;
+  }
+
+  function onMove(clientX) {
+    const { pct, ms } = fromX(clientX);
+    ph.style.transform = `translateX(${pct * 100}%)`;
+    twinScrubTo(ms);
+  }
+
+  ruler.addEventListener('mousedown', e => {
+    if (!TWIN.svg) return;
+    dragging = true;
+    ph.style.transition = 'none';
+    onMove(e.clientX);
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    onMove(e.clientX);
+  });
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    ph.style.transition = '';
+  });
+
+  // touch support
+  ruler.addEventListener('touchstart', e => {
+    if (!TWIN.svg) return;
+    dragging = true;
+    ph.style.transition = 'none';
+    onMove(e.touches[0].clientX);
+    e.preventDefault();
+  }, { passive: false });
+  window.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    onMove(e.touches[0].clientX);
+  }, { passive: false });
+  window.addEventListener('touchend', () => {
+    if (!dragging) return;
+    dragging = false;
+    ph.style.transition = '';
+  });
+}
+
+// ─── 2. Bidirectional hover linkage ───────────────────────────────
+// Hover a pin → narration scrolls to its finding sentence
+// Hover a finding sentence → its pin pulses
+
+function twinWireHover() {
+  if (!TWIN.svg) return;
+  // pins -> narration
+  TWIN.svg.querySelectorAll('rect.node').forEach(r => {
+    const id = r.dataset.id;
+    const finding = (window._nusa?.findings || []).find(f => f.twinId === id);
+    if (!finding) return;
+
+    r.addEventListener('mouseenter', () => {
+      r.classList.add('hit');
+      const p = narration.querySelector(`p.finding[data-finding-id="${finding.id}"]`);
+      if (p && !p.dataset.scrolled) {
+        p.dataset.scrolled = '1';
+        p.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        p.style.transition = 'color .3s';
+        const orig = p.style.color;
+        p.style.color = 'var(--violet)';
+        setTimeout(() => { p.style.color = orig; }, 900);
+      }
+    });
+    r.addEventListener('mouseleave', () => {
+      r.classList.remove('hit');
+    });
+  });
+
+  // narration -> pins
+  narration.querySelectorAll('p.finding').forEach(p => {
+    if (p.dataset.hoverWired === '1') return;
+    p.dataset.hoverWired = '1';
+    const fid = p.dataset.findingId;
+    if (!fid) return;
+    const finding = (window._nusa?.findings || []).find(f => f.id === fid);
+    if (!finding || !finding.twinId) return;
+    const rect = TWIN.svg.querySelector(`rect[data-id="${finding.twinId}"]`);
+    if (!rect) return;
+
+    p.addEventListener('mouseenter', () => {
+      rect.classList.add('hit');
+      rect.classList.add('pulse');
+      setTimeout(() => rect.classList.remove('pulse'), 1200);
+    });
+    p.addEventListener('mouseleave', () => {
+      rect.classList.remove('hit');
+    });
+  });
+}
+
+// ─── 3. Click a pin → jump to its finding ─────────────────────────
+function twinWireClick() {
+  if (!TWIN.svg) return;
+  TWIN.svg.querySelectorAll('rect.node').forEach(r => {
+    const id = r.dataset.id;
+    const finding = (window._nusa?.findings || []).find(f => f.twinId === id);
+    if (!finding) return;
+    r.style.cursor = 'pointer';
+    r.addEventListener('click', () => {
+      const p = narration.querySelector(`p.finding[data-finding-id="${finding.id}"]`);
+      if (p) {
+        p.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // flash the sentence
+        p.style.transition = 'background .3s';
+        const prev = p.style.background;
+        p.style.background = 'rgba(167,139,250,.14)';
+        setTimeout(() => { p.style.background = prev; }, 1200);
+      }
+    });
+  });
+}
+
+// ─── Wire everything right after pinning completes ────────────────
+const _origPin = pinFindingsToTwin;
+
+
+// Also re-wire when a fresh fix block is added (user clicked ✦) — finding ids don't
+// change, but the narration paragraph may have been re-rendered.
+const _origAttachVerify = attachVerify;
+attachVerify = function (block, finding) {
+  const r = _origAttachVerify.apply(this, arguments);
+  requestAnimationFrame(() => twinWireHover());
+  return r;
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// PHASE D.4 — honest draw count, full-width pin lines, narration click
+// ═══════════════════════════════════════════════════════════════════
+
+// ── 1. Wrap twinAddNode so we count what actually renders ─────────
+const _d2Add = twinAddNode;
+twinAddNode = function (ev) {
+  const before = TWIN.svg ? TWIN.svg.children.length : 0;
+  const r = _d2Add.apply(this, arguments);
+  const after = TWIN.svg ? TWIN.svg.children.length : 0;
+  if (after > before) TWIN.drawn = (TWIN.drawn || 0) + 1;
+  return r;
+};
+
+// ── 2. Full-width pin lines instead of coloured rects ─────────────
+// A finding's tag tells us which twin node to anchor to. We draw a
+// horizontal line at that node's y, spanning the full 390 width, with
+// a small dot and the finding id at the left edge.
+
+function twinPinLine(finding, ev) {
+  if (!TWIN.svg || !ev || !ev.bbox) return null;
+  const NS = 'http://www.w3.org/2000/svg';
+  const y = ev.bbox.y + 2;
+  const g = document.createElementNS(NS, 'g');
+  g.setAttribute('class', 'pin-group');
+  g.dataset.findingId = finding.id;
+
+  const line = document.createElementNS(NS, 'line');
+  line.setAttribute('x1', '0');
+  line.setAttribute('x2', '390');
+  line.setAttribute('y1', String(y));
+  line.setAttribute('y2', String(y));
+  const cls = finding.cat === 'AEO' ? 'pin-aeo' : (finding.status === 'fail' ? 'pin-fail' : 'pin-warn');
+  line.setAttribute('class', 'pin ' + cls);
+  g.appendChild(line);
+
+  const dot = document.createElementNS(NS, 'circle');
+  dot.setAttribute('cx', '3');
+  dot.setAttribute('cy', String(y));
+  dot.setAttribute('r', '3');
+  dot.setAttribute('class', 'pin-dot ' + cls);
+  g.appendChild(dot);
+
+  TWIN.svg.appendChild(g);
+
+  // pulse once on attach so the user sees it land
+  line.classList.add('pulse');
+  setTimeout(() => line.classList.remove('pulse'), 1500);
+
+  // linkage: hover/click → narration
+  g.style.cursor = 'pointer';
+  g.addEventListener('mouseenter', () => {
+    const p = narration.querySelector(`p.finding[data-finding-id="${finding.id}"]`);
+    if (p) p.classList.add('pulse-text');
+  });
+  g.addEventListener('mouseleave', () => {
+    const p = narration.querySelector(`p.finding[data-finding-id="${finding.id}"]`);
+    if (p) p.classList.remove('pulse-text');
+  });
+  g.addEventListener('click', () => {
+    const p = narration.querySelector(`p.finding[data-finding-id="${finding.id}"]`);
+    if (p) {
+      p.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      p.classList.add('pulse-text');
+      setTimeout(() => p.classList.remove('pulse-text'), 1500);
+    }
+  });
+
+  return g;
+}
+
+// ── 3. Replace pinFindingsToTwin with a per-tag matching pass ─────
+
+// ═══════════════════════════════════════════════════════════════════
+// pinFindingsToTwin — final, single definition
+// ═══════════════════════════════════════════════════════════════════
+
+function pinFindingsToTwin() {
+  if (!TWIN.svg || !TWIN.events.length) return;
+  const ctx = window._nusa;
+  if (!ctx) return;
+
+  const byTag = new Map();
+  for (const ev of TWIN.events) {
+    if (!ev.bbox || ev.bbox.w <= 0 || ev.bbox.h <= 0) continue;
+    if (!byTag.has(ev.tag)) byTag.set(ev.tag, []);
+    byTag.get(ev.tag).push(ev);
+  }
+
+  const DOM_RULES = [
+    { re: /images? missing alt text/i,   tag: 'img' },
+    { re: /^Missing page title$/i,       tag: 'title', fallback: 'head' },
+    { re: /^Title is \d+ chars/i,        tag: 'title', fallback: 'head' },
+    { re: /\d+ H1s on page/i,            tag: 'h1' },
+    { re: /Readability weak/i,           tag: 'p' }
+  ];
+
+  const railFindings = [];
+  const usedY = new Set();
+  let railIndex = 0;
+  const RAIL_START = 60;
+  const RAIL_STEP = 80;
+
+  for (const f of ctx.findings) {
+    const rule = DOM_RULES.find(function (r) { return r.re.test(f.label); });
+
+    if (rule) {
+      let list = byTag.get(rule.tag) || [];
+      if (!list.length && rule.fallback) list = byTag.get(rule.fallback) || [];
+      if (list.length) {
+        let placed = false;
+        for (const cand of list) {
+          const y = Math.round(cand.bbox.y);
+          if (!usedY.has(y)) {
+            usedY.add(y);
+            f.twinId = cand.id;
+            const g = twinPinLine(f, { bbox: { y: y }, id: cand.id });
+            if (g) TWIN.findingPins.set(f.id, cand.id);
+            placed = true;
+            break;
+          }
+        }
+        if (placed) continue;
+      }
+    }
+    railFindings.push(f);
+  }
+
+  for (const f of railFindings) {
+    const y = RAIL_START + railIndex * RAIL_STEP;
+    railIndex++;
+    const vb = (TWIN.svg.getAttribute('viewBox') || '0 0 390 844').split(' ');
+    const docH = parseFloat(vb[3]) || 844;
+    if (y + 40 > docH) {
+      const newH = y + 80;
+      TWIN.svg.setAttribute('viewBox', '0 0 390 ' + newH);
+      TWIN.svg.style.aspectRatio = '390 / ' + newH;
+    }
+    const g = twinPinLine(f, { bbox: { y: y }, id: 'rail-' + f.id });
+    if (g) {
+      const line = g.querySelector('line');
+      if (line) line.setAttribute('x2', '48');
+      TWIN.findingPins.set(f.id, 'rail-' + f.id);
+    }
+  }
+
+  twinSetMeta();
+
+  narration.querySelectorAll('p.finding').forEach(function (p) {
+    if (p.dataset.pinWired === '1') return;
+    p.dataset.pinWired = '1';
+    const fid = p.dataset.findingId;
+    if (!fid) return;
+    const g = TWIN.svg.querySelector('.pin-group[data-finding-id="' + fid + '"]');
+    if (!g) return;
+    const line = g.querySelector('line');
+
+    p.addEventListener('mouseenter', function () {
+      line.classList.add('pulse');
+      setTimeout(function () { line.classList.remove('pulse'); }, 1400);
+    });
+
+    p.style.cursor = 'pointer';
+    p.addEventListener('click', function (e) {
+      if (e.target.closest('.bolt')) return;
+      const y = parseFloat(line.getAttribute('y1'));
+      const twinCol = $('twin-col');
+      if (twinCol && TWIN.svg) {
+        const colRect = twinCol.getBoundingClientRect();
+        const svgRect = TWIN.svg.getBoundingClientRect();
+        const vbH = TWIN.svg.viewBox.baseVal.height || 1;
+        const scale = svgRect.height / vbH;
+        const targetY = svgRect.top + (y * scale) - colRect.height * 0.4;
+        twinCol.scrollTo({ top: twinCol.scrollTop + (targetY - colRect.top), behavior: 'smooth' });
+      }
+      line.classList.add('pulse');
+      setTimeout(function () { line.classList.remove('pulse'); }, 1400);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Session A — summary cards + progress feedback
+// ═══════════════════════════════════════════════════════════════════
+
+function setProgress(text, opts) {
+  opts = opts || {};
+  const s = $('status');
+  if (s) s.textContent = text;
+  const head = document.querySelector('.narration-col .col-head');
+  if (!head) return;
+  let dot = head.querySelector('.work-dot');
+  if (opts.busy === false) {
+    if (dot) dot.remove();
+    head.classList.remove('working');
+    return;
+  }
+  if (!dot) {
+    dot = document.createElement('span');
+    dot.className = 'work-dot';
+    head.appendChild(dot);
+  }
+  head.classList.add('working');
+}
+
+function buildSummaryCards(ctx) {
+  const container = $('summary-cards');
+  if (!container || !ctx) return;
+
+  const findings = ctx.findings || [];
+  const modules = ctx.modules || { UX: [], SEO: [], AEO: [] };
+
+  // overall counts (findings only)
+  const blocking = findings.filter(f => f.status === 'fail').length;
+  const warnings = findings.filter(f => f.status === 'warn').length;
+
+  // per category
+  const cats = ['UX', 'SEO', 'AEO'];
+  const catData = {};
+  for (const cat of cats) {
+    const catFindings = findings.filter(f => f.cat === cat);
+    const catModules = modules[cat] || [];
+    const passCount = catModules.filter(m => (m.score || 0) >= 80).length;
+    const failList = catFindings
+      .map(f => ({ label: f.label, status: f.status, cat: f.cat }))
+      .sort((a, b) => (a.status === 'fail' ? -1 : 1) - (b.status === 'fail' ? -1 : 1));
+    catData[cat] = {
+      modules: catModules,
+      passCount,
+      totalModules: catModules.length,
+      issues: catFindings.length,
+      failList
+    };
+  }
+
+  function renderCard(cat) {
+    if (!cat) {
+      // overall card
+      return `
+        <div class="sum-card sum-overall" data-cat="overall">
+          <div class="sum-head"><span class="sum-title">OVERALL</span></div>
+          <div class="sum-counts">
+            <span class="sum-count-fail">${blocking}</span> blocking ·
+            <span class="sum-count-warn">${warnings}</span> warn
+          </div>
+          <div style="margin-top:auto;font-size:11px;color:var(--dim);letter-spacing:.04em">
+            ${ctx.url ? ctx.url.replace('https://','').replace('http://','') : ''}
+          </div>
+        </div>`;
+    }
+    const d = catData[cat];
+    const passRows = d.modules
+      .slice()
+      .sort((a, b) => (b.score || 0) - (a.score || 0))
+      .map(m => {
+        const passing = (m.score || 0) >= 80;
+        return `<div class="sum-pass-row">
+          <span class="name">${passing ? '✓' : '·'} ${escapeHtml(m.name)}</span>
+          <span class="score">${Math.round(m.score || 0)}</span>
+        </div>`;
+      }).join('');
+
+    const failRows = d.failList.length
+      ? d.failList.slice(0, 6).map(f => {
+          const cls = f.cat === 'AEO' ? 'aeo' : (f.status === 'fail' ? 'fail' : 'warn');
+          const mark = f.status === 'fail' ? '✕' : '⚠';
+          return `<div class="sum-finding ${cls}">${mark} ${escapeHtml(shorten(f.label, 42))}</div>`;
+        }).join('')
+      : '<div class="sum-no-fail">✓ no issues</div>';
+
+    return `
+      <div class="sum-card" data-cat="${cat}" data-expandable="1">
+        <div class="sum-head">
+          <span class="sum-title">${cat}</span>
+          <span class="sum-toggle">▾</span>
+        </div>
+        <div class="sum-counts">
+          <span class="sum-count-pass">${d.passCount}</span> pass ·
+          <span class="sum-count-fail">${d.issues}</span> issue${d.issues===1?'':'s'}
+        </div>
+        <div class="sum-pass-list">${passRows || '<div class="sum-pass-row"><span class="name">—</span></div>'}</div>
+        <div class="sum-fail-list">${failRows}</div>
+      </div>`;
+  }
+
+  container.innerHTML = `<div class="sum-row">
+    ${renderCard(null)}
+    ${renderCard('UX')}
+    ${renderCard('SEO')}
+    ${renderCard('AEO')}
+  </div>`;
+  container.classList.remove('hidden');
+
+  // wire expand toggles
+  container.querySelectorAll('.sum-card[data-expandable="1"]').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('.sum-finding')) return;
+      card.classList.toggle('expanded');
+    });
+  });
+}
+
+function shorten(str, n) {
+  str = String(str || '');
+  return str.length > n ? str.slice(0, n - 1) + '…' : str;
+}
+
+// hook summary cards to audit settle
+(function hookSummaryCards() {
+  const statusEl = $('status');
+  if (!statusEl) return;
+  new MutationObserver(() => {
+    if (statusEl.textContent === 'settled' && window._nusa) {
+      buildSummaryCards(window._nusa);
+      setProgress('settled', { busy: false });
+    }
+  }).observe(statusEl, { childList: true, characterData: true, subtree: true });
+})();
+
+// progress updates during the audit — run after the audit starts
+(function hookProgress() {
+  const statusEl = $('status');
+  if (!statusEl) return;
+  const narrationEl = $('narration');
+  if (!narrationEl) return;
+  new MutationObserver(muts => {
+    for (const m of muts) {
+      for (const node of m.addedNodes) {
+        if (node.nodeType !== 1) continue;
+        const t = node.textContent || '';
+        if (/Opening .* via edge render/i.test(t))         setProgress('rendering…');
+        else if (/Rendered .* chars/i.test(t))             setProgress('parsing DOM…');
+        else if (/Running UX pass/i.test(t))               setProgress('running UX…');
+        else if (/Running SEO pass/i.test(t))              setProgress('running SEO…');
+        else if (/Running AEO pass/i.test(t))              setProgress('running AEO…');
+        else if (/Audit settled/i.test(t))                 setProgress('settled', { busy: false });
+      }
+    }
+  }).observe(narrationEl, { childList: true, subtree: false });
+})();
+

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traffic Torch – Developer API</title>
+  <meta name="description" content="Traffic Torch Developer API – programmatically run audits, manage keys, and integrate with your tools.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/integrations/developer/api/">
+
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Traffic Torch – Developer API">
+  <meta property="og:description" content="Programmatic access to all Traffic Torch SEO, UX, and AI audit tools.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/integrations/developer/api/">
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Traffic Torch – Developer API">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/integrations/developer/api/",
+        "url": "https://traffictorch.net/integrations/developer/api/",
+        "name": "Traffic Torch Developer API",
+        "description": "Programmatically run all 15 audit tools, retrieve results, and manage your API keys.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": "https://traffictorch.net/",
+          "name": "Traffic Torch"
+        },
+        "breadcrumb": {
+          "@id": "https://traffictorch.net/integrations/developer/api/#breadcrumb"
+        },
+        "about": {
+          "@type": "Thing",
+          "name": "SEO API"
+        },
+        "mainEntity": {
+          "@id": "https://traffictorch.net/integrations/developer/api/#api"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://traffictorch.net/integrations/developer/api/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://traffictorch.net/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Integrations",
+            "item": "https://traffictorch.net/integrations/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Developer Tools",
+            "item": "https://traffictorch.net/integrations/developer-tools/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "Developer API",
+            "item": "https://traffictorch.net/integrations/developer/api/"
+          }
+        ]
+      },
+      {
+        "@type": "WebAPI",
+        "@id": "https://traffictorch.net/integrations/developer/api/#api",
+        "name": "Traffic Torch Developer API",
+        "description": "REST API to programmatically run 13+ SEO, UX, GEO and AI-search audit tools, manage API keys and receive webhook notifications on audit completion.",
+        "documentation": "https://traffictorch.net/integrations/developer/api/",
+        "url": "https://traffictorch.net/integrations/developer/api/",
+        "provider": {
+          "@type": "Organization",
+          "name": "Traffic Torch",
+          "url": "https://traffictorch.net/"
+        },
+        "termsOfService": "https://traffictorch.net/terms/",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://traffictorch.net/integrations/developer/api/#faq",
+        "mainEntityOfPage": {
+          "@id": "https://traffictorch.net/integrations/developer/api/"
+        },
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I get an API key?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Generate one on this page after logging in. Use the 'Generate New Key' button."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What's the difference between the Bearer token and X-API-Key?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Bearer token (JWT) is used for management endpoints (keys, webhooks). The X-API-Key is used exclusively for running audits via /api/tools/*."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How are daily limits calculated?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The limit applies to the API key (for tool calls) and resets at midnight UTC. The /api/account-info endpoint shows your current usage and remaining requests."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I revoke an API key?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes – click 'Revoke' next to any key on this page. Revoked keys are immediately invalid."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What events trigger webhooks?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Currently only audit.completed. usage.alert (when you reach 80% of your daily limit) is planned."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a test environment?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The same endpoints work for both live and test; you can use https://webhook.site to test webhooks."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you have a sandbox mode?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Not yet, but you can create a test API key and use it with your own development environment."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- Preload CSS -->
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style.css?v=1.0"></noscript>
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local.css?v=1.0"></noscript>
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+
+  <style>
+    [x-cloak] { display: none !important; }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+    .dark .glass { background: rgba(0,0,0,0.3); }
+    .api-key-card {
+      transition: all 0.2s;
+    }
+    .api-key-card:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .spinner {
+      border: 4px solid rgba(0,0,0,0.1);
+      border-left-color: #f97316;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .endpoint-doc {
+      border-left: 3px solid #f97316;
+    }
+    .webhook-item {
+      transition: background 0.2s;
+    }
+    .webhook-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    /* Smooth scroll for anchor links */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Code blocks – tight line-height, no phantom blank lines */
+    pre {
+      background-color: #1e293b !important;
+      color: #f1f5f9 !important;
+      border-radius: 0.5rem;
+      padding: 0.85rem 1rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin: 0;
+      max-width: 100%;
+      tab-size: 2;
+    }
+    pre code {
+      background: transparent !important;
+      color: inherit !important;
+      padding: 0;
+      border-radius: 0;
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      white-space: pre;
+    }
+    @media (max-width: 640px) {
+      pre code {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    }
+    /* Inline code */
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+  </style>
+  <!-- PWA + Icons + Colour scheme -->
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Perf: preconnect critical origins -->
+  <link rel="preconnect" href="https://traffic-torch-auth.traffictorch.workers.dev" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="dns-prefetch" href="https://js.stripe.com">
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+
+<div x-data="apiApp()" x-init="initApp()" class="flex flex-1 min-h-screen">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
+    <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+      <a href="/" class="flex items-center gap-4">
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+        <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden md:block">Traffic Torch</span>
+      </a>
+    </div>
+    <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+    <div class="p-4 border-t border-white/10 dark:border-white/5">
+      <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="flex-1 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+      <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span class="text-[1rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</span>
+        </a>
+        <div class="w-10 md:hidden"></div>
+        <button id="menuToggle" class="md:hidden text-3xl text-gray-500">☰</button>
+        <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+        <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+        <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+        <div id="mobile-menu-placeholder"></div>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="container mx-auto px-4 py-8 flex-1">
+
+      <div class="max-w-4xl mx-auto">
+
+        <!-- ===== Breadcrumbs ===== -->
+        <nav aria-label="Breadcrumb" class="mb-6 text-sm">
+          <ol class="flex flex-wrap items-center gap-2 text-gray-500 dark:text-gray-400">
+            <li><a href="/" class="hover:text-orange-500">Home</a></li>
+            <li aria-hidden="true">›</li>
+            <li><a href="/integrations/" class="hover:text-orange-500">Integrations</a></li>
+            <li aria-hidden="true">›</li>
+            <li><a href="/integrations/developer-tools/" class="hover:text-orange-500">Developer Tools</a></li>
+            <li aria-hidden="true">›</li>
+            <li class="text-gray-800 dark:text-gray-200 font-semibold" aria-current="page">Developer API</li>
+          </ol>
+        </nav>
+
+        <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-6">🧑‍💻 Developer API</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">Programmatically run all 15 audit tools, retrieve results, and manage your API keys.</p>
+
+        <!-- ===== TABLE OF CONTENTS ===== -->
+        <nav id="toc" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📚 Table of Contents</h2>
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+            <li><a href="#auth" class="text-orange-500 hover:underline">🔐 Authentication</a></li>
+            <li><a href="#endpoints" class="text-orange-500 hover:underline">📡 Endpoints Overview</a></li>
+            <li><a href="#tool-endpoint" class="text-orange-500 hover:underline">🛠️ Tool Endpoint</a></li>
+            <li><a href="#webhooks-doc" class="text-orange-500 hover:underline">🔗 Webhook Endpoints</a></li>
+            <li><a href="#account-info" class="text-orange-500 hover:underline">👤 Account Info</a></li>
+            <li><a href="#errors" class="text-orange-500 hover:underline">❌ Error Codes</a></li>
+            <li><a href="#rate-limits-doc" class="text-orange-500 hover:underline">📊 Rate Limits</a></li>
+            <li><a href="#examples" class="text-orange-500 hover:underline">💻 Code Examples</a></li>
+            <li><a href="#webhook-payload" class="text-orange-500 hover:underline">📦 Webhook Payload</a></li>
+            <li><a href="#faq" class="text-orange-500 hover:underline">❓ FAQ</a></li>
+            <li><a href="#changelog" class="text-orange-500 hover:underline">📅 Changelog</a></li>
+            <li><a href="#support" class="text-orange-500 hover:underline">📧 Support</a></li>
+          </ul>
+        </nav>
+
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
+
+        <!-- ===== API KEY MANAGEMENT ===== -->
+        <section class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">🔑 Your API Keys</h2>
+
+          <div x-show="loading" class="text-center py-4">
+            <div class="spinner"></div>
+            <p class="mt-2 text-sm text-gray-500">Loading keys…</p>
+          </div>
+
+          <div x-show="!loading">
+            <template x-if="keys.length === 0">
+              <p class="text-gray-500 text-sm">No API keys yet. Generate one below.</p>
+            </template>
+
+            <template x-for="key in keys" :key="key.id">
+              <div class="api-key-card flex flex-wrap items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg mb-2">
+                <div class="flex-1">
+                  <span class="font-mono text-sm" x-text="key.key_prefix + '…'"></span>
+                  <span class="text-xs text-gray-500 ml-2" x-text="key.name || 'Unnamed'"></span>
+                  <span class="text-xs text-gray-400 ml-2" x-text="'Created: ' + new Date(key.created_at).toLocaleDateString()"></span>
+                </div>
+                <div class="flex gap-2 mt-2 sm:mt-0">
+                  <button @click="revokeKey(key.id)" class="text-xs text-red-500 hover:text-red-700 transition">Revoke</button>
+                </div>
+              </div>
+            </template>
+
+            <div class="mt-4 flex flex-wrap items-center gap-3">
+              <input type="text" x-model="newKeyName" placeholder="Key name (optional)" class="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm flex-1 min-w-[150px]">
+              <button @click="generateKey()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition">Generate New Key</button>
+            </div>
+
+            <div x-show="generatedKey" class="mt-4 p-3 bg-green-100 dark:bg-green-900/30 border border-green-400 rounded-lg">
+              <p class="text-sm font-semibold text-green-800 dark:text-green-200">Your new API key:</p>
+              <code class="block bg-gray-900 text-white p-2 rounded text-xs font-mono break-all mt-1" x-text="generatedKey"></code>
+              <p class="text-xs text-gray-500 mt-1">Copy this key now. It will not be shown again.</p>
+              <div class="mt-2 flex gap-3">
+                <button @click="copyKey(generatedKey)" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition">Copy</button>
+                <button @click="generatedKey = null" class="text-sm text-gray-500 hover:underline">Dismiss</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== WEBHOOK MANAGEMENT ===== -->
+        <section class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📡 Webhooks</h2>
+          <p class="text-sm text-gray-500 mb-4">Receive real‑time notifications when audits complete.</p>
+
+          <!-- Add webhook form -->
+          <div class="flex flex-wrap items-center gap-3 mb-4">
+            <input type="url" x-model="newWebhookUrl" placeholder="https://your-domain.com/webhook" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm min-w-[200px]">
+            <select x-model="newWebhookEvents" multiple aria-label="Select events" class="px-2 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm min-w-[150px]">
+              <option value="audit.completed">Audit Completed</option>
+              <option value="usage.alert">Usage Alert</option>
+            </select>
+            <button @click="addWebhook()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition">Add Webhook</button>
+          </div>
+          <div x-show="webhookError" class="text-red-500 text-sm mb-2" x-text="webhookError"></div>
+
+          <!-- List webhooks -->
+          <div x-show="webhooks.length > 0">
+            <template x-for="wh in webhooks" :key="wh.id">
+              <div class="webhook-item flex flex-wrap items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg mb-2">
+                <div class="flex-1 text-sm">
+                  <span class="font-mono" x-text="wh.url"></span>
+                  <span class="ml-2 text-xs text-gray-500" x-text="'Events: ' + wh.events.join(', ')"></span>
+                  <span class="ml-2 text-xs text-gray-400" x-text="'Added: ' + new Date(wh.created_at).toLocaleDateString()"></span>
+                </div>
+                <button @click="deleteWebhook(wh.id)" class="text-xs text-red-500 hover:text-red-700 transition">Delete</button>
+              </div>
+            </template>
+          </div>
+          <p x-show="webhooks.length === 0 && !webhookLoading" class="text-gray-500 text-sm">No webhooks configured.</p>
+        </section>
+
+        <!-- ===== API DOCS (quick reference) ===== -->
+        <section class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📖 API Endpoints (Quick Reference)</h2>
+          <p class="text-sm text-gray-500 mb-4">All endpoints require authentication via <code>X-API-Key</code> or <code>Authorization</code> header (see <a href="#auth" class="text-orange-500 hover:underline">Authentication</a>).</p>
+          <div class="space-y-4">
+            <div class="endpoint-doc pl-4 py-2">
+              <div class="flex flex-wrap items-start gap-2">
+                <span class="font-mono text-sm font-bold text-orange-500">POST</span>
+                <span class="font-mono text-sm">/api/tools/:tool</span>
+                <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Run audit</span>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Run any audit tool. Replace <code>:tool</code> with: <code>seo-intent</code>, <code>seo-ux</code>, <code>local-seo</code>, <code>product-seo</code>, <code>entity</code>, <code>topical</code>, <code>schema-generator</code>, <code>ai-search</code>, <code>ai-voice</code>, <code>ai-audit</code>, <code>quit-risk</code>, <code>keyword-research</code>, <code>keyword-placement</code>.</p>
+              <pre class="mt-2"><code>POST /api/tools/seo-intent
+X-API-Key: YOUR_API_KEY
+{"url": "https://example.com"}</code></pre>
+            </div>
+
+            <div class="endpoint-doc pl-4 py-2">
+              <div class="flex flex-wrap items-start gap-2">
+                <span class="font-mono text-sm font-bold text-orange-500">GET / POST / DELETE</span>
+                <span class="font-mono text-sm">/api/webhooks</span>
+                <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Webhooks</span>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manage your webhooks. <code>POST</code> with <code>{ url, events: ["audit.completed"] }</code>, <code>GET</code> to list, <code>DELETE /:id</code> to remove.</p>
+            </div>
+
+            <div class="endpoint-doc pl-4 py-2">
+              <div class="flex flex-wrap items-start gap-2">
+                <span class="font-mono text-sm font-bold text-orange-500">GET</span>
+                <span class="font-mono text-sm">/api/account-info</span>
+                <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">Account</span>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Get your account details, including remaining daily usage.</p>
+            </div>
+
+            <div class="endpoint-doc pl-4 py-2">
+              <div class="flex flex-wrap items-start gap-2">
+                <span class="font-mono text-sm font-bold text-orange-500">GET / POST / DELETE</span>
+                <span class="font-mono text-sm">/api/keys</span>
+                <span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-0.5 rounded-full">API Keys</span>
+              </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">List, generate, and revoke API keys (managed above).</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== RATE LIMITS (quick summary) ===== -->
+        <section class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📊 Rate Limits (Summary)</h2>
+          <div class="grid grid-cols-3 gap-4 text-sm">
+            <div><span class="text-gray-500">Free:</span> <span class="font-bold">3</span> req/day</div>
+            <div><span class="text-gray-500">Pro:</span> <span class="font-bold">25</span> req/day</div>
+            <div><span class="text-gray-500">Enterprise:</span> <span class="font-bold">300</span> req/day</div>
+          </div>
+          <div x-show="remaining !== undefined" class="mt-4 text-sm">
+            <span class="text-gray-500">Remaining today:</span>
+            <span class="font-bold" x-text="remaining"></span>
+          </div>
+          <p class="mt-2 text-xs text-gray-500">See <a href="#rate-limits-doc" class="text-orange-500 hover:underline">detailed rate limit documentation</a> for more info.</p>
+        </section>
+
+        <!-- ================================================ -->
+        <!-- ===== DETAILED DOCUMENTATION SECTIONS ===== -->
+        <!-- ================================================ -->
+
+        <!-- Authentication -->
+        <section id="auth" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">🔐 Authentication</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p>All API requests require authentication. There are two types of credentials:</p>
+            <ul class="list-disc list-inside space-y-2">
+              <li><strong>Bearer Token (JWT)</strong> – used for most endpoints (keys, webhooks, account info). Obtain it by logging in via the <a href="/login/" class="text-blue-500 hover:underline">login page</a>.</li>
+              <li><strong>X-API-Key</strong> – used exclusively for the tool endpoint <code>/api/tools/*</code>. Generate a key on this page.</li>
+            </ul>
+            <pre class="mt-2"><code>Authorization: Bearer &lt;your_jwt&gt;
+X-API-Key: &lt;your_api_key&gt;</code></pre>
+            <p class="text-xs text-gray-500">The <code>X-API-Key</code> header is only required for the tool endpoint; all other endpoints use the <code>Authorization</code> header.</p>
+          </div>
+        </section>
+
+        <!-- Endpoints Overview -->
+        <section id="endpoints" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📡 Endpoints Overview</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
+              <thead class="border-b border-gray-200 dark:border-gray-700">
+                <tr><th class="py-2 pr-4">Method</th><th class="py-2 pr-4">Endpoint</th><th class="py-2">Description</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4 font-mono text-xs">/api/keys</td><td>List your API keys</td></tr>
+                <tr><td class="py-2 pr-4">POST</td><td class="py-2 pr-4 font-mono text-xs">/api/keys/generate</td><td>Generate a new API key</td></tr>
+                <tr><td class="py-2 pr-4">DELETE</td><td class="py-2 pr-4 font-mono text-xs">/api/keys/revoke/:id</td><td>Revoke an API key</td></tr>
+                <tr><td class="py-2 pr-4">POST</td><td class="py-2 pr-4 font-mono text-xs">/api/tools/:tool</td><td>Run an audit (requires X-API-Key)</td></tr>
+                <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4 font-mono text-xs">/api/webhooks</td><td>List your webhooks</td></tr>
+                <tr><td class="py-2 pr-4">POST</td><td class="py-2 pr-4 font-mono text-xs">/api/webhooks</td><td>Create a webhook</td></tr>
+                <tr><td class="py-2 pr-4">DELETE</td><td class="py-2 pr-4 font-mono text-xs">/api/webhooks/:id</td><td>Delete a webhook</td></tr>
+                <tr><td class="py-2 pr-4">GET</td><td class="py-2 pr-4 font-mono text-xs">/api/account-info</td><td>Get account details &amp; usage</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Tool Endpoint -->
+        <section id="tool-endpoint" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">🛠️ Tool Endpoint</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p><strong>POST</strong> <code>/api/tools/:tool</code></p>
+            <p><strong>Headers:</strong> <code>X-API-Key: &lt;your_api_key&gt;</code> and <code>Content-Type: application/json</code></p>
+            <p><strong>Request body:</strong></p>
+            <pre><code>{
+  "url": "https://example.com"
+}</code></pre>
+            <p><strong>Response (success):</strong></p>
+            <pre><code>{
+  "success": true,
+  "data": {
+    "tool": "seo-intent",
+    "url": "https://example.com",
+    "score": 85,
+    "summary": "Good intent match"
+  }
+}</code></pre>
+            <p><strong>Available tools:</strong> <code>seo-intent</code>, <code>seo-ux</code>, <code>local-seo</code>, <code>product-seo</code>, <code>entity</code>, <code>topical</code>, <code>schema-generator</code>, <code>ai-search</code>, <code>ai-voice</code>, <code>ai-audit</code>, <code>quit-risk</code>, <code>keyword-research</code>, <code>keyword-placement</code>.</p>
+          </div>
+        </section>
+
+        <!-- Webhook Endpoints (detailed) -->
+        <section id="webhooks-doc" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">🔗 Webhook Endpoints (Detailed)</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p><strong>GET</strong> <code>/api/webhooks</code> – list your webhooks (requires Bearer token).</p>
+            <p><strong>POST</strong> <code>/api/webhooks</code> – create a new webhook (requires Bearer token).</p>
+            <pre><code>{
+  "url": "https://your-domain.com/webhook",
+  "events": ["audit.completed"]
+}</code></pre>
+            <p><strong>DELETE</strong> <code>/api/webhooks/:id</code> – delete a webhook (requires Bearer token).</p>
+            <p>All webhook endpoints return JSON with <code>{ success: true, ... }</code> or an error object.</p>
+          </div>
+        </section>
+
+        <!-- Account Info -->
+        <section id="account-info" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">👤 Account Info</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p><strong>GET</strong> <code>/api/account-info</code> – returns your account details and daily usage.</p>
+            <p><strong>Response example:</strong></p>
+            <pre><code>{
+  "email": "user@example.com",
+  "isPro": true,
+  "proSince": "2025-03-01T...",
+  "dailyUsed": 3,
+  "dailyLimit": 25,
+  "dailyRemaining": 22,
+  "tier": "pro",
+  "ga4Connected": true,
+  "gscConnected": true,
+  "gscSiteUrl": "sc-domain:example.com"
+}</code></pre>
+          </div>
+        </section>
+
+        <!-- Error Codes -->
+        <section id="errors" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">❌ Error Codes</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-700 dark:text-gray-300">
+              <thead class="border-b border-gray-200 dark:border-gray-700">
+                <tr><th class="py-2 pr-4">Status</th><th class="py-2 pr-4">Meaning</th><th class="py-2">Common Cause</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="py-2 pr-4">400</td><td class="py-2 pr-4">Bad Request</td><td>Missing or invalid parameters</td></tr>
+                <tr><td class="py-2 pr-4">401</td><td class="py-2 pr-4">Unauthorized</td><td>Missing/invalid Bearer token or X-API-Key</td></tr>
+                <tr><td class="py-2 pr-4">403</td><td class="py-2 pr-4">Forbidden</td><td>You don't own the resource (e.g., revoking someone else's key)</td></tr>
+                <tr><td class="py-2 pr-4">404</td><td class="py-2 pr-4">Not Found</td><td>Endpoint or resource ID does not exist</td></tr>
+                <tr><td class="py-2 pr-4">429</td><td class="py-2 pr-4">Too Many Requests</td><td>Daily rate limit exceeded</td></tr>
+                <tr><td class="py-2 pr-4">500</td><td class="py-2 pr-4">Internal Server Error</td><td>Unexpected server issue – contact support</td></tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-xs text-gray-500">All error responses include an <code>error</code> field with a description.</p>
+          </div>
+        </section>
+
+        <!-- Rate Limits (detailed) -->
+        <section id="rate-limits-doc" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📊 Rate Limits (Detailed)</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p>Daily request limits are applied per API key (for the tool endpoint) and per user (for other endpoints). The limit depends on your subscription tier:</p>
+            <div class="grid grid-cols-3 gap-4 text-sm">
+              <div><span class="text-gray-500">Free:</span> <span class="font-bold">3</span> req/day</div>
+              <div><span class="text-gray-500">Pro:</span> <span class="font-bold">25</span> req/day</div>
+              <div><span class="text-gray-500">Enterprise:</span> <span class="font-bold">300</span> req/day</div>
+            </div>
+            <p>The <code>/api/account-info</code> endpoint returns your current usage and remaining requests.</p>
+            <p><strong>Note:</strong> The tool endpoint (<code>/api/tools/*</code>) counts against the API key's daily limit. Other endpoints (keys, webhooks, account) are not rate-limited (but may be in the future).</p>
+          </div>
+        </section>
+
+        <!-- Code Examples -->
+        <section id="examples" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">💻 Code Examples</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-6 text-sm text-gray-700 dark:text-gray-300">
+            <div>
+              <h4 class="font-bold text-base">cURL</h4>
+              <pre><code>curl -X POST https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com"}'</code></pre>
+            </div>
+            <div>
+              <h4 class="font-bold text-base">JavaScript (fetch)</h4>
+              <pre><code>fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent', {
+  method: 'POST',
+  headers: {
+    'X-API-Key': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({ url: 'https://example.com' })
+})
+.then(res => res.json())
+.then(data => console.log(data))
+.catch(err => console.error(err));</code></pre>
+            </div>
+            <div>
+              <h4 class="font-bold text-base">Python (requests)</h4>
+              <pre><code>import requests
+
+url = 'https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent'
+headers = {'X-API-Key': 'YOUR_API_KEY', 'Content-Type': 'application/json'}
+payload = {'url': 'https://example.com'}
+
+response = requests.post(url, headers=headers, json=payload)
+print(response.json())</code></pre>
+            </div>
+            <div>
+              <h4 class="font-bold text-base">PHP (cURL)</h4>
+              <pre><code>$ch = curl_init('https://traffic-torch-auth.traffictorch.workers.dev/api/tools/seo-intent');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+  'X-API-Key: YOUR_API_KEY',
+  'Content-Type: application/json'
+]);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['url' => 'https://example.com']));
+$response = curl_exec($ch);
+curl_close($ch);
+echo $response;</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Webhook Payload -->
+        <section id="webhook-payload" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📦 Webhook Payload</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <p>When an audit completes, Traffic Torch sends a POST request to your registered webhook URL with the following JSON payload:</p>
+            <pre><code>{
+  "event": "audit.completed",
+  "tool": "seo-intent",
+  "url": "https://example.com",
+  "result": {
+    "tool": "seo-intent",
+    "url": "https://example.com",
+    "score": 85,
+    "summary": "Good intent match"
+  },
+  "timestamp": "2025-03-01T12:34:56.789Z"
+}</code></pre>
+            <p>The <code>result</code> field contains the exact response you'd get from the tool endpoint.</p>
+            <p><strong>Event types:</strong> <code>audit.completed</code> (currently the only event). <code>usage.alert</code> will be added in the future.</p>
+          </div>
+        </section>
+
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">❓ FAQ</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">How do I get an API key?</summary>
+              <div class="mt-2 pl-4">Generate one on this page after logging in. Use the "Generate New Key" button.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">What's the difference between the Bearer token and X-API-Key?</summary>
+              <div class="mt-2 pl-4">The Bearer token (JWT) is used for management endpoints (keys, webhooks). The X-API-Key is used exclusively for running audits via <code>/api/tools/*</code>.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">How are daily limits calculated?</summary>
+              <div class="mt-2 pl-4">The limit applies to the API key (for tool calls) and resets at midnight UTC. The <code>/api/account-info</code> endpoint shows your current usage and remaining requests.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Can I revoke an API key?</summary>
+              <div class="mt-2 pl-4">Yes – click "Revoke" next to any key on this page. Revoked keys are immediately invalid.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">What events trigger webhooks?</summary>
+              <div class="mt-2 pl-4">Currently only <code>audit.completed</code>. <code>usage.alert</code> (when you reach 80% of your daily limit) is planned.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Is there a test environment?</summary>
+              <div class="mt-2 pl-4">The same endpoints work for both live and test; you can use <code>https://webhook.site</code> to test webhooks.</div>
+            </details>
+            <details class="group">
+              <summary class="cursor-pointer font-semibold text-gray-800 dark:text-gray-200">Do you have a sandbox mode?</summary>
+              <div class="mt-2 pl-4">Not yet, but you can create a test API key and use it with your own development environment.</div>
+            </details>
+          </div>
+        </section>
+
+        <!-- Changelog -->
+        <section id="changelog" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📅 Changelog</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <p><strong>v1.0.0</strong> – <span class="text-gray-500">March 1, 2025</span></p>
+            <ul class="list-disc list-inside pl-4 space-y-1">
+              <li>Initial API release</li>
+              <li>Support for 13 audit tools</li>
+              <li>API key generation and revocation</li>
+              <li>Webhook management (audit.completed)</li>
+              <li>Account info and rate limits</li>
+            </ul>
+            <p class="mt-4 text-xs text-gray-500">Future versions will include additional tools, event types, and pagination.</p>
+          </div>
+        </section>
+
+        <!-- Support -->
+        <section id="support" class="glass rounded-2xl p-6 mb-8">
+          <h2 class="text-xl font-bold mb-4">📧 Support</h2>
+          <a href="#toc" class="text-sm text-orange-500 hover:underline mb-4 inline-block">↑ Back to Top</a>
+          <div class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <p>For API support, bug reports, or feature requests, please contact us:</p>
+            <ul class="list-disc list-inside pl-4 space-y-1">
+              <li><strong>Email:</strong> <a href="mailto:support@traffictorch.net" class="text-blue-500 hover:underline">support@traffictorch.net</a></li>
+              <li><strong>Help Guides:</strong> <a href="/ai-ux-seo-help-guides/" class="text-blue-500 hover:underline">traffictorch.net/ai-ux-seo-help-guides</a></li>
+            </ul>
+            <p class="mt-4">We aim to respond within 24 hours (business days).</p>
+          </div>
+        </section>
+
+        <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-12">Privacy-first • Traffic Torch</p>
+      </div>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+</div>
+
+<!-- ========================================================== -->
+<!-- SCRIPTS -->
+<!-- ========================================================== -->
+<script src="/main.js?v=1.2" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('apiApp', () => ({
+    loading: false,
+    keys: [],
+    newKeyName: '',
+    generatedKey: null,
+    remaining: undefined,
+
+    // Webhooks
+    webhooks: [],
+    newWebhookUrl: '',
+    newWebhookEvents: ['audit.completed'],
+    webhookError: '',
+    webhookLoading: false,
+
+    async initApp() {
+      // Load footer
+      fetch('/footer.html').then(r => r.text()).then(html => document.getElementById('footer-placeholder').innerHTML = html).catch(() => {});
+      // Load menus
+      this.loadMenus();
+      await this.fetchKeys();
+      await this.fetchUsage();
+      await this.fetchWebhooks();
+    },
+
+    loadMenus() {
+      fetch('/desktop-menu.html')
+        .then(r => r.text())
+        .then(html => document.getElementById('desktop-menu-placeholder').innerHTML = html);
+      fetch('/mobile-menu.html')
+        .then(r => r.text())
+        .then(html => document.getElementById('mobile-menu-placeholder').innerHTML = html);
+    },
+
+    async fetchKeys() {
+      this.loading = true;
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+          this.keys = [];
+          this.loading = false;
+          return;
+        }
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/keys', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.keys = data.keys || [];
+        } else {
+          this.keys = [];
+        }
+      } catch (e) {
+        this.keys = [];
+      }
+      this.loading = false;
+    },
+
+    async generateKey() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return alert('Please log in first.');
+      try {
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/keys/generate', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name: this.newKeyName })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.generatedKey = data.key;
+          this.newKeyName = '';
+          await this.fetchKeys();
+        } else {
+          const err = await res.text();
+          alert('Failed to generate key: ' + err);
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    },
+
+    async revokeKey(id) {
+      if (!confirm('Revoke this API key? This cannot be undone.')) return;
+      const token = localStorage.getItem('authToken');
+      try {
+        const res = await fetch(`https://traffic-torch-auth.traffictorch.workers.dev/api/keys/revoke/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          await this.fetchKeys();
+        } else {
+          alert('Failed to revoke key.');
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    },
+
+    copyKey(key) {
+      if (!key) return;
+      navigator.clipboard.writeText(key).then(() => {
+        alert('API key copied to clipboard!');
+      }).catch(() => {
+        // Fallback
+        const input = document.createElement('input');
+        input.value = key;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('API key copied to clipboard!');
+      });
+    },
+
+    async fetchUsage() {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.remaining = data.dailyRemaining;
+        }
+      } catch (e) {}
+    },
+
+    // ---- Webhooks ----
+    async fetchWebhooks() {
+      this.webhookLoading = true;
+      try {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/webhooks', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          this.webhooks = data.webhooks || [];
+        }
+      } catch (e) {
+        console.error('Webhook fetch error', e);
+      } finally {
+        this.webhookLoading = false;
+      }
+    },
+
+    async addWebhook() {
+      this.webhookError = '';
+      const url = this.newWebhookUrl.trim();
+      if (!url) {
+        this.webhookError = 'Please enter a valid URL.';
+        return;
+      }
+      const token = localStorage.getItem('authToken');
+      if (!token) return alert('Please log in first.');
+      try {
+        const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/webhooks', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            url,
+            events: this.newWebhookEvents
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          this.newWebhookUrl = '';
+          this.newWebhookEvents = ['audit.completed'];
+          await this.fetchWebhooks();
+        } else {
+          this.webhookError = data.error || 'Failed to add webhook.';
+        }
+      } catch (e) {
+        this.webhookError = 'Error: ' + e.message;
+      }
+    },
+
+    async deleteWebhook(id) {
+      if (!confirm('Delete this webhook?')) return;
+      const token = localStorage.getItem('authToken');
+      try {
+        const res = await fetch(`https://traffic-torch-auth.traffictorch.workers.dev/api/webhooks/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          await this.fetchWebhooks();
+        } else {
+          alert('Failed to delete webhook.');
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+  }));
+});
+</script>
+
+</body>
+</html>

@@ -1,5 +1,8 @@
+// seo-intent-tool/modules/trustworthiness.js
+
 export function analyzeTrustworthiness(url, doc, config, cleanedText) {
   const isHttps = url.startsWith('https');
+  const httpsUnknown = !url;                     // paste-mode: URL was not provided
 
   // === Contact ===
   const contactLinkElements = doc.querySelectorAll(
@@ -24,12 +27,16 @@ export function analyzeTrustworthiness(url, doc, config, cleanedText) {
   const hasPolicies = policyLinkElements.length > 0 || footerPolicyText;
 
   // === Update Date ===
+  // Config now uses only specific selectors (time[datetime], .updated, meta[property="article:modified_time"], etc).
+  // Text fallback regex widened to allow non-word separators between the verb and the date.
   const updateDateElement = doc.querySelector(config.parsing.updateDateSelectors.join(', '));
-  const hasUpdateDate = !!updateDateElement ||
-    cleanedText.match(/\b(Updated|Last updated|Published|Modified on)[\s:]*\w+/gi);
+  const updateDateTextMatch = cleanedText.match(
+    /\b(?:Updated|Last updated|Last modified|Published|Modified on|Revised)[\s:\-—]+[A-Za-z0-9]/i
+  );
+  const hasUpdateDate = !!updateDateElement || !!updateDateTextMatch;
 
   const metrics = {
-    https:      isHttps     ? 100 : 20,
+    https:      httpsUnknown ? 60 : (isHttps ? 100 : 20),
     contact:    hasContact  ? 100 : 20,
     policies:   hasPolicies ? 100 : 20,
     updateDate: hasUpdateDate ? 100 : 20
@@ -38,13 +45,24 @@ export function analyzeTrustworthiness(url, doc, config, cleanedText) {
   const score = Math.round(Object.values(metrics).reduce((a, b) => a + b) / 4);
 
   const failed = [];
-  if (!isHttps)         failed.push("Switch to HTTPS");
-  if (!hasContact)      failed.push("Add a visible Contact page or contact details");
-  if (!hasPolicies)     failed.push("Include links to Privacy Policy and/or Terms");
-  if (!hasUpdateDate)   failed.push("Display a last updated date");
+  if (!isHttps && !httpsUnknown) failed.push("Switch to HTTPS");
+  if (!hasContact)               failed.push("Add a visible Contact page or contact details");
+  if (!hasPolicies)              failed.push("Include links to Privacy Policy and/or Terms");
+  if (!hasUpdateDate)            failed.push("Display a last updated date");
 
-  // Radar uses same scale as score
   const normalized = score;
+
+  if (typeof window !== 'undefined' && window.SEO_INTENT_DEBUG) {
+    console.log('[trustworthiness]', {
+      isHttps, httpsUnknown,
+      hasContact, contactSelectorCount: contactLinkElements.length, footerContactText,
+      hasPolicies, policySelectorCount: policyLinkElements.length, footerPolicyText,
+      hasUpdateDate,
+      updateDateElementHTML: updateDateElement ? updateDateElement.outerHTML.slice(0, 200) : null,
+      updateDateTextMatch: updateDateTextMatch ? updateDateTextMatch[0] : null,
+      score
+    });
+  }
 
   return {
     score,

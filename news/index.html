@@ -1,70 +1,25 @@
 <!DOCTYPE html> 
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-
-<!-- Deferred Google Analytics – loads only after interaction -->
-<script>
-  (function() {
-    // Change this to false if you want to test without loading GA
-    const enableGA = true;
-    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
-
-    function loadGA() {
-      // Prevent double-loading
-      if (window.gtag) return;
-
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-      document.head.appendChild(script);
-
-      script.onload = function() {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', MEASUREMENT_ID);
-      };
-    }
-
-    // Trigger on first interaction (scroll, click, touch, key)
-    let fired = false;
-    function fireOnce() {
-      if (fired) return;
-      fired = true;
-      loadGA();
-      cleanup();
-    }
-
-    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
-    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
-
-    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
-    setTimeout(fireOnce, 4500);
-
-    function cleanup() {
-      events.forEach(ev => window.removeEventListener(ev, fireOnce));
-    }
-  })();
-</script>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Latest News, Help Guides and Development Updates on Traffic Torch</title>
-    <meta name="description" content="Stay updated with Traffic Torch news: SEO tool help guides, educational posts, audit tool and development process, how to improve seo and UX turorials." />
-<meta name="robots" content="index, follow" />
-<link rel="canonical" href="https://traffictorch.net/news/" />
-<meta property="og:title" content="Traffic Torch News and AI SEO & UX Development Updates" />
-<meta property="og:description" content="Stay updated with Traffic Torch news: SEO tool help guides, educational posts, audit tool and development process, how to improve seo and UX turorials." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://traffictorch.net/news/" />
-<meta property="og:image" content="https://traffictorch.net/blog/images/featured.webp" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:site_name" content="Traffic Torch" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Traffic Torch News – AI SEO & UX Updates" />
-<meta name="twitter:description" content="Stay updated with Traffic Torch news: SEO tool help guides, educational posts, audit tool and development process, how to improve seo and UX turorials." />
-<meta name="twitter:image" content="https://traffictorch.net/blog/images/featured.webp" />
+    <meta name="description" content="Stay updated with Traffic Torch news: SEO tool help guides, educational posts, audit tool and development process, how to improve seo and UX turorials.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://traffictorch.net/news/">
+<meta property="og:title" content="Traffic Torch News and AI SEO & UX Development Updates">
+<meta property="og:description" content="Stay updated with Traffic Torch news: SEO tool help guides, educational posts, audit tool and development process, how to improve seo and UX turorials.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://traffictorch.net/news/">
+<meta property="og:image" content="https://traffictorch.net/blog/images/featured.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Traffic Torch">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Traffic Torch News – AI SEO & UX Updates">
+<meta name="twitter:description" content="Stay updated with Traffic Torch news: SEO tool help guides, educational posts, audit tool and development process, how to improve seo and UX turorials.">
+<meta name="twitter:image" content="https://traffictorch.net/blog/images/featured.webp">
 <!-- Structured Data (JSON-LD) -->
 <script type="application/ld+json">
 {
@@ -112,8 +67,23 @@
   "url": "https://traffictorch.net/",
   "logo": "https://traffictorch.net/logo-512.webp",
   "sameAs": [
-    "https://twitter.com/guitaralize"
-  ]
+         "https://g.dev/traffictorch",
+         "https://github.com/traffictorch/",
+         "https://orcid.org/0009-0006-4084-0241",
+         "https://www.wikidata.org/wiki/Q139815165",
+         "https://zenodo.org/records/20149616",
+         "https://github.com/traffictorch/traffic-torch",
+         "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+         "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+         "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+         "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+         "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+         "https://www.framer.com/marketplace/plugins/traffic-torch/",
+         "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+         "https://github.com/marketplace/actions/traffic-torch-audit",
+         "https://www.linkedin.com/in/ylia-callan-8b889976/",
+         "https://x.com/Guitaralize"
+     ]
 }
 </script>
 
@@ -142,21 +112,17 @@
     <!-- Theme Color -->
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
-  <!-- Referrer Policy (security + privacy best practice) -->
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <!-- security headers -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
 
   <!-- hreflang -->
-<link rel="alternate" hreflang="en" href="https://traffictorch.net/news/" />
-<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/news/" />
-  <link rel="icon" href="/favicon.ico" />
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/news/">
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/news/">
+  <link rel="icon" href="/favicon.ico">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
   <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
   <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
   <meta name="apple-mobile-web-app-title" content="Torch">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
@@ -164,14 +130,17 @@
   <link rel="preconnect" href="https://static.cloudflareinsights.com">
 
   <!-- Preload critical CSS -->
-  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link rel="stylesheet" href="/style-v1.0.css">
+    <link rel="stylesheet" href="/style.css?v=1.0">
   </noscript>
 
-  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
-  <!-- Tailwind output – comes last so utilities can override -->
-  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
+  </noscript>
 
   <script>
     // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
@@ -185,7 +154,6 @@
       }
     })();
   </script>
-      <link rel="preconnect" href="https://traffictorch.net" crossorigin>
 
 </head>
 
@@ -204,38 +172,7 @@
         </a>
       </div>
 <!-- Menu Items -->
-      <nav class="p-6 space-y-4 flex-1">
-        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
-        </a>
-        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
-        </a>
-        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
-        </a>
-        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
-        </a>
-        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
-        </a>
-        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
-        </a>
-        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
-        </a>
-        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
-        </a>
-        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
-        </a>
-        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
-        </a>
-      </nav>
+<div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
       <!-- Collapse/Expand Button - Always visible -->
       <div class="p-4 border-t border-white/10 dark:border-white/5">
         <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
@@ -274,21 +211,7 @@
           <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
 			  ×
 			</button>
-          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
-            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
-              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
-              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
-              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
-              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
-              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
-              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
-              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
-              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
-              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
-              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
-            </div>
-          </nav>
+<div id="mobile-menu-placeholder"></div>
         </div>
       </header>
 
@@ -300,13 +223,299 @@
       Traffic Torch News
     </h1>
     <p class="text-center text-xl text-gray-800 dark:text-gray-200 mb-16 max-w-3xl mx-auto">
-      Latest updates on SEO, UX, AI tools, help guides and behind-the-scenes development.
+      Latest updates on SEO, GEO, AEO & UX tools, insights, help guides and behind-the-scenes development.
     </p>
 </div>
     
 <div class="grid gap-12">
+      
+<!-- ====== DYNAMIC NEWS FEED (text‑only) ====== -->
+<section class="container section-spacing" style="padding-top:1rem;">
+  <div class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl p-6 md:p-10 border border-white/10 dark:border-white/5">
+    <h2 style="font-size:1.75rem; font-weight:700; margin-bottom:0.25rem; background: linear-gradient(to right, #f97316, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">
+      Latest Updates
+    </h2>
+    <p style="color:var(--text-secondary, #6b7280); margin-bottom:1.5rem;">Fresh posts from the research team.</p>
 
-      <!-- Latest Post -->
+    <div id="news-list">
+      <p style="color:var(--text-muted, #9ca3af);">Loading posts…</p>
+    </div>
+  </div>
+</section>
+
+<!-- then your existing grid of old articles -->
+<div class="grid gap-12">
+  <!-- your existing <article> tags stay here -->
+</div>
+
+     <!--  Full Blog Posts -->
+     
+     <!-- Article: Traffic Torch Community Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/social-help-guide/" class="block">
+    <img
+      src="/blog/images/social/social-help-guide-640w.webp"
+      srcset="/blog/images/social/social-help-guide-640w.webp 640w,
+              /blog/images/social/social-help-guide-1200w.webp 1200w"
+      sizes="(max-width: 640px) 640px, 1200px"
+      alt="Traffic Torch Community Help Guide – How to post torches, build a profile, connect with other SEOs, earn points, and climb the leaderboard"
+      class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+      loading="lazy"
+      decoding="async"
+      width="640"
+      height="336">
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Traffic Torch Community Help Guide – Torches, Profiles, Leaderboard &amp; Network
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete guide to the Traffic Torch community: post audit torches, build a public profile, connect with other SEOs, earn points, climb the leaderboard, and subscribe via RSS.
+      </p>
+    </div>
+  </a>
+</article>
+     
+<!-- Article: NUSA Tool Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/nusa-tool-help-guide/" class="block">
+    <picture class="block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/nusa-tool/nusa-dashboard-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/nusa-tool/nusa-dashboard-1200w.webp">
+      <img
+        src="/blog/images/nusa-tool/nusa-dashboard-1200w.webp"
+        alt="NUSA Tool Help Guide – Complete walkthrough of the NUSA three-in-one audit: Quit Risk, Lighthouse Plus, and AEO Performance"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="lazy"
+        decoding="async"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        NUSA Tool Help Guide – Quit Risk, Lighthouse Plus &amp; AEO Performance
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete guide to the NUSA tool: run three audits in one click. Learn how to interpret Quit Risk, Lighthouse Plus and AEO Performance scores, connect GA4/GSC, and get AI-driven fixes.
+      </p>
+    </div>
+  </a>
+</article>
+
+<!-- Article: Pro Dashboard, OFUX & Ask AI Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/" class="block">
+    <picture class="block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/dashboard-ofux-ask-ai/pro-dashboard-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/dashboard-ofux-ask-ai/pro-dashboard-1200w.webp">
+      <img
+        src="/blog/images/dashboard-ofux-ask-ai/pro-dashboard-1200w.webp"
+        alt="Pro Dashboard, OFUX & Ask AI Help Guide – Complete walkthrough of Traffic Torch's new dashboard, all-in-one OFUX audit, and AI-powered assistant"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="lazy"
+        decoding="async"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Pro Dashboard, OFUX &amp; Ask AI Help Guide
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete guide to Traffic Torch's new dashboard, OFUX all-in-one audit, and Ask Traffic Torch AI. Learn how to use analytics, connect GA4/GSC, and get AI-driven fixes.
+      </p>
+    </div>
+  </a>
+</article>
+
+<!-- Article: Lighthouse Plus Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/lighthouse-plus-help-guide/" class="block">
+    <picture class="block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/lighthouse-plus/lighthouse-plus-help-guide-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/lighthouse-plus/lighthouse-plus-help-guide-1200w.webp">
+      <img
+        src="/blog/images/lighthouse-plus/lighthouse-plus-help-guide-1200w.webp"
+        alt="Lighthouse Plus Help Guide 2026 – The 10 modules that decide whether your page performs for humans and is ready for AI agents"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="lazy"
+        decoding="async"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Lighthouse Plus Help Guide 2026
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete 2026 guide to Lighthouse Plus: the 10 modules that decide whether a page performs for humans and is ready for AI agents — Core Web Vitals, Accessibility, PWA, Resource Optimisation, Mobile UX, Agentic Browsing and more.
+      </p>
+    </div>
+  </a>
+</article>
+
+<!-- Article: AEO Performance Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/aeo-performance-help-guide/" class="block">
+    <picture class="block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/aeo-performance/aeo-performance-help-guide-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/aeo-performance/aeo-performance-help-guide-1200w.webp">
+      <img
+        src="/blog/images/aeo-performance/aeo-performance-help-guide-1200w.webp"
+        alt="AEO Performance Help Guide 2026 – The 9 modules that decide whether AI crawlers can render, parse, and extract your content"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="lazy"
+        decoding="async"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        AEO Performance Help Guide 2026
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete 2026 guide to AEO and GEO performance: the 9 modules that decide whether AI crawlers and answer engines can crawl, render, parse, and extract your content.
+      </p>
+    </div>
+  </a>
+</article>
+
+<!-- Article: How to Build a Roach Startup for Near Zero -->     
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/roach-startup-help-guide/" class="block">
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/roach-startup-help-guide/roach-startup-guide-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/roach-startup-help-guide/roach-startup-guide-1200w.webp">
+  <img 
+    src="/blog/images/roach-startup-help-guide/roach-startup-guide-1200w.webp" 
+    alt="Cyberpunk cockroach sheriff riding unicorn with green traffic light - Traffic Torch Roach Startup Guide" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+  </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        How to Build a Roach Startup for Near Zero
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+      The Aussie story of building Traffic Torch - a lean, resilient, privacy-first SEO &amp; UX toolkit in six months for basically the cost of a domain name.
+    </p>
+    </div>
+  </a>
+</article>
+
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/research/traffic-torch-whitepaper/" class="block">
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/research/traffic-torch-whitepaper/images/traffic-torch-whitepaper-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/research/traffic-torch-whitepaper/images/traffic-torch-whitepaper-1200w.webp">
+  <img 
+    src="/research/traffic-torch-whitepaper/images/traffic-torch-whitepaper-1200w.webp" 
+    alt="Traffic Torch Whitepaper – AI SEO privacy-first diagnostics and Cooperative Search Optimization"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+  </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Traffic Torch Whitepaper
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+      Download the definitive whitepaper on transitioning to AI SEO with Traffic Torch - privacy-first diagnostics and Cooperative Search Optimization.
+    </p>
+    </div>
+  </a>
+</article>
+      
+ <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/topical-authority-help-guide/" class="block">
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/topical-authority-help-guide/topical-authority-help-guide-640x336.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/topical-authority-help-guide/topical-authority-help-guide-1200w.webp">
+  <img 
+    src="/blog/images/topical-authority-help-guide/topical-authority-help-guide-1200w.webp" 
+    alt="Topical Authority Help Guide – Build Stronger Topical Depth, Subtopic Coverage, E-E-A-T Signals & Content Clusters | Traffic Torch"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+  </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Topical Authority Help Guide
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+      Complete guide to topical authority: what it is, how search engines & AI apps test it, why subtopic depth beats keywords, and how Traffic Torch audits gaps to help you build stronger authority across Google, Bing & Perplexity.
+    </p>
+    </div>
+  </a>
+</article>
+      
+
+ <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/semantic-entity-help-guide/" class="block">
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-banner-640x336.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp">
+  <img 
+    src="/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp" 
+	alt="Semantic Entity Optimization Guide – Traffic Torch Entity Extractor Audit: Coverage, Salience, Relationships, Practices, Readiness, SEO Entities Analysis"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+  </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Semantic Entity Optimization Help Guide
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+      How to boost modern SEO, local/geo visibility, and answer engine results. Discover how Traffic Torch’s Entity Extractor audits your page across six key semantic layers and the highest-ROI optimizations you can apply today.
+    </p>
+    </div>
+  </a>
+</article>
       
  <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
   <a href="/blog/posts/ai-voice-search-help-guide/" class="block">
@@ -321,7 +530,7 @@
     src="/blog/images/ai-voice-search-help-guide/ai-voice-search-help-guide-1200w.webp"
     alt="2026 AI Voice Search Optimization Guide – Conversational SEO, Featured Snippets, Schema Markup – Traffic Torch"
     class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/720] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
-    loading="eager"
+    loading="lazy"
     decoding="async"
     fetchpriority="high"
     width="1200"
@@ -609,7 +818,7 @@
       </article>
       
               <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-        <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide.html" class="block">
+        <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/" class="block">
 <picture class="mb-12 block">
   <source 
     media="(max-width: 640px)" 
@@ -638,7 +847,7 @@
       </article>
       
         <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-        <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide.html" class="block">
+        <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide/" class="block">
 <picture class="mb-12 block">
   <source 
     media="(max-width: 640px)" 
@@ -668,7 +877,7 @@
 
       
       <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-        <a href="/blog/posts/developing-traffic-torch-tools.html" class="block">
+        <a href="/blog/posts/developing-traffic-torch-tools/" class="block">
   <picture class="mb-12 block">
   <source 
     media="(max-width: 640px)" 
@@ -699,7 +908,7 @@
 
       <!-- Oldest Post -->
       <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
-        <a href="/blog/posts/traffic-torch-seo-ux-analysis-tool-build.html" class="block">
+        <a href="/blog/posts/traffic-torch-seo-ux-analysis-tool-build/" class="block">
   <picture class="mb-12 block">
   <source 
     media="(max-width: 640px)" 
@@ -726,28 +935,66 @@
           </div>
         </a>
       </article>
+      
+            
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/ubi-is-coming/" class="block">
+    <!-- SVG Hero (replaces picture) -->
+    <div class="w-full aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] bg-gradient-to-br from-orange-500/20 to-pink-600/20 flex items-center justify-center p-8">
+      <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full max-h-[60vh]">
+        <!-- Background pattern (subtle) -->
+        <defs>
+          <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f97316" stop-opacity="0.2" />
+            <stop offset="100%" stop-color="#ec4899" stop-opacity="0.2" />
+          </linearGradient>
+          <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f97316" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#ec4899" stop-opacity="0.8" />
+          </linearGradient>
+        </defs>
+        <rect width="800" height="400" fill="url(#g1)" rx="20" />
+        <!-- Coin with rising arrow -->
+        <circle cx="400" cy="200" r="100" fill="#1f2937" stroke="url(#g2)" stroke-width="6" />
+        <circle cx="400" cy="200" r="80" fill="#111827" />
+        <!-- Dollar sign -->
+        <text x="400" y="230" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="url(#g2)" text-anchor="middle" dominant-baseline="central">$</text>
+        <!-- Rising arrow -->
+        <path d="M300 300 L400 180 L500 300" fill="none" stroke="url(#g2)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+        <polygon points="400,160 390,190 410,190" fill="url(#g2)" />
+        <!-- UBI text -->
+        <text x="400" y="340" font-family="Arial, sans-serif" font-size="50" font-weight="bold" fill="#f97316" text-anchor="middle" letter-spacing="8">UBI</text>
+        <text x="400" y="380" font-family="Arial, sans-serif" font-size="24" fill="#ec4899" text-anchor="middle" letter-spacing="2">PRODUCTIVITY DIVIDEND</text>
+        <!-- Small sparkles -->
+        <circle cx="200" cy="120" r="8" fill="#f97316" opacity="0.6" />
+        <circle cx="600" cy="100" r="10" fill="#ec4899" opacity="0.6" />
+        <circle cx="180" cy="300" r="6" fill="#f97316" opacity="0.5" />
+        <circle cx="620" cy="280" r="7" fill="#ec4899" opacity="0.5" />
+      </svg>
+    </div>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Universal Basic Income (UBI) is Coming
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        UBI funded by AI productivity. The Productivity Dividend pays citizens, stabilises government, and rewards investors. Here's how the future can actually work.
+      </p>
+    </div>
+  </a>
+</article>
 
     </div>
     
     </section>
-
-<!-- Share Buttons -->
-<div class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_pinterest"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_facebook"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
+    
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
 
 <!-- Breadcrumbs – semantic & detectable by analyzer -->
 <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
@@ -773,7 +1020,7 @@
 <!-- Last Update Date -->
 <div class="max-w-5xl mx-auto px-6 py-4 text-center">
   <p class="text-sm text-gray-500 dark:text-gray-400">
-    Last updated: <span>2026-01-30</span>
+    Last updated: <span>2026-05-19</span>
   </p>
 </div>
 
@@ -789,6 +1036,52 @@
 </div>
 </div>
     
-<script src="/main-v1.1.js" type="module"></script>
+<script src="/main.js?v=1.2" type="module"></script>
+<script type="module" src="/shared/google-analytics.js"></script>
+
+<script>
+  (function() {
+    const container = document.getElementById('news-list');
+    if (!container) return;
+
+    fetch('/blog/posts/posts.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Network error');
+        return res.json();
+      })
+      .then(posts => {
+        if (!posts || posts.length === 0) {
+          container.innerHTML = '<p style="color:var(--text-muted, #9ca3af);">No posts yet.</p>';
+          return;
+        }
+
+        // Sort by date descending (newest first)
+        posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        let html = '<div style="display:flex; flex-direction:column; gap:1.25rem;">';
+        posts.forEach(post => {
+          html += `
+            <div style="padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+              <a href="/blog/posts/${post.slug}/" style="text-decoration:none; display:block;">
+                <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary, #111827); margin-bottom:0.25rem; transition:color 0.2s;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color=''">
+                  ${post.title}
+                </h3>
+                <p style="color:var(--text-secondary, #6b7280); font-size:0.95rem; margin:0 0 0.25rem 0;">${post.excerpt}</p>
+                <time style="font-size:0.8rem; color:var(--text-muted, #9ca3af);">${post.date}</time>
+              </a>
+            </div>
+          `;
+        });
+        html += '</div>';
+
+        container.innerHTML = html;
+      })
+      .catch(err => {
+        container.innerHTML = '<p style="color:var(--text-muted, #9ca3af);">Could not load updates. Please try again later.</p>';
+        console.warn('Feed fetch error:', err);
+      });
+  })();
+</script>
+  
 </body>
 </html>

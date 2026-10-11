@@ -22,7 +22,6 @@ async function fetchPageHtml(url) {
     resp = await fetch(fetchUrl);
     if (resp.ok) {
       html = await resp.text();
-      console.log('Used advanced rendering for better accuracy');
       // Optional: UI toast "JS-heavy site detected – full render applied"
     }
   }

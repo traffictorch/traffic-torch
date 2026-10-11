@@ -101,7 +101,6 @@ export function prettyJsonLd(jsonLd) {
   try {
     return JSON.stringify(cleanJsonLd(jsonLd), null, 2);
   } catch (err) {
-    console.error('JSON stringify failed:', err);
     return '// Error generating preview';
   }
 }

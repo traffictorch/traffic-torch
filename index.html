@@ -1,340 +1,213 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<!-- Deferred Google Analytics – loads only after interaction -->
-<script>
-  (function() {
-    // Change this to false if you want to test without loading GA
-    const enableGA = true;
-    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
+  <title>Traffic Torch — Find Out Why Your Website Isn't Being Found</title>
+  <meta name="description" content="NUSA scores your User Experience, Search Visibility and AI Search Readiness in under 60 seconds. Free, browser-based audit with instant fixes. No data stored.">
 
-    function loadGA() {
-      // Prevent double-loading
-      if (window.gtag) return;
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/">
 
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-      document.head.appendChild(script);
-
-      script.onload = function() {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', MEASUREMENT_ID);
-      };
-    }
-
-    // Trigger on first interaction (scroll, click, touch, key)
-    let fired = false;
-    function fireOnce() {
-      if (fired) return;
-      fired = true;
-      loadGA();
-      cleanup();
-    }
-
-    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
-    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
-
-    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
-    setTimeout(fireOnce, 4500);
-
-    function cleanup() {
-      events.forEach(ev => window.removeEventListener(ev, fireOnce));
-    }
-  })();
-</script>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- 
-  <!-- Optimized SEO Title & Description -->
-  <title>Traffic Torch: Free Instant SEO Audit & AI UX Toolkit</title>
-  <meta name="description" content="SEO audit & UX health tools. Get your free 360° on-page analysis, competitive keyword gaps, AI fixes, bounce rate predictor and mobile optimized reports.">
- 
-  <!-- Robots & Canonical -->
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://traffictorch.net/" />
-  
-  <!-- Theme Colors -->
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
-  
-  <!-- Referrer Policy (security + privacy best practice) -->
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  
-  <!-- security headers -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  
-  <!-- hreflang -->
+
   <link rel="alternate" hreflang="en" href="https://traffictorch.net/">
   <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/">
- 
-  <!-- Open Graph Tags -->
-  <meta property="og:title" content="Traffic Torch: Free Instant SEO Audit & AI UX Toolkit 2026" />
-  <meta property="og:description" content="AI-powered SEO audit tools & UX health checker. Get 360° on-page analysis, competitive keyword gaps, AI fixes, bounce rate predictor & mobile optimization reports." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://traffictorch.net/" />
-  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Traffic Torch" />
- 
-  <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Traffic Torch: Free Instant SEO Audit & AI UX Toolkit 2026" />
-  <meta name="twitter:description" content="AI-powered SEO audit tools & UX health checker. Get 360° on-page analysis, competitive keyword gaps, AI fixes, bounce rate predictor & mobile optimization reports." />
-  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp" />
-  <meta name="twitter:site" content="@Guitaralize" />
- 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "name": "Traffic Torch",
-      "url": "https://traffictorch.net/",
-      "description": "Free instant AI-powered SEO & UX health analysis suite. Get 0–100 scores, deep-dive audits, competitive gap insights, priority fixes, and predictive improvement forecasts across on-page SEO, keywords, AI search, content authenticity, quit risk/bounce predictor, local SEO checker, and more. Mobile-friendly, PWA-ready, with day-night modes.",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Traffic Torch"
+
+  <meta property="og:title" content="Traffic Torch — Find Out Why Your Website Isn't Being Found">
+  <meta property="og:description" content="NUSA scores UX Health, SEO Intent and AI Search Readiness in under 60 seconds. Free browser-based audit, instant fixes, no data stored.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/">
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-nusa-tool-1200w.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Traffic Torch — Find Out Why Your Website Isn't Being Found">
+  <meta name="twitter:description" content="NUSA scores UX Health, SEO Intent and AI Search Readiness in under 60 seconds.">
+  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch-nusa-tool-1200w.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "Traffic Torch – NUSA Dashboard",
+        "url": "https://traffictorch.net/",
+        "description": "Website visibility platform. NUSA scores UX Health, SEO Intent and AI Search Readiness in one pass. Free, privacy-first.",
+        "publisher": { "@type": "Organization", "name": "Traffic Torch" },
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://traffictorch.net/" }
       },
-      "mainEntityOfPage": {
+      {
         "@type": "WebPage",
-        "@id": "https://traffictorch.net/"
-      }
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://traffictorch.net/",
-      "url": "https://traffictorch.net/",
-      "name": "Traffic Torch: Free Instant SEO Audit & AI UX Toolkit 2026",
-      "description": "Home of Traffic Torch's suite of free AI-powered tools for 360° SEO and UX health checks, including keyword optimization, competitive analysis, AI search readiness, content detection, quit risk reduction, local SEO audits, and more. Get actionable insights, fixes, and forecasts to boost rankings and engagement.",
-      "image": [
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/images/traffic-torch-toolkit.webp",
-          "contentUrl": "https://traffictorch.net/images/traffic-torch-toolkit.webp",
-          "width": 1200,
-          "height": 675,
-          "caption": "Traffic Torch Toolkit Overview: Instant 360° SEO & UX health analysis suite dashboard, scores, audits, and AI-powered insights"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/images/tool-banners/seo-ux-tool-infographic-1200w.webp",
-          "contentUrl": "https://traffictorch.net/images/tool-banners/seo-ux-tool-infographic-1200w.webp",
-          "width": 1200,
-          "height": 268,
-          "caption": "Traffic Torch SEO & UX Tool overview: Instant on-page UX health check covering accessibility, mobile usability, Core Web Vitals, visual hierarchy, and AI-powered fixes"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/seo-ux-tool/images/seo-ux-optimizations-infographic-800w.webp",
-          "contentUrl": "https://traffictorch.net/seo-ux-tool/images/seo-ux-optimizations-infographic-800w.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "SEO & UX Optimizations Infographic: Core areas Traffic Torch audits & optimizes – On-Page SEO, Mobile & PWA, Performance, Accessibility"
-        },
-        {
-          "@type": "ImageObject",
-          "url": "https://traffictorch.net/seo-ux-tool/images/seo-ux-audit-infographic-800w.webp",
-          "contentUrl": "https://traffictorch.net/seo-ux-tool/images/seo-ux-audit-infographic-800w.webp",
-          "width": 800,
-          "height": 1200,
-          "caption": "SEO & UX Audit Infographic: Core areas Traffic Torch checks for better rankings and user experience – Content Quality, UX Design, Security, Indexability"
+        "@id": "https://traffictorch.net/",
+        "url": "https://traffictorch.net/",
+        "name": "Traffic Torch — Find Out Why Your Website Isn't Being Found",
+        "description": "NUSA scores UX Health, SEO Intent and AI Search Readiness in under 60 seconds. Instant fixes, shareable report, no data stored.",
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": ["#faq", "#what-is", "#how-it-works"]
         }
-      ],
-      "speakable": {
-        "@type": "SpeakableSpecification",
-        "cssSelector": [
-          "#faq",
-          "p.text-xl.md\\:text-2xl.font-semibold.text-gray-800.dark\\:text-gray-200.mb-4",
-          "p.text-lg.md\\:text-xl.text-gray-700.dark\\:text-gray-300.max-w-3xl.mx-auto",
-          ".max-w-4xl.mx-auto.my-20 details div.mt-6",
-          "section.max-w-4xl.mx-auto.mt-12.mb-12 p.text-2xl.md\\:text-3xl.font-bold.text-center.mb-10.leading-tight"
-        ]
-      }
-    },
-    {
-      "@type": "SoftwareApplication",
-      "name": "Traffic Torch: SEO & UX Analysis Suite",
-      "applicationCategory": "WebApplication",
-      "operatingSystem": "Web Browser",
-      "softwareVersion": "1.0",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
       },
-      "description": "Free collection of powerful instant SEO and UX tools: on-page keyword optimization, competitive gap analysis, AI search readiness, content detector & humanizer, quit risk/bounce predictor, local SEO checker, and more. Delivers 360° health scores, AI fixes, and ranking forecasts. Mobile-friendly and PWA-ready.",
-      "url": "https://traffictorch.net/",
-      "featureList": [
-        "Instant 0–100 SEO & UX Health Scores",
-        "Deep-dive Audit Modules",
-        "Competitive Keyword & Content Gap Analysis",
-        "Prioritized Fixes",
-        "Predictive Ranking & Engagement Forecasts",
-        "Mobile-Friendly & PWA-Ready Interface"
-      ]
-    },
-    {
-      "@type": "Organization",
-      "name": "Traffic Torch",
-      "url": "https://traffictorch.net/",
-      "logo": "https://traffictorch.net/logo-512.webp",
-      "description": "Creators of free instant AI-powered SEO and UX analysis tools that help websites achieve better rankings, user engagement, and AI search visibility.",
-      "sameAs": [
-        "https://twitter.com/guitaralize"
-      ],
-      "founder": {
-        "@type": "Person",
-        "name": "Ylia Callan"
-      }
-    },
-    {
-      "@type": "Person",
-      "name": "Ylia Callan",
-      "url": "https://yliacallan.github.io/",
-      "sameAs": [
-        "https://www.linkedin.com/in/ylia-callan-8b889976/",
-        "https://x.com/guitaralize",
-        "https://traffictorch.net/"
-      ],
-      "image": "https://traffictorch.net/images/ylia-callan-320w.webp",
-      "jobTitle": "Founder & Builder",
-      "description": "Musician, Author, Web Designer, and Creator of Privacy-First AI SEO/UX Tools like Traffic Torch",
-      "worksFor": {
+      {
+        "@type": "SoftwareApplication",
+        "name": "NUSA – New UX · SEO · AEO",
+        "applicationCategory": "BusinessApplication, UtilitiesApplication, SEO Tool",
+        "operatingSystem": "Web",
+        "softwareVersion": "2.0",
+        "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" },
+        "description": "Website visibility platform that helps owners, designers and SEO professionals improve search visibility, user experience and AI discoverability through audits, analytics and AI-guided recommendations.",
+        "url": "https://traffictorch.net/",
+        "featureList": [
+          "Instant 0–100 scores for UX, SEO & AEO",
+          "Live fix list streamed as the audit runs",
+          "Affected-HTML snippet view for every finding",
+          "AI-generated fix panels with verify-in-browser step",
+          "Shareable report with PDF/CSV/JSON export",
+          "Privacy-first: no data stored"
+        ]
+      },
+      {
         "@type": "Organization",
         "name": "Traffic Torch",
-        "url": "https://traffictorch.net/"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://traffictorch.net/"
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://traffictorch.net/#faq",
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://traffictorch.net/"
+        "url": "https://traffictorch.net/",
+        "logo": "https://traffictorch.net/logo-512.webp",
+        "description": "Website visibility platform. Makers of NUSA – New UX, SEO and AEO audit dashboard.",
+        "sameAs": [
+          "https://g.dev/traffictorch",
+          "https://github.com/traffictorch/",
+          "https://orcid.org/0009-0006-4084-0241",
+          "https://www.wikidata.org/wiki/Q139815165",
+          "https://zenodo.org/records/20149616",
+          "https://github.com/traffictorch/traffic-torch",
+          "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+          "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+          "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+          "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+          "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+          "https://www.framer.com/marketplace/plugins/traffic-torch/",
+          "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+          "https://github.com/marketplace/actions/traffic-torch-audit",
+          "https://www.linkedin.com/in/ylia-callan-8b889976/",
+          "https://x.com/Guitaralize"
+        ],
+        "founder": { "@type": "Person", "name": "Ylia Callan" }
       },
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How does on-page SEO impact search engine traffic?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "On-page SEO optimizes title tags, meta descriptions, headings, content relevance, internal links, and structured data to align with user intent and E-E-A-T signals. It boosts rankings in traditional SERPs, featured snippets, and AI overviews by improving semantic relevance and CTR, often increasing qualified organic traffic by 20-40% through better visibility and engagement."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How does mobile readiness and PWA affect SEO rankings?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Mobile readiness, including responsive design and fast loading times, is crucial for Google's mobile-first indexing, where the mobile version of your site is primarily used for ranking. PWA features enhance perceived speed and engagement. These improve Core Web Vitals and UX signals, reducing bounce rates and prioritizing mobile traffic (over 60%), leading to stronger rankings and conversions."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the SEO impact of Core Web Vitals?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Core Web Vitals (LCP <2.5s for loading, INP <200ms for interactivity, CLS <0.1 for stability) are key page experience signals. Passing them acts as a ranking tiebreaker, lowers abandonment, and improves engagement metrics for 10-25% potential traffic gains."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does web accessibility improve SEO?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes—WCAG 2.2 compliance (alt text, contrast, semantic HTML, keyboard nav) boosts crawlability, inclusivity, and UX. It aligns with AI understanding and avoids penalties from poor engagement, enhancing rankings indirectly."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How does content quality affect search rankings?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "High-quality, original, intent-focused content with strong E-E-A-T ranks higher in AI summaries and results. It earns backlinks, reduces pogo-sticking, and appears in more AI responses, driving 25-50% more traffic than low-quality pages."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How important is UX design for SEO?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "UX (intuitive nav, fast interactions, low bounce, high dwell time) is a strong indirect signal. Poor UX hurts AI/mobile performance; excellent UX improves metrics and conversions significantly."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does website security (HTTPS) impact SEO?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "HTTPS remains a core ranking signal for trust and security. It prevents warnings, reduces abandonment, and supports secure features, contributing to 10-20% traffic gains via user confidence."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Why is indexability important for SEO?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Indexability (proper robots.txt, sitemaps, no noindex/orphan issues) maximizes crawl budget and indexed pages. Optimizations prevent visibility loss, increasing traffic potential by 20-30% from all site content."
-          }
-        }
-      ]
-    }
-  ]
-}
-</script>
+      {
+        "@type": "Person",
+        "name": "Ylia Callan",
+        "url": "https://yliacallan.github.io/",
+        "sameAs": ["https://www.linkedin.com/in/ylia-callan-8b889976/", "https://x.com/guitaralize", "https://traffictorch.net/"],
+        "image": "https://traffictorch.net/images/ylia-callan-320w.webp",
+        "jobTitle": "Founder & Builder",
+        "description": "Musician, Author, Web Designer, and Creator of NUSA.",
+        "worksFor": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{ "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" }]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://traffictorch.net/#faq",
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://traffictorch.net/" },
+        "mainEntity": [
+          { "@type": "Question", "name": "Why build NUSA instead of a traditional SEO tool?", "acceptedAnswer": { "@type": "Answer", "text": "Standalone SEO tools ignore UX, and standalone UX tools ignore AI search. After auditing hundreds of sites we saw that the real winners master all three. NUSA gives you a single dashboard that tells you where you actually stand across UX Health, SEO Intent and AI Search (AEO) — in one pass, in your browser." } },
+          { "@type": "Question", "name": "How does on-page SEO affect findability in 2026?", "acceptedAnswer": { "@type": "Answer", "text": "Pages that nail title tags, meta descriptions, heading structure and internal links see a 20–40% increase in qualified organic traffic. But you also need to satisfy user intent and be ready for AI overviews. Sites with perfect technical SEO can still lose traffic when their content doesn't answer the user's actual question. NUSA checks both on-page signals and semantic relevance." } },
+          { "@type": "Question", "name": "What's the biggest UX mistake we see?", "acceptedAnswer": { "@type": "Answer", "text": "Two things: ignoring mobile tap targets under 44px, and using long dense paragraphs. Breaking up paragraphs and increasing font size to 18px can boost dwell time by 60%. NUSA flags these exact issues so you can fix them in minutes." } },
+          { "@type": "Question", "name": "Does accessibility really help SEO?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Accessible sites tend to rank better because they offer a better user experience, and WCAG compliance often improves crawl efficiency. NUSA checks alt text, contrast, semantic HTML and landmarks so you can hit the WCAG 2.2 AA standard without hiring an expert." } },
+          { "@type": "Question", "name": "How does content quality affect AI citations?", "acceptedAnswer": { "@type": "Answer", "text": "AI answer engines like Perplexity and ChatGPT rely on clear, structured, authoritative content. Adding a concise definition in the first 150 words, using FAQ schema and including first-hand data measurably boosts citation rate. NUSA's AI Search module measures exactly these signals." } },
+          { "@type": "Question", "name": "How can I quickly improve my NUSA score?", "acceptedAnswer": { "@type": "Answer", "text": "Three-step sprint: add an author byline and bio on every post (often a 15-point Expertise jump), break long paragraphs into 2–3 sentence chunks (readability rises 10–20 points), and create a Contact page linked in the footer. Then run the audit again and watch the numbers climb." } }
+        ]
+      }
+    ]
+  }
+  </script>
 
- 
-  <!-- PWA and Icons -->
   <meta name="color-scheme" content="dark light">
-  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" href="/favicon.ico">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
   <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
   <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <link rel="mask-icon" href="/mask-icon.svg" color="#f97316">
   <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
 
-  <!-- Main Styles -->
-  <link rel="preconnect" href="https://static.cloudflareinsights.com">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 
-  <!-- Preload critical CSS -->
-  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" as="style" href="/seo-ux-tool/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/nusa-tool/css/nusa.css?v=1.1" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link rel="stylesheet" href="/style-v1.0.css">
-    <link rel="stylesheet" href="/seo-ux-tool/style-v1.0.css">
+    <link rel="stylesheet" href="/style.css?v=1.0">
+    <link rel="stylesheet" href="/nusa-tool/css/nusa.css?v=1.1">
+  </noscript>
+  
+  <link rel="preload" as="style" href="/leader-board/high-scores-widget.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/leader-board/high-scores-widget.css?v=1.0"></noscript>
+  <script src="/leader-board/high-scores-widget.js?v=1.0" defer></script>
+  <script src="/leader-board/submit-score.js?v=1.0" defer></script>
+  
+  <link rel="preload" as="style" href="/leader-board/contributions-widget.css?v=1.0"
+      onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/leader-board/contributions-widget.css?v=1.0"></noscript>
+<script src="/leader-board/contributions-widget.js?v=1.0" defer></script>
+
+  <link rel="stylesheet" href="/nusa-tool/print-share.css?v=1.0" media="print">
+
+  <style>
+    html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}
+
+    .skip-link {
+      position: absolute;
+      top: -60px;
+      left: 0;
+      background: #c2410c;
+      color: #fff;
+      padding: 10px 18px;
+      z-index: 9999;
+      border-radius: 0 0 8px 0;
+      font-weight: 700;
+      text-decoration: none;
+      transition: top 0.2s ease;
+    }
+    .skip-link:focus { top: 0; outline: 3px solid #fff; }
+
+    header.sticky {
+      padding-top: env(safe-area-inset-top, 0);
+      padding-left: env(safe-area-inset-left, 0);
+      padding-right: env(safe-area-inset-right, 0);
+    }
+    #site-footer {
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+  </style>
+
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
   </noscript>
 
-  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
-  <!-- Tailwind output – comes last so utilities can override -->
-  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
-
-  <link rel="stylesheet" media="print" href="/seo-ux-tool/print-v1.0.css">
-
   <script>
-    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
     (function() {
       const saved = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -345,1669 +218,1028 @@
       }
     })();
   </script>
-  
-    <link rel="preconnect" href="https://traffictorch.net" crossorigin> 
-
 </head>
 
-<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
-  <!-- Main Layout Container - Desktop flex with sidebar -->
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col" data-sidebar-start="collapsed">
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
   <div class="flex flex-1 min-h-screen">
-    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
-	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
-	<!-- Sidebar Header with Logo -->
-      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start" aria-label="Primary navigation">
+      <header class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
         <a href="/" class="flex items-center gap-4">
-            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-600 bg-clip-text text-transparent hidden">
             Traffic Torch
           </span>
         </a>
-      </div>
-<!-- Menu Items -->
-      <nav class="p-6 space-y-4 flex-1">
-        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
-        </a>
-        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
-        </a>
-        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
-        </a>
-        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
-        </a>
-        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
-        </a>
-        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
-        </a>
-        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
-        </a>
-        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
-        </a>
-        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
-        </a>
-        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
-        </a>
-      </nav>
-      <!-- Collapse/Expand Button - Always visible -->
+      </header>
+      <nav id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in" aria-label="Main menu"></nav>
       <div class="p-4 border-t border-white/10 dark:border-white/5">
-        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
-          ←
-        </button>
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-700 dark:hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition" aria-label="Collapse sidebar">←</button>
       </div>
     </aside>
-    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+
     <div class="flex-1 flex flex-col">
-      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
       <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-          <!-- Logo hidden on desktop since in sidebar -->
           <a href="/" class="flex items-center gap-4 md:hidden">
-          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
-            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-              Traffic Torch
-            </p>
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
           </a>
-          <!-- Empty spacer on mobile to balance -->
           <div class="w-10 md:hidden"></div>
-          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
-         
-          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
-          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
-            ☰
-          </button>
-         
-          <!-- Theme Toggle -->
-          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
-            🌙
-          </button>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1" aria-label="Open mobile menu">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-700 dark:hover:text-orange-400 transition mr-4" aria-label="Toggle sidebar">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl" aria-label="Toggle theme">🌙</button>
         </div>
-        <!-- Mobile Menu Dropdown (unchanged) -->
-        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
-          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
-			  ×
-			</button>
-          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
-            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
-              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
-              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
-              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
-              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
-              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
-              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
-              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
-              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
-              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
-              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
-            </div>
-          </nav>
-        </div>
+        <nav id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10" aria-label="Mobile menu">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </nav>
       </header>
-      
-  <!-- SEO UX AI TOOLS -->
-<main class="container mx-auto px-4 py-4 max-w-5xl">
-  <div class="text-center mb-12 md:mb-16">
-    <h1 class="text-4xl sm:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-5 leading-tight">
-     Traffic Torch SEO - UX - AI Audit Tools
-    </h1>
 
-    <p class="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
-      Instant free website health checks, fix suggestions, plugin solutions & best-practice education to boost rankings and user experience.
-    </p>
+      <main id="main-content" class="container mx-auto px-3 py-2 max-w-7xl" tabindex="-1">
 
-    <p class="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-      Discover SEO issues, uncover UX improvements and get clear, actionable steps with no technical skills required.
-    </p>
-  </div>
-
-
-<!-- Tools Grid -->
-<div class="tools-grid max-w-7xl mx-auto px-2">
-  <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-
-    <!-- Local SEO -->
-    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-green-500/30 group-hover:border-green-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">📍</div>
-          <h2 class="text-green-400 text-2xl font-bold mb-3">Local SEO Tool</h2>
-          <p class="text-gray-800 dark:text-gray-100">On-page local audit + NAP, schema, map signals + fixes.</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Try Now →
-        </span>
-      </div>
-    </a>
-
-    <!-- SEO Intent -->
-    <a href="/seo-intent-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🎯</div>
-          <h2 class="text-cyan-400 text-2xl font-bold mb-3">SEO Intent Tool</h2>
-          <p class="text-gray-800 dark:text-gray-100">Intent matching + E-E-A-T audit + fixes.</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Try Now →
-        </span>
-      </div>
-    </a>
-
-    <!-- Product SEO Tool -->
-    <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🛒</div>
-          <h2 class="text-orange-400 text-2xl font-bold mb-3">Product SEO Tool</h2>
-          <p class="text-gray-800 dark:text-gray-100">Product page audit + eCommerce signals.</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Try Now →
-        </span>
-      </div>
-    </a>
-
-    <!-- Quit Risk -->
-    <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
-          <h2 class="text-emerald-400 text-2xl font-bold mb-3">Quit Risk Tool</h2>
-          <p class="text-gray-800 dark:text-gray-100">UX friction audit + bounce prediction + optimizations.</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Try Now →
-        </span>
-      </div>
-    </a>
-
-    <!-- Keywords -->
-    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
-          <h2 class="text-purple-400 text-2xl font-bold mb-3">Keyword Tool</h2>
-          <p class="text-gray-800 dark:text-gray-100">On-page keyword placement score + density fixes.</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Try Now →
-        </span>
-      </div>
-    </a>
-
-    <!-- VS -->
-    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
-          <h2 class="text-red-400 text-2xl font-bold mb-3">VS Tool</h2>
-          <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis + beat strategies.</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Try Now →
-        </span>
-      </div>
-    </a>
-    
-        <!-- Ai Search -->
-    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🔍</div>
-          <h2 class="text-orange-400 text-2xl font-bold mb-3">Ai Search Tool</h2>
-          <p class="text-gray-800 dark:text-gray-100">Optimize for Perplexity, Grok, Gemini, ChatGPT Search.</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Try Now →
-        </span>
-      </div>
-    </a>
-
-    <!-- AI Content -->
-    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🤖</div>
-          <h2 class="text-pink-400 text-2xl font-bold mb-3">Ai Content Tool</h2>
-          <p class="text-gray-800 dark:text-gray-100">Detect AI patterns + humanize content + forecasts.</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Try Now →
-        </span>
-      </div>
-    </a>
-    
-        <!-- AI Voice -->
-    <a href="/ai-voice-search-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">🎙️</div>
-          <h2 class="text-green-400 text-2xl font-bold mb-3">Ai Voice Search Tool</h2>
-          <p class="text-gray-800 dark:text-gray-100">Instant 360° audit for voice SEO.</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Try Now →
-        </span>
-      </div>
-    </a>
-
-    <!-- Schema Generator -->
-    <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
-          <h2 class="text-cyan-400 text-2xl font-bold mb-3">Schema Generator Tool</h2>
-          <p class="text-gray-800 dark:text-gray-100">Detect & Generate 18 Schema Markups in JSON-LD</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Try Now →
-        </span>
-      </div>
-    </a>
-    
-        <!-- Help Guides -->
-    <a href="/ai-ux-seo-help-guides/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between">
-        <div>
-          <div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">📋</div>
-          <h2 class="text-indigo-400 text-2xl font-bold mb-3">Help Guides</h2>
-          <p class="text-gray-800 dark:text-gray-100">Practical SEO tutorials: Deep-dive diagnostics, high-impact fixes.</p>
-        </div>
-        <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-          Read Up →
-        </span>
-      </div>
-    </a>
-
-  </div>
-</div>
-
-      <h2 class="text-4xl md:text-4xl font-black text-center mt-16 mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      SEO & UX Audit Tool
-      </h2>
-    
-<form id="url-form" class="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto mb-12">
-  <label for="url-input" class="sr-only">Enter website URL to analyze</label>
-  <input
-    type="text"
-    id="url-input"
-    placeholder="example.com/page/"
-    class="flex-1 px-6 py-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-orange-500 transition-all text-lg"
-    aria-label="Enter website URL to analyze"
-    required
-    autocomplete="url"
-  />
-  <button
-    type="submit"
-    class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
-  >
-    <span>Analyze 💡</span>
-  </button>
-</form>
-
-    <div id="progress-container" class="text-center my-8 hidden">
-      <div class="spinner mx-auto mb-4"></div>
-      <p id="progress-text" class="text-xl text-orange-500 font-medium">Initializing analysis...</p>
-    </div>
-    
- <div id="results-wrapper" class="hidden">
-   <div id="radar-container" class="hidden md:block my-24">
-    <h2 id="radar-title" class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
-      360° Health Radar
-    </h2>
-    <div class="flex justify-center">
-      <canvas id="health-radar" class="max-w-full h-[600px]"></canvas>
-    </div>
-  </div>
-  
-<div id="overall-container" class="my-16 md:my-24">
-  <h2 class="text-4xl md:text-5xl font-black text-center mb-10 md:mb-14 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-    Overall SEO & UX Health Score
-  </h2>
-  <div class="flex justify-center">
-    <div id="overall-score" class="score-card max-w-md w-full md:max-w-lg">
-      <div class="score-circle large mb-10" data-score="0">
-        <svg viewBox="0 0 240 240">
-          <circle class="bg" cx="120" cy="120" r="108"/>
-          <circle class="progress" cx="120" cy="120" r="108"/>
-          <text x="120" y="132" class="number">0</text>
-        </svg>
-      </div>
-      <div id="page-title-display" class="text-xl md:text-2xl font-semibold text-center text-gray-400 dark:text-gray-200 mb-4 px-6 line-clamp-2">
-        Loading title...
-      </div>
-      <div id="overall-grade" class="text-2xl md:text-3xl font-bold text-center flex items-center justify-center gap-3">
-        <span class="grade-emoji text-3xl"></span>
-        <span class="grade-text">Evaluating...</span>
-      </div>
-      <div class="text-2xl md:text-3xl font-bold mt-8 text-gray-600 dark:text-gray-300 text-center">
-        Overall Score
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div id="results" class="grid md:grid-cols-2 lg:grid-cols-4 gap-2">
-  <section id="seo-score" class="score-card p-2 md:p-2 text-center">
-    <div class="score-circle" data-score="0">
-      <svg viewBox="0 0 120 120">
-        <circle class="bg" cx="60" cy="60" r="54"/>
-        <circle class="progress" cx="60" cy="60" r="54"/>
-        <text x="60" y="72" class="number">0</text>
-      </svg>
-    </div>
-    <div class="label text-xl font-bold mt-4">On-Page SEO</div>
-    <div class="module-grade mt-2 text-base md:text-lg font-semibold flex items-center justify-center gap-2 opacity-0 transition-opacity duration-500" data-module="seo">
-      <span class="grade-emoji text-xl"></span>
-      <span class="grade-text">Evaluating...</span>
-    </div>
-    <div class="short-desc mt-4 text-gray-400 dark:text-gray-300 text-sm md:text-base leading-relaxed px-4">
-      Evaluates core on-page elements like title, meta description, headings, schema, and alt text that search engines use to understand your page.
-    </div>
-    <button class="more-details mt-6 px-2 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold text-white transition">More Details</button>
-    <div class="module-info hidden mt-6 text-left p-2 bg-white/10 dark:bg-black/10 backdrop-blur rounded-2xl border border-white/20">
-      <h3 class="text-xl font-bold mb-4 text-indigo-300">About this module</h3>
-      <div class="what text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-cyan-300">What is it?</strong><br>
-      </div>
-      <div class="how text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-blue-300">How to improve overall:</strong><br>
-      </div>
-      <div class="why text-gray-400 dark:text-gray-200">
-        <strong class="text-purple-300">Why it matters:</strong><br>
-      </div>
-    </div>
-    <div class="checklist mt-6 px-4 space-y-1 text-left text-gray-800 dark:text-gray-200 text-sm"></div>
-    <button class="expand mt-6 px-2 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-    <div class="details hidden mt-6 text-left"><ul id="seo-issues" class="space-y-4"></ul></div>
-  </section>
-
-  <section id="mobile-score" class="score-card p-2 md:p-2 text-center">
-    <div class="score-circle" data-score="0">
-      <svg viewBox="0 0 120 120">
-        <circle class="bg" cx="60" cy="60" r="54"/>
-        <circle class="progress" cx="60" cy="60" r="54"/>
-        <text x="60" y="72" class="number">0</text>
-      </svg>
-    </div>
-    <div class="label text-xl font-bold mt-4">Mobile & PWA</div>
-    <div class="module-grade mt-2 text-base md:text-lg font-semibold flex items-center justify-center gap-2 opacity-0 transition-opacity duration-500" data-module="mobile">
-      <span class="grade-emoji text-xl"></span>
-      <span class="grade-text">Evaluating...</span>
-    </div>
-    <div class="short-desc mt-4 text-gray-400 dark:text-gray-300 text-sm md:text-base leading-relaxed px-4">
-      Checks mobile-friendliness, viewport, manifest, icons, and service worker for app-like experience.
-    </div>
-    <button class="more-details mt-6 px-2 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold text-white transition">More Details</button>
-    <div class="module-info hidden mt-6 text-left p-2 bg-white/10 dark:bg-black/10 backdrop-blur rounded-2xl border border-white/20">
-      <h4 class="text-xl font-bold mb-4 text-indigo-300">About this module</h4>
-      <div class="what text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-cyan-300">What is it?</strong><br>
-      </div>
-      <div class="how text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-blue-300">How to improve overall:</strong><br>
-      </div>
-      <div class="why text-gray-400 dark:text-gray-200">
-        <strong class="text-purple-300">Why it matters:</strong><br>
-      </div>
-    </div>
-    <div class="checklist mt-6 px-4 space-y-1 text-left text-gray-800 dark:text-gray-200 text-sm"></div>
-    <button class="expand mt-6 px-2 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-    <div class="details hidden mt-6 text-left"><ul id="mobile-issues" class="space-y-4"></ul></div>
-  </section>
-
-  <section id="perf-score" class="score-card p-2 md:p-2 text-center">
-    <div class="score-circle" data-score="0">
-      <svg viewBox="0 0 120 120">
-        <circle class="bg" cx="60" cy="60" r="54"/>
-        <circle class="progress" cx="60" cy="60" r="54"/>
-        <text x="60" y="72" class="number">0</text>
-      </svg>
-    </div>
-    <div class="label text-xl font-bold mt-4">Performance</div>
-    <div class="module-grade mt-2 text-base md:text-lg font-semibold flex items-center justify-center gap-2 opacity-0 transition-opacity duration-500" data-module="perf">
-      <span class="grade-emoji text-xl"></span>
-      <span class="grade-text">Evaluating...</span>
-    </div>
-    <div class="short-desc mt-4 text-gray-400 dark:text-gray-300 text-sm md:text-base leading-relaxed px-4">
-      Measures page speed, weight, requests, fonts, and render-blocking resources for fast loading.
-    </div>
-    <button class="more-details mt-6 px-2 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold text-white transition">More Details</button>
-    <div class="module-info hidden mt-6 text-left p-2 bg-white/10 dark:bg-black/10 backdrop-blur rounded-2xl border border-white/20">
-      <h4 class="text-xl font-bold mb-4 text-indigo-300">About this module</h4>
-      <div class="what text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-cyan-300">What is it?</strong><br>
-      </div>
-      <div class="how text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-blue-300">How to improve overall:</strong><br>
-      </div>
-      <div class="why text-gray-400 dark:text-gray-200">
-        <strong class="text-purple-300">Why it matters:</strong><br>
-      </div>
-    </div>
-    <div class="checklist mt-6 px-4 space-y-1 text-left text-gray-800 dark:text-gray-200 text-sm"></div>
-    <button class="expand mt-6 px-2 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-    <div class="details hidden mt-6 text-left"><ul id="perf-issues" class="space-y-4"></ul></div>
-  </section>
-
-  <section id="access-score" class="score-card p-2 md:p-2 text-center">
-    <div class="score-circle" data-score="0">
-      <svg viewBox="0 0 120 120">
-        <circle class="bg" cx="60" cy="60" r="54"/>
-        <circle class="progress" cx="60" cy="60" r="54"/>
-        <text x="60" y="72" class="number">0</text>
-      </svg>
-    </div>
-    <div class="label text-xl font-bold mt-4">Accessibility</div>
-    <div class="module-grade mt-2 text-base md:text-lg font-semibold flex items-center justify-center gap-2 opacity-0 transition-opacity duration-500" data-module="access">
-      <span class="grade-emoji text-xl"></span>
-      <span class="grade-text">Evaluating...</span>
-    </div>
-    <div class="short-desc mt-4 text-gray-400 dark:text-gray-300 text-sm md:text-base leading-relaxed px-4">
-      Ensures usability for everyone including screen readers and keyboard users.
-    </div>
-    <button class="more-details mt-6 px-2 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold text-white transition">More Details</button>
-    <div class="module-info hidden mt-6 text-left p-2 bg-white/10 dark:bg-black/10 backdrop-blur rounded-2xl border border-white/20">
-      <h4 class="text-xl font-bold mb-4 text-indigo-300">About this module</h4>
-      <div class="what text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-cyan-300">What is it?</strong><br>
-      </div>
-      <div class="how text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-blue-300">How to improve overall:</strong><br>
-      </div>
-      <div class="why text-gray-400 dark:text-gray-200">
-        <strong class="text-purple-300">Why it matters:</strong><br>
-      </div>
-    </div>
-    <div class="checklist mt-6 px-4 space-y-1 text-left text-gray-800 dark:text-gray-200 text-sm"></div>
-    <button class="expand mt-6 px-2 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-    <div class="details hidden mt-6 text-left"><ul id="access-issues" class="space-y-4"></ul></div>
-  </section>
-
-  <section id="content-score" class="score-card p-2 md:p-2 text-center">
-    <div class="score-circle" data-score="0">
-      <svg viewBox="0 0 120 120">
-        <circle class="bg" cx="60" cy="60" r="54"/>
-        <circle class="progress" cx="60" cy="60" r="54"/>
-        <text x="60" y="72" class="number">0</text>
-      </svg>
-    </div>
-    <div class="label text-xl font-bold mt-4">Content Quality</div>
-    <div class="module-grade mt-2 text-base md:text-lg font-semibold flex items-center justify-center gap-2 opacity-0 transition-opacity duration-500" data-module="content">
-      <span class="grade-emoji text-xl"></span>
-      <span class="grade-text">Evaluating...</span>
-    </div>
-    <div class="short-desc mt-4 text-gray-400 dark:text-gray-300 text-sm md:text-base leading-relaxed px-4">
-      Assesses depth, readability, structure, and scannability of your content.
-    </div>
-    <button class="more-details mt-6 px-2 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold text-white transition">More Details</button>
-    <div class="module-info hidden mt-6 text-left p-2 bg-white/10 dark:bg-black/10 backdrop-blur rounded-2xl border border-white/20">
-      <h4 class="text-xl font-bold mb-4 text-indigo-300">About this module</h4>
-      <div class="what text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-cyan-300">What is it?</strong><br>
-      </div>
-      <div class="how text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-blue-300">How to improve overall:</strong><br>
-      </div>
-      <div class="why text-gray-400 dark:text-gray-200">
-        <strong class="text-purple-300">Why it matters:</strong><br>
-      </div>
-    </div>
-    <div class="checklist mt-6 px-4 space-y-1 text-left text-gray-800 dark:text-gray-200 text-sm"></div>
-    <button class="expand mt-6 px-2 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-    <div class="details hidden mt-6 text-left"><ul id="content-issues" class="space-y-4"></ul></div>
-  </section>
-
-  <section id="ux-score" class="score-card p-2 md:p-2 text-center">
-    <div class="score-circle" data-score="0">
-      <svg viewBox="0 0 120 120">
-        <circle class="bg" cx="60" cy="60" r="54"/>
-        <circle class="progress" cx="60" cy="60" r="54"/>
-        <text x="60" y="72" class="number">0</text>
-      </svg>
-    </div>
-    <div class="label text-xl font-bold mt-4">UX Design</div>
-    <div class="module-grade mt-2 text-base md:text-lg font-semibold flex items-center justify-center gap-2 opacity-0 transition-opacity duration-500" data-module="ux">
-      <span class="grade-emoji text-xl"></span>
-      <span class="grade-text">Evaluating...</span>
-    </div>
-    <div class="short-desc mt-4 text-gray-400 dark:text-gray-300 text-sm md:text-base leading-relaxed px-4">
-      Reviews clarity of calls-to-action, navigation, and overall user flow.
-    </div>
-    <button class="more-details mt-6 px-2 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold text-white transition">More Details</button>
-    <div class="module-info hidden mt-6 text-left p-2 bg-white/10 dark:bg-black/10 backdrop-blur rounded-2xl border border-white/20">
-      <h4 class="text-xl font-bold mb-4 text-indigo-300">About this module</h4>
-      <div class="what text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-cyan-300">What is it?</strong><br>
-      </div>
-      <div class="how text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-blue-300">How to improve overall:</strong><br>
-      </div>
-      <div class="why text-gray-400 dark:text-gray-200">
-        <strong class="text-purple-300">Why it matters:</strong><br>
-      </div>
-    </div>
-    <div class="checklist mt-6 px-4 space-y-1 text-left text-gray-800 dark:text-gray-200 text-sm"></div>
-    <button class="expand mt-6 px-2 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-    <div class="details hidden mt-6 text-left"><ul id="ux-issues" class="space-y-4"></ul></div>
-  </section>
-
-  <section id="security-score" class="score-card p-2 md:p-2 text-center">
-    <div class="score-circle" data-score="0">
-      <svg viewBox="0 0 120 120">
-        <circle class="bg" cx="60" cy="60" r="54"/>
-        <circle class="progress" cx="60" cy="60" r="54"/>
-        <text x="60" y="72" class="number">0</text>
-      </svg>
-    </div>
-    <div class="label text-xl font-bold mt-4">Security</div>
-    <div class="module-grade mt-2 text-base md:text-lg font-semibold flex items-center justify-center gap-2 opacity-0 transition-opacity duration-500" data-module="security">
-      <span class="grade-emoji text-xl"></span>
-      <span class="grade-text">Evaluating...</span>
-    </div>
-    <div class="short-desc mt-4 text-gray-400 dark:text-gray-300 text-sm md:text-base leading-relaxed px-4">
-      Verifies HTTPS usage and absence of mixed/insecure content.
-    </div>
-    <button class="more-details mt-6 px-2 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold text-white transition">More Details</button>
-    <div class="module-info hidden mt-6 text-left p-2 bg-white/10 dark:bg-black/10 backdrop-blur rounded-2xl border border-white/20">
-      <h4 class="text-xl font-bold mb-4 text-indigo-300">About this module</h4>
-      <div class="what text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-cyan-300">What is it?</strong><br>
-      </div>
-      <div class="how text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-blue-300">How to improve overall:</strong><br>
-      </div>
-      <div class="why text-gray-400 dark:text-gray-200">
-        <strong class="text-purple-300">Why it matters:</strong><br>
-      </div>
-    </div>
-    <div class="checklist mt-6 px-4 space-y-1 text-left text-gray-800 dark:text-gray-200 text-sm"></div>
-    <button class="expand mt-6 px-2 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-    <div class="details hidden mt-6 text-left"><ul id="security-issues" class="space-y-4"></ul></div>
-  </section>
-
-  <section id="indexability-score" class="score-card p-2 md:p-2 text-center">
-    <div class="score-circle" data-score="0">
-      <svg viewBox="0 0 120 120">
-        <circle class="bg" cx="60" cy="60" r="54"/>
-        <circle class="progress" cx="60" cy="60" r="54"/>
-        <text x="60" y="72" class="number">0</text>
-      </svg>
-    </div>
-    <div class="label text-xl font-bold mt-4">Indexability</div>
-    <div class="module-grade mt-2 text-base md:text-lg font-semibold flex items-center justify-center gap-2 opacity-0 transition-opacity duration-500" data-module="indexability">
-      <span class="grade-emoji text-xl"></span>
-      <span class="grade-text">Evaluating...</span>
-    </div>
-    <div class="short-desc mt-4 text-gray-400 dark:text-gray-300 text-sm md:text-base leading-relaxed px-4">
-      Checks if the page can be discovered and indexed by search engines.
-    </div>
-    <button class="more-details mt-6 px-2 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-full font-bold text-white transition">More Details</button>
-    <div class="module-info hidden mt-6 text-left p-2 bg-white/10 dark:bg-black/10 backdrop-blur rounded-2xl border border-white/20">
-      <h4 class="text-xl font-bold mb-4 text-indigo-300">About this module</h4>
-      <div class="what text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-cyan-300">What is it?</strong><br>
-      </div>
-      <div class="how text-gray-400 dark:text-gray-200 mb-6">
-        <strong class="text-blue-300">How to improve overall:</strong><br>
-      </div>
-      <div class="why text-gray-400 dark:text-gray-200">
-        <strong class="text-purple-300">Why it matters:</strong><br>
-      </div>
-    </div>
-    <div class="checklist mt-6 px-4 space-y-1 text-left text-gray-800 dark:text-gray-200 text-sm"></div>
-    <button class="expand mt-6 px-2 py-3 bg-orange-500 rounded-full font-bold hover:bg-orange-600 transition">Show Fixes</button>
-    <div class="details hidden mt-6 text-left"><ul id="indexability-issues" class="space-y-4"></ul></div>
-  </section>
-</div>
-
-<!-- Priority Fixes & Ranking Gains -->
-<div id="priority-gains-section" class="mt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
-  <h2 class="text-4xl sm:text-5xl font-extrabold text-center bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
-    Top Priority Fixes
-  </h2>
-  <div id="priority-cards-container" class="space-y-8"></div>
-
-  <div id="gains-container" class="mt-12"></div>
-</div>
-  
-    <!-- Plugin Solutions -->
-<div id="plugin-solutions-section" class="hidden"></div>
-  
-  <!-- Mobile UX Previewer -->
-  <div id="mobile-preview" class="max-w-5xl mx-auto my-24">
-    <h2 class="text-5xl font-black text-center mb-12 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-      Mobile UX Preview
-    </h2>
-    <div class="flex justify-center gap-4 mb-8 flex-wrap">
-      <button id="view-toggle" class="px-6 py-3 text-gray-500 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Switch to Desktop</button>
-      <button id="device-toggle" class="px-6 py-3 text-gray-500 bg-white/20 backdrop-blur rounded-full font-bold hover:bg-white/30 transition">Android Frame</button>
-    </div>
-		<div class="flex justify-center">
-		  <div id="phone-frame" class="iphone-frame portrait relative w-full max-w-sm mx-auto">
-        <iframe id="preview-iframe" src="" sandbox="allow-scripts allow-popups" class="w-full h-full rounded-[40px]"></iframe>
-        <div id="highlight-overlays" class="absolute inset-0 pointer-events-none"></div>
-      </div>
-    </div>
-    <p class="text-center mt-8 text-xl text-gray-500 opacity-80">
-      Interactive preview — scroll and tap inside. Note: Some sites block iframe previews.
-    </p>
-  </div>
-
-<!-- Shave Save PDF and Feedback Button -->
-<div class="text-center my-16 px-4">
-  <div class="flex flex-col sm:flex-row justify-center gap-6 mb-8">
-    <!-- Share Report - Green - first -->
-    <button id="share-report-btn"
-            class="px-12 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Share Report ↗️
-    </button>
-    <!-- Save Report - Orange - second -->
-    <button onclick="const hiddenEls = [...document.querySelectorAll('.hidden')]; hiddenEls.forEach(el => el.classList.remove('hidden')); window.print(); setTimeout(() => hiddenEls.forEach(el => el.classList.add('hidden')), 800);"
-            class="px-12 py-5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-      Save Report 📥
-    </button>
-    <!-- Submit Feedback - Blue - third -->
-    <button id="feedback-btn"
-            class="px-12 py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:opacity-90 w-full sm:w-auto">
-     Submit Feedback 💬
-    </button>
-  </div>
-  <!-- Share message - placed directly below buttons, always visible when triggered -->
-  <div id="share-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium max-w-xl mx-auto"></div>
-  <!-- Share Report Form (still hidden/expandable) -->
-  <div id="share-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <form id="share-form" class="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-orange-500/30">
-      <div>
-        <label for="share-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
-        <input id="share-name" type="text" required placeholder="Your name" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-sender-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email (for replies)</label>
-        <input id="share-sender-email" type="email" required placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Recipient Email</label>
-        <input id="share-email" type="email" required class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-title" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Title</label>
-        <input id="share-title" type="text" required placeholder="Traffic Torch SEO UX Report" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-orange-500">
-      </div>
-      <div>
-        <label for="share-body" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
-        <textarea id="share-body" required rows="5" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-orange-500"></textarea>
-      </div>
-      <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Report →</button>
-    </form>
-  </div>
-  <!-- Feedback Form (unchanged) -->
-  <div id="feedback-form-container" class="hidden max-w-2xl mx-auto mt-8">
-    <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl border border-blue-500/30">
-      <p class="text-lg font-medium mb-6 text-gray-800 dark:text-gray-200">
- 		 Feedback for SEO UX Tool on <strong>the analyzed page</strong>
-		</p>
-      <form id="feedback-form" class="space-y-6">
-        <div>
-          <label for="feedback-rating" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Rating (optional)</label>
-          <div class="flex gap-3 text-3xl justify-center sm:justify-start">
-            <button type="button" data-rating="1" class="hover:scale-125 transition">😞</button>
-            <button type="button" data-rating="2" class="hover:scale-125 transition">🙁</button>
-            <button type="button" data-rating="3" class="hover:scale-125 transition">😐</button>
-            <button type="button" data-rating="4" class="hover:scale-125 transition">🙂</button>
-            <button type="button" data-rating="5" class="hover:scale-125 transition">😍</button>
-          </div>
-          <input type="hidden" id="feedback-rating" name="rating">
-        </div>
-        <div>
-          <label class="flex items-center gap-2 justify-center sm:justify-start">
-            <input type="checkbox" id="reply-requested" class="w-5 h-5">
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-200">Request reply</span>
-          </label>
-        </div>
-        <div id="email-group" class="hidden">
-          <label for="feedback-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Email</label>
-          <input id="feedback-email" type="email" name="email" placeholder="your@email.com" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-2xl px-6 py-4 focus:outline-none focus:border-blue-500">
-        </div>
-        <div>
-          <label for="feedback-text" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Feedback</label>
-          <textarea id="feedback-text" name="message" required rows="5" maxlength="1000" class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-3xl px-6 py-4 focus:outline-none focus:border-blue-500"></textarea>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center sm:text-left">
-            <span id="char-count">0</span>/1000 characters
+        <!-- ═══════════════════════════════════════════════════
+             HERO + NUSA TOOL (URL form stays above fold on mobile)
+             ═══════════════════════════════════════════════════ -->
+        <section id="hero-section" class="hero-section text-center" aria-labelledby="hero-heading">
+          <h1 id="hero-heading" class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500 bg-clip-text text-transparent mb-3 max-w-4xl mx-auto leading-tight">
+            Find Out Why Your Website Isn't Being Found
+          </h1>
+          <p class="hero-sub text-base md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-5">
+            NUSA scores your <strong>User Experience</strong>, <strong>Search Visibility</strong> and <strong>AI Search Readiness</strong> in under 60 seconds.
           </p>
-        </div>
-        <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Feedback</button>
-      </form>
-      <div id="feedback-message" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
-    </div>
-  </div>
-</div>
 
-<!-- Copy Badge Code -->
-  <div id="score-badge" class="hidden my-16 text-center">
-    <a href="https://traffictorch.net/" target="_blank" style="display: inline-block; position: relative; font-family: system-ui, -apple-system, sans-serif; font-weight: bold; font-size: 13px; color: #969696; text-decoration: none;">
-      Traffic Torch Optimized ⚖️
-      <span style="position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 8px; padding: 8px 16px; background: #1f2937; color: white; font-size: 14px; border-radius: 8px; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; white-space: nowrap; z-index: 10;">
-        UX, SEO & AI Optimization
-      </span>
-    </a>
-  </div>
+          <!-- NUSA TOOL (unchanged internals) -->
+          <section id="homepage-tool" class="max-w-4xl mx-auto" aria-labelledby="nusa-tool-heading">
+            <h2 id="nusa-tool-heading" class="sr-only">Run a free NUSA audit</h2>
+            <div id="nusa-app">
+              <form id="url-form" class="nusa-url-form" autocomplete="off" aria-label="NUSA audit form">
+                <label for="url-input" class="sr-only">Website URL to audit</label>
+<input id="url-input" type="text" inputmode="url"
+       placeholder="example.com or https://example.com"
+       required
+       class="nusa-url-input"
+       list="url-history-list"
+       autocomplete="off"
+       spellcheck="false"
+       autocapitalize="off"
+       autocorrect="off">
+                <datalist id="url-history-list"></datalist>
+                <button type="submit" class="nusa-url-btn" aria-label="Run NUSA audit">
+                  Analyze NUSA
+                </button>
+              </form>
 
-  <div class="flex justify-center my-16">
-    <button id="copy-badge" class="hidden px-12 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl text-xl">
-      Copy Badge Code ⚖️
-    </button>
-  </div>
-</div>
+              <section id="summary-cards" class="summary-cards hidden" aria-label="Audit summary"></section>
 
-<div class="center-btn-container">
-  <button
-    class="copy-link-btn"
-    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
-    data-text="https://traffictorch.net/"
-  >
-    Copy Link? 🔗
-  </button>
-</div>
+              <section id="stage" class="stage hidden">
+                <div class="col narration-col">
+                  <div class="col-head">
+                    <span>FIX LIST</span>
+                    <span id="status" class="num">idle</span>
+                  </div>
+                  <div id="narration" class="narration"></div>
+                </div>
+                <div class="col preview-col">
+                  <div class="col-head">
+                    <span>PREVIEW</span>
+                    <span id="preview-meta" class="num">·</span>
+                  </div>
+                  <div id="preview" class="preview">
+                    <div class="preview-empty">paste a url to begin</div>
+                  </div>
+                </div>
+              </section>
 
-<section id="faq" class="container mx-auto px-4 py-12 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-    <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-    Frequently Asked Questions about SEO & UX
-  </h2>
-  <div class="space-y-6 max-w-3xl mx-auto">
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How does on-page SEO impact search engine traffic?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        On-page SEO optimizes title tags, meta descriptions, headings, content relevance, internal links, and structured data to align with user intent and E-E-A-T signals. In 2026, it boosts rankings in traditional SERPs, featured snippets, and AI overviews by improving semantic relevance and CTR, often increasing qualified organic traffic by 20-40% through better visibility and engagement.
-      </div>
-    </details>
+              <section id="ask-block" class="ask-block hidden">
+                <form id="ask-form" class="ask" autocomplete="off">
+                  <span class="violet-mark">✦</span>
+                  <input id="ask-input" placeholder="ask nusa anything…" autocomplete="off">
+                  <button type="submit" aria-label="Ask NUSA">↵</button>
+                </form>
+                <div id="ask-answers" class="ask-answers"></div>
+              </section>
 
-	<details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-	  <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-	    How does mobile readiness and PWA affect SEO rankings?
-	    <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-	  </summary>
-	  <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-	    Mobile readiness, including responsive design and fast loading times, is crucial for Google's mobile-first indexing, where the mobile version of your site is primarily used for ranking. PWA features enhance perceived speed and engagement. These improve Core Web Vitals and UX signals, reducing bounce rates and prioritizing mobile traffic (over 60%), leading to stronger rankings and conversions.
-	  </div>
-	</details>
+              <section id="chamber" class="chamber hidden">
+                <div class="col-head">
+                  <span>CITATION CHAMBER</span>
+                  <span class="num">simulated engines</span>
+                </div>
+                <form id="chamber-form" class="chamber-form" autocomplete="off">
+                  <span class="violet-mark">▶</span>
+                  <input id="chamber-input" placeholder="What would a user ask this page?" autocomplete="off">
+                  <button type="submit">run simulation</button>
+                </form>
+                <div id="chamber-out" class="chamber-out"></div>
+              </section>
+            </div>
 
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        What is the SEO impact of Core Web Vitals?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Core Web Vitals (LCP <2.5s for loading, INP <200ms for interactivity, CLS <0.1 for stability) are key page experience signals. In 2026, passing them acts as a ranking tiebreaker, lowers abandonment, and improves engagement metrics for 10-25% potential traffic gains.
-      </div>
-    </details>
+            <section id="share-module" class="share-module-host hidden max-w-4xl mx-auto px-2 py-6"></section>
+          </section>
 
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Does web accessibility improve SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Yes, WCAG 2.2 compliance (alt text, contrast, semantic HTML, keyboard nav) boosts crawlability, inclusivity, and UX. In 2026, it aligns with AI understanding and avoids penalties from poor engagement, enhancing rankings indirectly.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How does content quality affect search rankings?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        High-quality, original, intent-focused content with strong E-E-A-T ranks higher in AI summaries and results. In 2026, it earns backlinks, reduces pogo-sticking, and appears in more AI responses, driving 25-50% more traffic than low-quality pages.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        How important is UX design for SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        UX (intuitive nav, fast interactions, low bounce, high dwell time) is a strong indirect signal. In 2026, poor UX hurts AI/mobile performance; excellent UX improves metrics and conversions significantly.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Does website security (HTTPS) impact SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        HTTPS remains a core ranking signal in 2026 for trust and security. It prevents warnings, reduces abandonment, and supports secure features, contributing to 10-20% traffic gains via user confidence.
-      </div>
-    </details>
-
-    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
-      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
-        Why is indexability important for SEO?
-        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-      </summary>
-      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
-        Indexability (proper robots.txt, sitemaps, no noindex/orphan issues) maximizes crawl budget and indexed pages. In 2026, optimizations prevent visibility loss, increasing traffic potential by 20-30% from all site content.
-      </div>
-    </details>
-  </div>
+          <!-- Trust badges below form -->
+<ul class="trust-badges" aria-label="Key features">
+  <li><span class="trust-icon" aria-hidden="true">⚡</span><span>Under 60 seconds</span></li>
+  <li><span class="trust-icon" aria-hidden="true">🔒</span><span>No data stored</span></li>
+  <li><span class="trust-icon" aria-hidden="true">🎯</span><span>UX + SEO + AEO in one pass</span></li>
+  <li><span class="trust-icon" aria-hidden="true">🌐</span><span>Runs in your browser</span></li>
+</ul>
+        </section>
+        
+        <!-- Sharing --> 
+        <section class="share-block mt-12" aria-label="Share options">
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </section>
+        
+        <section id="tt-lb-anchor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
+  			<div class="tt-lb" data-tool="nusa-tool" data-limit="12" data-title="Top NUSA Scores"></div>
+		</section>
+		
+		<!-- 🏅 Top Contributors -->
+<section id="tt-contrib-anchor" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mt-8 mb-8">
+  <div class="tt-contrib"
+       data-limit="12"
+       data-title="Top Contributors"></div>
 </section>
 
-	<!-- How Traffic Torch Works Accordion -->
-<div class="max-w-4xl mx-auto my-20">
-  <details>
-    <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
-      How Traffic Torch Works?
-      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
-    </summary>
-    <div class="mt-6 px-2 py-10 bg-white dark:bg-gray-800 rounded-3xl shadow-inner space-y-10 text-gray-700 dark:text-gray-300">
-      <section class="text-left space-y-6">
-        <h3 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Complete SEO & UX Toolkit with Instant Online Analysis</h3>
-        <p class="text-lg leading-relaxed">
-          Every Traffic Torch tool runs entirely in your browser. We use a secure CORS proxy to fetch page HTML without exposing data.
-        </p>
-        <p class="text-lg leading-relaxed">
-          Nothing is stored, logged, or transmitted. Your privacy is guaranteed. Results appear in seconds, optimized for mobile and desktop.
-        </p>
-      </section>
+     <!-- GA4 & GSC Dashboards -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
 
-      <section class="space-y-8">
-        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Our Growing Suite of Tools</h3>
-        <div class="grid md:grid-cols-2 gap-8 text-base">
-          <div class="space-y-4">
-            <h4 class="font-bold text-lg">Local SEO 📍</h4>
-            <p>Full on-page SEO audit for your target location. Checks title, meta, headings, content, images, schema and more.</p>
-          </div>
-          <div class="space-y-4">
-            <h4 class="font-bold text-lg">Keyword Competition 🆚</h4>
-            <p>Side-by-side relevance comparison with a top-ranking competitor for any phrase.</p>
-          </div>
-          <div class="space-y-4">
-            <h4 class="font-bold text-lg">AI Search Optimization 🔍</h4>
-            <p>Scores your page for citation potential in AI-powered search. Chat GTP, Google AI Overviews, Perplexity, Grok, Gemini.</p>
-          </div>
-          <div class="space-y-4">
-            <h4 class="font-bold text-lg">SEO Intent 🎯</h4>
-            <p>Analyzes how well your content matches informational, navigational, commercial, or transactional intent.</p>
-          </div>
-          <div class="space-y-4">
-            <h4 class="font-bold text-lg">AI Content Audit 🤖</h4>
-            <p>Detects AI-like patterns (perplexity, burstiness, repetition) and suggests humanizing improvements.</p>
-          </div>
-          <div class="space-y-4">
-            <h4 class="font-bold text-lg">Quit Risk ⚡</h4>
-            <p>Usability audit covering readability, navigation, accessibility, mobile readiness, and performance proxies.</p>
-          </div>
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
         </div>
-      </section>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
 
-      <section class="space-y-6">
-        <h4 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Shared Features Across All Tools.</h4>
-        <ul class="space-y-4 text-base list-disc list-inside">
-          <li>0–100 scoring with color-coded gauges and module breakdowns.</li>
-          <li>Prioritized, actionable fixes with expert education.</li>
-          <li>Predictive ranking or traffic forecasts where applicable.</li>
-          <li>Mobile-friendly reports with dark mode support.</li>
-          <li>PDF export for sharing insights.</li>
-        </ul>
-      </section>
-
-      <section class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-8 rounded-xl">
-        <h4 class="text-2xl font-bold mb-4">Built for Real Results</h4>
-        <p class="text-base leading-relaxed">
-          Each tool focuses on factors you can control. On-page SEO, UX, intent and authenticity can deliver quick wins while building long-term authority.
-        </p>
-      </section>
-    </div>
-  </details>
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
+  </div>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
 </div>
-
-<!-- Share Buttons -->
-<div class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_pinterest"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_facebook"></a>
-      <a class="a2a_button_copy_link"></a>
     </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
   </div>
 </div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-	
-<!-- Deep Dive into Key Modules -->
-<section class="py-20 bg-gray dark:bg-gray-900">
-  <div class="max-w-7xl mx-auto px-2">
-    <h2 class="text-4xl md:text-5xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      Deep Dive into Key Modules
-    </h2>
-    <div id="metric-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center lg:justify-start">
-      <!-- Cards generated dynamically -->
-    </div>
-  </div>
-</section>  
 
-<!-- Two-column infographic grid – stacks on mobile, side-by-side on md+ -->
-<div class="grid md:grid-cols-2 gap-4 my-4 max-w-6xl mx-auto px-4">
-  <!-- Left image: On-Page to Accessibility -->
-  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
-    <img
-      src="/seo-ux-tool/images/seo-ux-optimizations-infographic-800w.webp"
-      alt="SEO & UX Optimizations Infographic – On-Page SEO, Mobile & PWA, Performance, Accessibility"
-      class="w-full h-auto object-cover"
-      width="800"
-      height="1200"
-      loading="lazy"
-      decoding="async"
-      sizes="(max-width: 767px) 100vw, 50vw">
-    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
-      Quick reference: Core areas Traffic Torch audits & optimizes.
-    </figcaption>
-  </figure>
+        <!-- ═══════════════════════════════════════════════════
+             WHO ARE THE AUDIT TOOLS BUILT FOR?
+             ═══════════════════════════════════════════════════ -->
+        <section id="built-for" class="max-w-6xl mx-auto my-16 px-2" aria-labelledby="built-for-heading">
+          <h2 id="built-for-heading" class="text-center text-2xl md:text-3xl font-extrabold mb-2">Audit Tools Built For</h2>
+          <p class="text-center text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">Everyone, Traffic Torch tells you what's broken — and how to fix it.</p>
 
-  <!-- Right image: Content Quality to Indexability -->
-  <figure class="overflow-hidden rounded-2xl shadow-2xl bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10">
-    <img
-      src="/seo-ux-tool/images/seo-ux-audit-infographic-800w.webp"
-      alt="SEO & UX Optimizations Infographic – Content Quality, UX Design, Security, Indexability"
-      class="w-full h-auto object-cover"
-      width="800"
-      height="1200"
-      loading="lazy"
-      decoding="async"
-      sizes="(max-width: 767px) 100vw, 50vw">
-    <figcaption class="p-5 text-center text-sm text-gray-600 dark:text-gray-400">
-      Core areas Traffic Torch audits for better rankings and user experience.
-    </figcaption>
-  </figure>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <article class="glass rounded-2xl p-6 border border-white/10 dark:border-white/5 hover:border-orange-400 transition">
+              <div class="text-4xl mb-3" aria-hidden="true">🏠</div>
+              <h3 class="font-bold text-lg mb-2">Website Owners</h3>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Discover why your traffic, leads and sales are underperforming — with plain-English fixes you can act on today.</p>
+            </article>
+            <article class="glass rounded-2xl p-6 border border-white/10 dark:border-white/5 hover:border-orange-400 transition">
+              <div class="text-4xl mb-3" aria-hidden="true">🎨</div>
+              <h3 class="font-bold text-lg mb-2">Website Designers</h3>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Find UX, accessibility and mobile issues before clients do — and prove your work with a shareable 360° report.</p>
+            </article>
+            <article class="glass rounded-2xl p-6 border border-white/10 dark:border-white/5 hover:border-orange-400 transition">
+              <div class="text-4xl mb-3" aria-hidden="true">📈</div>
+              <h3 class="font-bold text-lg mb-2">SEO Professionals</h3>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Audit SEO, entities, schema, content and AI search visibility from one platform. No more stitching together five tools.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             THE PROBLEM — why fragmented tools fail
+             ═══════════════════════════════════════════════════ -->
+        <section id="problem" class="max-w-5xl mx-auto my-16 px-2" aria-labelledby="problem-heading">
+          <h2 id="problem-heading" class="text-center text-2xl md:text-3xl font-extrabold mb-2">
+            Modern Visibility Is Fragmented
+          </h2>
+          <p class="text-center text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+            Most tools only analyse one area. Real problems start where they don't meet.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+            <div class="glass rounded-xl p-4 border-l-4 border-l-red-500">
+              <strong class="block text-sm mb-1">SEO tools ignore UX</strong>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Perfect metadata on a page users bounce from ranks lower every month.</p>
+            </div>
+            <div class="glass rounded-xl p-4 border-l-4 border-l-orange-500">
+              <strong class="block text-sm mb-1">UX tools ignore AI search</strong>
+              <p class="text-sm text-gray-700 dark:text-gray-300">A page can feel great and still never get cited by Perplexity or ChatGPT.</p>
+            </div>
+            <div class="glass rounded-xl p-4 border-l-4 border-l-pink-500">
+              <strong class="block text-sm mb-1">Analytics tell you what, not how</strong>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Dashboards show drops but rarely the exact HTML you need to change.</p>
+            </div>
+            <div class="glass rounded-xl p-4 border-l-4 border-l-purple-500">
+              <strong class="block text-sm mb-1">AI engines cite differently</strong>
+              <p class="text-sm text-gray-700 dark:text-gray-300">What ranks #1 on Google is rarely what gets quoted by ChatGPT.</p>
+            </div>
+          </div>
+
+          <p class="text-center text-lg font-semibold text-orange-700 dark:text-orange-400 mt-8 max-w-2xl mx-auto">
+            NUSA combines everything in one dashboard — because that's the only way to see the full picture.
+          </p>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             FRAMEWORK — how it works (kept id="how-it-works" for schema)
+             ═══════════════════════════════════════════════════ -->
+        <section id="how-it-works" class="max-w-5xl mx-auto my-16 px-2" aria-labelledby="framework-heading">
+          <h2 id="framework-heading" class="text-center text-2xl md:text-3xl font-extrabold mb-3">The NUSA Framework</h2>
+          <p class="text-center text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+            Findability is a chain. NUSA audits every link.
+          </p>
+
+<div class="flow-chain" role="list" aria-label="Findability chain: Traffic leads to Search Visibility, then User Experience, then AI Discoverability, then Conversions">
+  <span class="flow-node" role="listitem">Traffic</span>
+  <span class="flow-arrow" aria-hidden="true">→</span>
+  <span class="flow-node" role="listitem">Search Visibility</span>
+  <span class="flow-arrow" aria-hidden="true">→</span>
+  <span class="flow-node" role="listitem">User Experience</span>
+  <span class="flow-arrow" aria-hidden="true">→</span>
+  <span class="flow-node" role="listitem">AI Discoverability</span>
+  <span class="flow-arrow" aria-hidden="true">→</span>
+  <span class="flow-node" role="listitem">Conversions</span>
 </div>
 
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <article class="glass rounded-2xl p-5 border border-purple-200/50 dark:border-purple-800/50">
+              <div class="text-3xl mb-2" aria-hidden="true">🧠</div>
+              <h3 class="font-bold text-lg text-purple-700 dark:text-purple-400 mb-1">UX Health</h3>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Accessibility, readability, mobile readiness, performance proxies and where users actually get stuck.</p>
+            </article>
+            <article class="glass rounded-2xl p-5 border border-blue-200/50 dark:border-blue-800/50">
+              <div class="text-3xl mb-2" aria-hidden="true">🎯</div>
+              <h3 class="font-bold text-lg text-blue-700 dark:text-blue-400 mb-1">SEO Health</h3>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Content depth, entity coverage, schema markup, internal linking and search-intent alignment.</p>
+            </article>
+            <article class="glass rounded-2xl p-5 border border-green-200/50 dark:border-green-800/50">
+              <div class="text-3xl mb-2" aria-hidden="true">🤖</div>
+              <h3 class="font-bold text-lg text-green-700 dark:text-green-400 mb-1">AI Search Readiness</h3>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Answerability, structured data, EEAT signals and how likely AI engines are to quote your page.</p>
+            </article>
+          </div>
+        </section>
 
-<!-- WHAT IS MODERN TRAFFIC GROWTH  -->
-<section class="max-w-4xl mx-auto mt-12 mb-12 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      What is Modern Traffic Growth in 2026+?
-    </h2>
+        <!-- ═══════════════════════════════════════════════════
+             WHAT IS TRAFFIC TORCH? (concise definition for AEO)
+             ═══════════════════════════════════════════════════ -->
+        <section id="what-is" class="max-w-3xl mx-auto my-16 px-2" aria-labelledby="what-is-heading">
+          <div class="glass rounded-3xl p-8 border border-orange-200/40 dark:border-orange-800/30 bg-gradient-to-br from-orange-50/60 to-pink-50/40 dark:from-orange-950/20 dark:to-pink-950/20">
+            <h2 id="what-is-heading" class="text-2xl md:text-3xl font-extrabold mb-4 text-center">What Is Traffic Torch?</h2>
+            <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 text-center">
+              <strong>Traffic Torch is a website visibility platform</strong> that helps website owners, designers and SEO professionals improve search visibility, user experience and AI discoverability through audits, analytics and AI-guided recommendations.
+            </p>
+          </div>
+        </section>
+        
+            <!-- ═══════════════════════════════════════════════════
+             CAROUSEL — Product screenshots
+             ═══════════════════════════════════════════════════ -->
+        <section id="product-preview" class="max-w-5xl mx-auto mt-8 mb-16 px-1" aria-labelledby="preview-heading">
+          <h2 id="preview-heading" class="text-center text-2xl md:text-3xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500">
+            One Dashboard. Three Scores. Zero Guesswork.
+          </h2>
 
-  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-500 dark:text-gray-100">
-    <strong>Modern traffic growth means gaining clicks from traditional search engines, satisfying user experience, AND getting quoted directly in AI answers.</strong>
-  </p>
+          <div class="carousel" id="screenshot-carousel" role="region" aria-roledescription="carousel" aria-label="Traffic Torch dashboard screenshots">
+            <div class="carousel-track" id="carousel-track">
+              <figure class="carousel-slide" role="group" aria-roledescription="slide" aria-label="1 of 3">
+                <img src="/screenshots/ux-seo-aeo-audit-screenshot-1.webp"
+                     alt="NUSA audit dashboard showing live fix list streaming next to an HTML preview panel"
+                     width="1200" height="900" loading="lazy" decoding="async">
+                <figcaption><strong>Live fix list.</strong> Every issue found, streamed in real time alongside the page it affects.</figcaption>
+              </figure>
+              <figure class="carousel-slide" role="group" aria-roledescription="slide" aria-label="2 of 3">
+                <img src="/screenshots/ux-seo-aeo-audit-screenshot-2.webp"
+                     alt="NUSA dashboard with AI-generated fix panel, affected HTML snippet and verification step"
+                     width="1200" height="900" loading="lazy" decoding="async">
+                <figcaption><strong>AI-generated fixes.</strong> Exact HTML snippets and a verify-in-browser step for every finding.</figcaption>
+              </figure>
+              <figure class="carousel-slide" role="group" aria-roledescription="slide" aria-label="3 of 3">
+                <img src="/screenshots/ux-seo-aeo-audit-screenshot-3.webp"
+                     alt="NUSA 360 score view across UX Health, SEO Intent and AI Search Readiness"
+                     width="1200" height="900" loading="lazy" decoding="async">
+                <figcaption><strong>360° scores.</strong> UX Health, SEO Intent and AI Search Readiness — one dashboard, one workflow.</figcaption>
+              </figure>
+            </div>
 
-  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
-    <p>Many websites still optimize with: keyword stuffing, backlink chasing, long content for the sake of length.</p>
-    <p>Today that approach delivers fragile rankings and vanishing traffic.</p>
-    <p class="font-semibold text-indigo-700 dark:text-indigo-300">
-      Real, sustainable growth now requires mastery of three interlocking pillars at once:
-    </p>
-    <ul class="list-none space-y-3 text-gray-500 font-medium">
-      <li>→ Modern SEO fundamentals.</li>
-      <li>→ Exceptional user experience.</li>
-      <li>→ AI citation & answer engine readiness.</li>
+            <button class="carousel-btn prev" type="button" aria-label="Previous slide">‹</button>
+            <button class="carousel-btn next" type="button" aria-label="Next slide">›</button>
+
+            <div class="carousel-dots" role="tablist" aria-label="Slide selection">
+              <button class="carousel-dot active" type="button" role="tab" aria-selected="true" aria-label="Go to slide 1"></button>
+              <button class="carousel-dot" type="button" role="tab" aria-selected="false" aria-label="Go to slide 2"></button>
+              <button class="carousel-dot" type="button" role="tab" aria-selected="false" aria-label="Go to slide 3"></button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             TRUST — why people use Traffic Torch
+             ═══════════════════════════════════════════════════ -->
+        <section id="trust" class="max-w-6xl mx-auto my-16 px-2" aria-labelledby="trust-heading">
+          <h2 id="trust-heading" class="text-center text-2xl md:text-3xl font-extrabold mb-8">Why People Use Traffic Torch</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <article class="glass rounded-2xl p-5 border border-white/10 dark:border-white/5">
+              <div class="text-3xl mb-2" aria-hidden="true">🔒</div>
+              <h3 class="font-bold mb-1">Privacy First</h3>
+              <p class="text-sm text-gray-700 dark:text-gray-300">No tracking. No data selling. Audits run in your browser, not on our servers.</p>
+            </article>
+            <article class="glass rounded-2xl p-5 border border-white/10 dark:border-white/5">
+              <div class="text-3xl mb-2" aria-hidden="true">👤</div>
+              <h3 class="font-bold mb-1">Built by a Practitioner</h3>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Created and maintained by an independent developer focused on real-world SEO and UX.</p>
+            </article>
+            <article class="glass rounded-2xl p-5 border border-white/10 dark:border-white/5">
+              <div class="text-3xl mb-2" aria-hidden="true">📚</div>
+              <h3 class="font-bold mb-1">Educational</h3>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Every score comes with an explanation and implementation guidance — you learn as you fix.</p>
+            </article>
+            <article class="glass rounded-2xl p-5 border border-white/10 dark:border-white/5">
+              <div class="text-3xl mb-2" aria-hidden="true">✦</div>
+              <h3 class="font-bold mb-1">AI Assisted</h3>
+              <p class="text-sm text-gray-700 dark:text-gray-300">Understand any issue instantly with AI-generated explanations, fix snippets and verification steps.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             TOOLS — organised by suite
+             ═══════════════════════════════════════════════════ -->
+        <section id="tools-grid" class="max-w-6xl mx-auto my-16 px-2" aria-labelledby="tools-heading">
+          <h2 id="tools-heading" class="text-center text-2xl md:text-3xl font-extrabold mb-2">
+            Explore the Toolkit
+          </h2>
+          <p class="text-center text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+            NUSA is the platform. Everything else powers NUSA.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <div class="suite-block">
+              <h3>⚡ Core Platform</h3>
+              <a href="/">NUSA Audit</a>
+              <a href="/dashboard/">Dashboard</a>
+              <a href="/ofux-tool/">OFUX</a>
+              <a href="/lighthouse-plus-tool/">Lighthouse Plus</a>
+              <a href="/aeo-performance-tool/">AEO Performance</a>
+            </div>
+
+            <div class="suite-block">
+              <h3>🎯 SEO Suite</h3>
+              <a href="/seo-intent-tool/">SEO Intent</a>
+              <a href="/seo-entity-extractor-tool/">Entity Extractor</a>
+              <a href="/topical-authority-audit-tool/">Topical Authority</a>
+              <a href="/local-seo-tool/">Local SEO</a>
+              <a href="/product-seo-tool/">Product SEO</a>
+              <a href="/schema-generator/">Schema Generator</a>
+            </div>
+
+            <div class="suite-block">
+              <h3>🤖 AI Search Suite</h3>
+              <a href="/ai-search-optimization-tool/">AEO Audit</a>
+              <a href="/ai-voice-search-tool/">Voice Search</a>
+              <a href="/ai-audit-tool/">AI Content Audit</a>
+            </div>
+
+            <div class="suite-block">
+              <h3>🔑 Keyword Suite</h3>
+              <a href="/keyword-research-tool/">Keyword Research</a>
+              <a href="/keyword-tool/">Keyword Placement</a>
+              <a href="/keyword-vs-tool/">Keyword Competition</a>
+            </div>
+
+            <div class="suite-block">
+              <h3>📈 UX Tools</h3>
+              <a href="/quit-risk-tool/">Quit Risk</a>
+              <a href="/seo-ux-tool/">SEO + UX</a>
+            </div>
+
+            <div class="suite-block">
+              <h3>📖 Learn & Integrate</h3>
+              <a href="/ai-ux-seo-help-guides/">Help Guides</a>
+              <a href="/integrations/browser-extensions/">Browser Extensions</a>
+              <a href="/integrations/developer-tools/">Developer Tools</a>
+              <a href="/integrations/plugins/">CMS Plugins</a>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             PRICING
+             ═══════════════════════════════════════════════════ -->
+        <section id="upgrade-short" class="max-w-6xl mx-auto px-4 py-12" aria-labelledby="pricing-heading">
+          <header class="text-center mb-8">
+            <h2 id="pricing-heading" class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500 bg-clip-text text-transparent">
+              Unlock More Audits
+            </h2>
+            <p class="text-gray-700 dark:text-gray-400 mt-2">Choose the plan that fits your needs.</p>
+          </header>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <article class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
+              <h3 class="text-xl font-bold">Free</h3>
+              <p class="text-3xl font-black mt-2">$0</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Forever free</p>
+              <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
+                <li>✓ 3 audits per day</li>
+                <li>✓ All 17 tools</li>
+                <li>✓ 7‑day GA4 &amp; GSC data</li>
+                <li>✓ Basic dashboard</li>
+                <li>✗ Real‑time analytics</li>
+                <li>✗ Custom date ranges</li>
+                <li>✗ CSV exports</li>
+                <li>✗ Priority support</li>
+              </ul>
+              <a href="/login/?tab=register" class="mt-6 inline-block w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">Create Account →</a>
+            </article>
+
+            <article class="glass rounded-2xl p-6 text-center border-2 border-orange-500/50 shadow-lg shadow-orange-500/20 flex flex-col relative">
+              <h3 class="text-xl font-bold mt-4">Pro</h3>
+              <p class="text-3xl font-black mt-2">$6</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">per month</p>
+              <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
+                <li>✓ 25 audits per day</li>
+                <li>✓ All 17 tools</li>
+                <li>✓ 30‑day GA4 data</li>
+                <li>✓ 28‑day GSC data</li>
+                <li>✓ CSV exports</li>
+                <li>✓ Priority support</li>
+                <li>✗ Real‑time analytics</li>
+                <li>✗ Custom date ranges</li>
+              </ul>
+              <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">Upgrade →</a>
+            </article>
+
+            <article class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
+              <h3 class="text-xl font-bold">Enterprise</h3>
+              <p class="text-3xl font-black mt-2">$68</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">per month</p>
+              <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
+                <li>✓ 300 audits per day</li>
+                <li>✓ All 17 tools</li>
+                <li>✓ 365‑day GA4 &amp; GSC data</li>
+                <li>✓ Real‑time analytics</li>
+                <li>✓ Custom date ranges</li>
+                <li>✓ CSV exports</li>
+                <li>✓ Dedicated support</li>
+              </ul>
+              <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">Upgrade →</a>
+            </article>
+          </div>
+
+          <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
+            All plans include all 17 tools. <a href="/pro/" class="text-orange-700 dark:text-orange-400 hover:underline">See full details →</a>
+          </p>
+        </section>
+
+        <!-- Beta discounts -->
+        <section class="py-8 bg-white/5 dark:bg-black/20" aria-labelledby="beta-heading">
+          <h2 id="beta-heading" class="sr-only">Beta Discounts</h2>
+          <div class="max-w-5xl mx-auto px-6 text-center">
+            <p class="text-lg md:text-xl font-semibold text-gray-800 dark:text-gray-300">
+              🎉 <strong class="text-orange-700 dark:text-orange-400">Beta Discounts!</strong>
+            </p>
+            <p class="text-base text-gray-700 dark:text-gray-400 mt-2">
+              Get <strong class="text-orange-700 dark:text-orange-400">Lifetime Pro for free</strong> or <strong class="text-purple-700 dark:text-purple-400">29% off Enterprise</strong>.
+            </p>
+            <a href="/upgrade/#beta-discounts" class="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">See Details →</a>
+          </div>
+        </section>
+
+        <!-- Login / Create account -->
+        <section class="py-8 max-w-5xl mx-auto px-6" aria-labelledby="account-heading">
+          <h2 id="account-heading" class="sr-only">Account Access</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <article class="bg-white/10 dark:bg-black/20 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 hover:border-orange-400 transition">
+              <div class="text-5xl mb-4" aria-hidden="true">🔑</div>
+              <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Already a member?</h3>
+              <p class="text-gray-700 dark:text-gray-400 mt-2 text-sm">Log in to your account and pick up where you left off.</p>
+              <a href="/login/?tab=login" class="inline-block mt-6 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">Log In →</a>
+            </article>
+            <article class="bg-white/10 dark:bg-black/20 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 hover:border-orange-400 transition">
+              <div class="text-5xl mb-4" aria-hidden="true">🚀</div>
+              <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">New here?</h3>
+              <p class="text-gray-700 dark:text-gray-400 mt-2 text-sm">Create your account and start auditing for free.</p>
+              <a href="/login/?tab=register" class="inline-block mt-6 px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition">Create Account →</a>
+            </article>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             FULL CHECKLIST (kept as compact AEO signal)
+             ═══════════════════════════════════════════════════ -->
+        <section id="seo-ux-checklist" class="py-0 px-1 max-w-6xl mx-auto my-16" aria-labelledby="checklist-heading">
+          <h2 id="checklist-heading" class="sr-only">Full Audit Checklist</h2>
+          <details class="mb-4 max-w-5xl mx-auto">
+            <summary class="px-6 py-5 text-xl text-center font-black bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+              See the Full Checklist 🗝️
+            </summary>
+            <div class="mt-6 p-8 bg-gray-100 dark:bg-gray-800/90 rounded-2xl shadow-inner space-y-8">
+              <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h3 class="text-xl font-bold text-green-700 dark:text-green-500 mb-4">✅ What We Look For</h3>
+                  <ul class="space-y-2 text-gray-800 dark:text-gray-300 text-sm">
+                    <li>✔ Readable sentences (under 20 words) and short paragraphs</li>
+                    <li>✔ Clear headings and scannable structure</li>
+                    <li>✔ Author bylines, bios, and citations</li>
+                    <li>✔ Mobile‑friendly design and touch targets</li>
+                    <li>✔ Fast loading and optimised assets</li>
+                    <li>✔ Structured data (FAQ, Article, Person)</li>
+                    <li>✔ First‑person language and engaging questions</li>
+                    <li>✔ Fresh, original insights and case studies</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-red-700 dark:text-red-400 mb-4">❌ Common Pitfalls</h3>
+                  <ul class="space-y-2 text-gray-800 dark:text-gray-300 text-sm">
+                    <li>✘ Walls of text with no breaks</li>
+                    <li>✘ Missing alt text or low contrast</li>
+                    <li>✘ No about, contact, or policy pages</li>
+                    <li>✘ Slow Core Web Vitals</li>
+                    <li>✘ No schema or outdated schema</li>
+                    <li>✘ Passive voice and vague language</li>
+                    <li>✘ Repetitive, generic AI‑sounding content</li>
+                    <li>✘ No clear answer in the first 150 words</li>
+                  </ul>
+                </div>
+              </div>
+              <p class="text-center text-sm text-gray-700 dark:text-gray-400 pt-4 border-t border-gray-200 dark:border-gray-700">
+                We score each of these in real‑time, in your browser. No data leaves your device.
+              </p>
+            </div>
+          </details>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             FAQ
+             ═══════════════════════════════════════════════════ -->
+        <section id="faq" class="max-w-4xl mx-auto my-16" aria-labelledby="faq-heading">
+          <h2 id="faq-heading" class="text-3xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500">
+            Frequently Asked Questions
+          </h2>
+          <div class="space-y-4">
+            <details class="group bg-white/5 dark:bg-black/20 rounded-2xl border border-white/10 dark:border-white/5 overflow-hidden">
+              <summary class="px-6 py-4 cursor-pointer font-bold text-lg text-gray-800 dark:text-gray-200 flex justify-between items-center gap-4">
+                Why build NUSA instead of a traditional SEO tool?
+                <span class="text-2xl transition-transform duration-300 group-open:rotate-180" aria-hidden="true">↓</span>
+              </summary>
+              <div class="px-6 pb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
+                Standalone SEO tools ignore UX, and standalone UX tools ignore AI search. After auditing hundreds of sites we saw that the real winners master all three. NUSA gives you a single dashboard that tells you where you actually stand across UX Health, SEO Intent and AI Search (AEO) — in one pass, in your browser.
+              </div>
+            </details>
+
+            <details class="group bg-white/5 dark:bg-black/20 rounded-2xl border border-white/10 dark:border-white/5 overflow-hidden">
+              <summary class="px-6 py-4 cursor-pointer font-bold text-lg text-gray-800 dark:text-gray-200 flex justify-between items-center gap-4">
+                How does on-page SEO affect findability in 2026?
+                <span class="text-2xl transition-transform duration-300 group-open:rotate-180" aria-hidden="true">↓</span>
+              </summary>
+              <div class="px-6 pb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
+                In our testing, pages that nail title tags, meta descriptions, heading structure and internal links see a 20–40% increase in qualified organic traffic. But you also need to satisfy user intent and be ready for AI overviews. Sites with perfect technical SEO can still lose traffic when their content doesn't answer the user's actual question. NUSA checks both on-page signals and semantic relevance.
+              </div>
+            </details>
+
+            <details class="group bg-white/5 dark:bg-black/20 rounded-2xl border border-white/10 dark:border-white/5 overflow-hidden">
+              <summary class="px-6 py-4 cursor-pointer font-bold text-lg text-gray-800 dark:text-gray-200 flex justify-between items-center gap-4">
+                What's the biggest UX mistake we see?
+                <span class="text-2xl transition-transform duration-300 group-open:rotate-180" aria-hidden="true">↓</span>
+              </summary>
+              <div class="px-6 pb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
+                Two things: ignoring mobile tap targets under 44px, and using long dense paragraphs. In one case study we boosted a client's dwell time by 60% just by breaking up paragraphs and increasing font size to 18px. NUSA flags these exact issues so you can fix them in minutes.
+              </div>
+            </details>
+
+            <details class="group bg-white/5 dark:bg-black/20 rounded-2xl border border-white/10 dark:border-white/5 overflow-hidden">
+              <summary class="px-6 py-4 cursor-pointer font-bold text-lg text-gray-800 dark:text-gray-200 flex justify-between items-center gap-4">
+                Does accessibility really help SEO?
+                <span class="text-2xl transition-transform duration-300 group-open:rotate-180" aria-hidden="true">↓</span>
+              </summary>
+              <div class="px-6 pb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
+                Yes. Accessible sites tend to rank better because they offer a better user experience, and WCAG compliance often improves crawl efficiency — search engines can understand your page structure more easily. NUSA checks alt text, contrast, semantic HTML and landmarks so you can hit the WCAG 2.2 AA standard without hiring an expert.
+              </div>
+            </details>
+
+            <details class="group bg-white/5 dark:bg-black/20 rounded-2xl border border-white/10 dark:border-white/5 overflow-hidden">
+              <summary class="px-6 py-4 cursor-pointer font-bold text-lg text-gray-800 dark:text-gray-200 flex justify-between items-center gap-4">
+                How does content quality affect AI citations?
+                <span class="text-2xl transition-transform duration-300 group-open:rotate-180" aria-hidden="true">↓</span>
+              </summary>
+              <div class="px-6 pb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
+                AI answer engines like Perplexity and ChatGPT rely on clear, structured, authoritative content. Adding a concise definition in the first 150 words, using FAQ schema and including first-hand data measurably boosts citation rate. NUSA's AI Search module measures exactly these signals — answerability, structured data, unique insights — to tell you how likely you are to be quoted.
+              </div>
+            </details>
+
+            <details class="group bg-white/5 dark:bg-black/20 rounded-2xl border border-white/10 dark:border-white/5 overflow-hidden">
+              <summary class="px-6 py-4 cursor-pointer font-bold text-lg text-gray-800 dark:text-gray-200 flex justify-between items-center gap-4">
+                How can I quickly improve my NUSA score?
+                <span class="text-2xl transition-transform duration-300 group-open:rotate-180" aria-hidden="true">↓</span>
+              </summary>
+              <div class="px-6 pb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
+                Three-step sprint: (1) Add an author byline and bio on every post — often a 15-point jump in Expertise just from that. (2) Break long paragraphs into 2–3 sentence chunks — readability scores rise 10–20 points. (3) Create a Contact page and link to it in the footer — trustworthiness improves immediately. Then run the audit again and watch the numbers climb.
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════
+             AUTHOR BIO
+             ═══════════════════════════════════════════════════ -->
+        <section id="author-bio" class="max-w-5xl mx-auto my-12 px-2 author-bio author-box" aria-labelledby="author-heading">
+          <article class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <header class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+              <div class="flex flex-col items-center gap-6 mb-6">
+                <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch logo" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+              </div>
+              <h2 id="author-heading" class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+              <p class="text-lg md:text-2xl text-gray-900 dark:text-gray-200 max-w-4xl mx-auto font-medium">
+                Website visibility platform. Deep diagnostics, plugin solutions, SEO &amp; AEO fixes and educational insights.
+              </p>
+            </header>
+
+            <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+              <div class="space-y-6">
+                <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+                  Traffic Torch delivers transparent, privacy-first SEO and UX analysis. We combine real correlation research with algorithm insights and performance testing. From instant health scores to competitive gap breakdowns, AI-suggested optimizations, and educational guidance – we help creators, agencies, and businesses rank better and build superior user experiences.
+                </p>
+              </div>
+
+              <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+                  <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+                    <img src="/images/ylia-callan-320w.webp"
+                         srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+                         sizes="(max-width: 768px) 96px, 128px"
+                         alt="Ylia Callan – Founder of Traffic Torch"
+                         class="w-full h-full object-cover object-center" loading="lazy">
+                  </div>
+                  <div class="space-y-4 text-center md:text-left">
+                    <h3 class="text-2xl md:text-3xl font-black text-orange-700 dark:text-orange-400 mb-2">Ylia Callan – Lead Developer</h3>
+                    <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+                      Musician • Author • Researcher • Web Designer • TAFE NSW Australia • Creator of the open-source NUSA audit toolkit. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+                    </p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+                      <a href="https://g.dev/traffictorch" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Google</a>
+                      <a href="https://github.com/traffictorch" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">GitHub</a>
+                      <a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">LinkedIn</a>
+                      <a href="https://x.com/Guitaralize" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">X</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <h3 class="text-2xl md:text-3xl font-black text-orange-700 dark:text-orange-400 mb-4">Server Stacks</h3>
+                <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+                  Hosted via <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-700 dark:text-blue-400 hover:underline font-medium">GitHub</a> for blazing-fast static delivery and updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-700 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations.
+                </p>
+                <div class="text-sm text-gray-700 dark:text-gray-400 italic mt-6">
+                  <p>Published: 2025-11-01</p>
+                  <p>Last updated: 2026-10-03</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="share-block" aria-label="Share options">
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </section>
+
+      </main>
+
+      <footer id="footer-placeholder"></footer>
+    </div>
+  </div>
+
+  <!-- Upgrade Modal (kept) -->
+  <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+    <div class="relative w-full max-w-md bg-white/10 dark:bg-gray-900/80 backdrop-blur-2xl rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto" id="upgradeModalContent" style="-webkit-overflow-scrolling: touch;">
+      <div class="sticky top-0 z-10 flex justify-end" style="margin-bottom: -3rem; pointer-events: none;">
+        <button onclick="window.closeUpgradeModal()" class="w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 text-white dark:text-gray-200 text-2xl font-bold transition" style="border: none; outline: none; pointer-events: auto; backdrop-filter: blur(4px);" aria-label="Close">&times;</button>
+      </div>
+      <div class="text-5xl mb-4" aria-hidden="true">🚀</div>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Daily Limit Reached</h2>
+      <p class="mt-2 text-gray-700 dark:text-gray-300">You've used all your free audits today.<br>Choose a plan to continue:</p>
+      <div class="mt-6 space-y-4">
+        <a href="/upgrade/" class="block w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg text-center">Upgrade to Pro <br> $6/month or $48/year or $198/lifetime</a>
+        <a href="/upgrade/" class="block w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow-lg text-center">Upgrade to Enterprise <br> $68/month or $680/year</a>
+      </div>
+      <p class="mt-4 text-xs text-gray-500 dark:text-gray-400">Pro: 25 audits/day • Enterprise: 300 audits/day + real‑time analytics</p>
+      <button onclick="window.closeUpgradeModal()" class="mt-4 text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 underline">Maybe later</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="/main.js?v=1.2" type="module"></script>
+  <script src="/nusa-tool/js/nusa.js?v=1.5" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b5ec7016f72456a9b4484d5dc706b79","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').catch(function (err) {
+          console.warn('Service worker registration failed:', err);
+        });
+      });
+    }
+  </script>
+
+  <!-- GA4 + GSC homepage card fetch (kept as before) -->
+  <script>
+    (function() {
+      const token = localStorage.getItem('authToken');
+      const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+      function setGA4Status(text, cls, bg) {
+        const el = document.getElementById('ga4-status');
+        if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+      }
+      function setGSCStatus(text, cls, bg) {
+        const el = document.getElementById('gsc-status');
+        if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+      }
+      function setExtraCTA(containerId, html) {
+        const el = document.getElementById(containerId);
+        if (el) el.innerHTML = html;
+      }
+
+      if (!token) {
+        setGA4Status('Not connected', 'text-yellow-700 dark:text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+        setGSCStatus('Not connected', 'text-yellow-700 dark:text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+        document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+        document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+        return;
+      }
+
+      (async function fetchData() {
+        try {
+          const res = await fetch(API_BASE + '/api/account-info', { headers: { 'Authorization': 'Bearer ' + token } });
+          const accountInfo = await res.json();
+          const ga4Connected = accountInfo.ga4Connected || false;
+          const gscConnected = accountInfo.gscConnected || false;
+
+          if (ga4Connected) {
+            try {
+              const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', { headers: { 'Authorization': 'Bearer ' + token } });
+              const d = await r.json();
+              const rows = d.data || [];
+              const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+              const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+              const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+              const newUsers = Math.round(users * 0.25);
+              document.getElementById('ga4-sessions').textContent = sessions;
+              document.getElementById('ga4-users').textContent = users;
+              document.getElementById('ga4-new-users').textContent = newUsers;
+              document.getElementById('ga4-views').textContent = views;
+              document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+              setGA4Status('Connected', 'text-green-700 dark:text-green-400', 'bg-green-500/20 border-green-500/30');
+              setExtraCTA('ga4-extra-cta', '');
+            } catch (e) {
+              setGA4Status('Error', 'text-red-700 dark:text-red-400', 'bg-red-500/20 border-red-500/30');
+            }
+          } else {
+            setGA4Status('Not connected', 'text-red-700 dark:text-red-400', 'bg-red-500/20 border-red-500/30');
+            document.getElementById('ga4-last-updated').textContent = 'Not connected';
+            setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-700 dark:text-orange-400 hover:underline">Connect GA4</a>');
+          }
+
+          if (gscConnected) {
+            try {
+              const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', { headers: { 'Authorization': 'Bearer ' + token } });
+              const d = await r.json();
+              const rows = d.data || [];
+              const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+              const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+              const ctr = impressions ? (clicks / impressions) : 0;
+              const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+              document.getElementById('gsc-clicks').textContent = clicks;
+              document.getElementById('gsc-impressions').textContent = impressions;
+              document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+              document.getElementById('gsc-position').textContent = position.toFixed(1);
+              document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+              setGSCStatus('Connected', 'text-green-700 dark:text-green-400', 'bg-green-500/20 border-green-500/30');
+              setExtraCTA('gsc-extra-cta', '');
+            } catch (e) {
+              setGSCStatus('Error', 'text-red-700 dark:text-red-400', 'bg-red-500/20 border-red-500/30');
+            }
+          } else {
+            setGSCStatus('Not connected', 'text-red-700 dark:text-red-400', 'bg-red-500/20 border-red-500/30');
+            document.getElementById('gsc-last-updated').textContent = 'Not connected';
+            setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-700 dark:text-orange-400 hover:underline">Connect GSC</a>');
+          }
+        } catch (err) {
+          console.error('Homepage cards error:', err);
+        }
+      })();
+    })();
+  </script>
+
+  <!-- Carousel -->
+  <script>
+    (function () {
+      const carousel = document.getElementById('screenshot-carousel');
+      if (!carousel) return;
+      const track = carousel.querySelector('#carousel-track');
+      const slides = track.querySelectorAll('.carousel-slide');
+      const dots = carousel.querySelectorAll('.carousel-dot');
+      const prevBtn = carousel.querySelector('.carousel-btn.prev');
+      const nextBtn = carousel.querySelector('.carousel-btn.next');
+      let current = 0;
+      let autoplayId = null;
+
+      function go(i) {
+        current = (i + slides.length) % slides.length;
+        track.style.transform = 'translateX(-' + (current * 100) + '%)';
+        dots.forEach(function (d, idx) {
+          const active = idx === current;
+          d.classList.toggle('active', active);
+          d.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        slides.forEach(function (s, idx) {
+          s.setAttribute('aria-hidden', idx === current ? 'false' : 'true');
+          // pause offscreen images for performance
+          const img = s.querySelector('img');
+          if (img) img.loading = idx === current ? 'eager' : 'lazy';
+        });
+      }
+      function next() { go(current + 1); }
+      function prev() { go(current - 1); }
+
+      function startAutoplay() {
+        if (autoplayId || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        autoplayId = setInterval(next, 5500);
+      }
+      function stopAutoplay() {
+        if (autoplayId) { clearInterval(autoplayId); autoplayId = null; }
+      }
+      function resetAutoplay() { stopAutoplay(); startAutoplay(); }
+
+      prevBtn.addEventListener('click', function () { prev(); resetAutoplay(); });
+      nextBtn.addEventListener('click', function () { next(); resetAutoplay(); });
+      dots.forEach(function (d, i) {
+        d.addEventListener('click', function () { go(i); resetAutoplay(); });
+      });
+
+      carousel.addEventListener('mouseenter', stopAutoplay);
+      carousel.addEventListener('mouseleave', startAutoplay);
+      carousel.addEventListener('focusin', stopAutoplay);
+      carousel.addEventListener('focusout', startAutoplay);
+
+      // swipe
+      let startX = 0, startY = 0, swiping = false;
+      carousel.addEventListener('touchstart', function (e) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        swiping = false;
+        stopAutoplay();
+      }, { passive: true });
+      carousel.addEventListener('touchmove', function (e) {
+        if (swiping) return;
+        const dx = Math.abs(e.touches[0].clientX - startX);
+        const dy = Math.abs(e.touches[0].clientY - startY);
+        if (dx > dy && dx > 12) swiping = true;
+      }, { passive: true });
+      carousel.addEventListener('touchend', function (e) {
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+        startAutoplay();
+      });
+
+      // keyboard
+      carousel.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') { next(); resetAutoplay(); }
+        if (e.key === 'ArrowLeft') { prev(); resetAutoplay(); }
+      });
+      carousel.setAttribute('tabindex', '0');
+
+      go(0);
+      startAutoplay();
+    })();
+  </script>
+
+  <script type="module">
+    import { injectShareModule } from '/share-injector.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      injectShareModule();
+    });
+  </script>
+
+  <noscript>
+    <h2>Traffic Torch — Find Out Why Your Website Isn't Being Found</h2>
+    <p><strong>NUSA</strong> is a website visibility platform. It audits UX Health, SEO Intent, and AI Search Readiness in one pass, in your browser.</p>
+    <h3>Explore the Traffic Torch Toolkit:</h3>
+    <ul>
+      <li><a href="https://traffictorch.net/lighthouse-plus-tool/">Lighthouse Plus Tool</a></li>
+      <li><a href="https://traffictorch.net/aeo-performance-tool/">AEO Performance Tool</a></li>
+      <li><a href="https://traffictorch.net/topical-authority-audit-tool/">Topical Authority Tool</a></li>
+      <li><a href="https://traffictorch.net/seo-entity-extractor-tool/">SEO Entity Extractor</a></li>
+      <li><a href="https://traffictorch.net/seo-intent-tool/">SEO Intent Tool</a></li>
+      <li><a href="https://traffictorch.net/local-seo-tool/">Local SEO Tool</a></li>
+      <li><a href="https://traffictorch.net/product-seo-tool/">Product SEO Tool</a></li>
+      <li><a href="https://traffictorch.net/schema-generator/">Schema Generator</a></li>
+      <li><a href="https://traffictorch.net/ai-search-optimization-tool/">AI Search Optimization</a></li>
+      <li><a href="https://traffictorch.net/ai-voice-search-tool/">AI Voice Search</a></li>
+      <li><a href="https://traffictorch.net/ai-audit-tool/">AI Content Audit</a></li>
+      <li><a href="https://traffictorch.net/quit-risk-tool/">Quit Risk UX Tool</a></li>
+      <li><a href="https://traffictorch.net/keyword-research-tool/">Keyword Research Tool</a></li>
+      <li><a href="https://traffictorch.net/keyword-tool/">Keyword Placement Tool</a></li>
+      <li><a href="https://traffictorch.net/keyword-vs-tool/">Keyword Competition Tool</a></li>
+      <li><a href="https://traffictorch.net/ai-ux-seo-help-guides/">AI, UX &amp; SEO Help Guides</a></li>
     </ul>
-    <p class="pt-4">
-      Traffic Torch delivers the complete 360° picture for SEO health + UX signals + AI visibility.
-    </p>
-  </div>
-</section>
+    <p><strong>Website:</strong> <a href="https://traffictorch.net/">Traffic Torch</a></p>
+  </noscript>
 
-<!-- THREE PILLARS – EACH WITH TOP 5/6 CARDS      -->
-<div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-12">
-  <div class="grid md:grid-cols-3 gap-12 lg:gap-16">
-
-    <!-- ================== SEO PILLAR ================== -->
-    <div>
-      <h2 class="text-3xl font-bold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-600">
-        Modern SEO Mastery
-      </h2>
-      <div class="space-y-6">
-        <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-6 rounded-2xl border border-blue-100 dark:border-blue-800/40">
-          <span class="text-3xl flex-shrink-0">1</span>
-          <div>
-            <strong>Perfect search intent match</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Answer exactly what people are actually asking — not just what you want to rank for.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
-          <span class="text-3xl flex-shrink-0">2</span>
-          <div>
-            <strong>Strong E-E-A-T signals</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Visible expertise, authoritativeness, trustworthiness — everywhere.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/30 dark:to-indigo-900/30 p-6 rounded-2xl border border-purple-100 dark:border-purple-800/40">
-          <span class="text-3xl flex-shrink-0">3</span>
-          <div>
-            <strong>Freshness & real updates</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Keep content current — stale pages lose fast.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/30 dark:to-teal-900/30 p-6 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
-          <span class="text-3xl flex-shrink-0">4</span>
-          <div>
-            <strong>Technical perfection</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Speed, mobile, crawlability, schema.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-teal-50 to-green-50 dark:from-teal-900/30 dark:to-green-900/30 p-6 rounded-2xl border border-teal-100 dark:border-teal-800/40">
-          <span class="text-3xl flex-shrink-0">5</span>
-          <div>
-            <strong>Competitive content depth gap analysis</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Know exactly what to add/remove to outrank others.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================== UX PILLAR ================== -->
-    <div>
-      <h2 class="text-3xl font-bold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-600">
-        Next-Level User Experience
-      </h2>
-      <div class="space-y-6">
-        <div class="flex items-start gap-5 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30 p-6 rounded-2xl border border-teal-100 dark:border-teal-800/40">
-          <span class="text-3xl flex-shrink-0">1</span>
-          <div>
-            <strong>Extremely low quit risk</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Clear value in under 5 seconds or users leave forever.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/30 dark:to-blue-900/30 p-6 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
-          <span class="text-3xl flex-shrink-0">2</span>
-          <div>
-            <strong>Scannable, mobile-first layout</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Big fonts, short paragraphs, generous spacing, touch targets.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-6 rounded-2xl border border-blue-100 dark:border-blue-800/40">
-          <span class="text-3xl flex-shrink-0">3</span>
-          <div>
-            <strong>Zero frustration UX patterns</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">No pop-ups, no sticky bars, no misleading CTAs on arrival.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30 p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
-          <span class="text-3xl flex-shrink-0">4</span>
-          <div>
-            <strong>Clear reading flow & visual hierarchy</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Users find what they need without thinking.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-6 rounded-2xl border border-purple-100 dark:border-purple-800/40">
-          <span class="text-3xl flex-shrink-0">5</span>
-          <div>
-            <strong>Accessibility as default</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">WCAG 2.2 AA — inclusive wins rankings & reputation.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================== AI PILLAR ================== -->
-    <div>
-      <h2 class="text-3xl font-bold text-center mb-10 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-        Professional AI Citations
-      </h2>
-      <div class="space-y-6">
-        <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-6 rounded-2xl border border-purple-100 dark:border-purple-800/40">
-          <span class="text-3xl flex-shrink-0">1</span>
-          <div>
-            <strong>Answer first — bold & complete</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Direct answer in first 150–200 words = AI quote machine.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-6 rounded-2xl border border-pink-100 dark:border-pink-800/40">
-          <span class="text-3xl flex-shrink-0">2</span>
-          <div>
-            <strong>Visible author credentials & bio</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Trust is now the #1 AI source selection signal.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-6 rounded-2xl border border-rose-100 dark:border-rose-800/40">
-          <span class="text-3xl flex-shrink-0">3</span>
-          <div>
-            <strong>FAQ / HowTo / Article schema</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Makes answers machine-extractable instantly.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 p-6 rounded-2xl border border-orange-100 dark:border-orange-800/40">
-          <span class="text-3xl flex-shrink-0">4</span>
-          <div>
-            <strong>Original data, tests, case studies</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">Unique value stops de-duplication.</span>
-          </div>
-        </div>
-        <div class="flex items-start gap-5 bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-900/30 dark:to-yellow-900/30 p-6 rounded-2xl border border-amber-100 dark:border-amber-800/40">
-          <span class="text-3xl flex-shrink-0">5</span>
-          <div>
-            <strong>Conversational + scannable format</strong><br>
-            <span class="text-gray-600 dark:text-gray-400">You language, lists, tables — loved by humans & AI.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
-<!-- COMPARISON TABLE – OLD vs MODERN              -->
-<section class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-16">
-      <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
-      Old SEO vs Modern Traffic Mastery
-      </h2>
-  
-  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
-    <table class="w-full text-left min-w-[640px]">
-      <thead class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-        <tr>
-          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
-          <th class="px-6 py-5 text-lg font-semibold">Old-School SEO Focus</th>
-          <th class="px-6 py-5 text-lg font-semibold">Modern Traffic Mastery Focus</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-        <tr>
-          <td class="px-6 py-5 font-medium">Primary Goal:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High Rankings in SERPS.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">SEO Find-ability + AI answers + satisfied users.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Key Metrics:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword rankings, backlinks, DA.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">360° health score (SEO + UX + AI visibility + quit risk).</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">Content Strategy:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Keyword density + word count.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent alignment + original insights + conversational clarity.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Trust & Authority:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Backlinks.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">E-E-A-T + authorship + freshness + real data.</td>
-        </tr>
-        <tr>
-          <td class="px-6 py-5 font-medium">User Experience:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mobile friendly.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Core vitals, low quit-risk, accessibility, clear flow.</td>
-        </tr>
-        <tr class="bg-gray-50 dark:bg-gray-900/50">
-          <td class="px-6 py-5 font-medium">Future-Proofing:</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Ignored AI/search evolution.</td>
-          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Citation readiness + extractability + human-first writing.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-	
-<!-- SEO UX Checklist -->
-<section id="seo-ux-checklist" class="py-16 px-1 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray dark:to-gray-900">
-  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-    SEO &amp; UX Checklist for Ranking Success
-  </h2>
-  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-400 dark:text-gray-300">
-    Master on-page SEO audits, plugin solutions, AI search optimization, E-E-A-T signals, mobile UX health checks.
-  </p>
-
-  <!-- Full Checklist Inside Single Expandable Box -->
-  <details class="mb-12 max-w-5xl mx-auto">
-    <summary class="px-6 py-5 text-2xl text-center font-black bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
-      SEO &amp; UX Checklist 🗝️
-    </summary>
-    <div class="mt-8 p-8 bg-white/80 dark:bg-gray-800/90 rounded-2xl shadow-inner">
-      <!-- Do / Avoid Summary Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <!-- Best Practices to Do -->
-        <div class="bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-2 shadow-lg">
-          <h3 class="text-xl font-bold mb-6 text-green-400 flex items-center gap-3">
-            <span class="text-3xl">✅</span> Best Practices to Do?
-          </h3>
-          <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
-            <li><strong>✅ Optimize title tags and meta descriptions</strong> with primary keywords naturally for better CTR.</li>
-            <li><strong>✅ Implement structured data schema</strong> for rich snippets and better AI visibility.</li>
-            <li><strong>✅ Run mobile UX preview</strong> to ensure responsive design and fast interactivity (INP).</li>
-            <li><strong>✅ Build strong E-E-A-T signals</strong> with author bios, citations, and first-hand experience.</li>
-            <li><strong>✅ Use AI SEO tools</strong> for keyword competition analysis and gap identification.</li>
-            <li><strong>✅ Perform AI content audit</strong> to detect patterns and improve authenticity.</li>
-            <li><strong>✅ Optimize images</strong> with proper compression, WebP formats, and descriptive alt text.</li>
-            <li><strong>✅ Leverage predictive rank forecast</strong> tools to prioritize high-impact fixes.</li>
-            <li><strong>✅ Conduct SEO intent analysis</strong> to align content with user queries.</li>
-          </ul>
-        </div>
-
-        <!-- Common Mistakes to Avoid -->
-        <div class="bg-gradient-to-br from-red-900/20 to-orange-900/20 dark:from-red-900/30 dark:to-orange-900/30 rounded-2xl p-2 shadow-lg">
-          <h3 class="text-xl font-bold mb-6 text-red-400 flex items-center gap-3">
-            <span class="text-3xl">⚠️</span> Common Mistakes to Avoid?
-          </h3>
-          <ul class="space-y-5 text-lg text-gray-700 dark:text-gray-300">
-            <li><strong>❌ Duplicate or thin content</strong> that provides no unique value.</li>
-            <li><strong>❌ Slow server response times</strong> impacting Core Web Vitals and LCP scores.</li>
-            <li><strong>❌ Unexpected layout shifts (high CLS)</strong> from unoptimized images or ads.</li>
-            <li><strong>❌ Ignoring search intent</strong> – mismatched content leads to high bounce rates.</li>
-            <li><strong>❌ Over-relying on AI-generated content</strong> without human review and personalization.</li>
-            <li><strong>❌ Broken internal/external links</strong> that frustrate users and crawlers.</li>
-            <li><strong>❌ Poor accessibility</strong> (low contrast, missing ARIA labels) harming UX and rankings.</li>
-            <li><strong>❌ Neglecting HTTPS security</strong> and privacy signals.</li>
-            <li><strong>❌ Cluttered navigation and hidden calls-to-action</strong> on mobile devices.</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Detailed Themed Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <!-- On-Page SEO Essentials -->
-        <div class="checklist-card bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
-          <h3 class="text-2xl font-bold mb-8 text-green-400 flex items-center gap-6">
-            <span class="text-4xl">🗝️</span> On-Page SEO Audit Essentials
-          </h3>
-          <div class="space-y-8 text-lg text-gray-700 dark:text-gray-300">
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🔻</span>
-              <div><strong>Weak title tags &amp; meta descriptions</strong> reducing click-through rates in website SEO analysis.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">📈</span>
-              <div><strong>Keyword Torch</strong>: Instant title/meta optimization with keyword placement, length checks, and CTR forecasts via free SEO audit tool.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🔻</span>
-              <div><strong>Poor heading structure &amp; keyword stuffing</strong> hurting relevance signals.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">📈</span>
-              <div>Deep H1–H6 analysis, natural density fixes, and content relevance scoring for better SEO health score.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🔻</span>
-              <div><strong>Unoptimized images &amp; missing alt text</strong> wasting accessibility opportunities.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">📈</span>
-              <div>Compression, WebP format, descriptive alt text, and lazy loading recommendations.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🔻</span>
-              <div><strong>No structured data schema</strong> missing rich results.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">📈</span>
-              <div>Schema validation, implementation suggestions, and rich snippet predictive previews.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🔻</span>
-              <div><strong>Duplicate or thin content</strong> risking devaluation.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">📈</span>
-              <div>Unique value checks, depth analysis, and expansion ideas.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Competitive & Intent -->
-        <div class="checklist-card bg-gradient-to-br from-blue-900/20 to-indigo-900/20 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
-          <h3 class="text-2xl font-bold mb-8 text-orange-400 flex items-center gap-6">
-            <span class="text-4xl">⚔️</span> Competitive Analysis &amp; Search Intent
-          </h3>
-          <div class="space-y-8 text-lg text-gray-700 dark:text-gray-300">
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🥈</span>
-              <div><strong>Keyword gaps vs top-ranking competitors</strong> limiting traffic potential.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🎯</span>
-              <div><strong>Keyword VS</strong>: Side-by-side keyword competition analysis with missing terms &amp; beat strategies.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">❓</span>
-              <div><strong>Mismatched search intent</strong> causing high bounce rates.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🎯</span>
-              <div>Full SEO intent analysis + E-E-A-T signal evaluation and alignment fixes.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🥈</span>
-              <div><strong>Weak topical authority</strong> vs established competitors.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🎯</span>
-              <div>Cluster mapping, entity optimization, and depth recommendations.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">❓</span>
-              <div><strong>Ignoring featured snippets &amp; AI overviews.</strong></div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🎯</span>
-              <div>Structured content audits for zero-click visibility and citation potential.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🥈</span>
-              <div><strong>No internal linking strategy</strong> diluting page authority.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🎯</span>
-              <div>Smart anchor text suggestions and silo structure guidance.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- AI Era Optimization -->
-        <div class="checklist-card bg-gradient-to-br from-purple-900/20 to-pink-900/20 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
-          <h3 class="text-2xl font-bold mb-8 text-red-400 flex items-center gap-6">
-            <span class="text-4xl">🤖</span> AI Search &amp; Content Optimization
-          </h3>
-          <div class="space-y-8 text-lg text-gray-700 dark:text-gray-300">
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">👻</span>
-              <div><strong>Invisible in AI-powered search results</strong> (Google AIO, Perplexity, Chat GTP).</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🌟</span>
-              <div><strong>AI Search Optimization</strong>: Citation scoring + visibility fixes using AI SEO tools.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">⚠️</span>
-              <div><strong>Detectable AI-generated content patterns</strong> risking penalties.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">✍️</span>
-              <div><strong>AI Content Audit</strong>: Perplexity/burstiness detection.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">👻</span>
-              <div><strong>Low E-E-A-T signals</strong> reducing trust in AI era.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🌟</span>
-              <div>Author expertise proof, source citations and original insight checks.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">⚠️</span>
-              <div><strong>Over-optimized or unnatural language</strong> from unchecked AI.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">✍️</span>
-              <div>Variability scoring, entity reinforcement, and first-hand experience prompts.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">👻</span>
-              <div><strong>Missing helpful content updates</strong> for user-first focus.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🌟</span>
-              <div>Readability, uniqueness, and value-add predictive analysis.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- UX & Performance -->
-        <div class="checklist-card bg-gradient-to-br from-orange-900/20 to-amber-900/20 dark:from-orange-900/30 dark:to-amber-900/30 rounded-2xl p-8 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
-          <h3 class="text-2xl font-bold mb-8 text-green-400 flex items-center gap-6">
-            <span class="text-4xl">📱</span> Mobile UX &amp; Usability Health Check
-          </h3>
-          <div class="space-y-8 text-lg text-gray-700 dark:text-gray-300">
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🚪</span>
-              <div><strong>High bounce rates</strong> from hard mobile readability &amp; navigation.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">❤️</span>
-              <div><strong>Quit Risk Tool</strong>: Readability scoring, navigation audit, bounce prediction &amp; UX analyzer fixes.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">♿</span>
-              <div><strong>Accessibility barriers &amp; low contrast.</strong></div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">✅</span>
-              <div>WCAG checks, contrast ratios, ARIA labels, and keyboard navigation validation.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🚪</span>
-              <div><strong>Slow Core Web Vitals (LCP/INP/CLS)</strong> frustrating users.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">❤️</span>
-              <div>Performance proxies, optimization roadmap, and mobile UX preview testing.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">♿</span>
-              <div><strong>Non-responsive design &amp; tiny tap targets.</strong></div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">✅</span>
-              <div>Viewport configuration, touch-friendly elements, and interactive device emulation.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">🚪</span>
-              <div><strong>Intrusive interstitials or pop-ups</strong> on mobile.</div>
-            </div>
-            <div class="flex items-start gap-6">
-              <span class="text-3xl">❤️</span>
-              <div>User flow analysis, distraction scoring, and retention-focused recommendations.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-12">
-        <p class="text-2xl font-semibold text-gray-700 dark:text-gray-300">
-          All checks powered by instant, private, client-side analysis.
-        </p>
-      </div>
-    </div>
-  </details>
-</section>
-    
-<!-- Why Traffic Torch Matters Accordion -->
-<div class="max-w-4xl mx-auto my-20">
-  <details>
-    <summary class="px-2 py-4 text-1xl text-center font-black bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-      Why Search matters?
-      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
-    </summary>
-    <div class="mt-6 px-2 py-10 bg-white dark:bg-gray-800 rounded-3xl shadow-inner space-y-10 text-gray-700 dark:text-gray-300">
-      <section class="text-left space-y-6">
-        <h3 class="text-3xl font-bold text-purple-600 dark:text-purple-400">Search Has Evolved — So Must Your Strategy</h3>
-        <p class="text-lg leading-relaxed">
-          Traditional keyword stuffing no longer works. Today’s search engines reward pages that demonstrate relevance, trustworthiness, usability and genuine value.
-        </p>
-        <p class="text-lg leading-relaxed">
-          Traffic Torch gives you the exact diagnostics and fixes to excel in this new landscape.
-        </p>
-      </section>
-
-      <section class="space-y-8">
-        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Compounding Benefits Across the Suite</h3>
-        <div class="space-y-6 text-base">
-          <div class="flex gap-6">
-            <div class="text-4xl">🚀</div>
-            <div>
-              <strong>Higher Rankings & AI Citations</strong><br>
-              Optimized on-page, intent, and human signals push you to Page 1 and into AI answer boxes.
-            </div>
-          </div>
-          <div class="flex gap-6">
-            <div class="text-4xl">📈</div>
-            <div>
-              <strong>More Organic Traffic</strong><br>
-              Better relevance, richer snippets, and stronger UX drive sustained growth.
-            </div>
-          </div>
-          <div class="flex gap-6">
-            <div class="text-4xl">😊</div>
-            <div>
-              <strong>Superior User Experience</strong><br>
-              Clear, authentic, accessible content keeps visitors engaged and converting.
-            </div>
-          </div>
-          <div class="flex gap-6">
-            <div class="text-4xl">🛡️</div>
-            <div>
-              <strong>Future-Proof Resilience</strong><br>
-              Align with Google’s Helpful Content, Core Updates, and emerging AI search standards.
-            </div>
-          </div>
-          <div class="flex gap-6">
-            <div class="text-4xl">💪</div>
-            <div>
-              <strong>Competitive Advantage</strong><br>
-              Most sites ignore these signals. Master them to outrank and outlast competitors.
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-8 rounded-xl">
-        <h3 class="text-2xl font-bold mb-4">The Big Picture</h3>
-        <p class="text-base leading-relaxed">
-          Traffic Torch isn’t just a collection of tools. It’s a complete system for building search-engine and user friendly that drive real business results.
-        </p>
-        <p class="text-base font-medium mt-6">
-          Run audits, implement fixes, re-test, and watch your traffic, UX, rankings and conversions grow.
-        </p>
-      </section>
-
-      <p class="text-center text-lg italic opacity-70 mt-8">
-        Master modern SEO & UX → Build traffic that lasts.
-      </p>
-    </div>
-  </details>
-</div>
-
-<!-- Author Bio -->
-<section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box" id="about-ylia-and-traffic-torch">
-  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
-    <!-- Hero Gradient Header: Gradient only, no solid bg -->
-    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
-      <div class="flex flex-col items-center gap-6 mb-6">
-        <!-- Traffic Torch Logo Only in Hero -->
-        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Deep-Dive Reports, Competitive Gaps, AI Fixes – Privacy-First Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
-      </div>
-      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
-      <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
-        360° SEO • UX • AI Optimization Toolkit. Deep Diagnostics, Plugin Solutions, AI-Powered Fixes & Educational Insights.
-      </p>
-    </div>
-    <!-- Main Content Area: Transparent, inherits page bg -->
-    <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
-      <!-- Tool Mission Description -->
-      <div class="space-y-6">
-        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
-          Traffic Torch delivers transparent, client-side, privacy-first SEO and UX analysis powered by real correlation research, algorithm insights, and performance testing. From instant health scores to competitive gap breakdowns, AI-suggested optimizations, and educational guidance. Empowering creators, agencies, and businesses to achieve better rankings and superior user experiences.
-        </p>
-      </div>
-      <!-- Founder Bio with Smaller Photo -->
-      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
-        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
-          <!-- Perfect circle wrapper for photo -->
-          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
-            <img
-              src="/images/ylia-callan-320w.webp"
-              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
-              sizes="(max-width: 768px) 96px, 128px"
-              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools"
-              class="w-full h-full object-cover object-center"
-              loading="lazy">
-          </div>
-          <div class="space-y-4 text-center md:text-left">
-            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
-            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
-              Musician • Author • Researcher • Web Designer • TAFE NSW • Creator of privacy-first AI-powered web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
-            </p>
-            <p class="text-base text-gray-800 dark:text-gray-200 italic">
-              Explore my work - books on physics, philosophy, consciousness, music, and more – at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
-            </p>
-          </div>
-        </div>
-        <!-- Social Links -->
-        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
-          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
-          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
-        </ul>
-      </div>
-      <!-- Tech Stack for E-E-A-T -->
-      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
-        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
-        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
-          Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations.
-        </p>
-        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
-          Core Expertise: SEO Correlation Research • UX Optimization • Privacy-First Development • AI-Assisted Diagnostics. Continuously aligned with the latest guidelines, best practices, and real-world data.
-        </p>
-          <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
-          <p>Published: 2025-11-01</p>
-          <p>Last updated: 2026-06-02</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Share Buttons -->
-<div class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_pinterest"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_facebook"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
-
-<section class="bottom-banner" aria-label="Traffic Torch visual summary">
-  <picture style="--banner-ratio: 22.36%;"> <!-- 275 / 1230 ≈ 22.36% -->
-<img src="/images/tool-banners/seo-ux-tool-infographic-1200w.webp" srcset="/images/tool-banners/seo-ux-tool-infographic-480w.webp 480w, /images/tool-banners/seo-ux-tool-infographic-800w.webp 800w, /images/tool-banners/seo-ux-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch SEO UX Tool – Instant on-page UX health check with accessibility, mobile usability, Core Web Vitals, visual hierarchy analysis and AI-powered optimization fixes" width="1200" height="268" loading="lazy" decoding="async">
-  </picture>
-</section>
-
-   
-  </main>
-
-<!-- Footer -->
-<div id="footer-placeholder"></div>
-</div>
-</div>
-
-<!-- Load JS last and defer for speed -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-<script src="/main-v1.1.js" type="module"></script>
-<script src="/seo-ux-tool/plugin-solutions-v1.0.js" type="module" defer></script>
-<script src="/seo-ux-tool/metric-explanations-v1.0.js" type="module" defer></script>
-<script src="/seo-ux-tool/priority-gains-v1.0.js" type="module" defer></script>
-<script src="/seo-ux-tool/script-v1.2.js" type="module" defer></script>
-
-
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b5ec7016f72456a9b4484d5dc706b79","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>

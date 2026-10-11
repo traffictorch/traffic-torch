@@ -2,7 +2,6 @@
 // Self-contained Organization schema editor & generator for Traffic Torch
 // No auto-prefill, starts empty, clean output, mobile-friendly
 // Focus on recommended SEO fields: core IDs, contact, address, social sameAs
-
 import {
   buildJsonLdSkeleton,
   cleanJsonLd,
@@ -22,7 +21,7 @@ function render(editorContainer, previewEl) {
         <li>Subtype as LocalBusiness if applicable (add in @type)</li>
         <li>Validate with Google Rich Results Test</li>
         <li>
-        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#organization" 
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#organization"
         class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
         Learn more about Organization Schema Markup →
         </a>
@@ -56,6 +55,11 @@ function render(editorContainer, previewEl) {
           <div>
             <label class="block mb-2 font-medium">Logo URL</label>
             <input type="url" data-field="logo" placeholder="https://yourwebsite.com/logo.png"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Image URL <span class="text-xs text-gray-500 dark:text-gray-400">(optional – storefront, office, building photo etc. Helps LocalBusiness rich results)</span></label>
+            <input type="url" data-field="image.0" placeholder="https://yourwebsite.com/storefront.jpg"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
         </div>
@@ -128,7 +132,6 @@ function render(editorContainer, previewEl) {
 
   const sameAsList = editorContainer.querySelector('#sameas-list');
   const addSameAsBtn = editorContainer.querySelector('#add-sameas-btn');
-
   let sameAsCount = 0;
 
   function addSameAs() {
@@ -142,12 +145,10 @@ function render(editorContainer, previewEl) {
         </button>
       </div>
     `);
-
     sameAsList.lastElementChild.querySelector('.remove-sameas').onclick = () => {
       sameAsList.lastElementChild.remove();
       updatePreview();
     };
-
     updatePreview();
   }
 
@@ -171,7 +172,8 @@ function render(editorContainer, previewEl) {
         postalCode: '',
         addressCountry: ''
       },
-      sameAs: []
+      sameAs: [],
+      image: []
     };
 
     editorContainer.querySelectorAll('[data-field]').forEach(el => {
@@ -184,6 +186,9 @@ function render(editorContainer, previewEl) {
         } else if (field.startsWith('sameAs.')) {
           const index = parseInt(field.split('.')[1]);
           data.sameAs[index] = value;
+        } else if (field.startsWith('image.')) {
+          const idx = parseInt(field.split('.')[1]);
+          if (value) data.image[idx] = value;
         } else {
           data[field] = value;
         }
@@ -191,6 +196,8 @@ function render(editorContainer, previewEl) {
     });
 
     data.sameAs = data.sameAs.filter(Boolean); // clean empty
+    data.image = data.image.filter(Boolean);
+    if (data.image.length === 0) delete data.image;
 
     if (Object.values(data.address).every(v => !v)) {
       delete data.address; // remove empty address

@@ -1,129 +1,153 @@
-  import { hasViewportMeta } from './helpers.js';
-  
-  function analyzeTechnicalSEO(doc, data) {
-    let details = {};
-    let mobileScore = data.hasViewport ? 60 : 10;
-    if (data.viewportContent && /width\s*=\s*device-width/i.test(data.viewportContent)) mobileScore += 30;
-    if (data.viewportContent.includes('initial-scale=1')) mobileScore += 10;
-    if (!data.viewportContent.includes('user-scalable=no') && !data.viewportContent.includes('maximum-scale=1')) {
-      mobileScore += 10;
-    } else {
-      mobileScore -= 15;
-    }
-    mobileScore = Math.min(100, Math.max(0, mobileScore));
-    details.mobile = { viewportPresent: data.hasViewport, score: mobileScore };
+// product-seo-tool/modules/technical.js
+// v1.2 — Adds variant/color/size to ignored query params (Shopify/Amazon pattern).
+//        Neutral HTTPS in pasted mode + mixed-content scan (from v1.1).
 
-    const isHttps = data.url.startsWith('https');
-    details.https = { isHttps, score: isHttps ? 95 : 0 };
+import { getMobileReadiness } from './helpers.js';
 
-    const canonical = doc.querySelector('link[rel="canonical"]');
-    let canonicalScore = 20;
-    let canonDetails = {
-      present: !!canonical,
-      href: '',
-      absoluteHref: '',
-      normalized: '',
-      requestedNormalized: '',
-      matchType: 'none'
-    };
+function analyzeTechnicalSEO(doc, data) {
+  const details = {};
 
-    if (canonical && canonical.hasAttribute('href')) {
-      const rawHref = canonical.getAttribute('href').trim();
-      canonDetails.href = rawHref;
-      let absoluteCanon = rawHref;
-      try {
-        absoluteCanon = new URL(rawHref, data.url).href;
-      } catch (e) {
-        console.warn('[Canonical] Failed to resolve relative href:', rawHref, e);
-      }
-      canonDetails.absoluteHref = absoluteCanon;
+  // ─── Mobile-first readiness ───────────────────────────────
+  const mr = getMobileReadiness(doc);
+  let mobileScore = 0;
+  if (mr.hasViewport)     mobileScore += 30;
+  if (mr.hasWidth)        mobileScore += 25;
+  if (mr.hasInitialScale) mobileScore += 15;
+  if (!mr.blocksZoom)     mobileScore += 15;
+  else                    mobileScore -= 20;
 
-      const normalizeUrl = (urlStr) => {
-        try {
-          const url = new URL(urlStr);
-          let hostname = url.hostname.toLowerCase().replace(/^www\./, '');
-          let path = url.pathname.toLowerCase().replace(/\/$/, '');
-          let search = url.search.toLowerCase();
-          const ignoreParams = ['session_id', 'sid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'fbclid', '_ga', '_gl', 'gclid'];
-          const params = new URLSearchParams(search);
-          ignoreParams.forEach(p => params.delete(p));
-          search = params.toString() ? '?' + params.toString() : '';
-          return `${hostname}${path}${search}`;
-        } catch (e) {
-          return urlStr.toLowerCase()
-            .replace(/^https?:\/\//, '')
-            .replace(/^www\./, '')
-            .replace(/\/$/, '');
-        }
-      };
+  const styledTargets = doc.querySelectorAll(
+    'button[style*="height"], a[style*="height"], button[style*="padding"], a[style*="padding"]'
+  );
+  let tinyCount = 0;
+  styledTargets.forEach(el => {
+    const style = (el.getAttribute('style') || '').toLowerCase();
+    const h = style.match(/height\s*:\s*(\d+)/);
+    const p = style.match(/padding\s*:\s*(\d+)/);
+    if (h && parseInt(h[1], 10) < 44) tinyCount++;
+    else if (p && parseInt(p[1], 10) * 2 < 44) tinyCount++;
+  });
+  if (tinyCount > 0) mobileScore -= Math.min(20, tinyCount * 4);
 
-      const requestedNorm = normalizeUrl(data.url);
-      const canonNorm = normalizeUrl(absoluteCanon);
-      canonDetails.normalized = canonNorm;
-      canonDetails.requestedNormalized = requestedNorm;
+  mobileScore = Math.min(100, Math.max(0, mobileScore));
+  details.mobile = { ...mr, smallTargets: tinyCount, score: mobileScore };
 
-      if (absoluteCanon === data.url || absoluteCanon === data.url + '/' || absoluteCanon === data.url.replace(/\/$/, '')) {
-        canonicalScore = 95;
-        canonDetails.matchType = 'exact';
-      } else if (requestedNorm === canonNorm) {
-        canonicalScore = 90;
-        canonDetails.matchType = 'normalized';
-      } else if (requestedNorm === canonNorm + '/' || requestedNorm + '/' === canonNorm) {
-        canonicalScore = 85;
-        canonDetails.matchType = 'normalized_slash';
-      } else {
-        if (canonNorm.includes(requestedNorm) || requestedNorm.includes(canonNorm)) {
-          canonicalScore = 75;
-          canonDetails.matchType = 'partial';
-        } else {
-          canonicalScore = 30;
-          canonDetails.matchType = 'mismatch';
-        }
-      }
-    } else {
-      canonicalScore = 15;
-      canonDetails.matchType = 'missing';
-    }
+  // ─── HTTPS + mixed content ────────────────────────────────
+  const isPasted = !data.url
+    || data.url.includes('Pasted HTML Code')
+    || data.url.includes('pasted-html')
+    || data.url.includes('example.com/pasted-html');
+  const isHttps = !isPasted && /^https:\/\//i.test(data.url);
 
-    details.canonical = {
-      present: canonDetails.present,
-      href: canonDetails.href,
-      absoluteHref: canonDetails.absoluteHref,
-      normalizedMatch: canonDetails.normalized === canonDetails.requestedNormalized,
-      score: canonicalScore
-    };
-
-    console.log('[Canonical Debug]', {
-      requested: data.url,
-      rawHref: canonDetails.href,
-      absoluteHref: canonDetails.absoluteHref,
-      requestedNorm: canonDetails.requestedNormalized,
-      canonNorm: canonDetails.normalized,
-      matchType: canonDetails.matchType,
-      score: canonicalScore
-    });
-
-    const robotsMeta = doc.querySelector('meta[name="robots"]');
-    let robotsScore = 95;
-    if (robotsMeta) {
-      const content = (robotsMeta.content || '').toLowerCase();
-      if (/noindex/i.test(content) || /nofollow/i.test(content)) {
-        robotsScore = 15;
-      }
-    }
-    details.robots = { indexable: robotsScore === 95, score: robotsScore };
-
-    let sitemapScore = /\/product[s]?\/|\/item\/|\/p\/|\/shop\/|\/collections\/[^/]+\/products\//i.test(data.url) ? 80 : 45;
-    details.sitemapHint = { likelyIncluded: sitemapScore >= 70, score: sitemapScore };
-
-    const score = Math.round(
-      details.mobile.score * 0.30 +
-      details.https.score * 0.30 +
-      details.canonical.score * 0.20 +
-      details.robots.score * 0.15 +
-      details.sitemapHint.score * 0.05
-    );
-    return { score: Math.min(100, Math.max(0, score)), details };
+  let mixedContentCount = 0;
+  if (isHttps) {
+    mixedContentCount = doc.querySelectorAll(
+      'img[src^="http://"], script[src^="http://"], link[href^="http://"], ' +
+      'iframe[src^="http://"], video[src^="http://"], audio[src^="http://"]'
+    ).length;
   }
-  
-  export { analyzeTechnicalSEO };
+
+  let httpsScore;
+  if (isPasted) {
+    httpsScore = 60;
+  } else if (!isHttps) {
+    httpsScore = 0;
+  } else if (mixedContentCount > 0) {
+    httpsScore = Math.max(40, 95 - mixedContentCount * 5);
+  } else {
+    httpsScore = 95;
+  }
+  details.https = { isHttps, mixedContentCount, isPasted, score: httpsScore };
+
+  // ─── Canonical ────────────────────────────────────────────
+  const canonical = doc.querySelector('link[rel="canonical"]');
+  let canonicalScore = 20;
+  const canonDetails = {
+    present: !!canonical, href: '', absoluteHref: '',
+    normalized: '', requestedNormalized: '', matchType: 'none'
+  };
+
+  if (canonical && canonical.hasAttribute('href')) {
+    const rawHref = canonical.getAttribute('href').trim();
+    canonDetails.href = rawHref;
+    let absoluteCanon = rawHref;
+    try {
+      const baseUrl = (data.url && !isPasted) ? data.url : 'https://example.com/pasted-html';
+      absoluteCanon = new URL(rawHref, baseUrl).href;
+    } catch { absoluteCanon = rawHref; }
+    canonDetails.absoluteHref = absoluteCanon;
+
+    const normalizeUrl = (urlStr) => {
+      try {
+        const url = new URL(urlStr);
+        const hostname = url.hostname.toLowerCase().replace(/^www\./, '');
+        const path = url.pathname.toLowerCase().replace(/\/$/, '');
+        const params = new URLSearchParams(url.search.toLowerCase());
+        // NOTE: 'variant', 'color', 'size' added to ignore list (Shopify/Amazon pattern)
+        ['session_id','sid','utm_source','utm_medium','utm_campaign','utm_term',
+         'utm_content','fbclid','_ga','_gl','gclid',
+         'variant','color','size','colour','option','sku','pid']
+          .forEach(p => params.delete(p));
+        const search = params.toString() ? '?' + params.toString() : '';
+        return `${hostname}${path}${search}`;
+      } catch {
+        return urlStr.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '');
+      }
+    };
+
+    const requestedNorm = normalizeUrl(data.url || 'https://example.com/pasted-html');
+    const canonNorm = normalizeUrl(absoluteCanon);
+    canonDetails.normalized = canonNorm;
+    canonDetails.requestedNormalized = requestedNorm;
+
+    if (absoluteCanon === data.url || absoluteCanon === data.url + '/' || absoluteCanon === data.url?.replace(/\/$/, '')) {
+      canonicalScore = 95; canonDetails.matchType = 'exact';
+    } else if (requestedNorm === canonNorm) {
+      canonicalScore = 90; canonDetails.matchType = 'normalized';
+    } else if (requestedNorm === canonNorm + '/' || requestedNorm + '/' === canonNorm) {
+      canonicalScore = 85; canonDetails.matchType = 'normalized_slash';
+    } else if (canonNorm.includes(requestedNorm) || requestedNorm.includes(canonNorm)) {
+      canonicalScore = 75; canonDetails.matchType = 'partial';
+    } else {
+      canonicalScore = 30; canonDetails.matchType = 'mismatch';
+    }
+  } else {
+    canonicalScore = 15; canonDetails.matchType = 'missing';
+  }
+
+  details.canonical = {
+    present: canonDetails.present,
+    href: canonDetails.href,
+    absoluteHref: canonDetails.absoluteHref,
+    normalizedMatch: canonDetails.normalized === canonDetails.requestedNormalized,
+    score: canonicalScore
+  };
+
+  // ─── Robots ───────────────────────────────────────────────
+  const robotsMeta = doc.querySelector('meta[name="robots"]');
+  let robotsScore = 95;
+  if (robotsMeta) {
+    const content = (robotsMeta.content || '').toLowerCase();
+    if (/noindex/i.test(content) || /nofollow/i.test(content)) robotsScore = 15;
+  }
+  details.robots = { indexable: robotsScore === 95, score: robotsScore };
+
+  // ─── Sitemap hint (informational only) ────────────────────
+  // Cannot be verified from the DOM. Score is neutral (100) so it never
+  // drags the module score. The `note` explains it in the fix panel.
+  details.sitemapHint = {
+    note: 'Sitemap inclusion cannot be verified from the DOM alone. Confirm the URL is in your sitemap.xml manually.',
+    score: 100
+  };
+
+  const score = Math.round(
+    details.mobile.score * 0.35 +
+    details.https.score * 0.30 +
+    details.canonical.score * 0.20 +
+    details.robots.score * 0.15
+  );
+
+  return { score: Math.min(100, Math.max(0, score)), details };
+}
+
+export { analyzeTechnicalSEO };

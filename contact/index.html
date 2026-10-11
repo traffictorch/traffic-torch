@@ -1,90 +1,41 @@
 <!DOCTYPE html> 
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-
-<!-- Deferred Google Analytics – loads only after interaction -->
-<script>
-  (function() {
-    // Change this to false if you want to test without loading GA
-    const enableGA = true;
-    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
-
-    function loadGA() {
-      // Prevent double-loading
-      if (window.gtag) return;
-
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-      document.head.appendChild(script);
-
-      script.onload = function() {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', MEASUREMENT_ID);
-      };
-    }
-
-    // Trigger on first interaction (scroll, click, touch, key)
-    let fired = false;
-    function fireOnce() {
-      if (fired) return;
-      fired = true;
-      loadGA();
-      cleanup();
-    }
-
-    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
-    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
-
-    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
-    setTimeout(fireOnce, 4500);
-
-    function cleanup() {
-      events.forEach(ev => window.removeEventListener(ev, fireOnce));
-    }
-  })();
-</script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
   <!-- Optimized SEO Title & Description -->
   <title>Contact Traffic Torch – Reach Out for AI SEO & UX Support</title>
-  <meta name="description" content="Contact Traffic Torch for questions on our 360° AI-powered SEO audits, UX optimizations, competitive analysis, or tool features. Privacy-first responses." />
+  <meta name="description" content="Contact Traffic Torch for questions on our 360° SEO audits, UX optimizations, competitive analysis, or tool features. Privacy-first responses.">
  
   <!-- Robots & Canonical -->
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://traffictorch.net/contact/" />
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/contact/">
   
     <!-- Theme Color -->
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
-  <!-- Referrer Policy (security + privacy best practice) -->
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <!-- security headers -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
 
   <!-- hreflang -->
   <link rel="alternate" hreflang="en" href="https://traffictorch.net/contact/">
   <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/contact/">
  
   <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
-  <meta property="og:title" content="Contact Traffic Torch – AI SEO & UX Tools Support" />
-  <meta property="og:description" content="Get in touch with Traffic Torch for help with instant SEO health scores, AI-generated fixes, predictive forecasting, and more – all in a privacy-focused way." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://traffictorch.net/contact/" />
-  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Traffic Torch" />
+  <meta property="og:title" content="Contact Traffic Torch – AI SEO & UX Tools Support">
+  <meta property="og:description" content="Get in touch with Traffic Torch for help with instant SEO health scores, priority fixes, predictive forecasting, and more – all in a privacy-focused way.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/contact/">
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Traffic Torch">
  
   <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Contact Traffic Torch – 360 AI SEO & UX Tools" />
-  <meta name="twitter:description" content="Get in touch with Traffic Torch for help with instant SEO health scores, AI-generated fixes, predictive forecasting, and more – all in a privacy-focused way." />
-  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp" />
-  <meta name="twitter:site" content="@Guitaralize" /> 
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Contact Traffic Torch – 360 AI SEO & UX Tools">
+  <meta name="twitter:description" content="Get in touch with Traffic Torch for help with instant SEO health scores, priority fixes, predictive forecasting, and more – all in a privacy-focused way.">
+  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch.webp">
+  <meta name="twitter:site" content="@Guitaralize"> 
  
 <!-- Structured Data (JSON-LD) -->
 <script type="application/ld+json">
@@ -92,7 +43,7 @@
   "@context": "https://schema.org",
   "@type": "ContactPage",
   "name": "Contact Traffic Torch",
-  "description": "Get in touch with the Traffic Torch team – creators of free, client-side AI-powered SEO and UX analysis tools. Questions, feedback, suggestions or support inquiries welcome.",
+  "description": "Get in touch with the Traffic Torch team – creators of free, client-side AI SEO and UX analysis tools. Questions, feedback, suggestions or support inquiries welcome.",
   "url": "https://traffictorch.net/contact/",
   "mainEntity": {
     "@type": "Organization",
@@ -120,10 +71,25 @@
   "name": "Traffic Torch",
   "url": "https://traffictorch.net/",
   "logo": "https://traffictorch.net/logo-512.webp",
-  "description": "Creators of free, privacy-first AI-powered SEO and UX analysis tools. All processing happens 100% client-side – no data collection, no tracking.",
+  "description": "Creators of free, privacy-first AI SEO and UX analysis tools. All processing happens 100% client-side – no data collection, no tracking.",
   "sameAs": [
-    "https://twitter.com/guitaralize"
-  ]
+         "https://g.dev/traffictorch",
+         "https://github.com/traffictorch/",
+         "https://orcid.org/0009-0006-4084-0241",
+         "https://www.wikidata.org/wiki/Q139815165",
+         "https://zenodo.org/records/20149616",
+         "https://github.com/traffictorch/traffic-torch",
+         "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+         "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+         "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+         "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+         "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+         "https://www.framer.com/marketplace/plugins/traffic-torch/",
+         "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+         "https://github.com/marketplace/actions/traffic-torch-audit",
+         "https://www.linkedin.com/in/ylia-callan-8b889976/",
+         "https://x.com/Guitaralize"
+     ]
 }
 </script>
 
@@ -150,29 +116,31 @@
 </script>
  
   <meta name="color-scheme" content="dark light">
-  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
   <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
   <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
   <meta name="apple-mobile-web-app-title" content="Torch">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
-  <link rel="manifest" href="/manifest.json" />
+  <link rel="manifest" href="/manifest.json">
  
   <!-- Preload critical CSS -->
-  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" as="style" href="/about/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/about/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link rel="stylesheet" href="/style-v1.0.css">
-    <link rel="stylesheet" href="/about/style-v1.0.css">
+    <link rel="stylesheet" href="/style.css?v=1.0">
+    <link rel="stylesheet" href="/about/style.css?v=1.0">
   </noscript>
 
-<link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
-  <!-- Tailwind output – comes last so utilities can override -->
-  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
-
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
+  </noscript>
 
 <script>
     // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
@@ -186,7 +154,6 @@
       }
     })();
   </script>
-    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
   
 </head>
 
@@ -205,38 +172,7 @@
         </a>
       </div>
 <!-- Menu Items -->
-      <nav class="p-6 space-y-4 flex-1">
-        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
-        </a>
-        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
-        </a>
-        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
-        </a>
-        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
-        </a>
-        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
-        </a>
-        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
-        </a>
-        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
-        </a>
-        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
-        </a>
-        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
-        </a>
-        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
-        </a>
-      </nav>
+<div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
       <!-- Collapse/Expand Button - Always visible -->
       <div class="p-4 border-t border-white/10 dark:border-white/5">
         <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
@@ -275,34 +211,19 @@
           <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
 			  ×
 			</button>
-          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
-            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
-              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
-              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
-              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
-              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
-              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
-              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
-              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
-              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
-              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
-              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
-            </div>
-          </nav>
+<div id="mobile-menu-placeholder"></div>
         </div>
       </header>
       
     <main id="main-content" class="container mx-auto px-4 py-4">
- 
-  <div class="container mx-auto px-6 py-4 max-w-4xl">
-    <header class="text-center mb-16">
+  <div class="container mx-auto px-6 py-4 max-w-7xl">
+
 <section class="py-1 px-1 max-w-4xl mx-auto">
   <h1 class="text-3xl md:text-3xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
     Contact Traffic Torch
   </h1>
 <p class="text-gray-800 dark:text-gray-200 mb-12 text-center max-w-3xl mx-auto leading-relaxed">
-  I’m Ylia, web developer behind Traffic Torch. In my experience ranking sites from scratch, I’ve found that most generic SEO tools miss the real issues — that’s why I built these from the ground up. Reach out directly if you have questions about our AI-powered tools, need personalized SEO/UX advice, or want to collaborate.
+  I’m Ylia, web developer behind Traffic Torch. In my experience ranking sites from scratch, I’ve found that most generic SEO tools miss the real issues - that’s why I built these from the ground up. Reach out directly if you have questions about our AI SEO/UX tools, need personalized SEO/UX advice, or want to collaborate.
 </p>
    
     <!-- Contact Cards Grid (Mobile-friendly, responsive) -->
@@ -312,7 +233,7 @@
     <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between text-center">
       <div>
         <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">💼</div>
-        <h3 class="text-orange-400 text-2xl font-bold mb-3">Contact Ylia on LinkedIn</h3>
+        <h2 class="text-orange-400 text-2xl font-bold mb-3">Contact Ylia on LinkedIn</h2>
         <p class="text-gray-800 dark:text-gray-200">Professional networking & collaborations</p>
       </div>
       <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
@@ -325,7 +246,7 @@
     <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between text-center">
       <div>
         <div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">𝕏</div>
-        <h3 class="text-cyan-400 text-2xl font-bold mb-3">Contact Ylia on X</h3>
+        <h2 class="text-cyan-400 text-2xl font-bold mb-3">Contact Ylia on X</h2>
         <p class="text-gray-800 dark:text-gray-200">Quick updates & SEO discussions</p>
       </div>
       <span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
@@ -342,38 +263,29 @@
   <form id="contactForm" class="space-y-6 bg-white/10 dark:bg-black/40 backdrop-blur-xl p-8 rounded-3xl border border-orange-500/20">
     <div>
       <label for="contact-name" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Your Name</label>
-      <input id="contact-name" type="text" name="name" required aria-required="true" class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500">
+      <input id="contact-name" type="text" name="name" required class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500">
     </div>
     <div>
       <label for="contact-email" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Email Address</label>
-      <input id="contact-email" type="email" name="email" required aria-required="true" class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500">
+      <input id="contact-email" type="email" name="email" required class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500">
     </div>
     <div>
       <label for="contact-message" class="block text-sm font-medium mb-2 text-gray-800 dark:text-gray-200">Message</label>
-      <textarea id="contact-message" name="message" required rows="6" aria-required="true" class="w-full bg-white/10 border border-white/20 rounded-3xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500"></textarea>
+      <textarea id="contact-message" name="message" required rows="6" class="w-full bg-white/10 border border-white/20 rounded-3xl px-6 py-4 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-orange-400 placeholder-gray-400 dark:placeholder-gray-500"></textarea>
     </div>
     <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition shadow-lg">Send Message →</button>
   </form>
   <div id="formMessage" class="hidden mt-6 p-4 rounded-2xl text-center font-medium"></div>
 </div>
 
-<!-- Share Buttons -->
-<div class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_pinterest"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_facebook"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
 
 <!-- Breadcrumbs – semantic & detectable by analyzer -->
 <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
@@ -399,7 +311,7 @@
 <!-- Last Update Date -->
 <div class="max-w-5xl mx-auto px-6 py-4 text-center">
   <p class="text-sm text-gray-500 dark:text-gray-400">
-    Last updated: <span>2026-01-30</span>
+    Last updated: <span>2026-05-20</span>
   </p>
 </div>
 
@@ -456,6 +368,8 @@
   </script>
 
   <!-- Load JS last for speed -->
-  <script src="/main-v1.1.js" type="module"></script>
+  <script src="/main.js?v=1.2" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+  
 </body>
 </html>

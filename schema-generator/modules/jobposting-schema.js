@@ -2,7 +2,6 @@
 // Self-contained JobPosting schema editor & generator for Traffic Torch
 // No auto-prefill, starts empty, clean output, mobile-friendly
 // Focus on fields required/recommended for Google Job Posting rich results (2026)
-
 import {
   buildJsonLdSkeleton,
   cleanJsonLd,
@@ -19,11 +18,13 @@ function render(editorContainer, previewEl) {
         <li>Required: @type="JobPosting", title, description, hiringOrganization, jobLocation, datePosted</li>
         <li>Strongly recommended: employmentType, baseSalary (with currency & value), validThrough</li>
         <li>Google shows rich cards if: public job, clear salary/location, real posting</li>
-        <li>2026 best practice: use ISO 8601 dates, include remote/hybrid in jobLocationType, add applicantLocationRequirements if remote</li>
+        <li>2026 best practice: use ISO 8601 dates, only use jobLocationType "TELECOMMUTE" for remote jobs (Google ignores other values)</li>
+        <li>For remote jobs add applicantLocationRequirements (countries) to avoid critical errors</li>
+        <li>For on-site/hybrid jobs add full address details to reduce warnings</li>
         <li>Place on individual job listing pages</li>
         <li>Validate with Google Rich Results Test + Job Posting Index in Search Console</li>
         <li>
-        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#jobposting" 
+        <a href="https://traffictorch.net/blog/posts/schema-markup-help-guide#jobposting"
         class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
         Learn more about JobPosting Schema Markup →
         </a>
@@ -91,22 +92,46 @@ function render(editorContainer, previewEl) {
         <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Job Location</h4>
         <div class="space-y-5">
           <div>
-            <label class="block mb-2 font-medium">Location Type</label>
+            <label class="block mb-2 font-medium">Remote / Telecommute? (optional – only use for remote jobs)</label>
             <select data-field="jobLocationType" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
-              <option value="https://schema.org/OnSite">On-site</option>
-              <option value="https://schema.org/Remote">Remote</option>
-              <option value="https://schema.org/Hybrid">Hybrid</option>
+              <option value="">Not remote (On-site or Hybrid – leave blank)</option>
+              <option value="TELECOMMUTE">Yes – Telecommute / Remote</option>
             </select>
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Google only supports "TELECOMMUTE" for remote jobs. For on-site/hybrid, describe in job description or location fields.</p>
           </div>
           <div>
             <label class="block mb-2 font-medium">City / Remote</label>
-            <input type="text" data-field="jobLocation.address.addressLocality" placeholder="Sydney or Remote"
+            <input type="text" data-field="jobLocation.address.addressLocality" placeholder="Los Angeles or Remote"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
           </div>
           <div>
             <label class="block mb-2 font-medium">Country</label>
-            <input type="text" data-field="jobLocation.address.addressCountry" placeholder="AU" value="AU"
+            <input type="text" data-field="jobLocation.address.addressCountry" placeholder="US" value="US"
                    class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block mb-2 font-medium">Street Address (optional)</label>
+            <input type="text" data-field="jobLocation.address.streetAddress" placeholder="123 Example St"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block mb-2 font-medium">State / Region (e.g. California)</label>
+              <input type="text" data-field="jobLocation.address.addressRegion" placeholder="California"
+                     class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block mb-2 font-medium">Postal Code / ZIP</label>
+              <input type="text" data-field="jobLocation.address.postalCode" placeholder="20000"
+                     class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Optional – fill for on-site/hybrid jobs to reduce warnings (Google ignores for remote).</p>
+          <div>
+            <label class="block mb-2 font-medium">Applicant Location Requirements (countries allowed to apply)</label>
+            <input type="text" data-field="applicantLocationRequirements" placeholder="US, CA, AU, NZ (comma separated)"
+                   class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+            <p class="mt-1 text-xs text-amber-600 dark:text-amber-400">Required for remote jobs (TELECOMMUTE) – Google flags as critical if missing when remote.</p>
           </div>
         </div>
       </div>
@@ -127,17 +152,33 @@ function render(editorContainer, previewEl) {
               <option value="OTHER">Other</option>
             </select>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label class="block mb-2 font-medium">Salary Currency</label>
-              <input type="text" data-field="baseSalary.currency" placeholder="AUD"
+              <input type="text" data-field="baseSalary.currency" placeholder="USD" maxlength="3"
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
-              <label class="block mb-2 font-medium">Salary Amount (min-max or single)</label>
-              <input type="text" data-field="baseSalary.value" placeholder="80000–120000" 
+              <label class="block mb-2 font-medium">Min Salary (number)</label>
+              <input type="number" data-field="baseSalary.value.minValue" placeholder="80000"
                      class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
             </div>
+            <div>
+              <label class="block mb-2 font-medium">Max Salary (number, optional)</label>
+              <input type="number" data-field="baseSalary.value.maxValue" placeholder="120000"
+                     class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+          <div class="mt-5">
+            <label class="block mb-2 font-medium">Salary Period</label>
+            <select data-field="baseSalary.value.unitText" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-blue-500">
+              <option value="">Select period (required for salary)</option>
+              <option value="YEAR">Per Year</option>
+              <option value="MONTH">Per Month</option>
+              <option value="WEEK">Per Week</option>
+              <option value="DAY">Per Day</option>
+              <option value="HOUR">Per Hour</option>
+            </select>
           </div>
         </div>
       </div>
@@ -162,15 +203,24 @@ function render(editorContainer, previewEl) {
         "@type": "Place",
         address: {
           "@type": "PostalAddress",
+          streetAddress: '',
           addressLocality: '',
+          addressRegion: '',
+          postalCode: '',
           addressCountry: ''
         }
       },
       jobLocationType: '',
+      applicantLocationRequirements: [],
       baseSalary: {
         "@type": "MonetaryAmount",
         currency: '',
-        value: ''
+        value: {
+          "@type": "QuantitativeValue",
+          minValue: '',
+          maxValue: '',
+          unitText: ''
+        }
       }
     };
 
@@ -185,10 +235,19 @@ function render(editorContainer, previewEl) {
           const key = field.split('.')[2];
           data.jobLocation.address[key] = value;
         } else if (field.startsWith('baseSalary.')) {
-          const key = field.split('.')[1];
-          data.baseSalary[key] = value;
+          const parts = field.split('.');
+          if (parts.length === 2) {
+            data.baseSalary[parts[1]] = value;
+          } else if (parts.length === 3 && parts[1] === 'value') {
+            data.baseSalary.value[parts[2]] = value;
+          }
         } else if (field === 'jobLocationType') {
           data.jobLocationType = value;
+        } else if (field === 'applicantLocationRequirements') {
+          data.applicantLocationRequirements = value.split(',').map(c => ({
+            "@type": "Country",
+            "name": c.trim()
+          })).filter(c => c.name);
         } else {
           data[field] = value;
         }
@@ -202,15 +261,38 @@ function render(editorContainer, previewEl) {
       data.hiringOrganization = cleanJsonLd(data.hiringOrganization);
     }
 
-    if (!data.jobLocation.address.addressLocality && !data.jobLocation.address.addressCountry) {
+    // Clean jobLocation – remove if completely empty
+    const addr = data.jobLocation.address;
+    if (
+      !addr.streetAddress &&
+      !addr.addressLocality &&
+      !addr.addressRegion &&
+      !addr.postalCode &&
+      !addr.addressCountry
+    ) {
       delete data.jobLocation;
     } else {
       data.jobLocation = cleanJsonLd(data.jobLocation);
     }
 
-    if (!data.baseSalary.currency && !data.baseSalary.value) {
+    // Clean applicantLocationRequirements
+    if (data.applicantLocationRequirements.length === 0) {
+      delete data.applicantLocationRequirements;
+    } else {
+      data.applicantLocationRequirements = cleanJsonLd(data.applicantLocationRequirements);
+    }
+
+    // Only include baseSalary if currency + period + at least one salary value
+    if (!data.baseSalary.currency ||
+        !data.baseSalary.value.unitText ||
+        (!data.baseSalary.value.minValue && !data.baseSalary.value.maxValue)) {
       delete data.baseSalary;
     } else {
+      if (!data.baseSalary.value.minValue && !data.baseSalary.value.maxValue) {
+        delete data.baseSalary.value;
+      } else {
+        data.baseSalary.value = cleanJsonLd(data.baseSalary.value);
+      }
       data.baseSalary = cleanJsonLd(data.baseSalary);
     }
 

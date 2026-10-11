@@ -1,0 +1,11 @@
+name = "traffic-torch-auth"
+main = "auth-worker.js"
+compatibility_date = "2024-09-01"
+
+[[d1_databases]]
+binding = "MY_BINDING"
+database_name = "traffic-torch-db"
+database_id = "d061d4d2078ee9128b033e6d27e7c768"   
+
+# Secret variables 
+# JWT_SECRET, RESEND_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_ID

@@ -1,337 +1,354 @@
 <!DOCTYPE html> 
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-
-<!-- Deferred Google Analytics – loads only after interaction -->
-<script>
-  (function() {
-    // Change this to false if you want to test without loading GA
-    const enableGA = true;
-    const MEASUREMENT_ID = 'G-RZQR2WFK9T';
-
-    function loadGA() {
-      // Prevent double-loading
-      if (window.gtag) return;
-
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-      document.head.appendChild(script);
-
-      script.onload = function() {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', MEASUREMENT_ID);
-      };
-    }
-
-    // Trigger on first interaction (scroll, click, touch, key)
-    let fired = false;
-    function fireOnce() {
-      if (fired) return;
-      fired = true;
-      loadGA();
-      cleanup();
-    }
-
-    const events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
-    events.forEach(ev => window.addEventListener(ev, fireOnce, { once: true, passive: true }));
-
-    // Fallback: load after ~4–9 seconds of idle anyway (good compromise)
-    setTimeout(fireOnce, 4500);
-
-    function cleanup() {
-      events.forEach(ev => window.removeEventListener(ev, fireOnce));
-    }
-  })();
-</script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  
   <!-- Optimized SEO Title & Description -->
-  <title>AI SEO &amp; UX Tools Suite – Instant Audits, Fixes &amp; Forecasts | Traffic Torch</title>
-  <meta name="description" content="AI-powered SEO &amp; UX tools suite: On-page audit, competitive gap analysis, AI search optimization, bounce predictor, keyword research – with 0–100 scores &amp; predictive insights." />
+  <title>AI SEO, GEO & UX Toolkit – Instant Audits & Fixes | Traffic Torch</title>
+  <meta name="description" content="AI SEO UX tool suite: On-page audits, AI search optimization, bounce predictor and keyword tools built for the future of UX Design, SEO, GEO, AEO & AIO search.">
  
   <!-- Robots & Canonical -->
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://traffictorch.net/ai-seo-ux-tools/" />
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/ai-seo-ux-tools/">
   
     <!-- Theme Color -->
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
-  <!-- Referrer Policy (security + privacy best practice) -->
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <!-- security headers -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
 
   <!-- hreflang -->
   <link rel="alternate" hreflang="en" href="https://traffictorch.net/ai-seo-ux-tools/">
   <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/ai-seo-ux-tools/">
  
   <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
-  <meta property="og:title" content="AI SEO &amp; UX Tools Suite – Instant 360° Analysis | Traffic Torch" />
-  <meta property="og:description" content="Complete collection of AI-powered tools: On-page SEO checker, competitive gaps, AI search visibility, content audit, quit risk predictor, keyword research – private, instant, mobile-friendly." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://traffictorch.net/ai-seo-ux-tools/" />
-  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:site_name" content="Traffic Torch" />
+  <meta property="og:title" content="AI SEO &amp; UX Tools Suite – Instant 360° Analysis | Traffic Torch">
+  <meta property="og:description" content="Complete collection of SEO, GEO, AEO & AIO search tools: On-page SEO checker, competitive gaps, AI search visibility, content audit, quit risk predictor, keyword research – private, instant, mobile-friendly.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/ai-seo-ux-tools/">
+  <meta property="og:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Traffic Torch">
  
   <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="AI SEO &amp; UX Tools Suite – Instant 360° Analysis | Traffic Torch" />
-  <meta name="twitter:description" content="Complete collection of AI-powered tools: On-page SEO checker, competitive gaps, AI search visibility, content audit, quit risk predictor, keyword research – private, instant, mobile-friendly." />
-  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp" />
-  <meta name="twitter:site" content="@Guitaralize" /> 
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI SEO &amp; UX Tools Suite – Instant 360° Analysis | Traffic Torch">
+  <meta name="twitter:description" content="Complete collection of SEO, GEO, AEO & AIO search tools: On-page SEO checker, competitive gaps, AI search visibility, content audit, quit risk predictor, keyword research – private, instant, mobile-friendly.">
+  <meta name="twitter:image" content="https://traffictorch.net/images/traffic-torch-toolkit.webp">
+  <meta name="twitter:site" content="@Guitaralize"> 
  
-<!-- Structured Data (JSON-LD) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": "All AI SEO & UX Tools – Traffic Torch Suite",
-  "description": "Free instant 360° SEO and UX analysis suite. On-page audits, keyword optimization, competitive gap analysis, AI search readiness, content authenticity checks, bounce risk prediction, local signals, and more – with scores, deep modules, priority fixes, and predictive forecasts.",
-  "url": "https://traffictorch.net/ai-seo-ux-tools/",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Traffic Torch"
-  }
-}
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  "name": "Traffic Torch Tools Collection",
-  "description": "Complete free AI-powered SEO, UX and AI analysis tools suite",
-  "url": "https://traffictorch.net/ai-seo-ux-tools/",
-  "numberOfItems": 8,
-  "itemListElement": [
+  "@graph": [
     {
-      "@type": "ListItem",
-      "position": 1,
-      "item": {
-        "@type": "SoftwareApplication",
-        "name": "Local SEO On-Page Checker",
-        "url": "https://traffictorch.net/local-seo-tool/",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "description": "GBP signals, citations consistency, local pack strength, NAP, schema & geo-keywords audit with AI fixes and local ranking forecasts."
-      }
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/ai-seo-ux-tools/#webpage",
+      "url": "https://traffictorch.net/ai-seo-ux-tools/",
+      "name": "AI SEO & UX Tools Suite – Instant 360° Analysis | Traffic Torch",
+      "description": "Free instant 360° SEO, GEO, AEO, AIO, UX health score analysis suite. Deep-dive audits, implementation gap analysis, fix suggestions, plugin solutions, educational reports and mobile-first, PWA-ready, day/night modes.",
+      "breadcrumb": {
+        "@id": "https://traffictorch.net/ai-seo-ux-tools/#breadcrumb"
+      },
+      "isPartOf": {
+        "@id": "https://traffictorch.net/#website"
+      },
+      "mainEntity": {
+        "@id": "https://traffictorch.net/ai-seo-ux-tools/#suite"
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "inLanguage": "en",
+      "datePublished": "2025-01-01",
+      "dateModified": "2026-09-12"
     },
     {
-      "@type": "ListItem",
-      "position": 2,
-      "item": {
-        "@type": "SoftwareApplication",
-        "name": "SEO Intent Analyzer",
-        "url": "https://traffictorch.net/seo-intent-tool/",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "description": "Classify keyword intent (informational, commercial, transactional), on-page alignment audit, E-E-A-T signals check, AI content fixes."
-      }
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "item": {
-        "@type": "SoftwareApplication",
-        "name": "Keyword Optimizer",
-        "url": "https://traffictorch.net/keyword-tool/",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "description": "On-page keyword placement, density, meta tags, headings, alt text & topical relevance audit with 0–100 score and AI fixes."
-      }
-    },
-    {
-      "@type": "ListItem",
-      "position": 4,
-      "item": {
-        "@type": "SoftwareApplication",
-        "name": "Keyword VS – Competitive Gap Analyzer",
-        "url": "https://traffictorch.net/keyword-vs-tool/",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "description": "Side-by-side keyword comparison vs top SERP competitors, missing keywords & content gaps discovery, AI optimization strategies."
-      }
-    },
-    {
-      "@type": "ListItem",
-      "position": 5,
-      "item": {
-        "@type": "SoftwareApplication",
-        "name": "Quit Risk & Bounce Rate Predictor",
-        "url": "https://traffictorch.net/quit-risk-tool/",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "description": "Predict visitor quit risk & bounce probability through readability, performance, accessibility, mobile readiness & navigation UX audit."
-      }
-    },
-    {
-      "@type": "ListItem",
-      "position": 6,
-      "item": {
-        "@type": "SoftwareApplication",
-        "name": "SEO UX Analyzer",
-        "url": "https://traffictorch.net/",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "description": "Quick 360° SEO + UX health check for your homepage: overall score, key signals, prioritized fixes and improvement forecasts."
-      }
-    },
-    {
-      "@type": "ListItem",
-      "position": 7,
-      "item": {
-        "@type": "SoftwareApplication",
-        "name": "AI Search Optimization Tool",
-        "url": "https://traffictorch.net/ai-search-optimization-tool/",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "description": "Optimize for AI-powered search: citation potential score, E-E-A-T audit, structured data fixes, and predictive AI visibility forecasts."
-      }
-    },
-    {
-      "@type": "ListItem",
-      "position": 8,
-      "item": {
-        "@type": "SoftwareApplication",
-        "name": "AI Content Detector & Humanizer",
-        "url": "https://traffictorch.net/ai-audit-tool/",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "description": "Detect AI-generated patterns (perplexity, burstiness, repetition), authenticity scoring, and humanizing recommendations."
-      }
-    },
-    {
-      "@type": "ListItem",
-      "position": 9,
-      "item": {
-        "@type": "SoftwareApplication",
-        "name": "Product SEO Audit Tool",
-        "url": "https://traffictorch.net/product-seo-tool/",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "description": "Instant audit tool for product page SEO: Evaluate on-page elements, technical health, content/media, UX/conversion signals and schema. With educational reports and fixes."
-      }
-    },
+      "@type": "BreadcrumbList",
+      "@id": "https://traffictorch.net/ai-seo-ux-tools/#breadcrumb",
+      "itemListElement": [
         {
-      "@type": "ListItem",
-      "position": 10,
-      "item": {
-        "@type": "SoftwareApplication",
-        "name": "Schema Markup Generator and Detector Tool",
-        "url": "https://traffictorch.net/schema-generator/",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
         },
-        "description": "Instantly detect structured data on any URL and generate SEO-optimized JSON-LD schema (FAQPage, Article, HowTo, LocalBusiness & more). Mobile-friendly, educational tool for rich results."
-      }
-    }
-  ]
-}
-</script>
-
-<!-- BreadcrumbList for site hierarchy -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://traffictorch.net/"
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "AI SEO & UX Tools Suite",
+          "item": "https://traffictorch.net/ai-seo-ux-tools/"
+        }
+      ]
     },
     {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "All Tools",
-      "item": "https://traffictorch.net/ai-seo-ux-tools/"
+      "@type": "WebSite",
+      "@id": "https://traffictorch.net/#website",
+      "url": "https://traffictorch.net/",
+      "name": "Traffic Torch",
+      "description": "Free 360° SEO, GEO, AEO, AIO & UX optimization toolkit. Instant health scores, deep audits, implementation gaps, fix suggestions, educational insights — privacy-first, mobile-optimized.",
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://traffictorch.net/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://traffictorch.net/#organization",
+      "name": "Traffic Torch",
+      "url": "https://traffictorch.net/",
+      "logo": "https://traffictorch.net/logo.png",
+      "sameAs": [
+      "https://g.dev/traffictorch",
+      "https://github.com/traffictorch/",
+      "https://orcid.org/0009-0006-4084-0241",
+      "https://www.wikidata.org/wiki/Q139815165",
+      "https://zenodo.org/records/20149616",
+      "https://github.com/traffictorch/traffic-torch",
+      "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+      "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+      "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+      "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+      "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+      "https://www.framer.com/marketplace/plugins/traffic-torch/",
+      "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+      "https://github.com/marketplace/actions/traffic-torch-audit",
+      "https://www.linkedin.com/in/ylia-callan-8b889976/",
+      "https://x.com/Guitaralize"
+     ]
+    },
+    {
+      "@type": "ItemList",
+      "@id": "https://traffictorch.net/ai-seo-ux-tools/#suite",
+      "name": "Traffic Torch 360° SEO, GEO, AEO, AIO & UX Tools Suite",
+      "description": "12 free instant tools grouped into SEO, AI-search, and UX categories. Delivers health scores, deep audits, competitive gaps, AI fixes, and educational reports — mobile-first, privacy-focused.",
+      "numberOfItems": 12,
+      "itemListOrder": "https://schema.org/ItemListOrderAscending",
+      "itemListElement": [
+        {
+          "@type": "WebApplication",
+          "position": 1,
+          "name": "Topical Authority Tool",
+          "description": "Instant topical authority audit tool. Detect main topics, subtopics, coverage gaps & authority clusters on any page.",
+          "url": "https://traffictorch.net/topical-authority-audit-tool/",
+          "applicationCategory": "https://schema.org/BusinessApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 2,
+          "name": "SEO Entity Tool",
+          "description": "Entity extractor + audit. Detects entities, scores salience/coverage, topical gaps vs competitors, AI fixes for semantic strength.",
+          "url": "https://traffictorch.net/seo-entity-extractor-tool/",
+          "applicationCategory": "https://schema.org/UtilitiesApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 3,
+          "name": "SEO Intent Tool",
+          "description": "Intent + E-E-A-T audit. Matches content to user intent, flags mismatches, suggests structural & trust improvements.",
+          "url": "https://traffictorch.net/seo-intent-tool/",
+          "applicationCategory": "https://schema.org/UtilitiesApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 4,
+          "name": "Local SEO Tool",
+          "description": "GBP + citations + local pack analysis. Health score, gaps in NAP/reviews/schema, prioritized fixes for local pack & Maps visibility.",
+          "url": "https://traffictorch.net/local-seo-tool/",
+          "applicationCategory": "https://schema.org/BusinessApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 5,
+          "name": "Product SEO Tool",
+          "description": "Product page audit + eCommerce signals. 360° score on on-page/technical/content/schema, fixes for rich snippets & conversions.",
+          "url": "https://traffictorch.net/product-seo-tool/",
+          "applicationCategory": "https://schema.org/BusinessApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 6,
+          "name": "Schema Generator",
+          "description": "Detect + generate JSON-LD for rich results. Scans existing markup, builds modern code for FAQ/Product/Article/etc., shows unlockable snippets.",
+          "url": "https://traffictorch.net/schema-generator",
+          "applicationCategory": "https://schema.org/DeveloperApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 7,
+          "name": "Ai Search Tool",
+          "description": "Optimize for AI-powered search engines. Scores AI readiness (structure/E-E-A-T/coverage), gaps in LLM visibility, targeted fixes.",
+          "url": "https://traffictorch.net/ai-search-optimization-tool/",
+          "applicationCategory": "https://schema.org/UtilitiesApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 8,
+          "name": "Ai Voice Search Tool",
+          "description": "360° audit for voice SEO. Scores visibility/sentiment/conversational fit, competitive gaps, fixes for voice assistants & Position Zero.",
+          "url": "https://traffictorch.net/ai-voice-search-tool/",
+          "applicationCategory": "https://schema.org/UtilitiesApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 9,
+          "name": "AI Content Tool",
+          "description": "Detect AI patterns. Authenticity score via perplexity/burstiness/repetition/vocab; humanization fixes to avoid quality downgrades.",
+          "url": "https://traffictorch.net/ai-audit-tool/",
+          "applicationCategory": "https://schema.org/UtilitiesApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 10,
+          "name": "Keyword Research Tool",
+          "description": "Free AI-powered keyword research: Enter a keyword or URL to find intelligent long-tail phrases optimized for classic SEO, GEO and AEO.",
+          "url": "https://traffictorch.net/keyword-research-tool/",
+          "applicationCategory": "https://schema.org/UtilitiesApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 11,
+          "name": "Keyword Placement Tool",
+          "description": "On-page keyword placement. Analyzes density, placement, semantic variations; optimization recs without over-optimization risk.",
+          "url": "https://traffictorch.net/keyword-tool/",
+          "applicationCategory": "https://schema.org/UtilitiesApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 12,
+          "name": "Keyword VS Tool",
+          "description": "Competitive keyword gap analysis. Head-to-head vs top pages, uncovers high-value gaps, traffic potential estimates.",
+          "url": "https://traffictorch.net/keyword-vs-tool/",
+          "applicationCategory": "https://schema.org/UtilitiesApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 13,
+          "name": "Quit Risk Tool",
+          "description": "UX friction + bounce prediction. Identifies layout/readability/mobile issues, Quit Risk score, prioritized fixes to boost engagement.",
+          "url": "https://traffictorch.net/quit-risk-tool/",
+          "applicationCategory": "https://schema.org/UtilitiesApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "WebApplication",
+          "position": 14,
+          "name": "SEO UX Analyzer Tool",
+          "description": "Quick SEO + UX health check for homepages. Evaluates first-impression elements, performance, mobile/UX, quick wins to cut bounce.",
+          "url": "https://traffictorch.net/#seo-ux-tool",
+          "applicationCategory": "https://schema.org/UtilitiesApplication",
+          "operatingSystem": "Web",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://traffictorch.net/ai-seo-ux-tools/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Traffic Torch and why use it for modern search optimization?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Traffic Torch is a free, instant, mobile-first 360° SEO, GEO, AEO & AIO toolkit that delivers comprehensive health scores, deep-dive audits, competitive gap analysis, prioritized AI-generated fixes, and clear educational explanations. It helps websites rank higher in traditional search, AI Overviews, voice search, and generative engines by diagnosing technical, content, UX, and entity issues. Then Traffic Torch teaches you exactly why they matter and how to fix them quickly. Privacy-first, client-side analysis, no data leaves your browser."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does the 360° health score actually measure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The 360° score combines signals across technical SEO, on-page optimization, semantic entities, intent match, UX friction (Quit Risk), schema readiness, AI-search compatibility (AEO/AIO), voice search pillars, content authenticity, and competitive gaps vs top-ranking pages. Tools like Home Page Analyzer, Product SEO Tool, and AI Search Optimization Tool feed into this holistic view. Helping you prioritize fixes that move the needle on rankings and user trust."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Traffic Torch fully mobile-friendly with day/night modes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes — built PWA-ready (installable, fast-loading), every tool and report is fully responsive and optimized for mobile users. Day/night mode uses gray-800 (light) and gray-200 (dark) text for perfect readability in any lighting. Toggle via the 🌙 icon. Ideal for on-the-go audits without eye strain."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the AI Content Tool help avoid quality filters?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It detects low perplexity, low burstiness, repetitive n-grams, overused AI-favored vocab (e.g., 'delve', 'testament', 'realm'), and uniform sentence patterns that trigger downgrades in Google/AI systems. You get an authenticity score plus concrete humanization fixes. Like adding varied rhythm, personal anecdotes, and bursty phrasing to restore trust signals and maintain strong rankings."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does competitive gap analysis (VS Tool) improve my SEO/GEO/AEO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The VS Tool compares your page head-to-head with top results, highlighting missing entities, weaker intent coverage, thin topical depth, and UX signals. It educates you on why those gaps cause lower visibility, then suggests targeted content additions, structure tweaks, and schema enhancements to close them fast and climb rankings across traditional, AI, and voice search."
+          }
+        }
+      ]
     }
   ]
 }
 </script>
  
   <meta name="color-scheme" content="dark light">
-  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
   <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
   <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
   <meta name="apple-mobile-web-app-title" content="Torch">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
   <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
-  <link rel="manifest" href="/manifest.json" />
+  <link rel="manifest" href="/manifest.json">
   
   <link rel="preconnect" href="https://static.cloudflareinsights.com"> 
   
   <!-- Preload critical CSS -->
-  <link rel="preload" as="style" href="/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" as="style" href="/ai-seo-ux-tools/style-v1.0.css" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/ai-seo-ux-tools/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link rel="stylesheet" href="/style-v1.0.css">
-    <link rel="stylesheet" href="/ai-seo-ux-tools/style-v1.0.css">
+    <link rel="stylesheet" href="/style.css?v=1.0">
+    <link rel="stylesheet" href="/ai-seo-ux-tools/style.css?v=1.0">
   </noscript>
 
-  <!-- Tailwind output – comes last so utilities can override -->
-  <link rel="preload" as="style" href="/tailwind-local-v1.0.css" onload="this.rel='stylesheet'">
-  <link rel="stylesheet" href="/tailwind-local-v1.0.css">
-
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
+  </noscript>
 
   <script>
     // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
@@ -345,8 +362,6 @@
       }
     })();
   </script>
-
-    <link rel="preconnect" href="https://traffictorch.net" crossorigin>
   
 </head>
 
@@ -358,45 +373,14 @@
 	<!-- Sidebar Header with Logo -->
       <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
         <a href="/" class="flex items-center gap-4">
-            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO, UX, GEO, AEO & AIO search Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
           <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
             Traffic Torch
           </span>
         </a>
       </div>
 <!-- Menu Items -->
-      <nav class="p-6 space-y-4 flex-1">
-        <a href="/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">⚖️</span> <span class="sidebar-text hidden">SEO + UX</span>
-        </a>
-        <a href="/local-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📍</span> <span class="sidebar-text hidden">Local SEO</span>
-        </a>
-        <a href="/seo-intent-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🎯</span> <span class="sidebar-text hidden">SEO Intent</span>
-        </a>
-        <a href="/product-seo-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🛒</span> <span class="sidebar-text hidden">Product SEO</span>
-        </a>
-        <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">⛔</span> <span class="sidebar-text hidden">Quit Risk</span>
-        </a>
-        <a href="/keyword-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🗝️</span> <span class="sidebar-text hidden">Keywords</span>
-        </a>
-        <a href="/keyword-vs-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🆚</span> <span class="sidebar-text hidden">Competition</span>
-        </a>
-        <a href="/ai-search-optimization-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🔍</span> <span class="sidebar-text hidden">Ai Search</span>
-        </a>
-        <a href="/ai-audit-tool/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">🤖</span> <span class="sidebar-text hidden">Ai Content</span>
-        </a>
-        <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 justify-center md:justify-start text-lg text-gray-500 dark:text-white/90 hover:text-orange-400 transition">
-          <span class="text-2xl">📋</span> <span class="sidebar-text hidden">Help Guides</span>
-        </a>
-      </nav>
+<div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
       <!-- Collapse/Expand Button - Always visible -->
       <div class="p-4 border-t border-white/10 dark:border-white/5">
         <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
@@ -411,7 +395,7 @@
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
           <!-- Logo hidden on desktop since in sidebar -->
           <a href="/" class="flex items-center gap-4 md:hidden">
-          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO, GEO, AEO & AIO Search Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
             <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
               Traffic Torch
             </p>
@@ -435,21 +419,7 @@
           <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
 			  ×
 			</button>
-          <nav class="flex flex-col gap-6 py-6 px-10 text-xl">
-            <a href="/ai-seo-ux-tools/" class="text-gray-100 hover:text-orange-400 transition font-bold">Tools 🚦</a>
-            <div class="pl-6 flex flex-col gap-4 text-lg opacity-90">
-              <a href="/" class="text-gray-100 hover:text-orange-400 transition">⚖️ SEO + UX</a>
-              <a href="/local-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">📍 Local SEO</a>
-              <a href="/seo-intent-tool/" class="text-gray-100 hover:text-orange-400 transition">🎯 SEO Intent</a>
-              <a href="/product-seo-tool/" class="text-gray-100 hover:text-orange-400 transition">🛒 Product SEO</a>
-              <a href="/quit-risk-tool/" class="text-gray-100 hover:text-orange-400 transition">⛔ Quit Risk</a>
-              <a href="/keyword-tool/" class="text-gray-100 hover:text-orange-400 transition">🗝️ Keywords</a>
-              <a href="/keyword-vs-tool/" class="text-gray-100 hover:text-orange-400 transition">🆚 Competition</a>
-              <a href="/ai-search-optimization-tool/" class="text-gray-100 hover:text-orange-400 transition">🔍 Ai Search</a>
-              <a href="/ai-audit-tool/" class="text-gray-100 hover:text-orange-400 transition">🤖 Ai Content</a>
-              <a href="/ai-ux-seo-help-guides/" class="text-gray-100 hover:text-orange-400 transition">📋 Help Guides</a>
-            </div>
-          </nav>
+<div id="mobile-menu-placeholder"></div>
         </div>
       </header>
       
@@ -457,40 +427,89 @@
   <main class="container mx-auto px-4 py-4 w-full">
     <div class="text-center mb-16">
       <h1 class="text-2xl md:text-4xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
-        Traffic Torch Toolkit
+        Traffic Torch SEO, AEO & UX Toolkit
       </h1>
       
       
-<!-- Expanding Text Box Intro -->
-<details class="max-w-3xl mx-auto text-left bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-orange-500/30 cursor-pointer">
+<!-- Expanding Text Box Intro – Updated for Pro Dashboard & OFUX -->
+<details class="max-w-3xl mx-auto text-left bg-white/10 backdrop-blur-xl rounded-3xl p-8 mb-12 border border-orange-500/30 cursor-pointer">
   <summary class="text-xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-4 flex items-center gap-2 cursor-pointer">
-    Tool Intro
+    Tool Intro 🛠
     <svg class="chevron ml-auto transition-transform duration-300" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M6 9l6 6 6-6"/>
     </svg>
   </summary>
   <div class="text-xl text-gray-800 dark:text-gray-100 leading-relaxed space-y-6">
     <p>
-      Traffic Torch delivers 9 powerful, instant SEO, UX and AI analysis tools designed to help your website achieve top search rankings. Built mobile-first and powered by advanced AI, these tools provide comprehensive audits, competitive gap analysis, actionable fix recommendations and predictive rank forecasting.
+      <strong>Traffic Torch</strong> now combines a <strong>unified Pro Dashboard</strong> with the new <strong>NUSA</strong> (New Ux Seo Aeo) & <strong>OFUX</strong> (Online Findability & User Experience) audits – giving you real‑time analytics and instant three‑in‑one audits in one place. All tools remain <strong>freemium, privacy‑first, and mobile‑ready</strong>.
     </p>
     <p>
-      Each tool focuses on a critical aspect of modern search performance: technical SEO health, on-page optimization, performance and user experience signals, content quality and relevance, and direct competitor benchmarking. By combining deep-dive diagnostics with clear educational explanations, Traffic Torch not only identifies issues but teaches you why they matter and how to resolve them effectively.
+      The <strong>Pro Dashboard</strong> connects your Google Analytics 4 and Search Console accounts, displaying live metrics (sessions, users, clicks, impressions) with custom date ranges, top content, traffic sources, device breakdowns, and CSV exports. Enterprise users get real‑time active users and event tracking.
+    </p>
+	<p>
+ 	 <strong>NUSA</strong> runs three audits simultaneously – <strong>Quit Risk</strong> (UX friction, bounce prediction, conversion optimizations), <strong>Lighthouse Plus</strong> (performance, accessibility, Core Web Vitals, agent‑readiness), and <strong>AEO Performance</strong> (AI crawler render fidelity, schema parse, content extractability, CMS fixes).
+	</p>
+    <p>
+      <strong>OFUX</strong> runs three audits simultaneously – <strong>UX Health</strong> (readability, accessibility, mobile, performance), <strong>SEO Intent</strong> (E‑E‑A‑T, content depth, schema, intent alignment), and <strong>AI Search (AEO)</strong> (answerability, structured data, originality). It delivers 0–100 scores, module breakdowns, and AI‑generated CMS fixes – all client‑side, no data stored.
     </p>
     <p>
-      If you're optimizing a single page or planning a full site strategy, the tools reveal hidden opportunities that search engines reward—faster load times, better mobile usability, stronger E-E-A-T signals, and targeted keyword gaps your competitors overlook. Results are presented in mobile-friendly reports with prioritized recommendations and priority improvement suggestions.
+      All 15+ standalone tools are still available (topical authority, entity extraction, keyword research, etc.), each with deep‑dive diagnostics, prioritized fixes, and educational explanations. Whether you're optimising a single page or planning a full strategy, Traffic Torch reveals hidden opportunities – faster load times, better mobile usability, stronger E‑E‑A‑T signals, and competitive gaps your rivals miss.
     </p>
     <p>
-      Simply click any tool card below to enter your URL and get an instant 360° health score, detailed insights, and a customized optimization roadmap. Start illuminating your path to higher rankings today.
+      Click any tool card below to enter your URL and get an instant 360° health score, detailed insights, and a custom optimisation roadmap. Start illuminating your path to higher rankings today.
     </p>
   </div>
+      <!-- Ask Traffic Torch AI  -->
+      <section class="space-y-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-8 rounded-xl">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">🧠 Ask Traffic Torch AI – Your Personal Assistant</h3>
+        <p class="text-base leading-relaxed">
+          <strong>Now available on every tool!</strong> After running an audit, click the “Ask Traffic Torch AI” button to get:
+        </p>
+        <ul class="list-disc list-inside text-base space-y-1 ml-4">
+          <li><strong>Actionable recommendations</strong> – tailored fixes based on your specific page and tool results.</li>
+          <li><strong>Context‑aware answers</strong> – ask follow‑up questions about any metric or suggestion.</li>
+          <li><strong>No fake advice</strong> – the AI is trained to be honest and will tell you if it’s unsure.</li>
+          <li><strong>Seamless integration</strong> – works across all tools (SEO Intent, UX, Local, Product, Entity, Topical, Schema, GEO, Voice, AI Content, Quit Risk, Keyword Research, and more).</li>
+        </ul>
+        <p class="text-base leading-relaxed">
+          The AI uses the latest LLM technology to interpret your audit data and provide clear, step‑by‑step guidance. It’s like having a senior SEO consultant on your team – always available.
+        </p>
+        <p class="text-sm italic">* The AI assistant is a beta feature – your feedback helps us improve it.</p>
+      </section>
 </details>
+
+<div class="space-y-12">
+  <!-- Unified grid: 2 columns on md+, even spacing for 6 cards -->
+  <div class="grid md:grid-cols-2 gap-8 lg:gap-10">
+
+    <!-- NUSA UX SEO AEO Tool -->
+    <a href="/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all duration-300">
+        <div class="text-purple-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🚀</div>
+        <h3 class="text-purple-500 dark:text-purple-300 text-xl md:text-2xl font-bold mb-3">NUSA Tool</h3>
+        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">New UX SEO AEO Audit</p>
+      </div>
+    </a>
+    
+    <!-- OFUX UX SEO AEO Tool -->
+    <a href="/ofux-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-red-500/30 group-hover:border-red-400 transition-all duration-300">
+        <div class="text-red-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🚦</div>
+        <h3 class="text-red-500 dark:text-red-300 text-xl md:text-2xl font-bold mb-3">OFUX Tool</h3>
+        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">Online Find-ability User Experience Audit</p>
+      </div>
+    </a>
+
+  </div>
+</div>
+
 <!-- Tools Grid – Grouped Sections with Anchors & Expanding Intros -->
 <div class="space-y-24">
 
     
   <!-- SEO Tools Section -->
   <section id="seo-tools">
-    <h2 class="text-4xl font-black text-center mb-8 bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent mt-6">
+    <h2 class="text-4xl font-black text-center mb-8 bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent mt-12">
       SEO Tools
     </h2>
     
@@ -498,35 +517,41 @@
 <!-- Expanding Classic SEO Intro Section -->
 <details class="max-w-3xl mx-auto text-center mb-12">
   <summary class="text-xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent cursor-pointer hover:text-orange-400 transition flex items-center justify-center gap-2 mt-6">
-    Show Intro
+    Intro 📍
     <svg class="chevron ml-2 transition-transform duration-300" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M6 9l6 6 6-6"/>
     </svg>
   </summary>
   <div class="mt-6 text-lg text-gray-800 dark:text-gray-200 leading-relaxed space-y-6">
     <p>
-      Traffic Torch’s classic SEO tools deliver proven, advanced analysis focused on search intent alignment, on-page optimization, direct competitor benchmarking, and modern structured data mastery. Core pillars that continue to drive sustainable rankings, rich results, and AI-enhanced visibility across all search engines.
+      Traffic Torch’s classic SEO tools deliver proven, advanced analysis focused on semantic entity optimization, search intent alignment, on-page signals, direct competitor benchmarking, and structured data mastery. Core pillars that drive sustainable rankings, rich results, and AI-enhanced visibility across modern search systems.
     </p>
     <p>
-      The <strong>Local SEO Tool</strong> analyzes your Google Business Profile signals, citation consistency (NAP), review velocity & sentiment, local structured data, and proximity/relevance factors. It delivers a complete local health score, highlights missing citations or optimization gaps, and provides prioritized fixes to boost visibility in the local pack, Google Maps, and AI-powered local summaries.
+      The <strong>Lighthouse Plus Tool</strong> 🗼 runs a 10-module human-first audit: Core Web Vitals, Performance Score, Accessibility (WCAG 2.2 AA), Best Practices, SEO On-Page, PWA Readiness, Resource Optimisation, Third-Party Impact, Mobile UX, and Agentic Browsing (beta). It gives a 0–100 score with what/how/why explanations for every module, plus CMS-aware step-by-step fix instructions and an Ask AI assistant. Everything runs inside Puppeteer + Cloudflare Browser Run — no external API, no tracking, no page speed API keys required.
     </p>
     <p>
-      The <strong>SEO Intent Tool</strong> performs a comprehensive intent and E-E-A-T audit, evaluating how well your content matches user search intent while assessing Experience, Expertise, Authoritativeness, and Trustworthiness signals. It highlights mismatches that cause lower rankings, suggests intent-aligned structural improvements, and provides clear guidance to strengthen topical authority.
+      The <strong>AEO Performance Tool</strong> 🚀 audits how well AI crawlers and answer engines can crawl, render, parse, and extract your page. It runs 9 technical modules — Render Fidelity, DOM Stability, Content Extractability, Schema Parse Performance, Crawler Accessibility, Text Density, Semantic Structure, Render Blocking, and Content Stability — then produces prioritized fixes and CMS-specific guidance. Built for AI citation, not just rankings.
+    </p>
+    <p>
+      The <strong>Topical Authority Tool</strong> detect main topics, subtopics, coverage gaps & authority clusters on any page. Get actionable fixes, subtopic suggestions & score to build stronger topical relevance across Google, Bing & AI search.
+    </p>
+    <p>
+      The <strong>Semantic Entity Extractor & Audit Tool</strong> instantly detects named entities on your page and scores coverage, salience, relationships, and on-page practices. It calculates an overall semantic readiness score (0–100), identifies topical gaps versus competitors, and delivers AI-generated, prioritized fixes to strengthen entity signals, topical authority, and performance in entity-aware search, answer engines, and generative AI responses.
+    </p>
+    <p>
+      The <strong>SEO Intent Tool</strong> performs a comprehensive intent and quality audit, evaluating how well your content matches user search intent while assessing key trust and relevance signals. It highlights mismatches that cause lower rankings, suggests intent-aligned structural improvements, and provides clear guidance to strengthen topical authority.
+    </p>
+    <p>
+      The <strong>Local SEO Tool</strong> analyzes your Google Business Profile signals, citation consistency (NAP), review velocity and sentiment, local structured data, and proximity/relevance factors. It delivers a complete local health score, highlights missing citations or optimization gaps, and provides prioritized fixes to boost visibility in the local pack, Google Maps, and local summaries.
     </p>
     <p>
       The <strong>Product SEO Tool</strong> delivers a full 360° health score for eCommerce/product pages. It analyzes on-page, technical, content/media, and eCommerce signals (schema, price/availability, reviews, variants, social tags). Provides deep-dive modules, priority fixes and recommendations, and projected ranking gains to maximize rich snippets, CTR, and conversions.
     </p>
     <p>
-      The <strong>Keywords Tool</strong> analyzes on-page keyword placement and usage with surgical precision. It checks primary and secondary keyword density, semantic variations, placement in critical elements (titles, headings, meta), and overall topical relevance—delivering actionable recommendations to optimize without risking over-optimization penalties.
+      The <strong>Schema Generator</strong> instantly detects existing structured data on any URL and generates clean, SEO-optimized JSON-LD markup. Supports all major schema types (FAQPage, HowTo, Article, Product, LocalBusiness, Organization, BreadcrumbList and more). It highlights implementation gaps, provides copy-paste-ready code with educational explanations, and shows exactly which rich results or enhanced snippets you could unlock — a fast way to boost CTR, voice/AI visibility, and overall SERP real estate.
     </p>
     <p>
-      The <strong>VS Tool</strong> uncovers competitive keyword gap opportunities by comparing your page directly against top-ranking competitors. It identifies high-value keywords they rank for that you don’t, estimates traffic potential, and prioritizes gaps you can realistically capture with targeted improvements.
-    </p>
-    <p>
-      The <strong>Schema Generator</strong> instantly detects existing structured data on any URL and generates clean, SEO-optimized JSON-LD markup. Supports all major schema types (FAQPage, HowTo, Article, Product, LocalBusiness, Organization, BreadcrumbList & more). It highlights implementation gaps, provides copy-paste-ready code with educational explanations, and shows exactly which rich results or enhanced snippets you could unlock — a fast way to boost CTR, voice/AI visibility, and overall SERP real estate.
-    </p>
-    <p>
-      These six tools combine to give you a complete, education-focused roadmap for traditional, local, eCommerce, and structured-data-powered SEO excellence. Click any of the cards below to enter your URL and instantly reveal opportunities to outrank the competition.
+      These eight tools combine to give you a complete, education-focused roadmap for human performance, AI-crawler performance, traditional, local, eCommerce, semantic entity, and structured-data-powered SEO excellence. Click any of the cards below to enter your URL and instantly reveal opportunities to outrank the competition.
     </p>
   </div>
 </details>
@@ -534,13 +559,31 @@
 <div class="space-y-12">
   <!-- Unified grid: 2 columns on md+, even spacing for 6 cards -->
   <div class="grid md:grid-cols-2 gap-8 lg:gap-10">
+  
+      <!-- Lighthouse Plus Tool -->
+    <a href="/lighthouse-plus-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all duration-300">
+        <div class="text-orange-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🗼</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-xl md:text-2xl font-bold mb-3">Lighthouse Plus Tool</h3>
+        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">10-module UX, performance, accessibility &amp; agent-readiness audit</p>
+      </div>
+    </a>
     
-    <!-- Local SEO Tool -->
-    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
+    <!-- Topical Authority Tool -->
+    <a href="/topical-authority-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
       <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all duration-300">
-        <div class="text-emerald-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">📍</div>
-        <h3 class="text-emerald-500 dark:text-emerald-300 text-xl md:text-2xl font-bold mb-3">Local SEO Tool</h3>
-        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">GBP + citations + local pack analysis</p>
+        <div class="text-emerald-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">⚜️</div>
+        <h3 class="text-emerald-500 dark:text-emerald-300 text-xl md:text-2xl font-bold mb-3">Topical Authority Tool</h3>
+        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">Detect main topics, subtopics & subtopic suggestions</p>
+      </div>
+    </a>
+    
+    <!-- SEO Entity Tool -->
+    <a href="/seo-entity-extractor-tool//" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all duration-300">
+        <div class="text-orange-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🧬</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-xl md:text-2xl font-bold mb-3">SEO Entity Tool</h3>
+        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">Entity extractor + audit</p>
       </div>
     </a>
 
@@ -552,6 +595,15 @@
         <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">Intent + E-E-A-T audit</p>
       </div>
     </a>
+    
+    <!-- Local SEO Tool -->
+    <a href="/local-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all duration-300">
+        <div class="text-emerald-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">📍</div>
+        <h3 class="text-emerald-500 dark:text-emerald-300 text-xl md:text-2xl font-bold mb-3">Local SEO Tool</h3>
+        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">GBP + citations + local pack analysis</p>
+      </div>
+    </a>
 
     <!-- Product SEO Tool -->
     <a href="/product-seo-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
@@ -561,30 +613,12 @@
         <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">Product page audit + eCommerce signals</p>
       </div>
     </a>
-
-    <!-- Keywords Tool -->
-    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-red-500/30 group-hover:border-red-400 transition-all duration-300">
-        <div class="text-red-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
-        <h3 class="text-red-500 dark:text-red-300 text-xl md:text-2xl font-bold mb-3">Keywords Tool</h3>
-        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">On-page keyword placement</p>
-      </div>
-    </a>
-
-    <!-- VS Tool -->
-    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all duration-300">
-        <div class="text-indigo-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🆚</div>
-        <h3 class="text-indigo-500 dark:text-indigo-300 text-xl md:text-2xl font-bold mb-3">VS Tool</h3>
-        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">Competitive keyword gap analysis</p>
-      </div>
-    </a>
     
     <!-- Schema Generator Tool -->
-    <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-amber-500/50">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-amber-500/30 group-hover:border-amber-400 transition-all duration-300">
-        <div class="text-amber-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
-        <h3 class="text-amber-500 dark:text-amber-300 text-xl md:text-2xl font-bold mb-3">Schema Generator</h3>
+    <a href="/schema-generator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-red-500/30 group-hover:border-red-400 transition-all duration-300">
+        <div class="text-red-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">⚙️</div>
+        <h3 class="text-red-500 dark:text-red-300 text-xl md:text-2xl font-bold mb-3">Schema Generator</h3>
         <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">Detect + generate JSON-LD for rich results</p>
       </div>
     </a>
@@ -594,15 +628,160 @@
   </section>
   </div> 
   
+    <!-- AI Tools Section -->
+  <section id="ai-tools">
+    <h2 class="text-4xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent text-center mb-8 bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent mt-12">
+      AI SEO Tools
+      <svg class="chevron ml-2 transition-transform duration-300" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+    </h2>
+
+<!-- Expanding AI Intro Section -->
+<details class="max-w-3xl mx-auto text-center mb-12">
+  <summary class="text-xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent cursor-pointer hover:text-orange-400 transition flex items-center justify-center gap-2">
+    AI Tools Intro 🤖
+    <svg class="chevron ml-2 transition-transform duration-300" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+  </summary>
+  <div class="mt-6 text-lg text-gray-800 dark:text-gray-100 leading-relaxed space-y-6">
+    <p>
+      In addition to traditional SEO, Traffic Torch includes dedicated GEO, AEO & AIO tools to help your content perform in the new generation of AI-driven search engines and answer engines like Perplexity, Grok, Gemini, and ChatGPT Search.
+    </p>
+    <p>
+      The <strong>AEO Performance Tool</strong> is the technical foundation of the suite. It runs a real headless Chrome render via Cloudflare Browser Run and audits your page across 9 modules that decide whether AI crawlers can actually reach, render, parse, and extract your content — Render Fidelity, DOM Stability, Content Extractability, Schema Parse, Crawler Accessibility, Text Density, Semantic Structure, Render Blocking, and Content Stability. You get an instant 9-module score, priority fixes, CMS-specific guidance, and an AI assistant that explains any failing metric in plain language.
+    </p>
+    <p>
+      The <strong>AI Search Optimization Tool</strong> analyzes your page against the signals that AI models prioritize: clear structure, authoritative sourcing, comprehensive topic coverage, natural language patterns, and E-E-A-T alignment. It delivers an AI readiness score, highlights gaps that cause your content to be overlooked by large language models, and provides targeted recommendations to increase visibility in AI-generated answers and summaries.
+    </p>
+    <p>
+      The <strong>AI Voice Search Tool</strong> goes deeper into voice-specific readiness. It scores your page across five core pillars — AI Visibility, Content Quality, Snippet Visibility, Sentiment Quality, and Traditional Keywords — with a full 360° health report, competitive gap analysis, priority fixes, and predictive insights for voice assistant performance. Use it to optimize for spoken answers, Position Zero, and AI assistant citations.
+    </p>
+    <p>
+      The <strong>AI Content Tool</strong> goes further by detecting subtle AI-generated patterns that can trigger quality filters in both search engines and AI systems. It scores content for authenticity and helps you maintain trust signals while preserving SEO performance.
+    </p>
+    <p>
+      These tools work together to future-proof your content strategy — ensuring your pages rank well in traditional results while becoming preferred sources for AI-powered discovery and citation. Click any card below to analyze your URL and start optimizing for the AI search era.
+    </p>
+  </div>
+</details>
+
+<div class="flex justify-center w-full">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-8 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- NEW: AEO Performance Tool -->
+    <a href="/aeo-performance-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50 transition-all">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col items-center text-center">
+        <div class="text-cyan-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🚀</div>
+        <h3 class="text-cyan-500 dark:text-cyan-300 text-xl md:text-2xl font-bold mb-3">AEO Performance Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100 text-base md:text-lg">9-module AI crawler audit</p>
+      </div>
+    </a>
+
+    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col items-center text-center">
+        <div class="text-orange-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🔍</div>
+        <h3 class="text-green-500 dark:text-green-300 text-xl md:text-2xl font-bold mb-3">AI Search Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100 text-base md:text-lg">Optimize for AI-powered search engines</p>
+      </div>
+    </a>
+
+    <a href="/ai-voice-search-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col items-center text-center">
+        <div class="text-pink-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🎙️</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-xl md:text-2xl font-bold mb-3">AI Voice Search Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100 text-base md:text-lg">360° audit for voice SEO</p>
+      </div>
+    </a>
+
+    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col items-center text-center">
+        <div class="text-pink-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🤖</div>
+        <h3 class="text-red-500 dark:text-orange-300 text-xl md:text-2xl font-bold mb-3">AI Content Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100 text-base md:text-lg">Detect AI patterns</p>
+      </div>
+    </a>
+
+  </div>
+</div>
+  
+<!-- Keyword Tools Section -->
+  <section id="keyword-tools">
+    <h2 class="text-4xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent text-center mb-8 bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent mt-12">
+      Keyword SEO Tools
+      <svg class="chevron ml-2 transition-transform duration-300" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+    </h2>
+
+<!-- Expanding Keyword Intro Section -->
+<details class="max-w-3xl mx-auto text-center mb-12">
+  <summary class="text-xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent cursor-pointer hover:text-orange-400 transition flex items-center justify-center gap-2">
+    Keyword Tool Intro 🔑
+    <svg class="chevron ml-2 transition-transform duration-300" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+  </summary>
+<div class="mt-6 text-lg text-gray-800 dark:text-gray-100 leading-relaxed space-y-6">
+  <p>
+    Traffic Torch includes three powerful keyword-focused tools designed to help your content rank higher in traditional search while performing strongly in the new generation of AI-driven search engines and answer engines.
+  </p>
+  <p>
+    The <strong>Keyword Research Tool</strong> uses Cloudflare Workers AI to analyze your seed keyword (and optional URL) and instantly generate 10–20 high-impact long-tail phrases. It extracts page topics, prioritizes buyer-intent and question formats, and delivers suggestions optimized for SEO, AEO (Answer Engine Optimization), GEO (Generative Engine Optimization), and AIO (AI-first visibility).
+  </p>
+  <p>
+    The <strong>Keywords Tool</strong> analyzes on-page keyword placement and usage with surgical precision. It checks primary and secondary keyword density, semantic variations, placement in critical elements (titles, headings, meta), and overall topical relevance — delivering actionable recommendations to optimize without risking over-optimization penalties.
+  </p>
+  <p>
+    The <strong>VS Tool</strong> uncovers competitive keyword gap opportunities by comparing your page directly against top-ranking competitors. It identifies high-value keywords they rank for that you don’t, estimates traffic potential, and prioritizes gaps you can realistically capture with targeted improvements.
+  </p>
+  <p>
+    These three keyword tools work together to build stronger, more discoverable content strategies. Ensuring your pages rank well in classic results while becoming preferred sources for AI-powered discovery and citation. The AI tools below can help you to start researching keywords, analyzing placement, and finding competitive gaps.
+  </p>
+</div>
+</details>
+<div class="flex justify-center w-full">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Keyword Research Tool -->
+    <a href="/keyword-research-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all duration-300">
+        <div class="text-purple-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">📝</div>
+        <h3 class="text-purple-500 dark:text-purple-300 text-xl md:text-2xl font-bold mb-3">Keyword Research Tool</h3>
+        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">Longtail keyword research and generator tool.</p>
+      </div>
+    </a>
+
+    <!-- Keyword Placement Tool -->
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-red-500/30 group-hover:border-red-400 transition-all duration-300">
+        <div class="text-red-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+        <h3 class="text-red-500 dark:text-red-300 text-xl md:text-2xl font-bold mb-3">Keyword Placement Tool</h3>
+        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">On-page keyword placement</p>
+      </div>
+    </a>
+
+    <!-- Keyword VS Tool -->
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all duration-300">
+        <div class="text-indigo-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-xl md:text-2xl font-bold mb-3">Keyword Competition Tool</h3>
+        <p class="text-gray-800 dark:text-gray-200 text-base md:text-lg">Competitive keyword gap analysis</p>
+      </div>
+    </a>
+  </div>
+</div>
+  </section>
+  
   <!-- UX Tools Section -->
   <section id="ux-tools">
-    <h2 class="text-4xl font-black text-center mb-8 bg-gradient-to-r from-emerald-400 to-teal-600 bg-clip-text text-transparent mt-6">
-      UX Tools
+    <h2 class="text-4xl font-black text-center mb-8 bg-gradient-to-r from-emerald-400 to-teal-600 bg-clip-text text-transparent mt-12">
+      UX Design Tools
     </h2>
 <!-- Expanding UX & Performance Intro Section -->
 <details class="max-w-3xl mx-auto text-center mb-12">
   <summary class="text-xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent cursor-pointer hover:text-orange-400 transition flex items-center justify-center gap-2">
-    Show Intro
+    Intro 👥
     <svg class="chevron ml-2 transition-transform duration-300" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M6 9l6 6 6-6"/>
     </svg>
@@ -629,14 +808,14 @@
       <a href="/quit-risk-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-emerald-500/50">
         <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-emerald-500/30 group-hover:border-emerald-400 transition-all">
           <div class="text-emerald-400 text-7xl mb-6 group-hover:animate-bounce">⚡</div>
-          <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">Quit Risk Tool</h4>
+          <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">Quit Risk Tool</h3>
           <p class="text-gray-800 dark:text-gray-100">UX friction + bounce prediction</p>
         </div>
       </a>
-      <a href="/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
+      <a href="/#seo-ux-tool" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50">
         <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all">
           <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">⚖️</div>
-          <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">Home Page Analyzer</h4>
+          <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">SEO UX Tool</h3>
           <p class="text-gray-800 dark:text-gray-100">Quick SEO + UX health check</p>
         </div>
       </a>
@@ -644,88 +823,245 @@
   </section>
 </div>
 
-  <!-- AI Tools Section -->
-  <section id="ai-tools">
-    <h2 class="text-2xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent text-center mb-8 bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent mt-6">
-      AI Tools
-      <svg class="chevron ml-2 transition-transform duration-300" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M6 9l6 6 6-6"/>
-    </svg>
-    </h2>
+<!-- UNIFIED EXTENSIONS, TOOLS & INTEGRATIONS SECTION -->
+<section id="extensions-tools-integrations" class="py-8">
+  <div class="max-w-7xl mx-auto px-6">
+    <!-- Title & Unified Description -->
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-500">
+        Traffic Torch Extensions, Tools & Integrations
+      </h2>
+      <p class="text-xl text-gray-800 dark:text-gray-200 max-w-3xl mx-auto leading-relaxed">
+        Supercharge your workflow with Traffic Torch AI SEO & UX tools. Install browser extensions for instant audits, 
+        add developer tools to your VS Code and Github, and bring powerful analysis directly into WordPress, Figma, Framer 
+        and more. One-click 360° health scoring, reports, fixes, and insights wherever you work.
+      </p>
+    </div>
 
-<!-- Expanding AI Intro Section -->
-<details class="max-w-3xl mx-auto text-center mb-12">
-  <summary class="text-xl font-black mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent cursor-pointer hover:text-orange-400 transition flex items-center justify-center gap-2">
-    Show AI Intro
-    <svg class="chevron ml-2 transition-transform duration-300" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M6 9l6 6 6-6"/>
-    </svg>
-  </summary>
-  <div class="mt-6 text-lg text-gray-800 dark:text-gray-100 leading-relaxed space-y-6">
-    <p>
-      In addition to traditional SEO, Traffic Torch includes dedicated AI-powered tools to help your content perform in the new generation of AI-driven search engines and answer engines like Perplexity, Grok, Gemini, and ChatGPT Search.
-    </p>
-    <p>
-      The <strong>AI Search Optimization Tool</strong> analyzes your page against the signals that AI models prioritize: clear structure, authoritative sourcing, comprehensive topic coverage, natural language patterns, and E-E-A-T alignment. It delivers an AI readiness score, highlights gaps that cause your content to be overlooked by large language models, and provides targeted recommendations to increase visibility in AI-generated answers and summaries.
-    </p>
-    <p>
-      The <strong>AI Voice Search Tool</strong> goes deeper into voice-specific readiness. It scores your page across five core pillars — AI Visibility, Content Quality, Snippet Visibility, Sentiment Quality, and Traditional Keywords — with a full 360° health report, competitive gap analysis, priority fixes, and predictive insights for voice assistant performance. Use it to optimize for spoken answers, Position Zero, and AI assistant citations.
-    </p>
-    <p>
-      The <strong>AI Content Tool</strong> goes further by detecting subtle AI-generated patterns that can trigger quality filters in both search engines and AI systems. It scores content for authenticity and helps you maintain trust signals while preserving SEO performance.
-    </p>
-    <p>
-      These tools work together to future-proof your content strategy—ensuring your pages rank well in traditional results while becoming preferred sources for AI-powered discovery and citation. Click the AI tool cards below to analyze your URL and start optimizing for the AI search era.
-    </p>
-  </div>
-</details>
-<div class="flex justify-center w-full">
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8">
-    <a href="/ai-search-optimization-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col items-center text-center">
-        <div class="text-orange-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🔍</div>
-        <h3 class="text-green-500 dark:text-green-300 text-xl md:text-2xl font-bold mb-3">Ai Search Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100 text-base md:text-lg">Optimize for AI-powered search engines</p>
+    <!-- 4-Column Plugin-Style Cards Grid -->
+    <div class="grid md:grid-cols-4 xl:grid-cols-4 gap-8">
+      
+      <!-- Chrome -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-red-500/50 group-hover:border-red-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🌐</div>
+            <h3 class="text-red-400 text-2xl text-center font-bold mb-3">Chrome Extension</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              Full AI SEO & UX audit toolkit directly in Chrome. Instant 360° health score, reports, and fixes.
+            </p>
+          </div>
+          <a href="https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
       </div>
-    </a>
 
-    <a href="/ai-voice-search-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col items-center text-center">
-        <div class="text-pink-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🎙️</div>
-        <h3 class="text-orange-500 dark:text-orange-300 text-xl md:text-2xl font-bold mb-3">Ai Voice Search Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100 text-base md:text-lg">360° audit for voice SEO</p>
+      <!-- Firefox -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-orange-500/50 group-hover:border-orange-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🦊</div>
+            <h3 class="text-orange-400 text-2xl text-center font-bold mb-3">Firefox Extension</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              360° AI SEO & UX health score, reports, and priority fixes inside Firefox.
+            </p>
+          </div>
+          <a href="https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
       </div>
-    </a>
 
-    <a href="/ai-audit-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all">
-      <div class="h-full bg-white/10 backdrop-blur-xl p-8 md:p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col items-center text-center">
-        <div class="text-pink-400 text-6xl md:text-7xl mb-6 group-hover:animate-bounce">🤖</div>
-        <h3 class="text-red-500 dark:text-orange-300 text-xl md:text-2xl font-bold mb-3">AI Content Tool</h3>
-        <p class="text-gray-800 dark:text-gray-100 text-base md:text-lg">Detect AI patterns</p>
+      <!-- Edge -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-blue-500 group-hover:border-blue-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🔷</div>
+            <h3 class="text-blue-400 text-2xl text-center font-bold mb-3">Edge Extension</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              Traffic Torch SEO, GEO & UX toolkit with help guides for Microsoft Edge.
+            </p>
+          </div>
+          <a href="https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
       </div>
-    </a>
-  </div>
-</div>
-  </section>
-  
 
-<!-- Share Buttons -->
-<div class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_pinterest"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_facebook"></a>
-      <a class="a2a_button_copy_link"></a>
+      <!-- VS Code -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-purple-500 group-hover:border-purple-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🛠️</div>
+            <h3 class="text-purple-400 text-2xl text-center font-bold mb-3">VS Code Extension</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              Real-time SEO, GEO & UX health scoring and implementation analysis for HTML in Visual Studio Code.
+            </p>
+          </div>
+          <a href="https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
+      </div>
+
+      <!-- WordPress -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-red-500/50 group-hover:border-red-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:animate-bounce">📘</div>
+            <h3 class="text-red-400 text-2xl text-center font-bold mb-3">WordPress Plugin</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              One-click AI SEO & UX analysis in your WordPress dashboard. Auto-scans posts, pages & products.
+            </p>
+          </div>
+          <a href="https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
+      </div>
+
+      <!-- Figma -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-blue-500 group-hover:border-cyan-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🎨</div>
+            <h3 class="text-cyan-400 text-2xl text-center font-bold mb-3">Figma Plugin</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              Real-time AI SEO & UX scoring inside Figma. Check headings, contrast, mobile layouts before hand-off.
+            </p>
+          </div>
+          <a href="https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
+      </div>
+
+      <!-- Framer -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-green-500/50 transition-all duration-300 border border-green-500/50">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-green-500/50 group-hover:border-green-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🔥</div>
+            <h3 class="text-emerald-400 text-2xl text-center font-bold mb-3">Framer Plugin</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              Official plugin for Framer. Auto-detects site URL and launches any Traffic Torch tool with one click.
+            </p>
+          </div>
+          <a href="https://www.framer.com/marketplace/plugins/traffic-torch/"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-green-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Install →
+          </a>
+        </div>
+      </div>
+
+      <!-- GitHub Action -->
+      <div class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+        <div class="h-full bg-white/10 backdrop-blur-xl p-6 border border-orange-500 group-hover:border-orange-400 transition-all flex flex-col justify-between min-h-[420px]">
+          <div>
+            <div class="text-5xl text-center mb-6 group-hover:animate-bounce">🚀</div>
+            <h3 class="text-orange-400 text-2xl text-center font-bold mb-3">GitHub Action</h3>
+            <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
+              One-click SEO + GEO + UX Health Analysis. Instantly opens the full Traffic Torch experience with your URL pre-filled.
+            </p>
+          </div>
+          <a href="https://github.com/marketplace/actions/traffic-torch-audit"
+             target="_blank" rel="noopener noreferrer"
+             class="mt-4 inline-block w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all text-center">
+            Add →
+          </a>
+        </div>
+      </div>
+
     </div>
   </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
+</section>
+  
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
+
+<section id="faq" class="container mx-auto px-4 py-16 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions – Traffic Torch 360° Toolkit
+  </h2>
+  <div class="space-y-6 max-w-4xl mx-auto">
+    
+    <!-- What is Traffic Torch -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-2xl overflow-hidden shadow-md bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-lg">
+      <summary class="flex justify-between items-center px-6 py-6 font-semibold text-xl cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is Traffic Torch and why use it for modern search optimization?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300 leading-relaxed">
+      Traffic Torch is a free, instant, mobile-first 360° SEO, GEO, AEO & AIO toolkit that delivers comprehensive health scores, deep-dive audits, competitive gap analysis, prioritized AI-generated fixes, and clear educational explanations. It helps websites rank higher in traditional search, AI Overviews, voice search, and generative engines by diagnosing technical, content, UX, and entity issues. Then Traffic Torch teaches you exactly why they matter and how to fix them quickly. Privacy-first, client-side analysis, no data leaves your browser.
+     </div>
+    </details>
+
+    <!-- 360° health score -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-2xl overflow-hidden shadow-md bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-lg">
+      <summary class="flex justify-between items-center px-6 py-6 font-semibold text-xl cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What does the 360° health score actually measure?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300 leading-relaxed">
+        The 360° score combines signals across technical SEO, on-page optimization, semantic entities, intent match, UX friction (Quit Risk), schema readiness, AI-search compatibility (AEO/AIO), voice search pillars, content authenticity, and competitive gaps vs top-ranking pages. Tools like Home Page Analyzer, Product SEO Tool, and AI Search Optimization Tool feed into this holistic view. Helping you prioritize fixes that move the needle on rankings and user trust.
+      </div>
+    </details>
+
+    <!-- Mobile & modes -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-2xl overflow-hidden shadow-md bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-lg">
+      <summary class="flex justify-between items-center px-6 py-6 font-semibold text-xl cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        Is Traffic Torch fully mobile-friendly with day/night modes?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300 leading-relaxed">
+        Yes — built PWA-ready (installable, fast-loading), every tool and report is fully responsive and optimized for mobile users. Day/night mode uses gray-800 (light) and gray-200 (dark) text for perfect readability in any lighting. Toggle via the 🌙 icon. Ideal for on-the-go audits without eye strain.
+      </div>
+    </details>
+
+    <!-- AI Content Tool -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-2xl overflow-hidden shadow-md bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-lg">
+      <summary class="flex justify-between items-center px-6 py-6 font-semibold text-xl cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does the AI Content Tool help avoid quality filters?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300 leading-relaxed">
+        It detects low perplexity, low burstiness, repetitive n-grams, overused AI-favored vocab (e.g., "delve", "testament", "realm"), and uniform sentence patterns that trigger downgrades in Google/AI systems. You get an authenticity score plus concrete humanization fixes. Like adding varied rhythm, personal anecdotes, and bursty phrasing to restore trust signals and maintain strong rankings.
+      </div>
+    </details>
+
+    <!-- Competitive gaps & education -->
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-2xl overflow-hidden shadow-md bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-lg">
+      <summary class="flex justify-between items-center px-6 py-6 font-semibold text-xl cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does competitive gap analysis (VS Tool) improve my SEO/GEO/AEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform duration-300">▼</span>
+      </summary>
+      <div class="px-6 pb-6 pt-3 text-gray-700 dark:text-gray-300 leading-relaxed">
+        The VS Tool compares your page head-to-head with top results, highlighting missing entities, weaker intent coverage, thin topical depth, and UX signals. It educates you on why those gaps cause lower visibility, then suggests targeted content additions, structure tweaks, and schema enhancements to close them fast and climb rankings across traditional, AI, and voice search.
+      </div>
+    </details>
+
+  </div>
+
+</section>
 
 
 <!-- Author Bio -->
@@ -735,11 +1071,11 @@
     <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
       <div class="flex flex-col items-center gap-6 mb-6">
         <!-- Traffic Torch Logo Only in Hero -->
-        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Deep-Dive Reports, Competitive Gaps, AI Fixes – Privacy-First Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Audit and Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
       </div>
       <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
       <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">
-        360° SEO • UX • AI Optimization Toolkit. Deep Diagnostics, Plugin Solutions, AI-Powered Fixes & Educational Insights.
+        360° SEO, GEO, AEO & AIO Search Optimization Toolkit. Deep Diagnostics, Plugin Solutions, Fixes & Educational Insights.
       </p>
     </div>
     <!-- Main Content Area: Transparent, inherits page bg -->
@@ -750,70 +1086,63 @@
           Traffic Torch delivers transparent, client-side, privacy-first SEO and UX analysis powered by real correlation research, algorithm insights, and performance testing. From instant health scores to competitive gap breakdowns, AI-suggested optimizations, and educational guidance. Empowering creators, agencies, and businesses to achieve better rankings and superior user experiences.
         </p>
       </div>
-      <!-- Founder Bio with Smaller Photo -->
+      <!-- Creator Entity -->
       <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
         <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
-          <!-- Perfect circle wrapper for photo -->
           <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
-            <img
-              src="/images/ylia-callan-320w.webp"
-              srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
-              sizes="(max-width: 768px) 96px, 128px"
-              alt="Ylia Callan: Musician, Author, Researcher, Web Designer, Founder of Traffic Torch – Bridging Creativity, Consciousness, and Cutting-Edge Web Tools"
-              class="w-full h-full object-cover object-center"
-              loading="lazy">
+            <img src="/images/ylia-callan-320w.webp" 
+                 srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+                 sizes="(max-width: 768px) 96px, 128px"
+                 alt="Ylia Callan – Founder of Traffic Torch" 
+                 class="w-full h-full object-cover object-center" loading="lazy">
           </div>
           <div class="space-y-4 text-center md:text-left">
             <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
             <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
-              Musician • Author • Researcher • Web Designer • TAFE NSW • Creator of privacy-first AI-powered web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+              Musician • Author • Researcher • Web Designer • TAFE NSW Australia • Creator of open-source AI SEO and UX web tools. 
+              Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
             </p>
-            <p class="text-base text-gray-800 dark:text-gray-200 italic">
-              Explore my work - books on physics, philosophy, consciousness, music, and more – at <a href="https://yliacallan.github.io/" target="_blank" rel="noopener" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">yliacallan.github.io</a>.
-            </p>
+            <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+              <a href="https://g.dev/traffictorch" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Google</a>
+              <a href="https://github.com/traffictorch" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">GitHub</a>
+              <a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">LinkedIn</a>
+              <a href="https://x.com/Guitaralize" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">X</a>
+              <a href="https://yliacallan.github.io/" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Ylia</a>
+            </div>
           </div>
         </div>
-        <!-- Social Links -->
-        <ul class="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
-          <li><a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">LinkedIn</a></li>
-          <li><a href="https://x.com/guitaralize" target="_blank" rel="noopener noreferrer" class="text-gray-500 dark:text-gray-200 hover:text-orange-500 transition font-medium text-lg">X (Twitter)</a></li>
-        </ul>
       </div>
       <!-- Tech Stack for E-E-A-T -->
       <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
         <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Modern Stack Setup</h3>
         <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
-          Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub Pages</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations.
+          Traffic Torch runs on epic, scalable infrastructure: Hosted via <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations.
         </p>
         <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
           Core Expertise: SEO Correlation Research • UX Optimization • Privacy-First Development • AI-Assisted Diagnostics. Continuously aligned with the latest guidelines, best practices, and real-world data.
         </p>
           <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
           <p>Published: 2025-12-12</p>
-          <p>Last updated: 2026-03-11</p>
+          <p>Last updated: 2026-09-12</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Share Buttons -->
-<div class="py-8 text-center">
-  <div class="flex flex-col items-center gap-4">
-    <strong class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-      Share?
-    </strong>
-    <div class="a2a_kit a2a_kit_size_32 a2a_default_style inline-flex justify-center gap-x-4 sm:gap-x-5">
-      <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
-      <a class="a2a_button_pinterest"></a>
-      <a class="a2a_button_x"></a>
-      <a class="a2a_button_reddit"></a>
-      <a class="a2a_button_facebook"></a>
-      <a class="a2a_button_copy_link"></a>
-    </div>
-  </div>
-</div>
-<script defer src="https://static.addtoany.com/menu/page.js"></script>
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
 
 <!-- Breadcrumbs – semantic & detectable by analyzer -->
 <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
@@ -843,6 +1172,8 @@
 </div>
 </div>
   
-  <script src="/main-v1.1.js" type="module"></script>
+  <script src="/main.js?v=1.2" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+  
 </body>
 </html>

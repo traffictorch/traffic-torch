@@ -1,0 +1,8 @@
+name               = "traffic-torch-high-scores"
+main               = "worker.js"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding       = "DB"
+database_name = "traffic-torch-db"
+database_id   = "d5c9fa6f-178f-4a5b-ae07-eebd161c6371"
