@@ -232,6 +232,8 @@ function renderTorchBody(data) {
     <div class="flex gap-2 flex-wrap w-full sm:w-auto items-center">
       <button x-show="!isOwnTorch" type="button" @click="toggleNetwork()" class="px-3 py-2 rounded-xl font-bold text-xs transition border-2" :class="inNetwork ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'" x-text="inNetwork ? 'In Network ✓' : '+ Add to Network'"></button>
       <button x-show="!isOwnTorch" type="button" @click="report()" class="px-3 py-2 rounded-xl font-bold text-xs border border-gray-300 dark:border-gray-600 hover:border-red-500 hover:text-red-500 transition">⚑ Report</button>
+      ${sc >= 80 ? `<button x-show="!isOwnTorch && !viewerEndorsed" type="button" @click="endorsePost()" :disabled="endorsing" class="px-3 py-2 rounded-xl font-bold text-xs transition border-2 border-pink-500 text-pink-500 hover:bg-pink-500 hover:text-white disabled:opacity-60" title="Endorse — author gets +36 points"><span x-text="endorsing ? '…' : '⭐ Endorse' + (endorseCount > 0 ? ' ' + endorseCount : '')"></span></button>
+      <button x-show="!isOwnTorch && viewerEndorsed" type="button" class="px-3 py-2 rounded-xl font-bold text-xs border-2 border-pink-500 text-pink-500 bg-pink-500/10 cursor-default" title="You already endorsed this torch"><span x-text="'⭐ ' + endorseCount"></span></button>` : ''}
     </div>
   </div>
   
@@ -320,12 +322,13 @@ function torchPage() {
     activeTab: 'torch',
     comments: [], commentsLoading: false, draft: '', submitting: false, commentError: '',
     isAuthenticated: false, inNetwork: false, isOwnTorch: false, myUserId: null, myAvatar: 'owner',
+    endorseCount: 0, viewerEndorsed: false, endorsing: false,
     copyLabel: 'Copy 🔗',
     async init() {
       const parts = window.location.pathname.split('/').filter(Boolean);
       this.torchId = parseInt(parts[1], 10) || null;
       const dataEl = document.getElementById('torch-data');
-      if (dataEl) { try { const d = JSON.parse(dataEl.textContent); this.authorId = d.author_id; this.authorUsername = d.author_username; } catch {} }
+      if (dataEl) { try { const d = JSON.parse(dataEl.textContent); this.authorId = d.author_id; this.authorUsername = d.author_username; this.endorseCount = d.endorse_count || 0; } catch {} }
       const token = localStorage.getItem('authToken');
       if (token) {
         this.isAuthenticated = true;
@@ -335,7 +338,10 @@ function torchPage() {
           this.isOwnTorch = this.myUserId && this.authorId && String(this.myUserId) === String(this.authorId);
         } catch {}
       }
-      if (!this.isOwnTorch && this.authorId && this.isAuthenticated) this.checkNetwork();
+      if (!this.isOwnTorch && this.authorId && this.isAuthenticated) {
+        this.checkNetwork();
+        this.checkEndorseStatus();
+      }
       await this.loadComments();
     },
     async checkNetwork() {
@@ -417,6 +423,42 @@ function torchPage() {
         await fetch(API_BASE + '/api/reports', { method: 'POST', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'post', target_id: this.torchId, reason }) });
         alert('Reported. Thank you.');
       } catch {}
+    },
+    async checkEndorseStatus() {
+      try {
+        const token = localStorage.getItem('authToken');
+        const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+        const res = await fetch(API_BASE + '/api/torch/' + this.torchId, { headers });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.post) {
+          this.endorseCount = data.post.endorse_count || 0;
+          this.viewerEndorsed = !!data.post.viewer_endorsed;
+        }
+      } catch {}
+    },
+    async endorsePost() {
+      const token = localStorage.getItem('authToken');
+      if (!token) { window.location.href = '/login/'; return; }
+      if (this.endorsing || this.viewerEndorsed) return;
+      this.endorsing = true;
+      try {
+        const res = await fetch(API_BASE + '/api/posts/' + this.torchId + '/endorse', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          this.viewerEndorsed = true;
+          this.endorseCount = data.endorse_count || (this.endorseCount + 1);
+        } else {
+          alert(data.error || 'Could not endorse');
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      } finally {
+        this.endorsing = false;
+      }
     },
     formatTime(ts) {
       const now = Date.now(), diff = now - ts, min = Math.floor(diff / 60000);
