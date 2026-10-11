@@ -1605,6 +1605,7 @@
   }
 
   let _moDone = false;
+  let _moDone = false;
   const mo = new MutationObserver(() => {
     if (_moDone) return;
     if (!isAuthed()) return;
