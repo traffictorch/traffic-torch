@@ -88,6 +88,34 @@
 
 <div x-data="profilePage()" x-init="init()" class="flex flex-1 min-h-screen">
 
+  <!-- ── Avatar lightbox ── -->
+  <div x-show="avatarLightbox" x-cloak
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave="transition ease-in duration-150"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       @click="avatarLightbox = false"
+       @keydown.escape.window="avatarLightbox = false"
+       class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm cursor-zoom-out p-6">
+    <img :src="avatarSrc(profile)"
+         :alt="profile.display_name"
+         @click.stop
+         x-show="avatarLightbox"
+         x-transition:enter="transition ease-out duration-300 delay-75"
+         x-transition:enter-start="opacity-0 scale-75"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-75"
+         class="max-w-[85vw] max-h-[85vh] rounded-full object-cover shadow-2xl ring-4 ring-white/20"
+         style="width: auto; height: auto;">
+    <button type="button" @click="avatarLightbox = false"
+            class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/15 hover:bg-white/25 text-white text-2xl flex items-center justify-center transition"
+            aria-label="Close">×</button>
+  </div>
+
   <!-- Sidebar -->
   <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
     <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
@@ -148,9 +176,10 @@
           <div class="px-6 pb-6 -mt-14 relative">
 <div class="flex flex-col items-center sm:flex-row sm:items-end gap-5 profile-header-flex">
   <template x-if="profile.id">
-    <div class="avatar-ring mx-auto sm:mx-0"
+    <div class="avatar-ring mx-auto sm:mx-0 cursor-pointer"
          :class="'tier-' + (profile.tier || 'free')"
-         :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member'">
+         :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member — click to enlarge'"
+         @click="avatarLightbox = true">
       <img :src="avatarSrc(profile)"
            :alt="profile.display_name"
            width="128" height="128" style="width:128px;height:128px;"
@@ -610,6 +639,7 @@ function profilePage() {
     inNetwork: false,
     endorsement_count: 0,
     contactsRevealed: {},
+    avatarLightbox: false,
     activeTab: 'audits',
     isOwnProfile: false,
     discover: { loading: false, users: [], hasMore: false, error: null, addLoading: {} },

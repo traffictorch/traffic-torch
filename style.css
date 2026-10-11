@@ -851,3 +851,9 @@ p a:hover, li a:hover {
   .profile-header-flex .profile-info { width: 100%; text-align: center; }
   .profile-header-flex .profile-actions { justify-content: center; }
 }
+
+/* Avatar click-to-enlarge */
+[x-cloak] { display: none !important; }
+.avatar-ring { transition: transform 0.18s ease; }
+.avatar-ring.cursor-pointer:hover { transform: scale(1.04); }
+.avatar-ring.cursor-pointer:active { transform: scale(0.98); }
