@@ -276,6 +276,7 @@ function extractParagraphs(html) {
   if (!doc || !doc.body) return [];
 
   const scope = doc.querySelector('main, article, [role="main"]') || doc.body;
+  scope.querySelectorAll('.tt-lb, .tt-contrib, [data-tt-thread-body], #tt-msg-panel').forEach(el => el.remove());
   const out = [];
   const seen = new Set();
 
