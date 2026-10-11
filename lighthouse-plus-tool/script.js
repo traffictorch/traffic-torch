@@ -11,6 +11,7 @@ import {
   deriveSelectorsForFailure,
   extractSnippets
 } from './code-snippet.js?v=1.0';
+import { renderContributions } from './contributions.js?v=1.0';
 
 // ─── Leaderboard submit helper ───────────────────────────────────
 function injectLeaderboardButton({ url, title, score, moduleScores }) {
@@ -292,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
     renderModuleCards('module-cards-container');
+  renderContributions();
   	initCodeSnippetModal();
 
   analyzeUrl.addEventListener('click', async () => {

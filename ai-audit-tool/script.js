@@ -15,6 +15,7 @@ import {
   deriveSelectorsForFailure,
   escapeHtml
 } from './code-snippet.js?v=1.0';
+import { renderContributions } from './contributions.js?v=1.0';
 
 // ── Renders AI answer text ──
 function renderCodeBlocks(text) {
@@ -174,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let wordCount = 0;
 
   initCodeSnippetModal();
+  renderContributions();
 
   function autoFillFromUrl() {
     const params = new URLSearchParams(window.location.search);
