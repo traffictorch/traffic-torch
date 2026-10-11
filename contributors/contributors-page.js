@@ -26,7 +26,7 @@ function merge(sources) {
   return [...byHandle.values()].map(m => ({ ...m, allTags: [...m.allTags] }));
 }
 
-export function renderContributorsPage(rootId = 'contributors-root') {
+export async function renderContributorsPage(rootId = 'contributors-root') {
   const root = document.getElementById(rootId);
   if (!root) return;
   const merged = merge(SOURCES);
@@ -35,6 +35,32 @@ export function renderContributorsPage(rootId = 'contributors-root') {
     return;
   }
   root.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">${merged.map(card).join('')}</div>`;
+
+  // Augment cards with live profile data (points, contributions, link)
+  const withUser = merged.filter(c => c.username);
+  if (withUser.length) {
+    const AUTH = 'https://traffic-torch-auth.traffictorch.workers.dev';
+    const results = await Promise.all(withUser.map(async c => {
+      try {
+        const r = await fetch(`${AUTH}/api/torcher/${encodeURIComponent(c.username)}`);
+        if (!r.ok) return { u: c.username, ok: false };
+        const d = await r.json();
+        return { u: c.username, ok: true, profile: d.profile };
+      } catch { return { u: c.username, ok: false }; }
+    }));
+    for (const r of results) {
+      if (!r.ok || !r.profile) continue;
+      const slot = root.querySelector(`[data-profile-slot="${r.u}"]`);
+      if (!slot) continue;
+      const pts = typeof r.profile.total_points === 'number' ? r.profile.total_points : 0;
+      const cnt = typeof r.profile.contribution_count === 'number' ? r.profile.contribution_count : 0;
+      slot.innerHTML = `
+        <a href="/torcher/${esc(r.u)}/"
+           class="inline-flex items-center gap-2 mt-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 text-white text-xs font-bold hover:brightness-110 transition shadow">
+          🏅 ${pts} points · ${cnt} contribution${cnt === 1 ? '' : 's'} · View profile →
+        </a>`;
+    }
+  }
 }
 
 function card(c) {

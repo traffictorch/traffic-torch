@@ -4,6 +4,7 @@
 export const contributors = [
   {
     handle: 'DrKJING',
+    username: 'hasan',
     name: 'Hasan Kalkan',
     role: 'Inhaber · EverGrow SEO Solution',
     subtitle: 'Informatiker (B.Sc.) · Team Lead SEO @ bike-components · Aachen',
