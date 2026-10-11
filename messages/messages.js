@@ -5,6 +5,7 @@
 //          draft persistence, export thread
 // Phase 2: edit-within-5min, clear conversation, block from thread
 // Phase 3: typing indicator (ephemeral, via Durable Object relay)
+// FIX: MutationObserver runaway loop + idempotent badge painting
 // ============================================================
 (function () {
   'use strict';
@@ -175,17 +176,17 @@
     paintBadges();
   }
 
+  // ── FIX: idempotent paint — only touches the DOM when the value actually changes.
+  //    This prevents the MutationObserver from re-firing in a loop.
   function paintBadges() {
     ['tt-beams-count', 'tt-beams-count-mobile'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
-      if (unreadCount > 0) {
-        el.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
-        el.classList.remove('hidden');
-      } else {
-        el.textContent = '';
-        el.classList.add('hidden');
-      }
+      const next = unreadCount > 0 ? (unreadCount > 99 ? '99+' : String(unreadCount)) : '';
+      const hide = unreadCount <= 0;
+      if (el.textContent !== next) el.textContent = next;
+      if (hide && !el.classList.contains('hidden')) el.classList.add('hidden');
+      if (!hide && el.classList.contains('hidden')) el.classList.remove('hidden');
     });
   }
 
@@ -1555,7 +1556,6 @@
     const panel = document.getElementById('tt-msg-panel');
     const drawerOpen = panel && panel.style.display === 'flex';
     if (activeThread && activeThread.peer.id === peer.id) {
-      // The peer sent a message — clear their typing indicator
       _peerTyping = false;
       clearTimeout(_typingIndicatorTimer);
       activeThread.messages.push(msg);
@@ -1606,9 +1606,18 @@
     connectWS();
   }
 
+  // ── FIX: one-shot MutationObserver. Wires beams links once, then disconnects.
+  //    Previously this ran forever and re-invoked wireStaticBeamsLinks →
+  //    paintBadges on every DOM change, causing an infinite loop
+  //    (mutate → observe → mutate) that pegged the main thread.
+  let _moDone = false;
+  let _moDone = false;
   const mo = new MutationObserver(() => {
+    if (_moDone) return;
     if (!isAuthed()) return;
     if (document.getElementById('tt-beams-inbox-link') || document.getElementById('tt-beams-inbox-link-mobile')) {
+      _moDone = true;
+      mo.disconnect();
       wireStaticBeamsLinks();
     }
   });
