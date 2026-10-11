@@ -88,32 +88,15 @@
 
 <div x-data="profilePage()" x-init="init()" class="flex flex-1 min-h-screen">
 
-  <!-- ── Avatar lightbox (teleported to body) ── -->
+  <!-- ── Avatar lightbox (bulletproof inline-styled) ── -->
   <template x-teleport="body">
-    <div x-show="avatarLightbox" x-cloak
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         @click="avatarLightbox = false"
-         @keydown.escape.window="avatarLightbox = false"
-         style="position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:1rem;cursor:zoom-out;">
-      <img :src="avatarSrc(profile)"
-           :alt="profile.display_name"
-           @click.stop
+    <div x-show="avatarLightbox" x-cloak @click="avatarLightbox = false" @keydown.escape.window="avatarLightbox = false"
+         style="position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;z-index:2147483647;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;cursor:zoom-out;overflow:hidden;">
+      <img :src="avatarSrc(profile)" :alt="profile.display_name" @click.stop
            x-show="avatarLightbox"
-           x-transition:enter="transition ease-out duration-300 delay-75"
-           x-transition:enter-start="opacity-0 scale-75"
-           x-transition:enter-end="opacity-100 scale-100"
-           x-transition:leave="transition ease-in duration-150"
-           x-transition:leave-start="opacity-100 scale-100"
-           x-transition:leave-end="opacity-0 scale-75"
-           style="width:min(80vw,360px);height:min(80vw,360px);border-radius:50%;object-fit:cover;box-shadow:0 25px 60px -12px rgba(0,0,0,0.7);">
-      <button type="button" @click="avatarLightbox = false"
-              style="position:absolute;top:1rem;right:1rem;width:44px;height:44px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:24px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;"
-              aria-label="Close">×</button>
+           style="display:block !important;width:min(80vmin,340px) !important;height:min(80vmin,340px) !important;max-width:min(80vmin,340px) !important;max-height:min(80vmin,340px) !important;object-fit:cover;border-radius:50%;box-shadow:0 25px 60px -12px rgba(0,0,0,0.7);background:#fff;">
+      <button type="button" @click="avatarLightbox = false" aria-label="Close"
+              style="position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-family:system-ui,-apple-system,sans-serif;">×</button>
     </div>
   </template>
 
