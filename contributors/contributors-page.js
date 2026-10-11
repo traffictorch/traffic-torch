@@ -54,6 +54,9 @@ export async function renderContributorsPage(rootId = 'contributors-root') {
       if (!slot) continue;
       const pts = typeof r.profile.total_points === 'number' ? r.profile.total_points : 0;
       const cnt = typeof r.profile.contribution_count === 'number' ? r.profile.contribution_count : 0;
+      const end = typeof r.profile.endorsement_count === 'number' ? r.profile.endorsement_count : 0;
+      // Skip the pill entirely for brand-new accounts with no activity yet
+      if (pts === 0 && cnt === 0 && end === 0) continue;
       slot.innerHTML = `
         <a href="/torcher/${esc(r.u)}/"
            class="inline-flex items-center gap-2 mt-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 text-white text-xs font-bold hover:brightness-110 transition shadow">
@@ -86,6 +89,7 @@ function card(c) {
         <div class="min-w-0 flex-1">
           <h3 class="text-xl font-black text-gray-900 dark:text-gray-100">${esc(c.name)}</h3>
           <p class="text-sm font-semibold text-orange-600 dark:text-orange-400">u/${esc(c.handle)}</p>
+          ${c.username ? `<div data-profile-slot="${esc(c.username)}"></div>` : ''}
           <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${esc(c.role)}</p>
           ${c.subtitle ? `<p class="text-xs text-gray-500 dark:text-gray-500 mt-0.5">${esc(c.subtitle)}</p>` : ''}
           ${c.location ? `<p class="text-xs text-gray-500 dark:text-gray-500 mt-0.5">📍 ${esc(c.location)}</p>` : ''}
