@@ -1289,6 +1289,7 @@ async function createNotification(env, { userId, type, actorId, subjectType, sub
               : type === 'network' ? 'notify_network'
               : type === 'leaderboard' ? 'notify_leaderboard'
               : type === 'message' ? 'notify_messages'
+              : type === 'endorse' ? 'notify_leaderboard'
               : null;
     if (col) {
       const u = await env.MY_BINDING.prepare(`SELECT ${col} AS pref FROM users WHERE id = ?`).bind(userId).first();
@@ -1305,6 +1306,7 @@ async function createNotification(env, { userId, type, actorId, subjectType, sub
     const pushType = type === 'comment' ? 'comment'
                    : type === 'network' ? 'network'
                    : type === 'leaderboard' ? 'leaderboard'
+                   : type === 'endorse' ? 'leaderboard'
                    : 'message';
     await firePush(env, {
       userId,

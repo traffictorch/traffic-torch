@@ -827,6 +827,7 @@
                           <span x-show="n.type === 'comment'" class="mr-1">💬</span>
                           <span x-show="n.type === 'network'" class="mr-1">🤝</span>
                           <span x-show="n.type === 'leaderboard'" class="mr-1">🏆</span>
+                          <span x-show="n.type === 'endorse'" class="mr-1">⭐</span>
                           <span x-text="n.message"></span>
                           <span x-show="n.actor_total_points > 0" class="points-badge ml-2" x-text="'🏅 ' + n.actor_total_points"></span>
                         </p>
@@ -4785,7 +4786,7 @@ async endorsePost(postId) {
 
     activityIcon(t) {
       return ({ torch: '🔥', comment: '💬', network: '🤝', contribution: '🛠️',
-                points_milestone: '🏅', rank_change: '📈', score_up: '⬆️' })[t] || '•';
+                points_milestone: '🏅', rank_change: '📈', score_up: '⬆️', endorse: '⭐' })[t] || '•';
     },
 
     activityText(item) {
@@ -4808,7 +4809,7 @@ async endorsePost(postId) {
         network: ' added someone to their network',
         contribution: ' made a contribution',
         points_milestone: ' reached a milestone', rank_change: ' moved up the leaderboard',
-        score_up: ' improved a score'
+        score_up: ' improved a score', endorse: ' endorsed a torch'
       })[item.event_type] || ' did something';
     },
 
@@ -4816,7 +4817,8 @@ async endorsePost(postId) {
       return ({
         torch: 'View torch →', comment: 'Read thread →', network: 'View profile →',
         contribution: 'View contribution →',
-        points_milestone: 'View leaderboard →', rank_change: 'View leaderboard →', score_up: 'Re-run audit →'
+        points_milestone: 'View leaderboard →', rank_change: 'View leaderboard →', score_up: 'Re-run audit →',
+        endorse: 'View torch →'
       })[item.event_type] || 'Open →';
     },
 
