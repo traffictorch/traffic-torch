@@ -584,6 +584,7 @@ function profilePage() {
         }));
         this.network = data.network || [];
         this.network_count = data.network_count || 0;
+        this.endorsement_count = (data.profile && data.profile.endorsement_count) || 0;
 
         if (this.profile.display_name) {
           document.title = `${this.profile.display_name} (@${username}) · Traffic Torch`;
