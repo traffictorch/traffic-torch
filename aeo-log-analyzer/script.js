@@ -2,9 +2,10 @@
 import { streamLogFile, FORMATS } from './log-parser.js';
 import { aggregateByBot, PUBLISHED_IP_BOTS } from './ip-matcher.js';
 import { renderReport } from './report-renderer.js';
+import { renderContributions } from './contributions.js';
 
 const IP_API = 'https://aeo-bot-ips.traffictorch.workers.dev/';
-const IP_CACHE_KEY = 'aeo_bot_ips_cache_v1';
+const IP_CACHE_KEY = 'aeo_bot_ips_cache_v2';
 const IP_CACHE_TTL = 24 * 60 * 60 * 1000;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,10 +16,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const results     = document.getElementById('results');
   const errorBox    = document.getElementById('error-box');
 
+  renderContributions();
+
   if (!fileInput) return;
 
   fileInput.addEventListener('change', () => {
     if (fileInput.files[0]) handleFile(fileInput.files[0]);
+  });
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      fileInput.click();
+    }
   });
 
   ['dragenter', 'dragover'].forEach(ev => {

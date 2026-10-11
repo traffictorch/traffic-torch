@@ -11,7 +11,12 @@ export function renderReport({ buckets, meta }) {
   const totalHits = buckets.reduce((s, b) => s + b.total, 0);
   const uniqueBots = buckets.length;
   const verifiedHits = buckets.reduce((s, b) => s + b.verifiedCount, 0);
-  const unverifiedHits = buckets.reduce((s, b) => s + b.unverifiedCount, 0);
+  // Split "unverified" into real spoofs (bot has published ranges but IP didn't match)
+  // vs UA-only (bot has no published ranges, so we can't verify — not suspicious).
+  const spoofedHits = buckets.reduce((s, b) =>
+    b.hasPublishedIps ? s + b.unverifiedCount : s, 0);
+  const uaOnlyHits = buckets.reduce((s, b) =>
+    b.hasPublishedIps ? s : s + b.total, 0);
   const suspicious = buckets.reduce((s, b) =>
     s + Object.values(b.suspiciousStatuses).reduce((a, c) => a + c, 0), 0);
 
@@ -29,8 +34,14 @@ export function renderReport({ buckets, meta }) {
           ${statCard('Total Bot Hits', totalHits.toLocaleString(), 'gray')}
           ${statCard('Unique Bots', uniqueBots, 'orange')}
           ${statCard('Verified Hits', verifiedHits.toLocaleString(), 'green')}
-          ${statCard('Unverified Claims', unverifiedHits.toLocaleString(), unverifiedHits > 0 ? 'red' : 'gray')}
+          ${statCard('Unverified Claims', spoofedHits.toLocaleString(), spoofedHits > 0 ? 'red' : 'gray')}
         </div>
+
+        ${uaOnlyHits > 0 ? `
+          <div class="mx-6 mb-4 text-xs text-gray-500 dark:text-gray-400 text-center">
+            Plus ${uaOnlyHits} hit${uaOnlyHits === 1 ? '' : 's'} from bots with no published IP ranges (UA-only, unverifiable).
+          </div>
+        ` : ''}
 
         ${suspicious > 0 ? `
           <div class="mx-6 mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">

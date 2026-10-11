@@ -26,8 +26,9 @@ export const BOT_UA_PATTERNS = {
 export const PUBLISHED_IP_BOTS = new Set([
   'Googlebot', 'Googlebot-Image', 'Googlebot-News',
   'Bingbot', 'Applebot',
-  'GPTBot', 'OAI-SearchBot', 'ChatGPT-User',
-  'Amazonbot'
+  'GPTBot', 'OAI-SearchBot', 'ChatGPT-User'
+  // Amazonbot removed — Amazon does not publish an IP range.
+  // It's UA-only like Perplexity, Claude, and CCBot.
 ]);
 
 // ── IP normalization ──

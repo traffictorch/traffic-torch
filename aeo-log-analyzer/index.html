@@ -32,28 +32,157 @@
     "@context": "https://schema.org",
     "@graph": [
       {
+        "@type": "Organization",
+        "@id": "https://traffictorch.net/#organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/",
+        "logo": { "@type": "ImageObject", "url": "https://traffictorch.net/logo-512.webp", "width": 512, "height": 512 },
+        "sameAs": [
+          "https://g.dev/traffictorch",
+          "https://github.com/traffictorch/",
+          "https://orcid.org/0009-0006-4084-0241",
+          "https://www.wikidata.org/wiki/Q139815165",
+          "https://zenodo.org/records/20149616",
+          "https://x.com/Guitaralize"
+        ]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://traffictorch.net/#author",
+        "name": "Ylia Callan",
+        "url": "https://yliacallan.github.io/",
+        "image": "https://traffictorch.net/images/ylia-callan-320w.webp",
+        "jobTitle": "Founder & Builder",
+        "description": "Musician, Author, Web Designer, and Creator of open-source SEO, UX, and AEO web tools.",
+        "sameAs": [
+          "https://g.dev/traffictorch",
+          "https://github.com/traffictorch/",
+          "https://orcid.org/0009-0006-4084-0241",
+          "https://www.wikidata.org/wiki/Q139815165",
+          "https://www.linkedin.com/in/ylia-callan-8b889976/",
+          "https://x.com/Guitaralize",
+          "https://yliacallan.github.io/"
+        ],
+        "worksFor": { "@id": "https://traffictorch.net/#organization" }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://traffictorch.net/#website",
+        "url": "https://traffictorch.net/",
+        "name": "Traffic Torch",
+        "publisher": { "@id": "https://traffictorch.net/#organization" }
+      },
+      {
         "@type": "WebPage",
         "@id": "https://traffictorch.net/aeo-log-analyzer/#webpage",
         "url": "https://traffictorch.net/aeo-log-analyzer/",
-        "name": "AEO Log Analyzer | Traffic Torch",
-        "description": "Verify which AI crawlers actually hit your site — IP-verified against published operator ranges.",
+        "name": "AEO Log Analyzer – IP-verified AI crawler log analysis | Traffic Torch",
+        "description": "Free client-side access log analyzer. Verify which AI crawlers actually hit your site — IP-verified against published operator ranges. No log content leaves the browser.",
         "isPartOf": { "@id": "https://traffictorch.net/#website" },
+        "about": { "@id": "https://traffictorch.net/aeo-log-analyzer/#software" },
         "datePublished": "2026-10-12T09:00:00+11:00",
-        "dateModified": "2026-10-12T09:00:00+11:00",
+        "dateModified": "2026-10-12T12:00:00+11:00",
         "author": { "@id": "https://traffictorch.net/#author" },
-        "publisher": { "@id": "https://traffictorch.net/#organization" }
+        "publisher": { "@id": "https://traffictorch.net/#organization" },
+        "breadcrumb": { "@id": "https://traffictorch.net/aeo-log-analyzer/#breadcrumb" },
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": ["h1", "#what-is-heading", "#faq h2"]
+        }
       },
       {
         "@type": "SoftwareApplication",
         "@id": "https://traffictorch.net/aeo-log-analyzer/#software",
         "name": "AEO Log Analyzer",
+        "alternateName": "AI Crawler Log Analyzer",
         "applicationCategory": "BusinessApplication",
+        "applicationSubCategory": "SEO Tool",
         "operatingSystem": "Web",
+        "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Edge, Safari.",
+        "softwareVersion": "1.0",
         "url": "https://traffictorch.net/aeo-log-analyzer/",
-        "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" },
+        "image": "https://traffictorch.net/aeo-log-analyzer/images/aeo-log-analyzer.webp",
         "description": "Client-side access log analyzer that identifies AI crawler hits, verifies claimed IPs against published operator ranges, and surfaces rate-limit responses. No log content leaves the browser.",
+        "featureList": [
+          "Parses Apache combined, Nginx combined, Nginx JSON, and Cloudflare CSV logs",
+          "Identifies 18 named crawler user agents",
+          "IP-verifies claims against published operator ranges",
+          "Flags unverified and spoofed source IPs",
+          "Groups hits by 2xx / 3xx / 4xx / 5xx status",
+          "Surfaces 401 / 403 / 429 / 503 rate-limit and block responses",
+          "First and last seen timestamps per bot",
+          "Top requested paths per bot",
+          "Export to JSON and CSV",
+          "100% client-side processing – no log content uploaded"
+        ],
+        "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock" },
         "author": { "@id": "https://traffictorch.net/#author" },
-        "publisher": { "@id": "https://traffictorch.net/#organization" }
+        "publisher": { "@id": "https://traffictorch.net/#organization" },
+        "isAccessibleForFree": true,
+        "permissions": "public"
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://traffictorch.net/aeo-log-analyzer/#breadcrumb",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" },
+          { "@type": "ListItem", "position": 2, "name": "AEO Log Analyzer", "item": "https://traffictorch.net/aeo-log-analyzer/" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://traffictorch.net/aeo-log-analyzer/#faq",
+        "mainEntityOfPage": { "@id": "https://traffictorch.net/aeo-log-analyzer/#webpage" },
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is the AEO Log Analyzer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The AEO Log Analyzer is a free client-side tool that parses your server access log and identifies which AI crawlers actually hit your site. It matches the User-Agent of every request against 18 known crawler patterns, then verifies the source IP against the operator's published IP ranges — Googlebot, Bingbot, Applebot, GPTBot, OAI-SearchBot, ChatGPT-User and Amazonbot all publish ranges, so hits are shown as verified or unverified. The tool also surfaces status codes, rate-limit responses (401, 403, 429, 503), first and last seen timestamps, and top requested paths per bot. Log content never leaves the browser — everything runs client-side."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I verify AI crawlers are actually hitting my site?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Download your server access log for the period you want to analyze (Apache combined, Nginx combined, Nginx JSON, or Cloudflare CSV format), then drop the file into the AEO Log Analyzer. The tool will parse each line, identify crawler User-Agents, and cross-reference the source IP against the operators' published IP ranges. Requests where both the UA and IP match are marked verified. Requests where the UA claims a known crawler but the IP does not match any published range are marked unverified — usually spoofed scrapers rather than the real bot. You will see per-bot totals, status code breakdown, and any rate-limit responses."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why does GPTBot show as 'unverified' in the results?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "GPTBot is verified against OpenAI's published IP ranges. If a hit is shown as unverified, it means the request's source IP is not in OpenAI's published range for GPTBot — even though the User-Agent claims to be GPTBot. This is usually a spoofed scraper, not the real OpenAI crawler. Any tool or person can set the User-Agent string to 'GPTBot', but only OpenAI's infrastructure can send requests from OpenAI's IP ranges. The unverified count in the report shows you how many hits claimed to be a given bot but came from a non-matching source."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What does a 429 response mean for an AI crawler?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "HTTP 429 means 'Too Many Requests' — the server (or a CDN/WAF in front of it) is rate-limiting the crawler because it sent too many requests in a short window. For AI crawlers this is important: if a verified crawler is being rate-limited, it may reduce its crawl rate for your site, delay re-visits, or skip pages entirely. The AEO Log Analyzer flags 429 responses per bot so you can see whether your rate limits are blocking legitimate crawlers. Other suspicious statuses include 401 (Unauthorized), 403 (Forbidden), and 503 (Service Unavailable)."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is my log file uploaded anywhere?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The AEO Log Analyzer parses your log file entirely in your browser. Nothing is uploaded to any server. The only network request the tool makes is to fetch the operators' published IP ranges — a public, static list that contains no information about your site or your logs. Your IP addresses, URL paths, referrers, and User-Agent data never leave your device."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does the AEO Log Analyzer work with Cloudflare, Nginx, and Apache logs?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The tool auto-detects and parses four common access log formats: Apache combined (the default on most Apache setups), Nginx combined (the default on most Nginx setups), Nginx JSON (if you have configured Nginx with a JSON log format), and Cloudflare CSV (exported from the Cloudflare dashboard). The format is detected automatically from the first few lines of the file. If you paste a log in an unsupported format, the tool will tell you rather than silently parsing it wrong."
+            }
+          }
+        ]
       }
     ]
   }
@@ -134,12 +263,16 @@
           </p>
         </div>
 
-        <label id="drop-zone" for="log-file">
-          <span class="drop-icon">📄</span>
+        <div id="drop-zone" role="button" tabindex="0" aria-label="Upload access log file">
+          <span class="drop-icon" aria-hidden="true">📄</span>
           <span class="drop-label">Drop your access log here</span>
           <span class="drop-hint">or click to browse · Apache, Nginx, or Cloudflare · up to 100 MB</span>
-          <input type="file" id="log-file" accept=".log,.txt,.csv,text/plain">
-        </label>
+        </div>
+        <input type="file" id="log-file" accept=".log,.txt,.csv,text/plain" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
+
+        <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
+          No log handy? <a href="/aeo-log-analyzer/sample.log" download class="text-orange-500 dark:text-orange-400 hover:underline font-semibold">Download a sample log →</a>
+        </p>
 
         <div id="error-box" class="hidden mt-6"></div>
 
@@ -154,7 +287,18 @@
 
         <div id="results" class="hidden"></div>
 
-        <section id="how-it-works" class="max-w-4xl mx-auto my-16 px-2">
+        <section id="what-is" class="max-w-4xl mx-auto my-16 px-2">
+          <div class="bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-950/20 dark:to-pink-950/20 rounded-3xl p-8 border border-orange-200 dark:border-orange-800/40">
+            <h2 id="what-is-heading" class="text-2xl md:text-3xl font-black mb-4 text-center text-gray-800 dark:text-gray-200">
+              What is the AEO Log Analyzer?
+            </h2>
+            <p class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 text-center max-w-3xl mx-auto">
+              The AEO Log Analyzer is a free, client-side tool that parses your server access log and shows which AI crawlers <em>actually</em> hit your site — not just which ones the User-Agent claims to be. It matches every request against 18 known crawler patterns, then verifies the source IP against the operator's published IP ranges. Only hits where both the User-Agent and the source IP match are marked <strong>verified</strong>. Spoofed claims are flagged as <strong>unverified</strong>. Your log content never leaves your browser.
+            </p>
+          </div>
+        </section>
+
+        <section id="how-it-works" class="max-w-4xl mx-auto my-8 px-2">
           <details class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden">
             <summary class="px-6 py-5 cursor-pointer list-none flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition">
               <span class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200">How it works — and what it can't see</span>
@@ -183,7 +327,6 @@
                 <li>Bingbot — Microsoft published ranges</li>
                 <li>Applebot — Apple published ranges</li>
                 <li>GPTBot, OAI-SearchBot, ChatGPT-User — OpenAI published ranges</li>
-                <li>Amazonbot — Amazon published ranges</li>
               </ul>
               <p class="mt-4"><strong>UA only (no published IP ranges):</strong></p>
               <ul class="list-disc pl-6 space-y-1 text-sm">
@@ -191,6 +334,7 @@
                 <li>PerplexityBot, Perplexity-User — Perplexity has not published ranges</li>
                 <li>CCBot — Common Crawl, UA-only</li>
                 <li>Bytespider — ByteDance, UA-only</li>
+                <li>Amazonbot — Amazon does not publish a range</li>
                 <li>DuckAssistBot, YandexBot — UA-only</li>
               </ul>
               <p class="text-sm italic mt-4">For UA-only bots, hits are shown as "UA only" rather than "verified" — the tool can't confirm IP authenticity, so we don't pretend to.</p>
@@ -198,7 +342,195 @@
           </details>
         </section>
 
-        <section id="share-module" class="max-w-4xl mx-auto my-8 px-2"></section>
+        <section id="cross-link" class="max-w-4xl mx-auto my-12 px-2">
+          <div class="rounded-3xl border border-orange-200 dark:border-orange-800/40 bg-white dark:bg-gray-900 p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-lg">
+            <div class="text-5xl flex-shrink-0" aria-hidden="true">🚀</div>
+            <div class="flex-1 text-center md:text-left">
+              <h3 class="text-xl md:text-2xl font-black text-gray-800 dark:text-gray-200 mb-2">Verified the crawlers. Now audit the page.</h3>
+              <p class="text-sm md:text-base text-gray-600 dark:text-gray-400">
+                Log analysis tells you who reached your site. The AEO Performance Tool tells you whether they could actually read what they found — render fidelity, DOM stability, schema parse, and 6 more modules.
+              </p>
+            </div>
+            <a href="/aeo-performance-tool/" class="flex-shrink-0 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition shadow-lg whitespace-nowrap">
+              Run AEO Performance Audit →
+            </a>
+          </div>
+        </section>
+
+        <section id="faq" class="max-w-4xl mx-auto my-16 px-2">
+          <h2 class="text-3xl md:text-4xl font-black text-center mb-10 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+            Frequently Asked Questions
+          </h2>
+          <div class="space-y-4">
+
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer p-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">
+                What is the AEO Log Analyzer?
+                <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-5 pb-5 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p>A free client-side tool that parses your server access log and identifies which AI crawlers actually hit your site. It matches the User-Agent of every request against 18 known crawler patterns, then verifies the source IP against the operator's published IP ranges — Googlebot, Bingbot, Applebot, GPTBot, OAI-SearchBot, ChatGPT-User and Amazonbot all publish ranges, so hits are shown as verified or unverified. The tool also surfaces status codes, rate-limit responses (401, 403, 429, 503), first and last seen timestamps, and top requested paths per bot.</p>
+              </div>
+            </details>
+
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer p-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">
+                How do I verify AI crawlers are actually hitting my site?
+                <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-5 pb-5 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p>Download your server access log for the period you want to analyze (Apache combined, Nginx combined, Nginx JSON, or Cloudflare CSV format), then drop the file into the AEO Log Analyzer. The tool parses each line, identifies crawler User-Agents, and cross-references the source IP against the operators' published IP ranges. Requests where both the UA and IP match are marked verified. Requests where the UA claims a known crawler but the IP does not match any published range are marked unverified — usually spoofed scrapers rather than the real bot.</p>
+              </div>
+            </details>
+
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer p-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">
+                Why does GPTBot show as "unverified" in the results?
+                <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-5 pb-5 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p>GPTBot is verified against OpenAI's published IP ranges. If a hit is shown as unverified, the request's source IP is not in OpenAI's published range for GPTBot — even though the User-Agent claims to be GPTBot. This is usually a spoofed scraper, not the real OpenAI crawler. Any tool or person can set the User-Agent string to "GPTBot", but only OpenAI's infrastructure can send requests from OpenAI's IP ranges. The unverified count in the report shows you how many hits claimed to be a given bot but came from a non-matching source.</p>
+              </div>
+            </details>
+
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer p-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">
+                What does a 429 response mean for an AI crawler?
+                <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-5 pb-5 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p>HTTP 429 means "Too Many Requests" — the server (or a CDN/WAF in front of it) is rate-limiting the crawler because it sent too many requests in a short window. For AI crawlers this is important: if a verified crawler is being rate-limited, it may reduce its crawl rate for your site, delay re-visits, or skip pages entirely. The AEO Log Analyzer flags 429 responses per bot so you can see whether your rate limits are blocking legitimate crawlers. Other suspicious statuses include 401 (Unauthorized), 403 (Forbidden), and 503 (Service Unavailable).</p>
+              </div>
+            </details>
+
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer p-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">
+                Is my log file uploaded anywhere?
+                <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-5 pb-5 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p>No. The tool parses your log file entirely in your browser. Nothing is uploaded to any server. The only network request the tool makes is to fetch the operators' published IP ranges — a public, static list that contains no information about your site or your logs. Your IP addresses, URL paths, referrers, and User-Agent data never leave your device.</p>
+              </div>
+            </details>
+
+            <details class="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <summary class="flex justify-between items-center cursor-pointer p-5 text-lg font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">
+                Does the AEO Log Analyzer work with Cloudflare, Nginx, and Apache logs?
+                <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="px-5 pb-5 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p>Yes. The tool auto-detects and parses four common access log formats: Apache combined (the default on most Apache setups), Nginx combined (the default on most Nginx setups), Nginx JSON (if you have configured Nginx with a JSON log format), and Cloudflare CSV (exported from the Cloudflare dashboard). The format is detected automatically from the first few lines of the file. If you paste a log in an unsupported format, the tool will tell you rather than silently parsing it wrong.</p>
+              </div>
+            </details>
+
+          </div>
+        </section>
+
+        <div id="contributions-section"></div>
+
+        <section id="author-bio" class="max-w-5xl mx-auto my-12 px-2 author-bio author-box">
+          <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+              <div class="flex flex-col items-center gap-6 mb-6">
+                <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Audit and Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+              </div>
+              <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+              <p class="text-lg md:text-2xl text-gray-800 dark:text-gray-200 max-w-4xl mx-auto font-medium">AEO Log Analyzer — IP-verified AI crawler log analysis.</p>
+            </div>
+            <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+              <div class="space-y-6">
+                <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">The AEO Log Analyzer verifies which AI crawlers actually reached your site by combining User-Agent matching with IP-range verification. Built for SEOs, technical marketers, and site operators who want hard evidence — not User-Agent theatre — about what the crawlers behind AI search are seeing.</p>
+              </div>
+              <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+                  <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+                    <img src="/images/ylia-callan-320w.webp" srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w" sizes="(max-width: 768px) 96px, 128px" alt="Ylia Callan – Founder of Traffic Torch" class="w-full h-full object-cover object-center" loading="lazy">
+                  </div>
+                  <div class="space-y-4 text-center md:text-left">
+                    <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+                    <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">Musician • Author • Researcher • Web Designer • TAFE NSW Australia • Creator of open-source web tools. Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+                      <a href="https://g.dev/traffictorch" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Google</a>
+                      <a href="https://github.com/traffictorch" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">GitHub</a>
+                      <a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">LinkedIn</a>
+                      <a href="https://x.com/Guitaralize" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">X</a>
+                      <a href="https://yliacallan.github.io/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Ylia</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Server Stacks</h3>
+                <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">Hosted via <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub</a> for blazing-fast static delivery and updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations. IP list cache runs on a Cloudflare Worker with KV storage.</p>
+                <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+                  <p>Published: 2026-10-12</p>
+                  <p>Last updated: 2026-10-12</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="related-tools" class="max-w-6xl mx-auto my-16 px-2">
+          <h2 class="text-2xl md:text-3xl font-black mb-10 text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Related Tools</h2>
+          <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <a href="/aeo-performance-tool/" class="group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-8 border border-orange-500/30 group-hover:border-orange-400 transition-all">
+                <div class="text-5xl mb-4 group-hover:animate-bounce" aria-hidden="true">🚀</div>
+                <h3 class="text-orange-500 text-xl font-bold mb-2">AEO Performance Tool</h3>
+                <p class="text-gray-700 dark:text-gray-300 text-sm">9-module audit of whether AI crawlers can render, parse, and extract your content.</p>
+              </div>
+            </a>
+            <a href="/ai-search-optimization-tool/" class="group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-8 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+                <div class="text-5xl mb-4 group-hover:animate-bounce" aria-hidden="true">🔍</div>
+                <h3 class="text-cyan-500 text-xl font-bold mb-2">AEO Audit Tool</h3>
+                <p class="text-gray-700 dark:text-gray-300 text-sm">Optimize for AI-powered search engines and answer engines.</p>
+              </div>
+            </a>
+            <a href="/ai-seo-ux-tools/" class="group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300">
+              <div class="h-full bg-white/10 backdrop-blur-xl p-8 border border-indigo-500/30 group-hover:border-indigo-400 transition-all">
+                <div class="text-5xl mb-4 group-hover:animate-bounce" aria-hidden="true">🧰</div>
+                <h3 class="text-indigo-500 text-xl font-bold mb-2">All Tools</h3>
+                <p class="text-gray-700 dark:text-gray-300 text-sm">Complete SEO, UX, and AEO toolkit.</p>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <section class="share-block my-12" aria-label="Share options">
+          <strong class="share-label">Share?</strong>
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </section>
+
+        <div class="center-btn-container mt-4 mb-4">
+          <button class="copy-link-btn" onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);" data-text="https://traffictorch.net/aeo-log-analyzer/">Copy Link? 🔗</button>
+        </div>
+
+        <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+          <div class="inline-block">
+            <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:text-orange-300 transition text-sm"><a href="/">Traffic Torch</a></p>
+            <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1"><span id="page-name"></span></p>
+          </div>
+        </nav>
+
+        <script>
+          document.getElementById('page-name').textContent = document.title
+            .replace('Traffic Torch – ', '')
+            .replace(' | Traffic Torch', '')
+            .replace(' Tool', '')
+            .trim();
+        </script>
+
+        <section class="bottom-banner" aria-label="Traffic Torch visual summary">
+          <picture>
+            <img src="/images/tool-banners/seo-intent-tool-infographic-1200w.webp" srcset="/images/tool-banners/seo-intent-tool-infographic-480w.webp 480w, /images/tool-banners/seo-intent-tool-infographic-800w.webp 800w, /images/tool-banners/seo-intent-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch AEO Log Analyzer – IP-verified AI crawler log analysis" width="1200" height="263" loading="lazy" decoding="async">
+          </picture>
+        </section>
       </main>
 
       <div id="footer-placeholder"></div>
