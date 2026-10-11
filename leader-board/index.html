@@ -819,25 +819,82 @@
         });
       }
 
-      /* ---------- Tabs ---------- */
-      document.addEventListener('click', (e) => {
-        const tab = e.target.closest('.lb-tab');
-        if (!tab) return;
-        const target = tab.dataset.target;
-        document.querySelectorAll('.lb-tab').forEach(b =>
-          b.setAttribute('aria-pressed', String(b === tab)));
+      /* ---------- Tabs + self-link interception + deep links ---------- */
+      const LB_TABS   = Array.from(document.querySelectorAll('.lb-tab'));
+      const LB_PANELS = document.getElementById('lb-panels');
+      const LB_VALID  = new Set(LB_TABS.map(t => t.dataset.target));
+      const lbNorm    = (t) => (LB_VALID.has(t) ? t : 'all');
+
+      function activateTab(target, opts) {
+        opts = opts || {};
+        target = lbNorm(target);
+        if (!LB_TABS.length || !LB_PANELS) return;
+
+        LB_TABS.forEach(b =>
+          b.setAttribute('aria-pressed', String(b.dataset.target === target)));
+
         document.querySelectorAll('.lb-panel').forEach(p => {
           p.classList.toggle('hidden', p.dataset.tool !== target);
         });
-        const active = document.querySelector(`.lb-panel[data-tool="${target}"] .tt-lb`);
-        if (active) active.dispatchEvent(new Event('tt-lb-reload'));
+
+        const live = document.querySelector(`.lb-panel[data-tool="${target}"] .tt-lb`);
+        if (live) live.dispatchEvent(new Event('tt-lb-reload'));
+
+        if (opts.updateUrl !== false) {
+          const url = new URL(location.href);
+          url.hash = '';
+          if (target === 'all') url.searchParams.delete('tool');
+          else url.searchParams.set('tool', target);
+          history.replaceState(null, '', url);
+        }
+
+        if (opts.scroll) LB_PANELS.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      document.addEventListener('click', (e) => {
+        /* 1. Normal tab clicks */
+        const tab = e.target.closest('.lb-tab');
+        if (tab) { activateTab(tab.dataset.target); return; }
+
+        /* 2. Self-referential "View Leaderboard" links inside the widgets */
+        const link = e.target.closest('#main-content .tt-lb a[href], #main-content .tt-contrib a[href]');
+        if (!link) return;
+
+        let url;
+        try { url = new URL(link.getAttribute('href'), location.href); } catch (_) { return; }
+        if (!/^\/leader-board\/?$/.test(url.pathname)) return;
+
+        e.preventDefault();
+        const root = link.closest('.tt-lb, .tt-contrib');
+        const tool = (root && root.dataset.tool) || url.searchParams.get('tool') || 'all';
+        activateTab(tool, { scroll: true });
       });
+
+      /* 3. Deep links: /leader-board/?tool=nusa-tool or #nusa-tool */
+      function lbFromUrl() {
+        const q = new URLSearchParams(location.search).get('tool');
+        if (q) return q;
+        const h = location.hash.replace(/^#/, '');
+        return h && LB_VALID.has(h) ? h : 'all';
+      }
+
+      function lbInitFromUrl() {
+        const start = lbFromUrl();
+        if (start !== 'all') {
+          activateTab(start, { updateUrl: false });
+          if (LB_PANELS) LB_PANELS.scrollIntoView({ block: 'start' });
+        }
+      }
+
+      window.addEventListener('popstate', () =>
+        activateTab(lbFromUrl(), { updateUrl: false, scroll: true }));
 
       function boot() {
         renderPodium();
         renderLiveCount();
         renderBadge();
         renderBadgeGenerator();
+        lbInitFromUrl();
       }
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
       else boot();

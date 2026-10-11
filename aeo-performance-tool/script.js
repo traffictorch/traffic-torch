@@ -11,6 +11,7 @@ import {
   deriveSelectorsForFailure,
   extractSnippets
 } from './code-snippet.js?v=1.0';
+import { renderRenderDiffPanel, buildAIDiffPayload } from './render-diff.js?v=1.0';
 
 const AEO_AUDIT_API = 'https://aeo-audit.traffictorch.workers.dev/';
 const AEO_CMS_API   = 'https://aeo-cms-fixes.traffictorch.workers.dev/';
@@ -428,6 +429,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
+      ${renderRenderDiffPanel(rawHtml, renderedHtml, meta)}
+
       <div class="grid md:grid-cols-3 gap-8 my-16 max-w-6xl mx-auto px-4">
         ${modules.map(m => {
           const failed = m.failed || [];
@@ -715,7 +718,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 desc: f.desc || ''
               })),
               snippets: affectedSnippets,
-              browserMetrics: browserMetrics ? {
+              renderDiff: buildAIDiffPayload(rawHtml, renderedHtml),
+            browserMetrics: browserMetrics ? {
                 cls: browserMetrics.cls,
                 lcp: browserMetrics.lcp,
                 fcp: browserMetrics.fcp,
