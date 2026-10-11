@@ -368,6 +368,16 @@
                           class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">
                     <span x-text="post._showDetails ? 'Hide details ▲' : 'More details ▼'"></span>
                   </button>
+                  <button type="button"
+                          @click="endorsePost(post.id)"
+                          x-show="post.user_id !== (profile && profile.id)"
+                          :disabled="post._endorsing || post.viewer_endorsed || (post.score || 0) < 80"
+                          class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition whitespace-nowrap"
+                          :class="post.viewer_endorsed ? 'border-pink-500 text-pink-500 bg-pink-500/10' : ((post.score || 0) < 80 ? 'border-gray-300 dark:border-gray-600 text-gray-400 cursor-not-allowed' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white')"
+                          :title="(post.score || 0) < 80 ? 'Only torches scoring 80+ can be endorsed' : (post.viewer_endorsed ? 'You already endorsed this torch' : 'Endorse — author gets +36 points')">
+                    <span x-text="post._endorsing ? '…' : (post.viewer_endorsed ? '⭐ ' + (post.endorse_count || 1) : '⭐ Endorse' + (post.endorse_count ? ' ' + post.endorse_count : ''))"></span>
+                  </button>
+
                   <template x-if="post.url && post.tool">
                     <a :href="toolRunUrl(post.tool, post.url)" target="_blank" rel="noopener"
                        class="px-4 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white hover:opacity-90 transition">Run audit →</a>
@@ -734,6 +744,33 @@ function profilePage() {
       }
     },
 
+async endorsePost(postId) {
+      const token = localStorage.getItem('authToken');
+      if (!token) { if (this.showUpgradeModal) this.showUpgradeModal(); else window.location.href = '/login/'; return; }
+      const arr = this.feed ? this.feed.posts : (this.posts || []);
+      const post = arr.find(p => p.id === postId);
+      if (!post) return;
+      if (post.viewer_endorsed || post._endorsing) return;
+      post._endorsing = true;
+      try {
+        const res = await fetch(API_BASE + '/api/posts/' + postId + '/endorse', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          post.viewer_endorsed = true;
+          post.endorse_count = data.endorse_count || ((post.endorse_count || 0) + 1);
+          if (this.profile) this.profile.endorsement_count = (this.profile.endorsement_count || 0) + 1;
+        } else {
+          alert(data.error || 'Could not endorse');
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      } finally {
+        post._endorsing = false;
+      }
+    },
     roleLabel(role) {
       const map = {
         owner: 'Website Owner',

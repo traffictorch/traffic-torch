@@ -433,6 +433,22 @@ async function ensureTables(env) {
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN hire_headline TEXT`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN hire_services TEXT`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN contact_email TEXT`).run(); } catch (e) {}
+  // Phase D: torch endorsements
+  try {
+    await env.MY_BINDING.prepare(
+      `CREATE TABLE IF NOT EXISTS torch_endorsements (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        torch_id INTEGER NOT NULL,
+        endorser_id INTEGER NOT NULL,
+        author_id INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
+        UNIQUE(torch_id, endorser_id)
+      )`
+    ).run();
+    await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_endorse_torch ON torch_endorsements(torch_id)`).run();
+    await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_endorse_author ON torch_endorsements(author_id)`).run();
+    await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_endorse_endorser ON torch_endorsements(endorser_id, created_at DESC)`).run();
+  } catch (e) { console.error('endorse table:', e.message); }
 }
 
 // ============================================================
@@ -891,13 +907,28 @@ async function handleProfileRoutes(request, env, url) {
       return { type: c.type, label: c.label || '', partA: v.slice(0, mid), partB: v.slice(mid) };
     });
     delete profile.contacts_visibility;
-    profile.endorsement_count = 0;
+    const totalEndorseRow = await env.MY_BINDING.prepare(
+      'SELECT COUNT(*) AS c FROM torch_endorsements WHERE author_id = ?'
+    ).bind(target.id).first();
+    profile.endorsement_count = totalEndorseRow && totalEndorseRow.c ? totalEndorseRow.c : 0;
 
     const posts = await env.MY_BINDING.prepare(
       `SELECT id, category, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, created_at
          FROM posts WHERE user_id = ? AND status = 'published'
          ORDER BY created_at DESC LIMIT 30`
     ).bind(target.id).all();
+
+    // Phase D: endorse counts per post
+    if (posts.results && posts.results.length) {
+      const ids = posts.results.map(p => p.id);
+      const ph = ids.map(() => '?').join(',');
+      const endorseRows = await env.MY_BINDING.prepare(
+        `SELECT torch_id, COUNT(*) AS c FROM torch_endorsements WHERE torch_id IN (${ph}) GROUP BY torch_id`
+      ).bind(...ids).all();
+      const endorseMap = {};
+      (endorseRows.results || []).forEach(r => { endorseMap[r.torch_id] = r.c; });
+      posts.results.forEach(p => { p.endorse_count = endorseMap[p.id] || 0; });
+    }
 
     let networkCount = 0;
     let networkList = [];
@@ -918,6 +949,7 @@ async function handleProfileRoutes(request, env, url) {
 }
 
 async function handleTorchRoutes(request, env, url) {
+  const user = await getUserFromToken(request, env);
   if (url.pathname.match(/^\/api\/torch\/\d+$/) && request.method === 'GET') {
     const id = parseInt(url.pathname.split('/').pop(), 10);
     const post = await env.MY_BINDING.prepare(
@@ -978,6 +1010,20 @@ async function handleTorchRoutes(request, env, url) {
       Math.max(0, post.score - 15), Math.min(100, post.score + 15),
       since
     ).all();
+
+    // Phase D: endorsement counts
+    const endorseCountRow = await env.MY_BINDING.prepare(
+      'SELECT COUNT(*) AS c FROM torch_endorsements WHERE torch_id = ?'
+    ).bind(id).first();
+    post.endorse_count = endorseCountRow && endorseCountRow.c ? endorseCountRow.c : 0;
+    if (user) {
+      const viewerRow = await env.MY_BINDING.prepare(
+        'SELECT id FROM torch_endorsements WHERE torch_id = ? AND endorser_id = ?'
+      ).bind(id, user.id).first();
+      post.viewer_endorsed = !!viewerRow;
+    } else {
+      post.viewer_endorsed = false;
+    }
 
     return feedJson({
       post,
@@ -1525,6 +1571,24 @@ async function handleFeedRoutes(request, env, url) {
       ).bind(user.id, ...ids).all();
       const inNet = new Set((net.results || []).map(r => r.network_user_id));
       results.forEach(r => { r.in_network = inNet.has(r.user_id); });
+      // Phase D: endorse counts per post
+      const postIds = results.map(r => r.id);
+      const ph = postIds.map(() => '?').join(',');
+      const endorseRows = await env.MY_BINDING.prepare(
+        `SELECT torch_id, COUNT(*) AS c FROM torch_endorsements WHERE torch_id IN (${ph}) GROUP BY torch_id`
+      ).bind(...postIds).all();
+      const endorseMap = {};
+      (endorseRows.results || []).forEach(r => { endorseMap[r.torch_id] = r.c; });
+      const viewerRows = await env.MY_BINDING.prepare(
+        `SELECT torch_id FROM torch_endorsements WHERE endorser_id = ? AND torch_id IN (${ph})`
+      ).bind(user.id, ...postIds).all();
+      const viewerSet = new Set((viewerRows.results || []).map(r => r.torch_id));
+      results.forEach(r => {
+        r.endorse_count = endorseMap[r.id] || 0;
+        r.viewer_endorsed = viewerSet.has(r.id);
+      });
+    } else {
+      results.forEach(r => { r.endorse_count = 0; r.viewer_endorsed = false; });
     }
 
     let slots = { used: 0, max: 5 };
@@ -1726,6 +1790,64 @@ async function handleFeedRoutes(request, env, url) {
     return feedJson({ success: true });
   }
 
+  // POST /api/posts/:id/endorse
+  if (url.pathname.match(/^\/api\/posts\/\d+\/endorse$/) && request.method === 'POST') {
+    if (!user) return feedJson({ error: 'Unauthorized' }, 401);
+    const postId = parseInt(url.pathname.split('/')[3], 10);
+    const post = await env.MY_BINDING.prepare(
+      "SELECT id, user_id, score, page_title, tool, category FROM posts WHERE id = ? AND status = 'published'"
+    ).bind(postId).first();
+    if (!post) return feedJson({ error: 'Torch not found' }, 404);
+    if ((post.score || 0) < 80) return feedJson({ error: 'Only torches scoring 80+ can be endorsed' }, 400);
+    if (post.user_id === user.id) return feedJson({ error: 'You cannot endorse your own torch' }, 400);
+
+    const accountRow = await env.MY_BINDING.prepare('SELECT created_at FROM users WHERE id = ?').bind(user.id).first();
+    const ageMs = Date.now() - new Date((accountRow && accountRow.created_at) || Date.now()).getTime();
+    if (ageMs < 24 * 3600 * 1000) return feedJson({ error: 'Your account must be 24 hours old to endorse' }, 403);
+
+    const existing = await env.MY_BINDING.prepare(
+      'SELECT id FROM torch_endorsements WHERE torch_id = ? AND endorser_id = ?'
+    ).bind(postId, user.id).first();
+    if (existing) return feedJson({ error: 'You already endorsed this torch' }, 409);
+
+    const since = Date.now() - 24 * 3600 * 1000;
+    const recent = await env.MY_BINDING.prepare(
+      'SELECT id FROM torch_endorsements WHERE endorser_id = ? AND created_at > ? LIMIT 1'
+    ).bind(user.id, since).first();
+    if (recent) return feedJson({ error: 'You can only endorse one torch per day' }, 429);
+
+    const now = Date.now();
+    await env.MY_BINDING.prepare(
+      'INSERT INTO torch_endorsements (torch_id, endorser_id, author_id, created_at) VALUES (?, ?, ?, ?)'
+    ).bind(postId, user.id, post.user_id, now).run();
+
+    await awardPoints(env, { userId: post.user_id, type: 'endorse', points: 36, referenceId: postId });
+
+    await logActivity(env, user.id, 'endorse', {
+      category: post.category,
+      tool: post.tool,
+      targetId: postId,
+      targetLabel: post.page_title || post.tool || ('Torch #' + postId),
+      link: '/torch/' + postId + '/'
+    });
+
+    const endorserName = user.name || user.username || 'Someone';
+    await createNotification(env, {
+      userId: post.user_id,
+      type: 'endorse',
+      actorId: user.id,
+      subjectType: 'post',
+      subjectId: postId,
+      message: endorserName + ' endorsed your torch (+36 points)',
+      link: '/torch/' + postId + '/'
+    });
+
+    const countRow = await env.MY_BINDING.prepare(
+      'SELECT COUNT(*) AS c FROM torch_endorsements WHERE torch_id = ?'
+    ).bind(postId).first();
+    return feedJson({ success: true, endorse_count: (countRow && countRow.c) || 1 });
+  }
+
   // POST /api/reports
   if (url.pathname === '/api/reports' && request.method === 'POST') {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
@@ -1897,7 +2019,7 @@ async function handleNewRoutes(request, env, url) {
     p.startsWith('/api/network/') ||
     p === '/api/feed' ||
     p === '/api/posts' ||
-    /^\/api\/posts\/\d+(\/comments)?$/.test(p) ||
+    /^\/api\/posts\/\d+(\/comments|\/endorse)?$/.test(p) ||
     /^\/api\/comments\/\d+$/.test(p) ||
     p === '/api/reports' ||
     p === '/api/blocks' ||
