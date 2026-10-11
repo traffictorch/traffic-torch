@@ -91,3 +91,63 @@
 }
 .render-diff-col-body p { margin: 0 0 0.75rem; }
 .render-diff-col-body p:last-child { margin-bottom: 0; }
+
+/* ── Crawler Behaviour Notes — per-bot status rows ── */
+.bot-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.bot-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.6rem;
+  background: rgba(156, 163, 175, 0.08);
+  border: 1px solid transparent;
+}
+.bot-row__icon {
+  font-size: 1.05rem;
+  line-height: 1.2;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+.bot-row__meta { min-width: 0; flex: 1; }
+.bot-row__name {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #111827;
+  word-break: break-word;
+}
+.dark .bot-row__name { color: #e5e7eb; }
+.bot-row__cat {
+  font-weight: 400;
+  color: #6b7280;
+  font-size: 0.72rem;
+}
+.dark .bot-row__cat { color: #9ca3af; }
+.bot-row__detail {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #4b5563;
+  margin-top: 0.1rem;
+}
+.dark .bot-row__detail { color: #d1d5db; }
+
+.bot-row--blocked {
+  background: rgba(239, 68, 68, 0.10);
+  border-color: rgba(239, 68, 68, 0.25);
+}
+.bot-row--js-gap {
+  background: rgba(249, 115, 22, 0.10);
+  border-color: rgba(249, 115, 22, 0.30);
+}
+.bot-row--ok {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.20);
+}
+.bot-row--no-robots {
+  background: rgba(234, 179, 8, 0.10);
+  border-color: rgba(234, 179, 8, 0.25);
+}

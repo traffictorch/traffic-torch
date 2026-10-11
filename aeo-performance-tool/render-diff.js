@@ -5,9 +5,9 @@ const MAX_PARAS = 150;
 const MAX_WORDS_PER_PARA = 400;
 const MAX_SAMPLE_WORDS = 25;
 
-export function renderRenderDiffPanel(rawHtml, renderedHtml, meta = {}) {
+export function renderRenderDiffPanel(rawHtml, renderedHtml, meta = {}, robotsTxt = '') {
   const diff = computeRenderDiff(rawHtml, renderedHtml);
-  return buildPanelHtml(diff, meta);
+  return buildPanelHtml(diff, meta, robotsTxt);
 }
 
 export function computeRenderDiff(rawHtml, renderedHtml) {
@@ -76,7 +76,150 @@ export function computeRenderDiff(rawHtml, renderedHtml) {
   };
 }
 
-function buildPanelHtml(diff, meta) {
+// ── robots.txt parsing (mirrors worker) ──
+const AI_CRAWLERS = [
+  { ua: 'Googlebot',        category: 'search',      renders: true,  label: 'search' },
+  { ua: 'Applebot',         category: 'search',      renders: true,  label: 'search' },
+  { ua: 'OAI-SearchBot',    category: 'ai-search',   renders: false, label: 'AI search' },
+  { ua: 'ChatGPT-User',     category: 'ai-search',   renders: false, label: 'AI search' },
+  { ua: 'PerplexityBot',    category: 'ai-search',   renders: false, label: 'AI search' },
+  { ua: 'Claude-Web',       category: 'ai-search',   renders: false, label: 'AI search' },
+  { ua: 'GPTBot',           category: 'ai-training', renders: false, label: 'AI training' },
+  { ua: 'ClaudeBot',        category: 'ai-training', renders: false, label: 'AI training' },
+  { ua: 'anthropic-ai',     category: 'ai-training', renders: false, label: 'AI training' },
+  { ua: 'CCBot',            category: 'ai-training', renders: false, label: 'AI training' },
+  { ua: 'Bytespider',       category: 'ai-training', renders: false, label: 'AI training' },
+  { ua: 'Google-Extended',  category: 'token',       renders: null,  label: 'robots token' }
+];
+
+function parseRobotsGroups(robots) {
+  const lines = String(robots || '').split(/\r?\n/).map(l => l.replace(/#.*$/, '').trim());
+  const groups = [];
+  let currentUas = [];
+  let currentRules = [];
+  for (const line of lines) {
+    if (!line) continue;
+    const uaMatch = line.match(/^User-agent:\s*(.+?)\s*$/i);
+    if (uaMatch) {
+      if (currentRules.length > 0) {
+        groups.push({ uas: currentUas, rules: currentRules });
+        currentUas = [];
+        currentRules = [];
+      }
+      currentUas.push(uaMatch[1].toLowerCase());
+      continue;
+    }
+    const ruleMatch = line.match(/^(Disallow|Allow):\s*(.*?)\s*$/i);
+    if (ruleMatch) {
+      if (currentUas.length === 0) continue;
+      currentRules.push({ directive: ruleMatch[1].toLowerCase(), path: ruleMatch[2] });
+    }
+  }
+  if (currentUas.length > 0) groups.push({ uas: currentUas, rules: currentRules });
+  return groups;
+}
+
+function isBotBlockedFromRoot(robots, bot) {
+  if (!robots) return false;
+  const botLower = bot.toLowerCase();
+  for (const group of parseRobotsGroups(robots)) {
+    const matches = group.uas.some(ua =>
+      ua === '*' ||
+      ua === botLower ||
+      ua.startsWith(botLower + '/') ||
+      ua.startsWith(botLower + ' ')
+    );
+    if (!matches) continue;
+    for (const rule of group.rules) {
+      if (rule.directive === 'disallow' &&
+          (rule.path === '/' || rule.path === '/*' || rule.path === '')) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function buildBotStatusList(robotsTxt, injectedPct) {
+  const wildcardBlock = isBotBlockedFromRoot(robotsTxt, '*');
+  return AI_CRAWLERS.map(bot => {
+    const explicitlyBlocked = isBotBlockedFromRoot(robotsTxt, bot.ua);
+    const blocked = wildcardBlock || explicitlyBlocked;
+
+    if (bot.category === 'token') {
+      return {
+        ...bot,
+        state: blocked ? 'blocked' : 'ok',
+        detail: blocked
+          ? 'Token present and set to Disallow — Gemini training/grounding disabled for this site.'
+          : (robotsTxt ? 'Token not present or set to Allow — Gemini training/grounding permitted.' : 'No robots.txt found.')
+      };
+    }
+    if (blocked) {
+      return {
+        ...bot,
+        state: 'blocked',
+        detail: wildcardBlock && !explicitlyBlocked
+          ? 'Cannot reach the page — blocked by wildcard "User-agent: *" rule.'
+          : 'Cannot reach the page — explicitly blocked in robots.txt.'
+      };
+    }
+    if (!robotsTxt) {
+      return { ...bot, state: 'no-robots', detail: 'No robots.txt found — treated as allowed.' };
+    }
+    if (bot.renders === false && injectedPct > 0.05) {
+      return {
+        ...bot,
+        state: 'js-gap',
+        detail: `Allowed, but does not execute JavaScript — misses about ${(injectedPct * 100).toFixed(1)}% of the visible content on this page.`
+      };
+    }
+    if (bot.renders === false) {
+      return {
+        ...bot,
+        state: 'ok',
+        detail: 'Allowed, no JS execution — but this page\u2019s content is server-rendered, so nothing is missed.'
+      };
+    }
+    if (bot.renders === true) {
+      return { ...bot, state: 'ok', detail: 'Allowed, renders JavaScript — sees the full post-JS DOM.' };
+    }
+    return { ...bot, state: 'ok', detail: 'Allowed.' };
+  });
+}
+
+function renderBotStatusList(robotsTxt, injectedPct) {
+  const bots = buildBotStatusList(robotsTxt, injectedPct);
+  const iconFor = (s) => s === 'blocked' ? '🚫' : s === 'js-gap' ? '⚠️' : '✅';
+
+  const rows = bots.map(b => `
+    <div class="bot-row bot-row--${b.state}">
+      <span class="bot-row__icon" aria-hidden="true">${iconFor(b.state)}</span>
+      <div class="bot-row__meta">
+        <div class="bot-row__name">
+          ${escapeHtml(b.ua)}
+          <span class="bot-row__cat">· ${escapeHtml(b.label)}</span>
+        </div>
+        <div class="bot-row__detail">${escapeHtml(b.detail)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  const anyBlocked = bots.some(b => b.state === 'blocked');
+  const wildcardNote = anyBlocked && isBotBlockedFromRoot(robotsTxt, '*')
+    ? '<p class="text-xs text-orange-700 dark:text-orange-300 mt-3"><strong>Note:</strong> a wildcard "User-agent: * / Disallow: /" block is present — every named bot listed below is affected.</p>'
+    : '';
+
+  return `
+    <p class="text-xs text-gray-500 dark:text-gray-400 italic mb-3">
+      Per-bot status for this page, based on robots.txt and observed rendering behaviour.
+    </p>
+    <div class="bot-status-list">${rows}</div>
+    ${wildcardNote}
+  `;
+}
+
+function buildPanelHtml(diff, meta, robotsTxt) {
   const renderSource = meta?.renderSource || 'unknown';
   const isRawFallback = renderSource === 'raw-fallback';
   const isCustomHtml = renderSource === 'custom-html';
@@ -92,7 +235,7 @@ function buildPanelHtml(diff, meta) {
       sub = 'The tool fell back to a raw fetch, so no diff can be computed. Try the audit again — if it keeps failing, check that the URL is publicly reachable.';
     } else {
       headline = '✅ Raw HTML and rendered DOM are identical';
-      sub = 'Both JavaScript-executing bots (Googlebot, Applebot) and non-executing AI crawlers (ChatGPT-User, PerplexityBot) see exactly the same content. Nothing is JS-gated.';
+      sub = 'Your server sends the same content that a JavaScript-executing browser sees after load. Nothing on this page is JS-gated — bots that run JavaScript and bots that do not receive identical text.';
     }
     const tone = isCustomHtml || isRawFallback ? 'yellow' : 'green';
     return `
@@ -137,7 +280,7 @@ function buildPanelHtml(diff, meta) {
         <summary class="px-6 py-5 cursor-pointer list-none flex items-center justify-between bg-gradient-to-r from-orange-500/10 to-pink-600/10">
           <div>
             <h3 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">🔍 What AI Crawlers Actually See</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Raw HTML (non-JS AI bots) vs. rendered DOM (Googlebot, Applebot)</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Pre-JS server response vs. post-JS rendered DOM</p>
           </div>
           <span class="text-orange-500 text-2xl">▾</span>
         </summary>
@@ -168,6 +311,10 @@ function buildPanelHtml(diff, meta) {
             </div>
           </div>
 
+          <div class="p-3 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-xs text-yellow-800 dark:text-yellow-200">
+            <strong>What this panel does and doesn't test:</strong> the comparison uses a clean fetch — no cookies, no authentication, no rate pressure. CDN rules, WAF challenges, and rate limits (HTTP 429) can block bots that robots.txt allows, and are not reflected here.
+          </div>
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="p-4 rounded-xl ${stats.h1InRaw ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'}">
               <p class="text-sm font-semibold ${stats.h1InRaw ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}">
@@ -193,8 +340,8 @@ function buildPanelHtml(diff, meta) {
   <details class="render-diff-col">
     <summary class="render-diff-col-head">
       <div class="render-diff-col-meta">
-        <span class="render-diff-col-title">📄 Raw HTML</span>
-        <span class="render-diff-col-sub">ChatGPT-User, PerplexityBot, GPTBot see</span>
+        <span class="render-diff-col-title">📄 Raw HTML Response</span>
+        <span class="render-diff-col-sub">pre-JS server output</span>
       </div>
       <span class="render-diff-col-badge">${stats.rawWordCount.toLocaleString()} words</span>
       <span class="render-diff-col-chevron" aria-hidden="true">▾</span>
@@ -209,8 +356,8 @@ function buildPanelHtml(diff, meta) {
   <details class="render-diff-col">
     <summary class="render-diff-col-head">
       <div class="render-diff-col-meta">
-        <span class="render-diff-col-title">🖥️ Rendered DOM</span>
-        <span class="render-diff-col-sub">Googlebot, Applebot see after JS runs</span>
+        <span class="render-diff-col-title">🖥️ Post-JS Rendered DOM</span>
+        <span class="render-diff-col-sub">after client-side execution</span>
       </div>
       <span class="render-diff-col-badge">${stats.renderedWordCount.toLocaleString()} words</span>
       <span class="render-diff-col-chevron" aria-hidden="true">▾</span>
@@ -233,6 +380,23 @@ function buildPanelHtml(diff, meta) {
               <p class="font-bold text-red-800 dark:text-red-200 mb-2">🔴 Sample removed words (lost after hydration)</p>
               <p class="text-sm text-red-700 dark:text-red-300">${samples.removed.map(w => escapeHtml(w)).join(', ')}${stats.removedCount > MAX_SAMPLE_WORDS ? ' …' : ''}</p>
             </div>` : ''}
+
+          <details class="mt-6 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <summary class="px-4 py-3 cursor-pointer list-none bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition flex items-center gap-2">
+              <span class="font-bold text-gray-800 dark:text-gray-200">📋 Crawler Behaviour Notes</span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">based on observed behaviour — Oct 2026</span>
+              <span class="ml-auto text-orange-500">▾</span>
+            </summary>
+            <div class="px-4 py-4 text-sm text-gray-700 dark:text-gray-300 space-y-3">
+              <p class="italic text-xs text-gray-500 dark:text-gray-400">
+                Google documents its rendering pipeline. OpenAI, Anthropic and Perplexity do not publish rendering specs. The notes below reflect third-party log analysis (e.g. Vercel, Oct 2024) and public crawl studies — they may change without notice and are not contractual.
+              </p>
+              ${renderBotStatusList(robotsTxt, stats.injectedPct)}
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                If page content is only present after JavaScript runs, bots listed as "no JS execution" will not see it — regardless of what robots.txt allows.
+              </p>
+            </div>
+          </details>
         </div>
       </details>
     </div>`;
