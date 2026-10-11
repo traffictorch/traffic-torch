@@ -422,6 +422,17 @@ async function ensureTables(env) {
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN avatar_updated_at INTEGER`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN message_policy TEXT DEFAULT 'all'`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN messages_blocked INTEGER DEFAULT 0`).run(); } catch (e) {}
+  // ── Phase B: Advanced profile columns ──
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN verified_domain TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN verified_token TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN verified_at INTEGER`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN skills TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN contacts TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN contacts_visibility TEXT DEFAULT 'click'`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN available_for_hire INTEGER DEFAULT 0`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN hire_headline TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN hire_services TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN contact_email TEXT`).run(); } catch (e) {}
 }
 
 // ============================================================
@@ -537,6 +548,14 @@ async function getUserFromToken(request, env) {
   } catch { return null; }
 }
 
+function parseJsonArray(raw) {
+  if (!raw) return [];
+  try {
+    const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    return Array.isArray(parsed) ? parsed : [];
+  } catch { return []; }
+}
+
 function slugifyUsername(str) {
   return String(str || '')
     .toLowerCase()
@@ -604,6 +623,15 @@ function shapeProfile(user) {
       : null,
     role: user.role || 'owner',
     tier: user.tier || 'free',
+    verified_domain: user.verified_domain || null,
+    verified_at: user.verified_at || null,
+    skills: parseJsonArray(user.skills),
+    contacts: parseJsonArray(user.contacts),
+    contacts_visibility: user.contacts_visibility || 'click',
+    available_for_hire: user.available_for_hire === 1 ? 1 : 0,
+    hire_headline: user.hire_headline || '',
+    hire_services: parseJsonArray(user.hire_services),
+    contact_email: user.contact_email || '',
     bio: user.bio || '',
     website_url: user.website_url || '',
     website_approved: user.website_approved || 0,
@@ -740,6 +768,9 @@ async function handleProfileRoutes(request, env, url) {
     if (typeof body.website_url === 'string') {
       fields.push('website_url = ?'); params.push(body.website_url.slice(0, 300));
       fields.push('website_approved = 1');
+      fields.push('verified_domain = NULL');
+      fields.push('verified_token = NULL');
+      fields.push('verified_at = NULL');
     }
     if (typeof body.social1_url === 'string') { fields.push('social1_url = ?'); params.push(body.social1_url.slice(0, 300)); }
     if (typeof body.social2_url === 'string') { fields.push('social2_url = ?'); params.push(body.social2_url.slice(0, 300)); }
@@ -759,6 +790,38 @@ async function handleProfileRoutes(request, env, url) {
     if (body.push_leaderboard !== undefined) { fields.push('push_leaderboard = ?'); params.push(body.push_leaderboard ? 1 : 0); }
     if (body.push_messages !== undefined) { fields.push('push_messages = ?'); params.push(body.push_messages ? 1 : 0); }
     if (body.activity_public !== undefined) { fields.push('activity_public = ?'); params.push(body.activity_public ? 1 : 0); }
+    // ── Phase B: Advanced profile fields ──
+    if (body.skills !== undefined) {
+      if (!Array.isArray(body.skills)) return feedJson({ error: 'skills must be an array' }, 400);
+      const clean = body.skills.map(s => String(s || '').trim()).filter(Boolean).slice(0, 8).map(s => s.slice(0, 24));
+      fields.push('skills = ?'); params.push(JSON.stringify(clean));
+    }
+    if (body.contacts !== undefined) {
+      if (!Array.isArray(body.contacts)) return feedJson({ error: 'contacts must be an array' }, 400);
+      const types = ['email','whatsapp','telegram','wechat','signal','phone','linkedin','x','other-url'];
+      const clean = body.contacts.slice(0, 3).map(c => {
+        if (!c || typeof c !== 'object') return null;
+        const type = String(c.type || '').trim();
+        if (!types.includes(type)) return null;
+        return { type, value: String(c.value || '').trim().slice(0, 200), label: String(c.label || '').trim().slice(0, 40) };
+      }).filter(c => c && c.value);
+      fields.push('contacts = ?'); params.push(JSON.stringify(clean));
+    }
+    if (body.contacts_visibility !== undefined) {
+      fields.push('contacts_visibility = ?'); params.push(body.contacts_visibility === 'public' ? 'public' : 'click');
+    }
+    if (body.available_for_hire !== undefined) { fields.push('available_for_hire = ?'); params.push(body.available_for_hire ? 1 : 0); }
+    if (typeof body.hire_headline === 'string') { fields.push('hire_headline = ?'); params.push(body.hire_headline.slice(0, 60)); }
+    if (body.hire_services !== undefined) {
+      if (!Array.isArray(body.hire_services)) return feedJson({ error: 'hire_services must be an array' }, 400);
+      const clean = body.hire_services.map(s => String(s || '').trim()).filter(Boolean).slice(0, 6).map(s => s.slice(0, 30));
+      fields.push('hire_services = ?'); params.push(JSON.stringify(clean));
+    }
+    if (typeof body.contact_email === 'string') {
+      const e = body.contact_email.trim().slice(0, 120);
+      if (e && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) return feedJson({ error: 'Invalid contact_email' }, 400);
+      fields.push('contact_email = ?'); params.push(e);
+    }
 
     if (!fields.length) return feedJson({ error: 'Nothing to update' }, 400);
 
@@ -768,6 +831,34 @@ async function handleProfileRoutes(request, env, url) {
     const profile = shapeProfile(fresh);
     profile.total_points = await getUserTotalPoints(env, user.id);
     return feedJson({ success: true, profile });
+  }
+
+  if (url.pathname === '/api/profile/verify-domain' && request.method === 'POST') {
+    if (!user) return feedJson({ error: 'Unauthorized' }, 401);
+    const fresh = await env.MY_BINDING.prepare('SELECT website_url, verified_token FROM users WHERE id = ?').bind(user.id).first();
+    if (!fresh || !fresh.website_url) return feedJson({ error: 'Add a website URL to your profile first' }, 400);
+    let targetHost;
+    try { targetHost = new URL(fresh.website_url).hostname.replace(/^www\./, ''); }
+    catch { return feedJson({ error: 'Your website URL is invalid' }, 400); }
+    const token = fresh.verified_token || crypto.randomUUID().replace(/-/g, '');
+    await env.MY_BINDING.prepare('UPDATE users SET verified_token = ? WHERE id = ?').bind(token, user.id).run();
+    let html = '';
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 8000);
+      const res = await fetch(fresh.website_url, { signal: ctrl.signal, headers: { 'User-Agent': 'TrafficTorch-Verify/1.0' } });
+      clearTimeout(to);
+      if (!res.ok) return feedJson({ error: 'Website returned HTTP ' + res.status, token }, 400);
+      html = (await res.text()).slice(0, 500000);
+    } catch (e) {
+      return feedJson({ error: 'Could not reach website: ' + e.message, token }, 400);
+    }
+    const metaRe = new RegExp('<meta\\s+name=["\']traffic-torch-verify["\']\\s+content=["\']' + token + '["\']', 'i');
+    if (!metaRe.test(html)) {
+      return feedJson({ success: false, verified: false, token, message: 'Meta tag not found. Add the tag to your <head> and retry.' });
+    }
+    await env.MY_BINDING.prepare('UPDATE users SET verified_domain = ?, verified_at = ? WHERE id = ?').bind(targetHost, Date.now(), user.id).run();
+    return feedJson({ success: true, verified: true, domain: targetHost });
   }
 
   if (url.pathname.startsWith('/api/torcher/') && request.method === 'GET') {
@@ -1778,6 +1869,7 @@ async function handleNewRoutes(request, env, url) {
   const p = url.pathname;
   const isNew =
     p === '/api/profile/me' ||
+    p === '/api/profile/verify-domain' ||
     p.startsWith('/api/torcher/') ||
     /^\/api\/torch\/\d+$/.test(p) ||
     p === '/api/sitemap/static' ||
