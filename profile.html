@@ -935,7 +935,7 @@ async endorsePost(postId) {
 
     activityIcon(t) {
       return ({ torch: '🔥', comment: '💬', leaderboard: '🏆', network: '🤝', contribution: '🛠️', profile: '✏️',
-                points_milestone: '🏅', rank_change: '📈', score_up: '⬆️' })[t] || '•';
+                points_milestone: '🏅', rank_change: '📈', score_up: '⬆️', endorse: '⭐' })[t] || '•';
     },
 
     activityVerb(item) {
@@ -952,7 +952,8 @@ async endorsePost(postId) {
       return ({
         torch: 'View torch →', comment: 'Read thread →', network: 'View profile →',
         contribution: 'View contribution →', leaderboard: 'View leaderboard →', profile: 'View profile →',
-        points_milestone: 'View leaderboard →', rank_change: 'View leaderboard →', score_up: 'Re-run audit →'
+        points_milestone: 'View leaderboard →', rank_change: 'View leaderboard →', score_up: 'Re-run audit →',
+        endorse: 'View torch →'
       })[item.event_type] || 'Open →';
     },
 
