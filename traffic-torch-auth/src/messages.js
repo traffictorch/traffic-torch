@@ -2,25 +2,60 @@
 // TRAFFIC TORCH — Messaging module
 // Exports: handleMessageRoutes(request, env, url, deps)
 //          handleCleanupMessages(request, env)
-// deps = { verifyJWT, createNotification, getUserFromToken }
+// deps = { verifyJWT, signJWT, createNotification, getUserFromToken }
+// Phase 2: edit-within-5min, clear conversation, block from thread
 // ============================================================
 
 const MAX_BODY = 2000;
+const EDIT_WINDOW_MS = 5 * 60 * 1000;
 const RATE_PER_MIN = 20;
 const RATE_PER_DAY = 200;
 const ALLOWED_EMOJI = ['👍', '❤️', '😂', '🎉', '👀', '🙏'];
 const ALLOWED_UPLOAD_TYPES = [
-  // Images (rendered inline in chat)
   'image/jpeg','image/png','image/gif','image/webp','image/svg+xml',
-  // Documents
   'application/pdf','text/plain','text/markdown','text/csv',
-  // Code / markup (downloaded, never rendered)
   'text/html','text/css','text/javascript','application/javascript',
   'application/json','application/xml','text/xml',
   'application/zip','application/x-zip-compressed',
 ];
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 const MAX_ATTACHMENTS = 3;
+
+// ------------------------------------------------------------
+// Schema bootstrap (runs once per Worker instance)
+// ------------------------------------------------------------
+let _msgTablesEnsured = null;
+
+async function ensureMessageSchema(env) {
+  // New column on messages: edited_at (INTEGER, nullable)
+  try {
+    await env.MY_BINDING.prepare(`ALTER TABLE messages ADD COLUMN edited_at INTEGER`).run();
+  } catch (e) { /* column already exists */ }
+
+  // New table: thread_clears (per-user hide)
+  try {
+    await env.MY_BINDING.prepare(
+      `CREATE TABLE IF NOT EXISTS thread_clears (
+        user_id INTEGER NOT NULL,
+        peer_id INTEGER NOT NULL,
+        cleared_at INTEGER NOT NULL,
+        PRIMARY KEY (user_id, peer_id)
+      )`
+    ).run();
+  } catch (e) {
+    console.error('[messages] ensureMessageSchema table error:', e.message);
+  }
+}
+
+function ensureMessageSchemaOnce(env) {
+  if (!_msgTablesEnsured) {
+    _msgTablesEnsured = ensureMessageSchema(env).catch(err => {
+      _msgTablesEnsured = null;
+      throw err;
+    });
+  }
+  return _msgTablesEnsured;
+}
 
 function json(data, status = 200) {
   const h = new Headers({ 'Content-Type': 'application/json' });
@@ -49,7 +84,7 @@ async function rateLimit(env, userId, bucket, limit, windowSec) {
   return (row?.c || 0) < limit;
 }
 
-async function logUsage(env, userId, bucket) {
+async function logUsage(env, userId) {
   await env.MY_BINDING.prepare(
     `INSERT INTO dm_rate_log (user_id, created_at) VALUES (?, ?)`
   ).bind(userId, Date.now()).run();
@@ -76,8 +111,6 @@ async function areConnected(env, a, b) {
   return !!row;
 }
 
-// Policy check: can `sender` message `recipient`?
-// Returns { ok: true } or { ok: false, status, error }
 async function canMessage(env, sender, recipient) {
   if (sender.id === recipient.id) return { ok: false, status: 400, error: 'Cannot message yourself' };
 
@@ -100,12 +133,20 @@ async function canMessage(env, sender, recipient) {
     if (!connected) return { ok: false, status: 403, error: 'This user only accepts messages from their network' };
   }
 
-  // Also enforce sender's mute list
   if (await isMuted(env, sender.id, recipient.id)) {
     return { ok: false, status: 403, error: 'You have muted this user. Unmute to send messages.' };
   }
 
   return { ok: true };
+}
+
+async function getClearedAt(env, userId, peerId) {
+  try {
+    const row = await env.MY_BINDING.prepare(
+      `SELECT cleared_at FROM thread_clears WHERE user_id = ? AND peer_id = ?`
+    ).bind(userId, peerId).first();
+    return row?.cleared_at || 0;
+  } catch { return 0; }
 }
 
 async function attachReactionsAndFiles(env, messages, viewerId) {
@@ -143,12 +184,7 @@ async function attachReactionsAndFiles(env, messages, viewerId) {
 // ---------- endpoints ----------
 
 async function handleWsTicket(request, env, user, deps) {
-  // 60-second, single-purpose ticket. Bound to user ID. Cannot be used for API auth.
-  const ticket = await deps.signJWT(
-    { uid: user.id, purpose: 'ws' },
-    env.JWT_SECRET,
-    60
-  );
+  const ticket = await deps.signJWT({ uid: user.id, purpose: 'ws' }, env.JWT_SECRET, 60);
   return json({ ticket, expires_in: 60 });
 }
 
@@ -164,7 +200,6 @@ async function handleSend(request, env, user, deps) {
   if (!toId) return json({ error: 'Missing to_user_id' }, 400);
   if (!raw || raw.length > MAX_BODY) return json({ error: `Message must be 1-${MAX_BODY} characters` }, 400);
 
-  // Rate limits
   if (!(await rateLimit(env, user.id, 'dm_minute', RATE_PER_MIN, 60)))
     return json({ error: 'Slow down — max 20 messages per minute' }, 429);
   if (!(await rateLimit(env, user.id, 'dm_day', RATE_PER_DAY, 86400)))
@@ -178,7 +213,6 @@ async function handleSend(request, env, user, deps) {
   const policy = await canMessage(env, user, recipient);
   if (!policy.ok) return json({ error: policy.error }, policy.status);
 
-  // Reply validation
   if (replyToId) {
     const parent = await env.MY_BINDING.prepare(
       `SELECT from_user_id, to_user_id FROM messages WHERE id = ?`
@@ -197,7 +231,6 @@ async function handleSend(request, env, user, deps) {
 
   const messageId = ins.meta.last_row_id;
 
-  // Attach files
   if (attachmentKeys.length && env.ATTACHMENTS) {
     for (const key of attachmentKeys) {
       const meta = await env.ATTACHMENTS.head(key);
@@ -212,10 +245,8 @@ async function handleSend(request, env, user, deps) {
     }
   }
 
-  await logUsage(env, user.id, 'dm_minute');
-  await logUsage(env, user.id, 'dm_day');
+  await logUsage(env, user.id);
 
-  // Fire-and-forget notification
   try {
     const senderName = user.display_name || user.username || 'Someone';
     const preview = raw.slice(0, 120) + (raw.length > 120 ? '…' : '');
@@ -236,7 +267,6 @@ async function handleSend(request, env, user, deps) {
 
   const [withMeta] = await attachReactionsAndFiles(env, [inserted], user.id);
 
-  // Fire-and-forget: push to recipient's DO for real-time delivery
   if (env.USER_INBOX) {
     try {
       const doId = env.USER_INBOX.idFromName(String(recipient.id));
@@ -262,22 +292,33 @@ async function handleSend(request, env, user, deps) {
 
 async function handleInbox(request, env, user, url) {
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 50);
-  const cursor = url.searchParams.get('cursor');
 
-  let query = `
-    SELECT
-      CASE WHEN from_user_id = ? THEN to_user_id ELSE from_user_id END AS peer_id,
-      MAX(created_at) AS last_at
-    FROM messages
-    WHERE (from_user_id = ? OR to_user_id = ?) AND is_deleted = 0
-    GROUP BY peer_id
-    ORDER BY last_at DESC
+  const query = `
+    SELECT t.peer_id, t.last_at
+    FROM (
+      SELECT
+        CASE WHEN from_user_id = ? THEN to_user_id ELSE from_user_id END AS peer_id,
+        MAX(created_at) AS last_at
+      FROM messages
+      WHERE (from_user_id = ? OR to_user_id = ?) AND is_deleted = 0
+      GROUP BY peer_id
+    ) t
+    WHERE t.peer_id NOT IN (
+      SELECT blocked_user_id FROM blocks WHERE user_id = ?
+    )
+    AND t.last_at > COALESCE(
+      (SELECT cleared_at FROM thread_clears WHERE user_id = ? AND peer_id = t.peer_id),
+      0
+    )
+    ORDER BY t.last_at DESC
     LIMIT ?
   `;
-  const binds = [user.id, user.id, user.id, limit + 1];
 
-  const threadRows = await env.MY_BINDING.prepare(query).bind(...binds).all();
-  let rows = threadRows.results || [];
+  const rows_raw = await env.MY_BINDING.prepare(query).bind(
+    user.id, user.id, user.id, user.id, user.id, limit + 1
+  ).all();
+
+  let rows = rows_raw.results || [];
   const hasMore = rows.length > limit;
   if (hasMore) rows = rows.slice(0, limit);
 
@@ -294,17 +335,21 @@ async function handleInbox(request, env, user, url) {
 
   const threads = [];
   for (const r of rows) {
+    const cleared = await getClearedAt(env, user.id, r.peer_id);
     const last = await env.MY_BINDING.prepare(
-      `SELECT id, from_user_id, to_user_id, body, is_read, created_at FROM messages
+      `SELECT id, from_user_id, to_user_id, body, is_read, created_at, edited_at FROM messages
        WHERE ((from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?))
          AND is_deleted = 0
+         AND created_at > ?
        ORDER BY created_at DESC LIMIT 1`
-    ).bind(user.id, r.peer_id, r.peer_id, user.id).first();
+    ).bind(user.id, r.peer_id, r.peer_id, user.id, cleared).first();
+
+    if (!last) continue;
 
     const unread = await env.MY_BINDING.prepare(
       `SELECT COUNT(*) AS c FROM messages
-       WHERE from_user_id = ? AND to_user_id = ? AND is_read = 0 AND is_deleted = 0`
-    ).bind(r.peer_id, user.id).first();
+       WHERE from_user_id = ? AND to_user_id = ? AND is_read = 0 AND is_deleted = 0 AND created_at > ?`
+    ).bind(r.peer_id, user.id, cleared).first();
 
     const muted = await isMuted(env, user.id, r.peer_id);
 
@@ -319,7 +364,7 @@ async function handleInbox(request, env, user, url) {
   return json({
     threads,
     has_more: hasMore,
-    cursor: hasMore ? String(threads[threads.length - 1].last_message.created_at) : null
+    cursor: hasMore && threads.length ? String(threads[threads.length - 1].last_message.created_at) : null
   });
 }
 
@@ -331,11 +376,13 @@ async function handleThread(request, env, user, username, url) {
 
   const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 50);
   const before = url.searchParams.get('before');
+  const cleared = await getClearedAt(env, user.id, peer.id);
 
   let q = `SELECT * FROM messages
            WHERE ((from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?))
-             AND is_deleted = 0`;
-  const binds = [user.id, peer.id, peer.id, user.id];
+             AND is_deleted = 0
+             AND created_at > ?`;
+  const binds = [user.id, peer.id, peer.id, user.id, cleared];
   if (before) { q += ` AND id < ?`; binds.push(parseInt(before)); }
   q += ` ORDER BY created_at DESC LIMIT ?`;
   binds.push(limit + 1);
@@ -347,16 +394,89 @@ async function handleThread(request, env, user, username, url) {
   list.reverse();
 
   const withMeta = await attachReactionsAndFiles(env, list, user.id);
-
   const muted = await isMuted(env, user.id, peer.id);
 
   return json({
     peer,
     messages: withMeta,
     has_more: hasMore,
-    cursor: hasMore ? String(list[0].id) : null,
+    cursor: hasMore && list.length ? String(list[0].id) : null,
     muted
   });
+}
+
+async function handleEdit(request, env, user, messageId) {
+  let body;
+  try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+  const newBody = String(body.body || '').trim();
+  if (!newBody || newBody.length > MAX_BODY) {
+    return json({ error: `Message must be 1-${MAX_BODY} characters` }, 400);
+  }
+
+  const msg = await env.MY_BINDING.prepare(
+    `SELECT from_user_id, to_user_id, created_at, is_deleted FROM messages WHERE id = ?`
+  ).bind(messageId).first();
+  if (!msg || msg.is_deleted) return json({ error: 'Not found' }, 404);
+  if (msg.from_user_id !== user.id) return json({ error: 'You can only edit your own messages' }, 403);
+
+  const age = Date.now() - msg.created_at;
+  if (age > EDIT_WINDOW_MS) {
+    return json({ error: 'Edit window expired (5 minutes)' }, 403);
+  }
+
+  const now = Date.now();
+  await env.MY_BINDING.prepare(
+    `UPDATE messages SET body = ?, edited_at = ? WHERE id = ?`
+  ).bind(newBody, now, messageId).run();
+
+  const updated = await env.MY_BINDING.prepare(
+    `SELECT * FROM messages WHERE id = ?`
+  ).bind(messageId).first();
+  const [withMeta] = await attachReactionsAndFiles(env, [updated], user.id);
+
+  return json({ success: true, message: withMeta });
+}
+
+async function handleClearThread(request, env, user, username) {
+  const peer = await env.MY_BINDING.prepare(
+    `SELECT id FROM users WHERE username = ?`
+  ).bind(username).first();
+  if (!peer) return json({ error: 'User not found' }, 404);
+
+  await env.MY_BINDING.prepare(
+    `INSERT OR REPLACE INTO thread_clears (user_id, peer_id, cleared_at) VALUES (?, ?, ?)`
+  ).bind(user.id, peer.id, Date.now()).run();
+
+  return json({ success: true });
+}
+
+async function handleBlockFromThread(request, env, user, targetId) {
+  if (targetId === user.id) return json({ error: 'Cannot block yourself' }, 400);
+
+  const target = await env.MY_BINDING.prepare(
+    `SELECT id, username FROM users WHERE id = ?`
+  ).bind(targetId).first();
+  if (!target) return json({ error: 'User not found' }, 404);
+
+  await env.MY_BINDING.prepare(
+    `INSERT OR IGNORE INTO blocks (user_id, blocked_user_id, created_at) VALUES (?, ?, ?)`
+  ).bind(user.id, targetId, Date.now()).run();
+
+  // Also remove from network in both directions for cleanliness
+  try {
+    await env.MY_BINDING.prepare(
+      `DELETE FROM network WHERE (user_id = ? AND network_user_id = ?) OR (user_id = ? AND network_user_id = ?)`
+    ).bind(user.id, targetId, targetId, user.id).run();
+  } catch (e) { /* network table may not exist in some deploys, ignore */ }
+
+  // Drop any mute entry — block supersedes it
+  try {
+    await env.MY_BINDING.prepare(
+      `DELETE FROM message_mutes WHERE user_id = ? AND muted_user_id = ?`
+    ).bind(user.id, targetId).run();
+  } catch (e) { /* ignore */ }
+
+  return json({ success: true });
 }
 
 async function handleRead(request, env, user) {
@@ -459,8 +579,6 @@ async function handleAttachmentDownload(request, env, user, attachmentId) {
   const obj = await env.ATTACHMENTS.get(att.r2_key);
   if (!obj) return json({ error: 'File missing' }, 404);
 
-  // Only render inline for safe image types. Everything else = force download
-  // to prevent HTML/SVG/JS from executing as XSS in the recipient's browser.
   const INLINE_OK = new Set(['image/jpeg','image/png','image/gif','image/webp','application/pdf']);
   const disposition = INLINE_OK.has(att.content_type) ? 'inline' : 'attachment';
   const safeName = (att.filename || 'file').replace(/["\r\n]/g, '');
@@ -492,10 +610,6 @@ async function handleSettings(request, env, user) {
   if (body.messages_blocked !== undefined) {
     updates.push('messages_blocked = ?');
     binds.push(body.messages_blocked ? 1 : 0);
-  }
-  if (body.allow_messages !== undefined) {
-    updates.push('allow_messages = ?');
-    binds.push(body.allow_messages ? 1 : 0);
   }
   if (!updates.length) return json({ error: 'Nothing to update' }, 400);
 
@@ -550,9 +664,10 @@ async function handleMute(request, env, user, targetId, mute) {
 export async function handleMessageRoutes(request, env, url, deps) {
   if (request.method === 'OPTIONS') return preflight();
 
+  await ensureMessageSchemaOnce(env);
+
   const p = url.pathname;
 
-  // ---- WebSocket upgrade — no Bearer header possible, uses short-lived ticket ----
   if (p === '/api/messages/connect') {
     const upgrade = (request.headers.get('Upgrade') || '').toLowerCase();
     if (upgrade !== 'websocket') return json({ error: 'Expected WebSocket upgrade' }, 426);
@@ -568,7 +683,6 @@ export async function handleMessageRoutes(request, env, url, deps) {
     return await stub.fetch(request);
   }
 
-  // ---- Everything below requires Bearer auth ----
   const user = await deps.getUserFromToken(request, env);
   if (!user) return json({ error: 'Unauthorized' }, 401);
 
@@ -589,6 +703,13 @@ export async function handleMessageRoutes(request, env, url, deps) {
     }
 
     let match;
+    if ((match = p.match(/^\/api\/messages\/thread\/([^\/]+)\/clear$/)) && m === 'POST') {
+      const username = decodeURIComponent(match[1]);
+      return await handleClearThread(request, env, user, username);
+    }
+    if ((match = p.match(/^\/api\/messages\/block\/(\d+)$/)) && m === 'POST') {
+      return await handleBlockFromThread(request, env, user, parseInt(match[1]));
+    }
     if ((match = p.match(/^\/api\/messages\/(\d+)\/react$/))) {
       const id = parseInt(match[1]);
       if (m === 'POST') return await handleReact(request, env, user, id, true);
@@ -605,8 +726,10 @@ export async function handleMessageRoutes(request, env, url, deps) {
     if ((match = p.match(/^\/api\/messages\/attachments\/(\d+)$/)) && m === 'GET') {
       return await handleAttachmentDownload(request, env, user, parseInt(match[1]));
     }
-    if ((match = p.match(/^\/api\/messages\/(\d+)$/)) && m === 'DELETE') {
-      return await handleDelete(request, env, user, parseInt(match[1]));
+    if ((match = p.match(/^\/api\/messages\/(\d+)$/))) {
+      const id = parseInt(match[1]);
+      if (m === 'PATCH') return await handleEdit(request, env, user, id);
+      if (m === 'DELETE') return await handleDelete(request, env, user, id);
     }
 
     return json({ error: 'Not found' }, 404);

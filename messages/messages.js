@@ -3,6 +3,7 @@
 // iOS-optimized: compositor-safe drawer + inline image previews
 // Phase 1: search, auto-open, optimistic send+retry, grouping,
 //          draft persistence, export thread
+// Phase 2: edit-within-5min, clear conversation, block from thread
 // ============================================================
 (function () {
   'use strict';
@@ -13,6 +14,7 @@
   const EMOJI = ['👍', '❤️', '😂', '🎉', '👀', '🙏'];
   const MAX_LEN = 2000;
   const MAX_FILE = 5 * 1024 * 1024;
+  const EDIT_WINDOW_MS = 5 * 60 * 1000;
   const ALLOWED_TYPES = [
     'image/jpeg','image/png','image/gif','image/webp','image/svg+xml',
     'application/pdf','text/plain','text/markdown','text/csv',
@@ -211,7 +213,6 @@
     }, 100);
   }
 
-  // ---------- Draft persistence ----------
   function _saveDraft(peerId, text) {
     try {
       const key = 'tt_draft_' + peerId;
@@ -223,7 +224,6 @@
     try { return localStorage.getItem('tt_draft_' + peerId) || ''; } catch { return ''; }
   }
 
-  // ---------- iOS-safe scroll lock ----------
   function _lockBody() {
     if (_kbLocked) return;
     _savedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
@@ -259,7 +259,6 @@
     });
   }
 
-  // ---------- drawer ----------
   function buildDrawer() {
     if (drawerBuilt) return;
     drawerBuilt = true;
@@ -395,12 +394,10 @@
       document.activeElement.blur();
     }
 
-    const lb = document.getElementById('tt-lightbox');
-    if (lb) lb.remove();
-    const fv = document.getElementById('tt-file-viewer');
-    if (fv) fv.remove();
-    const cv = document.getElementById('tt-code-viewer');
-    if (cv) cv.remove();
+    ['tt-lightbox','tt-file-viewer','tt-code-viewer','tt-thread-menu','tt-edit-modal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    });
 
     panel.style.height = '';
     panel.style.transform = 'translateX(100%) translateZ(0)';
@@ -436,8 +433,8 @@
       <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid ${T('#374151','#e5e7eb')};">
         ${showBack ? `<button data-tt-back style="background:none;border:none;font-size:22px;cursor:pointer;color:inherit;padding:0 4px;">←</button>` : ''}
         <h2 style="margin:0;font-size:16px;font-weight:800;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(title)}</h2>
-        ${showBack && muted !== undefined ? `<button data-tt-export title="Export thread" style="background:none;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;padding:4px 8px;font-size:14px;cursor:pointer;color:inherit;">⤓</button>` : ''}
         ${muted !== undefined ? `<button data-tt-mute title="${muted ? 'Unmute' : 'Mute'}" style="background:none;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;padding:4px 8px;font-size:14px;cursor:pointer;color:inherit;">${muted ? '🔇' : '🔔'}</button>` : ''}
+        ${showBack && muted !== undefined ? `<button data-tt-more title="More options" style="background:none;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;padding:4px 10px;font-size:16px;cursor:pointer;color:inherit;line-height:1;">⋯</button>` : ''}
         <button data-tt-close style="background:none;border:none;font-size:24px;cursor:pointer;color:inherit;line-height:1;padding:0 4px;">×</button>
       </div>`;
   }
@@ -463,7 +460,7 @@
       body = threads.map(t => {
         const unread = t.unread_count > 0;
         const visible = match(t);
-        return `<button data-tt-thread="${t.peer.id}" data-tt-thread-match="${visible ? 1 : 0}" style="display:${visible ? 'flex' : 'none'};gap:12px;align-items:center;width:100%;padding:12px 16px;text-align:left;background:${unread ? T('rgba(249,115,22,0.10)','rgba(249,115,22,0.06)') : 'transparent'};border:none;border-bottom:1px solid ${T('#1f2937','#f3f4f6')};cursor:pointer;color:inherit;font-family:inherit;">
+        return `<button data-tt-thread="${t.peer.id}" style="display:${visible ? 'flex' : 'none'};gap:12px;align-items:center;width:100%;padding:12px 16px;text-align:left;background:${unread ? T('rgba(249,115,22,0.10)','rgba(249,115,22,0.06)') : 'transparent'};border:none;border-bottom:1px solid ${T('#1f2937','#f3f4f6')};cursor:pointer;color:inherit;font-family:inherit;">
           <img src="${avatarFor(t.peer)}" width="44" height="44" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;object-fit:cover;" alt="">
           <div style="flex:1;min-width:0;">
             <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;">
@@ -513,6 +510,7 @@
       listHTML += `<p style="text-align:center;color:${T('#9ca3af','#6b7280')};padding:32px 16px;font-size:14px;">No messages yet. Say hi 👋</p>`;
     }
     const myId = me && me.id;
+    const now = Date.now();
     let prev = null;
     msgs.forEach(m => {
       const mine = m.from_user_id === myId;
@@ -532,16 +530,23 @@
         ? `<div style="font-size:10px;opacity:0.7;margin-bottom:4px;border-left:2px solid currentColor;padding-left:6px;">↩ reply</div>`
         : '';
 
+      const editable = mine && !m._status && !m.is_deleted
+        && (now - m.created_at) < EDIT_WINDOW_MS;
+
       const statusParts = [];
       if (m._status === 'sending') statusParts.push('<span style="opacity:0.9;">⏳</span>');
       if (m._status === 'failed') statusParts.push('<span style="color:#7f1d1d;background:#fecaca;padding:1px 6px;border-radius:4px;font-weight:700;opacity:1;">⚠ Not sent</span>');
       if (mine && m.is_read && !m._status) statusParts.push('<span>✓</span>');
+      if (m.edited_at) statusParts.push('<span style="opacity:0.75;font-style:italic;">· edited</span>');
 
       const delBtn = (mine && !m._status)
-        ? `<button data-tt-del="${m.id}" style="margin-left:auto;background:none;border:none;color:inherit;cursor:pointer;font-size:11px;opacity:0.7;">🗑</button>`
+        ? `<button data-tt-del="${m.id}" style="background:none;border:none;color:inherit;cursor:pointer;font-size:11px;opacity:0.7;">🗑</button>`
+        : '';
+      const editBtn = editable
+        ? `<button data-tt-edit="${m.id}" style="background:none;border:none;color:inherit;cursor:pointer;font-size:11px;opacity:0.85;text-decoration:underline;">Edit</button>`
         : '';
       const retryBtn = (m._status === 'failed')
-        ? `<button data-tt-retry="${m._tempId}" style="margin-left:auto;background:none;border:none;color:inherit;cursor:pointer;font-size:11px;font-weight:700;opacity:1;text-decoration:underline;">Retry</button>`
+        ? `<button data-tt-retry="${m._tempId}" style="background:none;border:none;color:inherit;cursor:pointer;font-size:11px;font-weight:700;opacity:1;text-decoration:underline;">Retry</button>`
         : '';
       const replyBtn = !m._status
         ? `<button data-tt-reply="${m.id}" style="background:none;border:none;color:inherit;cursor:pointer;font-size:11px;opacity:0.7;">↩</button>`
@@ -559,9 +564,12 @@
           <div style="display:flex;gap:8px;align-items:center;margin-top:6px;font-size:10px;opacity:0.7;">
             <span>${relTime(m.created_at)}</span>
             ${statusParts.join('')}
-            ${delBtn}
-            ${retryBtn}
-            ${replyBtn}
+            <span style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+              ${editBtn}
+              ${delBtn}
+              ${retryBtn}
+              ${replyBtn}
+            </span>
           </div>
         </div>
       </div>`;
@@ -723,6 +731,155 @@
     });
   }
 
+  // ---------- Thread options menu (⋯) ----------
+  function openThreadMenu() {
+    const existing = document.getElementById('tt-thread-menu');
+    if (existing) existing.remove();
+    if (!activeThread) return;
+
+    const peer = activeThread.peer || {};
+    const username = peer.username || 'this user';
+
+    const box = document.createElement('div');
+    box.id = 'tt-thread-menu';
+    box.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;padding:24px;isolation:isolate;';
+    box.innerHTML = `
+      <div style="background:${T('#111827','#ffffff')};color:${T('#f3f4f6','#111827')};border-radius:14px;max-width:340px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);font-family:system-ui,-apple-system,sans-serif;">
+        <div style="padding:16px;border-bottom:1px solid ${T('#374151','#e5e7eb')};">
+          <p style="margin:0;font-weight:700;font-size:15px;">Thread options</p>
+          <p style="margin:4px 0 0;font-size:12px;opacity:0.65;">With @${esc(username)}</p>
+        </div>
+        <button data-tt-menu-export style="display:block;width:100%;padding:14px 16px;background:none;border:none;border-bottom:1px solid ${T('#1f2937','#f3f4f6')};text-align:left;font-size:14px;color:inherit;cursor:pointer;font-family:inherit;">⤓ Export conversation (.txt)</button>
+        <button data-tt-menu-clear style="display:block;width:100%;padding:14px 16px;background:none;border:none;border-bottom:1px solid ${T('#1f2937','#f3f4f6')};text-align:left;font-size:14px;color:#ef4444;cursor:pointer;font-family:inherit;">🗑 Clear conversation</button>
+        <button data-tt-menu-block style="display:block;width:100%;padding:14px 16px;background:none;border:none;border-bottom:1px solid ${T('#1f2937','#f3f4f6')};text-align:left;font-size:14px;color:#ef4444;cursor:pointer;font-family:inherit;">🚫 Block @${esc(username)}</button>
+        <button data-tt-menu-cancel style="display:block;width:100%;padding:14px 16px;background:none;border:none;text-align:center;font-size:14px;color:inherit;cursor:pointer;font-family:inherit;opacity:0.75;">Cancel</button>
+      </div>
+    `;
+    document.documentElement.appendChild(box);
+
+    const close = () => box.remove();
+    box.addEventListener('click', (e) => { if (e.target === box) close(); });
+    box.querySelector('[data-tt-menu-cancel]').addEventListener('click', close);
+    box.querySelector('[data-tt-menu-export]').addEventListener('click', () => { close(); exportThread(); });
+    box.querySelector('[data-tt-menu-clear]').addEventListener('click', () => { close(); clearThread(); });
+    box.querySelector('[data-tt-menu-block]').addEventListener('click', () => { close(); blockCurrentPeer(); });
+  }
+
+  async function clearThread() {
+    if (!activeThread) return;
+    const peer = activeThread.peer || {};
+    const label = peer.username || peer.display_name || 'this user';
+    if (!confirm(`Clear your conversation with ${label}? This only affects your side — they will still see the messages. New messages will reappear here.`)) return;
+
+    const panel = document.getElementById('tt-msg-panel');
+    try {
+      await api('/api/messages/thread/' + encodeURIComponent(peer.username) + '/clear', { method: 'POST' });
+      activeThread = null;
+      _saveDraft(peer.id, '');
+      renderPanelContent();
+      loadThreads();
+    } catch (e) {
+      alert('Could not clear: ' + e.message);
+    }
+  }
+
+  async function blockCurrentPeer() {
+    if (!activeThread) return;
+    const peer = activeThread.peer || {};
+    const label = peer.username || peer.display_name || 'this user';
+    if (!confirm(`Block ${label}? They won't be able to message you, and this thread will be removed.`)) return;
+
+    try {
+      await api('/api/messages/block/' + peer.id, { method: 'POST' });
+      activeThread = null;
+      _saveDraft(peer.id, '');
+      // Also remove this peer from local threads cache
+      threads = threads.filter(t => t.peer.id !== peer.id);
+      renderPanelContent();
+      loadThreads();
+    } catch (e) {
+      alert('Could not block: ' + e.message);
+    }
+  }
+
+  // ---------- Edit message modal ----------
+  function openEditModal(messageId) {
+    if (!activeThread) return;
+    const msg = activeThread.messages.find(m => String(m.id) === String(messageId));
+    if (!msg) return;
+
+    const existing = document.getElementById('tt-edit-modal');
+    if (existing) existing.remove();
+
+    const box = document.createElement('div');
+    box.id = 'tt-edit-modal';
+    box.style.cssText = 'position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:20px;isolation:isolate;';
+    box.innerHTML = `
+      <div style="background:${T('#111827','#ffffff')};color:${T('#f3f4f6','#111827')};border-radius:14px;max-width:420px;width:100%;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.5);font-family:system-ui,-apple-system,sans-serif;">
+        <p style="margin:0 0 12px;font-weight:700;font-size:15px;">Edit message</p>
+        <textarea data-tt-edit-input maxlength="${MAX_LEN}" rows="4" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;background:${T('#0f172a','#ffffff')};color:inherit;font-family:inherit;font-size:15px;resize:vertical;outline:none;"></textarea>
+        <p data-tt-edit-count style="margin:6px 0 0;font-size:11px;text-align:right;opacity:0.6;">0 / ${MAX_LEN}</p>
+        <p data-tt-edit-error style="margin:8px 0 0;font-size:12px;color:#ef4444;display:none;"></p>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+          <button data-tt-edit-cancel style="padding:9px 16px;border-radius:8px;border:1px solid ${T('#4b5563','#d1d5db')};background:transparent;color:inherit;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+          <button data-tt-edit-save style="padding:9px 20px;border-radius:8px;border:none;background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;">Save</button>
+        </div>
+      </div>
+    `;
+    document.documentElement.appendChild(box);
+
+    const ta = box.querySelector('[data-tt-edit-input]');
+    const count = box.querySelector('[data-tt-edit-count]');
+    const err = box.querySelector('[data-tt-edit-error]');
+    const saveBtn = box.querySelector('[data-tt-edit-save]');
+    const cancelBtn = box.querySelector('[data-tt-edit-cancel]');
+
+    ta.value = msg.body || '';
+    count.textContent = ta.value.length + ' / ' + MAX_LEN;
+    ta.focus();
+    try { ta.setSelectionRange(ta.value.length, ta.value.length); } catch {}
+
+    ta.addEventListener('input', () => { count.textContent = ta.value.length + ' / ' + MAX_LEN; });
+
+    const close = () => box.remove();
+    const onKey = (e) => {
+      if (e.key === 'Escape') { document.removeEventListener('keydown', onKey); close(); }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') doSave();
+    };
+    document.addEventListener('keydown', onKey);
+    cancelBtn.addEventListener('click', () => { document.removeEventListener('keydown', onKey); close(); });
+    box.addEventListener('click', (e) => { if (e.target === box) { document.removeEventListener('keydown', onKey); close(); } });
+
+    async function doSave() {
+      const newBody = (ta.value || '').trim();
+      if (!newBody) { err.textContent = 'Message cannot be empty.'; err.style.display = 'block'; return; }
+      if (newBody === (msg.body || '')) { document.removeEventListener('keydown', onKey); close(); return; }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+      err.style.display = 'none';
+
+      try {
+        const d = await api('/api/messages/' + msg.id, {
+          method: 'PATCH',
+          body: JSON.stringify({ body: newBody })
+        });
+        const i = activeThread.messages.findIndex(m => m.id === msg.id);
+        if (i >= 0) activeThread.messages[i] = d.message;
+        document.removeEventListener('keydown', onKey);
+        close();
+        renderPanelContent();
+      } catch (e) {
+        err.textContent = e.message || 'Could not save';
+        err.style.display = 'block';
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save';
+      }
+    }
+
+    saveBtn.addEventListener('click', doSave);
+  }
+
   function showEmojiPicker(anchor, messageId) {
     const existing = document.getElementById('tt-emoji-picker');
     if (existing) existing.remove();
@@ -807,12 +964,14 @@
     });
     const mute = panel.querySelector('[data-tt-mute]');
     if (mute) mute.addEventListener('click', toggleMute);
-    const exportBtn = panel.querySelector('[data-tt-export]');
-    if (exportBtn) exportBtn.addEventListener('click', exportThread);
+    const moreBtn = panel.querySelector('[data-tt-more]');
+    if (moreBtn) moreBtn.addEventListener('click', openThreadMenu);
     const older = panel.querySelector('[data-tt-load-older]');
     if (older) older.addEventListener('click', loadOlder);
+
     panel.querySelectorAll('[data-tt-del]').forEach(b => b.addEventListener('click', () => deleteMsg(parseInt(b.getAttribute('data-tt-del')))));
     panel.querySelectorAll('[data-tt-retry]').forEach(b => b.addEventListener('click', () => retrySend(b.getAttribute('data-tt-retry'))));
+    panel.querySelectorAll('[data-tt-edit]').forEach(b => b.addEventListener('click', () => openEditModal(b.getAttribute('data-tt-edit'))));
     panel.querySelectorAll('[data-tt-reply]').forEach(b => b.addEventListener('click', () => {
       activeThread.reply_to_id = parseInt(b.getAttribute('data-tt-reply'));
       renderPanelContent();
@@ -1046,8 +1205,6 @@
   async function exportThread() {
     if (!activeThread) return;
     const panel = document.getElementById('tt-msg-panel');
-    const btn = panel.querySelector('[data-tt-export]');
-    if (btn) btn.disabled = true;
 
     try {
       let all = activeThread.messages.filter(m => !m._tempId && m._status !== 'failed');
@@ -1069,8 +1226,9 @@
         const ts = new Date(m.created_at);
         const stamp = ts.toISOString().slice(0, 16).replace('T', ' ');
         const who = m.from_user_id === meId ? 'me' : '@' + (peer.username || 'them');
+        const edited = m.edited_at ? ' (edited)' : '';
         const body = (m.body || '').replace(/\r?\n/g, '\n  ');
-        return `[${stamp}] ${who}: ${body}`;
+        return `[${stamp}] ${who}${edited}: ${body}`;
       });
 
       const header = [
@@ -1091,8 +1249,6 @@
       setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
     } catch (e) {
       alert('Export failed: ' + e.message);
-    } finally {
-      if (btn) btn.disabled = false;
     }
   }
 
