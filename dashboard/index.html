@@ -100,6 +100,34 @@
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
 <div x-data="dashboardApp()" x-init="initDashboard()" class="flex flex-1 min-h-screen">
+
+  <!-- ── Avatar lightbox ── -->
+  <div x-show="avatarLightbox" x-cloak
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0"
+       x-transition:enter-end="opacity-100"
+       x-transition:leave="transition ease-in duration-150"
+       x-transition:leave-start="opacity-100"
+       x-transition:leave-end="opacity-0"
+       @click="avatarLightbox = false"
+       @keydown.escape.window="avatarLightbox = false"
+       class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm cursor-zoom-out p-6">
+    <img :src="avatarSrc(profile)"
+         :alt="profile.display_name"
+         @click.stop
+         x-show="avatarLightbox"
+         x-transition:enter="transition ease-out duration-300 delay-75"
+         x-transition:enter-start="opacity-0 scale-75"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-75"
+         class="max-w-[85vw] max-h-[85vh] rounded-full object-cover shadow-2xl ring-4 ring-white/20"
+         style="width: auto; height: auto;">
+    <button type="button" @click="avatarLightbox = false"
+            class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/15 hover:bg-white/25 text-white text-2xl flex items-center justify-center transition"
+            aria-label="Close">×</button>
+  </div>
   <div class="flex flex-1 min-h-screen">
 
     <!-- Desktop Sidebar -->
@@ -242,9 +270,10 @@
 
 <div class="flex flex-col items-center sm:flex-row sm:items-end gap-5 profile-header-flex">
   <template x-if="profile.id">
-    <div class="avatar-ring mx-auto sm:mx-0"
+    <div class="avatar-ring mx-auto sm:mx-0 cursor-pointer"
          :class="'tier-' + (profile.tier || 'free')"
-         :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member'">
+         :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member — click to enlarge'"
+         @click="avatarLightbox = true">
       <img :src="avatarSrc(profile)"
            :alt="profile.display_name"
            width="72" height="72" style="width:72px;height:72px;"
@@ -2789,6 +2818,7 @@ function dashboardApp() {
     activeDashboardTab: 'profile',
     profileViewMode: 'view',
     contactsRevealed: {},
+    avatarLightbox: false,
     dailyLimit: 3,
     dailyUsedCount: 0,
     selectedTool: '/',
