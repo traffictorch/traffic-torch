@@ -873,6 +873,25 @@ async function handleProfileRoutes(request, env, url) {
     delete profile.notify_comments;
     delete profile.notify_network;
     delete profile.notify_leaderboard;
+    // ── Phase C: public advanced fields ──
+    delete profile.verified_token;
+    profile.skills = Array.isArray(profile.skills) ? profile.skills : [];
+    profile.verified_domain = profile.verified_domain || null;
+    profile.verified_at = profile.verified_at || null;
+    profile.available_for_hire = profile.available_for_hire === 1 ? 1 : 0;
+    profile.hire_headline = profile.hire_headline || '';
+    profile.hire_services = Array.isArray(profile.hire_services) ? profile.hire_services : [];
+    profile.contact_email = profile.contact_email || '';
+    const rawContacts = Array.isArray(profile.contacts) ? profile.contacts : [];
+    const contactVisibility = profile.contacts_visibility || 'click';
+    profile.contacts = rawContacts.map(c => {
+      const v = String(c.value || '');
+      if (contactVisibility === 'public') return { type: c.type, label: c.label || '', partA: v, partB: '' };
+      const mid = Math.ceil(v.length / 2);
+      return { type: c.type, label: c.label || '', partA: v.slice(0, mid), partB: v.slice(mid) };
+    });
+    delete profile.contacts_visibility;
+    profile.endorsement_count = 0;
 
     const posts = await env.MY_BINDING.prepare(
       `SELECT id, category, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, created_at
