@@ -1,6 +1,8 @@
 // ============================================================
 // Traffic Torch — Messages (vanilla JS, works on every page)
 // iOS-optimized: compositor-safe drawer + inline image previews
+// Phase 1: search, auto-open, optimistic send+retry, grouping,
+//          draft persistence, export thread
 // ============================================================
 (function () {
   'use strict';
@@ -24,6 +26,7 @@
   ].join(',');
 
   const IMG_EXT_RE = /\.(jpe?g|png|gif|webp|avif|heic|heif|bmp|svg)$/i;
+  const GROUP_WINDOW_MS = 5 * 60 * 1000;
 
   const getToken = () => localStorage.getItem('authToken');
   const decodeJwt = t => { try { return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); } catch { return null; } };
@@ -117,13 +120,13 @@
   let wsReconnectTimer = null;
   let wsBackoff = 1000;
   let drawerBuilt = false;
+  let _inboxSearch = '';
 
   let _savedScrollY = 0;
   let _kbLocked = false;
   let _touchMoveHandler = null;
   let _syncRafId = null;
 
-  // blob cache: attachment id -> object URL
   const _blobCache = new Map();
 
   async function api(path, opts = {}) {
@@ -208,7 +211,19 @@
     }, 100);
   }
 
-  // ---------- iOS-safe scroll lock (no position:fixed on body) ----------
+  // ---------- Draft persistence ----------
+  function _saveDraft(peerId, text) {
+    try {
+      const key = 'tt_draft_' + peerId;
+      if (text && text.length) localStorage.setItem(key, text);
+      else localStorage.removeItem(key);
+    } catch {}
+  }
+  function _loadDraft(peerId) {
+    try { return localStorage.getItem('tt_draft_' + peerId) || ''; } catch { return ''; }
+  }
+
+  // ---------- iOS-safe scroll lock ----------
   function _lockBody() {
     if (_kbLocked) return;
     _savedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
@@ -244,7 +259,7 @@
     });
   }
 
-  // ---------- drawer (compositor-isolated for iOS) ----------
+  // ---------- drawer ----------
   function buildDrawer() {
     if (drawerBuilt) return;
     drawerBuilt = true;
@@ -358,7 +373,11 @@
     requestAnimationFrame(() => {
       panel.style.transform = 'translateX(0) translateZ(0)';
     });
-    loadThreads();
+    loadThreads().then(() => {
+      if (activeThread) return;
+      const unread = threads.find(t => t.unread_count > 0);
+      if (unread) openThread(unread.peer);
+    });
   }
 
   function closeInbox() {
@@ -367,12 +386,21 @@
     const root = document.getElementById('tt-msg-root');
     if (!panel) return;
 
+    if (activeThread) {
+      const inp = panel.querySelector('[data-tt-input]');
+      if (inp) _saveDraft(activeThread.peer.id, inp.value);
+    }
+
     if (document.activeElement && panel.contains(document.activeElement) && document.activeElement.blur) {
       document.activeElement.blur();
     }
 
     const lb = document.getElementById('tt-lightbox');
     if (lb) lb.remove();
+    const fv = document.getElementById('tt-file-viewer');
+    if (fv) fv.remove();
+    const cv = document.getElementById('tt-code-viewer');
+    if (cv) cv.remove();
 
     panel.style.height = '';
     panel.style.transform = 'translateX(100%) translateZ(0)';
@@ -408,12 +436,22 @@
       <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid ${T('#374151','#e5e7eb')};">
         ${showBack ? `<button data-tt-back style="background:none;border:none;font-size:22px;cursor:pointer;color:inherit;padding:0 4px;">←</button>` : ''}
         <h2 style="margin:0;font-size:16px;font-weight:800;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(title)}</h2>
+        ${showBack && muted !== undefined ? `<button data-tt-export title="Export thread" style="background:none;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;padding:4px 8px;font-size:14px;cursor:pointer;color:inherit;">⤓</button>` : ''}
         ${muted !== undefined ? `<button data-tt-mute title="${muted ? 'Unmute' : 'Mute'}" style="background:none;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;padding:4px 8px;font-size:14px;cursor:pointer;color:inherit;">${muted ? '🔇' : '🔔'}</button>` : ''}
         <button data-tt-close style="background:none;border:none;font-size:24px;cursor:pointer;color:inherit;line-height:1;padding:0 4px;">×</button>
       </div>`;
   }
 
   function renderThreadList() {
+    const q = (_inboxSearch || '').trim().toLowerCase();
+    const match = (t) => {
+      if (!q) return true;
+      const name = (t.peer.display_name || '').toLowerCase();
+      const uname = (t.peer.username || '').toLowerCase();
+      const last = (t.last_message && t.last_message.body || '').toLowerCase();
+      return name.includes(q) || uname.includes(q) || last.includes(q);
+    };
+
     let body = '';
     if (!threads.length) {
       body = `<div style="padding:48px 24px;text-align:center;color:${T('#9ca3af','#6b7280')};">
@@ -424,7 +462,8 @@
     } else {
       body = threads.map(t => {
         const unread = t.unread_count > 0;
-        return `<button data-tt-thread="${t.peer.id}" style="display:flex;gap:12px;align-items:center;width:100%;padding:12px 16px;text-align:left;background:${unread ? T('rgba(249,115,22,0.10)','rgba(249,115,22,0.06)') : 'transparent'};border:none;border-bottom:1px solid ${T('#1f2937','#f3f4f6')};cursor:pointer;color:inherit;font-family:inherit;">
+        const visible = match(t);
+        return `<button data-tt-thread="${t.peer.id}" data-tt-thread-match="${visible ? 1 : 0}" style="display:${visible ? 'flex' : 'none'};gap:12px;align-items:center;width:100%;padding:12px 16px;text-align:left;background:${unread ? T('rgba(249,115,22,0.10)','rgba(249,115,22,0.06)') : 'transparent'};border:none;border-bottom:1px solid ${T('#1f2937','#f3f4f6')};cursor:pointer;color:inherit;font-family:inherit;">
           <img src="${avatarFor(t.peer)}" width="44" height="44" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;object-fit:cover;" alt="">
           <div style="flex:1;min-width:0;">
             <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;">
@@ -436,8 +475,20 @@
           ${unread ? `<span style="min-width:20px;height:20px;padding:0 6px;font-size:11px;font-weight:800;border-radius:9999px;background:#f97316;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">${t.unread_count}</span>` : ''}
         </button>`;
       }).join('');
+      body += `<div data-tt-search-empty style="display:${q && !threads.some(match) ? 'block' : 'none'};padding:32px 24px;text-align:center;color:${T('#9ca3af','#6b7280')};">
+        <p style="margin:0;font-size:13px;">No threads match your search.</p>
+      </div>`;
     }
-    return headerHTML('Beams 🔦', false) + `<div style="flex:1;overflow-y:auto;contain:content;-webkit-overflow-scrolling:touch;">${body}</div>`;
+
+    const searchBar = threads.length ? `
+      <div style="padding:8px 12px;border-bottom:1px solid ${T('#374151','#e5e7eb')};">
+        <input data-tt-search type="search" value="${esc(_inboxSearch)}" placeholder="Search threads…" autocorrect="off" autocapitalize="off" spellcheck="false"
+               style="width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;background:${T('#0f172a','#ffffff')};color:inherit;font-family:inherit;font-size:14px;outline:none;">
+      </div>` : '';
+
+    return headerHTML('Beams 🔦', false) +
+      searchBar +
+      `<div data-tt-inbox-list style="flex:1;overflow-y:auto;contain:content;-webkit-overflow-scrolling:touch;">${body}</div>`;
   }
 
   function renderAttachmentHTML(a) {
@@ -447,7 +498,7 @@
              style="max-width:100%;max-height:260px;border-radius:10px;display:block;cursor:pointer;background:transparent;opacity:0;transition:opacity 0.18s ease;" loading="lazy">
       </div>`;
     }
-        const mime = a.mime_type || a.mime || a.content_type || '';
+    const mime = a.mime_type || a.mime || a.content_type || '';
     return `<a data-tt-att="${a.id}" data-tt-filename="${esc(a.filename)}" data-tt-mime="${esc(mime)}" href="#" style="display:block;font-size:12px;text-decoration:underline;color:inherit;margin-top:4px;cursor:pointer;">📎 ${esc(a.filename)}</a>`;
   }
 
@@ -462,8 +513,14 @@
       listHTML += `<p style="text-align:center;color:${T('#9ca3af','#6b7280')};padding:32px 16px;font-size:14px;">No messages yet. Say hi 👋</p>`;
     }
     const myId = me && me.id;
+    let prev = null;
     msgs.forEach(m => {
       const mine = m.from_user_id === myId;
+      const grouped = prev
+        && prev.from_user_id === m.from_user_id
+        && (m.created_at - prev.created_at) < GROUP_WINDOW_MS;
+      prev = m;
+
       const bubbleBg = mine ? '#f97316' : T('#1f2937','#f3f4f6');
       const bubbleFg = mine ? '#ffffff' : T('#f3f4f6','#111827');
       const attachments = (m.attachments || []).map(renderAttachmentHTML).join('');
@@ -474,20 +531,37 @@
       const replyIndicator = m.reply_to_id
         ? `<div style="font-size:10px;opacity:0.7;margin-bottom:4px;border-left:2px solid currentColor;padding-left:6px;">↩ reply</div>`
         : '';
-      listHTML += `<div style="display:flex;justify-content:${mine ? 'flex-end' : 'flex-start'};">
+
+      const statusParts = [];
+      if (m._status === 'sending') statusParts.push('<span style="opacity:0.9;">⏳</span>');
+      if (m._status === 'failed') statusParts.push('<span style="color:#7f1d1d;background:#fecaca;padding:1px 6px;border-radius:4px;font-weight:700;opacity:1;">⚠ Not sent</span>');
+      if (mine && m.is_read && !m._status) statusParts.push('<span>✓</span>');
+
+      const delBtn = (mine && !m._status)
+        ? `<button data-tt-del="${m.id}" style="margin-left:auto;background:none;border:none;color:inherit;cursor:pointer;font-size:11px;opacity:0.7;">🗑</button>`
+        : '';
+      const retryBtn = (m._status === 'failed')
+        ? `<button data-tt-retry="${m._tempId}" style="margin-left:auto;background:none;border:none;color:inherit;cursor:pointer;font-size:11px;font-weight:700;opacity:1;text-decoration:underline;">Retry</button>`
+        : '';
+      const replyBtn = !m._status
+        ? `<button data-tt-reply="${m.id}" style="background:none;border:none;color:inherit;cursor:pointer;font-size:11px;opacity:0.7;">↩</button>`
+        : '';
+
+      listHTML += `<div style="display:flex;justify-content:${mine ? 'flex-end' : 'flex-start'};margin-top:${grouped ? '2px' : '12px'}">
         <div style="max-width:80%;background:${bubbleBg};color:${bubbleFg};padding:8px 12px;border-radius:16px;${mine ? 'border-bottom-right-radius:4px;' : 'border-bottom-left-radius:4px;'}">
           ${replyIndicator}
           <div style="font-size:14px;white-space:pre-wrap;word-break:break-word;">${esc(m.body)}</div>
           ${attachments}
           ${reactions}
           <div style="position:relative;margin-top:4px;">
-            <button data-tt-picker="${m.id}" style="background:none;border:none;color:inherit;opacity:0.6;cursor:pointer;font-size:12px;padding:2px 4px;font-family:inherit;">+😀</button>
+            ${!m._status ? `<button data-tt-picker="${m.id}" style="background:none;border:none;color:inherit;opacity:0.6;cursor:pointer;font-size:12px;padding:2px 4px;font-family:inherit;">+😀</button>` : ''}
           </div>
           <div style="display:flex;gap:8px;align-items:center;margin-top:6px;font-size:10px;opacity:0.7;">
             <span>${relTime(m.created_at)}</span>
-            ${mine && m.is_read ? '<span>✓</span>' : ''}
-            ${mine ? `<button data-tt-del="${m.id}" style="margin-left:auto;background:none;border:none;color:inherit;cursor:pointer;font-size:11px;opacity:0.7;">🗑</button>` : ''}
-            <button data-tt-reply="${m.id}" style="background:none;border:none;color:inherit;cursor:pointer;font-size:11px;opacity:0.7;">↩</button>
+            ${statusParts.join('')}
+            ${delBtn}
+            ${retryBtn}
+            ${replyBtn}
           </div>
         </div>
       </div>`;
@@ -503,6 +577,7 @@
       </div>`;
     }
 
+    const draft = _loadDraft(th.peer.id);
     const composeBar = `
       <div style="border-top:1px solid ${T('#374151','#e5e7eb')};padding:12px;">
         ${replyQuote}
@@ -511,14 +586,14 @@
           <label style="cursor:pointer;padding:8px;border-radius:8px;background:${T('#1f2937','#f3f4f6')};color:inherit;font-size:16px;">
             📎<input data-tt-file type="file" style="display:none;" accept="${ACCEPT_ATTR}">
           </label>
-          <textarea data-tt-input maxlength="${MAX_LEN}" rows="1" placeholder="Message…" style="flex:1;padding:8px;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;background:${T('#0f172a','#ffffff')};color:inherit;font-family:inherit;font-size:16px;resize:none;outline:none;"></textarea>
+          <textarea data-tt-input maxlength="${MAX_LEN}" rows="1" placeholder="Message…" style="flex:1;padding:8px;border:1px solid ${T('#4b5563','#d1d5db')};border-radius:8px;background:${T('#0f172a','#ffffff')};color:inherit;font-family:inherit;font-size:16px;resize:none;outline:none;">${esc(draft)}</textarea>
           <button data-tt-send style="padding:8px 16px;border:none;border-radius:8px;background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;">Send</button>
         </div>
         <p data-tt-error style="color:#ef4444;font-size:12px;margin:6px 0 0;display:none;"></p>
       </div>`;
 
     return headerHTML(peer.display_name || peer.username || 'Thread', true, th.muted) +
-      `<div data-tt-thread-body style="flex:1 1 0;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;contain:content;-webkit-overflow-scrolling:touch;">${listHTML}</div>` +
+      `<div data-tt-thread-body style="flex:1 1 0;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:0;contain:content;-webkit-overflow-scrolling:touch;">${listHTML}</div>` +
       composeBar;
   }
 
@@ -540,32 +615,32 @@
     box.querySelector('[data-tt-lb-close]').addEventListener('click', () => box.remove());
     box.addEventListener('click', (e) => { if (e.target === box) box.remove(); });
   }
-  
+
   function openFileViewer(url, filename, mime) {
-  const existing = document.getElementById('tt-file-viewer');
-  if (existing) existing.remove();
-  const box = document.createElement('div');
-  box.id = 'tt-file-viewer';
-  box.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(0,0,0,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;isolation:isolate;gap:18px;';
-  box.innerHTML = `
-    <div style="background:rgba(255,255,255,0.08);border-radius:14px;padding:28px 32px;text-align:center;max-width:340px;width:100%;">
-      <div style="font-size:56px;line-height:1;margin-bottom:14px;">📎</div>
-      <p style="margin:0 0 6px;color:#fff;font-weight:700;font-size:15px;word-break:break-all;font-family:system-ui,-apple-system,sans-serif;">${esc(filename)}</p>
-      <p style="margin:0;color:rgba(255,255,255,0.5);font-size:12px;font-family:system-ui,-apple-system,sans-serif;">${esc(mime || 'file')}</p>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px;">
-      <a href="${url}" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;padding:13px 22px;border-radius:9999px;font-weight:700;text-decoration:none;font-size:15px;text-align:center;font-family:system-ui,-apple-system,sans-serif;">Open in new tab</a>
-      <a href="${url}" download="${esc(filename)}" style="background:rgba(255,255,255,0.15);color:#fff;padding:13px 22px;border-radius:9999px;font-weight:700;text-decoration:none;font-size:15px;text-align:center;font-family:system-ui,-apple-system,sans-serif;">Download / Save</a>
-      <button data-tt-fv-close style="background:transparent;color:rgba(255,255,255,0.65);border:0;padding:10px;font-size:14px;cursor:pointer;font-family:system-ui,-apple-system,sans-serif;">Close</button>
-    </div>
-    <button data-tt-fv-x aria-label="Close" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.15);color:#fff;border:0;width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;">×</button>
-  `;
-  document.documentElement.appendChild(box);
-  const close = () => box.remove();
-  box.querySelector('[data-tt-fv-close]').addEventListener('click', close);
-  box.querySelector('[data-tt-fv-x]').addEventListener('click', close);
-  box.addEventListener('click', (e) => { if (e.target === box) close(); });
-}
+    const existing = document.getElementById('tt-file-viewer');
+    if (existing) existing.remove();
+    const box = document.createElement('div');
+    box.id = 'tt-file-viewer';
+    box.style.cssText = 'position:fixed;inset:0;z-index:2147483645;background:rgba(0,0,0,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;isolation:isolate;gap:18px;';
+    box.innerHTML = `
+      <div style="background:rgba(255,255,255,0.08);border-radius:14px;padding:28px 32px;text-align:center;max-width:340px;width:100%;">
+        <div style="font-size:56px;line-height:1;margin-bottom:14px;">📎</div>
+        <p style="margin:0 0 6px;color:#fff;font-weight:700;font-size:15px;word-break:break-all;font-family:system-ui,-apple-system,sans-serif;">${esc(filename)}</p>
+        <p style="margin:0;color:rgba(255,255,255,0.5);font-size:12px;font-family:system-ui,-apple-system,sans-serif;">${esc(mime || 'file')}</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px;">
+        <a href="${url}" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#f97316,#ec4899);color:#fff;padding:13px 22px;border-radius:9999px;font-weight:700;text-decoration:none;font-size:15px;text-align:center;font-family:system-ui,-apple-system,sans-serif;">Open in new tab</a>
+        <a href="${url}" download="${esc(filename)}" style="background:rgba(255,255,255,0.15);color:#fff;padding:13px 22px;border-radius:9999px;font-weight:700;text-decoration:none;font-size:15px;text-align:center;font-family:system-ui,-apple-system,sans-serif;">Download / Save</a>
+        <button data-tt-fv-close style="background:transparent;color:rgba(255,255,255,0.65);border:0;padding:10px;font-size:14px;cursor:pointer;font-family:system-ui,-apple-system,sans-serif;">Close</button>
+      </div>
+      <button data-tt-fv-x aria-label="Close" style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.15);color:#fff;border:0;width:44px;height:44px;border-radius:50%;font-size:24px;cursor:pointer;">×</button>
+    `;
+    document.documentElement.appendChild(box);
+    const close = () => box.remove();
+    box.querySelector('[data-tt-fv-close]').addEventListener('click', close);
+    box.querySelector('[data-tt-fv-x]').addEventListener('click', close);
+    box.addEventListener('click', (e) => { if (e.target === box) close(); });
+  }
 
   async function openCodeViewer(attachment) {
     const existing = document.getElementById('tt-code-viewer');
@@ -682,6 +757,29 @@
 
   function wireThreadList(panel) {
     panel.querySelector('[data-tt-close]').addEventListener('click', closeInbox);
+
+    const searchInput = panel.querySelector('[data-tt-search]');
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        _inboxSearch = searchInput.value;
+        const q = _inboxSearch.trim().toLowerCase();
+        let anyVisible = false;
+        panel.querySelectorAll('[data-tt-thread]').forEach(btn => {
+          const id = parseInt(btn.getAttribute('data-tt-thread'));
+          const t = threads.find(x => x.peer.id === id);
+          if (!t) { btn.style.display = 'none'; return; }
+          const name = (t.peer.display_name || '').toLowerCase();
+          const uname = (t.peer.username || '').toLowerCase();
+          const last = (t.last_message && t.last_message.body || '').toLowerCase();
+          const visible = !q || name.includes(q) || uname.includes(q) || last.includes(q);
+          btn.style.display = visible ? 'flex' : 'none';
+          if (visible) anyVisible = true;
+        });
+        const emptyEl = panel.querySelector('[data-tt-search-empty]');
+        if (emptyEl) emptyEl.style.display = (q && !anyVisible) ? 'block' : 'none';
+      });
+    }
+
     panel.querySelectorAll('[data-tt-thread]').forEach(btn => {
       btn.addEventListener('click', () => {
         const id = parseInt(btn.getAttribute('data-tt-thread'));
@@ -695,6 +793,10 @@
     panel.querySelector('[data-tt-close]').addEventListener('click', closeInbox);
     const back = panel.querySelector('[data-tt-back]');
     if (back) back.addEventListener('click', () => {
+      if (activeThread) {
+        const inp = panel.querySelector('[data-tt-input]');
+        if (inp) _saveDraft(activeThread.peer.id, inp.value);
+      }
       if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
       _unlockBody();
       panel.style.height = '';
@@ -705,9 +807,12 @@
     });
     const mute = panel.querySelector('[data-tt-mute]');
     if (mute) mute.addEventListener('click', toggleMute);
+    const exportBtn = panel.querySelector('[data-tt-export]');
+    if (exportBtn) exportBtn.addEventListener('click', exportThread);
     const older = panel.querySelector('[data-tt-load-older]');
     if (older) older.addEventListener('click', loadOlder);
     panel.querySelectorAll('[data-tt-del]').forEach(b => b.addEventListener('click', () => deleteMsg(parseInt(b.getAttribute('data-tt-del')))));
+    panel.querySelectorAll('[data-tt-retry]').forEach(b => b.addEventListener('click', () => retrySend(b.getAttribute('data-tt-retry'))));
     panel.querySelectorAll('[data-tt-reply]').forEach(b => b.addEventListener('click', () => {
       activeThread.reply_to_id = parseInt(b.getAttribute('data-tt-reply'));
       renderPanelContent();
@@ -723,7 +828,6 @@
       });
     });
 
-    // Inline image attachments: fetch blob, set src, wire lightbox
     panel.querySelectorAll('[data-tt-img]').forEach(img => {
       const id = parseInt(img.getAttribute('data-tt-img'));
       const filename = img.getAttribute('data-tt-filename');
@@ -747,7 +851,6 @@
       });
     });
 
-    // Non-image attachments: download on click
     panel.querySelectorAll('[data-tt-att]').forEach(a => {
       a.addEventListener('click', async (e) => {
         e.preventDefault();
@@ -784,7 +887,20 @@
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCurrent(); }
       });
+      let draftTimer = null;
+      input.addEventListener('input', () => {
+        clearTimeout(draftTimer);
+        const val = input.value;
+        draftTimer = setTimeout(() => {
+          if (activeThread) _saveDraft(activeThread.peer.id, val);
+        }, 300);
+      });
+      input.addEventListener('blur', () => {
+        if (activeThread) _saveDraft(activeThread.peer.id, input.value);
+      });
       input.focus();
+      const len = input.value.length;
+      if (len) try { input.setSelectionRange(len, len); } catch {}
     }
     const body = panel.querySelector('[data-tt-thread-body]');
     if (body) {
@@ -817,6 +933,11 @@
   }
 
   async function openThread(peer) {
+    const _pnl = document.getElementById('tt-msg-panel');
+    if (_pnl && activeThread && activeThread.peer.id !== peer.id) {
+      const _inp = _pnl.querySelector('[data-tt-input]');
+      if (_inp) _saveDraft(activeThread.peer.id, _inp.value);
+    }
     activeThread = { peer, messages: [], hasMore: false, cursor: null, muted: false, reply_to_id: null, attachments: [] };
     renderPanelContent();
     try {
@@ -846,6 +967,27 @@
     } catch (e) { alert(e.message); }
   }
 
+  async function retrySend(tempId) {
+    if (!activeThread) return;
+    const idx = activeThread.messages.findIndex(m => m._tempId === tempId);
+    if (idx < 0) return;
+    const msg = activeThread.messages[idx];
+    if (!msg._payload) return;
+    msg._status = 'sending';
+    renderPanelContent();
+    try {
+      const d = await api('/api/messages/send', {
+        method: 'POST',
+        body: JSON.stringify(msg._payload)
+      });
+      activeThread.messages[idx] = d.message;
+      renderPanelContent();
+    } catch (e) {
+      activeThread.messages[idx]._status = 'failed';
+      renderPanelContent();
+    }
+  }
+
   async function sendCurrent() {
     const panel = document.getElementById('tt-msg-panel');
     const input = panel.querySelector('[data-tt-input]');
@@ -853,23 +995,104 @@
     const body = (input && input.value || '').trim();
     if (!body) return;
     err.style.display = 'none';
+
+    const tempId = 'temp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    const payload = {
+      to_user_id: activeThread.peer.id,
+      body,
+      reply_to_id: activeThread.reply_to_id || null,
+      attachment_keys: (activeThread.attachments || []).map(a => a.key)
+    };
+
+    const tempMsg = {
+      id: tempId,
+      _tempId: tempId,
+      _status: 'sending',
+      _payload: payload,
+      from_user_id: (me && me.id) || null,
+      to_user_id: activeThread.peer.id,
+      body,
+      reply_to_id: payload.reply_to_id,
+      created_at: Date.now(),
+      attachments: (activeThread.attachments || []).map(a => ({
+        id: a.key, filename: a.filename, content_type: a.content_type,
+        size_bytes: a.size_bytes, _local: true
+      })),
+      reactions: []
+    };
+
+    activeThread.messages.push(tempMsg);
+    if (input) input.value = '';
+    _saveDraft(activeThread.peer.id, '');
+    activeThread.reply_to_id = null;
+    activeThread.attachments = [];
+    renderPanelContent();
+
     try {
       const d = await api('/api/messages/send', {
         method: 'POST',
-        body: JSON.stringify({
-          to_user_id: activeThread.peer.id,
-          body,
-          reply_to_id: activeThread.reply_to_id || null,
-          attachment_keys: (activeThread.attachments || []).map(a => a.key)
-        })
+        body: JSON.stringify(payload)
       });
-      activeThread.messages.push(d.message);
-      activeThread.reply_to_id = null;
-      activeThread.attachments = [];
+      const i = activeThread.messages.findIndex(m => m._tempId === tempId);
+      if (i >= 0) activeThread.messages[i] = d.message;
       renderPanelContent();
     } catch (e) {
-      err.textContent = e.message;
-      err.style.display = 'block';
+      const i = activeThread.messages.findIndex(m => m._tempId === tempId);
+      if (i >= 0) activeThread.messages[i]._status = 'failed';
+      renderPanelContent();
+    }
+  }
+
+  async function exportThread() {
+    if (!activeThread) return;
+    const panel = document.getElementById('tt-msg-panel');
+    const btn = panel.querySelector('[data-tt-export]');
+    if (btn) btn.disabled = true;
+
+    try {
+      let all = activeThread.messages.filter(m => !m._tempId && m._status !== 'failed');
+      let cursor = activeThread.cursor;
+      let hasMore = activeThread.hasMore;
+      const peer = activeThread.peer;
+      let page = 0;
+      while (hasMore && cursor && page < 50) {
+        const d = await api(`/api/messages/thread/${encodeURIComponent(peer.username)}?limit=50&before=${cursor}`);
+        const older = d.messages || [];
+        all = [...older, ...all];
+        hasMore = !!d.has_more;
+        cursor = d.cursor || null;
+        page++;
+      }
+
+      const meId = me && me.id;
+      const lines = all.map(m => {
+        const ts = new Date(m.created_at);
+        const stamp = ts.toISOString().slice(0, 16).replace('T', ' ');
+        const who = m.from_user_id === meId ? 'me' : '@' + (peer.username || 'them');
+        const body = (m.body || '').replace(/\r?\n/g, '\n  ');
+        return `[${stamp}] ${who}: ${body}`;
+      });
+
+      const header = [
+        `=== Beams with @${peer.username || peer.display_name || 'user'} ===`,
+        `Exported: ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`,
+        `Messages: ${all.length}`,
+        '',
+      ].join('\n');
+
+      const text = header + lines.join('\n') + '\n';
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `beams-${(peer.username || 'thread')}-${new Date().toISOString().slice(0, 10)}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500);
+    } catch (e) {
+      alert('Export failed: ' + e.message);
+    } finally {
+      if (btn) btn.disabled = false;
     }
   }
 
