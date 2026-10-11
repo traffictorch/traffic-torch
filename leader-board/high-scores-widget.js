@@ -103,8 +103,12 @@
         if (!r.ok) return;
         const data = await r.json();
         const pts = data.profile && data.profile.total_points;
-        if (typeof pts === 'number' && pts > 0) {
-          span.textContent = `🏅 ${pts}`;
+        const endorse = data.profile && data.profile.endorsement_count;
+        const parts = [];
+        if (typeof pts === 'number' && pts > 0) parts.push(`🏅 ${pts}`);
+        if (typeof endorse === 'number' && endorse > 0) parts.push(`⭐ ${endorse}`);
+        if (parts.length) {
+          span.textContent = parts.join(' · ');
           span.hidden = false;
         }
       } catch {}
