@@ -1,0 +1,8 @@
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  body { background: #fff !important; color: #111 !important; }
+  header, aside, nav, footer, #drop-zone, #loading, #share-module { display: none !important; }
+  details { display: block !important; }
+  details > summary { display: block !important; }
+  details > *:not(summary) { display: block !important; }
+}

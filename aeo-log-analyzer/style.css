@@ -1,0 +1,53 @@
+/* AEO Log Analyzer — tool-specific styles */
+
+#drop-zone {
+  border: 3px dashed rgba(156,163,175,0.5);
+  border-radius: 1.5rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: rgba(255,255,255,0.02);
+}
+#drop-zone:hover,
+#drop-zone.drag-over {
+  border-color: #f97316;
+  background: rgba(249,115,22,0.08);
+  transform: scale(1.005);
+}
+#drop-zone .drop-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+#drop-zone .drop-label {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #111827;
+}
+.dark #drop-zone .drop-label { color: #e5e7eb; }
+#drop-zone .drop-hint {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+.dark #drop-zone .drop-hint { color: #9ca3af; }
+#drop-zone input[type="file"] { display: none; }
+
+#error-box {
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  background: rgba(239,68,68,0.10);
+  border: 1px solid rgba(239,68,68,0.30);
+  color: #dc2626;
+  font-weight: 500;
+}
+
+#progress-text {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-top: 0.75rem;
+}
+.dark #progress-text { color: #9ca3af; }
+
+.bot-card-summary-group { display: contents; }

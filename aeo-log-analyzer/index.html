@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEO Log Analyzer | Traffic Torch</title>
+  <meta name="description" content="Free client-side access log analyzer. Verify which AI crawlers actually hit your site — IP-verified against Google, OpenAI, Anthropic, Perplexity and Bing published ranges. Shows status codes, 429s, and unverified claims. No log content leaves your browser.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/aeo-log-analyzer/">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/aeo-log-analyzer/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/aeo-log-analyzer/">
+
+  <meta property="og:title" content="AEO Log Analyzer | Traffic Torch">
+  <meta property="og:description" content="Verify which AI crawlers actually hit your site. IP-verified against published ranges. Free, client-side, no uploads.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/aeo-log-analyzer/">
+  <meta property="og:image" content="https://traffictorch.net/aeo-log-analyzer/images/aeo-log-analyzer.webp">
+  <meta property="og:site_name" content="Traffic Torch">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AEO Log Analyzer | Traffic Torch">
+  <meta name="twitter:description" content="Verify which AI crawlers actually hit your site. IP-verified against published ranges.">
+  <meta name="twitter:image" content="https://traffictorch.net/aeo-log-analyzer/images/aeo-log-analyzer.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/aeo-log-analyzer/#webpage",
+        "url": "https://traffictorch.net/aeo-log-analyzer/",
+        "name": "AEO Log Analyzer | Traffic Torch",
+        "description": "Verify which AI crawlers actually hit your site — IP-verified against published operator ranges.",
+        "isPartOf": { "@id": "https://traffictorch.net/#website" },
+        "datePublished": "2026-10-12T09:00:00+11:00",
+        "dateModified": "2026-10-12T09:00:00+11:00",
+        "author": { "@id": "https://traffictorch.net/#author" },
+        "publisher": { "@id": "https://traffictorch.net/#organization" }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://traffictorch.net/aeo-log-analyzer/#software",
+        "name": "AEO Log Analyzer",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "url": "https://traffictorch.net/aeo-log-analyzer/",
+        "offers": { "@type": "Offer", "price": "0.00", "priceCurrency": "USD" },
+        "description": "Client-side access log analyzer that identifies AI crawler hits, verifies claimed IPs against published operator ranges, and surfaces rate-limit responses. No log content leaves the browser.",
+        "author": { "@id": "https://traffictorch.net/#author" },
+        "publisher": { "@id": "https://traffictorch.net/#organization" }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+
+  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/aeo-log-analyzer/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style.css?v=1.0">
+    <link rel="stylesheet" href="/aeo-log-analyzer/style.css?v=1.0">
+  </noscript>
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
+  </noscript>
+  <link rel="stylesheet" media="print" href="/aeo-log-analyzer/print.css?v=1.0">
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+    })();
+  </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <div class="flex flex-1 min-h-screen">
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 rounded-lg transition">←</button>
+      </div>
+    </aside>
+    <div class="flex-1 flex flex-col">
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <main class="container mx-auto px-2 py-8 max-w-5xl">
+        <div class="text-center mb-8">
+          <h1 class="text-3xl md:text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
+            AEO Log Analyzer
+          </h1>
+          <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mt-4 max-w-3xl mx-auto">
+            Drop in your server access log. We'll show which AI crawlers actually hit your site — <strong>IP-verified</strong> against the operators' published ranges — plus status codes and any rate-limit blocks.
+          </p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
+            🔒 Runs entirely in your browser · No log content uploaded · No IP addresses stored
+          </p>
+        </div>
+
+        <label id="drop-zone" for="log-file">
+          <span class="drop-icon">📄</span>
+          <span class="drop-label">Drop your access log here</span>
+          <span class="drop-hint">or click to browse · Apache, Nginx, or Cloudflare · up to 100 MB</span>
+          <input type="file" id="log-file" accept=".log,.txt,.csv,text/plain">
+        </label>
+
+        <div id="error-box" class="hidden mt-6"></div>
+
+        <div id="loading" class="hidden mt-12 flex flex-col items-center justify-center py-12 bg-white dark:bg-gray-900 rounded-3xl shadow-inner border border-orange-200 dark:border-gray-700">
+          <div class="relative">
+            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
+            <div class="absolute inset-0 w-16 h-16 md:w-20 md:h-20 rounded-full border-8 border-transparent border-t-orange-500 border-r-pink-500 border-b-purple-500 animate-spin"></div>
+          </div>
+          <p class="text-lg font-medium text-gray-700 dark:text-gray-300 mt-6">Analyzing log…</p>
+          <p id="progress-text">Reading file…</p>
+        </div>
+
+        <div id="results" class="hidden"></div>
+
+        <section id="how-it-works" class="max-w-4xl mx-auto my-16 px-2">
+          <details class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden">
+            <summary class="px-6 py-5 cursor-pointer list-none flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+              <span class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200">How it works — and what it can't see</span>
+              <span class="text-orange-500 text-2xl transition-transform group-open:rotate-180">▾</span>
+            </summary>
+            <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300 space-y-4 leading-relaxed">
+              <p><strong>What the tool does:</strong> parses your log line by line, identifies every request whose User-Agent claims to be a known crawler, then verifies the source IP against the operator's published IP ranges. Only requests where both UA and IP match are marked <em>verified</em>. Mismatches are flagged as <em>unverified</em> — usually spoofed scrapers.</p>
+              <p><strong>What you'll see per bot:</strong> total hits, verified vs unverified counts, status code breakdown (2xx / 3xx / 4xx / 5xx), the count of 401 / 403 / 429 / 503 responses (rate-limit and block indicators), first and last seen timestamps, top requested paths, and any unverified source IPs.</p>
+              <p><strong>What this tool can't see:</strong> CDN-level blocks and rate limits that never reach your origin (Cloudflare, Fastly, Akamai) are invisible in your origin log. Cached responses served from the CDN edge also never hit origin. If you suspect CDN blocks, check your CDN provider's own analytics.</p>
+              <p><strong>What it does not do:</strong> no reverse DNS lookups (they require per-IP server-side queries, which would break the privacy promise and add latency). UA + IP range verification catches the vast majority of spoofing attempts.</p>
+              <p><strong>IP list freshness:</strong> operators update their ranges rarely. The tool caches the list for 24 hours. Force a refresh by clearing browser storage.</p>
+            </div>
+          </details>
+        </section>
+
+        <section id="supported-bots" class="max-w-4xl mx-auto my-8 px-2">
+          <details class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden">
+            <summary class="px-6 py-5 cursor-pointer list-none flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+              <span class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200">Supported bots and IP-list availability</span>
+              <span class="text-orange-500 text-2xl transition-transform group-open:rotate-180">▾</span>
+            </summary>
+            <div class="px-6 pb-6 pt-2 text-gray-700 dark:text-gray-300 space-y-3 leading-relaxed">
+              <p><strong>Have published IP ranges (verified matching):</strong></p>
+              <ul class="list-disc pl-6 space-y-1 text-sm">
+                <li>Googlebot, Googlebot-Image, Googlebot-News — Google published ranges</li>
+                <li>Bingbot — Microsoft published ranges</li>
+                <li>Applebot — Apple published ranges</li>
+                <li>GPTBot, OAI-SearchBot, ChatGPT-User — OpenAI published ranges</li>
+                <li>Amazonbot — Amazon published ranges</li>
+              </ul>
+              <p class="mt-4"><strong>UA only (no published IP ranges):</strong></p>
+              <ul class="list-disc pl-6 space-y-1 text-sm">
+                <li>ClaudeBot, Claude-Web, anthropic-ai — Anthropic has not published ranges</li>
+                <li>PerplexityBot, Perplexity-User — Perplexity has not published ranges</li>
+                <li>CCBot — Common Crawl, UA-only</li>
+                <li>Bytespider — ByteDance, UA-only</li>
+                <li>DuckAssistBot, YandexBot — UA-only</li>
+              </ul>
+              <p class="text-sm italic mt-4">For UA-only bots, hits are shown as "UA only" rather than "verified" — the tool can't confirm IP authenticity, so we don't pretend to.</p>
+            </div>
+          </details>
+        </section>
+
+        <section id="share-module" class="max-w-4xl mx-auto my-8 px-2"></section>
+      </main>
+
+      <div id="footer-placeholder"></div>
+    </div>
+  </div>
+
+  <script src="/main.js?v=1.2" type="module"></script>
+  <script src="/aeo-log-analyzer/script.js?v=1.0" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+</body>
+</html>
