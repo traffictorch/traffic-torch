@@ -574,64 +574,62 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================================
 // Pro Portal dot – green when logged in, red when logged out
 // ==========================================================
+let _proDotRan = false;
 function updateProPortalDot() {
   const token = localStorage.getItem('authToken') || 
                 localStorage.getItem('traffic_torch_jwt') || 
                 localStorage.getItem('torch_token');
   const isLoggedIn = token && token !== 'null' && token !== 'undefined';
 
-  const links = document.querySelectorAll('.pro-menu-link');
-  links.forEach(link => {
+  document.querySelectorAll('.pro-menu-link').forEach(link => {
     let badge = link.querySelector('.pro-badge');
     if (!badge) {
+      const slot = link.querySelector('[data-pro-badge-slot]');
+      if (!slot) return;
       badge = document.createElement('span');
       badge.className = 'pro-badge';
-      const slot = link.querySelector('[data-pro-badge-slot]');
-      if (slot) slot.appendChild(badge);
-      else link.appendChild(badge);
+      slot.appendChild(badge);
     }
-    badge.className = `pro-badge inline-block w-2.5 h-2.5 rounded-full ${isLoggedIn ? 'bg-green-500' : 'bg-red-500'}`;
+    const nextClass = `pro-badge inline-block w-2.5 h-2.5 rounded-full ${isLoggedIn ? 'bg-green-500' : 'bg-red-500'}`;
+    if (badge.className !== nextClass) badge.className = nextClass;
   });
 }
 
-// Run on page load (after menus load)
-document.addEventListener('DOMContentLoaded', () => {
+// Wait for menus to appear, then run once. No infinite interval.
+function waitForMenus(cb, timeoutMs = 8000) {
   const start = Date.now();
-  const checkMenusLoaded = setInterval(() => {
-    const desktopPlaceholder = document.getElementById('desktop-menu-placeholder');
-    const mobilePlaceholder = document.getElementById('mobile-menu-placeholder');
-    const ready =
-      desktopPlaceholder && mobilePlaceholder &&
-      desktopPlaceholder.innerHTML.trim() !== '' &&
-      mobilePlaceholder.innerHTML.trim() !== '';
-    if (ready) {
-      clearInterval(checkMenusLoaded);
-      updateProPortalDot();
-      updatePortalCount();
-    } else if (Date.now() - start > 8000) {
-      // Menus failed to load (offline, 404, etc.) — stop polling.
-      clearInterval(checkMenusLoaded);
-    }
-  }, 100);
+  const iv = setInterval(() => {
+    const dp = document.getElementById('desktop-menu-placeholder');
+    const mp = document.getElementById('mobile-menu-placeholder');
+    const ready = dp && mp && dp.innerHTML.trim() && mp.innerHTML.trim();
+    if (ready) { clearInterval(iv); cb(); }
+    else if (Date.now() - start > timeoutMs) { clearInterval(iv); }
+  }, 200);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  waitForMenus(() => {
+    updateProPortalDot();
+    updatePortalCount();
+    updateAuthMenu();
+  });
 });
 
-// Also listen for a custom event to update when login status changes
 document.addEventListener('loginStatusChanged', () => {
   updateProPortalDot();
   updatePortalCount();
+  updateAuthMenu();
 });
 
 // Portal unread count badge
 async function updatePortalCount() {
   const token = localStorage.getItem('authToken');
   const els = document.querySelectorAll('[data-portal-count]');
-  const applyCount = (el, n) => {
-    el.textContent = String(n);
-    if (n > 0) el.classList.remove('hidden');
-    else el.classList.add('hidden');
-  };
   if (!token) {
-    els.forEach(el => applyCount(el, 0));
+    els.forEach(el => {
+      if (el.textContent !== '') el.textContent = '';
+      if (!el.classList.contains('hidden')) el.classList.add('hidden');
+    });
     return;
   }
   try {
@@ -641,7 +639,13 @@ async function updatePortalCount() {
     if (!res.ok) return;
     const data = await res.json();
     const unread = data.unread || 0;
-    els.forEach(el => applyCount(el, unread));
+    els.forEach(el => {
+      const next = String(unread);
+      const hide = unread <= 0;
+      if (el.textContent !== next) el.textContent = next;
+      if (hide && !el.classList.contains('hidden')) el.classList.add('hidden');
+      if (!hide && el.classList.contains('hidden')) el.classList.remove('hidden');
+    });
   } catch {}
 }
 window.updatePortalCount = updatePortalCount;
@@ -715,22 +719,6 @@ document.addEventListener('click', (e) => {
 
   document.dispatchEvent(new CustomEvent('loginStatusChanged'));
   window.location.href = '/login/';
-});
-
-// Hook into existing flow — right after updateProPortalDot()
-document.addEventListener('DOMContentLoaded', () => {
-  const start = Date.now();
-  const check = setInterval(() => {
-    const dp = document.getElementById('desktop-menu-placeholder');
-    const mp = document.getElementById('mobile-menu-placeholder');
-    const ready = dp && mp && dp.innerHTML.trim() && mp.innerHTML.trim();
-    if (ready) {
-      clearInterval(check);
-      updateAuthMenu();
-    } else if (Date.now() - start > 8000) {
-      clearInterval(check);
-    }
-  }, 100);
 });
 
 // Re-run whenever login state changes anywhere
