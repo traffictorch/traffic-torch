@@ -444,7 +444,7 @@
     if (isImageAttachment(a)) {
       return `<div data-tt-img-wrap="${a.id}" style="margin-top:6px;">
         <img data-tt-img="${a.id}" data-tt-filename="${esc(a.filename)}" alt="${esc(a.filename)}"
-             style="max-width:100%;max-height:260px;border-radius:10px;display:block;cursor:pointer;background:rgba(255,255,255,0.08);" loading="lazy">
+             style="max-width:100%;max-height:260px;border-radius:10px;display:block;cursor:pointer;background:transparent;opacity:0;transition:opacity 0.18s ease;" loading="lazy">
       </div>`;
     }
         const mime = a.mime_type || a.mime || a.content_type || '';
@@ -728,15 +728,18 @@
       const id = parseInt(img.getAttribute('data-tt-img'));
       const filename = img.getAttribute('data-tt-filename');
       fetchAttachmentBlob(id).then(url => {
-        img.src = url;
-        img.addEventListener('click', () => openLightbox(url, filename));
+        img.addEventListener('load', () => { img.style.opacity = '1'; }, { once: true });
         img.addEventListener('error', () => {
+          img.style.opacity = '1';
           img.alt = 'Image failed to load';
           img.style.padding = '16px';
           img.style.fontSize = '12px';
           img.style.color = 'rgba(255,255,255,0.7)';
-        });
+        }, { once: true });
+        img.src = url;
+        img.addEventListener('click', () => openLightbox(url, filename));
       }).catch(() => {
+        img.style.opacity = '1';
         img.alt = 'Failed to load ' + filename;
         img.style.padding = '16px';
         img.style.fontSize = '12px';
