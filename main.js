@@ -5,7 +5,7 @@ const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 // Messages module — script-tag injected so Vite doesn't try to bundle it
 (function () {
   const s = document.createElement('script');
-  s.src = '/messages.js?v=9';
+  s.src = '/messages.js?v=10';
   s.defer = true;
   document.head.appendChild(s);
 })();
@@ -243,7 +243,7 @@ window.addEventListener('appinstalled', () => {
 // Minimal service worker registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=10')
+    navigator.serviceWorker.register('/sw.js?v=11')
       .then(reg => {})
       .catch(err => {});
   });

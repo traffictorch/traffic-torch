@@ -2,6 +2,7 @@
 // UserInbox Durable Object
 // One instance per user ID. Handles WebSocket connections.
 // Uses WebSocket Hibernation so idle users cost $0.
+// Phase 3: typing indicator relay (ephemeral, no persistence)
 // ============================================================
 
 export class UserInbox {
@@ -47,8 +48,36 @@ export class UserInbox {
   async webSocketMessage(ws, message) {
     try {
       const data = JSON.parse(message);
+
       if (data.type === 'ping') {
         ws.send(JSON.stringify({ type: 'pong', t: Date.now() }));
+        return;
+      }
+
+      if (data.type === 'typing') {
+        const myUserId = parseInt(this.state.id.name, 10);
+        const toId = parseInt(data.to_user_id, 10);
+        if (!myUserId || !toId || toId === myUserId) return;
+        if (!this.env.USER_INBOX) return;
+
+        // Fire-and-forget forward to the recipient's DO.
+        // No DB write — typing is ephemeral and must never persist.
+        try {
+          const doId = this.env.USER_INBOX.idFromName(String(toId));
+          const stub = this.env.USER_INBOX.get(doId);
+          await stub.fetch('https://do/push', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'typing',
+              from_user_id: myUserId,
+              active: data.active !== false
+            })
+          });
+        } catch (e) {
+          // Silent — typing failures are invisible to the user by design
+        }
+        return;
       }
     } catch {}
   }

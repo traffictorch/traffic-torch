@@ -4,6 +4,7 @@
 // Phase 1: search, auto-open, optimistic send+retry, grouping,
 //          draft persistence, export thread
 // Phase 2: edit-within-5min, clear conversation, block from thread
+// Phase 3: typing indicator (ephemeral, via Durable Object relay)
 // ============================================================
 (function () {
   'use strict';
@@ -124,6 +125,13 @@
   let drawerBuilt = false;
   let _inboxSearch = '';
 
+  // Typing indicator state
+  let _typingSendTimer = null;
+  let _typingStopTimer = null;
+  let _typingLastSent = 0;
+  let _typingIndicatorTimer = null;
+  let _peerTyping = false;
+
   let _savedScrollY = 0;
   let _kbLocked = false;
   let _touchMoveHandler = null;
@@ -211,6 +219,109 @@
         clearInterval(iv); cb();
       }
     }, 100);
+  }
+
+  // ---------- Typing indicator helpers ----------
+  function _emitTyping() {
+    if (!activeThread || !ws || ws.readyState !== WebSocket.OPEN) return;
+    const now = Date.now();
+    if (now - _typingLastSent < 2000) return;
+    _typingLastSent = now;
+    try {
+      ws.send(JSON.stringify({
+        type: 'typing',
+        to_user_id: activeThread.peer.id,
+        active: true
+      }));
+    } catch {}
+  }
+
+  function _stopTyping() {
+    if (!activeThread || !ws || ws.readyState !== WebSocket.OPEN) return;
+    if (_typingLastSent === 0) return;
+    _typingLastSent = 0;
+    try {
+      ws.send(JSON.stringify({
+        type: 'typing',
+        to_user_id: activeThread.peer.id,
+        active: false
+      }));
+    } catch {}
+  }
+
+  function _renderTypingIndicator() {
+    const body = document.querySelector('#tt-msg-panel [data-tt-thread-body]');
+    if (!body) return;
+    let el = body.querySelector('#tt-typing-indicator');
+    if (!_peerTyping) {
+      if (el) el.remove();
+      return;
+    }
+    if (!el) {
+      const nearBottom = body.scrollHeight - body.scrollTop - body.clientHeight < 80;
+      el = document.createElement('div');
+      el.id = 'tt-typing-indicator';
+      el.innerHTML = '<span class="tt-typing-dot"></span><span class="tt-typing-dot"></span><span class="tt-typing-dot"></span>';
+      body.appendChild(el);
+      if (nearBottom) requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
+    }
+  }
+
+  function _handleInboundTyping(fromUserId, active) {
+    if (!activeThread || activeThread.peer.id !== fromUserId) return;
+    if (!active) {
+      _peerTyping = false;
+      clearTimeout(_typingIndicatorTimer);
+      _renderTypingIndicator();
+      return;
+    }
+    _peerTyping = true;
+    _renderTypingIndicator();
+    clearTimeout(_typingIndicatorTimer);
+    _typingIndicatorTimer = setTimeout(() => {
+      _peerTyping = false;
+      _renderTypingIndicator();
+    }, 3000);
+  }
+
+  function _ensureTypingCSS() {
+    if (document.getElementById('tt-typing-css')) return;
+    const s = document.createElement('style');
+    s.id = 'tt-typing-css';
+    s.textContent = `
+      #tt-typing-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 10px 14px;
+        border-radius: 16px;
+        border-bottom-left-radius: 4px;
+        background: ${T('#1f2937','#f3f4f6')};
+        color: ${T('#f3f4f6','#111827')};
+        width: fit-content;
+        margin-top: 12px;
+        align-self: flex-start;
+        opacity: 0;
+        animation: tt-typing-in 0.18s ease-out forwards;
+      }
+      @keyframes tt-typing-in { to { opacity: 1; } }
+      #tt-typing-indicator .tt-typing-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.35;
+        animation: tt-typing-bounce 1.2s infinite ease-in-out;
+      }
+      #tt-typing-indicator .tt-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+      #tt-typing-indicator .tt-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+      @keyframes tt-typing-bounce {
+        0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+        40% { opacity: 1; transform: translateY(-3px); }
+      }
+    `;
+    document.head.appendChild(s);
   }
 
   function _saveDraft(peerId, text) {
@@ -389,6 +500,10 @@
       const inp = panel.querySelector('[data-tt-input]');
       if (inp) _saveDraft(activeThread.peer.id, inp.value);
     }
+    clearTimeout(_typingStopTimer);
+    _stopTyping();
+    _peerTyping = false;
+    clearTimeout(_typingIndicatorTimer);
 
     if (document.activeElement && panel.contains(document.activeElement) && document.activeElement.blur) {
       document.activeElement.blur();
@@ -731,7 +846,6 @@
     });
   }
 
-  // ---------- Thread options menu (⋯) ----------
   function openThreadMenu() {
     const existing = document.getElementById('tt-thread-menu');
     if (existing) existing.remove();
@@ -771,7 +885,6 @@
     const label = peer.username || peer.display_name || 'this user';
     if (!confirm(`Clear your conversation with ${label}? This only affects your side — they will still see the messages. New messages will reappear here.`)) return;
 
-    const panel = document.getElementById('tt-msg-panel');
     try {
       await api('/api/messages/thread/' + encodeURIComponent(peer.username) + '/clear', { method: 'POST' });
       activeThread = null;
@@ -793,7 +906,6 @@
       await api('/api/messages/block/' + peer.id, { method: 'POST' });
       activeThread = null;
       _saveDraft(peer.id, '');
-      // Also remove this peer from local threads cache
       threads = threads.filter(t => t.peer.id !== peer.id);
       renderPanelContent();
       loadThreads();
@@ -802,7 +914,6 @@
     }
   }
 
-  // ---------- Edit message modal ----------
   function openEditModal(messageId) {
     if (!activeThread) return;
     const msg = activeThread.messages.find(m => String(m.id) === String(messageId));
@@ -950,6 +1061,10 @@
     panel.querySelector('[data-tt-close]').addEventListener('click', closeInbox);
     const back = panel.querySelector('[data-tt-back]');
     if (back) back.addEventListener('click', () => {
+      clearTimeout(_typingStopTimer);
+      _stopTyping();
+      _peerTyping = false;
+      clearTimeout(_typingIndicatorTimer);
       if (activeThread) {
         const inp = panel.querySelector('[data-tt-input]');
         if (inp) _saveDraft(activeThread.peer.id, inp.value);
@@ -1053,9 +1168,14 @@
         draftTimer = setTimeout(() => {
           if (activeThread) _saveDraft(activeThread.peer.id, val);
         }, 300);
+        _emitTyping();
+        clearTimeout(_typingStopTimer);
+        _typingStopTimer = setTimeout(_stopTyping, 2000);
       });
       input.addEventListener('blur', () => {
         if (activeThread) _saveDraft(activeThread.peer.id, input.value);
+        clearTimeout(_typingStopTimer);
+        _stopTyping();
       });
       input.focus();
       const len = input.value.length;
@@ -1080,6 +1200,8 @@
           }
         }, { passive: false });
       }
+
+      if (_peerTyping) _renderTypingIndicator();
     }
   }
 
@@ -1092,6 +1214,10 @@
   }
 
   async function openThread(peer) {
+    clearTimeout(_typingStopTimer);
+    _stopTyping();
+    _peerTyping = false;
+    clearTimeout(_typingIndicatorTimer);
     const _pnl = document.getElementById('tt-msg-panel');
     if (_pnl && activeThread && activeThread.peer.id !== peer.id) {
       const _inp = _pnl.querySelector('[data-tt-input]');
@@ -1183,6 +1309,8 @@
     activeThread.messages.push(tempMsg);
     if (input) input.value = '';
     _saveDraft(activeThread.peer.id, '');
+    clearTimeout(_typingStopTimer);
+    _stopTyping();
     activeThread.reply_to_id = null;
     activeThread.attachments = [];
     renderPanelContent();
@@ -1397,6 +1525,11 @@
         try { data = JSON.parse(ev.data); } catch { return; }
         if (data.type === 'new_message' && data.message && data.peer) {
           handleInboundMessage(data.message, data.peer);
+          return;
+        }
+        if (data.type === 'typing' && data.from_user_id) {
+          _handleInboundTyping(data.from_user_id, data.active !== false);
+          return;
         }
       });
       ws.addEventListener('close', () => { ws = null; scheduleReconnect(); });
@@ -1422,6 +1555,9 @@
     const panel = document.getElementById('tt-msg-panel');
     const drawerOpen = panel && panel.style.display === 'flex';
     if (activeThread && activeThread.peer.id === peer.id) {
+      // The peer sent a message — clear their typing indicator
+      _peerTyping = false;
+      clearTimeout(_typingIndicatorTimer);
       activeThread.messages.push(msg);
       renderPanelContent();
       api('/api/messages/read', {
@@ -1437,6 +1573,7 @@
   async function init() {
     if (!isAuthed()) return;
     me = decodeJwt(getToken());
+    _ensureTypingCSS();
     buildDrawer();
 
     try {
