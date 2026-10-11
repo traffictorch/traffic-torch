@@ -467,7 +467,177 @@
                       </label>
                     </div>
 
-                    <div class="flex gap-3 pt-4 flex-wrap">
+  
+                  <!-- ═══ ADVANCED (optional) ═══ -->
+                  <details class="mt-6 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
+                    <summary class="cursor-pointer px-5 py-4 bg-gray-50 dark:bg-gray-900/60 hover:bg-gray-100 dark:hover:bg-gray-900 transition font-bold text-sm flex items-center justify-between gap-3">
+                      <span>⚙️ Advanced (optional)</span>
+                      <span class="text-xs font-normal text-gray-500">Verify · Skills · Contacts · Hire Me</span>
+                    </summary>
+                    <div class="p-5 space-y-8 bg-white/50 dark:bg-black/20">
+
+                      <!-- ── 1. Verify website ── -->
+                      <div>
+                        <h4 class="font-bold text-sm mb-2">🔐 Verify your website</h4>
+                        <p class="text-xs text-gray-500 mb-3">
+                          Get a green ✓ next to your website link. Add the meta tag to your site, then click Verify.
+                        </p>
+                        <div class="flex flex-wrap gap-2 items-center">
+                          <button type="button" @click="verifyDomain()"
+                                  :disabled="verifyStatus.loading"
+                                  class="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50">
+                            <span x-show="!verifyStatus.loading" x-text="profile.verified_at ? 'Re-verify' : 'Verify now'"></span>
+                            <span x-show="verifyStatus.loading">Checking…</span>
+                          </button>
+                          <template x-if="profile.verified_at">
+                            <span class="text-xs font-bold text-green-500 inline-flex items-center gap-1">
+                              ✓ Verified: <span x-text="profile.verified_domain"></span>
+                            </span>
+                          </template>
+                        </div>
+                        <template x-if="verifyStatus.message">
+                          <div class="mt-3 p-3 rounded-lg text-xs"
+                               :class="verifyStatus.ok ? 'bg-green-500/10 text-green-600 dark:text-green-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'">
+                            <p x-text="verifyStatus.message"></p>
+                            <template x-if="verifyStatus.token">
+                              <div class="mt-2">
+                                <p class="mb-1">Add this to your website's <code>&lt;head&gt;</code>:</p>
+                                <code class="block p-2 bg-gray-900 text-gray-100 rounded text-[10px] break-all">&#60;meta name="traffic-torch-verify" content="<span x-text="verifyStatus.token"></span>"&#62;</code>
+                                <button type="button" @click="copyVerifyToken()"
+                                        class="mt-2 px-3 py-1 rounded bg-gray-800 dark:bg-gray-700 text-white text-[11px] font-bold hover:bg-gray-700 dark:hover:bg-gray-600">
+                                  Copy tag
+                                </button>
+                              </div>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+
+                      <!-- ── 2. Skills ── -->
+                      <div>
+                        <h4 class="font-bold text-sm mb-2">🛠️ Skills <span class="font-normal text-gray-500">(max 8)</span></h4>
+                        <div class="flex gap-2 mb-3">
+                          <input type="text" x-model="skillDraft" maxlength="24"
+                                 @keydown.enter.prevent="addSkill()"
+                                 placeholder="e.g. Technical SEO"
+                                 class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                          <button type="button" @click="addSkill()"
+                                  :disabled="profile.skills.length >= 8"
+                                  class="px-4 py-2 rounded-lg bg-gray-800 dark:bg-gray-700 text-white text-sm font-bold hover:bg-gray-700 disabled:opacity-40">
+                            Add
+                          </button>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                          <template x-for="(s, i) in profile.skills" :key="'skill-' + i">
+                            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 text-xs font-bold">
+                              <span x-text="s"></span>
+                              <button type="button" @click="removeSkill(i)" class="ml-1 hover:text-red-500">×</button>
+                            </span>
+                          </template>
+                          <template x-if="profile.skills.length === 0">
+                            <span class="text-xs text-gray-400 italic">No skills yet — hidden from your public profile.</span>
+                          </template>
+                        </div>
+                      </div>
+
+                      <!-- ── 3. Contacts ── -->
+                      <div>
+                        <h4 class="font-bold text-sm mb-2">📬 Contacts <span class="font-normal text-gray-500">(max 3)</span></h4>
+                        <p class="text-xs text-gray-500 mb-3">
+                          Public contact methods. Hidden behind a "click to reveal" button by default to reduce scraping.
+                        </p>
+                        <div class="space-y-2 mb-3">
+                          <template x-for="(c, i) in profile.contacts" :key="'contact-' + i">
+                            <div class="flex gap-2 items-center">
+                              <select x-model="c.type"
+                                      class="p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 flex-shrink-0">
+                                <option value="email">Email</option>
+                                <option value="whatsapp">WhatsApp</option>
+                                <option value="telegram">Telegram</option>
+                                <option value="wechat">WeChat</option>
+                                <option value="signal">Signal</option>
+                                <option value="phone">Phone</option>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="x">X / Twitter</option>
+                                <option value="other-url">Other URL</option>
+                              </select>
+                              <input type="text" x-model="c.value" maxlength="200"
+                                     placeholder="Value"
+                                     class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                              <input type="text" x-model="c.label" maxlength="40"
+                                     placeholder="Label (optional)"
+                                     class="w-32 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                              <button type="button" @click="removeContact(i)"
+                                      class="px-2 py-2 rounded-lg text-red-500 hover:bg-red-500/10 text-lg">×</button>
+                            </div>
+                          </template>
+                        </div>
+                        <button type="button" @click="addContact()"
+                                :disabled="profile.contacts.length >= 3"
+                                class="px-4 py-2 rounded-lg border border-orange-500 text-orange-500 text-xs font-bold hover:bg-orange-500 hover:text-white transition disabled:opacity-40">
+                          + Add contact
+                        </button>
+                        <label class="mt-3 flex items-center justify-between cursor-pointer">
+                          <span class="text-sm">Show contacts immediately (no click-to-reveal)</span>
+                          <input type="checkbox" :checked="profile.contacts_visibility === 'public'"
+                                 @change="profile.contacts_visibility = $event.target.checked ? 'public' : 'click'"
+                                 class="w-5 h-5">
+                        </label>
+                      </div>
+
+                      <!-- ── 4. Hire Me ── -->
+                      <div>
+                        <h4 class="font-bold text-sm mb-2">💼 Hire Me</h4>
+                        <label class="flex items-center justify-between cursor-pointer mb-3">
+                          <span class="text-sm">I'm available for hire</span>
+                          <input type="checkbox" :checked="profile.available_for_hire == 1"
+                                 @change="profile.available_for_hire = $event.target.checked ? 1 : 0"
+                                 class="w-5 h-5">
+                        </label>
+                        <template x-if="profile.available_for_hire == 1">
+                          <div class="space-y-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                            <div>
+                              <label class="block text-xs font-medium mb-1">Headline <span class="text-gray-500">(60 chars)</span></label>
+                              <input type="text" x-model="profile.hire_headline" maxlength="60"
+                                     placeholder="e.g. Freelance SEO consultant"
+                                     class="w-full p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                            </div>
+                            <div>
+                              <label class="block text-xs font-medium mb-1">Services <span class="text-gray-500">(max 6)</span></label>
+                              <div class="flex gap-2 mb-2">
+                                <input type="text" x-model="hireServiceDraft" maxlength="30"
+                                       @keydown.enter.prevent="addHireService()"
+                                       placeholder="e.g. Technical audits"
+                                       class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                                <button type="button" @click="addHireService()"
+                                        :disabled="profile.hire_services.length >= 6"
+                                        class="px-4 py-2 rounded-lg bg-gray-800 dark:bg-gray-700 text-white text-sm font-bold hover:bg-gray-700 disabled:opacity-40">
+                                  Add
+                                </button>
+                              </div>
+                              <div class="flex flex-wrap gap-2">
+                                <template x-for="(s, i) in profile.hire_services" :key="'hs-' + i">
+                                  <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-400 text-xs font-bold">
+                                    <span x-text="s"></span>
+                                    <button type="button" @click="removeHireService(i)" class="ml-1 hover:text-red-500">×</button>
+                                  </span>
+                                </template>
+                              </div>
+                            </div>
+                            <div>
+                              <label class="block text-xs font-medium mb-1">Public contact email <span class="text-gray-500">(optional, shown as mailto button)</span></label>
+                              <input type="email" x-model="profile.contact_email" maxlength="120"
+                                     placeholder="you@example.com"
+                                     class="w-full p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                            </div>
+                          </div>
+                        </template>
+                      </div>
+
+                    </div>
+                  </details>
+
+                  <div class="flex gap-3 pt-4 flex-wrap">
                       <button @click="saveProfile()" :disabled="profile.saving"
                               class="flex-1 min-w-[180px] py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">
                         <span x-show="!profile.saving">Save Profile</span>
@@ -2645,8 +2815,88 @@ function dashboardApp() {
       push_leaderboard: 1,
       push_messages: 1,
       activity_public: 1,
+      verified_domain: null,
+      verified_at: null,
+      skills: [],
+      contacts: [],
+      contacts_visibility: 'click',
+      available_for_hire: 0,
+      hire_headline: '',
+      hire_services: [],
+      contact_email: '',
       total_points: 0,
       created_at: null
+    },
+
+    // ── Phase B: Advanced editor helpers ──
+    skillDraft: '',
+    contactDrafts: [],
+    hireServiceDraft: '',
+    verifyStatus: { loading: false, message: '', ok: false, token: null },
+
+    addSkill() {
+      const s = (this.skillDraft || '').trim().slice(0, 24);
+      if (!s) return;
+      if (!Array.isArray(this.profile.skills)) this.profile.skills = [];
+      if (this.profile.skills.length >= 8) return;
+      if (this.profile.skills.includes(s)) { this.skillDraft = ''; return; }
+      this.profile.skills.push(s);
+      this.skillDraft = '';
+    },
+    removeSkill(i) { this.profile.skills.splice(i, 1); },
+
+    addContact() {
+      if (!Array.isArray(this.profile.contacts)) this.profile.contacts = [];
+      if (this.profile.contacts.length >= 3) return;
+      this.profile.contacts.push({ type: 'email', value: '', label: '' });
+    },
+    removeContact(i) { this.profile.contacts.splice(i, 1); },
+
+    addHireService() {
+      const s = (this.hireServiceDraft || '').trim().slice(0, 30);
+      if (!s) return;
+      if (!Array.isArray(this.profile.hire_services)) this.profile.hire_services = [];
+      if (this.profile.hire_services.length >= 6) return;
+      if (this.profile.hire_services.includes(s)) { this.hireServiceDraft = ''; return; }
+      this.profile.hire_services.push(s);
+      this.hireServiceDraft = '';
+    },
+    removeHireService(i) { this.profile.hire_services.splice(i, 1); },
+
+    async verifyDomain() {
+      this.verifyStatus = { loading: true, message: '', ok: false, token: null };
+      try {
+        const token = localStorage.getItem('authToken');
+        const res = await fetch(`${API_BASE}/api/profile/verify-domain`, {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success && data.verified) {
+          this.profile.verified_domain = data.domain;
+          this.profile.verified_at = Date.now();
+          this.verifyStatus = { loading: false, message: '✓ Verified: ' + data.domain, ok: true, token: null };
+        } else {
+          this.verifyStatus = {
+            loading: false,
+            message: data.message || data.error || 'Verification failed',
+            ok: false,
+            token: data.token || null
+          };
+        }
+      } catch (e) {
+        this.verifyStatus = { loading: false, message: 'Network error: ' + e.message, ok: false, token: null };
+      }
+    },
+
+    copyVerifyToken() {
+      if (!this.verifyStatus.token) return;
+      const tag = `<meta name="traffic-torch-verify" content="${this.verifyStatus.token}">`;
+      navigator.clipboard.writeText(tag).then(() => {
+        this.verifyStatus.message = '✓ Meta tag copied — paste into your <head>';
+      }).catch(() => {
+        this.verifyStatus.message = 'Copy failed — token: ' + this.verifyStatus.token;
+      });
     },
 
     network: {
@@ -3869,6 +4119,11 @@ function dashboardApp() {
         if (data.profile?.total_points !== undefined) {
           this.profile.total_points = data.profile.total_points;
         }
+        // ── Phase B: normalize advanced fields ──
+        if (!Array.isArray(this.profile.skills)) this.profile.skills = [];
+        if (!Array.isArray(this.profile.contacts)) this.profile.contacts = [];
+        if (!Array.isArray(this.profile.hire_services)) this.profile.hire_services = [];
+        this.profile.available_for_hire = this.profile.available_for_hire ? 1 : 0;
       } catch (e) { this.profile.error = e.message; }
       finally { this.profile.loading = false; }
     },
@@ -3904,7 +4159,15 @@ function dashboardApp() {
           push_network: this.profile.push_network ? 1 : 0,
           push_leaderboard: this.profile.push_leaderboard ? 1 : 0,
           push_messages: this.profile.push_messages ? 1 : 0,
-          activity_public: this.profile.activity_public ? 1 : 0
+          activity_public: this.profile.activity_public ? 1 : 0,
+          // Phase B: advanced
+          skills: Array.isArray(this.profile.skills) ? this.profile.skills : [],
+          contacts: Array.isArray(this.profile.contacts) ? this.profile.contacts : [],
+          contacts_visibility: this.profile.contacts_visibility || 'click',
+          available_for_hire: this.profile.available_for_hire ? 1 : 0,
+          hire_headline: this.profile.hire_headline || '',
+          hire_services: Array.isArray(this.profile.hire_services) ? this.profile.hire_services : [],
+          contact_email: this.profile.contact_email || ''
         };
         const res = await fetch(`${API_BASE}/api/profile/me`, {
           method: 'PATCH',
