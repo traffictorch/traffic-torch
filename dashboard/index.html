@@ -101,15 +101,17 @@
 
 <div x-data="dashboardApp()" x-init="initDashboard()" class="flex flex-1 min-h-screen">
 
-  <!-- ── Avatar lightbox (bulletproof inline-styled) ── -->
+  <!-- ── Avatar lightbox (bulletproof, 2-element) ── -->
   <template x-teleport="body">
-    <div x-show="avatarLightbox" x-cloak @click="avatarLightbox = false" @keydown.escape.window="avatarLightbox = false"
-         style="position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;z-index:2147483647;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;cursor:zoom-out;overflow:hidden;">
-      <img :src="avatarSrc(profile)" :alt="profile.display_name" @click.stop
-           x-show="avatarLightbox"
-           style="display:block !important;width:min(80vmin,340px) !important;height:min(80vmin,340px) !important;max-width:min(80vmin,340px) !important;max-height:min(80vmin,340px) !important;object-fit:cover;border-radius:50%;box-shadow:0 25px 60px -12px rgba(0,0,0,0.7);background:#fff;">
-      <button type="button" @click="avatarLightbox = false" aria-label="Close"
-              style="position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-family:system-ui,-apple-system,sans-serif;">×</button>
+    <div x-show="avatarLightbox" x-cloak @keydown.escape.window="avatarLightbox = false"
+         style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483647;">
+      <div @click="avatarLightbox = false"
+           style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;cursor:zoom-out;overflow:hidden;">
+        <img :src="avatarSrc(profile)" :alt="profile.display_name" @click.stop
+             style="display:block;width:min(80vmin,340px);height:min(80vmin,340px);max-width:min(80vmin,340px);max-height:min(80vmin,340px);object-fit:cover;border-radius:50%;box-shadow:0 25px 60px -12px rgba(0,0,0,0.7);background:#fff;">
+        <button type="button" @click="avatarLightbox = false" aria-label="Close"
+                style="position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-family:system-ui,-apple-system,sans-serif;">×</button>
+      </div>
     </div>
   </template>
   <div class="flex flex-1 min-h-screen">
