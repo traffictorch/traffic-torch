@@ -56,13 +56,13 @@ function card(c, { showToolHeader = true } = {}) {
   const p = c._profile || {};
   const displayName = c.name || p.display_name || c.handle || 'Anonymous';
   const handle = c.username ? c.username : (c.handle || '');
-  const hasPhoto = !!(p.avatar_url || p.avatar_r2_key);
-  const src = (typeof window.ttAvatarSrc === 'function') ? window.ttAvatarSrc(p) : null;
+  const hasTtProfile = !!c.username;
+  const src = (hasTtProfile && typeof window.ttAvatarSrc === 'function') ? window.ttAvatarSrc(p) : null;
   const profileUrl = c.username ? `/torcher/${esc(c.username)}/` : null;
   const points = typeof p.total_points === 'number' ? p.total_points : 0;
   const links = resolveLinks(c);
 
-  const avatarHtml = (hasPhoto && src)
+  const avatarHtml = (hasTtProfile && src)
     ? `<img src="${esc(src)}" alt="" class="w-16 h-16 rounded-2xl object-cover flex-shrink-0 shadow-md" loading="lazy" onerror="this.onerror=null;this.src='/images/avatars/${esc(p.avatar_preset || 'owner')}.svg';">`
     : `<div class="w-16 h-16 rounded-2xl bg-gradient-to-br ${c.avatarColor || 'from-gray-500 to-gray-700'} flex items-center justify-center text-white text-2xl font-black flex-shrink-0 shadow-md">${esc(c.avatarInitial || (displayName[0] || '?'))}</div>`;
 

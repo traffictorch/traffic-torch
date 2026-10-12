@@ -17,6 +17,37 @@ export function initShareModule(container, results) {
   const ringColorHex = (s) => s >= 80 ? '#22c55e' : s >= 60 ? '#f59e0b' : '#ef4444';
 
   container.innerHTML = `
+    <style>
+      @media (max-width: 768px) {
+        .share-dashboard-header {
+          flex-direction: column !important;
+          text-align: center !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 1rem !important;
+        }
+        .share-dashboard-header > div:first-child {
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 100% !important;
+          gap: 0.35rem !important;
+        }
+        .share-dashboard-header > div:first-child h2 {
+          text-align: center !important;
+        }
+        .share-dashboard-header .overall-score-ring {
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 100% !important;
+          margin: 0 auto !important;
+          gap: 0.5rem !important;
+        }
+      }
+    </style>
     <div class="share-dashboard glass-card" style="padding:0rem; border-radius:2rem; background:rgba(255,255,255,0.06); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.12); margin-top:2rem;">
 
       <div class="share-dashboard-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;">
