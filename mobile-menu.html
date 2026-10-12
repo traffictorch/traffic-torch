@@ -21,6 +21,10 @@
     </button>
     <div id="proportal-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="proportal-mobile">
       <a href="/dashboard/#profile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="profile">👤 Profile</a>
+      <a href="javascript:void(0)" id="tt-beams-inbox-link-mobile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem] flex items-center gap-2">
+        🔦 Beams
+        <span id="tt-beams-count-mobile" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
+      </a>
       <a href="/dashboard/#dashboard" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="dashboard">📊 Dashboard</a>
       <a href="/dashboard/#network" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="network">🕸️ Network</a>
       <a href="/dashboard/#audits" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="audits">📋 Audits</a>
@@ -30,27 +34,6 @@
       <a href="/dashboard/#integrations" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="integrations">🔗 Integrations</a>
       <a href="/dashboard/#upgrade" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="upgrade">🚀 Upgrade</a>
       <a href="/dashboard/#settings" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="settings">⚙️ Settings</a>
-    </div>
-  </div>
-
-  <!-- ═══ Beams dropdown ═══ -->
-  <div>
-    <button
-      type="button" role="menuitem"
-      class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-      aria-expanded="false" aria-controls="beams-mobile-content" data-category="beams-mobile">
-      <span class="flex items-center gap-2">🔦 Beams</span>
-      <span class="flex items-center gap-2">
-        <span class="text-sm transition-transform">▼</span>
-        <span class="text-base font-bold text-orange-500 dark:text-orange-400 flex items-center gap-1">
-          <span>✉️</span>
-          <span id="tt-beams-count-mobile" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
-        </span>
-      </span>
-    </button>
-    <div id="beams-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="beams-mobile">
-      <a href="javascript:void(0)" id="tt-beams-inbox-link-mobile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📬 Inbox</a>
-      <a href="/dashboard/#communication-preferences" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚙️ Beam settings</a>
     </div>
   </div>
 
