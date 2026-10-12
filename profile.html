@@ -163,6 +163,7 @@
 <div class="flex flex-col items-center sm:flex-row sm:items-end gap-5 profile-header-flex">
   <template x-if="profile.id">
     <div class="avatar-ring mx-auto sm:mx-0 cursor-pointer"
+         style="padding: 6px;"
          :class="'tier-' + (profile.tier || 'free')"
          :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member — click to enlarge'"
          @click="avatarLightbox = true">
@@ -175,7 +176,7 @@
   </template>
   <div class="flex-1 min-w-0 sm:pb-2 profile-info">
     <h1 class="text-3xl font-black truncate" x-text="profile.display_name || profile.username"></h1>
-                <p class="text-gray-500 text-lg flex items-center gap-2 flex-wrap">
+                <p class="mt-4 text-gray-500 text-lg flex items-center gap-2 flex-wrap">
                   <span>@<span x-text="profile.username"></span></span>
                   <span class="inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(profile.role)"></span>
                 </p>
