@@ -169,6 +169,7 @@ const MODULE_WEIGHTS = {
 };
 
 function applyIssueCap(mod) {
+  if (mod.score === null || mod.score === undefined) return null;
   const failedCount  = (mod.failed  || []).length;
   const warningCount = (mod.signals || []).filter((s) => !s.pass && !s.informational).length;
   const issues = failedCount + warningCount;
@@ -183,20 +184,23 @@ function applyIssueCap(mod) {
 }
 
 function gradeFromScore(score) {
+  if (score === null || score === undefined) return 'Not measured';
   return score >= 80 ? 'Excellent' : score >= 60 ? 'Good' : 'Needs Work';
 }
 
 function recomputeOverall(mods) {
+  const measured = mods.filter((m) => m.score !== null && m.score !== undefined);
+  if (measured.length === 0) return null;
   let weightedSum = 0;
   let weightTotal = 0;
-  for (const m of mods) {
+  for (const m of measured) {
     const w = MODULE_WEIGHTS[m.name] ?? 10;
     weightedSum += m.score * w;
     weightTotal += w;
   }
   let overall = Math.round(weightedSum / weightTotal);
 
-  const lowest = Math.min(...mods.map((m) => m.score));
+  const lowest = Math.min(...measured.map((m) => m.score));
   if (lowest < 25)      overall = Math.min(overall, 60);
   else if (lowest < 40) overall = Math.min(overall, 72);
   else if (lowest < 60) overall = Math.min(overall, 85);
@@ -394,6 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const priorityFixes = modules
   .filter((m) => {
+    if (m.score === null || m.score === undefined) return false;
     const failed   = (m.failed || []).length;
     const warnings = (m.signals || []).filter((s) => !s.pass && !s.informational).length;
     return m.score < 80 || failed > 0 || warnings > 0;
@@ -433,12 +438,13 @@ const priorityFixes = modules
       console.warn('CMS detection failed:', err);
     }
 
-    const scores = modules.map((m) => m.score);
-    const gradeColor = (s) => s >= 80 ? '#22c55e' : s >= 60 ? '#f97316' : '#ef4444';
-    const gradeBorder = (s) => s >= 80 ? 'border-green-500' : s >= 60 ? 'border-orange-400' : 'border-red-500';
-    const gradeText = (s) => s >= 80 ? '✅ Excellent' : s >= 60 ? '⚠️ Good' : '❌ Needs Work';
+    const measuredModules = modules.filter((m) => m.score !== null && m.score !== undefined);
+    const scores = measuredModules.map((m) => m.score);
+    const gradeColor = (s) => s === null || s === undefined ? '#9ca3af' : s >= 80 ? '#22c55e' : s >= 60 ? '#f97316' : '#ef4444';
+    const gradeBorder = (s) => s === null || s === undefined ? 'border-gray-400' : s >= 80 ? 'border-green-500' : s >= 60 ? 'border-orange-400' : 'border-red-500';
+    const gradeText = (s) => s === null || s === undefined ? 'Not measured' : s >= 80 ? '✅ Excellent' : s >= 60 ? '⚠️ Good' : '❌ Needs Work';
 
-    const failedMetrics = modules
+    const failedMetrics = measuredModules
       .filter((m) => m.score < 80)
       .map((m) => ({
         name: m.name,
@@ -464,8 +470,8 @@ const priorityFixes = modules
             </svg>
             <div class="absolute inset-0 flex items-center justify-center">
               <div class="text-center">
-                <div class="text-5xl sm:text-6xl font-black" style="color:${gradeColor(overall)}">${overall}</div>
-                <div class="text-lg sm:text-xl opacity-80 -mt-1" style="color:${gradeColor(overall)}">/100</div>
+                <div class="text-5xl sm:text-6xl font-black" style="color:${gradeColor(overall)}">${overall === null || overall === undefined ? 'N/A' : overall}</div>
+                <div class="text-lg sm:text-xl opacity-80 -mt-1" style="color:${gradeColor(overall)}">${overall === null || overall === undefined ? '' : '/100'}</div>
               </div>
             </div>
           </div>
@@ -507,9 +513,9 @@ const issueCount           = failedItems.length + actionableWarnings.length;
                     <circle cx="48" cy="48" r="40" stroke="${gradeColor(m.score)}" stroke-width="10" fill="none"
                             stroke-dasharray="${(m.score / 100) * 251} 251" stroke-linecap="round"/>
                   </svg>
-                  <div class="absolute inset-0 flex items-center justify-center text-3xl font-black" style="color:${gradeColor(m.score)}">${m.score}</div>
+                  <div class="absolute inset-0 flex items-center justify-center text-3xl font-black" style="color:${gradeColor(m.score)}">${m.score === null || m.score === undefined ? 'N/A' : m.score}</div>
                 </div>
-                <p class="mt-3 text-lg font-bold ${m.score >= 80 ? 'text-green-600' : m.score >= 60 ? 'text-orange-400' : 'text-red-600'}">${gradeText(m.score)}</p>
+                <p class="mt-3 text-lg font-bold ${m.score === null || m.score === undefined ? 'text-gray-500 dark:text-gray-400' : m.score >= 80 ? 'text-green-600' : m.score >= 60 ? 'text-orange-400' : 'text-red-600'}">${gradeText(m.score)}</p>
                 <p class="mt-2 text-lg font-medium text-gray-800 dark:text-gray-200">${escapeHtml(m.name)}</p>
               </div>
 
@@ -666,7 +672,7 @@ ${(!failedItems.length && actionableWarnings.length === 0 && informationalSignal
       new Chart(canvas.getContext('2d'), {
         type: 'radar',
         data: {
-          labels: modules.map((m) => m.name),
+          labels: measuredModules.map((m) => m.name),
           datasets: [{
             label: 'Score',
             data: scores,
