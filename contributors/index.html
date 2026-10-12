@@ -89,7 +89,8 @@
 
   <link rel="preload" as="style" href="/leader-board/contributions-widget.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/leader-board/contributions-widget.css?v=1.0"></noscript>
-  <script src="/leader-board/contributions-widget.js?v=1.0" defer></script>
+  <script src="/shared/avatar.js?v=1.0"></script>
+  <script src="/leader-board/contributions-widget.js?v=1.1" defer></script>
 
   <script>
     (function() {
@@ -305,10 +306,10 @@
   </div>
 
   <script src="/main.js?v=1.2" type="module"></script>
-  <script type="module" src="/contributors/contributors-page.js?v=1.0"></script>
+  <script type="module" src="/contributors/contributors-page.js?v=1.1"></script>
   <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
   <script type="module">
-    import { renderContributorsPage } from '/contributors/contributors-page.js?v=1.0';
+    import { renderContributorsPage } from '/contributors/contributors-page.js?v=1.1';
     document.addEventListener('DOMContentLoaded', () => renderContributorsPage());
   </script>
 </body>

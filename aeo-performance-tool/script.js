@@ -1,4 +1,5 @@
 // AEO Performance Tool – client controller
+import { renderContributions } from './contributions.js?v=1.0';
 import { renderModuleCards } from './module-cards.js?v=1.0';
 import { renderPluginSolutions } from './plugin-solutions.js?v=1.0';
 import { moduleExplanations, fixFor } from './module-explanations.js?v=1.0';
@@ -157,7 +158,8 @@ async function saveAuditHistory(url, toolName) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const results     = document.getElementById('results');
+    renderContributions();
+const results     = document.getElementById('results');
   const urlInput    = document.getElementById('url-input');
   const codeInput   = document.getElementById('code-input');
   const analyzeUrl  = document.getElementById('analyze-url-btn');

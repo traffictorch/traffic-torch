@@ -334,6 +334,7 @@
       }
     })();
   </script>
+  <script src="/shared/avatar.js?v=1.0"></script>
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -634,12 +635,14 @@
 
           const pointsMap = {};
           const endorseMap = {};
+          const profilesMap = {};
           await Promise.all(rows.map(async (e) => {
             if (!e.username) return;
             try {
               const res = await fetch(`${AUTH_ENDPOINT}/api/torcher/${encodeURIComponent(e.username)}`);
               if (!res.ok) return;
               const data = await res.json();
+              if (data.profile) profilesMap[e.username] = data.profile;
               if (data.profile && typeof data.profile.total_points === 'number') {
                 pointsMap[e.username] = data.profile.total_points;
               }
@@ -661,7 +664,7 @@
 
             const profileBlock = e.username ? `
               <div class="lb-podium-profile">
-                <img class="lb-podium-profile-avatar" src="/images/avatars/${esc(e.avatar_preset || 'owner')}.svg" alt="" loading="lazy">
+                <img class="lb-podium-profile-avatar" src="${esc(ttAvatarSrc(profilesMap[e.username] || e))}" alt="" loading="lazy">
                 <div class="lb-podium-profile-meta">
                   <a class="lb-podium-profile-name" href="/torcher/${esc(e.username)}/">${esc(e.display_name || e.username)}</a>
                   <span class="lb-podium-profile-handle">@${esc(e.username)}</span>

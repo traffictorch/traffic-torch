@@ -195,6 +195,7 @@
     }
     .dark .points-badge { background: rgba(251,146,60,0.2); color: #fb923c; }
   </style>
+  <script src="/shared/avatar.js?v=1.0"></script>
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -331,7 +332,7 @@
                       </p>
                       <p x-show="post.note && post.note !== post.page_title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
                     </div>
-                    <img :src="`/images/avatars/${post.avatar_preset || 'owner'}.svg`"
+                    <img :src="ttAvatarSrc(post)"
                          :alt="post.display_name"
                          width="40" height="40" style="width:40px;height:40px;"
                          class="rounded-full flex-shrink-0 object-cover">
@@ -412,7 +413,7 @@
                     </p>
                     <template x-for="c in (feed.commentLists[post.id] || [])" :key="c.id">
                       <div class="flex gap-2 items-start">
-                        <img :src="`/images/avatars/${c.avatar_preset || 'owner'}.svg`"
+                        <img :src="ttAvatarSrc(c)"
                              width="32" height="32" style="width:32px;height:32px;"
                              class="rounded-full flex-shrink-0 object-cover" alt="">
                         <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
@@ -435,7 +436,7 @@
                        class="text-xs text-gray-400 italic text-center py-2">No comments yet. Be the first.</p>
                     <template x-if="isAuthenticated">
                       <div class="flex gap-2 items-start pt-1">
-                        <img :src="`/images/avatars/${profile.avatar_preset || 'owner'}.svg`"
+                        <img :src="ttAvatarSrc(profile)"
                              width="32" height="32" style="width:32px;height:32px;"
                              class="rounded-full flex-shrink-0 object-cover" alt="">
                         <div class="flex-1 flex gap-2">
@@ -505,7 +506,7 @@
                 <div class="space-y-3">
                   <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                      <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                      <img :src="ttAvatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                       <div class="flex-1 min-w-0">
                         <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                         <p class="text-xs text-gray-500 capitalize">
@@ -534,7 +535,7 @@
                   <div class="space-y-3">
                     <template x-for="u in network.searchResults" :key="u.id">
                       <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                        <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                        <img :src="ttAvatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                         <div class="flex-1 min-w-0">
                           <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                           <p class="text-xs text-gray-500 capitalize">

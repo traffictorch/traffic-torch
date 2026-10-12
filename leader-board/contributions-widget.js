@@ -32,7 +32,7 @@
     const username = entry.username || '';
     const displayName = entry.display_name || username || 'Anonymous';
     const profileUrl = '/torcher/' + username + '/';
-    const avatar = `/images/avatars/${entry.avatar_preset || 'owner'}.svg`;
+    const avatar = (typeof window.ttAvatarSrc === 'function') ? window.ttAvatarSrc(entry) : `/images/avatars/${entry.avatar_preset || 'owner'}.svg`;
 
     const websiteLink = (entry.website_url && entry.website_approved)
       ? `<a class="tt-contrib-link" href="${escapeHtml(entry.website_url)}" target="_blank" rel="ugc nofollow noopener">🌐 ${escapeHtml(domainLabel(entry.website_url))}</a>`

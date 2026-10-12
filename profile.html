@@ -606,6 +606,7 @@
   </div>
 </div>
 
+<script src="/shared/avatar.js?v=1.0"></script>
 <script src="/main.js?v=1.2" type="module"></script>
 <script defer src="/profile-message.js?v=1"></script>
 <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
@@ -618,12 +619,8 @@ function profilePage() {
     loading: true,
 
     avatarSrc(o) {
-      if (!o) return '/images/avatars/owner.svg';
-      if (typeof o === 'string') return '/images/avatars/' + o + '.svg';
-      if (o.avatar_url) {
-        return o.avatar_url.startsWith('http') ? o.avatar_url : (API_BASE + o.avatar_url);
-      }
-      return '/images/avatars/' + (o.avatar_preset || 'owner') + '.svg';
+      if (typeof window.ttAvatarSrc === 'function') return window.ttAvatarSrc(o);
+      return '/images/avatars/' + ((o && o.avatar_preset) || 'owner') + '.svg';
     },
 
     notFound: false,
