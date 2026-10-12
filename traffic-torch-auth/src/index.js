@@ -991,7 +991,7 @@ async function handleTorchRoutes(request, env, url) {
            FROM network n JOIN users u ON u.id = n.network_user_id
           WHERE n.user_id = ? LIMIT 30`
       ).bind(post.user_id).all();
-      networkList = net.results || [];
+      networkList = withAvatars(net.results);
     }
 
     const moreByAuthor = await env.MY_BINDING.prepare(
@@ -1036,7 +1036,13 @@ async function handleTorchRoutes(request, env, url) {
       post,
       author: {
         id: post.user_id, username: post.username, display_name: post.display_name,
-        avatar_preset: post.avatar_preset, role: post.role, bio: post.bio,
+        avatar_preset: post.avatar_preset,
+        avatar_r2_key: post.avatar_r2_key || null,
+        avatar_updated_at: post.avatar_updated_at || null,
+        avatar_url: post.avatar_r2_key
+          ? `https://traffic-torch-auth.traffictorch.workers.dev/api/profile/avatar/${post.user_id}?v=${post.avatar_updated_at || 0}`
+          : null,
+        role: post.role, bio: post.bio,
         website_url: post.website_url, website_approved: post.website_approved,
         social1_url: post.social1_url, social2_url: post.social2_url,
         job_title: post.job_title, company: post.company, location: post.location,

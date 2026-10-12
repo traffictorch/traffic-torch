@@ -425,23 +425,23 @@
                     </div>
 
 <div class="mt-7 grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-2xl mx-auto">
-  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
     <p class="text-2xl font-black text-orange-500" x-text="feed.slots.used"></p>
     <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🔥 Audits shared</p>
   </div>
-  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
     <p class="text-2xl font-black text-orange-500" x-text="network.list.length"></p>
     <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🤝 Network</p>
   </div>
-  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
     <p class="text-2xl font-black text-orange-500" x-text="profile.total_points || 0"></p>
     <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🏅 Points</p>
   </div>
-  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
     <p class="text-2xl font-black text-orange-500" x-text="profile.endorsement_count || 0"></p>
     <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">⭐ Endorsements</p>
   </div>
-  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
     <p class="text-2xl font-black text-orange-500" x-text="monthsSince(profile.created_at)"></p>
     <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">📅 Months here</p>
   </div>
@@ -570,13 +570,30 @@
                       </button>
                     </div>
 
-  
                   <!-- ═══ ADVANCED (optional) ═══ -->
-                  <details class="mt-6 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
-                    <summary class="cursor-pointer px-5 py-4 bg-gray-50 dark:bg-gray-900/60 hover:bg-gray-100 dark:hover:bg-gray-900 transition font-bold text-sm flex items-center justify-between gap-3">
-                      <span>⚙️ Advanced (optional)</span>
-                      <span class="text-xs font-normal text-gray-500">Verify · Skills · Contacts · Hire Me</span>
+                  <details class="group mt-6 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
+                    <summary class="cursor-pointer px-5 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 transition list-none"
+                             style="list-style:none;">
+                      <div class="flex items-center justify-between gap-3 font-bold text-sm">
+                        <div class="flex items-center gap-2 flex-wrap min-w-0">
+                          <span style="font-size:1.1rem;line-height:1;">⚙️</span>
+                          <span>Advanced options</span>
+                          <span class="text-xs font-normal opacity-90">Verify · Skills · Contacts · Hire Me</span>
+                        </div>
+                        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                             class="transition-transform duration-200 group-open:rotate-180"
+                             style="width:20px;height:20px;flex-shrink:0;display:block;">
+                          <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z"/>
+                        </svg>
+                      </div>
                     </summary>
+                    <style>
+                      /* Kill the default disclosure triangle (Safari/Firefox) */
+                      details > summary::-webkit-details-marker { display: none; }
+                      details > summary::marker { content: ""; }
+                    </style>
+                    
                     <div class="p-5 space-y-8 bg-white/50 dark:bg-black/20">
 
                       <!-- ── 1. Verify website ── -->
@@ -632,11 +649,11 @@
                                  @keydown.enter.prevent="addSkill()"
                                  placeholder="e.g. Technical SEO"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                          <button type="button" @click="addSkill()"
-                                  :disabled="profile.skills.length >= 8"
-                                  class="px-4 py-2 rounded-lg bg-gray-800 dark:bg-gray-700 text-white text-sm font-bold hover:bg-gray-700 disabled:opacity-40">
-                            Add
-                          </button>
+<button type="button" @click="addSkill()"
+        :disabled="profile.skills.length >= 8"
+        class="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40 whitespace-nowrap">
+  Add
+</button>
                         </div>
                         <div class="flex flex-wrap gap-2">
                           <template x-for="(s, i) in profile.skills" :key="'skill-' + i">
@@ -657,29 +674,40 @@
                         <p class="text-xs text-gray-500 mb-3">
                           Public contact methods. Hidden behind a "click to reveal" button by default to reduce scraping.
                         </p>
-                        <div class="space-y-2 mb-3">
+                        <div class="space-y-3 mb-3">
                           <template x-for="(c, i) in profile.contacts" :key="'contact-' + i">
-                            <div class="flex gap-2 items-center">
-                              <select x-model="c.type"
-                                      class="p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 flex-shrink-0">
-                                <option value="email">Email</option>
-                                <option value="whatsapp">WhatsApp</option>
-                                <option value="telegram">Telegram</option>
-                                <option value="wechat">WeChat</option>
-                                <option value="signal">Signal</option>
-                                <option value="phone">Phone</option>
-                                <option value="linkedin">LinkedIn</option>
-                                <option value="x">X / Twitter</option>
-                                <option value="other-url">Other URL</option>
-                              </select>
+                            <div class="flex flex-col sm:flex-row gap-2 sm:items-center p-3 sm:p-0 rounded-lg border border-gray-200 dark:border-gray-700 sm:border-0">
+                              <!-- Row 1 on mobile: type dropdown + remove button -->
+                              <div class="flex gap-2 items-center">
+                                <select x-model="c.type"
+                                        class="flex-1 sm:flex-none sm:w-36 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                                  <option value="email">Email</option>
+                                  <option value="whatsapp">WhatsApp</option>
+                                  <option value="telegram">Telegram</option>
+                                  <option value="wechat">WeChat</option>
+                                  <option value="signal">Signal</option>
+                                  <option value="phone">Phone</option>
+                                  <option value="linkedin">LinkedIn</option>
+                                  <option value="x">X / Twitter</option>
+                                  <option value="other-url">Other URL</option>
+                                </select>
+                                <!-- Mobile-only delete button (top-right of card) -->
+                                <button type="button" @click="removeContact(i)"
+                                        aria-label="Remove contact"
+                                        class="sm:hidden px-3 py-2 rounded-lg text-red-500 hover:bg-red-500/10 text-xl flex-shrink-0">×</button>
+                              </div>
+                              <!-- Row 2 on mobile: value -->
                               <input type="text" x-model="c.value" maxlength="200"
                                      placeholder="Value"
-                                     class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                                     class="w-full sm:flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                              <!-- Row 3 on mobile: label -->
                               <input type="text" x-model="c.label" maxlength="40"
                                      placeholder="Label (optional)"
-                                     class="w-32 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                                     class="w-full sm:w-32 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                              <!-- Desktop-only delete button -->
                               <button type="button" @click="removeContact(i)"
-                                      class="px-2 py-2 rounded-lg text-red-500 hover:bg-red-500/10 text-lg">×</button>
+                                      aria-label="Remove contact"
+                                      class="hidden sm:flex items-center justify-center px-2 py-2 rounded-lg text-red-500 hover:bg-red-500/10 text-lg flex-shrink-0">×</button>
                             </div>
                           </template>
                         </div>
@@ -720,11 +748,11 @@
                                        @keydown.enter.prevent="addHireService()"
                                        placeholder="e.g. Technical audits"
                                        class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                                <button type="button" @click="addHireService()"
-                                        :disabled="profile.hire_services.length >= 6"
-                                        class="px-4 py-2 rounded-lg bg-gray-800 dark:bg-gray-700 text-white text-sm font-bold hover:bg-gray-700 disabled:opacity-40">
-                                  Add
-                                </button>
+<button type="button" @click="addHireService()"
+        :disabled="profile.hire_services.length >= 6"
+        class="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40 whitespace-nowrap">
+  Add
+</button>
                               </div>
                               <div class="flex flex-wrap gap-2">
                                 <template x-for="(s, i) in profile.hire_services" :key="'hs-' + i">
@@ -2529,7 +2557,7 @@
               </div>
               <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Member since</span>
-                <span x-text="!authChecked ? '…' : (isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—')"></span>
+				<span x-text="!authChecked ? '…' : (profile.created_at ? formatShortDate(profile.created_at) : '—')"></span>
               </div>
             </div>
 
