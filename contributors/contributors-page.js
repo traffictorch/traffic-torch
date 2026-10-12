@@ -172,7 +172,10 @@ function card(c) {
       <div class="p-6 flex items-start gap-4">
         ${avatarHtml}
         <div class="min-w-0 flex-1">
-          <h3 class="text-xl font-black text-gray-900 dark:text-gray-100">${esc(displayName)}</h3>
+          <h3 class="text-xl font-black text-gray-900 dark:text-gray-100 flex items-center gap-2 flex-wrap">
+            <span>${esc(displayName)}</span>
+            ${p.verified_at ? `<svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>` : ''}
+          </h3>
 		  <p class="text-sm font-semibold text-orange-600 dark:text-orange-400">u/${esc(c.username || c.handle)}</p>
           ${profilePill}
           <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${esc(c.role || '')}</p>

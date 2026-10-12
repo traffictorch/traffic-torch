@@ -963,6 +963,7 @@ async function handleTorchRoutes(request, env, url) {
               u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.bio,
               u.website_url, u.website_approved, u.social1_url, u.social2_url,
               u.job_title, u.company, u.location, u.show_network, u.allow_adds,
+              u.verified_at, u.verified_domain,
               u.created_at AS author_created_at,
               COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = u.id), 0) AS total_points,
               (SELECT COUNT(*) FROM posts p2 WHERE p2.user_id = u.id AND p2.status = 'published') AS audit_count
@@ -1040,6 +1041,7 @@ async function handleTorchRoutes(request, env, url) {
         social1_url: post.social1_url, social2_url: post.social2_url,
         job_title: post.job_title, company: post.company, location: post.location,
         show_network: post.show_network, allow_adds: post.allow_adds,
+        verified_at: post.verified_at, verified_domain: post.verified_domain,
         total_points: post.total_points, created_at: post.author_created_at,
         audit_count: post.audit_count, network_count: networkCount,
       },

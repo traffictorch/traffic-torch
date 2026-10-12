@@ -226,7 +226,7 @@ function renderTorchBody(data) {
   <div class="glass rounded-2xl p-5 mt-6 flex flex-wrap items-center gap-3">
     <img src="${htmlEscape((author.avatar_url) || '/images/avatars/' + (author.avatar_preset || 'owner') + '.svg')}" alt="" width="48" height="48" style="width:48px;height:48px;" class="rounded-full object-cover flex-shrink-0">
     <div class="flex-1 min-w-0">
-      <p class="font-bold truncate"><a href="/torcher/${htmlEscape(author.username)}/" class="hover:text-orange-500">${htmlEscape(author.display_name || author.username)}</a></p>
+      <p class="font-bold flex items-center gap-1.5 min-w-0"><a href="/torcher/${htmlEscape(author.username)}/" class="hover:text-orange-500 truncate">${htmlEscape(author.display_name || author.username)}</a>${author.verified_at ? `<svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>` : ''}</p>
       <p class="text-xs text-gray-500">@${htmlEscape(author.username)} · 🏅 ${author.total_points || 0}</p>
     </div>
     <div class="flex gap-2 flex-wrap w-full sm:w-auto items-center">
@@ -274,7 +274,7 @@ function renderTorchBody(data) {
       <div class="flex flex-col sm:flex-row sm:items-end gap-5">
         <img src="${htmlEscape((author.avatar_url) || '/images/avatars/' + (author.avatar_preset || 'owner') + '.svg')}" alt="" width="96" height="96" style="width:96px;height:96px;" class="rounded-full object-cover flex-shrink-0">
         <div class="flex-1 min-w-0">
-          <h2 class="text-2xl font-black truncate">${htmlEscape(author.display_name || author.username)}</h2>
+          <h2 class="text-2xl font-black flex items-center gap-2 flex-wrap min-w-0"><span class="truncate">${htmlEscape(author.display_name || author.username)}</span>${author.verified_at ? `<svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>` : ''}</h2>
           <p class="text-gray-500 flex items-center gap-2 flex-wrap">
             <span>@${htmlEscape(author.username)}</span>
             <span class="inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500">${htmlEscape(roleLabel(author.role))}</span>
