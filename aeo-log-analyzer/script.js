@@ -18,6 +18,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderContributions();
 
+  // ── iOS-safe sample log download ──
+  // iOS PWA can trap an <a download> click in an in-app webview with no back button.
+  // Fix: pre-fetch the file at load, then hand it to navigator.share() on click,
+  // which opens the iOS share sheet ("Save to Files"). Fall back to native download.
+  (function initSampleLogShare() {
+    const link = document.getElementById('sample-log-link');
+    if (!link) return;
+
+    let cachedFile = null;
+    let ready = false;
+
+    (async () => {
+      try {
+        const res = await fetch(link.href);
+        if (!res.ok) return;
+        const blob = await res.blob();
+        cachedFile = new File([blob], 'sample.log', { type: 'text/plain' });
+        ready = true;
+      } catch { /* leave ready=false → native fallback */ }
+    })();
+
+    link.addEventListener('click', (e) => {
+      if (!ready || !cachedFile) return;                      // still loading → native download
+      if (!navigator.canShare || !navigator.share) return;    // desktop Firefox etc. → native
+      if (!navigator.canShare({ files: [cachedFile] })) return; // browser can't share files → native
+
+      e.preventDefault();
+      navigator.share({
+        files: [cachedFile],
+        title: 'Traffic Torch sample access log',
+      }).catch((err) => {
+        if (err && err.name === 'AbortError') return;         // user cancelled — fine
+        // Any other failure: fall back to a plain download
+        const url = URL.createObjectURL(cachedFile);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'sample.log';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+    });
+  })();
+
   if (!fileInput) return;
 
   fileInput.addEventListener('change', () => {
