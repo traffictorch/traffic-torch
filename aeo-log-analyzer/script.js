@@ -5,7 +5,7 @@ import { renderReport } from './report-renderer.js';
 import { renderContributions } from './contributions.js';
 
 const IP_API = 'https://aeo-bot-ips.traffictorch.workers.dev/';
-const IP_CACHE_KEY = 'aeo_bot_ips_cache_v2';
+const IP_CACHE_KEY = 'aeo_bot_ips_cache_v3';
 const IP_CACHE_TTL = 24 * 60 * 60 * 1000;
 
 document.addEventListener('DOMContentLoaded', () => {
