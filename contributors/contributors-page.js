@@ -143,13 +143,13 @@ function resolveLinks(c) {
 function card(c) {
   const p = c._profile || {};
   const displayName = p.display_name || c.name || c.handle || 'Anonymous';
-  const hasCustomPhoto = !!(p.avatar_url || p.avatar_r2_key);
-  const avatarSrc = (typeof window.ttAvatarSrc === 'function') ? window.ttAvatarSrc(p) : null;
+  const hasTtProfile = !!c.username;
+  const avatarSrc = (hasTtProfile && typeof window.ttAvatarSrc === 'function') ? window.ttAvatarSrc(p) : null;
   const profileUrl = c.username ? `/torcher/${esc(c.username)}/` : null;
   const points = typeof p.total_points === 'number' ? p.total_points : 0;
   const links = resolveLinks(c);
 
-  const avatarHtml = (hasCustomPhoto && avatarSrc)
+  const avatarHtml = (hasTtProfile && avatarSrc)
     ? `<img src="${esc(avatarSrc)}" alt="" class="w-16 h-16 rounded-2xl object-cover flex-shrink-0 shadow-md" loading="lazy" onerror="this.onerror=null;this.src='/images/avatars/${esc(p.avatar_preset || 'owner')}.svg';">`
     : `<div class="w-16 h-16 rounded-2xl bg-gradient-to-br ${c.avatarColor || 'from-gray-500 to-gray-700'} flex items-center justify-center text-white text-2xl font-black flex-shrink-0 shadow-md">${esc(c.avatarInitial || '?')}</div>`;
 
@@ -173,7 +173,7 @@ function card(c) {
         ${avatarHtml}
         <div class="min-w-0 flex-1">
           <h3 class="text-xl font-black text-gray-900 dark:text-gray-100">${esc(displayName)}</h3>
-          <p class="text-sm font-semibold text-orange-600 dark:text-orange-400">u/${esc(c.handle)}</p>
+		  <p class="text-sm font-semibold text-orange-600 dark:text-orange-400">u/${esc(c.username || c.handle)}</p>
           ${profilePill}
           <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${esc(c.role || '')}</p>
           ${c.subtitle ? `<p class="text-xs text-gray-500 dark:text-gray-500 mt-0.5">${esc(c.subtitle)}</p>` : ''}

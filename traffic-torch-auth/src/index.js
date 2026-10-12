@@ -934,7 +934,8 @@ async function handleProfileRoutes(request, env, url) {
     let networkList = [];
     if (profile.show_network) {
       const net = await env.MY_BINDING.prepare(
-        `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.role
+        `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset,
+                u.avatar_r2_key, u.avatar_updated_at, u.role
            FROM network n JOIN users u ON u.id = n.network_user_id
           WHERE n.user_id = ? LIMIT 60`
       ).bind(target.id).all();
@@ -980,7 +981,8 @@ async function handleTorchRoutes(request, env, url) {
     let networkList = [];
     if (post.show_network) {
       const net = await env.MY_BINDING.prepare(
-        `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.role
+        `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset,
+                u.avatar_r2_key, u.avatar_updated_at, u.role
            FROM network n JOIN users u ON u.id = n.network_user_id
           WHERE n.user_id = ? LIMIT 30`
       ).bind(post.user_id).all();
