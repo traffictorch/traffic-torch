@@ -57,6 +57,8 @@
     box-shadow: 0 2px 8px rgba(249,115,22,0.35);
   }
   #communication-preferences,
+  #settings-visibility,
+  #settings-content,
   #notifications-section { scroll-margin-top: 100px; }
   </style>
 
@@ -237,6 +239,12 @@
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
                       :class="profileSubTab === 'invite' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
                 Invite
+              </button>
+            </div>
+            <div class="text-center mt-3 pt-3 border-t border-white/10">
+              <button @click="scrollToSettings('settings-visibility')"
+                      class="text-xs text-gray-500 hover:text-orange-500 dark:hover:text-orange-400 transition font-medium">
+                ⚙️ Manage what people see →
               </button>
             </div>
           </div>
@@ -728,7 +736,7 @@
               </div>
 
               <!-- Notifications section -->
-              <div id="notifications-section" class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+              <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
 
                 <div x-show="push.supported && !pushBannerDismissed && isAuthenticated"
                      x-cloak
@@ -737,7 +745,7 @@
                   <div class="flex items-start gap-3 mb-3">
                     <span class="text-2xl flex-shrink-0">🔔</span>
                     <div class="flex-1 min-w-0">
-                      <p class="font-bold text-sm" x-show="!push.subscribed">🔔 Turn on push notifications for this device</p>
+                      <p class="font-bold text-sm" x-show="!push.subscribed">Turn on push notifications for this device</p>
                       <p class="font-bold text-sm text-green-600 dark:text-green-400" x-show="push.subscribed">✅ Push notifications are ON for this device</p>
                       <p class="text-xs text-gray-500 mt-0.5" x-show="!push.subscribed">Instant alerts for comments, network connections, and messages — even when Traffic Torch is closed.</p>
                       <p class="text-xs text-gray-500 mt-0.5" x-show="push.subscribed">You'll be notified on this device. Manage what you get below.</p>
@@ -774,7 +782,7 @@
                     <p class="text-xs text-gray-500 mt-0.5">On iPhone, Safari only supports notifications for apps installed to your Home Screen. Tap <strong>Share → Add to Home Screen</strong>, then reopen Traffic Torch from the icon.</p>
                   </div>
                 </div>
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+                <div id="notifications-section" class="flex flex-wrap items-center justify-between gap-3 mb-6">
                   <h3 class="text-xl font-bold">🔔 Notifications</h3>
                   <div class="flex gap-2 flex-wrap">
                     <button @click="markAllRead()" :disabled="notifications.unread === 0"
@@ -1488,6 +1496,12 @@
               <button @click="networkSubTab = 'invite'"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
                       :class="networkSubTab === 'invite' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">Invite</button>
+            </div>
+            <div class="text-center mt-3 pt-3 border-t border-white/10">
+              <button @click="scrollToSettings('settings-visibility')"
+                      class="text-xs text-gray-500 hover:text-orange-500 dark:hover:text-orange-400 transition font-medium">
+                ⚙️ Manage what people see →
+              </button>
             </div>
           </div>
 
@@ -2491,6 +2505,66 @@
               <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade here</button>
             </div>
 
+            <!-- ========== SECTION: Visibility ========== -->
+            <h4 id="settings-visibility" class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">👁️ Who can see me</h4>
+            <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3">
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Profile page</div>
+                  <div class="text-xs text-gray-500">Anyone can visit /torcher/your-username/</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.profile_public == 1"
+                       @change="profile.profile_public = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Activity stream</div>
+                  <div class="text-xs text-gray-500">Show your torches, comments, and milestones on your profile</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.activity_public == 1"
+                       @change="profile.activity_public = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">My network list</div>
+                  <div class="text-xs text-gray-500">Show who you're connected to on your profile</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.show_network == 1"
+                       @change="profile.show_network = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Allow network adds</div>
+                  <div class="text-xs text-gray-500">Let other members add you to their network</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.allow_adds == 1"
+                       @change="profile.allow_adds = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+            </div>
+
+            <!-- ========== SECTION: Content ========== -->
+            <h4 id="settings-content" class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">📝 My content</h4>
+            <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3">
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Auto-share new audits to feed</div>
+                  <div class="text-xs text-gray-500">Post your audits to the community feed automatically</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.auto_share == 1"
+                       @change="profile.auto_share = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+            </div>
+
             <!-- ========== SECTION: Communication Preferences ========== -->
             <h4 id="communication-preferences" class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">💬 Communication Preferences</h4>
 
@@ -3351,6 +3425,11 @@ function dashboardApp() {
       this.activeDashboardTab = 'profile';
       this.profileSubTab = 'profile';
       this._scrollToElementWithRetry('notifications-section');
+    },
+
+    scrollToSettings(anchorId = 'settings-visibility') {
+      this.activeDashboardTab = 'settings';
+      this._scrollToElementWithRetry(anchorId);
     },
 
     _scrollToElementWithRetry(id, maxAttempts = 40, delay = 200) {
