@@ -1,4 +1,14 @@
-// aeo-audit.traffictorch.workers.dev — Phase 3 (Puppeteer / Browser Run binding)
+// aeo-audit.traffictorch.workers.dev — Phase 4 (v4)
+// v4 changes — false-positive reduction, aligned with Lighthouse Plus:
+//   • Cookie consent: requires visible DOM markup (class/id/aria-label) or a
+//     named provider. Script bodies and HTML comments are stripped first, so
+//     a comment saying "no cookie banner needed" no longer fires this.
+//   • Infinite scroll: requires a named library OR a scroll/observer handler
+//     that runs a fetch within 600 chars AND no pagination. A bare scroll
+//     listener (sticky header, scroll progress) no longer fires this.
+//   • Text-to-code ratio: score scale recalibrated for modern JS-rendered
+//     sites. Fail threshold moved from 15% → 8%. 8–15% is now an
+//     informational hint instead of a failure.
 import puppeteer from '@cloudflare/puppeteer';
 
 // FIX: hoisted so buildPriorityFixes / buildWarningFixes can use it
@@ -466,12 +476,66 @@ function analyzeCrawlerAccessibility(html, robotsTxt, url) {
   const textLength = stripTags(html).length;
   if (textLength < 500 && noscriptCount === 0) { failed.push('Very little text and no <noscript> fallback'); score -= 20; }
 
-  if (/cookie-?consent|cookie-?banner|onetrust|osano|cookiebot|cookieyes|gdpr-?consent|consent-?manager/i.test(html)) {
-    signals.push({ label: 'Cookie consent UI detected', pass: false }); score -= 5;
+  /* ── v4 FIX — Cookie consent ────────────────────────────────────────
+     Previous check matched the raw HTML for the word "cookie-consent"
+     /"cookie-banner" etc. That fired on:
+       • a JS comment that literally says "no cookie banner needed"
+       • i18n strings and privacy-page copy
+       • inline scripts configuring analytics (GA4, Umami)
+     Now we strip <script>, <style> and HTML comments, then require either
+     (a) a named consent provider, or (b) a real DOM element whose
+     class/id/aria-label matches a cookie/consent pattern. */
+  const htmlNoScriptsOrComments = html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<!--[\s\S]*?-->/g, ' ');
+
+  const namedConsentProvider =
+    /(?:onetrust|osano|cookiebot|cookieyes|quantcast|klaro|termly|iubenda|usercentrics|consentmanager|cookiefirst)/i
+      .test(htmlNoScriptsOrComments);
+
+  const consentElementMarkup =
+    /<(?:div|section|aside|dialog|form)[^>]+(?:id|class|aria-label|data-[\w-]+)=["'][^"']*(?:cookie[\s_-]?(?:consent|banner|notice|dialog|popup)|gdpr[\s_-]?consent|consent[\s_-]?(?:banner|dialog|manager|popup))[^"']*["']/i
+      .test(htmlNoScriptsOrComments);
+
+  if (namedConsentProvider || consentElementMarkup) {
+    signals.push({ label: 'Cookie consent UI detected', pass: false });
+    score -= 5;
   }
 
-  if (/infinite-?scroll|infiniteScroll|IntersectionObserver[\s\S]{0,200}?fetch|window\.addEventListener\(['"]scroll/i.test(html)) {
-    failed.push('Possible infinite scroll — ensure pagination fallback'); score -= 10;
+  /* ── v4 FIX — Infinite scroll ───────────────────────────────────────
+     Previous check treated ANY scroll listener OR ANY IntersectionObserver
+     as infinite scroll. That fires on:
+       • sticky header / sticky CTA reveal-on-scroll
+       • scroll-progress bars
+       • counter animations (IntersectionObserver)
+       • lazy-loaded sections
+     New logic:
+       • Named library present → real finding (unambiguous).
+       • Otherwise, require the scroll/observer handler and a fetch/loader
+         call to appear within ~600 chars of each other AND no pagination
+         markup anywhere → soft informational hint only, no score penalty. */
+  const namedInfiniteScrollLib =
+    /(?:react-infinite-scroll|infinite-scroll\.js|react-infinite|useInfiniteQuery|vue-infinite-scroll|ngx-infinite-scroll)/i
+      .test(html);
+
+  const scrollThenFetch =
+    /(?:IntersectionObserver|addEventListener\(['"](?:scroll|wheel)['"])[\s\S]{0,600}?(?:fetch\s*\(|axios\.(?:get|post)|XMLHttpRequest|\.ajax\s*\()/i
+      .test(html);
+
+  const hasPagination =
+    /rel=["'](?:next|prev)["']|href=["'][^"']*\?page=|class=["'][^"']*\bpagination\b[^"']*["']|<nav[^>]*aria-label=["'][^"']*pagination/i
+      .test(html);
+
+  if (namedInfiniteScrollLib) {
+    failed.push('Infinite scroll detected — ensure a pagination fallback exists for crawlers');
+    score -= 10;
+  } else if (scrollThenFetch && !hasPagination) {
+    signals.push({
+      label: 'Possible infinite-scroll pattern — confirm a pagination fallback exists',
+      pass: false,
+      informational: true
+    });
   }
 
   const hashRouting = /window\.location\.hash|hashchange/i.test(html);
@@ -492,17 +556,34 @@ function analyzeTextDensity(html) {
   const styleLength = (html.match(/<style[\s\S]*?<\/style>/gi) || []).join('').length;
   const adMarkers = (html.match(/class=["'][^"']*?\b(?:ad|ads|advert|advertisement|sponsor|sponsored|promo|promotion|banner-ad|sidebar-widget)\b[^"']*?["']/gi) || []).length;
 
+  /* ── v4 FIX — Recalibrated for modern JS-rendered sites ─────────────
+     WordPress-era HTML could hit 15–30% text-to-code because a paragraph
+     cost ~10 characters of markup. Astro / Next.js / Tailwind push that
+     to ~50+ chars per paragraph. Every modern site with utility classes
+     was failing this. The new scale treats 8% as the practical floor and
+     10–15% as informational, not a failure. */
   const textToCode = totalLength > 0 ? textLength / totalLength : 0;
-  if (textToCode >= 0.30)      score = 100;
-  else if (textToCode >= 0.22) score = 90;
-  else if (textToCode >= 0.15) score = 75;
-  else if (textToCode >= 0.10) score = 60;
-  else if (textToCode >= 0.05) score = 40;
-  else                         score = 20;
 
-  signals.push({ label: `Text-to-code: ${(textToCode * 100).toFixed(1)}%`, pass: textToCode >= 0.15 });
-  if (textToCode < 0.10) failed.push(`Very low text-to-code ratio (${(textToCode * 100).toFixed(1)}%) — page is mostly markup`);
-  else if (textToCode < 0.15) failed.push(`Text-to-code ratio is ${(textToCode * 100).toFixed(1)}% — target is 15% or higher. Reduce wrapper markup or increase visible content.`);
+  if (textToCode >= 0.30)      score = 100;
+  else if (textToCode >= 0.22) score = 92;
+  else if (textToCode >= 0.15) score = 82;
+  else if (textToCode >= 0.10) score = 72;
+  else if (textToCode >= 0.08) score = 60;
+  else if (textToCode >= 0.05) score = 42;
+  else                         score = 22;
+
+  if (textToCode < 0.08) {
+    failed.push(`Text-to-code ratio is ${(textToCode * 100).toFixed(1)}% — page is mostly markup`);
+    signals.push({ label: `Text-to-code: ${(textToCode * 100).toFixed(1)}%`, pass: false });
+  } else if (textToCode < 0.15) {
+    signals.push({
+      label: `Text-to-code: ${(textToCode * 100).toFixed(1)}% — below 15% ideal, acceptable on JS-rendered sites`,
+      pass: false,
+      informational: true
+    });
+  } else {
+    signals.push({ label: `Text-to-code: ${(textToCode * 100).toFixed(1)}%`, pass: true });
+  }
 
   if (scriptLength > textLength * 3 && textLength > 0) { failed.push('Scripts far exceed text'); score -= 20; }
   if (adMarkers > 30)      { failed.push(`${adMarkers} ad/sponsor/promo markers — noise very high`); score -= 30; }
