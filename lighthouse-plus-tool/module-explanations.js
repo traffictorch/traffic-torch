@@ -30,7 +30,7 @@ export const moduleExplanations = {
     how: "Traffic Torch parses the rendered HTML and validates title length (target 50-60 chars), meta description length (target 120-160), canonical presence, hreflang tags, robots meta content, H1 count, and viewport correctness. Each check is scored on a sliding scale rather than pass/fail.",
     why: "These are the visible signals in search results. A missing title, noindex directive, or duplicate H1 will cost you rankings regardless of how good the content is. They are cheap to fix and produce immediate visibility gains."
   },
-"PWA Readiness": {
+"PWA / Installability (optional)": {
     slug: "pwa-readiness",
     what: "How ready your site is to be installed as a Progressive Web App: a valid web app manifest, a registered service worker, an offline fallback, correct theme colour and icon set, and HTTPS. Note: Lighthouse removed its PWA category in v12, so this is a custom Traffic Torch readiness check, not a direct Lighthouse replacement.",
     how: "Traffic Torch scans the HTML for the manifest link, service worker registration, theme-color meta, apple-touch-icon and mask-icon links, and apple-mobile-web-app-capable. It also confirms the site is served over HTTPS, which PWAs require.",

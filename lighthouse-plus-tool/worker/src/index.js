@@ -8,7 +8,7 @@ const WEIGHTS = {
   'Accessibility': 12,
   'Best Practices': 10,
   'SEO On-Page': 10,
-  'PWA Readiness': 8,
+  'PWA / Installability (optional)': 4,
   'Resource Optimisation': 10,
   'Third-Party Impact': 8,
   'Mobile UX': 10,
@@ -585,34 +585,39 @@ function analyzePwa(html, url) {
   let score = 100;
 
   const manifest = (html.match(/<link[^>]*rel=["']manifest["'][^>]*href=["']([^"']+)["']/i) || [])[1];
-  if (!manifest) { failed.push('No web app manifest link'); score -= 25; }
-  else signals.push({ label: 'Manifest linked', pass: true });
-
   const sw = /serviceWorker\.register|navigator\.serviceWorker/i.test(html);
-  if (!sw) { failed.push('No service worker registration detected'); score -= 25; }
-  else signals.push({ label: 'Service worker registered', pass: true });
-
   const themeColor = /<meta[^>]*name=["']theme-color["']/i.test(html);
-  if (!themeColor) { failed.push('Missing theme-color meta'); score -= 8; }
-  else signals.push({ label: 'theme-color meta present', pass: true });
-
   const appleCapable = /<meta[^>]*name=["']apple-mobile-web-app-capable["']/i.test(html);
-  if (!appleCapable) signals.push({ label: 'No apple-mobile-web-app-capable', pass: false, informational: true });
-  else signals.push({ label: 'apple-mobile-web-app-capable present', pass: true });
-
   const appleIcons = (html.match(/<link[^>]*rel=["']apple-touch-icon["']/gi) || []).length;
-  if (appleIcons === 0) signals.push({ label: 'No apple-touch-icon', pass: false, informational: true });
-  else signals.push({ label: `${appleIcons} apple-touch-icon(s)`, pass: true });
-
   const maskIcon = /<link[^>]*rel=["']mask-icon["']/i.test(html);
-  if (!maskIcon) signals.push({ label: 'No mask-icon', pass: false, informational: true });
-  else signals.push({ label: 'mask-icon present', pass: true });
-
   const isHttps = url?.startsWith('https://');
-  if (!isHttps && url) { failed.push('PWA requires HTTPS'); score -= 25; }
-  else if (isHttps) signals.push({ label: 'Served over HTTPS', pass: true });
 
-  return mod('PWA Readiness', score, { manifest: !!manifest, serviceWorker: sw, themeColor }, signals, failed);
+  const hasPwaIntent = !!(manifest || sw || themeColor);
+  const metrics = { manifest: !!manifest, serviceWorker: sw, themeColor, pwaIntent: hasPwaIntent };
+
+  if (!hasPwaIntent) {
+    if (!manifest) signals.push({ label: 'No web app manifest link (optional unless building a PWA)', pass: false, informational: true });
+    if (!sw) signals.push({ label: 'No service worker registration (optional unless building a PWA)', pass: false, informational: true });
+    if (!themeColor) signals.push({ label: 'No theme-color meta (optional)', pass: false, informational: true });
+    if (!appleCapable) signals.push({ label: 'No apple-mobile-web-app-capable (optional)', pass: false, informational: true });
+    if (appleIcons === 0) signals.push({ label: 'No apple-touch-icon (optional)', pass: false, informational: true });
+    else signals.push({ label: `${appleIcons} apple-touch-icon(s)`, pass: true });
+    if (!maskIcon) signals.push({ label: 'No mask-icon (optional)', pass: false, informational: true });
+    else signals.push({ label: 'mask-icon present', pass: true });
+    if (isHttps) signals.push({ label: 'Served over HTTPS', pass: true });
+    else if (url) signals.push({ label: 'Not served over HTTPS (blocks PWA installability)', pass: false, informational: true });
+    return mod('PWA / Installability (optional)', null, metrics, signals, [], { optional: true });
+  }
+
+  if (!manifest) { failed.push('No web app manifest link'); score -= 25; } else signals.push({ label: 'Manifest linked', pass: true });
+  if (!sw) { failed.push('No service worker registration detected'); score -= 25; } else signals.push({ label: 'Service worker registered', pass: true });
+  if (!themeColor) { failed.push('Missing theme-color meta'); score -= 8; } else signals.push({ label: 'theme-color meta present', pass: true });
+  if (!appleCapable) signals.push({ label: 'No apple-mobile-web-app-capable', pass: false, informational: true }); else signals.push({ label: 'apple-mobile-web-app-capable present', pass: true });
+  if (appleIcons === 0) signals.push({ label: 'No apple-touch-icon', pass: false, informational: true }); else signals.push({ label: `${appleIcons} apple-touch-icon(s)`, pass: true });
+  if (!maskIcon) signals.push({ label: 'No mask-icon', pass: false, informational: true }); else signals.push({ label: 'mask-icon present', pass: true });
+  if (!isHttps && url) { failed.push('PWA requires HTTPS'); score -= 25; } else if (isHttps) signals.push({ label: 'Served over HTTPS', pass: true });
+
+  return mod('PWA / Installability (optional)', score, metrics, signals, failed);
 }
 
 function analyzeResources(bm, html, url) {

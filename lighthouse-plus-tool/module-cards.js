@@ -7,7 +7,7 @@ const MODULE_META = {
   "Accessibility":            { icon: "♿", color: "from-pink-500 to-purple-500" },
   "Best Practices":           { icon: "🔒", color: "from-purple-500 to-indigo-500" },
   "SEO On-Page":              { icon: "🔎", color: "from-indigo-500 to-blue-500" },
-  "PWA Readiness":            { icon: "📱", color: "from-blue-500 to-cyan-500" },
+  "PWA / Installability (optional)": { icon: "📱", color: "from-blue-500 to-cyan-500" },
   "Resource Optimisation":    { icon: "🖼️", color: "from-cyan-500 to-teal-500" },
   "Third-Party Impact":       { icon: "🌐", color: "from-teal-500 to-emerald-500" },
   "Mobile UX":                { icon: "👆", color: "from-emerald-500 to-green-500" },
