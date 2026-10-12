@@ -636,6 +636,7 @@
           const pointsMap = {};
           const endorseMap = {};
           const profilesMap = {};
+          const verifiedMap = {};
           await Promise.all(rows.map(async (e) => {
             if (!e.username) return;
             try {
@@ -643,6 +644,7 @@
               if (!res.ok) return;
               const data = await res.json();
               if (data.profile) profilesMap[e.username] = data.profile;
+              if (data.profile && data.profile.verified_at) verifiedMap[e.username] = true;
               if (data.profile && typeof data.profile.total_points === 'number') {
                 pointsMap[e.username] = data.profile.total_points;
               }
@@ -666,7 +668,7 @@
               <div class="lb-podium-profile">
                 <img class="lb-podium-profile-avatar" src="${esc(ttAvatarSrc(profilesMap[e.username] || e))}" alt="" loading="lazy">
                 <div class="lb-podium-profile-meta">
-                  <a class="lb-podium-profile-name" href="/torcher/${esc(e.username)}/">${esc(e.display_name || e.username)}</a>
+                  <a class="lb-podium-profile-name" href="/torcher/${esc(e.username)}/" style="display:inline-flex;align-items:center;gap:6px;">${esc(e.display_name || e.username)}${verifiedMap[e.username] ? `<svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;flex-shrink:0;display:inline-block;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>` : ''}</a>
                   <span class="lb-podium-profile-handle">@${esc(e.username)}</span>
                   ${typeof points === 'number' ? `<span class="lb-podium-points">🏅 ${points}</span>` : ''}
                   ${endorseMap[e.username] ? `<span class="lb-podium-points" style="background:rgba(236,72,153,0.15);color:#ec4899;">⭐ ${endorseMap[e.username]}</span>` : ''}

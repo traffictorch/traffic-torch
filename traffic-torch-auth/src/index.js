@@ -960,7 +960,7 @@ async function handleTorchRoutes(request, env, url) {
     const post = await env.MY_BINDING.prepare(
       `SELECT p.id, p.user_id, p.category, p.note, p.tool, p.url, p.page_title, p.score,
               p.domain_mode, p.domain_label, p.module_scores, p.status, p.created_at,
-              u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.bio,
+              u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.verified_at, u.bio,
               u.website_url, u.website_approved, u.social1_url, u.social2_url,
               u.job_title, u.company, u.location, u.show_network, u.allow_adds,
               u.verified_at, u.verified_domain,
@@ -1214,7 +1214,7 @@ async function handleNetworkRoutes(request, env, url) {
   if (url.pathname === '/api/network/list' && request.method === 'GET') {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     const rows = await env.MY_BINDING.prepare(
-      `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, n.created_at,
+      `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.verified_at, n.created_at,
               COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = u.id), 0) AS total_points
          FROM network n JOIN users u ON u.id = n.network_user_id
         WHERE n.user_id = ? ORDER BY n.created_at DESC`
@@ -1612,7 +1612,7 @@ async function handleFeedRoutes(request, env, url) {
     const sql = `
             SELECT p.id, p.user_id, p.category, p.note, p.tool, p.url, p.page_title, p.score,
              p.domain_mode, p.domain_label, p.module_scores, p.created_at,
-             u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role,
+             u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.verified_at,
              COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = p.user_id), 0) AS total_points,
              (SELECT COUNT(*) FROM comments c WHERE c.post_id = p.id AND c.status = 'published') AS comment_count
         FROM posts p
@@ -1978,7 +1978,7 @@ async function handleFeedRoutes(request, env, url) {
   if (url.pathname === '/api/contributions/leaderboard' && request.method === 'GET') {
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '12', 10) || 12, 30);
     const rows = await env.MY_BINDING.prepare(
-      `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role,
+      `SELECT u.id, u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.verified_at,
               u.bio, u.website_url, u.website_approved, u.job_title, u.company, u.location,
               COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = u.id), 0) AS total_points,
               (SELECT COUNT(*) FROM user_points up WHERE up.user_id = u.id AND up.event_type = 'contribution') AS contribution_count,
