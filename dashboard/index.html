@@ -521,27 +521,14 @@
                       </div>
                     </div>
 
-                    <div class="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Auto-share new audits to feed</span>
-                        <input type="checkbox" x-model="profile.auto_share" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Hide my network on profile</span>
-                        <input type="checkbox" :checked="!profile.show_network" @change="profile.show_network = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Don't allow others to add me to their network</span>
-                        <input type="checkbox" :checked="!profile.allow_adds" @change="profile.allow_adds = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Make profile private</span>
-                        <input type="checkbox" :checked="!profile.profile_public" @change="profile.profile_public = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Keep my activity private</span>
-                        <input type="checkbox" :checked="!profile.activity_public" @change="profile.activity_public = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <p class="text-xs text-gray-500 mb-2">
+                        Privacy & visibility controls (profile, activity, network, auto-share) live in Settings.
+                      </p>
+                      <button type="button" @click="scrollToSettings('settings-visibility')"
+                              class="text-sm font-medium text-orange-500 hover:text-orange-600 dark:hover:text-orange-400 hover:underline">
+                        ⚙️ Manage privacy settings →
+                      </button>
                     </div>
 
   
@@ -577,13 +564,21 @@
                                :class="verifyStatus.ok ? 'bg-green-500/10 text-green-600 dark:text-green-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'">
                             <p x-text="verifyStatus.message"></p>
                             <template x-if="verifyStatus.token">
-                              <div class="mt-2">
-                                <p class="mb-1">Add this to your website's <code>&lt;head&gt;</code>:</p>
-                                <code class="block p-2 bg-gray-900 text-gray-100 rounded text-[10px] break-all">&#60;meta name="traffic-torch-verify" content="<span x-text="verifyStatus.token"></span>"&#62;</code>
-                                <button type="button" @click="copyVerifyToken()"
-                                        class="mt-2 px-3 py-1 rounded bg-gray-800 dark:bg-gray-700 text-white text-[11px] font-bold hover:bg-gray-700 dark:hover:bg-gray-600">
-                                  Copy tag
-                                </button>
+                              <div class="mt-3">
+                                <p class="mb-2 text-sm">Add this meta tag inside your website's <code class="px-1 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-xs">&lt;head&gt;</code>:</p>
+                                <div class="rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
+                                  <div class="px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-[11px] font-mono leading-relaxed break-all select-all">
+                                    <span class="text-gray-400 dark:text-gray-500">&lt;meta</span> <span class="text-blue-600 dark:text-blue-400">name</span>=<span class="text-green-700 dark:text-green-400">"traffic-torch-verify"</span>
+                                    <span class="text-blue-600 dark:text-blue-400">content</span>=<span class="text-green-700 dark:text-green-400">"<span x-text="verifyStatus.token" class="text-orange-600 dark:text-orange-400"></span>"</span><span class="text-gray-400 dark:text-gray-500">&gt;</span>
+                                  </div>
+                                  <button type="button" @click="copyVerifyToken()"
+                                          class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90 transition">
+                                    📋 Tap to copy the meta tag
+                                  </button>
+                                </div>
+                                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                  After pasting it into your site's <code>&lt;head&gt;</code>, click <strong>Verify now</strong> again.
+                                </p>
                               </div>
                             </template>
                           </div>

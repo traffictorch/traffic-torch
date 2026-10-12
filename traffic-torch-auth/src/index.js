@@ -759,6 +759,10 @@ async function handleProfileRoutes(request, env, url) {
     const fresh = await env.MY_BINDING.prepare('SELECT * FROM users WHERE id = ?').bind(user.id).first();
     const profile = shapeProfile(fresh);
     profile.total_points = await getUserTotalPoints(env, user.id);
+    const endorseRow = await env.MY_BINDING.prepare(
+      'SELECT COUNT(*) AS c FROM torch_endorsements WHERE author_id = ?'
+    ).bind(user.id).first();
+    profile.endorsement_count = (endorseRow && endorseRow.c) ? endorseRow.c : 0;
     return feedJson({ profile });
   }
 
