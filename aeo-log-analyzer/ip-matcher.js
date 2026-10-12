@@ -11,6 +11,8 @@ export const BOT_UA_PATTERNS = {
   'OAI-SearchBot':    /OAI-SearchBot\//i,
   'ChatGPT-User':     /ChatGPT-User\//i,
   'ClaudeBot':        /ClaudeBot\//i,
+  'Claude-User':      /Claude-User\//i,
+  'Claude-SearchBot': /Claude-SearchBot\//i,
   'Claude-Web':       /Claude-Web\//i,
   'anthropic-ai':     /anthropic-ai/i,
   'PerplexityBot':    /PerplexityBot\//i,
@@ -26,9 +28,10 @@ export const BOT_UA_PATTERNS = {
 export const PUBLISHED_IP_BOTS = new Set([
   'Googlebot', 'Googlebot-Image', 'Googlebot-News',
   'Bingbot', 'Applebot',
-  'GPTBot', 'OAI-SearchBot', 'ChatGPT-User'
-  // Amazonbot removed — Amazon does not publish an IP range.
-  // It's UA-only like Perplexity, Claude, and CCBot.
+  'GPTBot', 'OAI-SearchBot', 'ChatGPT-User',
+  'PerplexityBot', 'Perplexity-User',
+  'ClaudeBot', 'Claude-User', 'Claude-SearchBot'
+  // Amazonbot, CCBot, Bytespider, DuckAssistBot, YandexBot remain UA-only.
 ]);
 
 // ── IP normalization ──
