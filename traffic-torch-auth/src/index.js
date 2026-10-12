@@ -616,10 +616,10 @@ function withAvatarUrl(row) {
   if (!row) return row;
   const id = row.user_id != null ? row.user_id : row.id;
   if (id && row.avatar_r2_key) {
-    row.avatar_url = `/api/profile/avatar/${id}?v=${row.avatar_updated_at || 0}`;
+    row.avatar_url = `https://traffic-torch-auth.traffictorch.workers.dev/api/profile/avatar/${id}?v=${row.avatar_updated_at || 0}`;
   }
   if (row.actor_id && row.actor_avatar_r2_key) {
-    row.actor_avatar_url = `/api/profile/avatar/${row.actor_id}?v=${row.actor_avatar_updated_at || 0}`;
+    row.actor_avatar_url = `https://traffic-torch-auth.traffictorch.workers.dev/api/profile/avatar/${row.actor_id}?v=${row.actor_avatar_updated_at || 0}`;
   }
   return row;
 }
@@ -635,7 +635,7 @@ function shapeProfile(user) {
     avatar_r2_key: user.avatar_r2_key || null,
     avatar_updated_at: user.avatar_updated_at || null,
     avatar_url: user.avatar_r2_key
-      ? `/api/profile/avatar/${user.id}?v=${user.avatar_updated_at || 0}`
+      ? `https://traffic-torch-auth.traffictorch.workers.dev/api/profile/avatar/${user.id}?v=${user.avatar_updated_at || 0}`
       : null,
     role: user.role || 'owner',
     tier: user.tier || 'free',

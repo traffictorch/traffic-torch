@@ -39,11 +39,6 @@ export default {
       if (path.startsWith('/og/torch/')) return handleOgTorchReal(request, env);
       if (path.startsWith('/og/profile/')) return handleOgProfileReal(request, env);
 
-      // Avatars live on the auth worker — proxy transparently so <img src="/api/profile/avatar/...">
-      // works on torch pages, profile pages, community, etc. (fixes 404s).
-      if (path.startsWith('/api/profile/avatar/')) {
-        return env.AUTH.fetch(request);
-      }
 
       if (path.startsWith('/torcher/')) return handleProfileReal(request, env);
       if (path.startsWith('/torch/')) return handleTorchReal(request, env);
