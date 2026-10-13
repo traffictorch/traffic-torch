@@ -1,8 +1,8 @@
-// nusa-fix v16 — generic, honest, short
+// nusa-fix v17 — generic, honest, short
 //
-// The model's job: describe what needs to change, name the general area to fix it on
-// the user's platform, and give one plain example. No exact plugin names invented,
-// no fake code, no file paths the worker can't verify.
+// v17 adds findingHints(): deterministic prompt injections for findings where
+// the model's default advice would be wrong (language-dependent readability,
+// optional PWA, known build-tool artefacts).
 
 const DEFAULT_MODEL = '@cf/openai/gpt-oss-20b';
 
@@ -103,6 +103,49 @@ function surfaceFor(platformName, cat) {
   return (SURFACES[platformName] && SURFACES[platformName][cat]) || SURFACES[platformName].general;
 }
 
+/* ───────────────────────── finding hints (v17) ───────────────────────── */
+
+function findingHints(finding) {
+  const label = String(finding.label || '');
+  const l = label.toLowerCase();
+  const hints = [];
+
+  // Language-dependent readability — the tool now picks a formula based on
+  // the page's language, so hardcoding "Flesch" is often wrong.
+  if (/flesch|kincaid|reading ease|reading grade/.test(l)) {
+    hints.push(
+      'LANGUAGE DEPENDENCY: The readability module selects a language-appropriate formula — it is not always Flesch. ' +
+      'Do NOT write "Flesch" or "Flesch-Kincaid" in the fix text. Say "reading-ease score" or "reading-grade score" instead. ' +
+      'The formula is chosen from the page language (Amstad for German, Fernández-Huerta for Spanish, Kandel-Moles for French, ' +
+      'Flesch-Vacca for Italian, Douma for Dutch, Oborneva for Russian, Flesch for English). If the page language has no ' +
+      'trusted adapted formula, vocabulary scores are skipped and the finding is informational — no action required.'
+    );
+  }
+
+  // PWA / installability is optional since Lighthouse 12 removed the category.
+  if (/manifest|service worker|theme[- ]color|apple[- ]mobile[- ]web[- ]app|mask[- ]icon|apple[- ]touch[- ]icon/.test(l)) {
+    hints.push(
+      'OPTIONAL FEATURE: PWA / installability is optional. Do NOT present the fix as required. ' +
+      'Open with: this is optional and only matters if the site is aiming to be installable as a PWA. ' +
+      'If the site is not building a PWA, no action is required.'
+    );
+  }
+
+  // Known minifier artefacts — don't send the user to webpack for an Astro build.
+  if (/__name is not defined|referenceerror[^.]*__name/.test(l)) {
+    hints.push(
+      'KNOWN BUILD ARTEFACT: "__name is not defined" is a known esbuild / Vite / Astro minifier artefact, not a bug in hand-written code. ' +
+      'Do NOT mention webpack.config.js or gulpfile.js. Correct guidance: check the site build config (vite.config.js, astro.config.mjs, ' +
+      'esbuild options) for keepNames or minify settings; a rebuild with matching options, or disabling keepNames, usually clears the error. ' +
+      'If the site is not a JavaScript build project, treat it as informational only.'
+    );
+  }
+
+  return hints.length
+    ? '\n\nSpecial guidance for this finding:\n- ' + hints.join('\n- ')
+    : '';
+}
+
 /* ───────────────────────── worker entry ───────────────────────── */
 
 export default {
@@ -147,8 +190,8 @@ function buildPrompt({ url, pageTitle, cms, finding, affectedHtml }) {
   const pLine = cms?.version ? `${pName} ${cms.version}` : pName;
   const cat = category(finding.label);
   const surface = surfaceFor(pName, cat);
+  const hints = findingHints(finding);
 
-  // Abbreviate any URL in the failing HTML so the model can't paste long paths.
   const safeHtml = affectedHtml && String(affectedHtml).trim().length > 20
     ? String(affectedHtml).replace(/https?:\/\/[^\s"'<>]+/g, u => {
         const last = u.split('?')[0].split('/').pop() || '';
@@ -167,7 +210,7 @@ General area to fix this on this platform: ${surface}
 Context:
 - Page: ${url || 'unknown'}${pageTitle ? ' — "' + pageTitle + '"' : ''}
 - Category: ${catLine}
-- Finding: ${finding.label}${htmlBlock}
+- Finding: ${finding.label}${htmlBlock}${hints}
 
 Output format (exactly this shape):
 
@@ -184,7 +227,8 @@ Rules:
 - No markdown bold, italic, or inline code in prose.
 - No greetings. No sign-offs. No verification step. Start directly with the prose.
 - Custom-platform rule: when cms is "Custom / Unknown", never mention a theme, plugin, CMS admin screen, or CMS-specific path. Use neutral language: "your stylesheet", "your template", "your layout file", "your server config". Never say "theme's style.css", "WP Rocket", "Gutenberg", "child theme", or any product name that only exists on a CMS.
-- No invented third-party scripts: never produce a CDN URL, a script tag, an API call, or a config object for a product you cannot verify exists in the audit data or in the known-plugin list. If the finding names a technology you cannot confirm (e.g. WebMCP), say: "This is an informational signal — no action required unless you're actively integrating with a specific provider."`;
+- No invented third-party scripts: never produce a CDN URL, a script tag, an API call, or a config object for a product you cannot verify exists in the audit data or in the known-plugin list. If the finding names a technology you cannot confirm (e.g. WebMCP), say: "This is an informational signal — no action required unless you're actively integrating with a specific provider."
+- Obey any "Special guidance for this finding" block above. It overrides your default assumptions.`;
 }
 
 /* ───────────────────────── generateFix ───────────────────────── */
@@ -218,14 +262,12 @@ async function generateFix(env, payload) {
 
   const cleaned = stripInlineMarkdown(stripWrapper(prose));
 
-  // Basic shape check
   const hasExample = /(^|\n)\s*Example:\s*(\n|$)/i.test(cleaned);
   const hasSteps   = /(?:^|\n)\s*\d+[.)]\s+\S/.test(cleaned);
   if (!hasExample || !hasSteps) {
     return { applicable: false, prose: '', reason: 'model did not follow the format', debug: { proseHead: cleaned.slice(0, 200) } };
   }
 
-  // Reject invented plugins that don't exist on well-known lists
   const KNOWN_PLUGINS = ['yoast','rank math','seopress','perfmatters','wp rocket','autoptimize','litespeed','really simple ssl','wpcode','code snippets','smush','shortpixel','tinyimg','crush.pics','superpwa','pwa for wp','wp accessibility','equalize digital'];
   const pluginMentions = cleaned.match(/\b(?:plugin|app|extension)\s+(?:called\s+|named\s+)?["']?([A-Z][A-Za-z0-9 .'-]{2,30})["']?/g) || [];
   const invented = pluginMentions.find(m => {
@@ -236,13 +278,11 @@ async function generateFix(env, payload) {
     return { applicable: false, prose: '', reason: `model invented a plugin name: ${invented}`, debug: { proseHead: cleaned.slice(0, 200) } };
   }
 
-  // Reject long URLs in code blocks
   const blocks = cleaned.match(/```[\s\S]*?```/g) || [];
   if (blocks.some(b => /https?:\/\/[^\s"'<>]{50,}/.test(b))) {
     return { applicable: false, prose: '', reason: 'code block contains a full URL', debug: { proseHead: cleaned.slice(0, 200) } };
   }
 
-  // Prose word cap
   const intro = cleaned.split(/\n\s*Example:/i)[0] || '';
   const words = intro.trim().split(/\s+/).filter(Boolean).length;
   if (words > 60) {
