@@ -1068,10 +1068,10 @@
                              width="32" height="32" style="width:32px;height:32px;"
                              class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                         <div class="flex-1 flex gap-2">
-                                                    <textarea rows="3" maxlength="360"
+                                                    <textarea rows="3" maxlength="6000"
                                  x-model="feed.commentDrafts[post.id]"
                                  @keydown.enter.exact.prevent="submitComment(post.id)"
-                                 placeholder="Leave a comment… (360 chars) · +5 pts"
+                                 placeholder="Leave a comment… (6000 chars) · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                                  <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
@@ -1726,10 +1726,10 @@
                              width="32" height="32" style="width:32px;height:32px;"
                              class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                         <div class="flex-1 flex gap-2">
-                                                    <textarea rows="3" maxlength="360"
+                                                    <textarea rows="3" maxlength="6000"
                                  x-model="feed.commentDrafts[post.id]"
                                  @keydown.enter.exact.prevent="submitComment(post.id)"
-                                 placeholder="Leave a comment… (360 chars) · +5 pts"
+                                 placeholder="Leave a comment… (6000 chars) · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                                 <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
@@ -4670,7 +4670,7 @@ async endorsePost(postId) {
 
     async submitComment(postId) {
       const body = (this.feed.commentDrafts[postId] || '').trim();
-      if (!body || body.length > 360) return;
+      if (!body || body.length > 6000) return;
       try {
         const res = await fetch(`${API_BASE}/api/posts/${postId}/comments`, {
           method: 'POST',
@@ -4762,7 +4762,7 @@ async endorsePost(postId) {
               <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Title</label>
               <input id="tt-edit-post-title" type="text" maxlength="60" placeholder="Optional title (60 chars)" style="width:100%; box-sizing:border-box; padding:0.55rem 0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:0.9rem; background:transparent; color:inherit; font-family:inherit;">
               <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Note</label>
-              <textarea id="tt-edit-post-note" maxlength="360" rows="6" style="width:100%; box-sizing:border-box; padding:0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; resize:vertical; font-family:inherit; background:transparent; color:inherit;"></textarea>
+              <textarea id="tt-edit-post-note" maxlength="6000" rows="6" style="width:100%; box-sizing:border-box; padding:0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; resize:vertical; font-family:inherit; background:transparent; color:inherit;"></textarea>
               <p style="font-size:0.75rem; color:#9ca3af; text-align:right; margin:0.25rem 0 0.9rem;"><span id="tt-edit-post-count">0</span> / 360</p>
               <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Category</label>
               <select id="tt-edit-post-cat" style="width:100%; padding:0.55rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:1.25rem; background:transparent; color:inherit;">

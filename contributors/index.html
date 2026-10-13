@@ -150,6 +150,60 @@
 			  Traffic Torch is built in the open. Real sites, real logs, real pushback — the SEOs, developers, designers, and site owners who audit, break, and refine these tools don't just use them, they shape them. Every sharp edge on this platform came from somebody who noticed a blunt one.
 			</p>
         </section>
+        
+        <!-- ═══ Submit Contribution Form ═══ -->
+<section class="max-w-3xl mx-auto my-16 px-4">
+  <div class="bg-white dark:bg-gray-900 rounded-3xl p-8 border border-gray-200 dark:border-gray-700 shadow-xl">
+    <h2 class="text-2xl md:text-3xl font-black text-center mb-2 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+      Submit a Contribution
+    </h2>
+    <p class="text-center text-gray-600 dark:text-gray-400 mb-6 text-sm">
+      Found a bug, have a feature request, or want to share real-world data? Let us know.
+    </p>
+    
+    <form id="contribution-form" class="space-y-4">
+      <!-- Name/Handle -->
+      <div>
+        <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Your Name / GitHub Handle</label>
+        <input type="text" id="contrib-name" required maxlength="100" placeholder="e.g., JohnDoe or @johndoe" class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Email Address</label>
+        <input type="email" id="contrib-email" required maxlength="150" placeholder="you@example.com" class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
+      </div>
+
+      <!-- Tool Name -->
+      <div>
+        <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Which tool is this regarding?</label>
+        <select id="contrib-tool" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
+          <option value="">Select a tool...</option>
+          <option value="keyword-tool">Keyword Placement Tool</option>
+          <option value="seo-ux-tool">SEO + UX Tool</option>
+          <option value="local-seo-tool">Local SEO Tool</option>
+          <option value="ai-audit-tool">AI Content Audit Tool</option>
+          <option value="other">Other / General Feedback</option>
+        </select>
+      </div>
+
+      <!-- Contribution Details (Increased to 6000) -->
+      <div>
+        <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Contribution Details</label>
+        <textarea id="contrib-details" required maxlength="6000" rows="8" placeholder="Describe the bug, feature request, or feedback in detail (max 6000 characters)..." class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y"></textarea>
+        <p class="text-xs text-right text-gray-500 mt-1"><span id="char-count">0</span> / 6000</p>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="contrib-submit-btn" class="w-full py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition shadow-lg">
+        Submit Contribution
+      </button>
+    </form>
+    
+    <!-- Status Message -->
+    <p id="contrib-status" class="text-center text-sm mt-4 hidden"></p>
+  </div>
+</section>
 
         <section class="mb-16 px-2">
           <h2 class="text-2xl md:text-3xl font-black text-center mb-8 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
@@ -312,5 +366,61 @@
     import { renderContributorsPage } from '/contributors/contributors-page.js?v=1.1';
     document.addEventListener('DOMContentLoaded', () => renderContributorsPage());
   </script>
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('contribution-form');
+    const textarea = document.getElementById('contrib-details');
+    const charCount = document.getElementById('char-count');
+    const statusEl = document.getElementById('contrib-status');
+    const submitBtn = document.getElementById('contrib-submit-btn');
+
+    // Update character count
+    textarea.addEventListener('input', () => {
+      charCount.textContent = textarea.value.length;
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      statusEl.classList.add('hidden');
+
+      const payload = {
+        name: document.getElementById('contrib-name').value.trim(),
+        email: document.getElementById('contrib-email').value.trim(),
+        tool: document.getElementById('contrib-tool').value,
+        details: textarea.value.trim()
+      };
+
+      try {
+        // Replace with your actual API endpoint
+        const res = await fetch('/api/contributions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          statusEl.textContent = '✓ Contribution submitted successfully! We will review it shortly.';
+          statusEl.className = 'text-center text-sm mt-4 text-green-500 font-bold';
+          form.reset();
+          charCount.textContent = '0';
+        } else {
+          throw new Error('Server responded with an error');
+        }
+      } catch (err) {
+        statusEl.textContent = '⚠️ Failed to submit. Please try again or email us directly.';
+        statusEl.className = 'text-center text-sm mt-4 text-red-500 font-bold';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Contribution';
+        statusEl.classList.remove('hidden');
+      }
+    });
+  });
+</script>
+  
 </body>
 </html>

@@ -427,6 +427,15 @@ async function ensureTables(env) {
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN verified_token TEXT`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN verified_at INTEGER`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN skills TEXT`).run(); } catch (e) {}
+  // ── Social expansion ──
+  try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN post_type TEXT DEFAULT 'audit'`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN title TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN body_md TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN visibility TEXT DEFAULT 'public'`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN before_score INTEGER`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE comments ADD COLUMN body_md TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_comments_post_created ON comments(post_id, created_at DESC)`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`CREATE INDEX IF NOT EXISTS idx_posts_type_cat_created ON posts(post_type, category, created_at DESC)`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN contacts TEXT`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN contacts_visibility TEXT DEFAULT 'click'`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN available_for_hire INTEGER DEFAULT 0`).run(); } catch (e) {}
@@ -1676,7 +1685,7 @@ async function handleFeedRoutes(request, env, url) {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const category = CATEGORIES.includes(body.category) ? body.category : 'ux';
-    const note = String(body.note || '').slice(0, 360);
+    const note = String(body.note || '').slice(0, 6000);
     const tool = String(body.tool || '').slice(0, 60);
     const urlVal = String(body.url || '').slice(0, 500);
     const pageTitle = String(body.page_title || '').slice(0, 200);
@@ -1733,7 +1742,7 @@ async function handleFeedRoutes(request, env, url) {
     if (!post || post.user_id !== user.id) return feedJson({ error: 'Not found' }, 404);
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const fields = []; const params = [];
-    if (typeof body.note === 'string') { fields.push('note = ?'); params.push(body.note.slice(0, 360)); }
+    if (typeof body.note === 'string') { fields.push('note = ?'); params.push(body.note.slice(0, 6000)); }
     if (typeof body.page_title === 'string') { fields.push('page_title = ?'); params.push(body.page_title.slice(0, 200)); }
     if (CATEGORIES.includes(body.category)) { fields.push('category = ?'); params.push(body.category); }
     if (typeof body.domain_mode === 'string' && ['domain','hidden','full'].includes(body.domain_mode)) {
@@ -1776,28 +1785,38 @@ async function handleFeedRoutes(request, env, url) {
     return feedJson({ success: true });
   }
 
-  // GET /api/posts/:id/comments
+  // GET /api/posts/:id/comments  (paginated, default 30/page)
   if (url.pathname.match(/^\/api\/posts\/\d+\/comments$/) && request.method === 'GET') {
     const id = parseInt(url.pathname.split('/')[3], 10);
+    const qs = new URL(request.url).searchParams;
+    const offset = Math.max(0, parseInt(qs.get('offset') || '0', 10) || 0);
+    const limit = Math.min(100, Math.max(1, parseInt(qs.get('limit') || '30', 10) || 30));
     const rows = await env.MY_BINDING.prepare(
       `SELECT c.id, c.post_id, c.user_id, c.body, c.created_at,
               u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at,
               COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = c.user_id), 0) AS total_points
          FROM comments c JOIN users u ON u.id = c.user_id
         WHERE c.post_id = ? AND c.status = 'published'
-        ORDER BY c.created_at ASC LIMIT 100`
-    ).bind(id).all();
-    return feedJson({ comments: withAvatars(rows.results) });
+        ORDER BY c.created_at ASC LIMIT ? OFFSET ?`
+    ).bind(id, limit, offset).all();
+    const totalRow = await env.MY_BINDING.prepare(
+      "SELECT COUNT(*) AS c FROM comments WHERE post_id = ? AND status = 'published'"
+    ).bind(id).first();
+    const total = totalRow?.c || 0;
+    return feedJson({
+      comments: withAvatars(rows.results),
+      total, offset, limit,
+      has_more: offset + rows.results.length < total
+    });
   }
-
   // POST /api/posts/:id/comments
   if (url.pathname.match(/^\/api\/posts\/\d+\/comments$/) && request.method === 'POST') {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     const id = parseInt(url.pathname.split('/')[3], 10);
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const text = String(body.body || '').trim();
-    if (!text || text.length > 360) return feedJson({ error: 'Comment must be 1–360 chars' }, 400);
-    if (/https?:\/\//i.test(text)) return feedJson({ error: 'Links not allowed in comments' }, 400);
+    if (!text || text.length > 6000) return feedJson({ error: 'Comment must be 1–6000 chars' }, 400);
+    if ((text.match(/https?:\/\//gi) || []).length > 10) return feedJson({ error: 'Max 10 links per comment' }, 400);
     const post = await env.MY_BINDING.prepare("SELECT id FROM posts WHERE id = ? AND status = 'published'").bind(id).first();
     if (!post) return feedJson({ error: 'Post not found' }, 404);
     const now = Date.now();
@@ -1843,8 +1862,8 @@ async function handleFeedRoutes(request, env, url) {
     if (!c || c.user_id !== user.id) return feedJson({ error: 'Not found' }, 404);
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const text = String(body.body || '').trim();
-    if (!text || text.length > 360) return feedJson({ error: 'Comment must be 1–360 chars' }, 400);
-    if (/https?:\/\//i.test(text)) return feedJson({ error: 'Links not allowed' }, 400);
+    if (!text || text.length > 6000) return feedJson({ error: 'Comment must be 1–6000 chars' }, 400);
+    if ((text.match(/https?:\/\//gi) || []).length > 10) return feedJson({ error: 'Max 10 links per comment' }, 400);
     await env.MY_BINDING.prepare('UPDATE comments SET body = ? WHERE id = ?').bind(text, id).run();
     return feedJson({ success: true });
   }
@@ -1949,7 +1968,7 @@ async function handleFeedRoutes(request, env, url) {
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const type = ['bug', 'feature', 'feedback', 'docs'].includes(body.type) ? body.type : 'bug';
     const subject = String(body.subject || '').slice(0, 160);
-    const message = String(body.message || '').trim().slice(0, 2000);
+    const message = String(body.message || '').trim().slice(0, 6000);
     const tool = String(body.tool || '').slice(0, 60);
     const pageUrl = String(body.page_url || '').slice(0, 500);
     if (message.length < 10) return feedJson({ error: 'Please describe the issue (10+ chars)' }, 400);
