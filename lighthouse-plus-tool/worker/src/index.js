@@ -553,7 +553,7 @@ function analyzeBestPractices(bm, html, headers, url) {
     else signals.push({ label: 'X-Powered-By not exposed', pass: true });
   }
 
-  return mod('Best Practices', score, { https: url?.startsWith('https://'), errors: errs, deprecatedCount, badAspect }, signals, failed);
+return mod('Best Practices', score, { https: url?.startsWith('https://'), errors: pageErrors.length, deprecatedCount, badAspect }, signals, failed);
 }
 
 function analyzeSeoOnPage(html, url) {
