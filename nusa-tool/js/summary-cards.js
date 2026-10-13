@@ -1,4 +1,13 @@
-// summary-cards.js — v14
+// summary-cards.js — v15
+// v15 changes (NUSA ↔ Lighthouse Plus alignment):
+//   • applyIssueCap returns null for null scores (was silently returning 0,
+//     which capped the whole SEO category at 60 whenever an optional module
+//     like "PWA / Installability (optional)" slipped through dedupe)
+//   • recomputeOverall filters null-scored modules before averaging
+//   • evaluateWorkerModule skips signals marked informational:true (they are
+//     hints, not warnings, and were inflating warn counts)
+//   • moduleDisplayScore returns null; categoryCard filters null modules out
+//     instead of rendering "null · Needs Work"
 // v14 changes:
 //   • VISIBLE_MODULES 5 → 6 (SEO card previews 6 modules before "show more")
 //   • Added "Full Results →" chip to UX / SEO / AEO cards, deep-linking
@@ -44,7 +53,9 @@ const MODULE_WEIGHTS = {
   'Agentic Browsing': 7,
 };
 
+// v15 — null-safe: return null for null, never cap 0 onto a missing score.
 function applyIssueCap(mod) {
+  if (!mod || mod.score === null || mod.score === undefined) return null;
   const failedCount  = (mod.failed  || []).length;
   const warningCount = (mod.signals || []).filter((s) => !s.pass && !s.informational).length;
   const issues = failedCount + warningCount;
@@ -58,17 +69,22 @@ function applyIssueCap(mod) {
   return capped;
 }
 
+// v15 — filter null-scored modules before averaging so optional / N/A
+// modules can never drag the weighted overall down.
 function recomputeOverall(mods) {
+  const measured = mods.filter(m => m && m.score !== null && m.score !== undefined);
+  if (!measured.length) return 0;
+
   let weightedSum = 0;
   let weightTotal = 0;
-  for (const m of mods) {
+  for (const m of measured) {
     const w = MODULE_WEIGHTS[m.name] ?? 10;
     weightedSum += m.score * w;
     weightTotal += w;
   }
   let overall = Math.round(weightedSum / weightTotal);
 
-  const lowest = Math.min(...mods.map((m) => m.score));
+  const lowest = Math.min(...measured.map((m) => m.score));
   if (lowest < 25)      overall = Math.min(overall, 60);
   else if (lowest < 40) overall = Math.min(overall, 72);
   else if (lowest < 60) overall = Math.min(overall, 85);
@@ -125,7 +141,7 @@ const UX_FACTORS = {
 
 // ── sub-metric rows for SEO/AEO — same set the standalone tools render ──
 // failed[]   → ❌
-// !pass sig  → ⚠️  (informational or not — matches lighthouse-plus-tool)
+// !pass sig  → ⚠️  (informational signals skipped in v15)
 //  pass sig  → ✅
 function evaluateWorkerModule(mod) {
   const out = [];
@@ -133,6 +149,8 @@ function evaluateWorkerModule(mod) {
     out.push({ name: f, status: 'fail', score: TIER_SCORE.fail });
   }
   for (const sig of (mod.signals || [])) {
+    // v15 — informational signals are hints, not warnings. Never count them.
+    if (sig.informational === true) continue;
     const status = sig.pass === true ? 'pass' : 'warn';
     out.push({ name: sig.label, status, score: TIER_SCORE[status] });
   }
@@ -155,10 +173,12 @@ export function evaluateModule(cat, module) {
 }
 
 // ── what to display as the module's big number ──
+// v15 — null score → null (never silently becomes 0 → "Needs Work")
 function moduleDisplayScore(cat, m) {
-  if (cat === 'UX') return Math.round(Number(m.score) || 0);
-  if (cat === 'SEO') return applyIssueCap(m);        // cap from Lighthouse Plus
-  return Math.round(Number(m.score) || 0);            // AEO: raw worker score
+  if (!m || m.score === null || m.score === undefined) return null;
+  if (cat === 'UX')  return Math.round(Number(m.score) || 0);
+  if (cat === 'SEO') return applyIssueCap(m);      // cap from Lighthouse Plus (null-safe)
+  return Math.round(Number(m.score) || 0);         // AEO: raw worker score
 }
 
 // ── category scores ──
@@ -284,49 +304,56 @@ export function renderSummaryCards(state) {
          </div>`
       : '';
 
-    const blocks = modules.map((m, i) => {
-      const moduleScore = moduleDisplayScore(cat, m);
-      const status = moduleScore >= 80 ? 'pass' : moduleScore >= 60 ? 'warn' : 'fail';
-      const subs = evaluateModule(cat, m);
+    // v15 — filter out any module whose score resolves to null (e.g. optional
+    // modules that slipped through dedupe). Prevents "null · Needs Work".
+    const blocks = modules
+      .filter(m => {
+        const s = moduleDisplayScore(cat, m);
+        return s !== null && s !== undefined;
+      })
+      .map((m, i) => {
+        const moduleScore = moduleDisplayScore(cat, m);
+        const status = moduleScore >= 80 ? 'pass' : moduleScore >= 60 ? 'warn' : 'fail';
+        const subs = evaluateModule(cat, m);
 
-      // Accessibility summary line — mirrors lighthouse-plus-tool
-      // "✅ 28/35 checks passed"
-      const isA11y = cat === 'SEO' && m.name === 'Accessibility';
-      let summaryLine = '';
-      if (isA11y) {
-        const signalPasses   = (m.signals || []).filter(s => s.pass).length;
-        const signalWarnings = (m.signals || []).filter(s => !s.pass).length;
-        const failCount      = (m.failed  || []).length;
-        const passes = Number.isFinite(m.passes) ? m.passes : signalPasses;
-        const total  = passes + signalWarnings + failCount;
-        if (total >= 3) {
-          summaryLine = `<div class="sum-module-summary">✅ ${passes}/${total} checks passed</div>`;
+        // Accessibility summary line — mirrors lighthouse-plus-tool
+        // "✅ 28/35 checks passed"
+        const isA11y = cat === 'SEO' && m.name === 'Accessibility';
+        let summaryLine = '';
+        if (isA11y) {
+          const signalPasses   = (m.signals || []).filter(s => s.pass).length;
+          const signalWarnings = (m.signals || []).filter(s => !s.pass && !s.informational).length;
+          const failCount      = (m.failed  || []).length;
+          const passes = Number.isFinite(m.passes) ? m.passes : signalPasses;
+          const total  = passes + signalWarnings + failCount;
+          if (total >= 3) {
+            summaryLine = `<div class="sum-module-summary">✅ ${passes}/${total} checks passed</div>`;
+          }
         }
-      }
 
-      const subsHtml = subs.length
-        ? `<div class="sum-submetrics">
-            ${subs.map(sig => {
-              const fid = idByKey.get(`${cat}::${sig.name}`);
-              const attr = fid ? ` data-fid="${fid}"` : '';
-              const cls  = fid ? ' clickable' : '';
-              return `<div class="sum-submetric ${sig.status}${cls}"${attr}>
-                <span class="icon">${iconFor(sig.status)}</span>
-                <span class="text">${esc(shorten(sig.name, 64))}</span>
-              </div>`;
-            }).join('')}
-          </div>`
-        : '';
+        const subsHtml = subs.length
+          ? `<div class="sum-submetrics">
+              ${subs.map(sig => {
+                const fid = idByKey.get(`${cat}::${sig.name}`);
+                const attr = fid ? ` data-fid="${fid}"` : '';
+                const cls  = fid ? ' clickable' : '';
+                return `<div class="sum-submetric ${sig.status}${cls}"${attr}>
+                  <span class="icon">${iconFor(sig.status)}</span>
+                  <span class="text">${esc(shorten(sig.name, 64))}</span>
+                </div>`;
+              }).join('')}
+            </div>`
+          : '';
 
-      return `<div class="sum-module-block" data-module-index="${i}">
-        <div class="sum-module-head">
-          <span class="sum-module-name">${esc(m.name)}</span>
-          <span class="sum-module-status ${status}">${moduleScore} · ${gradeFromScore(moduleScore)}</span>
-        </div>
-        ${summaryLine}
-        ${subsHtml}
-      </div>`;
-    });
+        return `<div class="sum-module-block" data-module-index="${i}">
+          <div class="sum-module-head">
+            <span class="sum-module-name">${esc(m.name)}</span>
+            <span class="sum-module-status ${status}">${moduleScore} · ${gradeFromScore(moduleScore)}</span>
+          </div>
+          ${summaryLine}
+          ${subsHtml}
+        </div>`;
+      });
 
     let bodyHtml = blocks.join('');
     if (ACCORDION_CATS.has(cat) && blocks.length > VISIBLE_MODULES) {

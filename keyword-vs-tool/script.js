@@ -3,6 +3,7 @@
 
 import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
+import { renderContributions } from './contributions.js?v=1.0';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const SEMANTIC_VS_WORKER = 'https://keyword-vs-semantic-audit.traffictorch.workers.dev/';

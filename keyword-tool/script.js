@@ -13,6 +13,7 @@ import {
   extractSnippets,
   escapeHtml
 } from './code-snippet.js?v=1.0';
+import { renderContributions } from './contributions.js?v=1.0';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const SEMANTIC_WORKER = 'https://keyword-semantic-audit.traffictorch.workers.dev/';
@@ -164,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeAnalyzeBtn = document.getElementById('code-analyze-btn');
 
   initCodeSnippetModal();
+  renderContributions();
 
   document.addEventListener('click', (e) => {
     const toggle = e.target.closest('.fixes-toggle');

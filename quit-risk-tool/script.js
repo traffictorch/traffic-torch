@@ -29,6 +29,7 @@ import {
   extractSnippets,
   escapeHtml
 } from './code-snippet.js?v=2.0';
+import { renderContributions } from './contributions.js?v=1.0';
 
 // ─── Code block renderer ─────────────────────────────────────────
 function renderCodeBlocks(text) {
@@ -117,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const results = document.getElementById('results');
 
   initCodeSnippetModal();
+  renderContributions();
 
   // ── Save audit to history (auth user → API, guest → localStorage) ──
   async function saveAuditHistory(url, toolName) {
@@ -474,7 +476,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], ' +
         'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
         '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
-      ).length
+      ).length,
+      htmlLang: (doc.documentElement && doc.documentElement.getAttribute('lang')) || ''
     };
   }
   function analyzeUX(data) {

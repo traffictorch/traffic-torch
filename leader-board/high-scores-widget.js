@@ -37,12 +37,14 @@
   function renderProfile(entry) {
     if (!entry.username) return '';
     const displayName = entry.display_name || entry.username;
-    const avatar = entry.avatar_preset || 'owner';
+    const src = (typeof window.ttAvatarSrc === 'function')
+      ? window.ttAvatarSrc(entry)
+      : '/images/avatars/' + (entry.avatar_preset || 'owner') + '.svg';
     return `
       <div class="tt-lb-profile">
-        <img class="tt-lb-profile-avatar" src="/images/avatars/${escapeHtml(avatar)}.svg" alt="" loading="lazy">
+        <img class="tt-lb-profile-avatar" data-username="${escapeHtml(entry.username)}" src="${escapeHtml(src)}" alt="" loading="lazy">
         <div class="tt-lb-profile-meta">
-          <a class="tt-lb-profile-name" href="/torcher/${escapeHtml(entry.username)}/">${escapeHtml(displayName)}</a>
+          <a class="tt-lb-profile-name" href="/torcher/${escapeHtml(entry.username)}/" style="display:inline-flex;align-items:center;gap:5px;">${escapeHtml(displayName)}<span class="tt-lb-verify" data-username="${escapeHtml(entry.username)}" hidden></span></a>
           <span class="tt-lb-profile-handle">@${escapeHtml(entry.username)}</span>
           <span class="tt-lb-points" data-username="${escapeHtml(entry.username)}" hidden></span>
         </div>
@@ -102,14 +104,27 @@
         const r = await fetch(`${AUTH_ENDPOINT}/api/torcher/${encodeURIComponent(username)}`);
         if (!r.ok) return;
         const data = await r.json();
-        const pts = data.profile && data.profile.total_points;
-        const endorse = data.profile && data.profile.endorsement_count;
+        const p = data.profile || {};
+        const pts = p.total_points;
+        const endorse = p.endorsement_count;
         const parts = [];
         if (typeof pts === 'number' && pts > 0) parts.push(`🏅 ${pts}`);
         if (typeof endorse === 'number' && endorse > 0) parts.push(`⭐ ${endorse}`);
         if (parts.length) {
           span.textContent = parts.join(' · ');
           span.hidden = false;
+        }
+        if ((p.avatar_url || p.avatar_r2_key) && typeof window.ttAvatarSrc === 'function') {
+          el.querySelectorAll('.tt-lb-profile-avatar').forEach(img => {
+            if (img.dataset.username === username) img.src = window.ttAvatarSrc(p);
+          });
+        }
+        if (p.verified_at) {
+          const slot = el.querySelector('.tt-lb-verify[data-username="' + CSS.escape(username) + '"]');
+          if (slot) {
+            slot.innerHTML = '<svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+            slot.hidden = false;
+          }
         }
       } catch {}
     }));

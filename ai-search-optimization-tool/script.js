@@ -19,6 +19,7 @@ import {
   deriveSelectorsForFailure,
   extractSnippets
 } from './code-snippet.js?v=1.0';
+import { renderContributions } from './contributions.js?v=1.0';
 
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 const TOKEN_KEY = 'traffic_torch_jwt';
@@ -213,6 +214,7 @@ const waitForElements = () => {
 
 const initTool = (form, results, progressContainer) => {
   initCodeSnippetModal();
+  renderContributions();
   const progressText = document.getElementById('progress-text');
 
   const urlParams = new URLSearchParams(window.location.search);

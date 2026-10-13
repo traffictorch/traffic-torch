@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
   <title>Traffic Torch Pro – Dashboard</title>
   <meta name="description" content="Manage your Traffic Torch Pro Dashboard and access advanced SEO, UX, and AI tools.">
   <meta name="robots" content="noindex, nofollow">
@@ -56,6 +56,36 @@
     color: #fff;
     box-shadow: 0 2px 8px rgba(249,115,22,0.35);
   }
+  #communication-preferences,
+  #settings-visibility,
+  #settings-content,
+  #notifications-section { scroll-margin-top: 100px; }
+
+  /* ── Mobile tweaks: role pill + profile meta row ── */
+  @media (max-width: 639px) {
+    .role-pill {
+      padding: 0.25rem 0.6rem !important;
+      font-size: 0.62rem !important;
+      letter-spacing: 0.04em !important;
+      line-height: 1.1 !important;
+    }
+    .profile-info > p {
+      row-gap: 0.35rem !important;
+      line-height: 1.5 !important;
+    }
+    .profile-info .meta-item {
+      margin: 0 0.5rem !important;
+      line-height: 1.8 !important;
+      padding: 0.15rem 0 !important;
+    }
+    .profile-info .meta-item .emoji {
+      margin-right: 0.35rem !important;
+    }
+    /* Give the meta row a bit more breathing room overall */
+    .profile-info + * {
+      row-gap: 0.6rem !important;
+    }
+  }
   </style>
 
   <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
@@ -75,10 +105,43 @@
 
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- PWA + Icons + Colour scheme -->
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Perf: preconnect critical origins -->
+  <link rel="preconnect" href="https://traffic-torch-auth.traffictorch.workers.dev" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="dns-prefetch" href="https://js.stripe.com">
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
 <div x-data="dashboardApp()" x-init="initDashboard()" class="flex flex-1 min-h-screen">
+
+  <!-- ── Avatar lightbox (bulletproof, 2-element) ── -->
+  <template x-teleport="body">
+    <div x-show="avatarLightbox" x-cloak @keydown.escape.window="avatarLightbox = false"
+         style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483647;">
+      <div @click="avatarLightbox = false"
+           style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;cursor:zoom-out;overflow:hidden;">
+        <img :src="avatarSrc(profile)" :alt="profile.display_name" @click.stop
+             style="display:block;width:min(80vmin,340px);height:min(80vmin,340px);max-width:min(80vmin,340px);max-height:min(80vmin,340px);object-fit:cover;border-radius:50%;box-shadow:0 25px 60px -12px rgba(0,0,0,0.7);background:#fff;">
+        <button type="button" @click="avatarLightbox = false" aria-label="Close"
+                style="position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-family:system-ui,-apple-system,sans-serif;">×</button>
+      </div>
+    </div>
+  </template>
   <div class="flex flex-1 min-h-screen">
 
     <!-- Desktop Sidebar -->
@@ -204,6 +267,12 @@
                 Invite
               </button>
             </div>
+            <div class="text-center mt-3 pt-3 border-t border-white/10">
+              <button @click="scrollToSettings('settings-visibility')"
+                      class="text-xs text-gray-500 hover:text-orange-500 dark:hover:text-orange-400 transition font-medium">
+                ⚙️ Manage what people see →
+              </button>
+            </div>
           </div>
 
           <!-- === Profile view === -->
@@ -219,38 +288,113 @@
                 <div class="glass rounded-3xl overflow-hidden mb-6">
                   <div class="px-6 pb-6 -mt-14 relative">
 
-                    <div class="flex flex-col sm:flex-row sm:items-end gap-5">
-                      <img :src="`/images/avatars/${profile.avatar_preset || 'owner'}.svg`"
-                           :alt="profile.display_name"
-                           width="128" height="128" style="width:128px;height:128px;"
-                           class="rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100 object-cover">
-                      <div class="flex-1 min-w-0 sm:pb-2">
-                        <h1 class="text-3xl font-black truncate flex items-center gap-3 flex-wrap">
-                          <span x-text="profile.display_name || profile.username || 'Your name'"></span>
+<div class="flex flex-col items-center sm:flex-row sm:items-end gap-5 profile-header-flex">
+  <template x-if="profile.id">
+    <div class="avatar-ring mx-auto sm:mx-0 cursor-pointer"
+         style="padding: 6px;"
+         :class="'tier-' + (profile.tier || 'free')"
+         :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member — click to enlarge'"
+         @click="avatarLightbox = true">
+      <img :src="avatarSrc(profile)"
+           :alt="profile.display_name"
+           width="72" height="72" style="width:72px;height:72px;"
+           class="object-cover"
+           onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+    </div>
+  </template>
+  <div class="flex-1 min-w-0 sm:pb-2 profile-info">
+    <h1 class="text-3xl font-black flex items-center gap-3 flex-wrap min-w-0">
+                          <span class="truncate" x-text="profile.display_name || profile.username || 'Your name'"></span>
+                          <template x-if="profile.verified_at">
+                            <svg viewBox="0 0 24 24" aria-label="Verified website owner"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 style="width:26px;height:26px;flex-shrink:0;display:inline-block;vertical-align:middle;">
+                              <circle cx="12" cy="12" r="11" fill="#22c55e"/>
+                              <path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6"
+                                    stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                          </template>
                           <span x-show="profile.total_points > 0"
                                 class="points-badge points-badge-lg"
                                 x-text="'🏅 ' + profile.total_points"></span>
                         </h1>
                         <p class="text-gray-500 text-lg flex items-center gap-2 flex-wrap">
                           <span>@<span x-text="profile.username || 'username'"></span></span>
-                          <span class="inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(profile.role)"></span>
+                          <span class="role-pill inline-flex items-center gap-1.5 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-500">
+                            <span class="inline-block w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+                            <span x-text="roleLabel(profile.role)"></span>
+                          </span>
                         </p>
                       </div>
-                      <div class="flex gap-2 sm:pb-2 flex-wrap items-center flex-shrink-0">
-                        <button type="button" @click="profileViewMode = 'edit'"
+<div class="flex gap-2 sm:pb-2 flex-wrap items-center justify-center sm:justify-start flex-shrink-0 profile-actions">
+  <button type="button" @click="profileViewMode = 'edit'"
                                 class="px-4 py-2 rounded-xl font-bold text-sm transition border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white whitespace-nowrap">
                           ✏️ Edit Profile
                         </button>
                         <a :href="'/torcher/' + (profile.username || '') + '/'"
                            target="_blank"
                            x-show="profile.username && profile.profile_public"
-                           class="px-4 py-2 rounded-xl font-bold text-sm bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition whitespace-nowrap inline-flex items-center">
+                           class="px-4 py-2 rounded-xl font-bold text-sm bg-green-500 hover:bg-green-600 text-white transition whitespace-nowrap inline-flex items-center shadow-md shadow-green-500/20">
                           View public →
                         </a>
                       </div>
                     </div>
 
-                    <p x-show="profile.bio" class="mt-5 mb-2 text-center text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
+                    <p x-show="profile.bio" class="mt-5 mb-2 py-4 text-center text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
+
+                    <!-- ── Skills chip row ── -->
+                    <div x-show="(profile.skills || []).length > 0" x-cloak class="mt-3 flex flex-wrap items-center justify-center gap-2">
+                      <template x-for="(s, i) in (profile.skills || [])" :key="'dskill-' + i">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 text-xs font-bold" x-text="s"></span>
+                      </template>
+                    </div>
+
+                    <!-- ── Contacts card ── -->
+                    <div x-show="(profile.contacts || []).length > 0" x-cloak class="mt-5 glass rounded-2xl p-4 max-w-lg mx-auto">
+                      <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 text-center">📬 Contact</p>
+                      <div class="flex flex-wrap items-center justify-center gap-2">
+                        <template x-for="(c, i) in (profile.contacts || [])" :key="'dc-' + i">
+                          <div class="flex flex-col items-center">
+                            <template x-if="contactsRevealed[i]">
+                              <div class="flex items-center gap-2">
+                                <a x-show="contactHref(c) !== '#'" :href="contactHref(c)" target="_blank" rel="noopener nofollow ugc" class="link-btn text-xs"
+                                   x-text="contactIcon(c.type) + ' ' + (c.label || contactsTypeLabel(c.type))"></a>
+                                <span x-show="contactHref(c) === '#'" class="link-btn text-xs cursor-default">
+                                  <span x-text="contactIcon(c.type) + ' ' + (c.label || contactsTypeLabel(c.type)) + ': '"></span>
+                                  <span class="font-mono ml-1" x-text="(c.partA || '') + (c.partB || '')"></span>
+                                </span>
+                              </div>
+                            </template>
+                            <template x-if="!contactsRevealed[i]">
+                              <button type="button" @click="contactsRevealed[i] = true" class="link-btn text-xs"
+                                      x-text="'🔒 ' + (c.label || contactsTypeLabel(c.type))"></button>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+
+                    <!-- ── Hire Me card ── -->
+                    <div x-show="profile.available_for_hire == 1 && (profile.hire_headline || (profile.hire_services || []).length || profile.contact_email)" x-cloak
+                         class="mt-5 glass rounded-2xl p-5 max-w-lg mx-auto">
+                      <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 text-center">💼 Available for hire</p>
+                      <template x-if="profile.hire_headline">
+                        <p class="text-lg font-bold text-center mb-3" x-text="profile.hire_headline"></p>
+                      </template>
+                      <template x-if="(profile.hire_services || []).length > 0">
+                        <div class="flex flex-wrap items-center justify-center gap-2 mb-3">
+                          <template x-for="(s, i) in profile.hire_services" :key="'dhs-' + i">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-400 text-xs font-bold" x-text="s"></span>
+                          </template>
+                        </div>
+                      </template>
+                      <template x-if="profile.contact_email">
+                        <div class="text-center">
+                          <a :href="'mailto:' + profile.contact_email"
+                             class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90">✉️ Get in touch</a>
+                        </div>
+                      </template>
+                    </div>
                     <p x-show="!profile.bio" class="mt-5 text-gray-400 italic">No bio yet — click Edit Profile to add one.</p>
 
                     <div class="mt-5 mb-4 flex flex-wrap items-center justify-center gap-y-2 text-sm text-gray-500">
@@ -270,7 +414,7 @@
 
                     <div class="mt-5 mb-4 flex flex-wrap items-center justify-center gap-4">
                       <a x-show="profile.website_url" :href="profile.website_url" target="_blank" rel="ugc nofollow noopener" class="link-btn">
-                        🔗 <span x-text="domainLabel(profile.website_url)"></span>
+                        🔗 <span x-text="domainLabel(profile.website_url)"></span><template x-if="profile.verified_at"><span class="text-green-500 font-bold ml-1" title="Verified owner">✓</span></template>
                       </a>
                       <a x-show="profile.social1_url" :href="profile.social1_url" target="_blank" rel="ugc nofollow noopener" class="link-btn">
                         🔗 <span x-text="domainLabel(profile.social1_url)"></span>
@@ -280,24 +424,28 @@
                       </a>
                     </div>
 
-                    <div class="mt-7 grid grid-cols-4 gap-3 max-w-lg mx-auto">
-                      <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                        <p class="text-2xl font-black text-orange-500" x-text="feed.slots.used"></p>
-                        <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Audits shared</p>
-                      </div>
-                      <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                        <p class="text-2xl font-black text-orange-500" x-text="network.list.length"></p>
-                        <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Network</p>
-                      </div>
-                      <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                        <p class="text-2xl font-black text-orange-500" x-text="profile.total_points || 0"></p>
-                        <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Points</p>
-                      </div>
-                      <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-                        <p class="text-2xl font-black text-orange-500" x-text="monthsSince(profile.created_at)"></p>
-                        <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">Months here</p>
-                      </div>
-                    </div>
+<div class="mt-7 grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-2xl mx-auto">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="feed.slots.used"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🔥 Audits shared</p>
+  </div>
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="network.list.length"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🤝 Network</p>
+  </div>
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="profile.total_points || 0"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🏅 Points</p>
+  </div>
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="profile.endorsement_count || 0"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">⭐ Endorsements</p>
+  </div>
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+    <p class="text-2xl font-black text-orange-500" x-text="monthsSince(profile.created_at)"></p>
+    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">📅 Months here</p>
+  </div>
+</div>
                   </div>
                 </div>
               </div>
@@ -318,13 +466,38 @@
                       <label class="block text-sm font-medium mb-3">Avatar</label>
                       <div class="grid grid-cols-3 gap-4">
                         <template x-for="preset in ['owner','designer','seo']" :key="preset">
-                          <button type="button" @click="profile.avatar_preset = preset"
+                          <button type="button" @click="pickPreset(preset)"
                                   class="p-4 rounded-2xl border-2 transition flex flex-col items-center gap-2"
                                   :class="profile.avatar_preset === preset ? 'border-orange-500 bg-orange-500/10' : 'border-gray-300 dark:border-gray-600 hover:border-orange-400'">
                             <img :src="`/images/avatars/${preset}.svg`" :alt="preset" width="80" height="80" style="width:80px;height:80px;" class="rounded-full object-cover" loading="lazy">
                             <span class="text-sm font-medium capitalize" x-text="preset"></span>
                           </button>
                         </template>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-medium mb-2">Or upload a custom photo</label>
+                      <div class="flex items-center gap-4 flex-wrap">
+                      <template x-if="profile.id">
+                        <img :src="avatarSrc(profile)"
+                             :alt="profile.display_name"
+                             width="128" height="128" style="width:128px;height:128px;"
+                             class="rounded-full border-4 border-gray-50 dark:border-gray-950 flex-shrink-0 bg-gray-100 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                      </template>
+                        <div class="flex flex-col gap-2">
+                          <label class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg cursor-pointer hover:opacity-90 transition text-sm">
+                            <span x-show="!avatarUploading">Choose image</span>
+                            <span x-show="avatarUploading">Uploading…</span>
+                            <input type="file" accept="image/*" class="hidden" @change="uploadAvatar($event)" :disabled="avatarUploading">
+                          </label>
+                          <button type="button" x-show="profile.avatar_r2_key" @click="removeAvatar()"
+                                  class="px-4 py-1.5 text-xs font-medium rounded-lg border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition">
+                            Remove custom photo
+                          </button>
+                          <p class="text-xs text-gray-500">Any image · max 15 MB · we resize to 400×400</p>
+                          <p x-show="avatarError" class="text-xs text-red-500" x-text="avatarError"></p>
+                        </div>
                       </div>
                     </div>
 
@@ -387,30 +560,223 @@
                       </div>
                     </div>
 
-                    <div class="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Auto-share new audits to feed</span>
-                        <input type="checkbox" x-model="profile.auto_share" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Hide my network on profile</span>
-                        <input type="checkbox" :checked="!profile.show_network" @change="profile.show_network = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Don't allow others to add me to their network</span>
-                        <input type="checkbox" :checked="!profile.allow_adds" @change="profile.allow_adds = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Make profile private</span>
-                        <input type="checkbox" :checked="!profile.profile_public" @change="profile.profile_public = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Keep my activity private</span>
-                        <input type="checkbox" :checked="!profile.activity_public" @change="profile.activity_public = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <p class="text-xs text-gray-500 mb-2">
+                        Privacy & visibility controls (profile, activity, network, auto-share) live in Settings.
+                      </p>
+                      <button type="button" @click="scrollToSettings('settings-visibility')"
+                              class="text-sm font-medium text-orange-500 hover:text-orange-600 dark:hover:text-orange-400 hover:underline">
+                        ⚙️ Manage privacy settings →
+                      </button>
                     </div>
 
-                    <div class="flex gap-3 pt-4 flex-wrap">
+                  <!-- ═══ ADVANCED (optional) ═══ -->
+                  <details class="group mt-6 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
+                    <summary class="cursor-pointer px-5 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 transition list-none"
+                             style="list-style:none;">
+                      <div class="flex items-center justify-between gap-3 font-bold text-sm">
+                        <div class="flex items-center gap-2 flex-wrap min-w-0">
+                          <span style="font-size:1.1rem;line-height:1;">⚙️</span>
+                          <span>Advanced options</span>
+                          <span class="text-xs font-normal opacity-90">Verify · Skills · Contacts · Hire Me</span>
+                        </div>
+                        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                             class="transition-transform duration-200 group-open:rotate-180"
+                             style="width:20px;height:20px;flex-shrink:0;display:block;">
+                          <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z"/>
+                        </svg>
+                      </div>
+                    </summary>
+                    <style>
+                      /* Kill the default disclosure triangle (Safari/Firefox) */
+                      details > summary::-webkit-details-marker { display: none; }
+                      details > summary::marker { content: ""; }
+                    </style>
+                    
+                    <div class="p-5 space-y-8 bg-white/50 dark:bg-black/20">
+
+                      <!-- ── 1. Verify website ── -->
+                      <div>
+                        <h4 class="font-bold text-sm mb-2">🔐 Verify your website</h4>
+                        <p class="text-xs text-gray-500 mb-3">
+                          Get a green ✓ next to your website link. Add the meta tag to your site, then click Verify.
+                        </p>
+                        <div class="flex flex-wrap gap-2 items-center">
+                          <button type="button" @click="verifyDomain()"
+                                  :disabled="verifyStatus.loading"
+                                  class="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50">
+                            <span x-show="!verifyStatus.loading" x-text="profile.verified_at ? 'Re-verify' : 'Verify now'"></span>
+                            <span x-show="verifyStatus.loading">Checking…</span>
+                          </button>
+                          <template x-if="profile.verified_at">
+                            <span class="text-xs font-bold text-green-500 inline-flex items-center gap-1">
+                              ✓ Verified: <span x-text="profile.verified_domain"></span>
+                            </span>
+                          </template>
+                        </div>
+                        <template x-if="verifyStatus.message">
+                          <div class="mt-3 p-3 rounded-lg text-xs"
+                               :class="verifyStatus.ok ? 'bg-green-500/10 text-green-600 dark:text-green-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'">
+                            <p x-text="verifyStatus.message"></p>
+                            <template x-if="verifyStatus.token">
+                              <div class="mt-3">
+                                <p class="mb-2 text-sm">Add this meta tag inside your website's <code class="px-1 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-xs">&lt;head&gt;</code>:</p>
+                                <div class="rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
+                                  <div class="px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-[11px] font-mono leading-relaxed break-all select-all">
+                                    <span class="text-gray-400 dark:text-gray-500">&lt;meta</span> <span class="text-blue-600 dark:text-blue-400">name</span>=<span class="text-green-700 dark:text-green-400">"traffic-torch-verify"</span>
+                                    <span class="text-blue-600 dark:text-blue-400">content</span>=<span class="text-green-700 dark:text-green-400">"<span x-text="verifyStatus.token" class="text-orange-600 dark:text-orange-400"></span>"</span><span class="text-gray-400 dark:text-gray-500">&gt;</span>
+                                  </div>
+                                  <button type="button" @click="copyVerifyToken()"
+                                          class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90 transition">
+                                    📋 Tap to copy the meta tag
+                                  </button>
+                                </div>
+                                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                  After pasting it into your site's <code>&lt;head&gt;</code>, click <strong>Verify now</strong> again.
+                                </p>
+                              </div>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+
+                      <!-- ── 2. Skills ── -->
+                      <div>
+                        <h4 class="font-bold text-sm mb-2">🛠️ Skills <span class="font-normal text-gray-500">(max 8)</span></h4>
+                        <div class="flex gap-2 mb-3">
+                          <input type="text" x-model="skillDraft" maxlength="24"
+                                 @keydown.enter.prevent="addSkill()"
+                                 placeholder="e.g. Technical SEO"
+                                 class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+<button type="button" @click="addSkill()"
+        :disabled="profile.skills.length >= 8"
+        class="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40 whitespace-nowrap">
+  Add
+</button>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                          <template x-for="(s, i) in profile.skills" :key="'skill-' + i">
+                            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 text-xs font-bold">
+                              <span x-text="s"></span>
+                              <button type="button" @click="removeSkill(i)" class="ml-1 hover:text-red-500">×</button>
+                            </span>
+                          </template>
+                          <template x-if="profile.skills.length === 0">
+                            <span class="text-xs text-gray-400 italic">No skills yet — hidden from your public profile.</span>
+                          </template>
+                        </div>
+                      </div>
+
+                      <!-- ── 3. Contacts ── -->
+                      <div>
+                        <h4 class="font-bold text-sm mb-2">📬 Contacts <span class="font-normal text-gray-500">(max 3)</span></h4>
+                        <p class="text-xs text-gray-500 mb-3">
+                          Public contact methods. Hidden behind a "click to reveal" button by default to reduce scraping.
+                        </p>
+                        <div class="space-y-3 mb-3">
+                          <template x-for="(c, i) in profile.contacts" :key="'contact-' + i">
+                            <div class="flex flex-col sm:flex-row gap-2 sm:items-center p-3 sm:p-0 rounded-lg border border-gray-200 dark:border-gray-700 sm:border-0">
+                              <!-- Row 1 on mobile: type dropdown + remove button -->
+                              <div class="flex gap-2 items-center">
+                                <select x-model="c.type"
+                                        class="flex-1 sm:flex-none sm:w-36 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                                  <option value="email">Email</option>
+                                  <option value="whatsapp">WhatsApp</option>
+                                  <option value="telegram">Telegram</option>
+                                  <option value="wechat">WeChat</option>
+                                  <option value="signal">Signal</option>
+                                  <option value="phone">Phone</option>
+                                  <option value="linkedin">LinkedIn</option>
+                                  <option value="x">X / Twitter</option>
+                                  <option value="other-url">Other URL</option>
+                                </select>
+                                <!-- Mobile-only delete button (top-right of card) -->
+                                <button type="button" @click="removeContact(i)"
+                                        aria-label="Remove contact"
+                                        class="sm:hidden px-3 py-2 rounded-lg text-red-500 hover:bg-red-500/10 text-xl flex-shrink-0">×</button>
+                              </div>
+                              <!-- Row 2 on mobile: value -->
+                              <input type="text" x-model="c.value" maxlength="200"
+                                     placeholder="Value"
+                                     class="w-full sm:flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                              <!-- Row 3 on mobile: label -->
+                              <input type="text" x-model="c.label" maxlength="40"
+                                     placeholder="Label (optional)"
+                                     class="w-full sm:w-32 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                              <!-- Desktop-only delete button -->
+                              <button type="button" @click="removeContact(i)"
+                                      aria-label="Remove contact"
+                                      class="hidden sm:flex items-center justify-center px-2 py-2 rounded-lg text-red-500 hover:bg-red-500/10 text-lg flex-shrink-0">×</button>
+                            </div>
+                          </template>
+                        </div>
+                        <button type="button" @click="addContact()"
+                                :disabled="profile.contacts.length >= 3"
+                                class="px-4 py-2 rounded-lg border border-orange-500 text-orange-500 text-xs font-bold hover:bg-orange-500 hover:text-white transition disabled:opacity-40">
+                          + Add contact
+                        </button>
+                        <label class="mt-3 flex items-center justify-between cursor-pointer">
+                          <span class="text-sm">Show contacts immediately (no click-to-reveal)</span>
+                          <input type="checkbox" :checked="profile.contacts_visibility === 'public'"
+                                 @change="profile.contacts_visibility = $event.target.checked ? 'public' : 'click'"
+                                 class="w-5 h-5">
+                        </label>
+                      </div>
+
+                      <!-- ── 4. Hire Me ── -->
+                      <div>
+                        <h4 class="font-bold text-sm mb-2">💼 Hire Me</h4>
+                        <label class="flex items-center justify-between cursor-pointer mb-3">
+                          <span class="text-sm">I'm available for hire</span>
+                          <input type="checkbox" :checked="profile.available_for_hire == 1"
+                                 @change="profile.available_for_hire = $event.target.checked ? 1 : 0"
+                                 class="w-5 h-5">
+                        </label>
+                        <template x-if="profile.available_for_hire == 1">
+                          <div class="space-y-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                            <div>
+                              <label class="block text-xs font-medium mb-1">Headline <span class="text-gray-500">(60 chars)</span></label>
+                              <input type="text" x-model="profile.hire_headline" maxlength="60"
+                                     placeholder="e.g. Freelance SEO consultant"
+                                     class="w-full p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                            </div>
+                            <div>
+                              <label class="block text-xs font-medium mb-1">Services <span class="text-gray-500">(max 6)</span></label>
+                              <div class="flex gap-2 mb-2">
+                                <input type="text" x-model="hireServiceDraft" maxlength="30"
+                                       @keydown.enter.prevent="addHireService()"
+                                       placeholder="e.g. Technical audits"
+                                       class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+<button type="button" @click="addHireService()"
+        :disabled="profile.hire_services.length >= 6"
+        class="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40 whitespace-nowrap">
+  Add
+</button>
+                              </div>
+                              <div class="flex flex-wrap gap-2">
+                                <template x-for="(s, i) in profile.hire_services" :key="'hs-' + i">
+                                  <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-400 text-xs font-bold">
+                                    <span x-text="s"></span>
+                                    <button type="button" @click="removeHireService(i)" class="ml-1 hover:text-red-500">×</button>
+                                  </span>
+                                </template>
+                              </div>
+                            </div>
+                            <div>
+                              <label class="block text-xs font-medium mb-1">Public contact email <span class="text-gray-500">(optional, shown as mailto button)</span></label>
+                              <input type="email" x-model="profile.contact_email" maxlength="120"
+                                     placeholder="you@example.com"
+                                     class="w-full p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                            </div>
+                          </div>
+                        </template>
+                      </div>
+
+                    </div>
+                  </details>
+
+                  <div class="flex gap-3 pt-4 flex-wrap">
                       <button @click="saveProfile()" :disabled="profile.saving"
                               class="flex-1 min-w-[180px] py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition">
                         <span x-show="!profile.saving">Save Profile</span>
@@ -423,25 +789,32 @@
                     </div>
 
                     <p x-show="profile.success" class="text-green-500 text-sm" x-text="profile.success"></p>
-                    <p x-show="profile.error" class="text-red-500 text-sm" x-text="profile.error"></p>
+                    <div x-show="profile.error" class="text-red-500 text-sm">
+                      <span x-text="profile.error"></span>
+                      <a x-show="!isAuthenticated" href="/login/?tab=register" class="ml-1 font-bold underline hover:no-underline">Create account / Log in →</a>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <!-- Notifications section -->
-              <div id="notifications-section" class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+              <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
 
                 <div x-show="push.supported && !pushBannerDismissed && isAuthenticated"
                      x-cloak
-                     class="mb-6 p-4 rounded-2xl border border-orange-500/30 bg-gradient-to-r from-orange-500/10 to-pink-500/10 flex flex-wrap items-center gap-3">
-                  <span class="text-2xl flex-shrink-0">🔔</span>
-                  <div class="flex-1 min-w-[200px]">
-                    <p class="font-bold text-sm" x-show="!push.subscribed">🔔 Turn on push notifications for this device</p>
-                    <p class="font-bold text-sm text-green-600 dark:text-green-400" x-show="push.subscribed">✅ Push notifications are ON for this device</p>
-                    <p class="text-xs text-gray-500 mt-0.5" x-show="!push.subscribed">Instant alerts for comments, network connections, and messages — even when Traffic Torch is closed.</p>
-                    <p class="text-xs text-gray-500 mt-0.5" x-show="push.subscribed">You'll be notified on this device. Manage what you get below.</p>
+                     class="mb-6 p-4 rounded-2xl border border-orange-500/30 bg-gradient-to-r from-orange-500/10 to-pink-500/10">
+
+                  <div class="flex items-start gap-3 mb-3">
+                    <span class="text-2xl flex-shrink-0">🔔</span>
+                    <div class="flex-1 min-w-0">
+                      <p class="font-bold text-sm" x-show="!push.subscribed">Turn on push notifications for this device</p>
+                      <p class="font-bold text-sm text-green-600 dark:text-green-400" x-show="push.subscribed">✅ Push notifications are ON for this device</p>
+                      <p class="text-xs text-gray-500 mt-0.5" x-show="!push.subscribed">Instant alerts for comments, network connections, and messages — even when Traffic Torch is closed.</p>
+                      <p class="text-xs text-gray-500 mt-0.5" x-show="push.subscribed">You'll be notified on this device. Manage what you get below.</p>
+                    </div>
                   </div>
-                  <div class="flex gap-2 flex-shrink-0 flex-wrap">
+
+                  <div class="flex gap-2 flex-wrap items-center">
                     <button @click="enablePush()" :disabled="push.loading" x-show="!push.subscribed"
                             class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-sm rounded-lg hover:opacity-90 transition disabled:opacity-50">
                       <span x-show="!push.loading">Enable now</span>
@@ -456,7 +829,7 @@
                       More settings
                     </button>
                     <button @click="dismissPushBanner()" type="button"
-                            class="px-2 py-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                            class="px-2 py-2 ml-auto text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                             aria-label="Dismiss">✕</button>
                   </div>
                 </div>
@@ -471,7 +844,7 @@
                     <p class="text-xs text-gray-500 mt-0.5">On iPhone, Safari only supports notifications for apps installed to your Home Screen. Tap <strong>Share → Add to Home Screen</strong>, then reopen Traffic Torch from the icon.</p>
                   </div>
                 </div>
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+                <div id="notifications-section" class="flex flex-wrap items-center justify-between gap-3 mb-6">
                   <h3 class="text-xl font-bold">🔔 Notifications</h3>
                   <div class="flex gap-2 flex-wrap">
                     <button @click="markAllRead()" :disabled="notifications.unread === 0"
@@ -504,22 +877,37 @@
                     <div class="notif-row" :class="n.is_read ? '' : 'unread'">
                       <template x-if="!n.is_read"><span class="notif-dot"></span></template>
                       <template x-if="n.is_read"><span style="width:8px;flex-shrink:0;"></span></template>
-                      <img :src="`/images/avatars/${n.actor_avatar || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover" alt="">
-                      <div class="flex-1 min-w-0">
+                      <img :src="avatarSrc({id:n.actor_id, avatar_preset:n.actor_avatar, avatar_url:n.actor_avatar_url})" width="40" height="40" style="width:40px;height:40px;" class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                       <div class="flex-1 min-w-0">
                         <p class="text-sm leading-snug">
+                          <span x-show="n.type === 'message'" class="mr-1">✉️</span>
+                          <span x-show="n.type === 'comment'" class="mr-1">💬</span>
+                          <span x-show="n.type === 'network'" class="mr-1">🤝</span>
+                          <span x-show="n.type === 'leaderboard'" class="mr-1">🏆</span>
+                          <span x-show="n.type === 'endorse'" class="mr-1">⭐</span>
                           <span x-text="n.message"></span>
                           <span x-show="n.actor_total_points > 0" class="points-badge ml-2" x-text="'🏅 ' + n.actor_total_points"></span>
                         </p>
                         <p class="text-xs text-gray-500 mt-1" x-text="formatRelativeTime(n.created_at)"></p>
                       </div>
                       <div class="flex flex-col gap-1 items-end flex-shrink-0">
-                        <template x-if="n.link">
+                        <template x-if="n.type === 'message'">
+                          <button @click="openBeamNotification(n)" class="text-xs text-orange-500 hover:underline whitespace-nowrap">🔦 Open Beam →</button>
+                        </template>
+                        <template x-if="n.type !== 'message' && n.link">
                           <a :href="n.link" @click="markOneRead(n.id)" class="text-xs text-orange-500 hover:underline whitespace-nowrap">Open →</a>
                         </template>
                         <button @click="deleteNotification(n.id)" class="text-xs text-gray-400 hover:text-red-500 transition" title="Delete">✕</button>
                       </div>
                     </div>
                   </template>
+                </div>
+
+                <div class="text-center mt-12">
+                  <a href="/blog/posts/social-help-guide/#profile"
+                     class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                    📖 Learn more — Your Public Profile →
+                  </a>
                 </div>
               </div>
             </div>
@@ -564,16 +952,16 @@
 </h3>
                         <p class="text-xs text-gray-500">
                           <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
-                          · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                          · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500 inline-flex items-center gap-1"><span x-text="post.display_name || post.username"></span><svg x-show="post.verified_at" viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a>
                           <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
                           · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                         </p>
                         <p x-show="post.note && post.note !== post.page_title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
                       </div>
-                      <img :src="`/images/avatars/${post.avatar_preset || 'owner'}.svg`"
+                      <img :src="avatarSrc(post)"
                            :alt="post.display_name"
                            width="40" height="40" style="width:40px;height:40px;"
-                           class="rounded-full flex-shrink-0 object-cover">
+                           class="rounded-full flex-shrink-0 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                     </div>
                   </div>
 
@@ -584,6 +972,16 @@
                             class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">
                       <span x-text="post._showDetails ? 'Hide details ▲' : 'More details ▼'"></span>
                     </button>
+                    <button type="button"
+                            @click="endorsePost(post.id)"
+                            x-show="post.user_id !== (user && user.id)"
+                            :disabled="post._endorsing || post.viewer_endorsed || (post.score || 0) < 80"
+                            class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition whitespace-nowrap"
+                            :class="post.viewer_endorsed ? 'border-pink-500 text-pink-500 bg-pink-500/10' : ((post.score || 0) < 80 ? 'border-gray-300 dark:border-gray-600 text-gray-400 cursor-not-allowed' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white')"
+                            :title="(post.score || 0) < 80 ? 'Only torches scoring 80+ can be endorsed' : (post.viewer_endorsed ? 'You already endorsed this torch' : 'Endorse — author gets +36 points')">
+                      <span x-text="post._endorsing ? '…' : (post.viewer_endorsed ? '⭐ ' + (post.endorse_count || 1) : '⭐ Endorse' + (post.endorse_count ? ' ' + post.endorse_count : ''))"></span>
+                    </button>
+
                     <template x-if="post.url && post.tool">
                       <a :href="toolRunUrl(post.tool, post.url)" target="_blank" rel="noopener"
                          class="px-4 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white hover:opacity-90 transition">Run audit →</a>
@@ -642,9 +1040,9 @@
                       </p>
                       <template x-for="c in (feed.commentLists[post.id] || [])" :key="c.id">
                         <div class="flex gap-2 items-start">
-                          <img :src="`/images/avatars/${c.avatar_preset || 'owner'}.svg`"
+                          <img :src="avatarSrc(c)"
                                width="32" height="32" style="width:32px;height:32px;"
-                               class="rounded-full flex-shrink-0 object-cover" alt="">
+                               class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                           <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
                             <div class="flex items-baseline gap-2 flex-wrap">
                               <a :href="'/torcher/' + (c.username || '') + '/'"
@@ -666,16 +1064,16 @@
                       <p x-show="(feed.commentLists[post.id] || []).length === 0"
                          class="text-xs text-gray-400 italic text-center py-2">No comments yet. Be the first.</p>
                       <div class="flex gap-2 items-start pt-1">
-                        <img :src="`/images/avatars/${profile.avatar_preset || 'owner'}.svg`"
+                        <img :src="avatarSrc(profile)"
                              width="32" height="32" style="width:32px;height:32px;"
-                             class="rounded-full flex-shrink-0 object-cover" alt="">
+                             class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                         <div class="flex-1 flex gap-2">
-                          <input type="text" maxlength="360"
+                                                    <textarea rows="3" maxlength="360"
                                  x-model="feed.commentDrafts[post.id]"
-                                 @keydown.enter.prevent="submitComment(post.id)"
+                                 @keydown.enter.exact.prevent="submitComment(post.id)"
                                  placeholder="Leave a comment… (360 chars) · +5 pts"
-                                 class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-                          <button @click="submitComment(post.id)"
+                                 class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
+                                 <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
@@ -692,6 +1090,13 @@
               </button>
             </div>
             <p x-show="feed.error" class="text-red-500 text-center text-sm mt-4" x-text="feed.error"></p>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/social-help-guide/#torch-pages"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Torch Pages →
+              </a>
+            </div>
           </div>
 
           <!-- === Network view === -->
@@ -720,7 +1125,7 @@
               <div class="space-y-3">
                 <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
                   <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                    <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                    <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                     <div class="flex-1 min-w-0">
                       <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                       <p class="text-xs text-gray-500 capitalize">
@@ -743,7 +1148,7 @@
                 <div class="space-y-3">
                   <template x-for="u in network.searchResults" :key="u.id">
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                      <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                      <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                       <div class="flex-1 min-w-0">
                         <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                         <p class="text-xs text-gray-500 capitalize">
@@ -760,6 +1165,13 @@
                 </div>
               </div>
             </template>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/social-help-guide/#network"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Network &amp; Connections →
+              </a>
+            </div>
           </div>
 
           <!-- === Profile Activity view === -->
@@ -791,23 +1203,118 @@
               <p class="text-sm text-gray-400 mt-2">Share a torch, comment, or connect with someone.</p>
             </div>
 
-            <div x-show="activity.items.length > 0" class="relative pl-6">
-              <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-gray-200 dark:bg-gray-700"></div>
-              <template x-for="item in activity.items" :key="'pa-'+item.id">
-                <div class="relative pb-5 flex items-start gap-3">
-                  <div class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-orange-500 border-2 border-white dark:border-gray-950 flex items-center justify-center text-[9px]"></div>
-                  <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
-                    <p class="text-sm leading-snug">
-                      <span class="mr-1" x-text="activityIcon(item.event_type)"></span>
-                      <span x-text="activityText(item)"></span>
-                    </p>
-                    <div class="flex items-center justify-between gap-2 mt-1">
-                      <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
-                      <template x-if="item.link">
-                        <a :href="item.link" class="text-[11px] text-orange-500 hover:underline">Open →</a>
+            <template x-if="activity.filterUser">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-xs text-gray-500">Filtered by</span>
+                <button @click="clearUserFilter()" class="px-3 py-1 text-xs font-bold rounded-full bg-orange-500 text-white hover:opacity-90">
+                  @<span x-text="activity.filterUsername"></span> ×
+                </button>
+              </div>
+            </template>
+            <div x-show="activity.items.length > 0" class="space-y-3">
+              <template x-for="group in groupActivityByDay(activityFiltered())" :key="'pg-'+group.label">
+                <div class="space-y-2">
+                  <div class="text-xs font-bold uppercase tracking-wider text-gray-500 px-1 pt-2" x-text="group.label"></div>
+                  <template x-for="item in collapseBursts(group.items)" :key="'pa-'+item.id">
+                    <div>
+                      <div class="glass rounded-2xl p-4 flex gap-3 hover:bg-white/5 transition"
+                           :class="item.is_your_target ? 'ring-2 ring-orange-500/40' : ''">
+                        <div class="relative flex-shrink-0">
+                          <img :src="avatarSrc(item)"
+                               width="44" height="44" style="width:44px;height:44px;"
+                               class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                          <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
+                                x-text="activityIcon(item.event_type)"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                          <p class="text-sm leading-snug">
+                            <a href="#" @click.prevent="filterActivityByUser(item)"
+                               class="font-bold hover:text-orange-500 hover:underline"
+                               x-text="item.display_name || item.username"></a>
+                            <span class="text-gray-600 dark:text-gray-400" x-text="activityVerb(item)"></span>
+                            <template x-if="item.burst_count > 1">
+                              <span class="ml-1 inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-orange-500/20 text-orange-500"
+                                    x-text="'× ' + item.burst_count"></span>
+                            </template>
+                            <template x-if="item.is_your_target">
+                              <span class="ml-1 inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-orange-500 text-white">Your torch</span>
+                            </template>
+                          </p>
+
+                          <template x-if="item.event_type === 'comment' && item.target_label">
+                            <blockquote class="mt-2 pl-3 border-l-2 border-orange-500/40 text-sm italic text-gray-600 dark:text-gray-400 break-words"
+                                        x-text="'“' + item.target_label + (item.target_label.length >= 60 ? '…' : '') + '”'"></blockquote>
+                          </template>
+
+                          <template x-if="item.event_type === 'torch' && item.target_label">
+                            <div class="mt-2 flex flex-wrap items-center gap-2">
+                              <span class="text-sm font-medium break-words" x-text="item.target_label"></span>
+                              <template x-if="item.category">
+                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-orange-500/15 text-orange-500" x-text="item.category"></span>
+                              </template>
+                              <template x-if="item.tool">
+                                <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" x-text="item.tool"></span>
+                              </template>
+                            </div>
+                          </template>
+
+                          <template x-if="(item.event_type === 'comment' || item.event_type === 'torch') && item.target_title && item.target_title !== item.target_label">
+                            <a :href="'/torch/' + item.target_id + '/'"
+                               class="mt-2 flex items-center gap-3 p-2 rounded-lg bg-gray-100 dark:bg-gray-800/60 hover:bg-gray-200 dark:hover:bg-gray-800 transition">
+                              <div class="text-center flex-shrink-0" style="min-width:34px;">
+                                <p class="text-lg font-black leading-none"
+                                   :class="item.target_score >= 80 ? 'text-green-500' : item.target_score >= 60 ? 'text-yellow-500' : 'text-red-500'"
+                                   x-text="item.target_score ?? '—'"></p>
+                              </div>
+                              <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium truncate" x-text="item.target_title"></p>
+                                <p class="text-[10px] text-gray-500 truncate">
+                                  <span x-text="item.target_domain_mode === 'hidden' ? (item.target_domain_label || 'Hidden') : (item.target_domain_label || '')"></span>
+                                  <template x-if="item.target_author_name && item.target_author_username !== item.username">
+                                    <span> · by <span x-text="item.target_author_name"></span></span>
+                                  </template>
+                                </p>
+                              </div>
+                            </a>
+                          </template>
+
+                          <template x-if="item.event_type === 'network' && item.target_label">
+                            <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400">→ <span class="font-medium" x-text="item.target_label"></span></p>
+                          </template>
+
+                          <template x-if="item.event_type === 'contribution' && item.target_label">
+                            <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400 break-words" x-text="item.target_label"></p>
+                          </template>
+
+                          <template x-if="item.event_type === 'points_milestone' && item.target_label">
+                            <p class="mt-1.5 text-sm font-bold text-orange-500">🏅 Reached <span x-text="item.target_label"></span></p>
+                          </template>
+
+                          <template x-if="item.event_type === 'rank_change' && item.target_label">
+                            <p class="mt-1.5 text-sm font-bold text-green-500">📈 <span x-text="item.target_label"></span> on the leaderboard</p>
+                          </template>
+
+                          <template x-if="item.event_type === 'score_up' && item.target_label">
+                            <p class="mt-1.5 text-sm font-bold text-green-500">⬆️ Score improved: <span x-text="item.target_label"></span></p>
+                          </template>
+
+                          <div class="flex items-center justify-between gap-2 mt-2.5">
+                            <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
+                            <template x-if="item.link && item.link !== '#'">
+                              <a :href="item.link" class="text-xs font-semibold text-orange-500 hover:underline" x-text="activityLinkText(item)"></a>
+                            </template>
+                          </div>
+                        </div>
+                      </div>
+                      <template x-if="item._show_after_divider">
+                        <div class="flex items-center gap-3 my-4">
+                          <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
+                          <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Earlier</span>
+                          <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
+                        </div>
                       </template>
                     </div>
-                  </div>
+                  </template>
                 </div>
               </template>
             </div>
@@ -820,6 +1327,13 @@
             </div>
 
             <p x-show="activity.error" class="text-red-500 text-xs text-center mt-3" x-text="activity.error"></p>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/social-help-guide/#activity"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Activity Feed →
+              </a>
+            </div>
           </div>
 
           <!-- === Discover view === -->
@@ -838,12 +1352,12 @@
             <div x-show="!discover.loading && discover.users.length === 0" class="glass rounded-2xl p-8 text-center">
               <p class="text-4xl mb-3">🌱</p>
               <p class="text-gray-500">No new people to discover yet.</p>
-              <p class="text-sm text-gray-400 mt-2">Invite a colleague or wait for the daily reshuffle.</p>
+              <p class="text-sm text-gray-400 mt-2">Invite a friend/colleague or wait for the daily reshuffle.</p>
             </div>
             <div x-show="!discover.loading && discover.users.length > 0" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               <template x-for="u in discover.users" :key="'prof-disc-' + u.id">
                 <div class="glass rounded-2xl p-3 flex flex-col items-center text-center hover:bg-white/10 transition">
-                  <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover mb-2" alt="" loading="lazy">
+                  <img :src="avatarSrc(u)" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover mb-2" alt="" loading="lazy" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                   <a :href="'/torcher/' + u.username + '/'" class="font-bold text-sm hover:text-orange-500 truncate w-full" x-text="u.display_name || u.username"></a>
                   <p class="text-xs text-gray-500 truncate w-full">@<span x-text="u.username"></span></p>
                   <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(u.role)"></span>
@@ -851,8 +1365,9 @@
                     <span x-show="u.total_points > 0">🏅 <span x-text="u.total_points"></span></span>
                     <span x-show="u.torch_count > 0">🔥 <span x-text="u.torch_count"></span></span>
                   </div>
-                  <button @click="addDiscoverUser(u)" :disabled="discover.addLoading[u.id]"
-                          class="mt-2 w-full py-1.5 text-xs font-bold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition disabled:opacity-50">
+                  <button @click="addDiscoverUser(u)"
+                          :class="discover.addLoading[u.id] ? 'opacity-60' : ''"
+                          class="mt-2 w-full py-1.5 text-xs font-bold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition">
                     <span x-show="!discover.addLoading[u.id]">+ Add</span>
                     <span x-show="discover.addLoading[u.id]">…</span>
                   </button>
@@ -860,17 +1375,31 @@
               </template>
             </div>
             <p x-show="discover.error" class="text-red-500 text-xs text-center mt-3" x-text="discover.error"></p>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/social-help-guide/#discover"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Discover New People →
+              </a>
+            </div>
           </div>
 
           <!-- === Invite view === -->
           <div x-show="profileSubTab === 'invite'" class="max-w-md mx-auto glass rounded-2xl p-6">
-            <h3 class="text-lg font-bold mb-2">Invite a colleague</h3>
+            <h3 class="text-lg font-bold mb-2">Invite a friend/colleague</h3>
             <p class="text-sm text-gray-500 mb-4">Send them a link to sign up.</p>
             <div class="flex gap-2">
               <input type="email" x-model="network.inviteEmail" placeholder="colleague@example.com" class="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
               <button @click="inviteColleague()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-medium">Send</button>
             </div>
             <p x-show="network.inviteStatus" class="text-sm mt-3" x-text="network.inviteStatus"></p>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/social-help-guide/#network"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Inviting Colleagues →
+              </a>
+            </div>
           </div>
         </div>
 
@@ -1030,6 +1559,12 @@
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
                       :class="networkSubTab === 'invite' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">Invite</button>
             </div>
+            <div class="text-center mt-3 pt-3 border-t border-white/10">
+              <button @click="scrollToSettings('settings-visibility')"
+                      class="text-xs text-gray-500 hover:text-orange-500 dark:hover:text-orange-400 transition font-medium">
+                ⚙️ Manage what people see →
+              </button>
+            </div>
           </div>
 
           <div x-show="networkSubTab === 'feed'" class="max-w-2xl mx-auto">
@@ -1075,16 +1610,16 @@
 </h3>
                         <p class="text-xs text-gray-500">
                           <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
-                          · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                          · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500 inline-flex items-center gap-1"><span x-text="post.display_name || post.username"></span><svg x-show="post.verified_at" viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a>
                           <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
                           · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                         </p>
                         <p x-show="post.note && post.note !== post.page_title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
                       </div>
-                      <img :src="`/images/avatars/${post.avatar_preset || 'owner'}.svg`"
+                      <img :src="avatarSrc(post)"
                            :alt="post.display_name"
                            width="40" height="40" style="width:40px;height:40px;"
-                           class="rounded-full flex-shrink-0 object-cover">
+                           class="rounded-full flex-shrink-0 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                     </div>
                   </div>
 
@@ -1095,6 +1630,16 @@
                             class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">
                       <span x-text="post._showDetails ? 'Hide details ▲' : 'More details ▼'"></span>
                     </button>
+                    <button type="button"
+                            @click="endorsePost(post.id)"
+                            x-show="post.user_id !== (user && user.id)"
+                            :disabled="post._endorsing || post.viewer_endorsed || (post.score || 0) < 80"
+                            class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition whitespace-nowrap"
+                            :class="post.viewer_endorsed ? 'border-pink-500 text-pink-500 bg-pink-500/10' : ((post.score || 0) < 80 ? 'border-gray-300 dark:border-gray-600 text-gray-400 cursor-not-allowed' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white')"
+                            :title="(post.score || 0) < 80 ? 'Only torches scoring 80+ can be endorsed' : (post.viewer_endorsed ? 'You already endorsed this torch' : 'Endorse — author gets +36 points')">
+                      <span x-text="post._endorsing ? '…' : (post.viewer_endorsed ? '⭐ ' + (post.endorse_count || 1) : '⭐ Endorse' + (post.endorse_count ? ' ' + post.endorse_count : ''))"></span>
+                    </button>
+
                     <template x-if="post.url && post.tool">
                       <a :href="toolRunUrl(post.tool, post.url)" target="_blank" rel="noopener"
                          class="px-4 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white hover:opacity-90 transition">Run audit →</a>
@@ -1153,9 +1698,9 @@
                       </p>
                       <template x-for="c in (feed.commentLists[post.id] || [])" :key="c.id">
                         <div class="flex gap-2 items-start">
-                          <img :src="`/images/avatars/${c.avatar_preset || 'owner'}.svg`"
+                          <img :src="avatarSrc(c)"
                                width="32" height="32" style="width:32px;height:32px;"
-                               class="rounded-full flex-shrink-0 object-cover" alt="">
+                               class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                           <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
                             <div class="flex items-baseline gap-2 flex-wrap">
                               <a :href="'/torcher/' + (c.username || '') + '/'"
@@ -1177,16 +1722,16 @@
                       <p x-show="(feed.commentLists[post.id] || []).length === 0"
                          class="text-xs text-gray-400 italic text-center py-2">No comments yet. Be the first.</p>
                       <div class="flex gap-2 items-start pt-1">
-                        <img :src="`/images/avatars/${profile.avatar_preset || 'owner'}.svg`"
+                        <img :src="avatarSrc(profile)"
                              width="32" height="32" style="width:32px;height:32px;"
-                             class="rounded-full flex-shrink-0 object-cover" alt="">
+                             class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                         <div class="flex-1 flex gap-2">
-                          <input type="text" maxlength="360"
+                                                    <textarea rows="3" maxlength="360"
                                  x-model="feed.commentDrafts[post.id]"
-                                 @keydown.enter.prevent="submitComment(post.id)"
+                                 @keydown.enter.exact.prevent="submitComment(post.id)"
                                  placeholder="Leave a comment… (360 chars) · +5 pts"
-                                 class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-                          <button @click="submitComment(post.id)"
+                                 class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
+                                <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
@@ -1205,6 +1750,13 @@
             </div>
 
             <p x-show="feed.error" class="text-red-500 text-center text-sm mt-4" x-text="feed.error"></p>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/social-help-guide/#torch-pages"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Torch Pages →
+              </a>
+            </div>
           </div>
 
           <div x-show="networkSubTab === 'mine'" class="max-w-2xl mx-auto glass rounded-2xl p-6">
@@ -1232,7 +1784,7 @@
               <div class="space-y-3">
                 <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
                   <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                    <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                    <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                     <div class="flex-1 min-w-0">
                       <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                       <p class="text-xs text-gray-500 capitalize">
@@ -1255,7 +1807,7 @@
                 <div class="space-y-3">
                   <template x-for="u in network.searchResults" :key="u.id">
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                      <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                      <img :src="avatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                       <div class="flex-1 min-w-0">
                         <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                         <p class="text-xs text-gray-500 capitalize">
@@ -1272,6 +1824,13 @@
                 </div>
               </div>
             </template>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/social-help-guide/#network"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Network &amp; Connections →
+              </a>
+            </div>
           </div>
 
           <div x-show="networkSubTab === 'activity'" x-cloak class="max-w-2xl mx-auto">
@@ -1322,27 +1881,118 @@
               <p class="text-sm text-gray-400 mt-2">Try switching scope to "Everyone" or invite someone.</p>
             </div>
 
-            <div x-show="activity.items.length > 0" class="relative pl-6">
-              <div class="absolute left-2 top-2 bottom-2 w-0.5 bg-gray-200 dark:bg-gray-700"></div>
-              <template x-for="item in activity.items" :key="'na-'+item.id">
-                <div class="relative pb-5 flex items-start gap-3">
-                  <div class="absolute -left-6 top-1 w-4 h-4 rounded-full bg-orange-500 border-2 border-white dark:border-gray-950"></div>
-                  <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
-                    <div class="flex items-center gap-2 mb-1">
-                      <img :src="`/images/avatars/${item.avatar_preset || 'owner'}.svg`" width="24" height="24" style="width:24px;height:24px;" class="rounded-full" alt="">
-                      <a :href="'/torcher/' + item.username + '/'" class="text-xs font-bold hover:text-orange-500" x-text="item.display_name || item.username"></a>
-                    </div>
-                    <p class="text-sm leading-snug">
-                      <span class="mr-1" x-text="activityIcon(item.event_type)"></span>
-                      <span x-text="activityText(item)"></span>
-                    </p>
-                    <div class="flex items-center justify-between gap-2 mt-1">
-                      <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
-                      <template x-if="item.link">
-                        <a :href="item.link" class="text-[11px] text-orange-500 hover:underline">Open →</a>
+            <template x-if="activity.filterUser">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-xs text-gray-500">Filtered by</span>
+                <button @click="clearUserFilter()" class="px-3 py-1 text-xs font-bold rounded-full bg-orange-500 text-white hover:opacity-90">
+                  @<span x-text="activity.filterUsername"></span> ×
+                </button>
+              </div>
+            </template>
+            <div x-show="activity.items.length > 0" class="space-y-3">
+              <template x-for="group in groupActivityByDay(activityFiltered())" :key="'ng-'+group.label">
+                <div class="space-y-2">
+                  <div class="text-xs font-bold uppercase tracking-wider text-gray-500 px-1 pt-2" x-text="group.label"></div>
+                  <template x-for="item in collapseBursts(group.items)" :key="'na-'+item.id">
+                    <div>
+                      <div class="glass rounded-2xl p-4 flex gap-3 hover:bg-white/5 transition"
+                           :class="item.is_your_target ? 'ring-2 ring-orange-500/40' : ''">
+                        <div class="relative flex-shrink-0">
+                          <img :src="avatarSrc(item)"
+                               width="44" height="44" style="width:44px;height:44px;"
+                               class="rounded-full object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
+                          <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white dark:bg-gray-900 flex items-center justify-center text-sm border border-gray-200 dark:border-gray-700"
+                                x-text="activityIcon(item.event_type)"></span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                          <p class="text-sm leading-snug">
+                            <a href="#" @click.prevent="filterActivityByUser(item)"
+                               class="font-bold hover:text-orange-500 hover:underline"
+                               x-text="item.display_name || item.username"></a>
+                            <span class="text-gray-600 dark:text-gray-400" x-text="activityVerb(item)"></span>
+                            <template x-if="item.burst_count > 1">
+                              <span class="ml-1 inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-orange-500/20 text-orange-500"
+                                    x-text="'× ' + item.burst_count"></span>
+                            </template>
+                            <template x-if="item.is_your_target">
+                              <span class="ml-1 inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-orange-500 text-white">Your torch</span>
+                            </template>
+                          </p>
+
+                          <template x-if="item.event_type === 'comment' && item.target_label">
+                            <blockquote class="mt-2 pl-3 border-l-2 border-orange-500/40 text-sm italic text-gray-600 dark:text-gray-400 break-words"
+                                        x-text="'“' + item.target_label + (item.target_label.length >= 60 ? '…' : '') + '”'"></blockquote>
+                          </template>
+
+                          <template x-if="item.event_type === 'torch' && item.target_label">
+                            <div class="mt-2 flex flex-wrap items-center gap-2">
+                              <span class="text-sm font-medium break-words" x-text="item.target_label"></span>
+                              <template x-if="item.category">
+                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-orange-500/15 text-orange-500" x-text="item.category"></span>
+                              </template>
+                              <template x-if="item.tool">
+                                <span class="px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" x-text="item.tool"></span>
+                              </template>
+                            </div>
+                          </template>
+
+                          <template x-if="(item.event_type === 'comment' || item.event_type === 'torch') && item.target_title && item.target_title !== item.target_label">
+                            <a :href="'/torch/' + item.target_id + '/'"
+                               class="mt-2 flex items-center gap-3 p-2 rounded-lg bg-gray-100 dark:bg-gray-800/60 hover:bg-gray-200 dark:hover:bg-gray-800 transition">
+                              <div class="text-center flex-shrink-0" style="min-width:34px;">
+                                <p class="text-lg font-black leading-none"
+                                   :class="item.target_score >= 80 ? 'text-green-500' : item.target_score >= 60 ? 'text-yellow-500' : 'text-red-500'"
+                                   x-text="item.target_score ?? '—'"></p>
+                              </div>
+                              <div class="flex-1 min-w-0">
+                                <p class="text-xs font-medium truncate" x-text="item.target_title"></p>
+                                <p class="text-[10px] text-gray-500 truncate">
+                                  <span x-text="item.target_domain_mode === 'hidden' ? (item.target_domain_label || 'Hidden') : (item.target_domain_label || '')"></span>
+                                  <template x-if="item.target_author_name && item.target_author_username !== item.username">
+                                    <span> · by <span x-text="item.target_author_name"></span></span>
+                                  </template>
+                                </p>
+                              </div>
+                            </a>
+                          </template>
+
+                          <template x-if="item.event_type === 'network' && item.target_label">
+                            <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400">→ <span class="font-medium" x-text="item.target_label"></span></p>
+                          </template>
+
+                          <template x-if="item.event_type === 'contribution' && item.target_label">
+                            <p class="mt-1.5 text-sm text-gray-600 dark:text-gray-400 break-words" x-text="item.target_label"></p>
+                          </template>
+
+                          <template x-if="item.event_type === 'points_milestone' && item.target_label">
+                            <p class="mt-1.5 text-sm font-bold text-orange-500">🏅 Reached <span x-text="item.target_label"></span></p>
+                          </template>
+
+                          <template x-if="item.event_type === 'rank_change' && item.target_label">
+                            <p class="mt-1.5 text-sm font-bold text-green-500">📈 <span x-text="item.target_label"></span> on the leaderboard</p>
+                          </template>
+
+                          <template x-if="item.event_type === 'score_up' && item.target_label">
+                            <p class="mt-1.5 text-sm font-bold text-green-500">⬆️ Score improved: <span x-text="item.target_label"></span></p>
+                          </template>
+
+                          <div class="flex items-center justify-between gap-2 mt-2.5">
+                            <span class="text-[11px] text-gray-500" x-text="formatRelativeTime(item.created_at)"></span>
+                            <template x-if="item.link && item.link !== '#'">
+                              <a :href="item.link" class="text-xs font-semibold text-orange-500 hover:underline" x-text="activityLinkText(item)"></a>
+                            </template>
+                          </div>
+                        </div>
+                      </div>
+                      <template x-if="item._show_after_divider">
+                        <div class="flex items-center gap-3 my-4">
+                          <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
+                          <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">Earlier</span>
+                          <div class="flex-1 h-px bg-gray-300 dark:bg-gray-600"></div>
+                        </div>
                       </template>
                     </div>
-                  </div>
+                  </template>
                 </div>
               </template>
             </div>
@@ -1355,6 +2005,13 @@
             </div>
 
             <p x-show="activity.error" class="text-red-500 text-xs text-center mt-3" x-text="activity.error"></p>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/social-help-guide/#activity"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Activity Feed →
+              </a>
+            </div>
           </div>
 
           <div x-show="networkSubTab === 'discover'" x-cloak class="max-w-4xl mx-auto">
@@ -1372,12 +2029,12 @@
             <div x-show="!discover.loading && discover.users.length === 0" class="glass rounded-2xl p-8 text-center">
               <p class="text-4xl mb-3">🌱</p>
               <p class="text-gray-500">No new people to discover yet.</p>
-              <p class="text-sm text-gray-400 mt-2">Invite a colleague or wait for the daily reshuffle.</p>
+              <p class="text-sm text-gray-400 mt-2">Invite a friend/colleague or wait for the daily reshuffle.</p>
             </div>
             <div x-show="!discover.loading && discover.users.length > 0" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               <template x-for="u in discover.users" :key="'dash-disc-' + u.id">
                 <div class="glass rounded-2xl p-3 flex flex-col items-center text-center hover:bg-white/10 transition">
-                  <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover mb-2" alt="" loading="lazy">
+                  <img :src="avatarSrc(u)" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover mb-2" alt="" loading="lazy" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                   <a :href="'/torcher/' + u.username + '/'" class="font-bold text-sm hover:text-orange-500 truncate w-full" x-text="u.display_name || u.username"></a>
                   <p class="text-xs text-gray-500 truncate w-full">@<span x-text="u.username"></span></p>
                   <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(u.role)"></span>
@@ -1385,8 +2042,9 @@
                     <span x-show="u.total_points > 0">🏅 <span x-text="u.total_points"></span></span>
                     <span x-show="u.torch_count > 0">🔥 <span x-text="u.torch_count"></span></span>
                   </div>
-                  <button @click="addDiscoverUser(u)" :disabled="discover.addLoading[u.id]"
-                          class="mt-2 w-full py-1.5 text-xs font-bold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition disabled:opacity-50">
+                  <button @click="addDiscoverUser(u)"
+                          :class="discover.addLoading[u.id] ? 'opacity-60' : ''"
+                          class="mt-2 w-full py-1.5 text-xs font-bold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition">
                     <span x-show="!discover.addLoading[u.id]">+ Add</span>
                     <span x-show="discover.addLoading[u.id]">…</span>
                   </button>
@@ -1394,10 +2052,17 @@
               </template>
             </div>
             <p x-show="discover.error" class="text-red-500 text-xs text-center mt-3" x-text="discover.error"></p>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/social-help-guide/#discover"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Discover New People →
+              </a>
+            </div>
           </div>
 
           <div x-show="networkSubTab === 'invite'" class="max-w-md mx-auto glass rounded-2xl p-6">
-            <h3 class="text-lg font-bold mb-2">Invite a colleague</h3>
+            <h3 class="text-lg font-bold mb-2">Invite a friend/colleague</h3>
             <p class="text-sm text-gray-500 mb-4">Send them a nudge to discover Traffic Torch.</p>
             <div class="flex gap-2">
               <input type="email" x-model="network.inviteEmail" placeholder="colleague@example.com"
@@ -1406,6 +2071,13 @@
                       class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 text-sm font-medium">Send</button>
             </div>
             <p x-show="network.inviteStatus" class="text-sm mt-3" x-text="network.inviteStatus"></p>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/social-help-guide/#network"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Inviting Colleagues →
+              </a>
+            </div>
           </div>
         </div>
 
@@ -1625,6 +2297,13 @@
                 </div>
               </div>
             </template>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#realtime-tab"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Real-time Data →
+              </a>
+            </div>
           </div>
         </div>
 
@@ -1840,8 +2519,9 @@
                 <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
                   <li>✓ 25 audits per day</li><li>✓ All 17 tools</li><li>✓ 30‑day GA4 data</li><li>✓ 28‑day GSC data</li><li>✓ CSV exports</li><li>✓ Priority support</li><li>✗ Real‑time analytics</li><li>✗ Custom date ranges</li>
                 </ul>
-                <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">Upgrade →</a>
-              </div>
+<a href="/upgrade/#pro" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">
+  Upgrade →
+</a>              </div>
               <div class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
                 <h3 class="text-xl font-bold">Enterprise</h3>
                 <p class="text-3xl font-black mt-2">$68</p>
@@ -1849,26 +2529,29 @@
                 <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
                   <li>✓ 300 audits per day</li><li>✓ All 17 tools</li><li>✓ 365‑day GA4 &amp; GSC data</li><li>✓ Real‑time analytics</li><li>✓ Custom date ranges</li><li>✓ CSV exports</li><li>✓ Dedicated support</li>
                 </ul>
-                <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">Upgrade →</a>
-              </div>
+<a href="/upgrade/#enterprise" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">
+  Upgrade →
+</a>              </div>
             </div>
             <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">All plans include all 17 tools. <a href="/pro/" class="text-orange-500 hover:underline">See full details →</a></p>
           </div>
         </div>
-
+        
         <!-- ===== SETTINGS TAB ===== -->
         <div x-show="activeDashboardTab === 'settings'" x-cloak>
           <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
             <h3 class="text-xl font-bold mb-6">⚙️ Account Settings</h3>
 
+            <!-- ========== SECTION: Account ========== -->
+            <h4 class="text-sm font-bold uppercase tracking-wider text-gray-500 mb-3">👤 Account</h4>
             <div class="space-y-4">
               <div class="flex flex-col items-start p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Email</span>
-                <span class="break-all" x-text="isAuthenticated ? user.email : 'Not logged in'"></span>
+                <span class="break-all" x-text="!authChecked ? 'Checking…' : (isAuthenticated ? user.email : 'Not logged in')"></span>
               </div>
               <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Plan</span>
-                <span x-text="isAuthenticated ? (user.tier || 'free').charAt(0).toUpperCase() + (user.tier || 'free').slice(1) : 'Guest'"></span>
+                <span x-text="!authChecked ? '…' : (isAuthenticated ? (user.tier || 'free').charAt(0).toUpperCase() + (user.tier || 'free').slice(1) : 'Guest')"></span>
               </div>
               <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Total points</span>
@@ -1876,30 +2559,140 @@
               </div>
               <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Member since</span>
-                <span x-text="isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—'"></span>
+				<span x-text="!authChecked ? '…' : (profile.created_at ? formatShortDate(profile.created_at) : '—')"></span>
               </div>
             </div>
 
             <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-              <h4 class="font-semibold mb-3">🔔 Notification Preferences</h4>
-              <p class="text-xs text-gray-500 mb-4">Choose which events generate a notification.</p>
-              <div class="space-y-3">
-                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Comments on my posts</span><input type="checkbox" x-model="profile.notify_comments" class="w-5 h-5"></label>
-                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">New network connections</span><input type="checkbox" x-model="profile.notify_network" class="w-5 h-5"></label>
-                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Leaderboard movements</span><input type="checkbox" x-model="profile.notify_leaderboard" class="w-5 h-5"></label>
+              <h4 class="font-semibold mb-2">💳 Billing & Subscription</h4>
+              <button x-show="isAuthenticated && user.tier !== 'free'" @click="manageBilling()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Manage Subscription</button>
+              <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade here</button>
+            </div>
+
+            <!-- ========== SECTION: Visibility ========== -->
+            <h4 id="settings-visibility" class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">👁️ Who can see me</h4>
+            <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3">
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Profile page</div>
+                  <div class="text-xs text-gray-500">Anyone can visit /torcher/your-username/</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.profile_public == 1"
+                       @change="profile.profile_public = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Activity stream</div>
+                  <div class="text-xs text-gray-500">Show your torches, comments, and milestones on your profile</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.activity_public == 1"
+                       @change="profile.activity_public = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">My network list</div>
+                  <div class="text-xs text-gray-500">Show who you're connected to on your profile</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.show_network == 1"
+                       @change="profile.show_network = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Allow network adds</div>
+                  <div class="text-xs text-gray-500">Let other members add you to their network</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.allow_adds == 1"
+                       @change="profile.allow_adds = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+            </div>
+
+            <!-- ========== SECTION: Content ========== -->
+            <h4 id="settings-content" class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">📝 My content</h4>
+            <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3">
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Auto-share new audits to feed</div>
+                  <div class="text-xs text-gray-500">Post your audits to the community feed automatically</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.auto_share == 1"
+                       @change="profile.auto_share = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+            </div>
+
+            <!-- ========== SECTION: Communication Preferences ========== -->
+            <h4 id="communication-preferences" class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">💬 Communication Preferences</h4>
+
+            <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <h4 class="font-semibold mb-3">✉️ Direct Messages</h4>
+              <p class="text-xs text-gray-500 mb-4">Control who can send you private messages.</p>
+
+              <div class="space-y-2">
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <input type="radio" value="all" x-model="messageSettingsPolicy" class="mt-0.5 w-4 h-4">
+                  <div>
+                    <div class="text-sm font-medium">🌍 Anyone</div>
+                    <div class="text-xs text-gray-500">Any logged-in user can message you.</div>
+                  </div>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <input type="radio" value="network" x-model="messageSettingsPolicy" class="mt-0.5 w-4 h-4">
+                  <div>
+                    <div class="text-sm font-medium">🕸️ My network only</div>
+                    <div class="text-xs text-gray-500">Only people you've added to your network can message you.</div>
+                  </div>
+                </label>
+                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                  <input type="radio" value="none" x-model="messageSettingsPolicy" class="mt-0.5 w-4 h-4">
+                  <div>
+                    <div class="text-sm font-medium">🚫 Nobody</div>
+                    <div class="text-xs text-gray-500">Turn off direct messages completely.</div>
+                  </div>
+                </label>
               </div>
-              <div class="flex gap-3 mt-4 flex-wrap">
-                <button @click="saveProfile()" :disabled="profile.saving"
-                        class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition text-sm">
-                  <span x-show="!profile.saving">Save Preferences</span>
-                  <span x-show="profile.saving">Saving…</span>
+
+              <label class="flex items-center justify-between cursor-pointer mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div>
+                  <div class="text-sm font-medium">Hard-block all messages</div>
+                  <div class="text-xs text-gray-500">Emergency off switch — overrides the setting above.</div>
+                </div>
+                <input type="checkbox"
+                       :checked="messageSettingsBlocked === 1"
+                       @change="messageSettingsBlocked = $event.target.checked ? 1 : 0"
+                       class="w-5 h-5">
+              </label>
+
+              <div class="flex items-center gap-3 mt-4 flex-wrap">
+                <button @click="saveMessageSettings()" :disabled="messageSettingsSaving"
+                        class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition text-sm disabled:opacity-50">
+                  <span x-show="!messageSettingsSaving">Save Message Settings</span>
+                  <span x-show="messageSettingsSaving">Saving…</span>
                 </button>
-                <button @click="scrollToNotifications(); activeDashboardTab = 'profile';" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 text-sm transition">View notifications →</button>
+                <span x-show="messageSettingsSaved" class="text-green-500 text-sm">Saved ✓</span>
               </div>
-              <p x-show="profile.success" class="text-green-500 text-sm mt-3" x-text="profile.success"></p>
             </div>
 
-            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <div class="mt-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <h4 class="font-semibold mb-3">🔔 Notification Preferences</h4>
+              <p class="text-xs text-gray-500 mb-4">Choose which events show the bell badge and appear in your notifications list.</p>
+              <div class="space-y-3">
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Comments on my posts</span><input type="checkbox" :checked="profile.notify_comments == 1" @change="profile.notify_comments = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5"></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">New network connections</span><input type="checkbox" :checked="profile.notify_network == 1" @change="profile.notify_network = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5"></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Leaderboard movements</span><input type="checkbox" :checked="profile.notify_leaderboard == 1" @change="profile.notify_leaderboard = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5"></label>
+                <label class="flex items-center justify-between cursor-pointer"><span class="text-sm">Direct messages</span><input type="checkbox" :checked="profile.notify_messages == 1" @change="profile.notify_messages = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5"></label>
+              </div>
+            </div>
+
+            <div class="mt-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <h4 class="font-semibold">📲 Push Notifications (this device)</h4>
                 <span x-show="push.subscribed"
@@ -1950,26 +2743,26 @@
                     Refresh status
                   </button>
                 </div>
+
                 <div class="pt-3 border-t border-gray-200 dark:border-gray-700 space-y-2" x-show="push.subscribed">
-                  <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Notify me about</p>
+                  <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Push me about</p>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>💬 Comments on my posts</span>
-                    <input type="checkbox" x-model="profile.notify_comments" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" :checked="profile.push_comments == 1" @change="profile.push_comments = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5">
                   </label>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>🤝 New network connections</span>
-                    <input type="checkbox" x-model="profile.notify_network" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" :checked="profile.push_network == 1" @change="profile.push_network = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5">
                   </label>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>🏅 Leaderboard updates</span>
-                    <input type="checkbox" x-model="profile.notify_leaderboard" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" :checked="profile.push_leaderboard == 1" @change="profile.push_leaderboard = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5">
                   </label>
                   <label class="flex items-center justify-between cursor-pointer text-sm">
                     <span>✉️ Direct messages</span>
-                    <input type="checkbox" x-model="profile.notify_messages" @change="saveProfile()" class="w-5 h-5">
+                    <input type="checkbox" :checked="profile.push_messages == 1" @change="profile.push_messages = $event.target.checked ? 1 : 0; saveProfile()" class="w-5 h-5">
                   </label>
                 </div>
-
 
                 <p x-show="push.message" class="text-sm"
                    :class="push.message && push.message.type === 'ok' ? 'text-green-500' : 'text-red-500'"
@@ -1977,29 +2770,48 @@
               </div>
             </div>
 
-            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-              <h4 class="font-semibold mb-2">💳 Billing & Subscription</h4>
-              <button x-show="isAuthenticated && user.tier !== 'free'" @click="manageBilling()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Manage Subscription</button>
-              <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade here</button>
+            <div class="mt-4 flex gap-3 flex-wrap">
+              <button @click="saveProfile()" :disabled="profile.saving"
+                      class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg hover:opacity-90 transition text-sm">
+                <span x-show="!profile.saving">Save Preferences</span>
+                <span x-show="profile.saving">Saving…</span>
+              </button>
+              <button @click="scrollToNotifications(); activeDashboardTab = 'profile';" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 text-sm transition">View notifications →</button>
             </div>
+            <p x-show="profile.success" class="text-green-500 text-sm mt-3" x-text="profile.success"></p>
 
-            <div class="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <!-- ========== SECTION: Security ========== -->
+            <h4 class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">🔒 Security</h4>
+
+            <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
               <h4 class="font-semibold mb-3">🔒 Change Password</h4>
               <p class="text-sm text-gray-500 mb-3">We'll send a password reset link to your email address.</p>
               <button @click="sendPasswordReset()" class="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" :disabled="!isAuthenticated">Send Reset Email</button>
             </div>
 
-            <div class="mt-8 text-center p-4 border border-red-500 rounded-lg">
-              <h4 class="font-semibold text-red-500 mb-2">⚠️</h4>
-              <button @click="openDeleteModal()" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition" :disabled="!isAuthenticated">Delete Account</button>
-            </div>
-
+            <!-- Logout (benign action, neutral colour) -->
             <template x-if="isAuthenticated">
-              <button @click="logout()" class="mt-6 w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg">Logout</button>
+              <button @click="logout()" class="mt-6 w-full py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition">Log Out</button>
             </template>
             <template x-if="!isAuthenticated">
-              <button @click="showUpgradeModal()" class="mt-6 w-full py-3 bg-orange-500 text-white rounded-lg">Login / Register</button>
+              <button @click="showUpgradeModal()" class="mt-6 w-full py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition">Login / Register</button>
             </template>
+
+            <!-- ========== SECTION: Danger Zone ========== -->
+            <h4 class="text-sm font-bold uppercase tracking-wider text-red-500 mt-10 mb-3">⚠️ Danger Zone</h4>
+
+            <div class="p-4 border border-red-500 rounded-lg">
+              <h4 class="font-semibold text-red-500 mb-2">Delete Account</h4>
+              <p class="text-sm text-gray-500 mb-3">Permanently erase your account and all associated data. This cannot be undone.</p>
+              <button @click="openDeleteModal()" class="px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 transition" :disabled="!isAuthenticated">Delete My Account</button>
+            </div>
+
+            <div class="text-center mt-12">
+              <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#settings"
+                 class="inline-block text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-orange-500 dark:hover:text-orange-400 hover:underline transition">
+                📖 Learn more — Settings &amp; Account →
+              </a>
+            </div>
           </div>
         </div>
 
@@ -2108,6 +2920,33 @@
 <script>
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
+async function processAvatarFile(file) {
+  let src;
+  try { src = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+  catch {
+    src = await new Promise((res, rej) => {
+      const img = new Image();
+      img.onload = () => res(img);
+      img.onerror = rej;
+      img.src = URL.createObjectURL(file);
+    });
+  }
+  const S = 400;
+  const sw = Math.min(src.width, src.height);
+  const sx = (src.width - sw) / 2;
+  const sy = (src.height - sw) / 2;
+  const c = document.createElement('canvas');
+  c.width = c.height = S;
+  const ctx = c.getContext('2d');
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(src, sx, sy, sw, sw, 0, 0, S, S);
+  const toBlob = (type, q) => new Promise(r => c.toBlob(r, type, q));
+  let blob = await toBlob('image/webp', 0.85);
+  if (!blob || blob.type !== 'image/webp') blob = await toBlob('image/jpeg', 0.85);
+  if (blob.size > 500 * 1024) blob = await toBlob(blob.type, 0.7);
+  return blob;
+}
+
 function dashboardApp() {
   return {
     resetToken: null,
@@ -2119,9 +2958,12 @@ function dashboardApp() {
     loadingReset: false,
     showPassword: false,
     isAuthenticated: false,
+    authChecked: false,
     user: { id: null, email: '', isPro: false, tier: 'free', gscConnected: false, gscSiteUrl: null },
     activeDashboardTab: 'profile',
     profileViewMode: 'view',
+    contactsRevealed: {},
+    avatarLightbox: false,
     dailyLimit: 3,
     dailyUsedCount: 0,
     selectedTool: '/',
@@ -2148,8 +2990,14 @@ function dashboardApp() {
     networkSubTab: 'feed',
     profileSubTab: 'profile',
     discover: { loading: false, users: [], hasMore: false, error: null, addLoading: {} },
-    activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, type: 'all', category: 'all', tool: 'all', time: 'all', scope: 'network' },
+    activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, type: 'all', category: 'all', tool: 'all', time: 'all', scope: 'network', filterUser: null, filterUsername: null },
 
+    messageSettingsPolicy: 'all',
+    messageSettingsBlocked: 0,
+    messageSettingsSaving: false,
+    messageSettingsSaved: false,
+    messageSettingsLoaded: false,
+    
     notifications: {
       loading: false,
       list: [],
@@ -2192,9 +3040,93 @@ function dashboardApp() {
       notify_network: 1,
       notify_leaderboard: 1,
       notify_messages: 1,
+      push_comments: 1,
+      push_network: 1,
+      push_leaderboard: 1,
+      push_messages: 1,
       activity_public: 1,
+      verified_domain: null,
+      verified_at: null,
+      skills: [],
+      contacts: [],
+      contacts_visibility: 'click',
+      available_for_hire: 0,
+      hire_headline: '',
+      hire_services: [],
+      contact_email: '',
       total_points: 0,
       created_at: null
+    },
+
+    // ── Phase B: Advanced editor helpers ──
+    skillDraft: '',
+    contactDrafts: [],
+    hireServiceDraft: '',
+    verifyStatus: { loading: false, message: '', ok: false, token: null },
+
+    addSkill() {
+      const s = (this.skillDraft || '').trim().slice(0, 24);
+      if (!s) return;
+      if (!Array.isArray(this.profile.skills)) this.profile.skills = [];
+      if (this.profile.skills.length >= 8) return;
+      if (this.profile.skills.includes(s)) { this.skillDraft = ''; return; }
+      this.profile.skills.push(s);
+      this.skillDraft = '';
+    },
+    removeSkill(i) { this.profile.skills.splice(i, 1); },
+
+    addContact() {
+      if (!Array.isArray(this.profile.contacts)) this.profile.contacts = [];
+      if (this.profile.contacts.length >= 3) return;
+      this.profile.contacts.push({ type: 'email', value: '', label: '' });
+    },
+    removeContact(i) { this.profile.contacts.splice(i, 1); },
+
+    addHireService() {
+      const s = (this.hireServiceDraft || '').trim().slice(0, 30);
+      if (!s) return;
+      if (!Array.isArray(this.profile.hire_services)) this.profile.hire_services = [];
+      if (this.profile.hire_services.length >= 6) return;
+      if (this.profile.hire_services.includes(s)) { this.hireServiceDraft = ''; return; }
+      this.profile.hire_services.push(s);
+      this.hireServiceDraft = '';
+    },
+    removeHireService(i) { this.profile.hire_services.splice(i, 1); },
+
+    async verifyDomain() {
+      this.verifyStatus = { loading: true, message: '', ok: false, token: null };
+      try {
+        const token = localStorage.getItem('authToken');
+        const res = await fetch(`${API_BASE}/api/profile/verify-domain`, {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success && data.verified) {
+          this.profile.verified_domain = data.domain;
+          this.profile.verified_at = Date.now();
+          this.verifyStatus = { loading: false, message: '✓ Verified: ' + data.domain, ok: true, token: null };
+        } else {
+          this.verifyStatus = {
+            loading: false,
+            message: data.message || data.error || 'Verification failed',
+            ok: false,
+            token: data.token || null
+          };
+        }
+      } catch (e) {
+        this.verifyStatus = { loading: false, message: 'Network error: ' + e.message, ok: false, token: null };
+      }
+    },
+
+    copyVerifyToken() {
+      if (!this.verifyStatus.token) return;
+      const tag = `<meta name="traffic-torch-verify" content="${this.verifyStatus.token}">`;
+      navigator.clipboard.writeText(tag).then(() => {
+        this.verifyStatus.message = '✓ Meta tag copied — paste into your <head>';
+      }).catch(() => {
+        this.verifyStatus.message = 'Copy failed — token: ' + this.verifyStatus.token;
+      });
     },
 
     network: {
@@ -2284,6 +3216,13 @@ function dashboardApp() {
       const hash = window.location.hash.replace('#', '');
       if (hash && this.tabs.some(t => t.id === hash)) {
         this.activeDashboardTab = hash;
+      } else if (hash === 'communication-preferences') {
+        this.activeDashboardTab = 'settings';
+        this._scrollToElementWithRetry('communication-preferences');
+      } else if (hash === 'notifications-section') {
+        this.activeDashboardTab = 'profile';
+        this.profileSubTab = 'profile';
+        this._scrollToElementWithRetry('notifications-section');
       }
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -2301,6 +3240,7 @@ function dashboardApp() {
         this.loadNetwork();
         this.loadFeed(true);
         this.loadNotifications();
+        this.loadMessageSettings();
         this.initPush();
         this.loadDiscover();
       } else {
@@ -2317,6 +3257,13 @@ function dashboardApp() {
         const h = window.location.hash.replace('#', '');
         if (h && this.tabs.some(t => t.id === h) && h !== this.activeDashboardTab) {
           this.activeDashboardTab = h;
+        } else if (h === 'communication-preferences') {
+          this.activeDashboardTab = 'settings';
+          this._scrollToElementWithRetry('communication-preferences');
+        } else if (h === 'notifications-section') {
+          this.activeDashboardTab = 'profile';
+          this.profileSubTab = 'profile';
+          this._scrollToElementWithRetry('notifications-section');
         }
       });
 
@@ -2378,6 +3325,7 @@ function dashboardApp() {
         this.showResetModal = true;
       }
 
+      this.authChecked = true;
       this.$watch('activeDashboardTab', (newTab) => {
         if (window.location.hash.replace('#', '') !== newTab) {
           history.replaceState(null, '', '#' + newTab);
@@ -2538,8 +3486,28 @@ function dashboardApp() {
     closeUpgradeModal() { document.getElementById('upgradeModal').classList.add('hidden'); },
 
     scrollToNotifications() {
-      const el = document.getElementById('notifications-section');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      this.activeDashboardTab = 'profile';
+      this.profileSubTab = 'profile';
+      this._scrollToElementWithRetry('notifications-section');
+    },
+
+    scrollToSettings(anchorId = 'settings-visibility') {
+      this.activeDashboardTab = 'settings';
+      this._scrollToElementWithRetry(anchorId);
+    },
+
+    _scrollToElementWithRetry(id, maxAttempts = 40, delay = 200) {
+      let attempts = 0;
+      const tick = () => {
+        attempts++;
+        const el = document.getElementById(id);
+        if (el && el.offsetHeight > 0) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+        if (attempts < maxAttempts) setTimeout(tick, delay);
+      };
+      tick();
     },
 
     updateSidebarBadge() {
@@ -2547,6 +3515,33 @@ function dashboardApp() {
       document.querySelectorAll('[data-portal-count]').forEach(el => { el.textContent = count; });
     },
 
+async endorsePost(postId) {
+      const token = localStorage.getItem('authToken');
+      if (!token) { if (this.showUpgradeModal) this.showUpgradeModal(); else window.location.href = '/login/'; return; }
+      const arr = this.feed ? this.feed.posts : (this.posts || []);
+      const post = arr.find(p => p.id === postId);
+      if (!post) return;
+      if (post.viewer_endorsed || post._endorsing) return;
+      post._endorsing = true;
+      try {
+        const res = await fetch(API_BASE + '/api/posts/' + postId + '/endorse', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (data.success) {
+          post.viewer_endorsed = true;
+          post.endorse_count = data.endorse_count || ((post.endorse_count || 0) + 1);
+          if (this.profile) this.profile.endorsement_count = (this.profile.endorsement_count || 0) + 1;
+        } else {
+          alert(data.error || 'Could not endorse');
+        }
+      } catch (e) {
+        alert('Network error: ' + e.message);
+      } finally {
+        post._endorsing = false;
+      }
+    },
     roleLabel(role) {
       const map = { owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', developer: 'Developer', other: 'Member' };
       return map[role] || 'Member';
@@ -2649,6 +3644,48 @@ function dashboardApp() {
     },
 
     // ===== NOTIFICATIONS =====
+        async loadMessageSettings() {
+      if (this.messageSettingsLoaded || !this.isAuthenticated) return;
+      try {
+        const token = localStorage.getItem('authToken');
+        const res = await fetch(`${API_BASE}/api/profile/me`, {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const p = data.profile || {};
+        this.messageSettingsPolicy = p.message_policy || 'all';
+        this.messageSettingsBlocked = p.messages_blocked || 0;
+        this.messageSettingsLoaded = true;
+      } catch {}
+    },
+
+    async saveMessageSettings() {
+      this.messageSettingsSaving = true;
+      this.messageSettingsSaved = false;
+      try {
+        const token = localStorage.getItem('authToken');
+        const res = await fetch(`${API_BASE}/api/messages/settings`, {
+          method: 'PATCH',
+          headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message_policy: this.messageSettingsPolicy,
+            messages_blocked: this.messageSettingsBlocked
+          })
+        });
+        if (!res.ok) {
+          const d = await res.json().catch(() => ({}));
+          throw new Error(d.error || 'Save failed');
+        }
+        this.messageSettingsSaved = true;
+        setTimeout(() => { this.messageSettingsSaved = false; }, 2500);
+      } catch (e) {
+        alert('Could not save: ' + e.message);
+      } finally {
+        this.messageSettingsSaving = false;
+      }
+    },
+    
     async loadNotifications() {
       if (!this.isAuthenticated) return;
       this.notifications.loading = true;
@@ -2661,6 +3698,17 @@ function dashboardApp() {
         this.updateSidebarBadge();
       } catch {}
       finally { this.notifications.loading = false; }
+    },
+    
+        openBeamNotification(n) {
+      // Mark read first, then open the drawer
+      this.markOneRead(n.id);
+      if (typeof window.ttOpenBeams === 'function') {
+        window.ttOpenBeams(n.actor_id);
+      } else {
+        // Fallback if messages.js hasn't loaded (rare)
+        window.location.href = '/dashboard/?openbeams=1';
+      }
     },
 
     async markAllRead() {
@@ -3312,19 +4360,41 @@ function dashboardApp() {
     // ===== PROFILE =====
     async loadProfile() {
       this.profile.loading = true; this.profile.error = null;
+      if (!this.isAuthenticated) {
+        this.profile.loading = false;
+        return;
+      }
       try {
         const res = await fetch(`${API_BASE}/api/profile/me`, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') } });
+        if (res.status === 401) {
+          this.profile.error = 'Your session expired. Please log in again to edit your profile.';
+          return;
+        }
         if (!res.ok) throw new Error('Failed to load profile');
         const data = await res.json();
         Object.assign(this.profile, data.profile || {});
+        // Normalize 0/1 values — Alpine checkbox binding is sensitive to type
+        ['notify_comments','notify_network','notify_leaderboard','notify_messages',
+         'push_comments','push_network','push_leaderboard','push_messages'].forEach(k => {
+          if (this.profile[k] !== undefined) this.profile[k] = this.profile[k] ? 1 : 0;
+        });
         if (data.profile?.total_points !== undefined) {
           this.profile.total_points = data.profile.total_points;
         }
+        // ── Phase B: normalize advanced fields ──
+        if (!Array.isArray(this.profile.skills)) this.profile.skills = [];
+        if (!Array.isArray(this.profile.contacts)) this.profile.contacts = [];
+        if (!Array.isArray(this.profile.hire_services)) this.profile.hire_services = [];
+        this.profile.available_for_hire = this.profile.available_for_hire ? 1 : 0;
       } catch (e) { this.profile.error = e.message; }
       finally { this.profile.loading = false; }
     },
 
     async saveProfile() {
+      if (!this.isAuthenticated) {
+        this.profile.error = 'You need an account to save your profile. Click "Create account" below.';
+        return;
+      }
       this.profile.saving = true; this.profile.error = null; this.profile.success = null;
       try {
         const body = {
@@ -3347,7 +4417,19 @@ function dashboardApp() {
           notify_network: this.profile.notify_network ? 1 : 0,
           notify_leaderboard: this.profile.notify_leaderboard ? 1 : 0,
           notify_messages: this.profile.notify_messages ? 1 : 0,
-          activity_public: this.profile.activity_public ? 1 : 0
+          push_comments: this.profile.push_comments ? 1 : 0,
+          push_network: this.profile.push_network ? 1 : 0,
+          push_leaderboard: this.profile.push_leaderboard ? 1 : 0,
+          push_messages: this.profile.push_messages ? 1 : 0,
+          activity_public: this.profile.activity_public ? 1 : 0,
+          // Phase B: advanced
+          skills: Array.isArray(this.profile.skills) ? this.profile.skills : [],
+          contacts: Array.isArray(this.profile.contacts) ? this.profile.contacts : [],
+          contacts_visibility: this.profile.contacts_visibility || 'click',
+          available_for_hire: this.profile.available_for_hire ? 1 : 0,
+          hire_headline: this.profile.hire_headline || '',
+          hire_services: Array.isArray(this.profile.hire_services) ? this.profile.hire_services : [],
+          contact_email: this.profile.contact_email || ''
         };
         const res = await fetch(`${API_BASE}/api/profile/me`, {
           method: 'PATCH',
@@ -3355,6 +4437,10 @@ function dashboardApp() {
           body: JSON.stringify(body)
         });
         const data = await res.json();
+        if (res.status === 401) {
+          this.profile.error = 'Your session expired. Please log in again to save changes.';
+          return;
+        }
         if (!res.ok) throw new Error(data.error || 'Save failed');
         Object.assign(this.profile, data.profile || {});
         this.profile.success = 'Saved ✓';
@@ -3466,6 +4552,7 @@ function dashboardApp() {
     // ===== NETWORK =====
     async loadNetwork() {
       this.network.loading = true;
+      this.network.addLoading = {};
       try {
         const res = await fetch(`${API_BASE}/api/network/list`, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') } });
         const data = await res.json();
@@ -3748,6 +4835,7 @@ function dashboardApp() {
       if (!token) return;
       this.discover.loading = true;
       this.discover.error = null;
+      this.discover.addLoading = {};
       try {
         const res = await fetch(`${API_BASE}/api/users/discover?seed=${fresh ? 'fresh' : 'today'}&limit=24&offset=0`,
           { headers: { 'Authorization': 'Bearer ' + token } });
@@ -3762,20 +4850,32 @@ function dashboardApp() {
     async randomizeDiscover() { return this.loadDiscover(true); },
 
     async addDiscoverUser(u) {
-      if (this.discover.addLoading[u.id]) return;
-      this.discover.addLoading[u.id] = true;
+      const uid = u && u.id;
+      if (!uid) { console.warn('[discover] missing id on user', u); return; }
+      if (this.discover.addLoading[uid]) return;
+      this.discover.addLoading[uid] = true;
+      console.log('[discover] add clicked, uid =', uid);
       try {
         const token = localStorage.getItem('authToken');
         if (!token) { window.location.href = '/login/'; return; }
         const res = await fetch(`${API_BASE}/api/network/add`, {
           method: 'POST',
           headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: u.id })
+          body: JSON.stringify({ user_id: uid })
         });
-        if (res.ok) this.discover.users = this.discover.users.filter(x => x.id !== u.id);
-        else { const d = await res.json().catch(() => ({})); alert(d.error || 'Failed to add'); }
-      } catch (e) { alert('Network error: ' + e.message); }
-      finally { this.discover.addLoading[u.id] = false; }
+        const data = await res.json().catch(() => ({}));
+        console.log('[discover] add response', res.status, data);
+        if (res.ok) {
+          this.discover.users = this.discover.users.filter(x => x.id !== uid);
+        } else {
+          alert(data.error || ('Failed to add (HTTP ' + res.status + ')'));
+        }
+      } catch (e) {
+        console.error('[discover] add error', e);
+        alert('Network error: ' + e.message);
+      } finally {
+        this.discover.addLoading[uid] = false;
+      }
     },
 
     async loadActivity(mode = 'me') {
@@ -3802,6 +4902,7 @@ function dashboardApp() {
           : (data.items || []);
         this.activity.cursor = data.cursor || null;
         this.activity.hasMore = !!data.has_more;
+        this._markNewItems('me');
       } catch (e) { this.activity.error = e.message; }
       finally { this.activity.loading = false; }
     },
@@ -3814,7 +4915,8 @@ function dashboardApp() {
     },
 
     activityIcon(t) {
-      return ({ torch: '🔥', comment: '💬', leaderboard: '🏆', network: '🤝', contribution: '🛠️', profile: '✏️' })[t] || '•';
+      return ({ torch: '🔥', comment: '💬', network: '🤝', contribution: '🛠️',
+                points_milestone: '🏅', rank_change: '📈', score_up: '⬆️', endorse: '⭐' })[t] || '•';
     },
 
     activityText(item) {
@@ -3829,25 +4931,217 @@ function dashboardApp() {
         case 'profile':      return `${who} updated their profile`;
         default:             return `${who} did something`;
       }
-    }
+    },
+
+    activityVerb(item) {
+      return ({
+        torch: ' shared a torch', comment: ' commented on a torch',
+        network: ' added someone to their network',
+        contribution: ' made a contribution',
+        points_milestone: ' reached a milestone', rank_change: ' moved up the leaderboard',
+        score_up: ' improved a score', endorse: ' endorsed a torch'
+      })[item.event_type] || ' did something';
+    },
+
+    activityLinkText(item) {
+      return ({
+        torch: 'View torch →', comment: 'Read thread →', network: 'View profile →',
+        contribution: 'View contribution →',
+        points_milestone: 'View leaderboard →', rank_change: 'View leaderboard →', score_up: 'Re-run audit →',
+        endorse: 'View torch →'
+      })[item.event_type] || 'Open →';
+    },
+
+    collapseBursts(items) {
+      if (!Array.isArray(items) || !items.length) return [];
+      const out = [];
+      for (const item of items) {
+        const last = out[out.length - 1];
+        if (last
+            && last.user_id === item.user_id
+            && last.event_type === item.event_type
+            && last.target_id === item.target_id
+            && Number.isFinite(last.target_id)
+            && (last.created_at - item.created_at) < 10 * 60 * 1000) {
+          last.burst_count = (last.burst_count || 1) + 1;
+        } else {
+          out.push({ ...item, burst_count: 1 });
+        }
+      }
+      return out;
+    },
+
+    activityFiltered() {
+      return this.activity.filterUser
+        ? this.activity.items.filter(i => i.user_id === this.activity.filterUser)
+        : this.activity.items;
+    },
+
+    filterActivityByUser(item) {
+      this.activity.filterUser = item.user_id;
+      this.activity.filterUsername = item.username;
+    },
+
+    clearUserFilter() {
+      this.activity.filterUser = null;
+      this.activity.filterUsername = null;
+    },
+
+    _markNewItems(mode) {
+      const key = 'activity_' + mode;
+      const lastSeen = parseInt(localStorage.getItem('tt_activity_last_seen_' + key) || '0', 10);
+      let lastNewIdx = -1;
+      this.activity.items.forEach((item, i) => {
+        item._is_new = lastSeen > 0 && item.created_at > lastSeen;
+        delete item._show_after_divider;
+        if (item._is_new) lastNewIdx = i;
+      });
+      if (lastNewIdx >= 0 && lastNewIdx < this.activity.items.length - 1) {
+        this.activity.items[lastNewIdx]._show_after_divider = true;
+      }
+      setTimeout(() => {
+        localStorage.setItem('tt_activity_last_seen_' + key, String(Date.now()));
+      }, 3000);
+    },
+
+    groupActivityByDay(items) {
+      if (!Array.isArray(items) || !items.length) return [];
+      const now = new Date();
+      const todayMs = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      const yesterdayMs = todayMs - 86400000;
+      const currentYear = now.getFullYear();
+      const groups = [];
+      let lastLabel = null;
+      for (const item of items) {
+        const d = new Date(item.created_at);
+        const dayMs = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+        let label;
+        if (dayMs === todayMs) label = 'Today';
+        else if (dayMs === yesterdayMs) label = 'Yesterday';
+        else label = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: d.getFullYear() !== currentYear ? 'numeric' : undefined });
+        if (label !== lastLabel) { groups.push({ label, items: [] }); lastLabel = label; }
+        groups[groups.length - 1].items.push(item);
+      }
+      return groups;
+    },
   }
 }
 
 window.dashboardApp = dashboardApp;
 
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('reset_token');
-  if (token) {
-    setTimeout(function() {
-      const appEl = document.querySelector('[x-data]');
-      if (appEl && appEl.__x) {
-        const data = appEl.__x.$data;
-        if (data && !data.showResetModal) { data.resetToken = token; data.showResetModal = true; }
-      }
-    }, 1000);
-  }
+// ============================================================
+// Avatar behavior — final, no _forcePreset flag
+// ============================================================
+(function(){
+  if (window.__ttAvatarFinal) return;
+  window.__ttAvatarFinal = true;
+  const _orig = window.dashboardApp;
+
+  window.dashboardApp = function() {
+    const obj = _orig.apply(this, arguments);
+
+    // Simple, correct: use avatar_url if present, else fall back to preset SVG.
+    obj.avatarSrc = function(o) {
+      if (!o) return '/images/avatars/owner.svg';
+      if (typeof o === 'string') return '/images/avatars/' + o + '.svg';
+      if (o.avatar_url) return o.avatar_url.startsWith('http') ? o.avatar_url : (API_BASE + o.avatar_url);
+      return '/images/avatars/' + (o.avatar_preset || 'owner') + '.svg';
+    };
+
+    // Clicking a preset immediately deletes any custom photo server-side.
+    obj.pickPreset = async function(preset) {
+      this.profile.avatar_preset = preset;
+      if (!this.profile.avatar_r2_key) return;
+      try {
+        await fetch(API_BASE + '/api/profile/avatar', {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        this.profile.avatar_r2_key = null;
+        this.profile.avatar_updated_at = null;
+        this.profile.avatar_url = null;
+        console.log('[avatar] custom photo removed, using preset:', preset);
+      } catch (e) { console.warn('[avatar] preset-clear failed', e); }
+    };
+
+    return obj;
+  };
 })();
+
+// ---- avatar helpers (installed by patch) ----
+(function(){
+  window.__avatarHelpersInstalled = true;
+  const _orig = window.dashboardApp;
+  window.dashboardApp = function() {
+    const obj = _orig.apply(this, arguments);
+
+    obj.avatarUploading = false;
+    obj.avatarError = null;
+
+    // ONLY use the API endpoint when the server explicitly says a custom avatar exists.
+    // Never guess from user id — that caused the white-circle bug (302 to wrong origin).
+    obj.avatarSrc = function(o) {
+      if (o && o._forcePreset) return '/images/avatars/' + (o.avatar_preset || 'owner') + '.svg';
+      if (!o) return '/images/avatars/owner.svg';
+      if (typeof o === 'string') return '/images/avatars/' + o + '.svg';
+      if (o.avatar_url) return o.avatar_url.startsWith('http') ? o.avatar_url : (API_BASE + o.avatar_url);
+      // Belt-and-braces: server told us a custom avatar exists but didn't send the URL
+      if (o.avatar_r2_key) {
+        const id = o.id != null ? o.id : o.user_id;
+        if (id) return API_BASE + '/api/profile/avatar/' + id + '?v=' + (o.avatar_updated_at || 0);
+      }
+      return '/images/avatars/' + (o.avatar_preset || 'owner') + '.svg';
+    };
+
+    obj.uploadAvatar = async function(ev) {
+      const input = ev.target;
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (!file) return;
+      this.avatarError = null;
+      // No MIME check — try to decode whatever the user picked. Handles HEIC, HEIF, AVIF, etc.
+      if (file.size > 15 * 1024 * 1024) { this.avatarError = 'Max 15 MB.'; return; }
+      this.avatarUploading = true;
+      try {
+        const blob = await processAvatarFile(file);
+        const fd = new FormData();
+        fd.append('file', blob, 'avatar.' + (blob.type === 'image/webp' ? 'webp' : 'jpg'));
+        const res = await fetch(API_BASE + '/api/profile/avatar', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') },
+          body: fd
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        this.profile.avatar_r2_key = data.avatar_r2_key;
+        this.profile.avatar_updated_at = data.avatar_updated_at;
+        this.profile.avatar_url = data.avatar_url;
+      } catch (e) {
+        this.avatarError = e.message;
+      } finally {
+        this.avatarUploading = false;
+      }
+    };
+
+    obj.removeAvatar = async function() {
+      if (!confirm('Remove custom photo and go back to the preset avatar?')) return;
+      try {
+        const res = await fetch(API_BASE + '/api/profile/avatar', {
+          method: 'DELETE',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        if (!res.ok) throw new Error('Delete failed');
+        this.profile.avatar_r2_key = null;
+        this.profile.avatar_updated_at = null;
+        this.profile.avatar_url = null;
+      } catch (e) { alert(e.message); }
+    };
+
+    return obj;
+  };
+})();
+
+
 </script>
 
 </body>

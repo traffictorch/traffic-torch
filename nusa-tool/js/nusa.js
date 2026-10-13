@@ -76,29 +76,31 @@ function looksLikeRealFix(prose) {
 }
 
 /* ── Lighthouse dedupe ─────────────────────────────────────────
-   The local UX pass already scores Accessibility, Performance,
-   Mobile and PWA. Anything the UX pass owns is removed from the
-   Lighthouse module list *before* the SEO score is computed, so
-   the same problem isn't penalised in both UX and SEO and doesn't
-   appear twice in the fix list. */
-const UX_OWNED_MODULES = new Set([
-  'accessibility',
-  'performance',
-  'performance score',
-  'core web vitals',
-  'mobile',
-  'mobile ux',
-  'pwa readiness',
-  'resource optimisation',
-  'resource optimization'
-]);
+/* Anything the local UX pass already scores is removed from the Lighthouse
+   module list *before* SEO is computed. Regex (not exact names) so future
+   renames like "PWA Readiness" → "PWA / Installability (optional)" can't
+   slip through again. */
+const UX_OWNED_PATTERNS = [
+  /^accessibility$/i,
+  /^performance(?:\s+score)?$/i,
+  /^core\s+web\s+vitals$/i,
+  /^mobile(?:\s+ux)?$/i,
+  /^pwa\b/i,
+  /^resource\s+optimi[sz]ation$/i
+];
+
+function isUxOwned(name) {
+  const n = (name || '').trim();
+  if (!n) return false;
+  return UX_OWNED_PATTERNS.some(re => re.test(n));
+}
 
 function dedupeLighthouse(lh, uxModules) {
   if (!lh || !Array.isArray(lh.modules)) return lh;
   const uxNames = new Set(uxModules.map(m => (m.name || '').toLowerCase().trim()));
   const kept = lh.modules.filter(m => {
     const n = (m.name || '').toLowerCase().trim();
-    return !UX_OWNED_MODULES.has(n) && !uxNames.has(n);
+    return !isUxOwned(m.name) && !uxNames.has(n);
   });
   return { ...lh, modules: kept, _removedByDedupe: lh.modules.length - kept.length };
 }
@@ -305,6 +307,7 @@ function getUXContent(doc, metrics, auditedUrl) {
   const topLevelItems = primaryNav ? primaryNav.querySelectorAll(':scope > ul > li, :scope > li').length : 0;
 
   return {
+    htmlLang: (doc.documentElement && doc.documentElement.getAttribute('lang')) || '',
     fullText, wordCount: countWords(fullText),
     linkCount: links.length,
     externalLinkCount: countExternalLinks(links, auditedUrl),
@@ -385,7 +388,8 @@ function getUXContent(doc, metrics, auditedUrl) {
       'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], ' +
       'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
       '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
-    ).length
+    ).length,
+    htmlLang: (doc.documentElement && doc.documentElement.getAttribute('lang')) || ''
   };
 }
 
@@ -437,7 +441,7 @@ async function runAudit(rawUrl) {
     return;
   }
 
-  narrate(`Rendered + scored. Parsing DOM for the UX pass.`);
+  narrate(`SEO & AEO done. Fetching rendered DOM for UX…`);
   setProgress('running UX pass…');
   await sleep(80);
 

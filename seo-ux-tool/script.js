@@ -21,6 +21,7 @@ import {
   extractSnippets,
   escapeHtml
 } from './code-snippet.js?v=1.0';
+import { renderContributions } from './contributions.js?v=1.0';
 
 // ─── Leaderboard submission button ───────────────────────────────
 function injectLeaderboardButton({ url, title, score, moduleScores }) {
@@ -213,6 +214,7 @@ let resultsWrapper = null;
 document.addEventListener('DOMContentLoaded', () => {
   // ── Edit 2a: init the code-snippet modal once ──
   initCodeSnippetModal();
+  renderContributions();
 
   document.querySelectorAll('.number').forEach(n => n.style.opacity = '0');
 

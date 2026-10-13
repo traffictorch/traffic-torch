@@ -18,6 +18,7 @@ import {
   deriveSelectorsForFailure,
   extractSnippets
 } from './code-snippet.js?v=1.0';
+import { renderContributions } from './contributions.js?v=1.0';
 
 // ── Edit 1: fenced-code-block renderer (module top) ────────────────────
 function renderCodeBlocks(text) {
@@ -178,6 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const analyzeCodeBtn = document.getElementById('analyze-code-btn');
 
   initCodeSnippetModal();
+  renderContributions();
 
   // ── Delegated click handler: fixes toggle + Ask AI link ──────────────
   document.addEventListener('click', (e) => {

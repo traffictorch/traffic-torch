@@ -10,8 +10,8 @@ const SOURCES = {
   'ChatGPT-User':     'https://openai.com/chatgpt-user.json',
   Bingbot:            'https://www.bing.com/toolbox/bingbot.json',
   Applebot:           'https://search.developer.apple.com/applebot.json',
-  PerplexityBot:      'https://perplexity.ai/perplexitybot.json',
-  'Perplexity-User':  'https://perplexity.ai/perplexity-user.json',
+  PerplexityBot:      'https://www.perplexity.com/perplexitybot.json',
+  'Perplexity-User':  'https://www.perplexity.com/perplexity-user.json',
   ClaudeBot:          'https://claude.com/crawling/bots.json',
   'Claude-User':      'https://claude.com/crawling/bots.json',
   'Claude-SearchBot': 'https://claude.com/crawling/bots.json'

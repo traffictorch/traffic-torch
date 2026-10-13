@@ -1,6 +1,5 @@
 // ip-matcher.js — matches log entries against published bot UA + IP list
 
-// UA patterns for each bot family. Case-insensitive substring match.
 export const BOT_UA_PATTERNS = {
   'Googlebot':        /Googlebot\//i,
   'Googlebot-Image':  /Googlebot-Image\//i,
@@ -11,6 +10,8 @@ export const BOT_UA_PATTERNS = {
   'OAI-SearchBot':    /OAI-SearchBot\//i,
   'ChatGPT-User':     /ChatGPT-User\//i,
   'ClaudeBot':        /ClaudeBot\//i,
+  'Claude-User':      /Claude-User\//i,
+  'Claude-SearchBot': /Claude-SearchBot\//i,
   'Claude-Web':       /Claude-Web\//i,
   'anthropic-ai':     /anthropic-ai/i,
   'PerplexityBot':    /PerplexityBot\//i,
@@ -22,25 +23,23 @@ export const BOT_UA_PATTERNS = {
   'YandexBot':        /YandexBot\//i
 };
 
-// Which bots have published IP ranges (from the worker)
 export const PUBLISHED_IP_BOTS = new Set([
   'Googlebot', 'Googlebot-Image', 'Googlebot-News',
   'Bingbot', 'Applebot',
-  'GPTBot', 'OAI-SearchBot', 'ChatGPT-User'
-  // Amazonbot removed — Amazon does not publish an IP range.
-  // It's UA-only like Perplexity, Claude, and CCBot.
+  'GPTBot', 'OAI-SearchBot', 'ChatGPT-User',
+  'PerplexityBot', 'Perplexity-User',
+  'ClaudeBot', 'Claude-User', 'Claude-SearchBot'
+  // Amazonbot, CCBot, Bytespider, DuckAssistBot, YandexBot remain UA-only.
 ]);
 
 // ── IP normalization ──
 export function ipToBigInt(ip) {
   if (!ip) return null;
-  // IPv4
   if (/^\d+\.\d+\.\d+\.\d+$/.test(ip)) {
     const parts = ip.split('.').map(Number);
     if (parts.some(p => p < 0 || p > 255)) return null;
     return (BigInt(parts[0]) << 24n) | (BigInt(parts[1]) << 16n) | (BigInt(parts[2]) << 8n) | BigInt(parts[3]);
   }
-  // IPv6 — expand shorthand
   if (ip.includes(':')) {
     try {
       const expanded = expandIPv6(ip);
@@ -57,7 +56,6 @@ export function ipToBigInt(ip) {
 }
 
 function expandIPv6(ip) {
-  // Strip zone id
   ip = ip.split('%')[0];
   let [head, tail] = ip.split('::');
   const headParts = head ? head.split(':').filter(Boolean) : [];
@@ -72,47 +70,75 @@ function expandIPv6(ip) {
   return all.map(p => p.padStart(4, '0')).join(':');
 }
 
+// ── Anonymization detection ──
+// Some hosts (Plesk, CloudPanel with GDPR-safe logging, certain cPanel vhosts)
+// rewrite the last IPv4 octet to 0 or truncate IPv6 to /48. We can't verify
+// the bot against a truncated IP, but we shouldn't call it "unverified" —
+// that reads as "spoofed", which it isn't.
+export function isAnonymizedIp(ip) {
+  if (!ip) return false;
+  if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.0$/.test(ip)) return true;
+  if (ip.includes(':')) {
+    const expanded = expandIPv6(ip);
+    if (!expanded) return false;
+    const hextets = expanded.split(':');
+    if (hextets.length !== 8) return false;
+    const tail = hextets.slice(3).every(h => parseInt(h, 16) === 0);
+    const head = hextets.slice(0, 3).some(h => parseInt(h, 16) !== 0);
+    if (tail && head) return true;
+  }
+  return false;
+}
+
 // ── CIDR check ──
-// Returns true if ipBigInt falls within cidr. cidr can be "1.2.3.0/24" or "2001:db8::/32" or a single IP.
 export function ipInCidr(ipBigInt, cidr) {
   if (!cidr) return false;
   const [rangeStr, prefixStr] = cidr.split('/');
   const rangeIp = ipToBigInt(rangeStr);
   if (rangeIp === null || ipBigInt === null) return false;
 
-  // Determine bit width from whether rangeIp has IPv6 range
   const isV6 = rangeStr.includes(':');
   const totalBits = isV6 ? 128 : 32;
   const prefix = prefixStr !== undefined ? parseInt(prefixStr, 10) : totalBits;
   if (isNaN(prefix) || prefix < 0 || prefix > totalBits) return false;
 
-  // Mask both to prefix length
   const hostBits = BigInt(totalBits - prefix);
   const mask = ((1n << BigInt(totalBits)) - 1n) ^ ((1n << hostBits) - 1n);
   return (ipBigInt & mask) === (rangeIp & mask);
 }
 
 // ── Bot matching ──
-// For each entry: check UA → identify bot; if bot has published IPs, verify IP is in range.
+// status is one of:
+//   'verified'   — UA claims a bot with published ranges, and IP is in range
+//   'anonymized' — UA claims such a bot, but the IP is anonymized (can't verify)
+//   'unverified' — UA claims such a bot, IP isn't in range
+//   'ua-only'    — UA claims a bot with no published ranges
 export function classifyEntry(entry, ipLists) {
-  if (!entry || !entry.ua) return { bot: null, verified: false, claimed: null };
+  if (!entry || !entry.ua) return { bot: null, status: null, claimed: null };
 
   for (const [bot, pattern] of Object.entries(BOT_UA_PATTERNS)) {
     if (!pattern.test(entry.ua)) continue;
 
-    // Claimed to be this bot. If it has published ranges, verify.
-    if (PUBLISHED_IP_BOTS.has(bot) && ipLists?.[bot]?.length) {
-      const ipBig = ipToBigInt(entry.ip);
-      if (ipBig === null) return { bot, verified: false, claimed: bot };
-      const verified = ipLists[bot].some(cidr => ipInCidr(ipBig, cidr));
-      return { bot, verified, claimed: bot };
+    if (!PUBLISHED_IP_BOTS.has(bot) || !ipLists?.[bot]?.length) {
+      return { bot, status: 'ua-only', claimed: bot };
     }
 
-    // No published ranges → UA-only claim
-    return { bot, verified: false, claimed: bot };
+    const ipBig = ipToBigInt(entry.ip);
+    if (ipBig === null) {
+      return { bot, status: 'unverified', claimed: bot };
+    }
+
+    const verified = ipLists[bot].some(cidr => ipInCidr(ipBig, cidr));
+    if (verified) return { bot, status: 'verified', claimed: bot };
+
+    if (isAnonymizedIp(entry.ip)) {
+      return { bot, status: 'anonymized', claimed: bot };
+    }
+
+    return { bot, status: 'unverified', claimed: bot };
   }
 
-  return { bot: null, verified: false, claimed: null };
+  return { bot: null, status: null, claimed: null };
 }
 
 // ── Aggregate ──
@@ -120,17 +146,18 @@ export function aggregateByBot(entries, ipLists) {
   const buckets = new Map();
 
   for (const e of entries) {
-    const { bot, verified, claimed } = classifyEntry(e, ipLists);
+    const { bot, status } = classifyEntry(e, ipLists);
     if (!bot) continue;
 
-    const key = bot;
-    if (!buckets.has(key)) {
-      buckets.set(key, {
+    if (!buckets.has(bot)) {
+      buckets.set(bot, {
         bot,
         hasPublishedIps: PUBLISHED_IP_BOTS.has(bot),
         total: 0,
         verifiedCount: 0,
         unverifiedCount: 0,
+        anonymizedCount: 0,
+        uaOnlyCount: 0,
         statuses: new Map(),
         statusClasses: { 2: 0, 3: 0, 4: 0, 5: 0 },
         firstSeen: null,
@@ -138,13 +165,17 @@ export function aggregateByBot(entries, ipLists) {
         topPaths: new Map(),
         topIps: new Map(),
         unverifiedIps: new Map(),
+        anonymizedIps: new Map(),
         suspiciousStatuses: { 401: 0, 403: 0, 429: 0, 503: 0 }
       });
     }
 
-    const b = buckets.get(key);
+    const b = buckets.get(bot);
     b.total++;
-    if (verified) b.verifiedCount++; else b.unverifiedCount++;
+    if (status === 'verified')         b.verifiedCount++;
+    else if (status === 'anonymized')  b.anonymizedCount++;
+    else if (status === 'ua-only')     b.uaOnlyCount++;
+    else                               b.unverifiedCount++;
 
     if (!b.statuses.has(e.status)) b.statuses.set(e.status, 0);
     b.statuses.set(e.status, b.statuses.get(e.status) + 1);
@@ -161,22 +192,21 @@ export function aggregateByBot(entries, ipLists) {
       if (!b.lastSeen || e.time > b.lastSeen) b.lastSeen = e.time;
     }
 
-    if (e.path) {
-      b.topPaths.set(e.path, (b.topPaths.get(e.path) || 0) + 1);
-    }
+    if (e.path) b.topPaths.set(e.path, (b.topPaths.get(e.path) || 0) + 1);
 
-    b.topIps.set(e.ip, (b.topIps.get(e.ip) || 0) + 1);
-    if (!verified && e.ip) {
-      b.unverifiedIps.set(e.ip, (b.unverifiedIps.get(e.ip) || 0) + 1);
+    if (e.ip) {
+      b.topIps.set(e.ip, (b.topIps.get(e.ip) || 0) + 1);
+      if (status === 'unverified') b.unverifiedIps.set(e.ip, (b.unverifiedIps.get(e.ip) || 0) + 1);
+      if (status === 'anonymized') b.anonymizedIps.set(e.ip, (b.anonymizedIps.get(e.ip) || 0) + 1);
     }
   }
 
-  // Convert to sorted arrays
   return [...buckets.values()].map(b => ({
     ...b,
     statuses: [...b.statuses.entries()].sort((a, b) => b[1] - a[1]),
     topPaths: [...b.topPaths.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10),
     topIps: [...b.topIps.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10),
-    unverifiedIps: [...b.unverifiedIps.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10)
+    unverifiedIps: [...b.unverifiedIps.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10),
+    anonymizedIps: [...b.anonymizedIps.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10)
   })).sort((a, b) => b.total - a.total);
 }

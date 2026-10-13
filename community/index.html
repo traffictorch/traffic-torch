@@ -142,6 +142,9 @@
 
   <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/style.css?v=1.0"></noscript>
+  
+  <link rel="preload" as="style" href="/leader-board/contributions-widget.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/leader-board/contributions-widget.css?v=1.0"></noscript>
 
 <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
 <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
@@ -195,6 +198,7 @@
     }
     .dark .points-badge { background: rgba(251,146,60,0.2); color: #fb923c; }
   </style>
+  <script src="/shared/avatar.js?v=1.0"></script>
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -325,13 +329,13 @@
 </h3>
                       <p class="text-xs text-gray-500">
                         <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
-                        · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                        · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500 inline-flex items-center gap-1"><span x-text="post.display_name || post.username"></span><svg x-show="post.verified_at" viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a>
                         <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
                         · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                       </p>
                       <p x-show="post.note && post.note !== post.page_title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
                     </div>
-                    <img :src="`/images/avatars/${post.avatar_preset || 'owner'}.svg`"
+                    <img :src="ttAvatarSrc(post)"
                          :alt="post.display_name"
                          width="40" height="40" style="width:40px;height:40px;"
                          class="rounded-full flex-shrink-0 object-cover">
@@ -412,7 +416,7 @@
                     </p>
                     <template x-for="c in (feed.commentLists[post.id] || [])" :key="c.id">
                       <div class="flex gap-2 items-start">
-                        <img :src="`/images/avatars/${c.avatar_preset || 'owner'}.svg`"
+                        <img :src="ttAvatarSrc(c)"
                              width="32" height="32" style="width:32px;height:32px;"
                              class="rounded-full flex-shrink-0 object-cover" alt="">
                         <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
@@ -435,7 +439,7 @@
                        class="text-xs text-gray-400 italic text-center py-2">No comments yet. Be the first.</p>
                     <template x-if="isAuthenticated">
                       <div class="flex gap-2 items-start pt-1">
-                        <img :src="`/images/avatars/${profile.avatar_preset || 'owner'}.svg`"
+                        <img :src="ttAvatarSrc(profile)"
                              width="32" height="32" style="width:32px;height:32px;"
                              class="rounded-full flex-shrink-0 object-cover" alt="">
                         <div class="flex-1 flex gap-2">
@@ -505,7 +509,7 @@
                 <div class="space-y-3">
                   <template x-for="u in network.list.filter(x => !network.search || (x.display_name || '').toLowerCase().includes(network.search.toLowerCase()) || (x.username || '').toLowerCase().includes(network.search.toLowerCase()))" :key="u.id">
                     <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                      <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                      <img :src="ttAvatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                       <div class="flex-1 min-w-0">
                         <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                         <p class="text-xs text-gray-500 capitalize">
@@ -534,7 +538,7 @@
                   <div class="space-y-3">
                     <template x-for="u in network.searchResults" :key="u.id">
                       <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5">
-                        <img :src="`/images/avatars/${u.avatar_preset || 'owner'}.svg`" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
+                        <img :src="ttAvatarSrc(u)" width="40" height="40" style="width:40px;height:40px;" class="rounded-full object-cover" alt="">
                         <div class="flex-1 min-w-0">
                           <a :href="'/torcher/' + u.username + '/'" class="font-medium hover:text-orange-500 text-sm truncate block" x-text="u.display_name || u.username"></a>
                           <p class="text-xs text-gray-500 capitalize">
@@ -577,6 +581,28 @@
             </div>
           </template>
         </div>
+        
+         <!-- ═══ Tool Contributors ═══ -->
+        <section class="max-w-6xl mx-auto my-16 px-4">
+          <h2 class="text-2xl md:text-3xl font-black text-center mb-3 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+            🛠️ Built by the Community
+          </h2>
+          <p class="text-center text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8 text-sm">
+            The people whose feedback changed how these tools work — bug reports, architecture suggestions, and real-world data that shipped into the codebase.
+          </p>
+          <div id="contributors-root"></div>
+        </section>
+
+        <!-- ═══ Community Contributors ═══ -->
+        <section class="max-w-6xl mx-auto my-16 px-4">
+          <h2 class="text-2xl md:text-3xl font-black text-center mb-3 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">
+            🏅 Community Contributors
+          </h2>
+          <p class="text-center text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8 text-sm">
+            Members earning points from comments, posts, leaderboard submissions, and development work across Traffic Torch.
+          </p>
+          <div class="tt-contrib max-w-4xl mx-auto" data-limit="12" data-title="All-Time Contributors"></div>
+        </section>
 
         <section class="share-block" aria-label="Share options">
           <div class="share-row">
@@ -1034,6 +1060,13 @@
 
 <script src="/main.js?v=1.2" type="module"></script>
 <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+
+<script src="/leader-board/contributions-widget.js?v=1.1" defer></script>
+<script type="module" src="/contributors/contributors-page.js?v=1.1"></script>
+<script type="module">
+  import { renderContributorsPage } from '/contributors/contributors-page.js?v=1.1';
+  document.addEventListener('DOMContentLoaded', () => renderContributorsPage());
+</script>
 
 <script>
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';

@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
+  <meta name="traffic-torch-verify" content="ec143aa52ac34e189f0044d6cb02a02a"> 
+ 
   <title>Traffic Torch — Find Out Why Your Website Isn't Being Found</title>
   <meta name="description" content="NUSA scores your User Experience, Search Visibility and AI Search Readiness in under 60 seconds. Free, browser-based audit with instant fixes. No data stored.">
 
@@ -367,6 +368,13 @@
        data-limit="12"
        data-title="Top Contributors"></div>
 </section>
+
+        <section id="nusa-contributors" class="max-w-6xl mx-auto my-16 px-4">
+          <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500">
+            Contributors
+          </h2>
+          <div id="contributions-section"></div>
+        </section>
 
      <!-- GA4 & GSC Dashboards -->
 <div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
@@ -751,8 +759,9 @@
                 <li>✗ Real‑time analytics</li>
                 <li>✗ Custom date ranges</li>
               </ul>
-              <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">Upgrade →</a>
-            </article>
+<a href="/upgrade/#pro" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">
+  Upgrade →
+</a>            </article>
 
             <article class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
               <h3 class="text-xl font-bold">Enterprise</h3>
@@ -767,8 +776,9 @@
                 <li>✓ CSV exports</li>
                 <li>✓ Dedicated support</li>
               </ul>
-              <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">Upgrade →</a>
-            </article>
+<a href="/upgrade/#enterprise" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">
+  Upgrade →
+</a>            </article>
           </div>
 
           <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
@@ -1019,7 +1029,14 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="/main.js?v=1.2" type="module"></script>
-  <script src="/nusa-tool/js/nusa.js?v=1.5" type="module"></script>
+  <script src="/nusa-tool/js/nusa.js?v=1.6" type="module"></script>
+  <script src="/shared/avatar.js?v=1.0"></script>
+  <script type="module">
+  import { renderContributions } from '/nusa-tool/contributions.js';
+  document.addEventListener('DOMContentLoaded', () => {
+    renderContributions('contributions-section');
+  });
+</script>
   <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
 
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b5ec7016f72456a9b4484d5dc706b79","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>

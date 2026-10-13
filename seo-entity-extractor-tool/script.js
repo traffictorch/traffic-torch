@@ -14,6 +14,7 @@ import {
   deriveSelectorsForFailure,
   extractSnippets
 } from './code-snippet.js?v=1.0';
+import { renderContributions } from './contributions.js?v=1.0';
 
 // ── Module-scope caches ──
 let lastAuditData = null;
@@ -69,6 +70,7 @@ function simplePrefillAndRun() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initCodeSnippetModal();
+  renderContributions();
   simplePrefillAndRun();
 });
 

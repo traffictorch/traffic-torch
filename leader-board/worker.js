@@ -14,6 +14,7 @@ const ALLOWED_TOOLS = [
   'seo-intent-tool',
   'product-seo-tool',
   'aeo-performance-tool',
+  'aeo-log-analyzer',
   'ai-search-optimization-tool',
   'ai-voice-search-tool',
   'ai-audit-tool',

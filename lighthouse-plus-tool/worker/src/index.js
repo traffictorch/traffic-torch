@@ -8,7 +8,7 @@ const WEIGHTS = {
   'Accessibility': 12,
   'Best Practices': 10,
   'SEO On-Page': 10,
-  'PWA Readiness': 8,
+  'PWA / Installability (optional)': 4,
   'Resource Optimisation': 10,
   'Third-Party Impact': 8,
   'Mobile UX': 10,
@@ -84,8 +84,17 @@ async function runAudit({ url, html }, env) {
   };
 
   if (!html && url) {
+    let browser;
     try {
-      const browser = await puppeteer.launch(env.BROWSER);
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          browser = await puppeteer.launch(env.BROWSER, { keep_alive: 120000 });
+          break;
+        } catch (e) {
+          if (attempt === 2) throw e;
+          await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+        }
+      }
       const page = await browser.newPage();
       await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
 
@@ -217,20 +226,6 @@ async function runAudit({ url, html }, env) {
         }
       } catch {}
       if (!rawHtml) rawHtml = renderedHtml;
-
-      await browser.close();
-
-      try {
-        const origin = new URL(finalUrl).origin;
-        const r = await fetchWithTimeout(`${origin}/llms.txt`, {}, 5000);
-        if (r.ok) bm.llmsTxt = (await r.text()).slice(0, 20000);
-      } catch {}
-
-      try {
-        const origin = new URL(finalUrl).origin;
-        const r = await fetchWithTimeout(`${origin}/robots.txt`, {}, 5000);
-        if (r.ok) bm.robotsTxt = (await r.text()).slice(0, 20000);
-      } catch {}
     } catch (err) {
       // FIX 2: Clear ghost data captured during the failed Puppeteer attempt
       // so the fallback audit doesn't score phantoms.
@@ -257,16 +252,38 @@ async function runAudit({ url, html }, env) {
       try {
         const r = await fetchWithTimeout(url, {}, 15000);
         if (r.ok) {
+          for (const [k, v] of r.headers) {
+            if (!responseHeaders[k]) responseHeaders[k] = v;
+          }
+          if (r.url) finalUrl = r.url;
           renderedHtml = await r.text();
           rawHtml = renderedHtml;
           renderSource = 'raw-fallback';
         }
       } catch {}
       if (!renderedHtml) throw new Error('All render paths failed: ' + err.message);
+    } finally {
+      if (browser) { try { await browser.close(); } catch {} }
     }
   } else if (html) {
     rawHtml = html;
     renderedHtml = html;
+  }
+
+  // Ensure llms.txt and robots.txt are fetched in ALL paths, including raw-fallback.
+  if (finalUrl && !bm.llmsTxt) {
+    try {
+      const origin = new URL(finalUrl).origin;
+      const r = await fetchWithTimeout(`${origin}/llms.txt`, {}, 5000);
+      if (r.ok) bm.llmsTxt = (await r.text()).slice(0, 20000);
+    } catch {}
+  }
+  if (finalUrl && !bm.robotsTxt) {
+    try {
+      const origin = new URL(finalUrl).origin;
+      const r = await fetchWithTimeout(`${origin}/robots.txt`, {}, 5000);
+      if (r.ok) bm.robotsTxt = (await r.text()).slice(0, 20000);
+    } catch {}
   }
 
   const modules = [
@@ -282,24 +299,27 @@ async function runAudit({ url, html }, env) {
     analyzeAgentic(renderedHtml, bm, finalUrl),
   ];
 
+  const measured = modules.filter((m) => m.score !== null && m.score !== undefined);
   let weightedSum = 0, weightTotal = 0;
-  for (const m of modules) {
+  for (const m of measured) {
     const w = WEIGHTS[m.name] ?? 10;
     weightedSum += m.score * w;
     weightTotal += w;
   }
-  let overall = Math.round(weightedSum / weightTotal);
-  const lowest = Math.min(...modules.map((m) => m.score));
-  if (lowest < 25)      overall = Math.min(overall, 60);
-  else if (lowest < 40) overall = Math.min(overall, 72);
-  else if (lowest < 60) overall = Math.min(overall, 85);
+  let overall = weightTotal > 0 ? Math.round(weightedSum / weightTotal) : null;
+  if (overall !== null && measured.length > 0) {
+    const lowest = Math.min(...measured.map((m) => m.score));
+    if (lowest < 25)      overall = Math.min(overall, 60);
+    else if (lowest < 40) overall = Math.min(overall, 72);
+    else if (lowest < 60) overall = Math.min(overall, 85);
+  }
 
   return {
     success: true,
     url: finalUrl || 'Custom HTML',
     pageTitle: extractTitle(renderedHtml),
     overall,
-    grade: gradeFromScore(overall),
+    grade: overall !== null ? gradeFromScore(overall) : 'Not measured',
     modules,
     priorityFixes: buildPriorityFixes(modules),
     rawHtml,
@@ -319,7 +339,7 @@ function analyzeCoreWebVitals(bm) {
   // FIX 3: No browser capture means no real CWV. Return informational so the
   // module doesn't fabricate a score from default zeros.
   if (!bm.capturedAt) {
-    return mod('Core Web Vitals', 100, {}, [
+    return mod('Core Web Vitals', null, {}, [
       { label: 'Not measured — no browser capture (pasted HTML or render fallback)', pass: false, informational: true },
     ], []);
   }
@@ -405,6 +425,21 @@ function analyzePerformance(bm, html) {
   return mod('Performance Score', score, { blocking, stylesheets, imgs: imgs.length, tbt: bm.tbt, longTasks: bm.longTasks }, signals, failed);
 }
 
+function countUnlabeledInputs(inputs, html) {
+  const labelBlocks = html.match(/<label\b[^>]*>[\s\S]*?<\/label>/gi) || [];
+  return inputs.filter((i) => {
+    if (/\btype=["']hidden["']/i.test(i)) return false;
+    if (/\bdisplay\s*:\s*none/i.test(i)) return false;
+    if (/\btabindex=["']-1["']/i.test(i)) return false;
+    if (/\baria-hidden=["']true["']/i.test(i)) return false;
+    const idMatch = i.match(/\bid=["']([^"']+)["']/i);
+    if (idMatch && new RegExp(`<label[^>]*\\bfor=["']${idMatch[1]}["']`, 'i').test(html)) return false;
+    if (/\baria-label=/.test(i) || /\baria-labelledby=/.test(i)) return false;
+    if (labelBlocks.some((block) => block.includes(i))) return false;
+    return true;
+  }).length;
+}
+
 function analyzeAccessibility(bm, html) {
   const failed = [], signals = [];
   let score = 100;
@@ -431,7 +466,7 @@ function analyzeAccessibility(bm, html) {
     else if (imgs.length) signals.push({ label: 'All images have alt', pass: true });
 
     const inputs = html.match(/<(input|select|textarea)\b[^>]*>/gi) || [];
-    const unlabeled = inputs.filter((i) => !/\bid=/.test(i) && !/\baria-label/.test(i)).length;
+    const unlabeled = countUnlabeledInputs(inputs, html);
     if (unlabeled > 2) { failed.push(`${unlabeled} form field(s) may lack labels`); score -= Math.min(unlabeled * 2, 10); }
     if (/tabindex=["']-1["']/.test(html)) signals.push({ label: 'Uses tabindex=-1 (verify focus order)', pass: false });
   }
@@ -451,9 +486,28 @@ function analyzeBestPractices(bm, html, headers, url) {
   if (url && url.startsWith('http://')) { failed.push('Page served over HTTP — not HTTPS'); score -= 25; }
   else if (url && url.startsWith('https://')) signals.push({ label: 'HTTPS in use', pass: true });
 
-  const errs = (bm.consoleErrors?.length || 0) + (bm.pageErrors?.length || 0);
-  if (errs > 0) { failed.push(`${errs} console error(s) during load`); score -= Math.min(errs * 5, 25); }
-  else if (bm.capturedAt) signals.push({ label: 'No console errors', pass: true });
+  const allErrors = [
+    ...(bm.consoleErrors || []).map(e => ({ text: e, source: 'console' })),
+    ...(bm.pageErrors || []).map(e => ({ text: e, source: 'page' }))
+  ];
+  const envErrors = allErrors.filter(e =>
+    /about:blank|^data:|\.workers\.dev|cloudflare/i.test(e.text)
+  );
+  const pageErrors = allErrors.filter(e => !envErrors.includes(e));
+
+  if (pageErrors.length > 0) {
+    score -= Math.min(pageErrors.length * 5, 25);
+    const previews = pageErrors.slice(0, 3).map(e => `[${e.source}] ${String(e.text).slice(0, 200)}`);
+    failed.push(`${pageErrors.length} console error(s) during load — ${previews.join(' | ')}`);
+  } else if (envErrors.length > 0 && bm.capturedAt) {
+    signals.push({
+      label: `${envErrors.length} JS error(s) from audit environment, not your page`,
+      pass: true,
+      informational: true
+    });
+  } else if (bm.capturedAt) {
+    signals.push({ label: 'No console errors', pass: true });
+  }
 
   if (bm.failedRequests?.length) { failed.push(`${bm.failedRequests.length} failed network request(s)`); score -= Math.min(bm.failedRequests.length * 3, 15); }
   else if (bm.capturedAt) signals.push({ label: 'No failed network requests', pass: true });
@@ -481,16 +535,25 @@ function analyzeBestPractices(bm, html, headers, url) {
   else if (imgs.length) signals.push({ label: 'No distorted image aspect ratios', pass: true });
 
   const h = headers || {};
-  if (!h['strict-transport-security']) signals.push({ label: 'No HSTS header', pass: false, informational: true });
-  else signals.push({ label: 'HSTS header present', pass: true });
+  const hasHeaders = Object.keys(h).length > 0;
+  const headerFallback = !bm.capturedAt && !hasHeaders;
 
-  if (!h['x-content-type-options']) signals.push({ label: 'No X-Content-Type-Options header', pass: false, informational: true });
-  else signals.push({ label: 'X-Content-Type-Options present', pass: true });
+  if (headerFallback) {
+    signals.push({ label: 'Could not verify HSTS header (no browser capture)', pass: false, informational: true });
+    signals.push({ label: 'Could not verify X-Content-Type-Options (no browser capture)', pass: false, informational: true });
+    signals.push({ label: 'Could not verify X-Powered-By (no browser capture)', pass: false, informational: true });
+  } else {
+    if (!h['strict-transport-security']) signals.push({ label: 'No HSTS header', pass: false, informational: true });
+    else signals.push({ label: 'HSTS header present', pass: true });
 
-  if (h['x-powered-by']) signals.push({ label: `X-Powered-By exposes: ${h['x-powered-by']}`, pass: false });
-  else signals.push({ label: 'X-Powered-By not exposed', pass: true });
+    if (!h['x-content-type-options']) signals.push({ label: 'No X-Content-Type-Options header', pass: false, informational: true });
+    else signals.push({ label: 'X-Content-Type-Options present', pass: true });
 
-  return mod('Best Practices', score, { https: url?.startsWith('https://'), errors: errs, deprecatedCount, badAspect }, signals, failed);
+    if (h['x-powered-by']) signals.push({ label: `X-Powered-By exposes: ${h['x-powered-by']}`, pass: false });
+    else signals.push({ label: 'X-Powered-By not exposed', pass: true });
+  }
+
+return mod('Best Practices', score, { https: url?.startsWith('https://'), errors: pageErrors.length, deprecatedCount, badAspect }, signals, failed);
 }
 
 function analyzeSeoOnPage(html, url) {
@@ -541,34 +604,39 @@ function analyzePwa(html, url) {
   let score = 100;
 
   const manifest = (html.match(/<link[^>]*rel=["']manifest["'][^>]*href=["']([^"']+)["']/i) || [])[1];
-  if (!manifest) { failed.push('No web app manifest link'); score -= 25; }
-  else signals.push({ label: 'Manifest linked', pass: true });
-
   const sw = /serviceWorker\.register|navigator\.serviceWorker/i.test(html);
-  if (!sw) { failed.push('No service worker registration detected'); score -= 25; }
-  else signals.push({ label: 'Service worker registered', pass: true });
-
   const themeColor = /<meta[^>]*name=["']theme-color["']/i.test(html);
-  if (!themeColor) { failed.push('Missing theme-color meta'); score -= 8; }
-  else signals.push({ label: 'theme-color meta present', pass: true });
-
   const appleCapable = /<meta[^>]*name=["']apple-mobile-web-app-capable["']/i.test(html);
-  if (!appleCapable) signals.push({ label: 'No apple-mobile-web-app-capable', pass: false, informational: true });
-  else signals.push({ label: 'apple-mobile-web-app-capable present', pass: true });
-
   const appleIcons = (html.match(/<link[^>]*rel=["']apple-touch-icon["']/gi) || []).length;
-  if (appleIcons === 0) signals.push({ label: 'No apple-touch-icon', pass: false, informational: true });
-  else signals.push({ label: `${appleIcons} apple-touch-icon(s)`, pass: true });
-
   const maskIcon = /<link[^>]*rel=["']mask-icon["']/i.test(html);
-  if (!maskIcon) signals.push({ label: 'No mask-icon', pass: false, informational: true });
-  else signals.push({ label: 'mask-icon present', pass: true });
-
   const isHttps = url?.startsWith('https://');
-  if (!isHttps && url) { failed.push('PWA requires HTTPS'); score -= 25; }
-  else if (isHttps) signals.push({ label: 'Served over HTTPS', pass: true });
 
-  return mod('PWA Readiness', score, { manifest: !!manifest, serviceWorker: sw, themeColor }, signals, failed);
+  const hasPwaIntent = !!(manifest || sw || themeColor);
+  const metrics = { manifest: !!manifest, serviceWorker: sw, themeColor, pwaIntent: hasPwaIntent };
+
+  if (!hasPwaIntent) {
+    if (!manifest) signals.push({ label: 'No web app manifest link (optional unless building a PWA)', pass: false, informational: true });
+    if (!sw) signals.push({ label: 'No service worker registration (optional unless building a PWA)', pass: false, informational: true });
+    if (!themeColor) signals.push({ label: 'No theme-color meta (optional)', pass: false, informational: true });
+    if (!appleCapable) signals.push({ label: 'No apple-mobile-web-app-capable (optional)', pass: false, informational: true });
+    if (appleIcons === 0) signals.push({ label: 'No apple-touch-icon (optional)', pass: false, informational: true });
+    else signals.push({ label: `${appleIcons} apple-touch-icon(s)`, pass: true });
+    if (!maskIcon) signals.push({ label: 'No mask-icon (optional)', pass: false, informational: true });
+    else signals.push({ label: 'mask-icon present', pass: true });
+    if (isHttps) signals.push({ label: 'Served over HTTPS', pass: true });
+    else if (url) signals.push({ label: 'Not served over HTTPS (blocks PWA installability)', pass: false, informational: true });
+    return mod('PWA / Installability (optional)', null, metrics, signals, [], { optional: true });
+  }
+
+  if (!manifest) { failed.push('No web app manifest link'); score -= 25; } else signals.push({ label: 'Manifest linked', pass: true });
+  if (!sw) { failed.push('No service worker registration detected'); score -= 25; } else signals.push({ label: 'Service worker registered', pass: true });
+  if (!themeColor) { failed.push('Missing theme-color meta'); score -= 8; } else signals.push({ label: 'theme-color meta present', pass: true });
+  if (!appleCapable) signals.push({ label: 'No apple-mobile-web-app-capable', pass: false, informational: true }); else signals.push({ label: 'apple-mobile-web-app-capable present', pass: true });
+  if (appleIcons === 0) signals.push({ label: 'No apple-touch-icon', pass: false, informational: true }); else signals.push({ label: `${appleIcons} apple-touch-icon(s)`, pass: true });
+  if (!maskIcon) signals.push({ label: 'No mask-icon', pass: false, informational: true }); else signals.push({ label: 'mask-icon present', pass: true });
+  if (!isHttps && url) { failed.push('PWA requires HTTPS'); score -= 25; } else if (isHttps) signals.push({ label: 'Served over HTTPS', pass: true });
+
+  return mod('PWA / Installability (optional)', score, metrics, signals, failed);
 }
 
 function analyzeResources(bm, html, url) {
@@ -717,7 +785,7 @@ function analyzeAgentic(html, bm, url) {
   else signals.push({ label: `${foundLandmarks} semantic landmarks found`, pass: true });
 
   const inputs = html.match(/<(input|select|textarea)\b[^>]*>/gi) || [];
-  const labeled = inputs.filter((i) => /\bid=/.test(i) || /\baria-label/.test(i) || /\baria-labelledby/.test(i)).length;
+  const labeled = inputs.length - countUnlabeledInputs(inputs, html);
   if (inputs.length > 3 && labeled / inputs.length < 0.7) { failed.push(`${inputs.length - labeled} form field(s) without labels — agents cannot fill forms`); score -= 12; }
   else if (inputs.length) signals.push({ label: 'Form fields labelled for agents', pass: true });
 
@@ -742,6 +810,9 @@ function analyzeAgentic(html, bm, url) {
 }
 
 function mod(name, score, metrics, signals, failed, extra = {}) {
+  if (score === null || score === undefined) {
+    return { name, score: null, grade: 'Not measured', metrics, signals, failed, unmeasured: true, ...extra };
+  }
   score = Math.max(0, Math.min(100, Math.round(score)));
   return { name, score, grade: gradeFromScore(score), metrics, signals, failed, ...extra };
 }
@@ -774,7 +845,7 @@ function extractTitle(html) {
 
 function buildPriorityFixes(modules) {
   return modules
-    .filter((m) => m.score < 80)
+    .filter((m) => m.score !== null && m.score !== undefined && m.score < 80)
     .map((m) => {
       const gap = 80 - m.score;
       return {

@@ -216,6 +216,8 @@
       else document.documentElement.classList.remove('dark');
     })();
   </script>
+  <script src="/shared/avatar.js?v=1.0"></script>
+  <script src="/shared/contributions-renderer.js?v=1.0" type="module"></script>
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
@@ -271,7 +273,7 @@
         <input type="file" id="log-file" accept=".log,.txt,.csv,text/plain" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
 
         <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
-          No log handy? <a href="/aeo-log-analyzer/sample.log" download class="text-orange-500 dark:text-orange-400 hover:underline font-semibold">Download a sample log →</a>
+          No log handy? <a href="/aeo-log-analyzer/sample.log" download id="sample-log-link" class="text-orange-500 dark:text-orange-400 hover:underline font-semibold">Download a sample log →</a>
         </p>
 
         <div id="error-box" class="hidden mt-6"></div>
@@ -286,6 +288,81 @@
         </div>
 
         <div id="results" class="hidden"></div>
+
+        <div id="share-dashboard-container" class="mt-16"></div>
+
+        <!-- Analytics & Search Console cards (same as AEO Perf) -->
+        <div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+          <h2 class="sr-only">Analytics &amp; Search Console Dashboard</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+            <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+                <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+              </div>
+              <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h3>
+                <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+              </div>
+              <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+              <div class="grid grid-cols-2 gap-5">
+                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+                  <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+                  <p id="ga4-sessions" class="text-3xl font-black">—</p>
+                </div>
+                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+                  <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+                  <p id="ga4-users" class="text-3xl font-black">—</p>
+                </div>
+                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+                  <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+                  <p id="ga4-new-users" class="text-3xl font-black">—</p>
+                </div>
+                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+                  <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+                  <p id="ga4-views" class="text-3xl font-black">—</p>
+                </div>
+              </div>
+              <div class="mt-4 text-center">
+                <a href="/dashboard/#analytics" class="inline-block px-6 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg">📊 Analytics</a>
+                <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+              </div>
+            </div>
+            <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+                <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+              </div>
+              <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h3>
+                <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+              </div>
+              <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+              <div class="grid grid-cols-2 gap-5">
+                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+                  <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+                  <p id="gsc-clicks" class="text-3xl font-black">—</p>
+                </div>
+                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+                  <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+                  <p id="gsc-impressions" class="text-3xl font-black">—</p>
+                </div>
+                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+                  <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+                  <p id="gsc-ctr" class="text-3xl font-black">—</p>
+                </div>
+                <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+                  <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+                  <p id="gsc-position" class="text-3xl font-black">—</p>
+                </div>
+              </div>
+              <div class="mt-4 text-center">
+                <a href="/dashboard/#gsc" class="inline-block px-6 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg">🌐 Search Console</a>
+                <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <section id="what-is" class="max-w-4xl mx-auto my-16 px-2">
           <div class="bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-950/20 dark:to-pink-950/20 rounded-3xl p-8 border border-orange-200 dark:border-orange-800/40">
@@ -327,11 +404,12 @@
                 <li>Bingbot — Microsoft published ranges</li>
                 <li>Applebot — Apple published ranges</li>
                 <li>GPTBot, OAI-SearchBot, ChatGPT-User — OpenAI published ranges</li>
+                <li>PerplexityBot, Perplexity-User — Perplexity published ranges</li>
+                <li>ClaudeBot, Claude-User, Claude-SearchBot — Anthropic published ranges</li>
               </ul>
               <p class="mt-4"><strong>UA only (no published IP ranges):</strong></p>
               <ul class="list-disc pl-6 space-y-1 text-sm">
-                <li>ClaudeBot, Claude-Web, anthropic-ai — Anthropic has not published ranges</li>
-                <li>PerplexityBot, Perplexity-User — Perplexity has not published ranges</li>
+                <li>Claude-Web, anthropic-ai — legacy UA names, no published ranges</li>
                 <li>CCBot — Common Crawl, UA-only</li>
                 <li>Bytespider — ByteDance, UA-only</li>
                 <li>Amazonbot — Amazon does not publish a range</li>
@@ -427,6 +505,37 @@
         </section>
 
         <div id="contributions-section"></div>
+
+        <section id="integrations-teaser" class="py-12 max-w-6xl mx-auto px-4">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+              Works Where You Work
+            </h2>
+            <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 mt-3 max-w-2xl mx-auto">
+              Browser extensions, developer tools and CMS/design plugins — the same audit engine, wherever you build.
+            </p>
+          </div>
+          <div class="grid md:grid-cols-3 gap-6">
+            <a href="/integrations/browser-extensions/" class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group">
+              <div class="text-4xl mb-3">🌐</div>
+              <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">Browser Extensions</h3>
+              <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Chrome, Firefox and Edge. Audit any page you're already looking at, in one click.</p>
+              <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+            </a>
+            <a href="/integrations/developer-tools/" class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group">
+              <div class="text-4xl mb-3">🛠️</div>
+              <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">Developer Tools</h3>
+              <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">VS Code extension, GitHub Action and the REST Developer API with webhooks.</p>
+              <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+            </a>
+            <a href="/integrations/plugins/" class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group">
+              <div class="text-4xl mb-3">🎨</div>
+              <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">CMS &amp; Design Plugins</h3>
+              <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">WordPress, Figma and Framer. Audit SEO and UX where you actually build.</p>
+              <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+            </a>
+          </div>
+        </section>
 
         <section id="author-bio" class="max-w-5xl mx-auto my-12 px-2 author-bio author-box">
           <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
@@ -537,8 +646,78 @@
     </div>
   </div>
 
+  <script src="/leader-board/submit-score.js?v=1.0" defer></script>
   <script src="/main.js?v=1.2" type="module"></script>
-  <script src="/aeo-log-analyzer/script.js?v=1.0" type="module"></script>
+  <script src="/aeo-log-analyzer/script.js?v=1.2" type="module"></script>
   <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+
+  <script>
+    (function() {
+      const token = localStorage.getItem('authToken');
+      const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+      function setGA4Status(text, cls, bg) {
+        const el = document.getElementById('ga4-status');
+        if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+      }
+      function setGSCStatus(text, cls, bg) {
+        const el = document.getElementById('gsc-status');
+        if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+      }
+      if (!token) {
+        setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+        setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+        document.getElementById('ga4-last-updated').textContent = 'Demo mode';
+        document.getElementById('gsc-last-updated').textContent = 'Demo mode';
+        return;
+      }
+      (async function() {
+        try {
+          const res = await fetch(API_BASE + '/api/account-info', { headers: { 'Authorization': 'Bearer ' + token } });
+          const info = await res.json();
+          if (info.ga4Connected) {
+            try {
+              const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', { headers: { 'Authorization': 'Bearer ' + token } });
+              const d = await r.json();
+              const rows = d.data || [];
+              const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+              const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+              const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+              document.getElementById('ga4-sessions').textContent = sessions;
+              document.getElementById('ga4-users').textContent = users;
+              document.getElementById('ga4-new-users').textContent = Math.round(users * 0.25);
+              document.getElementById('ga4-views').textContent = views;
+              document.getElementById('ga4-last-updated').textContent = 'Updated: ' + new Date().toLocaleString();
+              setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            } catch { setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30'); }
+          } else {
+            setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+            document.getElementById('ga4-last-updated').textContent = 'Not connected';
+            document.getElementById('ga4-extra-cta').innerHTML = '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>';
+          }
+          if (info.gscConnected) {
+            try {
+              const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', { headers: { 'Authorization': 'Bearer ' + token } });
+              const d = await r.json();
+              const rows = d.data || [];
+              const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+              const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+              const ctr = impressions ? (clicks / impressions) : 0;
+              const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+              document.getElementById('gsc-clicks').textContent = clicks;
+              document.getElementById('gsc-impressions').textContent = impressions;
+              document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+              document.getElementById('gsc-position').textContent = position.toFixed(1);
+              document.getElementById('gsc-last-updated').textContent = 'Updated: ' + new Date().toLocaleString();
+              setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            } catch { setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30'); }
+          } else {
+            setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+            document.getElementById('gsc-last-updated').textContent = 'Not connected';
+            document.getElementById('gsc-extra-cta').innerHTML = '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>';
+          }
+        } catch (err) { console.error('Analytics cards error:', err); }
+      })();
+    })();
+  </script>
 </body>
 </html>

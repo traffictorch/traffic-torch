@@ -26,9 +26,10 @@
       </span>
     </button>
     <div id="proportal-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="proportal">
-      <a href="/dashboard/#profile" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="profile">
-        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">👤</span>
-        <span class="sidebar-text hidden md:block">Profile</span>
+      <a href="javascript:void(0)" id="tt-beams-inbox-link" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Beam – private messages">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔦</span>
+        <span class="sidebar-text hidden md:block flex-1">Beams</span>
+        <span id="tt-beams-count" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
       </a>
       <a href="/dashboard/#dashboard" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="dashboard">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📊</span>
@@ -37,6 +38,10 @@
       <a href="/dashboard/#network" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="network">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🕸️</span>
         <span class="sidebar-text hidden md:block">Network</span>
+      </a>
+      <a href="/dashboard/#profile" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="profile">
+        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">👤</span>
+        <span class="sidebar-text hidden md:block">Profile</span>
       </a>
       <a href="/dashboard/#audits" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="audits">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📋</span>
@@ -65,39 +70,6 @@
       <a href="/dashboard/#settings" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="settings">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
         <span class="sidebar-text hidden md:block">Settings</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- ═══ Beams dropdown ═══ -->
-  <div>
-    <button
-      type="button"
-      role="menuitem"
-      class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
-      aria-expanded="false"
-      aria-controls="beams-content"
-      data-category="beams"
-      title="Beams – private messages and chat"
-    >
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔦</span>
-      <span class="sidebar-text font-semibold flex-1 text-left">Beams</span>
-      <span class="ml-auto flex items-center gap-2">
-        <span class="text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
-        <span class="text-base font-bold text-orange-500 dark:text-orange-400 flex items-center gap-1">
-          <span>✉️</span>
-          <span id="tt-beams-count" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
-        </span>
-      </span>
-    </button>
-    <div id="beams-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="beams">
-      <a href="javascript:void(0)" id="tt-beams-inbox-link" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
-        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📬</span>
-        <span class="sidebar-text hidden md:block">Inbox</span>
-      </a>
-      <a href="/dashboard/#communication-preferences" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition">
-        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚙️</span>
-        <span class="sidebar-text hidden md:block">Beam settings</span>
       </a>
     </div>
   </div>

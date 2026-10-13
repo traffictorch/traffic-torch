@@ -19,6 +19,7 @@ import {
   deriveSelectorsForFailure,
   extractSnippets
 } from './code-snippet.js?v=1.0';
+import { renderContributions } from './contributions.js?v=1.0';
 
 // ─── Code block renderer (shared) ─────────────────────────────
 function renderCodeBlocks(text) {
@@ -298,6 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   simpleIntentPrefillAndRun();
   initCodeSnippetModal();
+  renderContributions();
   
   const results = document.getElementById('results');
   const urlInput = document.getElementById('url-input');

@@ -1,6 +1,8 @@
 // ai-voice-search-tool/modules/content-quality.js
 // Requires compromise.js CDN in index.html for NLP
 
+import { countSyllables as countSyllablesShared, detectLang, fleschLike } from '/shared/readability-lang.js';
+
 const clamp = (n, min = 0, max = 100) => Math.min(max, Math.max(min, n));
 
 export function computeContentQuality(text) {
@@ -41,9 +43,10 @@ export function computeContentQuality(text) {
     if (isNonProse) {
       readability = 40; // neutral
     } else {
-      const syllables = words.reduce((sum, word) => sum + countSyllables(word), 0);
-      const flesch = 206.835 - 1.015 * (words.length / sentenceCount) - 84.6 * (syllables / words.length);
-      readability = clamp(Math.round(flesch));
+      const lang = detectLang(text);
+      const syllables = countSyllablesShared(text, lang);
+      const fr = fleschLike(words.length / sentenceCount, syllables / words.length, lang);
+      readability = fr.measured ? clamp(Math.round(fr.ease)) : 40;
     }
 
     // Answer Conciseness — based on paragraph length (ideal 40-60 words)
@@ -133,12 +136,4 @@ export function computeContentQuality(text) {
       }
     };
   }
-}
-
-function countSyllables(word) {
-  word = word.toLowerCase();
-  if (word.length <= 3) return 1;
-  word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
-  word = word.replace(/^y/, '');
-  return (word.match(/[aeiouy]{1,2}/g) || []).length || 1;
 }

@@ -28,6 +28,7 @@ import {
   hasSocialMeta,
   getProductPageContent
 } from './modules/helpers.js';
+import { renderContributions } from './contributions.js?v=1.0';
 
 const importErrors = [];
 
@@ -194,6 +195,7 @@ import('./modules/ecommerce.js')
 
 document.addEventListener('DOMContentLoaded', () => {
   initCodeSnippetModal();
+  renderContributions();
 
   // ── factorDefinitions ───────────────────────────────────────
   // (Thresholds & descriptions unchanged; only the wording of Keyword

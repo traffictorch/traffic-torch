@@ -32,7 +32,7 @@
     const username = entry.username || '';
     const displayName = entry.display_name || username || 'Anonymous';
     const profileUrl = '/torcher/' + username + '/';
-    const avatar = `/images/avatars/${entry.avatar_preset || 'owner'}.svg`;
+    const avatar = (typeof window.ttAvatarSrc === 'function') ? window.ttAvatarSrc(entry) : `/images/avatars/${entry.avatar_preset || 'owner'}.svg`;
 
     const websiteLink = (entry.website_url && entry.website_approved)
       ? `<a class="tt-contrib-link" href="${escapeHtml(entry.website_url)}" target="_blank" rel="ugc nofollow noopener">🌐 ${escapeHtml(domainLabel(entry.website_url))}</a>`
@@ -45,7 +45,7 @@
           <img class="tt-contrib-avatar" src="${avatar}" alt="" loading="lazy">
           <div class="tt-contrib-body">
             <div class="tt-contrib-name">
-              <a href="${profileUrl}">${escapeHtml(displayName)}</a>
+              <a href="${profileUrl}" style="display:inline-flex;align-items:center;gap:5px;">${escapeHtml(displayName)}${entry.verified_at ? '<svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>' : ''}</a>
               <span class="tt-contrib-role">${escapeHtml(roleLabel(entry.role))}</span>
             </div>
             <div class="tt-contrib-username">@${escapeHtml(username)}</div>

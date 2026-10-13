@@ -94,7 +94,7 @@
           "height": 630
         },
         "datePublished": "2026-09-12T10:00:00+11:00",
-        "dateModified": "2026-10-08T10:00:00+10:00",
+        "dateModified": "2026-10-13T10:00:00+10:00",
         "author": { "@id": "https://traffictorch.net/#author" },
         "publisher": { "@id": "https://traffictorch.net/#organization" },
         "breadcrumb": { "@id": "https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/#breadcrumb" },
@@ -171,7 +171,7 @@
           "height": 630
         },
         "datePublished": "2026-09-12T10:00:00+11:00",
-        "dateModified": "2026-10-08T10:00:00+10:00",
+        "dateModified": "2026-10-13T10:00:00+10:00",
         "author": { "@id": "https://traffictorch.net/#author" },
         "publisher": { "@id": "https://traffictorch.net/#organization" },
         "mainEntityOfPage": { "@id": "https://traffictorch.net/blog/posts/lighthouse-plus-help-guide/#webpage" },
@@ -529,6 +529,7 @@
                     <li><strong>TTFB:</strong> Read from the browser's navigation timing API (responseStart).</li>
                   </ol>
                   <p class="mt-6">Scoring thresholds (Good / Needs Improvement / Poor):</p>
+                  <p class="mt-6"><strong>Not-measured behaviour:</strong> if a browser capture is unavailable (pasted HTML, or the render fell back to a plain fetch), the module returns <em>N/A</em> instead of a score. N/A modules are excluded from the overall weighted average — they never silently register as 100/Excellent or as a failure.</p>
                   <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
                     <li>LCP: ≤ 2500ms / ≤ 4000ms / &gt; 4000ms</li>
                     <li>INP: ≤ 200ms / ≤ 500ms / &gt; 500ms</li>
@@ -799,66 +800,76 @@
               </div>
             </section>
 
-            <!-- Module 6: PWA Readiness -->
-            <section id="pwa-readiness" class="mb-20 scroll-mt-24">
-              <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">PWA Readiness</h2>
+<!-- Module 6: PWA Readiness -->
+<section id="pwa-readiness" class="mb-20 scroll-mt-24">
+  <h2 class="text-4xl md:text-5xl font-black mb-10 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">PWA / Installability <span class="text-lg font-normal align-middle text-gray-500 dark:text-gray-400">(optional)</span></h2>
 
-              <div class="mb-16">
-                <h3 id="pwa-readiness-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
-                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
-                  <p><strong>PWA Readiness measures how ready your site is to be installed as a Progressive Web App: valid manifest, registered service worker, offline fallback, correct theme colour and icon set, and HTTPS.</strong> It is the difference between a website that feels like a website and one that feels like a native app.</p>
-                  <p>PWAs launch from the home screen, work offline, receive push notifications, and re-engage users without an app store. For sites that rely on repeat visits, a PWA is often a 20-40% lift in returning-user engagement.</p>
-                  <p>The requirements are well defined and enforced by browsers. Chrome, Edge, and Safari all require a manifest, a service worker, and HTTPS for installability. Missing any one of them means the "Install" prompt never appears.</p>
-                  <p>Common failure patterns:</p>
-                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
-                    <li>No web app manifest linked.</li>
-                    <li>Manifest missing required fields (name, icons, start_url, display).</li>
-                    <li>No service worker registration.</li>
-                    <li>Icons missing at 192px or 512px sizes.</li>
-                    <li>No theme-color meta tag.</li>
-                    <li>No apple-touch-icon for iOS installability.</li>
-                  </ul>
-                </div>
-              </div>
+  <div class="mb-16">
+    <h3 id="pwa-readiness-what" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">What is it?</h3>
+    <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+      <p><strong>PWA / Installability is an optional module that measures how ready a site is to be installed as a Progressive Web App — valid manifest, registered service worker, correct theme colour and icon set, HTTPS.</strong> It only scores when the site shows PWA intent.</p>
+      <p>Google removed the PWA category from Lighthouse in version 12. For a normal website, a missing manifest or service worker is not a problem — most sites that are not trying to be installable do not need either. Treating those as failures punishes millions of sites for not doing something they never intended to do.</p>
+      <p>Traffic Torch reflects that reality. The module first checks whether the site is attempting to be a PWA at all:</p>
+      <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+        <li>If <strong>any PWA signal is present</strong> (manifest link, service worker registration, or theme-color meta), the module scores against PWA criteria and applies penalties for missing pieces.</li>
+        <li>If <strong>no PWA signal is present</strong>, the module returns N/A. It is excluded from the overall weighted score entirely — the missing manifest does not reduce your grade.</li>
+      </ul>
+      <p>This means a blog, a corporate brochure site, or a normal e-commerce store is not penalised for lacking a manifest. A site that has already added a manifest but not a service worker is scored — and told what to add.</p>
+      <p>Common PWA-specific issues (only scored if PWA intent is detected):</p>
+      <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+        <li>Manifest linked but missing required fields (name, icons, start_url, display).</li>
+        <li>Service worker registered but with no offline fallback.</li>
+        <li>Icons missing at 192px or 512px sizes.</li>
+        <li>No theme-color meta tag (install UI looks generic).</li>
+        <li>No apple-touch-icon for iOS installability.</li>
+      </ul>
+    </div>
+  </div>
 
-              <div class="mb-16">
-                <h3 id="pwa-readiness-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
-                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
-                  <p><strong>Traffic Torch scans the HTML for the manifest link, service worker registration, theme-color, and icon links, then confirms the site is served over HTTPS.</strong></p>
-                  <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
-                    <li><strong>Manifest check:</strong> Looks for &lt;link rel="manifest"&gt; and confirms href is set.</li>
-                    <li><strong>Service worker:</strong> Greps for serviceWorker.register or navigator.serviceWorker.</li>
-                    <li><strong>Theme colour:</strong> Looks for name="theme-color" meta.</li>
-                    <li><strong>Apple meta:</strong> Checks for apple-mobile-web-app-capable and apple-touch-icon links.</li>
-                    <li><strong>Mask icon:</strong> Looks for mask-icon link (Safari pinned tab).</li>
-                    <li><strong>HTTPS:</strong> Confirms final URL uses https://.</li>
-                  </ol>
-                  <p class="mt-6">Scoring:</p>
-                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
-                    <li>No manifest: -25</li>
-                    <li>No service worker: -25</li>
-                    <li>No theme-colour: -8</li>
-                    <li>No apple-touch-icon: -10</li>
-                    <li>No HTTPS: -25</li>
-                  </ul>
-                </div>
-              </div>
+  <div class="mb-16">
+    <h3 id="pwa-readiness-how" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">How it's Tested?</h3>
+    <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+      <p><strong>Traffic Torch first detects PWA intent, then either scores against PWA criteria or returns N/A. It never penalises a site for not being a PWA it never intended to be.</strong></p>
+      <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
+        <li><strong>Intent detection:</strong> Greps for &lt;link rel="manifest"&gt;, serviceWorker.register, navigator.serviceWorker, or name="theme-color". If none are present, the module returns N/A.</li>
+        <li><strong>Manifest check:</strong> Confirms the manifest link is present and href is set.</li>
+        <li><strong>Service worker:</strong> Greps for serviceWorker.register or navigator.serviceWorker.</li>
+        <li><strong>Theme colour:</strong> Looks for name="theme-color" meta.</li>
+        <li><strong>Apple meta:</strong> Checks for apple-mobile-web-app-capable and apple-touch-icon links.</li>
+        <li><strong>Mask icon:</strong> Looks for mask-icon link (Safari pinned tab).</li>
+        <li><strong>HTTPS:</strong> Confirms final URL uses https://.</li>
+      </ol>
+      <p class="mt-6">Scoring (only applied when PWA intent is detected):</p>
+      <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+        <li>No PWA signals at all → <strong>N/A</strong> (excluded from overall score)</li>
+        <li>Manifest missing but other PWA signals present: −25</li>
+        <li>Service worker missing but other PWA signals present: −25</li>
+        <li>No theme-colour: −8</li>
+        <li>No apple-touch-icon: −10</li>
+        <li>No HTTPS: −25</li>
+      </ul>
+    </div>
+  </div>
 
-              <div class="mb-16">
-                <h3 id="pwa-readiness-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
-                <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
-                  <p>PWAs are the closest thing to a native app experience you can ship on the open web. They install in one tap, launch without a browser chrome, work offline, and re-engage users with push notifications. For sites with repeat visitors — news, e-commerce, SaaS dashboards — they consistently outperform regular tabs on retention.</p>
-                  <p>The user-perceived speed benefit is dramatic. An installed PWA opens in under a second because the shell is cached. Compare that to a website that opens in 2-3 seconds every visit. Users feel the difference immediately.</p>
-                  <p>PWAs also protect against browser-based distribution changes. When a user installs your PWA, they have a durable shortcut that survives cookie clearing, cache clearing, and browser updates. It is the most stable re-engagement channel available on the open web.</p>
-                  <p class="mt-8 font-semibold text-xl">A PWA is not a nice-to-have. For repeat-visit sites, it is the highest-ROI engagement channel still available for free.</p>
-                  <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
-                    <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to make your site installable?</p>
-                    <a href="https://traffictorch.net/lighthouse-plus-tool/#pwa-readiness" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check PWA Readiness on Traffic Torch →</a>
-                    <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
-                  </div>
-                </div>
-              </div>
-            </section>
+  <div class="mb-16">
+    <h3 id="pwa-readiness-why" class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200 border-l-4 border-orange-500 pl-5">Why it Matters?</h3>
+    <div class="text-lg leading-relaxed text-gray-800 dark:text-gray-200 space-y-6">
+      <p>For sites that <em>are</em> attempting to be PWAs, installability is a real user-experience win. PWAs install in one tap, launch without browser chrome, work offline, and re-engage users with push notifications. For repeat-visit sites — news, e-commerce, SaaS dashboards — they consistently outperform regular tabs on retention.</p>
+      <p>For sites that are <em>not</em> attempting to be PWAs, the module correctly stays silent. A blog does not need a manifest. A corporate brochure site does not need a service worker. Forcing every site to add these before it can score 100 on Lighthouse was a known problem with Lighthouse's PWA category — and it is why Google removed it.</p>
+      <p>The practical guidance is simple:</p>
+      <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+        <li>If you want installability (repeat-visit audience, app-like experience), add a manifest + service worker + theme-color. The module will score it and give you the specific missing pieces.</li>
+        <li>If you do not want installability, do nothing. The module returns N/A, your overall score is unaffected, and no red X appears in the audit.</li>
+      </ul>
+      <p class="mt-8 font-semibold text-xl">PWA is a choice, not a requirement. Traffic Torch treats it that way.</p>
+      <div class="mt-10 p-6 bg-gradient-to-br from-orange-500/10 to-pink-500/10 dark:from-orange-900/20 dark:to-pink-900/20 rounded-2xl border border-orange-500/30 text-center">
+        <p class="text-xl font-bold mb-5 text-gray-800 dark:text-gray-200">Ready to see if your site is PWA-ready?</p>
+        <a href="https://traffictorch.net/lighthouse-plus-tool/#pwa-readiness" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-lg rounded-xl hover:brightness-110 hover:scale-[1.03] transition-all duration-300 shadow-xl shadow-orange-500/30">Check PWA / Installability on Traffic Torch →</a>
+        <p class="mt-6 text-base"><a href="#table-of-contents" class="text-orange-500 dark:text-orange-400 hover:underline font-medium">← Return to TOC</a></p>
+      </div>
+    </div>
+  </div>
+</section>
 
             <!-- Module 7: Resource Optimisation -->
             <section id="resource-optimisation" class="mb-20 scroll-mt-24">
@@ -1230,7 +1241,7 @@
                 <p class="text-base text-gray-800 dark:text-gray-200 italic">Continuously updated with the latest Google guidelines, WCAG success criteria, browser APIs, and emerging agentic browsing specs — as of October 2026.</p>
                 <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6 space-y-1">
                   <p>Guide originally published: 2026-09-12</p>
-                  <p>Last updated: 2026-10-08</p>
+                  <p>Last updated: 2026-10-13</p>
                 </div>
               </div>
             </div>

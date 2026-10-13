@@ -217,7 +217,7 @@
             <button type="button" class="feedback-rating" data-rating="5" aria-label="Great" style="font-size:2rem; background:transparent; border:none; cursor:pointer; transition:0.2s; padding:0;">🤩</button>
           </div>
           <input type="hidden" data-rating-value="contribute" value="">
-          <textarea class="tt-action-note" data-note="contribute" maxlength="2000" placeholder="Describe the bug or feature…"></textarea>
+          <textarea class="tt-action-note" data-note="contribute" maxlength="6000" placeholder="Describe the bug or feature…"></textarea>
           <div class="tt-action-meta">
             <span class="tt-cont-count">0 / 2000</span>
             <span style="color:#f97316; font-weight:700;">+25 points</span>

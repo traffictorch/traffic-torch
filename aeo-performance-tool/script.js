@@ -1,4 +1,5 @@
 // AEO Performance Tool – client controller
+import { renderContributions } from './contributions.js?v=1.0';
 import { renderModuleCards } from './module-cards.js?v=1.0';
 import { renderPluginSolutions } from './plugin-solutions.js?v=1.0';
 import { moduleExplanations, fixFor } from './module-explanations.js?v=1.0';
@@ -11,7 +12,6 @@ import {
   deriveSelectorsForFailure,
   extractSnippets
 } from './code-snippet.js?v=1.0';
-import { renderContributions } from './contributions.js?v=1.0';
 import { renderRenderDiffPanel, buildAIDiffPayload } from './render-diff.js?v=1.0';
 
 const AEO_AUDIT_API = 'https://aeo-audit.traffictorch.workers.dev/';
@@ -158,7 +158,8 @@ async function saveAuditHistory(url, toolName) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const results     = document.getElementById('results');
+    renderContributions();
+const results     = document.getElementById('results');
   const urlInput    = document.getElementById('url-input');
   const codeInput   = document.getElementById('code-input');
   const analyzeUrl  = document.getElementById('analyze-url-btn');
@@ -229,7 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderModuleCards('module-cards-container');
   initCodeSnippetModal();
-  renderContributions();
 
   analyzeUrl.addEventListener('click', async () => {
     if (!(await canRunTool('aeo-performance-tool'))) return;

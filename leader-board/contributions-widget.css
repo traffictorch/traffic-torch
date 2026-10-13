@@ -42,13 +42,26 @@
   flex-direction: column;
   padding: 0.75rem 1rem;
   border-radius: 1rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  transition: background 0.2s;
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(249,115,22,0.28);
+  box-shadow: 0 2px 10px -4px rgba(0,0,0,0.08);
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
-.tt-contrib-card:hover { background: rgba(255,255,255,0.08); }
-.dark .tt-contrib-card { background: rgba(0,0,0,0.25); border-color: rgba(255,255,255,0.05); }
-.dark .tt-contrib-card:hover { background: rgba(255,255,255,0.05); }
+.tt-contrib-card:hover {
+  background: rgba(255,255,255,0.75);
+  border-color: rgba(249,115,22,0.55);
+  box-shadow: 0 4px 14px -4px rgba(249,115,22,0.25);
+}
+.dark .tt-contrib-card {
+  background: rgba(0,0,0,0.35);
+  border-color: rgba(251,146,60,0.35);
+  box-shadow: 0 2px 10px -4px rgba(0,0,0,0.5);
+}
+.dark .tt-contrib-card:hover {
+  background: rgba(0,0,0,0.5);
+  border-color: rgba(251,146,60,0.6);
+  box-shadow: 0 4px 14px -4px rgba(251,146,60,0.35);
+}
 
 .tt-contrib-top {
   display: flex;
@@ -196,64 +209,90 @@
   100% { background-position: -200% 0; }
 }
 
-@media (max-width: 520px) {
-  .tt-contrib { padding: 0.85rem; }
-  .tt-contrib-list { gap: 0.5rem; }
+/* Mobile fix: compact contributor rows, not full-screen cards */
+
+.tt-contrib-card { position: relative; }
+
+/* ── Mobile: stacked + centred ── */
+@media (max-width: 640px) {
+  .tt-contrib { padding: 0.85rem !important; }
+  .tt-contrib-list { gap: 0.5rem !important; }
   .tt-contrib-card {
-    padding: 0.6rem 0.75rem;
-    border-radius: 0.85rem;
+    padding: 1rem 0.9rem 0.9rem !important;
+    border-radius: 0.85rem !important;
+    text-align: center !important;
   }
+
   .tt-contrib-top {
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    row-gap: 0.4rem;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-wrap: unset !important;
   }
+
+  /* Rank medal sits centred above the avatar */
   .tt-contrib-rank {
-    order: 1;
-    font-size: 1rem;
-    min-width: 24px;
+    position: static !important;
+    display: inline-block !important;
+    font-size: 1.1rem !important;
+    min-width: 0 !important;
+    text-align: center !important;
+    order: 0 !important;
   }
   .tt-contrib-avatar {
-    order: 2;
-    width: 32px;
-    height: 32px;
+    width: 52px !important;
+    height: 52px !important;
+    margin-left: 0 !important;
+    order: 1 !important;
   }
+
   .tt-contrib-body {
-    order: 3;
-    flex: 1 1 100%;
-    min-width: 0;
+    width: 100% !important;
+    min-width: 0 !important;
+    order: 2 !important;
   }
   .tt-contrib-name {
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 0.85rem;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    font-size: 1.05rem !important;
+    line-height: 1.25 !important;
+  }
+  .tt-contrib-name a {
+    max-width: 100% !important;
+    white-space: normal !important;
   }
   .tt-contrib-role {
-    font-size: 0.55rem;
-    padding: 0.08rem 0.4rem;
+    margin: 0 !important;
+    font-size: 0.6rem !important;
+    padding: 0.1rem 0.55rem !important;
+    white-space: nowrap !important;
+    align-self: center !important;
   }
-  .tt-contrib-username { font-size: 0.68rem; }
+  .tt-contrib-username {
+    font-size: 0.75rem !important;
+    margin-top: 0.15rem !important;
+    text-align: center !important;
+  }
 
-  /* Stats move to their own row, aligned right */
+  /* Stats: centred row, divider on top, both values evenly spaced */
   .tt-contrib-stats {
-    order: 4;
-    flex: 1 1 100%;
-    text-align: right;
-    margin-top: 0.15rem;
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding-top: 0.6rem !important;
+    border-top: 1px solid rgba(255,255,255,0.06) !important;
+    gap: 1.25rem !important;
+    flex-shrink: 1 !important;
   }
-  .tt-contrib-points {
-    font-size: 1rem;
-    display: inline-block;
-    margin-right: 0.5rem;
-  }
-  .tt-contrib-count {
-    font-size: 0.65rem;
-    display: inline-block;
-    margin-top: 0;
-  }
+  .dark .tt-contrib-stats { border-top-color: rgba(255,255,255,0.05) !important; }
+  .tt-contrib-points { font-size: 1.15rem !important; line-height: 1 !important; }
+  .tt-contrib-count  { font-size: 0.7rem !important; margin: 0 !important; }
 
-  .tt-contrib-expand-row { display: none; }
-  .tt-contrib-details { display: none; }
+  .tt-contrib-expand-row { margin-top: 0.6rem !important; text-align: center !important; }
+  .tt-contrib-details { font-size: 0.78rem !important; text-align: center !important; }
 }

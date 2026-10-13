@@ -1,6 +1,13 @@
 // log-parser.js — client-side access log parser
-// Supports Apache combined, Nginx combined, Nginx JSON, and Cloudflare CSV.
-// Reads via FileReader chunks so large files don't block the UI.
+// Supports Apache combined, Nginx combined, Apache vhost_combined,
+// Nginx JSON, and Cloudflare CSV.
+//
+// v2 change (DrKJING feedback, Oct 2026):
+//   The combined regex now tolerates an unquoted vhost field between the
+//   response size and the referrer (used by Plesk, CloudPanel, some cPanel
+//   vhost configs), and tolerates extra trailing fields after the UA.
+//   The tail of the line is parsed by pulling all quoted strings, so UA
+//   extraction no longer depends on a fixed layout.
 
 export const FORMATS = {
   APACHE_COMBINED: 'apache-combined',
@@ -10,25 +17,25 @@ export const FORMATS = {
   UNKNOWN:         'unknown'
 };
 
-// Apache/Nginx combined regex — captures IP, time, method, path, status, size, referrer, UA
-const COMBINED_RE = /^(\S+)\s+\S+\s+\S+\s+\[([^\]]+)\]\s+"(\S+)\s+(\S+)(?:\s+(\S+))?"\s+(\d{3})\s+(\S+)(?:\s+"([^"]*)"\s+"([^"]*)")?/;
+// Header portion shared by all combined variants:
+//   IP ident authuser [time] "request" status size [rest...]
+// Everything after `size` is format-specific — we extract quoted strings from
+// the tail rather than trying to guess the exact layout.
+const COMBINED_RE = /^(\S+)\s+(\S+)\s+(\S+)\s+\[([^\]]+)\]\s+"([^"]*)"\s+(\d{3})\s+(\S+)\s*(.*)$/;
 
 export function detectFormat(sampleLines) {
   const sample = sampleLines.slice(0, 20).join('\n').trim();
   if (!sample) return FORMATS.UNKNOWN;
 
-  // Nginx JSON: lines start with '{' and contain "remote_addr" or similar
   const firstNonEmpty = sampleLines.find(l => l.trim());
   if (firstNonEmpty && firstNonEmpty.trim().startsWith('{')) {
     try { JSON.parse(firstNonEmpty); return FORMATS.NGINX_JSON; } catch {}
   }
 
-  // Cloudflare CSV headers
   if (/^"?ip"?,/i.test(firstNonEmpty || '') || /\bRayID\b/.test(sample)) {
     return FORMATS.CLOUDFLARE_CSV;
   }
 
-  // Combined format
   if (COMBINED_RE.test(firstNonEmpty || '')) return FORMATS.APACHE_COMBINED;
 
   return FORMATS.UNKNOWN;
@@ -54,7 +61,6 @@ export function parseLine(line, format) {
   }
 
   if (format === FORMATS.CLOUDFLARE_CSV) {
-    // Minimal CSV split (no quoted comma handling — Cloudflare logs are simple)
     const parts = line.split(',');
     if (parts.length < 8) return null;
     return {
@@ -69,18 +75,34 @@ export function parseLine(line, format) {
     };
   }
 
-  // Combined format (Apache & Nginx)
+  // Combined format (Apache & Nginx) — tolerant of:
+  //   Standard combined:            status size "referrer" "UA"
+  //   vhost_combined:               status size VHOST "referrer" "UA"
+  //   vhost_combined + extra:       status size VHOST "referrer" "UA" "extra"
+  //   combined + extra:             status size "referrer" "UA" "extra"
+  // In every variant, the 1st quoted string in the tail is the referrer and
+  // the 2nd is the user-agent. Extra trailing fields are ignored.
   const m = line.match(COMBINED_RE);
   if (!m) return null;
+
+  const requestParts = (m[5] || '').split(' ');
+  const method = requestParts[0] || '';
+  const path   = requestParts[1] || '';
+
+  const tail = m[8] || '';
+  const quoted = [...tail.matchAll(/"([^"]*)"/g)].map(x => x[1]);
+  const referrer = quoted[0] || '';
+  const ua       = quoted[1] || '';
+
   return {
     ip: m[1],
-    time: m[2],
-    method: m[3],
-    path: m[4],
-    status: parseInt(m[6], 10),
+    time: m[4],
+    method,
+    path,
+    status: parseInt(m[6], 10) || 0,
     size: parseInt(m[7], 10) || 0,
-    referrer: m[8] || '',
-    ua: m[9] || ''
+    referrer,
+    ua
   };
 }
 
@@ -93,12 +115,19 @@ export async function streamLogFile(file, { onProgress, maxBytes = 100 * 1024 * 
   const format = detectFormat(lines.slice(0, 20));
   const entries = [];
   let parsed = 0;
+  let parsedWithUa = 0;
+  let firstLine = '';
   for (let i = 0; i < lines.length; i++) {
+    if (!firstLine && lines[i].trim()) firstLine = lines[i].slice(0, 240);
     const e = parseLine(lines[i], format);
-    if (e) { entries.push(e); parsed++; }
+    if (e) {
+      entries.push(e);
+      parsed++;
+      if (e.ua) parsedWithUa++;
+    }
     if (onProgress && i % 5000 === 0) {
       onProgress({ line: i, total: lines.length, parsed });
     }
   }
-  return { entries, format, totalLines: lines.length, parsed };
+  return { entries, format, totalLines: lines.length, parsed, parsedWithUa, firstLine };
 }

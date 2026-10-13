@@ -57,7 +57,35 @@
     box-shadow: 0 2px 8px rgba(249,115,22,0.35);
   }
   #communication-preferences,
+  #settings-visibility,
+  #settings-content,
   #notifications-section { scroll-margin-top: 100px; }
+
+  /* ── Mobile tweaks: role pill + profile meta row ── */
+  @media (max-width: 639px) {
+    .role-pill {
+      padding: 0.25rem 0.6rem !important;
+      font-size: 0.62rem !important;
+      letter-spacing: 0.04em !important;
+      line-height: 1.1 !important;
+    }
+    .profile-info > p {
+      row-gap: 0.35rem !important;
+      line-height: 1.5 !important;
+    }
+    .profile-info .meta-item {
+      margin: 0 0.5rem !important;
+      line-height: 1.8 !important;
+      padding: 0.15rem 0 !important;
+    }
+    .profile-info .meta-item .emoji {
+      margin-right: 0.35rem !important;
+    }
+    /* Give the meta row a bit more breathing room overall */
+    .profile-info + * {
+      row-gap: 0.6rem !important;
+    }
+  }
   </style>
 
   <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
@@ -239,6 +267,12 @@
                 Invite
               </button>
             </div>
+            <div class="text-center mt-3 pt-3 border-t border-white/10">
+              <button @click="scrollToSettings('settings-visibility')"
+                      class="text-xs text-gray-500 hover:text-orange-500 dark:hover:text-orange-400 transition font-medium">
+                ⚙️ Manage what people see →
+              </button>
+            </div>
           </div>
 
           <!-- === Profile view === -->
@@ -257,6 +291,7 @@
 <div class="flex flex-col items-center sm:flex-row sm:items-end gap-5 profile-header-flex">
   <template x-if="profile.id">
     <div class="avatar-ring mx-auto sm:mx-0 cursor-pointer"
+         style="padding: 6px;"
          :class="'tier-' + (profile.tier || 'free')"
          :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member — click to enlarge'"
          @click="avatarLightbox = true">
@@ -268,15 +303,27 @@
     </div>
   </template>
   <div class="flex-1 min-w-0 sm:pb-2 profile-info">
-    <h1 class="text-3xl font-black truncate flex items-center gap-3 flex-wrap">
-                          <span x-text="profile.display_name || profile.username || 'Your name'"></span>
+    <h1 class="text-3xl font-black flex items-center gap-3 flex-wrap min-w-0">
+                          <span class="truncate" x-text="profile.display_name || profile.username || 'Your name'"></span>
+                          <template x-if="profile.verified_at">
+                            <svg viewBox="0 0 24 24" aria-label="Verified website owner"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 style="width:26px;height:26px;flex-shrink:0;display:inline-block;vertical-align:middle;">
+                              <circle cx="12" cy="12" r="11" fill="#22c55e"/>
+                              <path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6"
+                                    stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                          </template>
                           <span x-show="profile.total_points > 0"
                                 class="points-badge points-badge-lg"
                                 x-text="'🏅 ' + profile.total_points"></span>
                         </h1>
                         <p class="text-gray-500 text-lg flex items-center gap-2 flex-wrap">
                           <span>@<span x-text="profile.username || 'username'"></span></span>
-                          <span class="inline-block px-2 py-0.5 text-xs font-bold uppercase tracking-wide rounded-full bg-orange-500/20 text-orange-500" x-text="roleLabel(profile.role)"></span>
+                          <span class="role-pill inline-flex items-center gap-1.5 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-500">
+                            <span class="inline-block w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+                            <span x-text="roleLabel(profile.role)"></span>
+                          </span>
                         </p>
                       </div>
 <div class="flex gap-2 sm:pb-2 flex-wrap items-center justify-center sm:justify-start flex-shrink-0 profile-actions">
@@ -293,7 +340,7 @@
                       </div>
                     </div>
 
-                    <p x-show="profile.bio" class="mt-5 mb-2 text-center text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
+                    <p x-show="profile.bio" class="mt-5 mb-2 py-4 text-center text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
 
                     <!-- ── Skills chip row ── -->
                     <div x-show="(profile.skills || []).length > 0" x-cloak class="mt-3 flex flex-wrap items-center justify-center gap-2">
@@ -378,23 +425,23 @@
                     </div>
 
 <div class="mt-7 grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-2xl mx-auto">
-  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
     <p class="text-2xl font-black text-orange-500" x-text="feed.slots.used"></p>
     <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🔥 Audits shared</p>
   </div>
-  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
     <p class="text-2xl font-black text-orange-500" x-text="network.list.length"></p>
     <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🤝 Network</p>
   </div>
-  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
     <p class="text-2xl font-black text-orange-500" x-text="profile.total_points || 0"></p>
     <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🏅 Points</p>
   </div>
-  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
     <p class="text-2xl font-black text-orange-500" x-text="profile.endorsement_count || 0"></p>
     <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">⭐ Endorsements</p>
   </div>
-  <div class="text-center p-3 rounded-xl bg-gray-100 dark:bg-gray-900/60">
+  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
     <p class="text-2xl font-black text-orange-500" x-text="monthsSince(profile.created_at)"></p>
     <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">📅 Months here</p>
   </div>
@@ -513,36 +560,40 @@
                       </div>
                     </div>
 
-                    <div class="space-y-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Auto-share new audits to feed</span>
-                        <input type="checkbox" x-model="profile.auto_share" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Hide my network on profile</span>
-                        <input type="checkbox" :checked="!profile.show_network" @change="profile.show_network = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Don't allow others to add me to their network</span>
-                        <input type="checkbox" :checked="!profile.allow_adds" @change="profile.allow_adds = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Make profile private</span>
-                        <input type="checkbox" :checked="!profile.profile_public" @change="profile.profile_public = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
-                      <label class="flex items-center justify-between cursor-pointer">
-                        <span class="text-sm">Keep my activity private</span>
-                        <input type="checkbox" :checked="!profile.activity_public" @change="profile.activity_public = $event.target.checked ? 0 : 1" class="w-5 h-5">
-                      </label>
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <p class="text-xs text-gray-500 mb-2">
+                        Privacy & visibility controls (profile, activity, network, auto-share) live in Settings.
+                      </p>
+                      <button type="button" @click="scrollToSettings('settings-visibility')"
+                              class="text-sm font-medium text-orange-500 hover:text-orange-600 dark:hover:text-orange-400 hover:underline">
+                        ⚙️ Manage privacy settings →
+                      </button>
                     </div>
 
-  
                   <!-- ═══ ADVANCED (optional) ═══ -->
-                  <details class="mt-6 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
-                    <summary class="cursor-pointer px-5 py-4 bg-gray-50 dark:bg-gray-900/60 hover:bg-gray-100 dark:hover:bg-gray-900 transition font-bold text-sm flex items-center justify-between gap-3">
-                      <span>⚙️ Advanced (optional)</span>
-                      <span class="text-xs font-normal text-gray-500">Verify · Skills · Contacts · Hire Me</span>
+                  <details class="group mt-6 border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden">
+                    <summary class="cursor-pointer px-5 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 transition list-none"
+                             style="list-style:none;">
+                      <div class="flex items-center justify-between gap-3 font-bold text-sm">
+                        <div class="flex items-center gap-2 flex-wrap min-w-0">
+                          <span style="font-size:1.1rem;line-height:1;">⚙️</span>
+                          <span>Advanced options</span>
+                          <span class="text-xs font-normal opacity-90">Verify · Skills · Contacts · Hire Me</span>
+                        </div>
+                        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                             class="transition-transform duration-200 group-open:rotate-180"
+                             style="width:20px;height:20px;flex-shrink:0;display:block;">
+                          <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z"/>
+                        </svg>
+                      </div>
                     </summary>
+                    <style>
+                      /* Kill the default disclosure triangle (Safari/Firefox) */
+                      details > summary::-webkit-details-marker { display: none; }
+                      details > summary::marker { content: ""; }
+                    </style>
+                    
                     <div class="p-5 space-y-8 bg-white/50 dark:bg-black/20">
 
                       <!-- ── 1. Verify website ── -->
@@ -569,13 +620,21 @@
                                :class="verifyStatus.ok ? 'bg-green-500/10 text-green-600 dark:text-green-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'">
                             <p x-text="verifyStatus.message"></p>
                             <template x-if="verifyStatus.token">
-                              <div class="mt-2">
-                                <p class="mb-1">Add this to your website's <code>&lt;head&gt;</code>:</p>
-                                <code class="block p-2 bg-gray-900 text-gray-100 rounded text-[10px] break-all">&#60;meta name="traffic-torch-verify" content="<span x-text="verifyStatus.token"></span>"&#62;</code>
-                                <button type="button" @click="copyVerifyToken()"
-                                        class="mt-2 px-3 py-1 rounded bg-gray-800 dark:bg-gray-700 text-white text-[11px] font-bold hover:bg-gray-700 dark:hover:bg-gray-600">
-                                  Copy tag
-                                </button>
+                              <div class="mt-3">
+                                <p class="mb-2 text-sm">Add this meta tag inside your website's <code class="px-1 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-xs">&lt;head&gt;</code>:</p>
+                                <div class="rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
+                                  <div class="px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-[11px] font-mono leading-relaxed break-all select-all">
+                                    <span class="text-gray-400 dark:text-gray-500">&lt;meta</span> <span class="text-blue-600 dark:text-blue-400">name</span>=<span class="text-green-700 dark:text-green-400">"traffic-torch-verify"</span>
+                                    <span class="text-blue-600 dark:text-blue-400">content</span>=<span class="text-green-700 dark:text-green-400">"<span x-text="verifyStatus.token" class="text-orange-600 dark:text-orange-400"></span>"</span><span class="text-gray-400 dark:text-gray-500">&gt;</span>
+                                  </div>
+                                  <button type="button" @click="copyVerifyToken()"
+                                          class="w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90 transition">
+                                    📋 Tap to copy the meta tag
+                                  </button>
+                                </div>
+                                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                  After pasting it into your site's <code>&lt;head&gt;</code>, click <strong>Verify now</strong> again.
+                                </p>
                               </div>
                             </template>
                           </div>
@@ -590,11 +649,11 @@
                                  @keydown.enter.prevent="addSkill()"
                                  placeholder="e.g. Technical SEO"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                          <button type="button" @click="addSkill()"
-                                  :disabled="profile.skills.length >= 8"
-                                  class="px-4 py-2 rounded-lg bg-gray-800 dark:bg-gray-700 text-white text-sm font-bold hover:bg-gray-700 disabled:opacity-40">
-                            Add
-                          </button>
+<button type="button" @click="addSkill()"
+        :disabled="profile.skills.length >= 8"
+        class="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40 whitespace-nowrap">
+  Add
+</button>
                         </div>
                         <div class="flex flex-wrap gap-2">
                           <template x-for="(s, i) in profile.skills" :key="'skill-' + i">
@@ -615,29 +674,40 @@
                         <p class="text-xs text-gray-500 mb-3">
                           Public contact methods. Hidden behind a "click to reveal" button by default to reduce scraping.
                         </p>
-                        <div class="space-y-2 mb-3">
+                        <div class="space-y-3 mb-3">
                           <template x-for="(c, i) in profile.contacts" :key="'contact-' + i">
-                            <div class="flex gap-2 items-center">
-                              <select x-model="c.type"
-                                      class="p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 flex-shrink-0">
-                                <option value="email">Email</option>
-                                <option value="whatsapp">WhatsApp</option>
-                                <option value="telegram">Telegram</option>
-                                <option value="wechat">WeChat</option>
-                                <option value="signal">Signal</option>
-                                <option value="phone">Phone</option>
-                                <option value="linkedin">LinkedIn</option>
-                                <option value="x">X / Twitter</option>
-                                <option value="other-url">Other URL</option>
-                              </select>
+                            <div class="flex flex-col sm:flex-row gap-2 sm:items-center p-3 sm:p-0 rounded-lg border border-gray-200 dark:border-gray-700 sm:border-0">
+                              <!-- Row 1 on mobile: type dropdown + remove button -->
+                              <div class="flex gap-2 items-center">
+                                <select x-model="c.type"
+                                        class="flex-1 sm:flex-none sm:w-36 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                                  <option value="email">Email</option>
+                                  <option value="whatsapp">WhatsApp</option>
+                                  <option value="telegram">Telegram</option>
+                                  <option value="wechat">WeChat</option>
+                                  <option value="signal">Signal</option>
+                                  <option value="phone">Phone</option>
+                                  <option value="linkedin">LinkedIn</option>
+                                  <option value="x">X / Twitter</option>
+                                  <option value="other-url">Other URL</option>
+                                </select>
+                                <!-- Mobile-only delete button (top-right of card) -->
+                                <button type="button" @click="removeContact(i)"
+                                        aria-label="Remove contact"
+                                        class="sm:hidden px-3 py-2 rounded-lg text-red-500 hover:bg-red-500/10 text-xl flex-shrink-0">×</button>
+                              </div>
+                              <!-- Row 2 on mobile: value -->
                               <input type="text" x-model="c.value" maxlength="200"
                                      placeholder="Value"
-                                     class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                                     class="w-full sm:flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                              <!-- Row 3 on mobile: label -->
                               <input type="text" x-model="c.label" maxlength="40"
                                      placeholder="Label (optional)"
-                                     class="w-32 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                                     class="w-full sm:w-32 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
+                              <!-- Desktop-only delete button -->
                               <button type="button" @click="removeContact(i)"
-                                      class="px-2 py-2 rounded-lg text-red-500 hover:bg-red-500/10 text-lg">×</button>
+                                      aria-label="Remove contact"
+                                      class="hidden sm:flex items-center justify-center px-2 py-2 rounded-lg text-red-500 hover:bg-red-500/10 text-lg flex-shrink-0">×</button>
                             </div>
                           </template>
                         </div>
@@ -678,11 +748,11 @@
                                        @keydown.enter.prevent="addHireService()"
                                        placeholder="e.g. Technical audits"
                                        class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                                <button type="button" @click="addHireService()"
-                                        :disabled="profile.hire_services.length >= 6"
-                                        class="px-4 py-2 rounded-lg bg-gray-800 dark:bg-gray-700 text-white text-sm font-bold hover:bg-gray-700 disabled:opacity-40">
-                                  Add
-                                </button>
+<button type="button" @click="addHireService()"
+        :disabled="profile.hire_services.length >= 6"
+        class="px-4 py-2 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40 whitespace-nowrap">
+  Add
+</button>
                               </div>
                               <div class="flex flex-wrap gap-2">
                                 <template x-for="(s, i) in profile.hire_services" :key="'hs-' + i">
@@ -728,7 +798,7 @@
               </div>
 
               <!-- Notifications section -->
-              <div id="notifications-section" class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+              <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
 
                 <div x-show="push.supported && !pushBannerDismissed && isAuthenticated"
                      x-cloak
@@ -737,7 +807,7 @@
                   <div class="flex items-start gap-3 mb-3">
                     <span class="text-2xl flex-shrink-0">🔔</span>
                     <div class="flex-1 min-w-0">
-                      <p class="font-bold text-sm" x-show="!push.subscribed">🔔 Turn on push notifications for this device</p>
+                      <p class="font-bold text-sm" x-show="!push.subscribed">Turn on push notifications for this device</p>
                       <p class="font-bold text-sm text-green-600 dark:text-green-400" x-show="push.subscribed">✅ Push notifications are ON for this device</p>
                       <p class="text-xs text-gray-500 mt-0.5" x-show="!push.subscribed">Instant alerts for comments, network connections, and messages — even when Traffic Torch is closed.</p>
                       <p class="text-xs text-gray-500 mt-0.5" x-show="push.subscribed">You'll be notified on this device. Manage what you get below.</p>
@@ -774,7 +844,7 @@
                     <p class="text-xs text-gray-500 mt-0.5">On iPhone, Safari only supports notifications for apps installed to your Home Screen. Tap <strong>Share → Add to Home Screen</strong>, then reopen Traffic Torch from the icon.</p>
                   </div>
                 </div>
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+                <div id="notifications-section" class="flex flex-wrap items-center justify-between gap-3 mb-6">
                   <h3 class="text-xl font-bold">🔔 Notifications</h3>
                   <div class="flex gap-2 flex-wrap">
                     <button @click="markAllRead()" :disabled="notifications.unread === 0"
@@ -882,7 +952,7 @@
 </h3>
                         <p class="text-xs text-gray-500">
                           <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
-                          · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                          · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500 inline-flex items-center gap-1"><span x-text="post.display_name || post.username"></span><svg x-show="post.verified_at" viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a>
                           <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
                           · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                         </p>
@@ -998,10 +1068,10 @@
                              width="32" height="32" style="width:32px;height:32px;"
                              class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                         <div class="flex-1 flex gap-2">
-                                                    <textarea rows="3" maxlength="360"
+                                                    <textarea rows="3" maxlength="6000"
                                  x-model="feed.commentDrafts[post.id]"
                                  @keydown.enter.exact.prevent="submitComment(post.id)"
-                                 placeholder="Leave a comment… (360 chars) · +5 pts"
+                                 placeholder="Leave a comment… (6000 chars) · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                                  <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
@@ -1489,6 +1559,12 @@
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
                       :class="networkSubTab === 'invite' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">Invite</button>
             </div>
+            <div class="text-center mt-3 pt-3 border-t border-white/10">
+              <button @click="scrollToSettings('settings-visibility')"
+                      class="text-xs text-gray-500 hover:text-orange-500 dark:hover:text-orange-400 transition font-medium">
+                ⚙️ Manage what people see →
+              </button>
+            </div>
           </div>
 
           <div x-show="networkSubTab === 'feed'" class="max-w-2xl mx-auto">
@@ -1534,7 +1610,7 @@
 </h3>
                         <p class="text-xs text-gray-500">
                           <span x-text="post.domain_mode === 'hidden' ? (post.domain_label || 'Hidden') : (post.url ? new URL(post.url).hostname.replace('www.','') : '')"></span>
-                          · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                          · by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500 inline-flex items-center gap-1"><span x-text="post.display_name || post.username"></span><svg x-show="post.verified_at" viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:14px;height:14px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a>
                           <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
                           · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                         </p>
@@ -1650,10 +1726,10 @@
                              width="32" height="32" style="width:32px;height:32px;"
                              class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';" >
                         <div class="flex-1 flex gap-2">
-                                                    <textarea rows="3" maxlength="360"
+                                                    <textarea rows="3" maxlength="6000"
                                  x-model="feed.commentDrafts[post.id]"
                                  @keydown.enter.exact.prevent="submitComment(post.id)"
-                                 placeholder="Leave a comment… (360 chars) · +5 pts"
+                                 placeholder="Leave a comment… (6000 chars) · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                                 <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
@@ -2443,8 +2519,9 @@
                 <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
                   <li>✓ 25 audits per day</li><li>✓ All 17 tools</li><li>✓ 30‑day GA4 data</li><li>✓ 28‑day GSC data</li><li>✓ CSV exports</li><li>✓ Priority support</li><li>✗ Real‑time analytics</li><li>✗ Custom date ranges</li>
                 </ul>
-                <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">Upgrade →</a>
-              </div>
+<a href="/upgrade/#pro" class="mt-6 inline-block w-full py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition">
+  Upgrade →
+</a>              </div>
               <div class="glass rounded-2xl p-6 text-center border border-white/10 dark:border-white/5 flex flex-col">
                 <h3 class="text-xl font-bold">Enterprise</h3>
                 <p class="text-3xl font-black mt-2">$68</p>
@@ -2452,8 +2529,9 @@
                 <ul class="mt-4 space-y-1.5 text-sm text-left flex-1">
                   <li>✓ 300 audits per day</li><li>✓ All 17 tools</li><li>✓ 365‑day GA4 &amp; GSC data</li><li>✓ Real‑time analytics</li><li>✓ Custom date ranges</li><li>✓ CSV exports</li><li>✓ Dedicated support</li>
                 </ul>
-                <a href="/upgrade/" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">Upgrade →</a>
-              </div>
+<a href="/upgrade/#enterprise" class="mt-6 inline-block w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition">
+  Upgrade →
+</a>              </div>
             </div>
             <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">All plans include all 17 tools. <a href="/pro/" class="text-orange-500 hover:underline">See full details →</a></p>
           </div>
@@ -2481,7 +2559,7 @@
               </div>
               <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                 <span class="font-medium">Member since</span>
-                <span x-text="!authChecked ? '…' : (isAuthenticated && user.pro_since ? new Date(user.pro_since).toLocaleDateString() : '—')"></span>
+				<span x-text="!authChecked ? '…' : (profile.created_at ? formatShortDate(profile.created_at) : '—')"></span>
               </div>
             </div>
 
@@ -2489,6 +2567,66 @@
               <h4 class="font-semibold mb-2">💳 Billing & Subscription</h4>
               <button x-show="isAuthenticated && user.tier !== 'free'" @click="manageBilling()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Manage Subscription</button>
               <button x-show="!isAuthenticated || user.tier === 'free'" @click="showUpgradeModal()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Upgrade here</button>
+            </div>
+
+            <!-- ========== SECTION: Visibility ========== -->
+            <h4 id="settings-visibility" class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">👁️ Who can see me</h4>
+            <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3">
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Profile page</div>
+                  <div class="text-xs text-gray-500">Anyone can visit /torcher/your-username/</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.profile_public == 1"
+                       @change="profile.profile_public = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Activity stream</div>
+                  <div class="text-xs text-gray-500">Show your torches, comments, and milestones on your profile</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.activity_public == 1"
+                       @change="profile.activity_public = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">My network list</div>
+                  <div class="text-xs text-gray-500">Show who you're connected to on your profile</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.show_network == 1"
+                       @change="profile.show_network = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Allow network adds</div>
+                  <div class="text-xs text-gray-500">Let other members add you to their network</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.allow_adds == 1"
+                       @change="profile.allow_adds = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
+            </div>
+
+            <!-- ========== SECTION: Content ========== -->
+            <h4 id="settings-content" class="text-sm font-bold uppercase tracking-wider text-gray-500 mt-10 mb-3">📝 My content</h4>
+            <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-3">
+              <label class="flex items-center justify-between cursor-pointer gap-3">
+                <div>
+                  <div class="text-sm font-medium">Auto-share new audits to feed</div>
+                  <div class="text-xs text-gray-500">Post your audits to the community feed automatically</div>
+                </div>
+                <input type="checkbox"
+                       :checked="profile.auto_share == 1"
+                       @change="profile.auto_share = $event.target.checked ? 1 : 0; saveProfile()"
+                       class="w-5 h-5 flex-shrink-0">
+              </label>
             </div>
 
             <!-- ========== SECTION: Communication Preferences ========== -->
@@ -3351,6 +3489,11 @@ function dashboardApp() {
       this.activeDashboardTab = 'profile';
       this.profileSubTab = 'profile';
       this._scrollToElementWithRetry('notifications-section');
+    },
+
+    scrollToSettings(anchorId = 'settings-visibility') {
+      this.activeDashboardTab = 'settings';
+      this._scrollToElementWithRetry(anchorId);
     },
 
     _scrollToElementWithRetry(id, maxAttempts = 40, delay = 200) {
@@ -4527,7 +4670,7 @@ async endorsePost(postId) {
 
     async submitComment(postId) {
       const body = (this.feed.commentDrafts[postId] || '').trim();
-      if (!body || body.length > 360) return;
+      if (!body || body.length > 6000) return;
       try {
         const res = await fetch(`${API_BASE}/api/posts/${postId}/comments`, {
           method: 'POST',
@@ -4619,7 +4762,7 @@ async endorsePost(postId) {
               <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Title</label>
               <input id="tt-edit-post-title" type="text" maxlength="60" placeholder="Optional title (60 chars)" style="width:100%; box-sizing:border-box; padding:0.55rem 0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:0.9rem; background:transparent; color:inherit; font-family:inherit;">
               <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Note</label>
-              <textarea id="tt-edit-post-note" maxlength="360" rows="6" style="width:100%; box-sizing:border-box; padding:0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; resize:vertical; font-family:inherit; background:transparent; color:inherit;"></textarea>
+              <textarea id="tt-edit-post-note" maxlength="6000" rows="6" style="width:100%; box-sizing:border-box; padding:0.65rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; resize:vertical; font-family:inherit; background:transparent; color:inherit;"></textarea>
               <p style="font-size:0.75rem; color:#9ca3af; text-align:right; margin:0.25rem 0 0.9rem;"><span id="tt-edit-post-count">0</span> / 360</p>
               <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Category</label>
               <select id="tt-edit-post-cat" style="width:100%; padding:0.55rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:1.25rem; background:transparent; color:inherit;">

@@ -1,9 +1,12 @@
-// readability.js
+import { countSyllables, detectLang, fleschLike } from '/shared/readability-lang.js';
+
 export function computeReadability(mainText) {
   const words = mainText.split(/\s+/).filter(Boolean).length || 1;
   const sentences = (mainText.match(/[.!?]+/g) || []).length || 1;
-  const syllables = mainText.split(/\s+/).reduce((a, w) => a + (w.match(/[aeiouy]+/gi) || []).length, 0);
-  const flesch = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
+  const lang = detectLang(mainText);
+  const syllables = countSyllables(mainText, lang);
+  const fr = fleschLike(words / sentences, syllables / words, lang);
+  const flesch = fr.measured ? fr.ease : null;
 
   const sentencesArr = mainText.split(/[.!?]+/).filter(Boolean);
   const lengths = sentencesArr.map(s => s.split(/\s+/).length);
@@ -21,9 +24,13 @@ export function computeReadability(mainText) {
   const complexRatio = words > 0 ? (complexWords / words) * 100 : 0;
 
   let readability = 0;
-  if (flesch > 70) readability += 45;
-  else if (flesch > 60) readability += 35;
-  else if (flesch > 50) readability += 20;
+  if (flesch !== null) {
+    if (flesch > 70) readability += 45;
+    else if (flesch > 60) readability += 35;
+    else if (flesch > 50) readability += 20;
+  } else {
+    readability += 30; // neutral baseline when language isn't scoreable
+  }
 
   if (variationScore > 80) readability += 25;
   else if (variationScore > 60) readability += 15;
@@ -34,16 +41,19 @@ export function computeReadability(mainText) {
   else if (complexRatio < 18) readability += 12;
   else if (complexRatio < 25) readability += 5;
 
-const MAX = 45 + 25 + 20 + 20; // = 110
-return {
-  score: Math.min(100, (readability / MAX) * 100),
-  flags: {
-    goodFlesch: flesch > 60,
-    naturalVariation: variationScore > 70,
-    lowPassive: passivePatterns.length < 5,
-    lowComplex: complexRatio < 15
-  },
-  variationScore,
-  words
-};
+  const MAX = 45 + 25 + 20 + 20; // = 110
+  return {
+    score: Math.min(100, (readability / MAX) * 100),
+    flags: {
+      goodFlesch: flesch === null ? false : flesch > 60,
+      naturalVariation: variationScore > 70,
+      lowPassive: passivePatterns.length < 5,
+      lowComplex: complexRatio < 15
+    },
+    variationScore,
+    words,
+    lang,
+    formula: fr.formula,
+    measured: fr.measured
+  };
 }

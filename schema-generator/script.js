@@ -4,6 +4,7 @@ import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
 import { prettyJsonLd } from './modules/schema-base.js';
 import { detectCMS } from '/cms-detect.js';
+import { renderContributions } from './contributions.js?v=1.0';
 
 const API_PROXY = 'https://full-render-v2.traffictorch.workers.dev/?url=';
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';

@@ -100,6 +100,7 @@ import { computeConversational } from '/ai-search-optimization-tool/modules/conv
 import { computeReadability as computeAIReadability } from '/ai-search-optimization-tool/modules/readability.js';
 import { computeUniqueInsights } from '/ai-search-optimization-tool/modules/uniqueInsights.js';
 import { computeAntiAiSafety } from '/ai-search-optimization-tool/modules/antiAiSafety.js';
+import { renderContributions } from './contributions.js?v=1.0';
 
 // ─── Save audit history (matches Quit Risk / SEO Intent / AI Search) ──
 async function saveAuditHistory(url, toolName) {
@@ -453,6 +454,7 @@ function getUXContent(doc, metrics, auditedUrl) {
       'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
       '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
     ).length,
+    htmlLang: (doc.documentElement && doc.documentElement.getAttribute('lang')) || '',
     doc,
     title: doc.title || '',
     renderedLoadTime: null,
