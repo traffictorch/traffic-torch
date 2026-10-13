@@ -23,7 +23,7 @@ export default {
       screenshot = false,
       highlightSelectors = [],
       filters = [],
-      deviceScaleFactor = 2          // NEW — plumbed through from the caller
+      deviceScaleFactor = 2
     } = body;
     if (!url) return json({ error: 'url required' }, 400, cors);
 
@@ -42,74 +42,78 @@ function json(obj, status = 200, extra = {}) {
 
 async function renderOnce(url, env, { screenshot, highlightSelectors, filters, deviceScaleFactor }) {
   const { default: puppeteer } = await import('@cloudflare/puppeteer');
-  const browser = await puppeteer.launch(env.BROWSER);
-  const page = await browser.newPage();
-  await page.setViewport({ width: 390, height: 844, deviceScaleFactor });
-  await page.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1 NUSA/0.6');
 
-  const t0 = Date.now();
-  await page.goto(url, { waitUntil: 'networkidle2', timeout: 45000 });
-  await page.evaluate(() => new Promise(r => {
-    if (document.readyState === 'complete') return r();
-    window.addEventListener('load', r, { once: true });
-  }));
-
-  // NEW — force lazy images to actually paint before we capture
-  await primeImages(page);
-
-  const renderMs = Date.now() - t0;
-
-  const html = await page.content();
-  const finalUrl = page.url();
-  const out = { html, finalUrl, renderMs };
+  // 1) HTML via plain fetch — no browser, works for every site
+  const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NUSA/0.7)' } });
+  const html = await res.text();
+  const out = { html, finalUrl: res.url, renderMs: 0 };
 
   const safeSels = Array.isArray(highlightSelectors)
-    ? highlightSelectors.filter(s => typeof s === 'string' && s).slice(0, 200)
-    : [];
+    ? highlightSelectors.filter(s => typeof s === 'string' && s).slice(0, 200) : [];
   const safeFilters = Array.isArray(filters)
-    ? filters.filter(f => f && typeof f.selector === 'string' && f.selector).slice(0, 100)
-    : [];
+    ? filters.filter(f => f && typeof f.selector === 'string' && f.selector).slice(0, 100) : [];
 
-  if (safeSels.length || safeFilters.length) {
-    out.highlights = await page.evaluate(collectHighlights, { selectors: safeSels, filters: safeFilters });
+  if (!screenshot && !safeSels.length && !safeFilters.length) return out;
+
+  // 2) Browser only for screenshot + highlights
+  const browser = await puppeteer.launch(env.BROWSER);
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 390, height: 844, deviceScaleFactor });
+    await page.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1');
+
+    // Inject <base href> so relative URLs resolve against the origin
+    const htmlWithBase = html.replace(/<head([^>]*)>/i, '<head$1><base href="' + url + '">');
+
+    const t0 = Date.now();
+
+    // Use setContent — no navigation, no "Target closed" from goto timeout
+    await page.setContent(htmlWithBase, { waitUntil: 'domcontentloaded', timeout: 5000 })
+      .catch(function (e) { console.log('setContent timeout (ignored):', e.message); });
+
+    // Give the browser time to fetch styles/images and hydrate
+    await new Promise(function (r) { setTimeout(r, 4000); });
+
+    out.renderMs = Date.now() - t0;
+
+    await primeImages(page);
+
+    if (safeSels.length || safeFilters.length) {
+      out.highlights = await page.evaluate(collectHighlights, { selectors: safeSels, filters: safeFilters });
+    }
+
+    if (screenshot) {
+      const dims = await page.evaluate(function () {
+        return {
+          sw: document.documentElement.scrollWidth,
+          sh: document.documentElement.scrollHeight,
+          vw: window.innerWidth
+        };
+      });
+      const clipW = Math.min(dims.sw, dims.vw);
+      const clipH = Math.min(dims.sh, MAX_SHOT_HEIGHT);
+      await page.evaluate(function () { window.scrollTo(0, 0); });
+      await new Promise(function (r) { setTimeout(r, 200); });
+
+      const base64 = await page.screenshot({
+        type: 'jpeg', quality: 70, encoding: 'base64',
+        clip: { x: 0, y: 0, width: clipW, height: clipH }
+      });
+      out.screenshot = { data: base64, mime: 'image/jpeg', w: clipW, h: clipH };
+    }
+
+    return out;
+  } finally {
+    try { await browser.close(); } catch (_) {}
   }
-
-  if (screenshot) {
-    const dims = await page.evaluate(() => ({
-      sw: document.documentElement.scrollWidth,
-      sh: document.documentElement.scrollHeight,
-      vw: window.innerWidth              // NEW — viewport width for clamping
-    }));
-
-    // NEW — never wider than the actual viewport
-    const clipW = Math.min(dims.sw, dims.vw);
-    const clipH = Math.min(dims.sh, MAX_SHOT_HEIGHT);
-
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await new Promise(r => setTimeout(r, 200));
-
-    const base64 = await page.screenshot({
-      type: 'jpeg',
-      quality: 70,
-      encoding: 'base64',
-      clip: { x: 0, y: 0, width: clipW, height: clipH }
-    });
-    out.screenshot = { data: base64, mime: 'image/jpeg', w: clipW, h: clipH };
-  }
-
-  await browser.close();
-  return out;
 }
 
-// NEW — helper that makes lazy images load, scrolls the page so
-// IntersectionObservers fire, and waits for every <img> to finish.
-// NOTE: uses function expressions (not arrow functions) because the
-// puppeteer bundler stringifies these and arrow shorthand can break.
 async function primeImages(page) {
   // Step 0 — kill smooth scrolling so scrollTo() is synchronous
   await page.evaluate(function () {
     document.documentElement.style.scrollBehavior = 'auto';
   });
+  
   // Step 1 — eager-ify + un-stick common lazy-load libs
   await page.evaluate(function () {
     var imgs = document.querySelectorAll('img');
@@ -158,10 +162,6 @@ async function primeImages(page) {
   await new Promise(function (r) { setTimeout(r, 300); });
 }
 
-// Runs in the browser. Returns { [key]: [{x,y,w,h}, ...] }
-//  - Raw selectors → key = selector string
-//  - Filtered rules → key = `${selector}|${maxH}|${maxW}`
-//    Only keeps elements where rect.w < maxW OR rect.h < maxH (too small).
 function collectHighlights({ selectors, filters }) {
   const bboxOf = (el) => {
     const r = el.getBoundingClientRect();
@@ -173,7 +173,6 @@ function collectHighlights({ selectors, filters }) {
     };
   };
   const visible = (b) => b.w > 0 && b.h > 0;
-
   const out = {};
 
   for (const sel of selectors) {
