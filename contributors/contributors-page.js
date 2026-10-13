@@ -47,7 +47,6 @@ function withSiteContributors(perTool) {
   for (const t of TOOLS) {
     const existing = byTool.get(t.slug) || [];
     const existingKeys = new Set(existing.map(keyOf));
-    // Site-wide contributors first so they lead the merged card order.
     for (const s of siteContributors) {
       if (existingKeys.has(keyOf(s))) continue;
       out.push({
@@ -55,7 +54,6 @@ function withSiteContributors(perTool) {
         _tool: { tool: t.name, slug: t.slug, contribution: s.contribution || '' }
       });
     }
-    // Then tool-specific contributors.
     out.push(...existing);
   }
   return out;
@@ -127,7 +125,6 @@ function domainLabel(url) {
   } catch { return 'Link'; }
 }
 
-// Links: profile wins. Fallback to manual only when no profile.
 function resolveLinks(c) {
   const p = c._profile || {};
   if (c.username) {
@@ -159,11 +156,22 @@ function card(c) {
     ? `<a href="${profileUrl}" class="inline-flex items-center gap-1.5 mt-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 text-white text-xs font-bold hover:brightness-110 transition shadow">🏅 ${points} points · View profile →</a>`
     : '';
 
-  const contribs = c.contributions.map(x => `
-    <li class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+  const contribs = c.contributions.map(x => {
+    const text = String(x.text || '');
+    const LIMIT = 220;
+    if (text.length <= LIMIT) {
+      return `<li class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+        <a href="/${esc(x.slug)}/" class="font-semibold text-orange-600 dark:text-orange-400 hover:underline">${esc(x.tool)}</a>
+        — ${esc(text)}
+      </li>`;
+    }
+    const preview = text.slice(0, LIMIT).replace(/\s+\S*$/, '') + '…';
+    return `<li class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
       <a href="/${esc(x.slug)}/" class="font-semibold text-orange-600 dark:text-orange-400 hover:underline">${esc(x.tool)}</a>
-      — ${esc(x.text)}
-    </li>`).join('');
+      — <span class="contrib-preview">${esc(preview)}</span><span class="contrib-full" hidden>${esc(text)}</span>
+      <button type="button" class="contrib-more text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline ml-1">read more</button>
+    </li>`;
+  }).join('');
 
   const linkButtons = links.map(l =>
     `<a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-orange-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-medium transition">${l.icon}<span>${esc(l.label)}</span></a>`
@@ -211,4 +219,16 @@ export async function renderContributorsPage(rootId = 'contributors-root') {
 
   await hydrateProfiles(merged);
   root.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">${merged.map(card).join('')}</div>`;
+
+  root.querySelectorAll('.contrib-more').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const li = btn.closest('li');
+      const prev = li.querySelector('.contrib-preview');
+      const full = li.querySelector('.contrib-full');
+      const expanded = !full.hidden;
+      full.hidden = expanded;
+      prev.hidden = !expanded;
+      btn.textContent = expanded ? 'read more' : 'read less';
+    });
+  });
 }

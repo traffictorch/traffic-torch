@@ -70,11 +70,22 @@ function card(c, { showToolHeader = true } = {}) {
     ? `<a href="${profileUrl}" class="inline-flex items-center gap-1.5 mt-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 text-white text-xs font-bold hover:brightness-110 transition shadow">🏅 ${points} points · View profile →</a>`
     : '';
 
-  const contribs = (c.contributions || []).map(x => `
-    <li class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+  const contribs = (c.contributions || []).map(x => {
+    const text = String(x.text || '');
+    const LIMIT = 220;
+    if (text.length <= LIMIT) {
+      return `<li class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+        <a href="/${esc(x.slug)}/" class="font-semibold text-orange-600 dark:text-orange-400 hover:underline">${esc(x.tool)}</a>
+        — ${esc(text)}
+      </li>`;
+    }
+    const preview = text.slice(0, LIMIT).replace(/\s+\S*$/, '') + '…';
+    return `<li class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
       <a href="/${esc(x.slug)}/" class="font-semibold text-orange-600 dark:text-orange-400 hover:underline">${esc(x.tool)}</a>
-      — ${esc(x.text)}
-    </li>`).join('');
+      — <span class="contrib-preview">${esc(preview)}</span><span class="contrib-full" hidden>${esc(text)}</span>
+      <button type="button" class="contrib-more text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline ml-1">read more</button>
+    </li>`;
+  }).join('');
 
   const header = showToolHeader
     ? `<p class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-3 font-bold">Contributions</p>`
@@ -149,9 +160,6 @@ export async function renderToolContributions(toolContributors, containerId = 'c
     return (a.name || '').localeCompare(b.name || '');
   });
 
-  // If exactly the site-wide set (no tool-specific contributors), use a wider single-column layout
-  const onlySite = merged.every(c => c._siteWide);
-
   container.innerHTML = `
     <section class="max-w-6xl mx-auto my-16 px-2">
       <div class="text-center mb-10">
@@ -166,4 +174,16 @@ export async function renderToolContributions(toolContributors, containerId = 'c
         ${merged.map(c => card(c, { showToolHeader: !c._siteWide })).join('')}
       </div>
     </section>`;
+
+  container.querySelectorAll('.contrib-more').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const li = btn.closest('li');
+      const prev = li.querySelector('.contrib-preview');
+      const full = li.querySelector('.contrib-full');
+      const expanded = !full.hidden;
+      full.hidden = expanded;
+      prev.hidden = !expanded;
+      btn.textContent = expanded ? 'read more' : 'read less';
+    });
+  });
 }
