@@ -132,12 +132,13 @@ function findingHints(finding) {
   }
 
   // Known minifier artefacts — don't send the user to webpack for an Astro build.
-  if (/__name is not defined|referenceerror[^.]*__name/.test(l)) {
+  if (/javascript error|js error|page error|console error|error\(s\) during (?:load|render)|referenceerror|__name is not defined/.test(l)) {
     hints.push(
-      'KNOWN BUILD ARTEFACT: "__name is not defined" is a known esbuild / Vite / Astro minifier artefact, not a bug in hand-written code. ' +
-      'Do NOT mention webpack.config.js or gulpfile.js. Correct guidance: check the site build config (vite.config.js, astro.config.mjs, ' +
-      'esbuild options) for keepNames or minify settings; a rebuild with matching options, or disabling keepNames, usually clears the error. ' +
-      'If the site is not a JavaScript build project, treat it as informational only.'
+      'JAVASCRIPT ERROR: The finding text usually includes the actual error message (for example "ReferenceError: __name is not defined"). ' +
+      'If the error is "__name is not defined" or another minifier artefact name like "__vite" or "__astro", treat it as a build-tool artefact, not a hand-written bug. ' +
+      'Do NOT mention webpack.config.js or gulpfile.js. Correct guidance: check the site build config (vite.config.js, astro.config.mjs, esbuild options) for keepNames or minify settings; a rebuild with matching options usually clears it. ' +
+      'If no message is shown, or the error is a plain ReferenceError / TypeError in the site\'s own code, say: locate the failing script in your layout, check the browser console for the full stack, and fix or remove the offending line. ' +
+      'If the error source is "audit environment" or a Cloudflare/workers.dev domain, treat it as informational only.'
     );
   }
 
