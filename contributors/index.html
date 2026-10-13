@@ -158,7 +158,7 @@
       Submit a Contribution
     </h2>
     <p class="text-center text-gray-600 dark:text-gray-400 mb-6 text-sm">
-      Found a bug, have a feature request, or want to share real-world data? Let us know.
+      Found a bug, have a feature request, or want to share real-world data? Let us know. Contributions earn +36 points. High value submissions are considered for a custom widget in Tool Contributions. Plus additional +50 points.
     </p>
     
     <form id="contribution-form" class="space-y-4">
@@ -381,7 +381,7 @@
     document.addEventListener('DOMContentLoaded', () => renderContributorsPage());
   </script>
   
-  <script>
+ <script>
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('contribution-form');
     const textarea = document.getElementById('contrib-details');
@@ -397,23 +397,38 @@
     // Handle form submission
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        statusEl.textContent = '⚠️ You must be logged in to submit a contribution.';
+        statusEl.className = 'text-center text-sm mt-4 text-red-500 font-bold';
+        statusEl.classList.remove('hidden');
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting...';
       statusEl.classList.add('hidden');
 
       const payload = {
-        name: document.getElementById('contrib-name').value.trim(),
-        email: document.getElementById('contrib-email').value.trim(),
+        type: 'feedback', // Default type for this form
+        subject: document.getElementById('contrib-name').value.trim(),
+        message: textarea.value.trim(),
         tool: document.getElementById('contrib-tool').value,
-        details: textarea.value.trim()
+        page_url: window.location.href,
+        // Send name and email so the backend can use them for the reply-to and email body
+        name: document.getElementById('contrib-name').value.trim(),
+        email: document.getElementById('contrib-email').value.trim()
       };
 
       try {
-        // Replace with your actual API endpoint
-const WORKER_URL = 'https://traffic-torch-auth.traffictorch.workers.dev';
-const res = await fetch(`${WORKER_URL}/api/contributions`, {
+        const WORKER_URL = 'https://traffic-torch-auth.traffictorch.workers.dev';
+        const res = await fetch(`${WORKER_URL}/api/contributions`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
           body: JSON.stringify(payload)
         });
 
@@ -423,10 +438,11 @@ const res = await fetch(`${WORKER_URL}/api/contributions`, {
           form.reset();
           charCount.textContent = '0';
         } else {
-          throw new Error('Server responded with an error');
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'Server responded with an error');
         }
       } catch (err) {
-        statusEl.textContent = '⚠️ Failed to submit. Please try again or email us directly.';
+        statusEl.textContent = '⚠️ ' + (err.message || 'Failed to submit. Please try again or email us directly.');
         statusEl.className = 'text-center text-sm mt-4 text-red-500 font-bold';
       } finally {
         submitBtn.disabled = false;
