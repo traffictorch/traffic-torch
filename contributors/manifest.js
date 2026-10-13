@@ -6,6 +6,7 @@
 export const TOOLS = [
   { slug: 'aeo-performance-tool',         name: 'AEO Performance Tool',         path: '/aeo-performance-tool/contributions.js' },
   { slug: 'aeo-log-analyzer',             name: 'AEO Log Analyzer',             path: '/aeo-log-analyzer/contributions.js' },
+  { slug: 'nusa-tool',                    name: 'NUSA Tool',                    path: '/nusa-tool/contributions.js' },
   { slug: 'ofux-tool',                    name: 'OFUX Tool',                    path: '/ofux-tool/contributions.js' },
   { slug: 'keyword-research-tool',        name: 'Keyword Research Tool',        path: '/keyword-research-tool/contributions.js' },
   { slug: 'topical-authority-audit-tool', name: 'Topical Authority Audit Tool', path: '/topical-authority-audit-tool/contributions.js' },

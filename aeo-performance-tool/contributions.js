@@ -1,5 +1,6 @@
-// contributions.js — contributor cards for the AEO Log Analyzer
+// contributions.js — contributor cards for the AEO Performance Tool
 // Data-driven so more cards can be added without touching markup.
+// Profile fields (avatar, points, links) load live from /api/torcher/{username}.
 import { renderToolContributions } from '/shared/contributions-renderer.js';
 
 export const contributors = [
@@ -12,16 +13,9 @@ export const contributors = [
     location: 'Aachen, Deutschland',
     avatarInitial: 'H',
     avatarColor: 'from-cyan-500 to-blue-600',
-    contribution: 'Pushed back on the original AEO framing with a training-crawler vs. search-crawler distinction — GPTBot and ClaudeBot feed future model weights, while OAI-SearchBot and ChatGPT-User decide today\'s citations. His log data showed verified OAI-SearchBot and ClaudeBot receiving 429 rate-limit responses from his host, which drove the per-bot "Crawler Behaviour Notes" panel. Also flagged that bot JS behaviour is observed, not documented, which led to removing bot names from the diff column headers.',
-    tags: ['Architecture', 'Crawler taxonomy', 'Behaviour data'],
-    links: {
-      linkedin: 'https://www.linkedin.com/in/hasan-kalkan/',
-      github:   'https://github.com/HK2084',
-      reddit:   'https://www.reddit.com/user/DrKJING/',
-      website:  'https://evergrowsolution.de'
-    }
+    contribution: 'Ran the tool on a live site and reported three false positives: a cookie-consent warning fired by a code comment saying "no cookie banner needed", an infinite-scroll warning fired by a counter animation\'s IntersectionObserver, and a text-to-code failure fired at 10.1% on a Tailwind/Astro page. All three checks were rewritten — cookie detection now strips scripts and comments first, infinite-scroll requires a named library or a scroll-plus-fetch pair with no pagination, and the text-density fail floor moved from 15% to 8%.',
+    tags: ['False positives', 'Threshold calibration', 'Crawler accessibility']
   }
-  // Future contributors go here.
 ];
 
 export function renderContributions(containerId = 'contributions-section') {

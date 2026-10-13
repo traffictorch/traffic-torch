@@ -83,7 +83,8 @@ export default {
       } catch (_) {}
 
       const startTime = Date.now();
-      await page.goto(target, { waitUntil: 'networkidle2', timeout: 45000 });
+await page.goto(target, { waitUntil: 'domcontentloaded', timeout: 45000 });
+await page.waitForSelector('body', { timeout: 15000 });
       const loadTime = Date.now() - startTime;
 
       await new Promise((r) => setTimeout(r, 800));

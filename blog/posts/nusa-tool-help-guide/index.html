@@ -148,7 +148,7 @@
             "name": "What is the NUSA tool?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "NUSA is a free, browser-based audit tool that runs three audits on any URL at the same time: Quit Risk (UX friction and bounce prediction), Lighthouse Plus (performance, accessibility, Core Web Vitals and agent-readiness), and AEO Performance (AI crawler render fidelity, schema parsing and content extractability). You get three 0–100 scores, module breakdowns, and plain-English fixes in one view."
+              "text": "NUSA is a free, browser-based audit tool that runs three audits on any URL at the same time: Quit Risk (UX friction and bounce prediction), Lighthouse Plus (performance, accessibility, Core Web Vitals and agent-readiness), and AEO Performance (AI crawler render fidelity, DOM stability, schema parsing and content extractability). You get three 0–100 scores, module breakdowns, informational signals that never penalise you, and plain-English fixes in one view."
             }
           },
           {
@@ -452,12 +452,12 @@
                   <div class="bg-white/5 dark:bg-black/20 p-6 rounded-2xl border border-orange-200 dark:border-orange-800">
                     <div class="text-4xl mb-3" aria-hidden="true">🗼</div>
                     <h3 class="font-bold text-lg text-orange-700 dark:text-orange-400">Lighthouse Plus</h3>
-                    <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">Performance, Accessibility, Core Web Vitals, PWA readiness, and agent‑readiness. A superset of vanilla Lighthouse.</p>
+                    <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">Performance, Accessibility, Core Web Vitals, PWA / Installability (optional), and agent‑readiness. A superset of vanilla Lighthouse.</p>
                   </div>
                   <div class="bg-white/5 dark:bg-black/20 p-6 rounded-2xl border border-cyan-200 dark:border-cyan-800">
                     <div class="text-4xl mb-3" aria-hidden="true">🚀</div>
                     <h3 class="font-bold text-lg text-cyan-700 dark:text-cyan-400">AEO Performance</h3>
-                    <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">AI crawler render fidelity, schema parsing, and content extractability. Tests whether AI search engines can actually use the page.</p>
+                    <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">AI crawler render fidelity, DOM stability, schema parsing, and content extractability. Tests whether AI search engines can actually use the page.</p>
                   </div>
                 </div>
 
@@ -513,12 +513,13 @@
               </h2>
               <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
                 <p class="text-gray-800 dark:text-gray-200 leading-relaxed">
-                  Each pillar returns a score between <strong>0 and 100</strong>. Below the score you get a grade emoji, a short rating, and a list of the individual metrics that fed into the number. Each metric is marked with one of three states:
+                  Each pillar returns a score between <strong>0 and 100</strong>. Below the score you get a grade emoji, a short rating, and a list of the individual metrics that fed into the number. Each metric is marked with one of four states:
                 </p>
                 <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
                   <li><strong>✅ Pass</strong> – the page meets the standard. No action needed.</li>
                   <li><strong>⚠️ Average</strong> – the page is in the middle of the pack. Worth improving when you have time.</li>
                   <li><strong>❌ Fail</strong> – the page is missing something that actively hurts the metric. Fix these first.</li>
+                  <li><strong>ℹ️ Info</strong> – a signal that cannot be checked from the browser, or that is optional. Informational signals never reduce your score and never count as failures.</li>
                 </ul>
 
                 <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What the score bands mean</h3>
@@ -539,6 +540,10 @@
                     </tbody>
                   </table>
                 </div>
+
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">
+                  Some modules return <strong>N/A</strong> instead of a score — for example Core Web Vitals when no browser capture is available, or PWA / Installability when the site is not attempting to be a PWA. N/A modules are excluded from the overall score entirely. They neither inflate nor penalise it.
+                </p>
 
                 <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">
                   Below each score you'll also see a <strong>“Full Results →”</strong> link. That takes you to the standalone pillar tool page, where you can see the underlying data and ask the AI for targeted fixes.
@@ -592,12 +597,12 @@
 
                 <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What it looks at</h3>
                 <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
-                  <li><strong>Core Web Vitals</strong> – LCP, INP, and CLS, treated as hard signals rather than soft heuristics.</li>
-                  <li><strong>Accessibility</strong> – WCAG 2.2 AA contrast, landmarks, focus order, and ARIA usage.</li>
-                  <li><strong>Best practices</strong> – HTTPS, safe third‑party usage, and image aspect ratios.</li>
+                  <li><strong>Core Web Vitals</strong> – LCP, INP, and CLS, treated as hard signals rather than soft heuristics. When no browser capture is available (pasted HTML or a render fallback), the module returns <em>N/A</em> instead of a fabricated score, and is excluded from the overall weighted average.</li>
+                  <li><strong>Accessibility</strong> – WCAG 2.2 AA contrast, landmarks, focus order, and ARIA usage. Form fields wrapped in a <code>&lt;label&gt;</code> element are correctly recognised as labelled, and hidden honeypot fields (<code>display:none</code>, <code>tabindex=-1</code>) are skipped rather than flagged.</li>
+                  <li><strong>Best practices</strong> – HTTPS, console errors, deprecated APIs, and image aspect ratios. Security header checks (HSTS, X-Content-Type-Options) that cannot be read cross-origin from the browser are shown as <em>“can't check from the browser”</em> rather than as failures — never a red X when the tool simply couldn't see the header.</li>
                   <li><strong>SEO basics</strong> – title length, meta description, crawlability, and canonical signals.</li>
-                  <li><strong>PWA readiness</strong> – manifest validity, service worker presence, and installability.</li>
-                  <li><strong>Agent‑readiness</strong> – semantic HTML, structured data, and machine‑readable navigation.</li>
+                  <li><strong>PWA / Installability (optional)</strong> – manifest validity, service worker presence, and installability. Scored only when PWA intent is detected (a manifest link, service worker, or theme-color is present). Sites that are not attempting to be a PWA return <em>N/A</em> and are excluded from the overall score.</li>
+                  <li><strong>Agent‑readiness</strong> – semantic HTML, structured data, and machine‑readable navigation. <code>llms.txt</code> is checked on both the live browser path and the plain-fetch fallback, so sites that serve it correctly are credited even when the headless render is unavailable.</li>
                 </ul>
 
                 <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">When to prioritize Lighthouse Plus</h3>
@@ -623,9 +628,18 @@
 
                 <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">What it looks at</h3>
                 <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
-                  <li><strong>Render fidelity</strong> – does the page's content survive when JavaScript is limited or delayed?</li>
-                  <li><strong>Schema parsing</strong> – validity of JSON‑LD, required properties, and how easily crawlers can interpret the types.</li>
-                  <li><strong>Content extractability</strong> – are the important claims in semantic HTML, or buried in images and widgets?</li>
+                  <li><strong>Render fidelity</strong> – does the page's content survive when JavaScript is limited or delayed? Raw HTML and post-JS DOM are compared word-for-word.</li>
+                  <li><strong>DOM stability</strong> – how much the DOM mutates during load. Content that arrives late may be invisible to crawlers that capture the DOM early.</li>
+                  <li><strong>Content extractability</strong> – semantic HTML ratio, div density, paragraph structure, and whether the important claims are in text or buried in widgets.</li>
+                  <li><strong>Schema parsing</strong> – JSON-LD validity, missing <code>@context</code>, type coverage, and nesting depth.</li>
+                  <li><strong>Crawler accessibility</strong> – robots.txt rules, meta robots, and two checks that were previously over-sensitive:
+                    <ul class="list-circle pl-6 mt-2 space-y-1">
+                      <li><strong>Cookie consent detection</strong> – strips scripts, styles, and HTML comments first, then looks for either a named consent provider or a real DOM element with a cookie/consent pattern. A code comment mentioning “cookie” no longer fires this.</li>
+                      <li><strong>Infinite scroll detection</strong> – requires a named library (react-infinite-scroll, useInfiniteQuery, etc.) or a scroll/observer handler that runs a fetch within 600 characters, with no pagination markup. A bare scroll listener for a sticky header or counter animation no longer fires this.</li>
+                    </ul>
+                  </li>
+                  <li><strong>Text density</strong> – text-to-code ratio, text-to-scripts ratio, and ad-marker density. The practical fail floor is <strong>8%</strong>; the 8–15% band is now informational, because modern JS-rendered sites (Astro, Next.js, Tailwind) sit there naturally from utility-class markup.</li>
+                  <li><strong>Semantic structure</strong> – H1 count, heading order, list and table markup, and paragraph length.</li>
                   <li><strong>Answerability signals</strong> – clear definitions, direct answers in the first screen, and question‑shaped headings.</li>
                   <li><strong>CMS readiness</strong> – whether the platform you're on (WordPress, Shopify, Wix, Framer, etc.) supports the recommended fixes.</li>
                 </ul>
@@ -727,7 +741,7 @@
                     <span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform duration-300">▼</span>
                   </summary>
                   <div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed prose prose-orange dark:prose-invert">
-                    <p>NUSA is a free, browser‑based audit tool that runs three audits on any URL at the same time: <strong>Quit Risk</strong> (UX friction and bounce prediction), <strong>Lighthouse Plus</strong> (performance, accessibility, Core Web Vitals and agent‑readiness), and <strong>AEO Performance</strong> (AI crawler render fidelity, schema parsing and content extractability). You get three 0–100 scores, module breakdowns, and plain‑English fixes in one view.</p>
+                    <p>NUSA is a free, browser‑based audit tool that runs three audits on any URL at the same time: <strong>Quit Risk</strong> (UX friction and bounce prediction), <strong>Lighthouse Plus</strong> (performance, accessibility, Core Web Vitals and agent‑readiness), and <strong>AEO Performance</strong> (AI crawler render fidelity, DOM stability, schema parsing and content extractability). You get three 0–100 scores, module breakdowns, informational signals that never penalise you, and plain‑English fixes in one view.</p>
                   </div>
                 </details>
 

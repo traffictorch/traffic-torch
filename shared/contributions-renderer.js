@@ -77,7 +77,7 @@ function card(c, { showToolHeader = true } = {}) {
     </li>`).join('');
 
   const header = showToolHeader
-    ? `<p class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-3 font-bold">Contributions to ${c.tools.length} tool${c.tools.length === 1 ? '' : 's'}</p>`
+    ? `<p class="text-xs uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-3 font-bold">Contributions</p>`
     : '';
 
   const linkButtons = links.map(l =>

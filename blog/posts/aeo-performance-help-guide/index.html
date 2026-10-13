@@ -94,7 +94,7 @@
           "height": 630
         },
         "datePublished": "2026-09-12T10:00:00+11:00",
-        "dateModified": "2026-10-12T09:00:00+11:00",
+        "dateModified": "2026-10-13T09:00:00+11:00",
         "author": { "@id": "https://traffictorch.net/#author" },
         "publisher": { "@id": "https://traffictorch.net/#organization" },
         "breadcrumb": { "@id": "https://traffictorch.net/blog/posts/aeo-performance-help-guide/#breadcrumb" },
@@ -163,7 +163,7 @@
           "height": 630
         },
         "datePublished": "2026-09-12T10:00:00+11:00",
-        "dateModified": "2026-10-12T09:00:00+11:00",
+        "dateModified": "2026-10-13T09:00:00+11:00",
         "author": { "@id": "https://traffictorch.net/#author" },
         "publisher": { "@id": "https://traffictorch.net/#organization" },
         "mainEntityOfPage": { "@id": "https://traffictorch.net/blog/posts/aeo-performance-help-guide/#webpage" },
@@ -738,8 +738,8 @@
                   <ol class="list-decimal pl-6 mt-6 space-y-4 text-lg">
                     <li><strong>robots.txt analysis:</strong> Fetches robots.txt and checks for disallow rules targeting named crawlers: Googlebot, Applebot, OAI-SearchBot, ChatGPT-User, PerplexityBot, Claude-Web, GPTBot, ClaudeBot, anthropic-ai, CCBot, Bytespider. It also reads the <code>Google-Extended</code> token separately, since Google-Extended is a robots.txt token rather than a crawler — blocking it does not stop Googlebot; it only disables Gemini training and grounding for the site. If a wildcard <code>User-agent: * / Disallow: /</code> block exists, it is reported as the single root cause rather than as many separate bot blocks, because the wildcard already implies every named bot is blocked.</li>
                     <li><strong>Meta robots check:</strong> Scans for meta robots tags that include noindex or nofollow.</li>
-                    <li><strong>Cookie wall detection:</strong> Looks for common consent manager markers (OneTrust, CookieBot, Osano, CookieYes).</li>
-                    <li><strong>Infinite scroll detection:</strong> Looks for scroll-based content loading patterns without visible pagination.</li>
+<li><strong>Cookie wall detection:</strong> Strips scripts, styles, and HTML comments first, then checks for either a named consent provider (OneTrust, CookieBot, Osano, CookieYes, etc.) or a real DOM element whose id/class/aria-label matches a cookie/consent pattern. A code comment or analytics config mentioning "cookie" no longer triggers this.</li>
+<li><strong>Infinite scroll detection:</strong> Requires a named library (react-infinite-scroll, useInfiniteQuery, etc.) or a scroll/observer handler that runs a fetch within 600 characters AND no pagination markup. A bare scroll listener for a sticky header, scroll-progress bar, or counter animation no longer triggers this.</li>
                     <li><strong>JS-gated content detection:</strong> Checks for very low text in raw HTML without a <code>&lt;noscript&gt;</code> fallback.</li>
                     <li><strong>Hash routing detection:</strong> Checks for hashchange or location.hash usage.</li>
                   </ol>
@@ -750,8 +750,9 @@
                     <li>One AI crawler blocked: -12 points each (capped at -40).</li>
                     <li>Wildcard block at root: -40 points.</li>
                     <li>noindex directive: -40 points.</li>
-                    <li>Cookie wall detected: -5 points.</li>
-                    <li>Infinite scroll or hash routing: -10 points each.</li>
+<li>Cookie wall detected: -5 points.</li>
+<li>Infinite scroll (named library detected): -10 points. Bare scroll/observer patterns without a library are informational only — no score penalty.</li>
+<li>Hash routing: -10 points.</li>
                   </ul>
                 </div>
               </div>
@@ -805,14 +806,16 @@
                     <li><strong>Absolute text floor:</strong> Flags pages with fewer than 800 or 300 characters of visible text.</li>
                   </ol>
                   <p class="mt-6">Scoring:</p>
-                  <ul class="list-disc list-inside mt-4 space-y-3 text-lg">
-                    <li>30%+ text-to-code: 100 points.</li>
-                    <li>22–29%: 90 points.</li>
-                    <li>15–21%: 75 points.</li>
-                    <li>10–14%: 60 points.</li>
-                    <li>5–9%: 40 points.</li>
-                    <li>Below 5%: 20 points.</li>
-                  </ul>
+<ul class="list-disc list-inside mt-4 space-y-3 text-lg">
+  <li>30%+ text-to-code: 100 points.</li>
+  <li>22–29%: 92 points.</li>
+  <li>15–21%: 82 points.</li>
+  <li>10–14%: 72 points.</li>
+  <li>8–9%: 60 points.</li>
+  <li>5–7%: 42 points.</li>
+  <li>Below 5%: 22 points.</li>
+</ul>
+<p class="mt-6"><strong>Fail threshold: 8%.</strong> The 8–15% band now shows an informational hint instead of a failure, because modern JS-rendered sites (Astro, Next.js, Tailwind) naturally sit at 8–14% due to utility-class markup inflating HTML weight.</p>
                 </div>
               </div>
 
@@ -1145,7 +1148,7 @@
                 <p class="text-base text-gray-800 dark:text-gray-200 italic">Continuously updated with the latest Google guidelines, AI crawler behaviours (GPTBot, ClaudeBot, PerplexityBot), ranking factor studies, and real-world headless render data — as of October 2026.</p>
                 <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6 space-y-1">
                   <p>Guide originally published: 2026-09-12</p>
-                  <p>Last updated: 2026-10-12 09:00 AEDT</p>
+                  <p>Last updated: 2026-10-13 09:00 AEDT</p>
                 </div>
               </div>
             </div>

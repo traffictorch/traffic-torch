@@ -47,7 +47,7 @@ function withSiteContributors(perTool) {
   for (const t of TOOLS) {
     const existing = byTool.get(t.slug) || [];
     const existingKeys = new Set(existing.map(keyOf));
-    out.push(...existing);
+    // Site-wide contributors first so they lead the merged card order.
     for (const s of siteContributors) {
       if (existingKeys.has(keyOf(s))) continue;
       out.push({
@@ -55,6 +55,8 @@ function withSiteContributors(perTool) {
         _tool: { tool: t.name, slug: t.slug, contribution: s.contribution || '' }
       });
     }
+    // Then tool-specific contributors.
+    out.push(...existing);
   }
   return out;
 }

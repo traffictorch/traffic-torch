@@ -369,6 +369,13 @@
        data-title="Top Contributors"></div>
 </section>
 
+        <section id="nusa-contributors" class="max-w-6xl mx-auto my-16 px-4">
+          <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500">
+            Contributors
+          </h2>
+          <div id="contributions-section"></div>
+        </section>
+
      <!-- GA4 & GSC Dashboards -->
 <div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
@@ -1021,6 +1028,13 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="/main.js?v=1.2" type="module"></script>
   <script src="/nusa-tool/js/nusa.js?v=1.6" type="module"></script>
+  <script src="/shared/avatar.js?v=1.0"></script>
+  <script type="module">
+  import { renderContributions } from '/nusa-tool/contributions.js';
+  document.addEventListener('DOMContentLoaded', () => {
+    renderContributions('contributions-section');
+  });
+</script>
   <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
 
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b5ec7016f72456a9b4484d5dc706b79","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
