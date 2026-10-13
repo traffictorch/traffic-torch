@@ -71,6 +71,15 @@
         letter-spacing: 0.04em !important;
         line-height: 1.1 !important;
       }
+      /* ── Desktop tweaks: role pill ── */
+@media (min-width: 640px) {
+  .role-pill {
+    padding: 0.35rem 0.85rem !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.05em !important;
+    margin-left: 0.25rem !important; /* Adds a little space between @username and the pill */
+  }
+}
       .profile-info > p {
         row-gap: 0.35rem !important;
         line-height: 1.5 !important;
@@ -209,7 +218,7 @@
                     </svg>
                   </template>
                 </h1>
-                <p class="mt-4 text-gray-500 text-lg flex items-center gap-2 flex-wrap">
+<p class="mt-4 text-gray-500 text-lg flex items-center gap-2 flex-wrap md:flex-nowrap">
                   <span>@<span x-text="profile.username"></span></span>
                   <span class="role-pill inline-flex items-center gap-1.5 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-500">
                     <span class="inline-block w-1.5 h-1.5 rounded-full bg-orange-500"></span>
