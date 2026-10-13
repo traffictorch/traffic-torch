@@ -89,21 +89,8 @@
     /* ── Desktop tweaks: role pill ── */
     @media (min-width: 640px) {
       .role-pill {
-        white-space: nowrap !important; /* Prevents the text from stacking */
-        flex-shrink: 0 !important;      /* Prevents the pill from being squeezed */
-      }
-    }
-      .profile-info > p {
-        row-gap: 0.35rem !important;
-        line-height: 1.5 !important;
-      }
-      .profile-info .meta-item {
-        margin: 0 0.5rem !important;
-        line-height: 1.8 !important;
-        padding: 0.15rem 0 !important;
-      }
-      .profile-info .meta-item .emoji {
-        margin-right: 0.35rem !important;
+        white-space: nowrap !important; /* Prevents text stacking */
+        flex-shrink: 0 !important;      /* Prevents squeezing */
       }
     }
   </style>
@@ -231,9 +218,9 @@
                     </svg>
                   </template>
                 </h1>
-<span class="role-pill inline-flex items-center gap-1.5 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-500 whitespace-nowrap shrink-0">
+                <p class="mt-4 text-gray-500 text-lg flex items-center gap-2 flex-wrap md:flex-nowrap">
                   <span>@<span x-text="profile.username"></span></span>
-                  <span class="role-pill inline-flex items-center gap-1.5 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-500">
+                  <span class="role-pill inline-flex items-center gap-1.5 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-500 whitespace-nowrap shrink-0">
                     <span class="inline-block w-1.5 h-1.5 rounded-full bg-orange-500"></span>
                     <span x-text="roleLabel(profile.role)"></span>
                   </span>
