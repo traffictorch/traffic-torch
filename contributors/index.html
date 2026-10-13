@@ -164,7 +164,7 @@
     <form id="contribution-form" class="space-y-4">
       <!-- Name/Handle -->
       <div>
-        <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Your Name / GitHub Handle</label>
+        <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Your Name / Username</label>
         <input type="text" id="contrib-name" required maxlength="100" placeholder="e.g., JohnDoe or @johndoe" class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
       </div>
 
@@ -177,14 +177,28 @@
       <!-- Tool Name -->
       <div>
         <label class="block text-sm font-semibold mb-1 text-gray-700 dark:text-gray-300">Which tool is this regarding?</label>
-        <select id="contrib-tool" required class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
-          <option value="">Select a tool...</option>
-          <option value="keyword-tool">Keyword Placement Tool</option>
-          <option value="seo-ux-tool">SEO + UX Tool</option>
-          <option value="local-seo-tool">Local SEO Tool</option>
-          <option value="ai-audit-tool">AI Content Audit Tool</option>
-          <option value="other">Other / General Feedback</option>
-        </select>
+<select id="contrib-tool" required>
+  <option value="">Select a tool...</option>
+  <option value="nusa">NUSA (Homepage)</option>
+  <option value="ofux-tool">OFUX Tool</option>
+  <option value="lighthouse-plus-tool">Lighthouse Plus</option>
+  <option value="topical-authority-audit-tool">Topical Authority</option>
+  <option value="seo-entity-extractor-tool">SEO Entity Extractor</option>
+  <option value="seo-ux-tool">SEO + UX Tool</option>
+  <option value="schema-generator">Schema Generator</option>
+  <option value="local-seo-tool">Local SEO Tool</option>
+  <option value="seo-intent-tool">SEO Intent Tool</option>
+  <option value="product-seo-tool">Product SEO Tool</option>
+  <option value="aeo-performance-tool">AEO Performance</option>
+  <option value="ai-search-optimization-tool">AI Search Optimization</option>
+  <option value="ai-voice-search-tool">AI Voice Search</option>
+  <option value="ai-audit-tool">AI Audit Tool</option>
+  <option value="quit-risk-tool">Quit Risk Tool</option>
+  <option value="keyword-research-tool">Keyword Research</option>
+  <option value="keyword-tool">Keyword Placement</option>
+  <option value="keyword-vs-tool">Keyword VS Tool</option>
+  <option value="other">Other / General Feedback</option>
+</select>
       </div>
 
       <!-- Contribution Details (Increased to 6000) -->
@@ -396,7 +410,8 @@
 
       try {
         // Replace with your actual API endpoint
-        const res = await fetch('/api/contributions', {
+const WORKER_URL = 'https://traffic-torch-auth.traffictorch.workers.dev';
+const res = await fetch(`${WORKER_URL}/api/contributions`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

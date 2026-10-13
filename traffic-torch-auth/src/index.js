@@ -1966,12 +1966,15 @@ async function handleFeedRoutes(request, env, url) {
   if (url.pathname === '/api/contributions' && request.method === 'POST') {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
+    
     const type = ['bug', 'feature', 'feedback', 'docs'].includes(body.type) ? body.type : 'bug';
     const subject = String(body.subject || '').slice(0, 160);
-    const message = String(body.message || '').trim().slice(0, 6000);
+    const message = String(body.message || '').trim().slice(0, 6000); // ✅ INCREASED TO 6000
     const tool = String(body.tool || '').slice(0, 60);
     const pageUrl = String(body.page_url || '').slice(0, 500);
+    
     if (message.length < 10) return feedJson({ error: 'Please describe the issue (10+ chars)' }, 400);
+    
     const now = Date.now();
     const ins = await env.MY_BINDING.prepare(
       `INSERT INTO contributions (user_id, type, subject, message, tool, page_url, status, points, created_at)
@@ -1980,11 +1983,44 @@ async function handleFeedRoutes(request, env, url) {
 
     const contributionId = ins.meta?.last_row_id || null;
     await awardPoints(env, { userId: user.id, type: 'contribution', points: POINTS_CONTRIBUTION, referenceId: contributionId });
-    await logActivity(env, user.id, 'contribution', {
-      targetId: contributionId,
-      targetLabel: subject || type,
-      link: '/contributions/'
-    });
+
+    // ✅ ADDED: Send email via Resend
+    try {
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${env.RESEND_API_KEY}`
+        },
+        body: JSON.stringify({
+          from: 'Traffic Torch <support@traffictorch.net>',
+          to: 'admin@traffictorch.net', // Replace with your admin email
+          subject: `New Contribution: ${subject || type}`,
+          html: `
+            <h2>New Contribution Submitted</h2>
+            <p><strong>User:</strong> ${user.name || user.username} (${user.email})</p>
+            <p><strong>Type:</strong> ${type}</p>
+            <p><strong>Tool:</strong> ${tool || 'N/A'}</p>
+            <p><strong>Page URL:</strong> ${pageUrl || 'N/A'}</p>
+            <hr>
+            <p><strong>Details:</strong></p>
+            <p style="white-space: pre-wrap; font-family: monospace;">${message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+          `
+        })
+      });
+    } catch (emailErr) {
+      console.error('Failed to send contribution email:', emailErr.message);
+    }
+
+    // ✅ ADDED: Insert into Beam Inbox (notifications table)
+    try {
+      await env.MY_BINDING.prepare(
+        `INSERT INTO notifications (user_id, type, message, link, is_read, created_at)
+         VALUES (?, 'contribution', ?, '/contributors/', 0, ?)`
+      ).bind(1, `New ${type} contribution from ${user.name || user.username}: ${subject || 'No subject'}`, now).run();
+    } catch (notifErr) {
+      console.error('Failed to add to Beam Inbox:', notifErr.message);
+    }
 
     const total = await getUserTotalPoints(env, user.id);
     const countRow = await env.MY_BINDING.prepare(
