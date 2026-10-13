@@ -1,3 +1,5 @@
+import { countSyllables, detectLang, fleschLike } from '/shared/readability-lang.js';
+
 export function analyzeContentQuality(html, doc) {
     let score = 100;
     const issues = [];
@@ -24,27 +26,16 @@ export function analyzeContentQuality(html, doc) {
 
     if (wordCount >= 50) {
       const sentences = Math.max(1, bodyText.split(/[.!?]+/).filter(s => s.trim()).length);
-      let syllableCount = 0;
-      words.forEach(word => {
-        let clean = word.toLowerCase().replace(/[^a-z]/g, '');
-        if (clean.length === 0) return;
-        if (clean.length <= 3) {
-          syllableCount += 1;
-          return;
-        }
-        let matches = clean.match(/[aeiouy]+/g);
-        syllableCount += matches ? matches.length : 1;
-        if (clean.endsWith('es') || clean.endsWith('ed')) {
-          syllableCount = Math.max(1, syllableCount - 1);
-        }
-      });
+      const lang = detectLang(bodyText);
+      const syllableCount = countSyllables(bodyText, lang);
       const avgSentenceLength = wordCount / sentences;
       const avgSyllables = syllableCount / wordCount;
-      const fleschScore = Math.round(206.835 - 1.015 * avgSentenceLength - 84.6 * avgSyllables);
-      if (fleschScore < 60) {
+      const fr = fleschLike(avgSentenceLength, avgSyllables, lang);
+      const fleschScore = fr.measured ? Math.round(fr.ease) : null;
+      if (fleschScore !== null && fleschScore < 60) {
         score -= 20;
         issues.push({
-          issue: `Readability needs improvement (Flesch score: ${fleschScore})`,
+          issue: `Readability needs improvement (${fr.formula} score: ${fleschScore})`,
           fix: 'Complex sentences and long words can make content hard to read, especially on mobile. Use shorter sentences, common words, active voice, and break text into small paragraphs. Clear, easy-to-read content keeps visitors longer and improves overall engagement.'
         });
       }
