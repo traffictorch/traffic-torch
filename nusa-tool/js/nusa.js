@@ -307,6 +307,7 @@ function getUXContent(doc, metrics, auditedUrl) {
   const topLevelItems = primaryNav ? primaryNav.querySelectorAll(':scope > ul > li, :scope > li').length : 0;
 
   return {
+    htmlLang: (doc.documentElement && doc.documentElement.getAttribute('lang')) || '',
     fullText, wordCount: countWords(fullText),
     linkCount: links.length,
     externalLinkCount: countExternalLinks(links, auditedUrl),
