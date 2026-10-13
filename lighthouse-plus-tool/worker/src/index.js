@@ -486,9 +486,28 @@ function analyzeBestPractices(bm, html, headers, url) {
   if (url && url.startsWith('http://')) { failed.push('Page served over HTTP — not HTTPS'); score -= 25; }
   else if (url && url.startsWith('https://')) signals.push({ label: 'HTTPS in use', pass: true });
 
-  const errs = (bm.consoleErrors?.length || 0) + (bm.pageErrors?.length || 0);
-  if (errs > 0) { failed.push(`${errs} console error(s) during load`); score -= Math.min(errs * 5, 25); }
-  else if (bm.capturedAt) signals.push({ label: 'No console errors', pass: true });
+  const allErrors = [
+    ...(bm.consoleErrors || []).map(e => ({ text: e, source: 'console' })),
+    ...(bm.pageErrors || []).map(e => ({ text: e, source: 'page' }))
+  ];
+  const envErrors = allErrors.filter(e =>
+    /about:blank|^data:|\.workers\.dev|cloudflare/i.test(e.text)
+  );
+  const pageErrors = allErrors.filter(e => !envErrors.includes(e));
+
+  if (pageErrors.length > 0) {
+    score -= Math.min(pageErrors.length * 5, 25);
+    const previews = pageErrors.slice(0, 3).map(e => `[${e.source}] ${String(e.text).slice(0, 200)}`);
+    failed.push(`${pageErrors.length} console error(s) during load — ${previews.join(' | ')}`);
+  } else if (envErrors.length > 0 && bm.capturedAt) {
+    signals.push({
+      label: `${envErrors.length} JS error(s) from audit environment, not your page`,
+      pass: true,
+      informational: true
+    });
+  } else if (bm.capturedAt) {
+    signals.push({ label: 'No console errors', pass: true });
+  }
 
   if (bm.failedRequests?.length) { failed.push(`${bm.failedRequests.length} failed network request(s)`); score -= Math.min(bm.failedRequests.length * 3, 15); }
   else if (bm.capturedAt) signals.push({ label: 'No failed network requests', pass: true });

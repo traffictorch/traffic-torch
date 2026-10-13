@@ -290,11 +290,26 @@ function analyzeRenderFidelity(rawHtml, renderedHtml, bm) {
   else if (removedPct > 0.20) score -= 10;
 
   if (bm) {
-    const totalErrors = (bm.consoleErrors?.length || 0) + (bm.pageErrors?.length || 0);
-    if (totalErrors > 0) {
-      failed.push(`${totalErrors} JavaScript error(s) during render`);
-      score -= Math.min(totalErrors * 5, 30);
-      signals.push({ label: `${totalErrors} console/page error(s)`, pass: false });
+    const allErrors = [
+      ...(bm.consoleErrors || []).map(e => ({ text: e, source: 'console' })),
+      ...(bm.pageErrors || []).map(e => ({ text: e, source: 'page' }))
+    ];
+    const envErrors = allErrors.filter(e =>
+      /about:blank|^data:|\.workers\.dev|cloudflare/i.test(e.text)
+    );
+    const pageErrors = allErrors.filter(e => !envErrors.includes(e));
+
+    if (pageErrors.length > 0) {
+      score -= Math.min(pageErrors.length * 5, 30);
+      const previews = pageErrors.slice(0, 3).map(e => `[${e.source}] ${String(e.text).slice(0, 200)}`);
+      failed.push(`${pageErrors.length} JavaScript error(s) during render — ${previews.join(' | ')}`);
+      signals.push({ label: `${pageErrors.length} page JS error(s) — see finding for messages`, pass: false });
+    } else if (envErrors.length > 0) {
+      signals.push({
+        label: `${envErrors.length} JS error(s) from audit environment, not your page`,
+        pass: true,
+        informational: true
+      });
     } else {
       signals.push({ label: 'No JS errors during render', pass: true });
     }
@@ -377,17 +392,52 @@ function analyzeContentExtractability(html) {
   const totalBlocks = divCount + semanticCount + pCount + liCount;
   const semanticRatio = totalBlocks > 0 ? semanticCount / totalBlocks : 0;
 
-  if (semanticRatio >= 0.20)      score = 100;
-  else if (semanticRatio >= 0.15) score = 85;
-  else if (semanticRatio >= 0.10) score = 70;
-  else if (semanticRatio >= 0.05) score = 55;
-  else                            score = 35;
+  // ── Content findability (replaces ratio-as-score) ──
+  // The div-to-semantic ratio punishes utility-CSS wrappers (Tailwind,
+  // CSS Modules, styled-components) that carry no semantic meaning.
+  // No AI provider documents div ratio as a signal. What matters is
+  // whether the primary content is actually findable.
+  let contentFindability = 100;
+  const findings = [];
 
-  signals.push({ label: `Semantic HTML ratio: ${(semanticRatio * 100).toFixed(1)}%`, pass: semanticRatio >= 0.15 });
-  if (semanticRatio < 0.10) failed.push(`Low semantic HTML usage (${(semanticRatio * 100).toFixed(1)}%) — div-soup hurts AI extraction`);
+  const hasMainOrArticle = /<(?:main|article)\b/i.test(html);
+  if (!hasMainOrArticle) {
+    findings.push('primary content is not wrapped in <main> or <article>');
+    contentFindability -= 35;
+  }
 
-  if (divCount > 300)      { failed.push(`Extreme div count (${divCount})`); score -= 15; }
-  else if (divCount > 200) { failed.push(`High div count (${divCount})`); score -= 8; }
+  const h1CountLocal = (html.match(/<h1\b/gi) || []).length;
+  if (h1CountLocal === 0) {
+    findings.push('no <h1> in raw HTML');
+    contentFindability -= 25;
+  } else if (h1CountLocal > 1) {
+    findings.push(`${h1CountLocal} <h1> elements`);
+    contentFindability -= 15;
+  }
+
+  const paragraphInMain = (() => {
+    const m = html.match(/<(?:main|article)\b[^>]*>([\s\S]*?)<\/(?:main|article)>/i);
+    if (!m) return 0;
+    return (m[1].match(/<p\b/gi) || []).length;
+  })();
+  if (hasMainOrArticle && paragraphInMain < 3) {
+    findings.push(`only ${paragraphInMain} paragraph(s) inside <main>/<article>`);
+    contentFindability -= 20;
+  }
+
+  score = Math.max(0, contentFindability);
+
+  signals.push({
+    label: `Semantic HTML ratio: ${(semanticRatio * 100).toFixed(1)}%`,
+    pass: semanticRatio >= 0.10,
+    informational: true
+  });
+
+  if (findings.length) {
+    failed.push(`Content findability issues: ${findings.join('; ')}`);
+  } else {
+    signals.push({ label: 'Primary content findable via main/article, one H1, ≥3 paragraphs', pass: true });
+  }
 
   const h1Count = (html.match(/<h1\b/gi) || []).length;
   if (h1Count === 0)    { failed.push('No H1 found'); score -= 15; }
@@ -397,8 +447,22 @@ function analyzeContentExtractability(html) {
   if (pCount < 3)       { failed.push(`Only ${pCount} <p> tags`); score -= 10; }
   else if (pCount >= 10) signals.push({ label: `${pCount} paragraph tags`, pass: true });
 
-  const bigInline = (html.match(/<script(?![^>]*\bsrc=)(?![^>]*application\/ld\+json)[^>]*>[\s\S]{500,}?<\/script>/gi) || []).length;
-  if (bigInline > 3) { failed.push(`${bigInline} large inline scripts may hide content`); score -= 10; }
+  const inlineScripts = html.match(/<script(?![^>]*\bsrc=)(?![^>]*application\/ld\+json)[^>]*>[\s\S]{500,}?<\/script>/gi) || [];
+  const bigInline = inlineScripts.length;
+  if (bigInline > 3) {
+    // Gate on evidence: only a failure if the raw HTML actually misses content
+    // or if a hydration payload carries page text. Small component scripts
+    // (menu, counters, chat) do not hide anything.
+    const hydrationPayload = /__NEXT_DATA__|__NUXT__|__INITIAL_STATE__|__remixContext|window\.__APOLLO_STATE__|window\.__PRELOADED_STATE__/i.test(html);
+    const h1Missing = !/<h1\b/i.test(html);
+    const firstParaMissing = !/<p\b[^>]*>[\s\S]{30,}?<\/p>/i.test(html);
+    if (hydrationPayload || h1Missing || firstParaMissing) {
+      failed.push(`${bigInline} large inline scripts may hide content`);
+      score -= 10;
+    } else {
+      signals.push({ label: `${bigInline} inline scripts — none carry page content`, pass: true });
+    }
+  }
 
   return mod('Content Extractability', score, { semanticRatio: +semanticRatio.toFixed(4), divCount, h1Count, pCount, semanticCount }, signals, failed);
 }

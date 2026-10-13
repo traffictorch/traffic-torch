@@ -388,7 +388,8 @@ function getUXContent(doc, metrics, auditedUrl) {
       'a[href*="contact"], a[href*="book"], a[href*="demo"], a[href*="trial"], a[href*="buy"], ' +
       'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
       '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
-    ).length
+    ).length,
+    htmlLang: (doc.documentElement && doc.documentElement.getAttribute('lang')) || ''
   };
 }
 

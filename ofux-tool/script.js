@@ -454,6 +454,7 @@ function getUXContent(doc, metrics, auditedUrl) {
       'a[href*="get"], a[href*="start"], button, [role="button"], .btn, .button, ' +
       '[class*="cta"], [id*="cta"], [class*="button"], [class*="CallToAction"]'
     ).length,
+    htmlLang: (doc.documentElement && doc.documentElement.getAttribute('lang')) || '',
     doc,
     title: doc.title || '',
     renderedLoadTime: null,
