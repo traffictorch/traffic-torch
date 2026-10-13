@@ -439,7 +439,7 @@ async function runAudit(rawUrl) {
     return;
   }
 
-  narrate(`Rendered + scored. Parsing DOM for the UX pass.`);
+  narrate(`SEO & AEO done. Fetching rendered DOM for UX…`);
   setProgress('running UX pass…');
   await sleep(80);
 
