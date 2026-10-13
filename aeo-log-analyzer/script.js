@@ -215,17 +215,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // 2. Parse log
       progress.textContent = 'Parsing log file…';
-      const { entries, format, totalLines, parsed } = await streamLogFile(file, {
+      const { entries, format, totalLines, parsed, parsedWithUa, firstLine } = await streamLogFile(file, {
         onProgress: ({ line, total, parsed }) => {
           progress.textContent = `Parsing… ${Math.floor((line / total) * 100)}% · ${parsed.toLocaleString()} entries`;
         }
       });
 
       if (format === FORMATS.UNKNOWN) {
-        throw new Error('Could not detect log format. Supported: Apache combined, Nginx combined, Nginx JSON, Cloudflare CSV.');
+        throw new Error(
+          `Couldn't recognise this log format.\n\n` +
+          `First non-empty line of your file:\n${firstLine}\n\n` +
+          `Supported: Apache combined, Nginx combined, Apache vhost_combined, Nginx JSON, Cloudflare CSV.`
+        );
       }
       if (entries.length === 0) {
-        throw new Error('No valid log entries found. Check the file format.');
+        throw new Error(
+          `No lines in this file parsed as access-log entries.\n\n` +
+          `First non-empty line of your file:\n${firstLine}`
+        );
+      }
+      if (parsedWithUa === 0) {
+        throw new Error(
+          `Parsed ${parsed.toLocaleString()} lines but couldn't find a user-agent field in any of them.\n\n` +
+          `First non-empty line of your file:\n${firstLine}\n\n` +
+          `Bot detection needs the UA. Check the format includes a quoted UA field.`
+        );
       }
 
       // 3. Aggregate
@@ -233,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const buckets = aggregateByBot(entries, ipLists);
 
       if (buckets.length === 0) {
-        throw new Error('No bot hits found in this log. Try a log that covers a longer period, or check that User-Agent lines are present.');
+        throw new Error(`Parsed ${parsed.toLocaleString()} lines with user agents. No known crawler user agents matched.`);
       }
 
       // 4. Render
