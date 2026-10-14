@@ -40,6 +40,24 @@
   .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.4); border-radius: 2px; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 
+  @media (max-width: 639px) {
+    [data-feed-cats],
+    [data-composer-cats] {
+      flex-wrap: wrap !important;
+      overflow-x: visible !important;
+    }
+    [data-feed-cats] > button:nth-of-type(-n+2),
+    [data-composer-cats] > button:nth-of-type(-n+2) {
+      flex: 0 0 calc(50% - 0.1875rem) !important;
+      min-width: 0 !important;
+    }
+    [data-feed-cats] > button:nth-of-type(n+3),
+    [data-composer-cats] > button:nth-of-type(n+3) {
+      flex: 0 0 calc(33.333% - 0.25rem) !important;
+      min-width: 0 !important;
+    }
+  }
+
   .points-badge {
     display: inline-flex;
     align-items: center;
@@ -1005,12 +1023,12 @@
               <span class="flex-shrink-0 text-orange-500 font-bold text-lg group-hover:translate-x-1 transition-transform">→</span>
             </button>
             <div x-show="composer.open" x-cloak class="space-y-4">
-              <div class="flex items-center justify-between">
+              <div class="flex flex-wrap items-center justify-between gap-1">
                 <div class="flex items-center gap-2">
                   <span class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 text-white flex items-center justify-center text-sm font-bold">✏️</span>
                   <span class="text-sm font-bold" x-text="composer.editingId ? 'Edit post' : 'New post'"></span>
                 </div>
-                <span class="text-[10px] uppercase tracking-wider font-bold text-gray-400">Markdown ready</span>
+                <span class="text-[10px] uppercase tracking-wider font-bold text-gray-400 w-full sm:w-auto text-left sm:text-right">Markdown ready</span>
               </div>
 
               <div x-show="!composer.editingId" class="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-gray-800/60">
@@ -1039,12 +1057,14 @@
                      placeholder="Title — what's this about?"
                      class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-base font-bold outline-none focus:ring-2 focus:ring-orange-500">
               <div class="flex gap-2">
+                <div data-composer-cats class="flex flex-wrap gap-1.5 sm:gap-2">
                 <template x-for="cat in ['casual','websites','ux','seo','aeo']" :key="'comp-' + cat">
                   <button type="button" @click="composer.category = cat"
                           class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all duration-150"
                           :class="composer.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-md shadow-orange-500/30 scale-105' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-orange-500'"
                           x-text="cat"></button>
                 </template>
+              </div>
               </div>
               <div class="flex items-center gap-1 mb-1">
                 <button type="button" @click="composer.preview = false"
@@ -1160,7 +1180,7 @@
               </div>
             </div>
           </div>
-            <div class="glass rounded-2xl p-2 sm:p-3 mb-4 flex gap-1 sm:gap-2 overflow-x-auto scrollbar-thin">
+            <div data-feed-cats class="glass rounded-2xl p-2 sm:p-3 mb-4 flex gap-1 sm:gap-2 overflow-x-auto scrollbar-thin">
               <template x-for="cat in ['casual','websites','ux','seo','aeo']" :key="cat">
                 <button @click="setFeedCategory(cat)"
                         class="flex-shrink-0 sm:flex-1 min-w-[80px] py-2 px-2 rounded-lg text-xs sm:text-sm font-bold uppercase tracking-wide transition whitespace-nowrap"
@@ -2086,12 +2106,12 @@
               <span class="flex-shrink-0 text-orange-500 font-bold text-lg group-hover:translate-x-1 transition-transform">→</span>
             </button>
             <div x-show="composer.open" x-cloak class="space-y-4">
-              <div class="flex items-center justify-between">
+              <div class="flex flex-wrap items-center justify-between gap-1">
                 <div class="flex items-center gap-2">
                   <span class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 text-white flex items-center justify-center text-sm font-bold">✏️</span>
                   <span class="text-sm font-bold" x-text="composer.editingId ? 'Edit post' : 'New post'"></span>
                 </div>
-                <span class="text-[10px] uppercase tracking-wider font-bold text-gray-400">Markdown ready</span>
+                <span class="text-[10px] uppercase tracking-wider font-bold text-gray-400 w-full sm:w-auto text-left sm:text-right">Markdown ready</span>
               </div>
 
               <div x-show="!composer.editingId" class="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-gray-800/60">
@@ -2120,12 +2140,14 @@
                      placeholder="Title — what's this about?"
                      class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-base font-bold outline-none focus:ring-2 focus:ring-orange-500">
               <div class="flex gap-2">
+                <div data-composer-cats class="flex flex-wrap gap-1.5 sm:gap-2">
                 <template x-for="cat in ['casual','websites','ux','seo','aeo']" :key="'comp-' + cat">
                   <button type="button" @click="composer.category = cat"
                           class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all duration-150"
                           :class="composer.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-md shadow-orange-500/30 scale-105' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-orange-500'"
                           x-text="cat"></button>
                 </template>
+              </div>
               </div>
               <div class="flex items-center gap-1 mb-1">
                 <button type="button" @click="composer.preview = false"
@@ -2241,7 +2263,7 @@
               </div>
             </div>
           </div>
-            <div class="glass rounded-2xl p-2 sm:p-3 mb-4 flex gap-1 sm:gap-2 overflow-x-auto scrollbar-thin">
+            <div data-feed-cats class="glass rounded-2xl p-2 sm:p-3 mb-4 flex gap-1 sm:gap-2 overflow-x-auto scrollbar-thin">
               <template x-for="cat in ['casual','websites','ux','seo','aeo']" :key="cat">
                 <button @click="setFeedCategory(cat)"
                         class="flex-shrink-0 sm:flex-1 min-w-[80px] py-2 px-2 rounded-lg text-xs sm:text-sm font-bold uppercase tracking-wide transition whitespace-nowrap"
