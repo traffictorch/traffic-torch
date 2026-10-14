@@ -2,13 +2,13 @@
 
 import { htmlHeaders, xmlHeaders, textHeaders, pngHeaders } from './lib/cache.js';
 import { handleProfile as handleProfileReal } from './handlers/profile.js';
-import { handleTorch as handleTorchReal } from './handlers/torch.js';
+import { handleTorch as handleTorchReal, TORCH_PAGE_JS } from './handlers/torch.js';
 import { handleCommunity as handleCommunityReal } from './handlers/community.js';
 import { handleToolFeed as handleToolFeedReal } from './handlers/toolFeed.js';
 import { handleSitemapIndex as handleSitemapIndexReal, handleSitemap as handleSitemapReal } from './handlers/sitemap.js';
 import { handleLlms as handleLlmsReal } from './handlers/llms.js';
 import { handleGlobalRss as handleGlobalRssReal, handleUserRss as handleUserRssReal, handleToolRss as handleToolRssReal } from './handlers/rss.js';
-import { handleOgTorch as handleOgTorchReal, handleOgProfile as handleOgProfileReal } from './handlers/og.js';
+import { handleOgTorch as handleOgTorchReal, handleOgProfile as handleOgProfileReal, handleOgDiscussion as handleOgDiscussionReal } from './handlers/og.js';
 import { handlePurge as handlePurgeReal } from './handlers/purge.js';
 
 export default {
@@ -38,6 +38,8 @@ export default {
 
       if (path.startsWith('/og/torch/')) return handleOgTorchReal(request, env);
       if (path.startsWith('/og/profile/')) return handleOgProfileReal(request, env);
+      if (path.startsWith('/og/discussion/')) return handleOgDiscussionReal(request, env);
+      if (path === '/torch-page.js') return new Response(TORCH_PAGE_JS, { headers: { 'Content-Type': 'application/javascript; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
 
 
       if (path.startsWith('/torcher/')) return handleProfileReal(request, env);

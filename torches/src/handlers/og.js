@@ -148,6 +148,92 @@ function profileCard(profile, username) {
   ]);
 }
 
+function stripMdForOg(text, max = 150) {
+  if (!text) return '';
+  const t = String(text)
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*>\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return truncate(t, max);
+}
+
+function discussionCard(post, author) {
+  const titleText = truncate((post.title || 'Discussion').trim(), 90);
+  const excerpt = stripMdForOg(post.body_md || post.note || '', 180);
+  const category = (post.category || '').toUpperCase();
+  const authorName = author.display_name || author.username;
+
+  return bgFrame([
+    brandRow(),
+    el('div', { display: 'flex', alignItems: 'center', gap: '16px', marginTop: '32px', marginBottom: '20px' }, [
+      el('div', {
+        display: 'flex', alignItems: 'center', gap: '10px',
+        padding: '10px 20px', borderRadius: '999px',
+        background: 'rgba(168,85,247,0.18)',
+        border: '2px solid rgba(168,85,247,0.5)',
+        fontSize: '18px', fontWeight: 800, color: '#c084fc',
+        letterSpacing: '1px', textTransform: 'uppercase',
+      }, '💬 Discussion'),
+      category ? el('div', {
+        display: 'flex',
+        padding: '10px 20px', borderRadius: '999px',
+        background: 'rgba(249,115,22,0.15)',
+        border: '2px solid rgba(249,115,22,0.4)',
+        fontSize: '18px', fontWeight: 800, color: COLORS.orange,
+        letterSpacing: '1px',
+      }, category) : null,
+    ].filter(Boolean)),
+    el('div', {
+      fontSize: '56px', fontWeight: 900, lineHeight: 1.1,
+      letterSpacing: '-1.5px', marginBottom: '24px',
+    }, titleText),
+    excerpt ? el('div', {
+      fontSize: '24px', color: COLORS.dim, lineHeight: 1.4,
+    }, excerpt) : null,
+    el('div', {
+      display: 'flex', alignItems: 'center', gap: '14px',
+      marginTop: 'auto', paddingTop: '28px',
+      borderTop: '2px solid rgba(168,85,247,0.3)',
+    }, [
+      el('div', {
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        width: '44px', height: '44px', borderRadius: '44px',
+        background: 'linear-gradient(135deg, #a855f7, #ec4899)',
+        fontSize: '20px', fontWeight: 900,
+      }, (authorName || '?').slice(0, 1).toUpperCase()),
+      el('div', { display: 'flex', flexDirection: 'column' }, [
+        el('div', { fontSize: '20px', fontWeight: 700 }, authorName),
+        el('div', { fontSize: '14px', color: COLORS.dim }, '@' + author.username),
+      ]),
+    ]),
+  ], { accent: '#a855f7' });
+}
+
+export async function handleOgDiscussion(request, env) {
+  const path = new URL(request.url).pathname;
+  const idRaw = path.replace('/og/discussion/', '').replace('.png', '').replace(/\/$/, '');
+  const id = parseInt(idRaw, 10);
+  if (!id) return Response.redirect(FALLBACK, 302);
+  try {
+    const data = await fetchTorch(env, id);
+    return new ImageResponse(discussionCard(data.post, data.author), {
+      width: 1200, height: 630,
+      headers: pngHeaders(CACHE.og),
+    });
+  } catch (err) {
+    console.error('OG discussion failed:', err.message);
+    return Response.redirect(FALLBACK, 302);
+  }
+}
+
 export async function handleOgTorch(request, env) {
   const path = new URL(request.url).pathname;
   const idRaw = path.replace('/og/torch/', '').replace('.png', '').replace(/\/$/, '');

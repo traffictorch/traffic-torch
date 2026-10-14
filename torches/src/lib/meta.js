@@ -3,6 +3,25 @@ import { htmlEscape } from './escape.js';
 const SITE = 'https://traffictorch.net';
 const FALLBACK_OG = `${SITE}/images/traffic-torch-toolkit.webp`;
 
+function stripMarkdown(text, max) {
+  if (!text) return '';
+  const stripped = String(text)
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/```[\s\S]*?```/g, '[code]')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    .replace(/^\s*>\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return max ? (stripped.length <= max ? stripped : stripped.slice(0, max).replace(/\s+\S*$/, '') + '…') : stripped;
+}
+
 export function buildProfileMeta(profile, username) {
   const display = profile.display_name || username;
   const title = `${display} (@${username}) · Traffic Torch`;
@@ -41,14 +60,25 @@ export function renderHeadTags(meta, { index = true, type = 'profile' } = {}) {
 
 export function buildTorchMeta(post, author, id) {
   const display = author.display_name || author.username;
+
+  if (post.post_type === 'discussion') {
+    const titleText = (post.title && post.title.trim()) || ('Discussion #' + id);
+    const title = titleText + ' — Discussion by @' + author.username + ' · Traffic Torch';
+    const bodyText = stripMarkdown(post.body_md || post.note || '', 155);
+    const description = bodyText || ('Discussion started by @' + author.username + ' on Traffic Torch.');
+    const canonical = 'https://traffictorch.net/torch/' + id + '/';
+    const ogImage = 'https://traffictorch.net/og/discussion/' + id + '.png';
+    return { title, description, canonical, ogImage, titleText, display };
+  }
+
   const domain = post.domain_mode === 'hidden'
     ? (post.domain_label || 'Hidden site')
     : (post.url ? new URL(post.url).hostname.replace(/^www\./, '') : 'Unknown');
   const titleText = (post.page_title && post.page_title.trim()) || post.domain_label || domain;
-  const title = `${titleText} — ${post.score}/100 · Torch by @${author.username}`;
-  const description = `@${author.username} scored ${post.score}/100 with the ${post.tool} audit on ${domain}.${post.note ? ' ' + post.note.slice(0, 120) : ''}`;
-  const canonical = `https://traffictorch.net/torch/${id}/`;
-  const ogImage = `https://traffictorch.net/og/torch/${id}.png`;
+  const title = titleText + ' — ' + post.score + '/100 · Torch by @' + author.username;
+  const description = '@' + author.username + ' scored ' + post.score + '/100 with the ' + post.tool + ' audit on ' + domain + '.' + (post.note ? ' ' + post.note.slice(0, 120) : '');
+  const canonical = 'https://traffictorch.net/torch/' + id + '/';
+  const ogImage = 'https://traffictorch.net/og/torch/' + id + '.png';
   return { title, description, canonical, ogImage, domain, titleText, display };
 }
 

@@ -48,7 +48,76 @@ export function jsonLdScript(obj) {
   return `<script type="application/ld+json">${json}</script>`;
 }
 
+function stripMarkdown(text, max) {
+  if (!text) return '';
+  const stripped = String(text)
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/```[\s\S]*?```/g, '[code]')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    .replace(/^\s*>\s+/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return max ? (stripped.length <= max ? stripped : stripped.slice(0, max).replace(/\s+\S*$/, '') + '…') : stripped;
+}
+
+function discussionJsonLd(post, author, id) {
+  const url = SITE + '/torch/' + id + '/';
+  const bodyText = stripMarkdown(post.body_md || post.note || '').slice(0, 500);
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'DiscussionForumPosting',
+        '@id': url + '#discussion',
+        url: url,
+        headline: (post.title && post.title.trim()) || ('Discussion #' + id),
+        text: bodyText,
+        datePublished: new Date(post.created_at).toISOString(),
+        dateModified: new Date(post.created_at).toISOString(),
+        author: {
+          '@type': 'Person',
+          name: author.display_name || author.username,
+          url: SITE + '/torcher/' + author.username + '/',
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Traffic Torch',
+          url: SITE + '/',
+          logo: { '@type': 'ImageObject', url: SITE + '/logo-512.webp' },
+        },
+        isPartOf: {
+          '@type': 'CollectionPage',
+          name: 'Community Discussions',
+          url: SITE + '/community/',
+        },
+        keywords: [post.category, 'discussion'].filter(Boolean),
+        speakable: {
+          '@type': 'SpeakableSpecification',
+          cssSelector: ['h1'],
+        },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+          { '@type': 'ListItem', position: 2, name: 'Community', item: SITE + '/community/' },
+          { '@type': 'ListItem', position: 3, name: '@' + author.username, item: SITE + '/torcher/' + author.username + '/' },
+          { '@type': 'ListItem', position: 4, name: 'Discussion #' + id, item: url },
+        ],
+      },
+    ],
+  };
+}
+
 export function torchJsonLd(post, author, id) {
+  if (post.post_type === 'discussion') return discussionJsonLd(post, author, id);
   const url = `${SITE}/torch/${id}/`;
   const domain = post.domain_mode === 'hidden'
     ? (post.domain_label || 'Hidden site')

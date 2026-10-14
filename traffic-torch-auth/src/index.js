@@ -429,6 +429,10 @@ async function ensureTables(env) {
   try { await env.MY_BINDING.prepare(`ALTER TABLE users ADD COLUMN skills TEXT`).run(); } catch (e) {}
   // ── Social expansion ──
   try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN post_type TEXT DEFAULT 'audit'`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN images TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE comments ADD COLUMN images TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN workflow_meta TEXT`).run(); } catch (e) {}
+  try { await env.MY_BINDING.prepare(`CREATE TABLE IF NOT EXISTS og_cache (url TEXT PRIMARY KEY, title TEXT, description TEXT, image TEXT, site_name TEXT, fetched_at INTEGER NOT NULL)`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN title TEXT`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN body_md TEXT`).run(); } catch (e) {}
   try { await env.MY_BINDING.prepare(`ALTER TABLE posts ADD COLUMN visibility TEXT DEFAULT 'public'`).run(); } catch (e) {}
@@ -967,7 +971,7 @@ async function handleTorchRoutes(request, env, url) {
   if (url.pathname.match(/^\/api\/torch\/\d+$/) && request.method === 'GET') {
     const id = parseInt(url.pathname.split('/').pop(), 10);
     const post = await env.MY_BINDING.prepare(
-      `SELECT p.id, p.user_id, p.category, p.post_type, p.title, p.body_md, p.note, p.tool, p.url, p.page_title, p.score,
+      `SELECT p.id, p.user_id, p.category, p.post_type, p.title, p.body_md, p.note, p.tool, p.url, p.page_title, p.score, p.images, p.workflow_meta,
               p.domain_mode, p.domain_label, p.module_scores, p.status, p.created_at,
               u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.verified_at, u.bio,
               u.website_url, u.website_approved, u.social1_url, u.social2_url,
@@ -1625,7 +1629,7 @@ async function handleFeedRoutes(request, env, url) {
     }
 
     const sql = `
-            SELECT p.id, p.user_id, p.category, p.post_type, p.title, p.body_md, p.note, p.tool, p.url, p.page_title, p.score,
+            SELECT p.id, p.user_id, p.category, p.post_type, p.title, p.body_md, p.note, p.tool, p.url, p.page_title, p.score, p.images, p.workflow_meta,
              p.domain_mode, p.domain_label, p.module_scores, p.created_at,
              u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.verified_at,
              COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = p.user_id), 0) AS total_points,
@@ -1685,7 +1689,7 @@ async function handleFeedRoutes(request, env, url) {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const category = CATEGORIES.includes(body.category) ? body.category : 'ux';
-    const postType = ['audit','discussion'].includes(body.post_type) ? body.post_type : 'audit';
+    const postType = ['audit','discussion','workflow'].includes(body.post_type) ? body.post_type : 'audit';
     const note = String(body.note || '').slice(0, 6000);
     const bodyMd = body.body_md ? String(body.body_md).slice(0, 6000) : null;
     const title = body.title ? String(body.title).slice(0, 120) : null;
@@ -1708,10 +1712,12 @@ async function handleFeedRoutes(request, env, url) {
     }
 
     const now = Date.now();
+    const workflowMeta = body.workflow_meta && typeof body.workflow_meta === 'object' ? JSON.stringify(body.workflow_meta).slice(0, 8000) : null;
+    const imagesJson = Array.isArray(body.images) && body.images.length ? JSON.stringify(body.images.slice(0, 5)) : null;
     const ins = await env.MY_BINDING.prepare(
-      `INSERT INTO posts (user_id, category, post_type, title, body_md, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, status, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`
-    ).bind(user.id, category, postType, title, bodyMd, note, tool, urlVal, pageTitle, score, domainMode, domainLabel, moduleScores, now).run();
+      `INSERT INTO posts (user_id, category, post_type, title, body_md, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, images, workflow_meta, status, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`
+    ).bind(user.id, category, postType, title, bodyMd, note, tool, urlVal, pageTitle, score, domainMode, domainLabel, moduleScores, imagesJson, workflowMeta, now).run();
 
     const postId = ins.meta?.last_row_id || null;
     await awardPoints(env, { userId: user.id, type: 'post', points: POINTS_POST, referenceId: postId });
@@ -1749,6 +1755,7 @@ async function handleFeedRoutes(request, env, url) {
     const fields = []; const params = [];
     if (typeof body.note === 'string') { fields.push('note = ?'); params.push(body.note.slice(0, 6000)); }
     if (typeof body.body_md === 'string') { fields.push('body_md = ?'); params.push(body.body_md.slice(0, 6000)); }
+    if (body.workflow_meta && typeof body.workflow_meta === 'object') { fields.push('workflow_meta = ?'); params.push(JSON.stringify(body.workflow_meta).slice(0, 8000)); }
     if (typeof body.title === 'string') { fields.push('title = ?'); params.push(body.title.slice(0, 120)); }
     if (typeof body.page_title === 'string') { fields.push('page_title = ?'); params.push(body.page_title.slice(0, 200)); }
     if (CATEGORIES.includes(body.category)) { fields.push('category = ?'); params.push(body.category); }
@@ -1799,7 +1806,7 @@ async function handleFeedRoutes(request, env, url) {
     const offset = Math.max(0, parseInt(qs.get('offset') || '0', 10) || 0);
     const limit = Math.min(100, Math.max(1, parseInt(qs.get('limit') || '30', 10) || 30));
     const rows = await env.MY_BINDING.prepare(
-      `SELECT c.id, c.post_id, c.user_id, c.body, c.created_at,
+      `SELECT c.id, c.post_id, c.user_id, c.body, c.images, c.created_at,
               u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at,
               COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = c.user_id), 0) AS total_points
          FROM comments c JOIN users u ON u.id = c.user_id
@@ -1827,9 +1834,10 @@ async function handleFeedRoutes(request, env, url) {
     const post = await env.MY_BINDING.prepare("SELECT id FROM posts WHERE id = ? AND status = 'published'").bind(id).first();
     if (!post) return feedJson({ error: 'Post not found' }, 404);
     const now = Date.now();
+    const commentImages = Array.isArray(body.images) && body.images.length ? JSON.stringify(body.images.slice(0, 3)) : null;
     const ins = await env.MY_BINDING.prepare(
-      'INSERT INTO comments (post_id, user_id, body, status, created_at) VALUES (?, ?, ?, ?, ?)'
-    ).bind(id, user.id, text, 'published', now).run();
+      'INSERT INTO comments (post_id, user_id, body, images, status, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+    ).bind(id, user.id, text, commentImages, 'published', now).run();
 
     await awardPoints(env, { userId: user.id, type: 'comment', points: POINTS_COMMENT, referenceId: ins.meta?.last_row_id || null });
     await logActivity(env, user.id, 'comment', {
@@ -2196,6 +2204,198 @@ async function handleNewRoutes(request, env, url) {
   }
 } 
 
+
+// ============================================================
+// Post/comment image uploads — R2-backed
+// ============================================================
+async function handleUploadRoutes(request, env, url) {
+  // POST /api/uploads/image  — upload
+  if (url.pathname === '/api/uploads/image' && request.method === 'POST') {
+    const user = await getUserFromToken(request, env);
+    if (!user) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+
+    let form;
+    try { form = await request.formData(); } catch { return new Response(JSON.stringify({ error: 'Invalid form data' }), { status: 400, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } }); }
+    const file = form.get('file');
+    if (!file || typeof file === 'string') return new Response(JSON.stringify({ error: 'No file provided' }), { status: 400, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+    if (file.size > 5 * 1024 * 1024) return new Response(JSON.stringify({ error: 'Max 5MB' }), { status: 413, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+
+    const allowed = ['image/webp', 'image/jpeg', 'image/png'];
+    if (!allowed.includes(file.type)) return new Response(JSON.stringify({ error: 'Only webp/jpeg/png allowed' }), { status: 415, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+
+    const ext = file.type === 'image/webp' ? 'webp' : (file.type === 'image/png' ? 'png' : 'jpg');
+    const uuid = crypto.randomUUID();
+    const key = `posts/${user.id}/${uuid}.${ext}`;
+
+    const buf = await file.arrayBuffer();
+    await env.ATTACHMENTS.put(key, buf, {
+      httpMetadata: { contentType: file.type, cacheControl: 'public, max-age=31536000, immutable' }
+    });
+
+    const publicUrl = `https://traffic-torch-auth.traffictorch.workers.dev/api/uploads/image/${key}`;
+    return new Response(JSON.stringify({
+      success: true,
+      url: publicUrl,
+      key,
+      width: parseInt(form.get('width') || '0', 10) || 0,
+      height: parseInt(form.get('height') || '0', 10) || 0
+    }), { status: 200, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+  }
+
+  // GET /api/uploads/image/posts/:userId/:uuid.ext — serve
+  if (url.pathname.startsWith('/api/uploads/image/') && request.method === 'GET') {
+    const key = url.pathname.replace('/api/uploads/image/', '');
+    if (!key || key.includes('..')) return new Response('Not found', { status: 404 });
+    const obj = await env.ATTACHMENTS.get(key);
+    if (!obj) return new Response('Not found', { status: 404 });
+    const headers = new Headers();
+    obj.writeHttpMetadata(headers);
+    headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+    headers.set('etag', obj.httpEtag);
+    headers.set('Access-Control-Allow-Origin', '*');
+    return new Response(obj.body, { status: 200, headers });
+  }
+
+  // DELETE /api/uploads/image  — body: { key }
+  if (url.pathname === '/api/uploads/image' && request.method === 'DELETE') {
+    const user = await getUserFromToken(request, env);
+    if (!user) return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+    let body; try { body = await request.json(); } catch { return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } }); }
+    const key = String(body.key || '');
+    if (!key.startsWith(`posts/${user.id}/`)) return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+    await env.ATTACHMENTS.delete(key);
+    return new Response(JSON.stringify({ success: true }), { status: 200, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+  }
+
+  return null;
+}
+
+
+
+// ============================================================
+// OG preview cards — fetch any URL, SSRF-guarded, D1-cached
+// ============================================================
+function ogIsPublicHost(host) {
+  if (!host) return false;
+  const h = host.toLowerCase();
+  if (h === 'localhost' || h === '127.0.0.1' || h === '0.0.0.0' || h === '::1' || h === '[::1]') return false;
+  if (h.endsWith('.local') || h.endsWith('.internal') || h.endsWith('.localhost')) return false;
+  if (h === 'metadata' || h === 'metadata.google.internal') return false;
+  const ipv4 = h.match(/^(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+  if (ipv4) {
+    const a = Number(ipv4[1]), b = Number(ipv4[2]);
+    if (a === 0 || a === 10 || a === 127) return false;
+    if (a === 169 && b === 254) return false;
+    if (a === 172 && b >= 16 && b <= 31) return false;
+    if (a === 192 && b === 168) return false;
+    if (a >= 224) return false;
+  }
+  if (h.startsWith('[') || h.includes(':')) {
+    if (/^\[?f[cd]/i.test(h)) return false;
+    if (/^\[?fe80/i.test(h)) return false;
+  }
+  return true;
+}
+
+function ogDecode(s) {
+  return String(s || '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&apos;/g, "'");
+}
+
+function ogParse(html, url) {
+  const pick = (re) => { const m = html.match(re); return m ? ogDecode(m[1].trim()) : ''; };
+  const title = pick(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i)
+             || pick(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i)
+             || pick(/<title[^>]*>([^<]+)<\/title>/i);
+  const description = pick(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i)
+                   || pick(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i)
+                   || pick(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i)
+                   || pick(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i);
+  let image = pick(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
+           || pick(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
+  const site_name = pick(/<meta[^>]+property=["']og:site_name["'][^>]+content=["']([^"']+)["']/i);
+  if (image && !/^https?:\/\//.test(image)) {
+    try { image = new URL(image, url).href; } catch { image = ''; }
+  }
+  return {
+    title: (title || '').slice(0, 200),
+    description: (description || '').slice(0, 300),
+    image: (image || '').slice(0, 500),
+    site_name: (site_name || '').slice(0, 60)
+  };
+}
+
+async function handleOgPreviewRoutes(request, env, url) {
+  if (url.pathname !== '/api/og-preview' || request.method !== 'GET') return null;
+  const target = url.searchParams.get('url');
+  if (!target) return new Response(JSON.stringify({ error: 'url required' }), { status: 400, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+
+  let parsed;
+  try { parsed = new URL(target); } catch { return new Response(JSON.stringify({ error: 'invalid url' }), { status: 400, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } }); }
+  if (!/^https?:$/.test(parsed.protocol)) return new Response(JSON.stringify({ error: 'http(s) only' }), { status: 400, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+
+  const host = parsed.hostname.toLowerCase();
+  if (!ogIsPublicHost(host)) return new Response(JSON.stringify({ error: 'host not allowed' }), { status: 403, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+
+  const now = Date.now();
+  try {
+    const cached = await env.MY_BINDING.prepare(
+      'SELECT title, description, image, site_name FROM og_cache WHERE url = ? AND fetched_at > ?'
+    ).bind(target, now - 7 * 86400000).first();
+    if (cached) {
+      return new Response(JSON.stringify({
+        url: target, domain: host.replace(/^www\./, ''),
+        title: cached.title, description: cached.description,
+        image: cached.image, site_name: cached.site_name, cached: true
+      }), { status: 200, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+    }
+  } catch (e) {}
+
+  let html = '';
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch(target, {
+      method: 'GET',
+      redirect: 'manual',
+      signal: controller.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TrafficTorchBot/1.0; +https://traffictorch.net)', 'Accept': 'text/html,application/xhtml+xml' }
+    });
+    clearTimeout(timer);
+    if (res.status >= 300 && res.status < 400) return new Response(JSON.stringify({ error: 'redirect not followed' }), { status: 400, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+    if (!res.ok) return new Response(JSON.stringify({ error: 'fetch failed ' + res.status }), { status: 502, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+    const ct = (res.headers.get('content-type') || '').toLowerCase();
+    if (!ct.includes('text/html') && !ct.includes('application/xhtml')) return new Response(JSON.stringify({ error: 'not html' }), { status: 415, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+    const reader = res.body.getReader();
+    let chunks = [], total = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.length;
+      if (total > 200000) { chunks.push(value.slice(0, Math.max(0, value.length - (total - 200000)))); break; }
+      chunks.push(value);
+    }
+    const combined = new Uint8Array(chunks.reduce((s, c) => s + c.length, 0));
+    let off = 0;
+    for (const c of chunks) { combined.set(c, off); off += c.length; }
+    html = new TextDecoder('utf-8', { fatal: false }).decode(combined);
+  } catch (e) {
+    return new Response(JSON.stringify({ error: 'fetch error: ' + e.message }), { status: 502, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
+  }
+
+  const meta = ogParse(html, target);
+  try {
+    await env.MY_BINDING.prepare(
+      'INSERT OR REPLACE INTO og_cache (url, title, description, image, site_name, fetched_at) VALUES (?, ?, ?, ?, ?, ?)'
+    ).bind(target, meta.title, meta.description, meta.image, meta.site_name, now).run();
+    await env.MY_BINDING.prepare('DELETE FROM og_cache WHERE fetched_at < ?').bind(now - 30 * 86400000).run();
+  } catch (e) {}
+
+  return new Response(JSON.stringify({ url: target, domain: host.replace(/^www\./, ''), ...meta }), {
+    status: 200, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' }
+  });
+}
+
+
 // ============================================================
 // Main export
 // ============================================================
@@ -2211,6 +2411,28 @@ export default {
       } catch (e) {
         return new Response(JSON.stringify({ error: 'avatar threw: ' + e.message }),
           { status: 500, headers: { 'Content-Type': 'application/json' } });
+      }
+    }
+
+    // === UPLOAD ROUTES ===
+    if (url.pathname.startsWith('/api/uploads/image')) {
+      try {
+        const r = await handleUploadRoutes(request, env, url);
+        if (r) return r;
+      } catch (e) {
+        return new Response(JSON.stringify({ error: 'upload threw: ' + e.message }),
+          { status: 500, headers: { 'Content-Type': 'application/json' } });
+      }
+    }
+
+    // === OG PREVIEW ===
+    if (url.pathname === '/api/og-preview') {
+      try {
+        const r = await handleOgPreviewRoutes(request, env, url);
+        if (r) return r;
+      } catch (e) {
+        return new Response(JSON.stringify({ error: 'og-preview threw: ' + e.message }),
+          { status: 500, headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' } });
       }
     }
 

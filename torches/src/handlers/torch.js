@@ -5,8 +5,47 @@ import { torchJsonLd, jsonLdScript } from '../lib/jsonld.js';
 import { htmlHeaders, CACHE } from '../lib/cache.js';
 import { htmlEscape } from '../lib/escape.js';
 import { toolDisplay, toolRunUrl } from '../lib/tools.js';
+import TORCH_PAGE_JS from '../static/torch-page.js.txt';
 
 const SITE = 'https://traffictorch.net';
+
+const MD_CSS = `<style>
+.md-body { line-height: 1.65; overflow-wrap: anywhere; word-break: break-word; }
+.md-body > *:first-child { margin-top: 0; }
+.md-body > *:last-child { margin-bottom: 0; }
+.md-body p { margin: 0.6em 0; }
+.md-body h1, .md-body h2, .md-body h3, .md-body h4 { font-weight: 800; margin: 1em 0 0.5em; line-height: 1.25; }
+.md-body h1 { font-size: 1.5em; }
+.md-body h2 { font-size: 1.3em; }
+.md-body h3 { font-size: 1.1em; }
+.md-body h4 { font-size: 1em; }
+.md-body ul, .md-body ol { padding-left: 1.5em; margin: 0.6em 0; }
+.md-body li { margin: 0.25em 0; }
+.md-body a { color: #f97316; text-decoration: underline; overflow-wrap: anywhere; }
+.md-body a:hover { color: #ea580c; }
+.md-body blockquote { border-left: 3px solid rgba(249,115,22,0.5); padding-left: 0.9em; margin: 0.7em 0; color: #6b7280; font-style: italic; }
+.dark .md-body blockquote { color: #9ca3af; }
+.md-body code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.88em; padding: 0.15em 0.4em; border-radius: 0.3em; background: rgba(0,0,0,0.06); }
+.dark .md-body code { background: rgba(255,255,255,0.08); }
+.md-body pre { margin: 0.8em 0; padding: 0.9em 1em; border-radius: 0.6em; background: #0f172a; color: #e5e7eb; overflow-x: auto; font-size: 0.85em; line-height: 1.5; }
+.md-body pre code { background: transparent; padding: 0; font-size: 1em; color: inherit; }
+.md-body table { width: 100%; border-collapse: collapse; margin: 0.8em 0; font-size: 0.9em; }
+.md-body th, .md-body td { padding: 0.4em 0.7em; border: 1px solid rgba(0,0,0,0.1); text-align: left; }
+.dark .md-body th, .dark .md-body td { border-color: rgba(255,255,255,0.1); }
+.md-body th { background: rgba(0,0,0,0.03); font-weight: 700; }
+.dark .md-body th { background: rgba(255,255,255,0.04); }
+.md-body hr { border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 1em 0; }
+.dark .md-body hr { border-top-color: rgba(255,255,255,0.1); }
+.md-body img { max-width: 100%; height: auto; border-radius: 0.5em; margin: 0.5em 0; }
+.md-body pre .hljs-keyword, .md-body pre .hljs-built_in, .md-body pre .hljs-type { color: #c792ea; }
+.md-body pre .hljs-string, .md-body pre .hljs-attr { color: #c3e88d; }
+.md-body pre .hljs-number, .md-body pre .hljs-literal { color: #f78c6c; }
+.md-body pre .hljs-comment { color: #6b7280; font-style: italic; }
+.md-body pre .hljs-function, .md-body pre .hljs-title { color: #82aaff; }
+.md-body pre .hljs-variable, .md-body pre .hljs-params { color: #e5e7eb; }
+.md-body pre .hljs-tag, .md-body pre .hljs-name { color: #f07178; }
+.md-body pre .hljs-attribute { color: #ffcb6b; }
+</style>`;
 
 function injectHead(html, { headTags, jsonLd }) {
   let out = html;
@@ -14,7 +53,7 @@ function injectHead(html, { headTags, jsonLd }) {
   out = out.replace(/<meta\s+name="description"[^>]*>/gi, '');
   out = out.replace(/<link\s+rel="canonical"[^>]*>/gi, '');
   out = out.replace(/<meta\s+name="robots"[^>]*>/gi, '');
-  const block = `\n${headTags}\n${jsonLd}\n</head>`;
+  const block = `\n${headTags}\n${jsonLd}\n${MD_CSS}\n</head>`;
   return out.includes('</head>') ? out.replace('</head>', block) : out;
 }
 
@@ -38,6 +77,23 @@ function torchLabel(post) {
   if (post.domain_mode === 'hidden') return post.domain_label || 'Hidden site';
   if (post.url) return new URL(post.url).hostname.replace(/^www\./, '');
   return `Torch #${post.id}`;
+}
+function plainExcerptServer(text, max = 600) {
+  if (!text) return '';
+  const stripped = String(text)
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/__([^_]+)__/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/_([^_]+)_/g, '$1')
+    .replace(/\x60([^\x60]+)\x60/g, '$1')
+    .replace(/\x60\x60\x60[\s\S]*?\x60\x60\x60/g, '[code]')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    .replace(/^\s*>\s+/gm, '');
+  const trimmed = stripped.trim();
+  return trimmed.length <= max ? trimmed : trimmed.slice(0, max).replace(/\s+\S*$/, '') + '…';
 }
 
 function domainOf(post) {
@@ -76,7 +132,7 @@ function renderMiniCard(post, { showAuthor } = {}) {
 function renderComments() {
   return `
   <section class="glass rounded-2xl p-5 mt-6">
-    <h2 class="text-lg font-bold mb-4">Comments <span class="text-sm font-normal text-gray-500">(<span x-text="comments.length">0</span>)</span></h2>
+    <h2 class="text-lg font-bold mb-4">Comments <span class="text-sm font-normal text-gray-500">(<span x-text="comments.length">0</span><template x-if="commentMeta.total > comments.length"><span> of <span x-text="commentMeta.total"></span></span></template>)</span></h2>
     <div x-show="commentsLoading" class="text-center py-6"><div class="spinner mx-auto"></div></div>
     <div x-show="!commentsLoading && comments.length === 0" class="text-center text-sm text-gray-500 py-4">No comments yet — be the first.</div>
     <div class="space-y-3" x-show="!commentsLoading">
@@ -94,10 +150,18 @@ function renderComments() {
                 </div>
               </template>
             </div>
-            <p class="text-sm mt-1 leading-snug break-words" x-text="c.body"></p>
+            <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
+            <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
+            <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
           </div>
         </div>
       </template>
+      <div x-show="commentMeta.has_more" class="text-center pt-2">
+        <button @click="loadMoreComments()" :disabled="commentMeta.loading" type="button" class="px-4 py-1.5 text-xs font-semibold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition disabled:opacity-50">
+          <span x-show="!commentMeta.loading">Load more comments</span>
+          <span x-show="commentMeta.loading">Loading…</span>
+        </button>
+      </div>
     </div>
     <div x-show="!isAuthenticated" class="mt-5 text-center text-sm text-gray-500">
       <a href="/login/" class="text-orange-500 hover:underline">Log in</a> to comment.
@@ -105,7 +169,7 @@ function renderComments() {
     <div x-show="isAuthenticated" class="mt-5 flex gap-2 items-start">
       <img :src="(window.__ttProfile && window.__ttProfile.avatar_url) || ('/images/avatars/' + (myAvatar || 'owner') + '.svg')" width="36" height="36" style="width:36px;height:36px;" class="rounded-full flex-shrink-0 object-cover" alt="">
       <div class="flex-1 flex gap-2">
-        <input type="text" maxlength="360" x-model="draft" @keydown.enter.prevent="submitComment()" placeholder="Leave a comment… (360 chars) · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none">
+        <textarea rows="3" maxlength="6000" x-model="draft" @keydown.enter.exact.prevent="submitComment()" @keydown.meta.enter.prevent="submitComment()" @keydown.ctrl.enter.prevent="submitComment()" placeholder="Leave a comment… (6000 chars) · Markdown supported · Cmd/Ctrl+Enter · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[60px]"></textarea>
         <button type="button" @click="submitComment()" :disabled="submitting || !draft.trim()" class="px-4 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition disabled:opacity-50">
           <span x-show="!submitting">Post +5</span>
           <span x-show="submitting">…</span>
@@ -118,9 +182,12 @@ function renderComments() {
 
 function renderTorchBody(data) {
   const { post, author, more_by_author, related, author_network } = data;
+  const isDiscussion = post.post_type === 'discussion';
   const sc = Number(post.score) || 0;
   const domain = domainOf(post);
   const titleText = htmlEscape(torchLabel(post));
+  const displayTitle = isDiscussion ? htmlEscape(post.title || 'Discussion') : titleText;
+  const bodyMd = isDiscussion ? (post.body_md || post.note || '') : (post.note || '');
   const date = fmtDate(post.created_at);
   const toolName = toolDisplay(post.tool);
   const runUrl = post.url && post.tool ? toolRunUrl(post.tool, post.url) : null;
@@ -143,7 +210,7 @@ function renderTorchBody(data) {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${more_by_author.map(p => renderMiniCard(p)).join('')}</div>
       </section>` : '';
 
-  const relatedHtml = (related || []).length
+  const relatedHtml = !isDiscussion && (related || []).length
     ? `<section class="mt-8">
         <h2 class="text-lg font-bold mb-3">Similar scores with ${htmlEscape(toolName)}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${related.map(p => renderMiniCard(p, { showAuthor: true })).join('')}</div>
@@ -200,24 +267,20 @@ function renderTorchBody(data) {
     <span>Torch #${post.id}</span>
   </nav>
 
-  <article class="glass rounded-2xl overflow-hidden border-l-4" style="border-left-color:${scoreColor(sc)}">
+  <article class="glass rounded-2xl overflow-hidden border-l-4" style="border-left-color:${isDiscussion ? '#f97316' : scoreColor(sc)}">
     <div class="p-6">
-      <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 text-center sm:text-left">${htmlEscape(toolName)}</p>
+      ${isDiscussion ? '<p class="text-xs font-bold uppercase tracking-wider text-purple-500 mb-4 text-center sm:text-left">💬 Discussion</p>' : '<p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 text-center sm:text-left">' + htmlEscape(toolName) + '</p>'}
 
       <div class="flex flex-col items-center sm:flex-row sm:items-start gap-6 mb-4">
-        <div class="flex-shrink-0 score-circle" style="--sc:${sc};--color:${scoreColor(sc)};">
-          <div class="score-inner">
-            <p class="score-num" style="color:${scoreColor(sc)};">${sc}</p>
-            <p class="score-denom">/100</p>
-          </div>
-        </div>
+        ${!isDiscussion ? '<div class="flex-shrink-0 score-circle" style="--sc:' + sc + ';--color:' + scoreColor(sc) + ';"><div class="score-inner"><p class="score-num" style="color:' + scoreColor(sc) + ';">' + sc + '</p><p class="score-denom">/100</p></div></div>' : ''}
         <div class="flex-1 min-w-0 text-center sm:text-left">
-          <h1 class="text-2xl sm:text-3xl font-black leading-tight mb-2">${titleText}</h1>
-          <p class="text-sm text-gray-500">${htmlEscape(domain)} · <time datetime="${new Date(post.created_at).toISOString()}">${date}</time></p>
+          <h1 class="text-2xl sm:text-3xl font-black leading-tight mb-2">${displayTitle}</h1>
+          <p class="text-sm text-gray-500">${isDiscussion ? '<time datetime="' + new Date(post.created_at).toISOString() + '">' + date + '</time>' : htmlEscape(domain) + ' · <time datetime="' + new Date(post.created_at).toISOString() + '">' + date + '</time>'}</p>
         </div>
       </div>
 
-      ${post.note ? `<p class="text-base leading-relaxed mt-3 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">${htmlEscape(post.note)}</p>` : ''}
+      ${isDiscussion && bodyMd ? '<div class="mt-5 md-body text-base leading-relaxed text-gray-700 dark:text-gray-300"><div x-show="!bodyExpanded">' + htmlEscape(plainExcerptServer(bodyMd, 1500)) + '</div><div x-show="bodyExpanded" x-cloak x-html="renderMarkdown(bodyMd)"></div><button x-show="shouldCollapse(bodyMd, 1500)" type="button" @click="bodyExpanded = !bodyExpanded" class="text-sm font-semibold text-orange-500 hover:underline mt-2" x-text="bodyExpanded ? \'Show less ▲\' : \'Read more ▼\'"></button></div>' : ''}
+      ${!isDiscussion && post.note ? '<p class="text-base leading-relaxed mt-3 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">' + htmlEscape(post.note) + '</p>' : ''}
     </div>
     ${modulesHtml ? `<div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div><div class="px-6 py-4 space-y-2">${modulesHtml}</div>` : ''}
   </article>
@@ -256,11 +319,11 @@ function renderTorchBody(data) {
   <!-- Tab: Torch -->
   <section x-show="activeTab === 'torch'">
     <div class="glass rounded-2xl p-6 mt-4">
-      <h2 class="text-lg font-bold mb-3">About this audit</h2>
+      <h2 class="text-lg font-bold mb-3" x-text="postType === 'discussion' ? 'About this discussion' : 'About this audit'">About this audit</h2>
       <div class="grid grid-cols-2 gap-3 text-sm">
-        <div><span class="text-gray-500">Tool:</span> <span class="font-medium">${htmlEscape(toolName)}</span></div>
+        <div x-show="postType !== 'discussion'"><span class="text-gray-500">Tool:</span> <span class="font-medium">${htmlEscape(toolName)}</span></div>
         <div><span class="text-gray-500">Category:</span> <span class="font-medium uppercase">${htmlEscape(post.category || '')}</span></div>
-        <div><span class="text-gray-500">Score:</span> <span class="font-medium">${sc}/100</span></div>
+        <div x-show="postType !== 'discussion'"><span class="text-gray-500">Score:</span> <span class="font-medium">${sc}/100</span></div>
         <div><span class="text-gray-500">Audited:</span> <span class="font-medium">${date}</span></div>
       </div>
       ${runUrl ? `<div class="mt-5"><a href="${runUrl}" target="_blank" rel="noopener" class="inline-block px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold rounded-xl hover:opacity-90 transition">▶ Run this audit yourself</a></div>` : ''}
@@ -314,167 +377,12 @@ function renderTorchBody(data) {
 }
 
 function torchPageScript() {
-  return `<script>
-const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
-function torchPage() {
-  return {
-    torchId: null, authorId: null, authorUsername: '',
-    activeTab: 'torch',
-    comments: [], commentsLoading: false, draft: '', submitting: false, commentError: '',
-    isAuthenticated: false, inNetwork: false, isOwnTorch: false, myUserId: null, myAvatar: 'owner',
-    endorseCount: 0, viewerEndorsed: false, endorsing: false,
-    copyLabel: 'Copy 🔗',
-    async init() {
-      const parts = window.location.pathname.split('/').filter(Boolean);
-      this.torchId = parseInt(parts[1], 10) || null;
-      const dataEl = document.getElementById('torch-data');
-      if (dataEl) { try { const d = JSON.parse(dataEl.textContent); this.authorId = d.author_id; this.authorUsername = d.author_username; this.endorseCount = d.endorse_count || 0; } catch {} }
-      const token = localStorage.getItem('authToken');
-      if (token) {
-        this.isAuthenticated = true;
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-          this.myUserId = payload.id || payload.userId || payload.sub || null;
-          this.isOwnTorch = this.myUserId && this.authorId && String(this.myUserId) === String(this.authorId);
-        } catch {}
-      }
-      if (!this.isOwnTorch && this.authorId && this.isAuthenticated) {
-        this.checkNetwork();
-        this.checkEndorseStatus();
-      }
-      await this.loadComments();
-    },
-    async checkNetwork() {
-      try {
-        const token = localStorage.getItem('authToken');
-        if (!token) return;
-        const res = await fetch(API_BASE + '/api/network/list', { headers: { 'Authorization': 'Bearer ' + token } });
-        if (!res.ok) return;
-        const data = await res.json();
-        this.inNetwork = (data.network || []).some(u => u.id === this.authorId);
-      } catch {}
-    },
-    async toggleNetwork() {
-      const token = localStorage.getItem('authToken');
-      if (!token) { window.location.href = '/login/'; return; }
-      const ep = this.inNetwork ? 'remove' : 'add';
-      try {
-        const res = await fetch(API_BASE + '/api/network/' + ep, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify({ user_id: this.authorId }) });
-        if (res.ok) this.inNetwork = !this.inNetwork;
-        else { const d = await res.json().catch(() => ({})); alert(d.error || 'Failed'); }
-      } catch {}
-    },
-    async loadComments() {
-      if (!this.torchId) return;
-      this.commentsLoading = true;
-      try {
-        const res = await fetch(API_BASE + '/api/posts/' + this.torchId + '/comments');
-        if (res.ok) { const d = await res.json(); this.comments = d.comments || []; }
-      } catch {}
-      finally { this.commentsLoading = false; }
-    },
-    async submitComment() {
-      const body = (this.draft || '').trim();
-      if (!body || body.length > 360) return;
-      this.submitting = true; this.commentError = '';
-      try {
-        const res = await fetch(API_BASE + '/api/posts/' + this.torchId + '/comments', { method: 'POST', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' }, body: JSON.stringify({ body }) });
-        const data = await res.json();
-        if (data.success) { this.comments = [...this.comments, data.comment]; this.draft = ''; }
-        else this.commentError = data.error || 'Failed';
-      } catch { this.commentError = 'Network error'; }
-      finally { this.submitting = false; }
-    },
-    async editComment(c) {
-      const nb = prompt('Edit comment (360 chars max):', c.body);
-      if (nb === null) return;
-      if (!nb.trim() || nb.length > 360) { alert('Must be 1–360 chars'); return; }
-      try {
-        const res = await fetch(API_BASE + '/api/comments/' + c.id, { method: 'PATCH', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' }, body: JSON.stringify({ body: nb.trim() }) });
-        if (res.ok) c.body = nb.trim();
-      } catch {}
-    },
-    async deleteComment(id) {
-      if (!confirm('Delete this comment?')) return;
-      try {
-        const res = await fetch(API_BASE + '/api/comments/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') } });
-        if (res.ok) this.comments = this.comments.filter(c => c.id !== id);
-      } catch {}
-    },
-    async share() {
-      const url = window.location.href;
-      const text = document.querySelector('h1')?.textContent || 'Traffic Torch audit';
-      try {
-        if (navigator.share) await navigator.share({ title: document.title, text, url });
-        else await this.copyLink();
-      } catch {}
-    },
-    async copyLink() {
-      try {
-        await navigator.clipboard.writeText(window.location.href);
-        this.copyLabel = 'Copied ✓';
-        setTimeout(() => { this.copyLabel = 'Copy 🔗'; }, 1800);
-      } catch {}
-    },
-    async report() {
-      const reason = prompt('Reason for report:');
-      if (!reason) return;
-      try {
-        await fetch(API_BASE + '/api/reports', { method: 'POST', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'post', target_id: this.torchId, reason }) });
-        alert('Reported. Thank you.');
-      } catch {}
-    },
-    async checkEndorseStatus() {
-      try {
-        const token = localStorage.getItem('authToken');
-        const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
-        const res = await fetch(API_BASE + '/api/torch/' + this.torchId, { headers });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data.post) {
-          this.endorseCount = data.post.endorse_count || 0;
-          this.viewerEndorsed = !!data.post.viewer_endorsed;
-        }
-      } catch {}
-    },
-    async endorsePost() {
-      const token = localStorage.getItem('authToken');
-      if (!token) { window.location.href = '/login/'; return; }
-      if (this.endorsing || this.viewerEndorsed) return;
-      this.endorsing = true;
-      try {
-        const res = await fetch(API_BASE + '/api/posts/' + this.torchId + '/endorse', {
-          method: 'POST',
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        const data = await res.json();
-        if (data.success) {
-          this.viewerEndorsed = true;
-          this.endorseCount = data.endorse_count || (this.endorseCount + 1);
-        } else {
-          alert(data.error || 'Could not endorse');
-        }
-      } catch (e) {
-        alert('Network error: ' + e.message);
-      } finally {
-        this.endorsing = false;
-      }
-    },
-    formatTime(ts) {
-      const now = Date.now(), diff = now - ts, min = Math.floor(diff / 60000);
-      if (min < 1) return 'Just now';
-      if (min < 60) return min + 'm ago';
-      const hr = Math.floor(min / 60);
-      if (hr < 24) return hr + 'h ago';
-      const d = Math.floor(hr / 24);
-      if (d < 7) return d + 'd ago';
-      return new Date(ts).toLocaleDateString();
-    },
-  };
+  return '<script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>\n' +
+    '<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>\n' +
+    '<script src="/torch-page.js" defer></script>';
 }
-window.torchPage = torchPage;
-</script>`;
-}
+
+export { TORCH_PAGE_JS };
 
 export async function handleTorch(request, env) {
   const path = new URL(request.url).pathname;
@@ -514,7 +422,7 @@ export async function handleTorch(request, env) {
   const mainStart = html.indexOf('<main ');
   const mainEnd = html.indexOf('</main>');
   if (mainStart !== -1 && mainEnd !== -1) {
-    const embedded = `<script id="torch-data" type="application/json">${JSON.stringify({ torch_id: id, author_id: author.id, author_username: author.username, endorse_count: post.endorse_count || 0 })}</script>`;
+    const embedded = `<script id="torch-data" type="application/json">${JSON.stringify({ torch_id: id, author_id: author.id, author_username: author.username, endorse_count: post.endorse_count || 0, post_type: post.post_type || 'audit', title: post.title || null, body_md: post.body_md || post.note || null })}</script>`;
     const wrapped = `<div x-data="torchPage()" x-init="init()">\n${renderTorchBody(data)}\n${embedded}\n</div>\n${torchPageScript()}`;
     html = html.slice(0, mainStart) + wrapped + html.slice(mainEnd + '</main>'.length);
   }
