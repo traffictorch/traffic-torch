@@ -1005,6 +1005,7 @@
             </div>
             <div class="space-y-4" x-show="!feed.loading">
               <template x-for="post in feed.posts" :key="'p-' + post.id">
+                <div>
                 <article x-show="post.post_type !== 'discussion'" class="glass rounded-2xl overflow-hidden border-l-4"
                          :class="post.score >= 80 ? 'border-green-500' : post.score >= 60 ? 'border-yellow-500' : 'border-red-500'">
                   <div class="p-4 pb-3">
@@ -1239,7 +1240,8 @@
                     </div>
                   </div>
                 </article>
-              </template>
+              
+                </div></template>
             </div>
             <div x-show="feed.hasMore && !feed.loading" class="text-center mt-6">
               <button @click="loadMoreFeed()" :disabled="feed.loadingMore"
@@ -1783,6 +1785,7 @@
 
             <div class="space-y-4" x-show="!feed.loading">
               <template x-for="post in feed.posts" :key="'n-' + post.id">
+                <div>
                 <article x-show="post.post_type !== 'discussion'" class="glass rounded-2xl overflow-hidden border-l-4"
                          :class="post.score >= 80 ? 'border-green-500' : post.score >= 60 ? 'border-yellow-500' : 'border-red-500'">
                   <div class="p-4 pb-3">
@@ -2017,7 +2020,8 @@
                     </div>
                   </div>
                 </article>
-              </template>
+              
+                </div></template>
             </div>
 
             <div x-show="feed.hasMore && !feed.loading" class="text-center mt-6">
