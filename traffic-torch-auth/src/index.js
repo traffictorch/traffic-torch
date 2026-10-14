@@ -967,7 +967,7 @@ async function handleTorchRoutes(request, env, url) {
   if (url.pathname.match(/^\/api\/torch\/\d+$/) && request.method === 'GET') {
     const id = parseInt(url.pathname.split('/').pop(), 10);
     const post = await env.MY_BINDING.prepare(
-      `SELECT p.id, p.user_id, p.category, p.note, p.tool, p.url, p.page_title, p.score,
+      `SELECT p.id, p.user_id, p.category, p.post_type, p.title, p.body_md, p.note, p.tool, p.url, p.page_title, p.score,
               p.domain_mode, p.domain_label, p.module_scores, p.status, p.created_at,
               u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.verified_at, u.bio,
               u.website_url, u.website_approved, u.social1_url, u.social2_url,
@@ -1625,7 +1625,7 @@ async function handleFeedRoutes(request, env, url) {
     }
 
     const sql = `
-            SELECT p.id, p.user_id, p.category, p.note, p.tool, p.url, p.page_title, p.score,
+            SELECT p.id, p.user_id, p.category, p.post_type, p.title, p.body_md, p.note, p.tool, p.url, p.page_title, p.score,
              p.domain_mode, p.domain_label, p.module_scores, p.created_at,
              u.username, u.name AS display_name, u.avatar_preset, u.avatar_r2_key, u.avatar_updated_at, u.role, u.verified_at,
              COALESCE((SELECT SUM(up.points) FROM user_points up WHERE up.user_id = p.user_id), 0) AS total_points,
@@ -1685,11 +1685,16 @@ async function handleFeedRoutes(request, env, url) {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const category = CATEGORIES.includes(body.category) ? body.category : 'ux';
+    const postType = ['audit','discussion'].includes(body.post_type) ? body.post_type : 'audit';
     const note = String(body.note || '').slice(0, 6000);
+    const bodyMd = body.body_md ? String(body.body_md).slice(0, 6000) : null;
+    const title = body.title ? String(body.title).slice(0, 120) : null;
     const tool = String(body.tool || '').slice(0, 60);
     const urlVal = String(body.url || '').slice(0, 500);
-    const pageTitle = String(body.page_title || '').slice(0, 200);
-    const score = Math.max(0, Math.min(100, parseInt(body.score, 10) || 0));
+    const pageTitle = postType === 'discussion' ? (title || '') : String(body.page_title || '').slice(0, 200);
+    const score = postType === 'discussion' ? 0 : Math.max(0, Math.min(100, parseInt(body.score, 10) || 0));
+
+    if (postType === 'discussion' && !bodyMd && !note) return feedJson({ error: 'Discussion body required' }, 400);
     const domainMode = ['domain', 'hidden', 'full'].includes(body.domain_mode) ? body.domain_mode : 'domain';
     const domainLabel = body.domain_label ? String(body.domain_label).slice(0, 60) : null;
     const moduleScores = body.module_scores ? JSON.stringify(body.module_scores).slice(0, 3000) : null;
@@ -1704,9 +1709,9 @@ async function handleFeedRoutes(request, env, url) {
 
     const now = Date.now();
     const ins = await env.MY_BINDING.prepare(
-      `INSERT INTO posts (user_id, category, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, status, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`
-    ).bind(user.id, category, note, tool, urlVal, pageTitle, score, domainMode, domainLabel, moduleScores, now).run();
+      `INSERT INTO posts (user_id, category, post_type, title, body_md, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, status, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`
+    ).bind(user.id, category, postType, title, bodyMd, note, tool, urlVal, pageTitle, score, domainMode, domainLabel, moduleScores, now).run();
 
     const postId = ins.meta?.last_row_id || null;
     await awardPoints(env, { userId: user.id, type: 'post', points: POINTS_POST, referenceId: postId });
@@ -1743,6 +1748,8 @@ async function handleFeedRoutes(request, env, url) {
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const fields = []; const params = [];
     if (typeof body.note === 'string') { fields.push('note = ?'); params.push(body.note.slice(0, 6000)); }
+    if (typeof body.body_md === 'string') { fields.push('body_md = ?'); params.push(body.body_md.slice(0, 6000)); }
+    if (typeof body.title === 'string') { fields.push('title = ?'); params.push(body.title.slice(0, 120)); }
     if (typeof body.page_title === 'string') { fields.push('page_title = ?'); params.push(body.page_title.slice(0, 200)); }
     if (CATEGORIES.includes(body.category)) { fields.push('category = ?'); params.push(body.category); }
     if (typeof body.domain_mode === 'string' && ['domain','hidden','full'].includes(body.domain_mode)) {
@@ -1968,12 +1975,13 @@ async function handleFeedRoutes(request, env, url) {
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     
     const type = ['bug', 'feature', 'feedback', 'docs'].includes(body.type) ? body.type : 'bug';
-    const subject = String(body.subject || '').slice(0, 160);
-    const message = String(body.message || '').trim().slice(0, 6000);
+    // Accept both 'subject' and 'name' for compatibility
+    const subject = String(body.subject || body.name || '').slice(0, 160);
+    // Accept both 'message' and 'details' for compatibility
+    const message = String(body.message || body.details || '').trim().slice(0, 6000); 
     const tool = String(body.tool || '').slice(0, 60);
     const pageUrl = String(body.page_url || '').slice(0, 500);
     
-    // Use the name/email provided in the form, fallback to the authenticated user's details
     const senderName = body.name || user.name || user.username || 'Anonymous';
     const senderEmail = body.email || user.email || 'support@traffictorch.net';
 
@@ -1989,8 +1997,10 @@ async function handleFeedRoutes(request, env, url) {
     await awardPoints(env, { userId: user.id, type: 'contribution', points: POINTS_CONTRIBUTION, referenceId: contributionId });
 
     // Send email via Resend
+    let emailSuccess = false;
+    let emailError = null;
     try {
-      await fetch('https://api.resend.com/emails', {
+      const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1998,8 +2008,8 @@ async function handleFeedRoutes(request, env, url) {
         },
         body: JSON.stringify({
           from: 'Traffic Torch <support@traffictorch.net>',
-          to: 'admin@traffictorch.net', // Replace with your admin email
-          reply_to: senderEmail, // Allows you to reply directly to the contributor
+          to: 'support@traffictorch.net', 
+          reply_to: senderEmail,
           subject: `New Contribution: ${subject || type}`,
           html: `
             <h2>New Contribution Submitted</h2>
@@ -2014,8 +2024,17 @@ async function handleFeedRoutes(request, env, url) {
           `
         })
       });
+
+      if (resendRes.ok) {
+        emailSuccess = true;
+      } else {
+        const errText = await resendRes.text();
+        emailError = `Resend API error: ${resendRes.status} - ${errText}`;
+        console.error(emailError);
+      }
     } catch (emailErr) {
-      console.error('Failed to send contribution email:', emailErr.message);
+      emailError = emailErr.message;
+      console.error('Failed to send contribution email:', emailError);
     }
 
     const total = await getUserTotalPoints(env, user.id);
@@ -2023,11 +2042,14 @@ async function handleFeedRoutes(request, env, url) {
       `SELECT COUNT(*) AS c FROM user_points WHERE user_id = ? AND event_type = 'contribution'`
     ).bind(user.id).first();
 
+    // Return email status so the frontend can show an error if it failed
     return feedJson({
       success: true,
       contribution_id: contributionId,
       total_points: total,
-      contribution_count: countRow?.c || 0
+      contribution_count: countRow?.c || 0,
+      email_sent: emailSuccess,
+      email_error: emailError
     });
   }
 

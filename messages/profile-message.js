@@ -65,7 +65,7 @@
         <button type="button" data-tt-close style="background:none;border:none;font-size:26px;
                 cursor:pointer;color:${fg};line-height:1;padding:0 4px;">&times;</button>
       </div>
-      <textarea data-tt-body maxlength="2000" rows="6" placeholder="Write a message…"
+      <textarea data-tt-body maxlength="6000" rows="6" placeholder="Write a message…"
         style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;
                border:1px solid ${inputBd};background:${inputBg};color:${fg};
                font-family:inherit;font-size:14px;resize:vertical;outline:none;"></textarea>

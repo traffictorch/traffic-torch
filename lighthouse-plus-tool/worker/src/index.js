@@ -227,6 +227,13 @@ async function runAudit({ url, html }, env) {
       } catch {}
       if (!rawHtml) rawHtml = renderedHtml;
     } catch (err) {
+      // Log the reason so wrangler tail shows why Puppeteer failed.
+      const renderError = `${err.name || 'Error'}: ${err.message || String(err)}`;
+      console.error('[lighthouse-audit] puppeteer failed:', renderError);
+      console.error('[lighthouse-audit] url:', url);
+      console.error('[lighthouse-audit] stack:', err.stack || '(none)');
+      bm.renderError = renderError;
+
       // FIX 2: Clear ghost data captured during the failed Puppeteer attempt
       // so the fallback audit doesn't score phantoms.
       bm.consoleErrors = [];
@@ -329,6 +336,7 @@ async function runAudit({ url, html }, env) {
       rawHtmlLength: rawHtml.length,
       renderedHtmlLength: renderedHtml.length,
       renderSource,
+      renderError: bm.renderError || null,
       headers: sanitizeHeaders(responseHeaders),
       fetchedAt: new Date().toISOString(),
     },
