@@ -998,9 +998,33 @@
                         :class="composer.preview ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-orange-500'">Preview</button>
               </div>
               <textarea x-show="!composer.preview" x-model="composer.body" maxlength="6000" rows="6"
+                        @dragover.prevent="$el.classList.add('border-orange-500')"
+                        @dragleave.prevent="$el.classList.remove('border-orange-500')"
+                        @drop.prevent="$el.classList.remove('border-orange-500'); handleComposerFiles($event.dataTransfer.files)"
+                        @paste="const items = $event.clipboardData?.items || []; for (const it of items) { if (it.type.startsWith('image/')) { const f = it.getAsFile(); if (f) handleComposerFiles([f]); $event.preventDefault(); } }"
                         @keydown.meta.enter.prevent="submitDiscussion()" @keydown.ctrl.enter.prevent="submitDiscussion()"
                         placeholder="Share an insight, ask a question…&#10;&#10;Markdown supported: **bold**, # heading, lists, links, code blocks&#10;Tip: Cmd/Ctrl + Enter to post"
                         class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm resize-y focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15 outline-none transition-all leading-relaxed"></textarea>
+              <div class="flex items-center gap-2 flex-wrap">
+                <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:border-orange-500 hover:text-orange-500 transition">
+                  <span>📎</span>
+                  <span>Add image</span>
+                  <input type="file" accept="image/*" multiple class="hidden" @change="handleComposerFiles($event.target.files); $event.target.value = ''">
+                </label>
+                <span class="text-xs text-gray-400">or drag & drop · max 5</span>
+                <template x-if="composer.uploading > 0">
+                  <span class="text-xs text-orange-500 animate-pulse">Uploading…</span>
+                </template>
+              </div>
+              <div x-show="composer.images.length > 0" class="flex flex-wrap gap-2">
+                <template x-for="(img, i) in composer.images" :key="'cimg-' + i">
+                  <div class="relative group">
+                    <img :src="img.url" :alt="'image ' + (i+1)" width="80" height="80" style="width:80px;height:80px;" class="rounded-lg object-cover border border-gray-200 dark:border-gray-700">
+                    <button type="button" @click="removeComposerImage(i)"
+                            class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">×</button>
+                  </div>
+                </template>
+              </div>
               <div x-show="composer.preview" x-cloak
                    class="min-h-[9rem] px-4 py-3 rounded-xl border-2 border-dashed border-orange-400/40 bg-orange-500/5 md-body text-sm leading-relaxed text-gray-700 dark:text-gray-300"
                    x-html="composer.body ? renderMarkdown(composer.body) : '<span class=&quot;text-gray-400 italic&quot;>Nothing to preview yet.</span>'"></div>
@@ -1231,6 +1255,15 @@
                       <div x-show="!post._expandedNote" class="md-body" x-html="renderMarkdown(excerpt(post.body_md || post.note || '', 1200))"></div>
                       <div x-show="post._expandedNote" x-cloak class="md-body" x-html="renderMarkdown(post.body_md || post.note || '')"></div>
                       <button x-show="shouldCollapse(post.body_md || post.note || '', 1200)" @click="post._expandedNote = !post._expandedNote" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="post._expandedNote ? 'Show less ▲' : 'Read more ▼'"></button>
+                      <template x-if="post.images && parseImages(post.images).length > 0">
+                        <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          <template x-for="(img, idx) in parseImages(post.images)" :key="'pimg-' + post.id + '-' + idx">
+                            <a :href="img.url" target="_blank" rel="noopener">
+                              <img :src="img.url" loading="lazy" :alt="'image ' + (idx+1)" class="w-full rounded-lg object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;">
+                            </a>
+                          </template>
+                        </div>
+                      </template>
                     </div>
                   </div>
                   <div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div>
@@ -1270,14 +1303,48 @@
                             <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
                             <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
                             <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
+                            <template x-if="c.images && parseImages(c.images).length > 0">
+                              <div class="mt-2 flex flex-wrap gap-1.5">
+                                <template x-for="(img, idx) in parseImages(c.images)" :key="'cimgr-' + c.id + '-' + idx">
+                                  <a :href="img.url" target="_blank" rel="noopener">
+                                    <img :src="img.url" loading="lazy" class="rounded-md object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="width:80px;height:80px;">
+                                  </a>
+                                </template>
+                              </div>
+                            </template>
                           </div>
                         </div>
                       </template>
                       <div class="flex gap-2 items-start pt-1">
                         <img :src="avatarSrc(profile)" width="32" height="32" style="width:32px;height:32px;" class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
                         <div class="flex-1 flex gap-2">
-                          <textarea rows="3" maxlength="6000" x-model="feed.commentDrafts[post.id]" @keydown.enter.exact.prevent="submitComment(post.id)" @keydown.meta.enter.prevent="submitComment(post.id)" @keydown.ctrl.enter.prevent="submitComment(post.id)" placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
-                          <button @click="submitComment(post.id)" class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
+                          <div class="flex-1 flex flex-col gap-2">
+                            <textarea rows="3" maxlength="6000" x-model="feed.commentDrafts[post.id]"
+                              @keydown.enter.exact.prevent="submitComment(post.id)"
+                              @keydown.meta.enter.prevent="submitComment(post.id)"
+                              @keydown.ctrl.enter.prevent="submitComment(post.id)"
+                              @dragover.prevent
+                              @drop.prevent="handleCommentFiles(post.id, $event.dataTransfer.files)"
+                              @paste="const items = $event.clipboardData?.items || []; for (const it of items) { if (it.type.startsWith('image/')) { const f = it.getAsFile(); if (f) handleCommentFiles(post.id, [f]); $event.preventDefault(); } }"
+                              placeholder="Leave a comment… (6000 chars) · Markdown · drop images here"
+                              class="p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
+                            <div class="flex items-center gap-2 flex-wrap">
+                              <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-300 dark:border-gray-600 text-[11px] font-semibold text-gray-500 hover:border-orange-500 hover:text-orange-500 transition">
+                                📎<input type="file" accept="image/*" multiple class="hidden" @change="handleCommentFiles(post.id, $event.target.files); $event.target.value = ''">
+                              </label>
+                              <template x-if="(feed.commentImages[post.id] || []).length > 0">
+                                <div class="flex gap-1.5">
+                                  <template x-for="(img, i) in feed.commentImages[post.id]" :key="'cimg-' + post.id + '-' + i">
+                                    <div class="relative group">
+                                      <img :src="img.url" width="40" height="40" style="width:40px;height:40px;" class="rounded object-cover border border-gray-200 dark:border-gray-700">
+                                      <button type="button" @click="removeCommentImage(post.id, i)" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition">×</button>
+                                    </div>
+                                  </template>
+                                </div>
+                              </template>
+                              <button @click="submitComment(post.id)" class="ml-auto px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1814,9 +1881,33 @@
                         :class="composer.preview ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-orange-500'">Preview</button>
               </div>
               <textarea x-show="!composer.preview" x-model="composer.body" maxlength="6000" rows="6"
+                        @dragover.prevent="$el.classList.add('border-orange-500')"
+                        @dragleave.prevent="$el.classList.remove('border-orange-500')"
+                        @drop.prevent="$el.classList.remove('border-orange-500'); handleComposerFiles($event.dataTransfer.files)"
+                        @paste="const items = $event.clipboardData?.items || []; for (const it of items) { if (it.type.startsWith('image/')) { const f = it.getAsFile(); if (f) handleComposerFiles([f]); $event.preventDefault(); } }"
                         @keydown.meta.enter.prevent="submitDiscussion()" @keydown.ctrl.enter.prevent="submitDiscussion()"
                         placeholder="Share an insight, ask a question…&#10;&#10;Markdown supported: **bold**, # heading, lists, links, code blocks&#10;Tip: Cmd/Ctrl + Enter to post"
                         class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm resize-y focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15 outline-none transition-all leading-relaxed"></textarea>
+              <div class="flex items-center gap-2 flex-wrap">
+                <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:border-orange-500 hover:text-orange-500 transition">
+                  <span>📎</span>
+                  <span>Add image</span>
+                  <input type="file" accept="image/*" multiple class="hidden" @change="handleComposerFiles($event.target.files); $event.target.value = ''">
+                </label>
+                <span class="text-xs text-gray-400">or drag & drop · max 5</span>
+                <template x-if="composer.uploading > 0">
+                  <span class="text-xs text-orange-500 animate-pulse">Uploading…</span>
+                </template>
+              </div>
+              <div x-show="composer.images.length > 0" class="flex flex-wrap gap-2">
+                <template x-for="(img, i) in composer.images" :key="'cimg-' + i">
+                  <div class="relative group">
+                    <img :src="img.url" :alt="'image ' + (i+1)" width="80" height="80" style="width:80px;height:80px;" class="rounded-lg object-cover border border-gray-200 dark:border-gray-700">
+                    <button type="button" @click="removeComposerImage(i)"
+                            class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">×</button>
+                  </div>
+                </template>
+              </div>
               <div x-show="composer.preview" x-cloak
                    class="min-h-[9rem] px-4 py-3 rounded-xl border-2 border-dashed border-orange-400/40 bg-orange-500/5 md-body text-sm leading-relaxed text-gray-700 dark:text-gray-300"
                    x-html="composer.body ? renderMarkdown(composer.body) : '<span class=&quot;text-gray-400 italic&quot;>Nothing to preview yet.</span>'"></div>
@@ -2052,6 +2143,15 @@
                       <div x-show="!post._expandedNote" class="md-body" x-html="renderMarkdown(excerpt(post.body_md || post.note || '', 1200))"></div>
                       <div x-show="post._expandedNote" x-cloak class="md-body" x-html="renderMarkdown(post.body_md || post.note || '')"></div>
                       <button x-show="shouldCollapse(post.body_md || post.note || '', 1200)" @click="post._expandedNote = !post._expandedNote" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="post._expandedNote ? 'Show less ▲' : 'Read more ▼'"></button>
+                      <template x-if="post.images && parseImages(post.images).length > 0">
+                        <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          <template x-for="(img, idx) in parseImages(post.images)" :key="'pimg-' + post.id + '-' + idx">
+                            <a :href="img.url" target="_blank" rel="noopener">
+                              <img :src="img.url" loading="lazy" :alt="'image ' + (idx+1)" class="w-full rounded-lg object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;">
+                            </a>
+                          </template>
+                        </div>
+                      </template>
                     </div>
                   </div>
                   <div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div>
@@ -2091,14 +2191,48 @@
                             <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
                             <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
                             <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
+                            <template x-if="c.images && parseImages(c.images).length > 0">
+                              <div class="mt-2 flex flex-wrap gap-1.5">
+                                <template x-for="(img, idx) in parseImages(c.images)" :key="'cimgr-' + c.id + '-' + idx">
+                                  <a :href="img.url" target="_blank" rel="noopener">
+                                    <img :src="img.url" loading="lazy" class="rounded-md object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="width:80px;height:80px;">
+                                  </a>
+                                </template>
+                              </div>
+                            </template>
                           </div>
                         </div>
                       </template>
                       <div class="flex gap-2 items-start pt-1">
                         <img :src="avatarSrc(profile)" width="32" height="32" style="width:32px;height:32px;" class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
                         <div class="flex-1 flex gap-2">
-                          <textarea rows="3" maxlength="6000" x-model="feed.commentDrafts[post.id]" @keydown.enter.exact.prevent="submitComment(post.id)" @keydown.meta.enter.prevent="submitComment(post.id)" @keydown.ctrl.enter.prevent="submitComment(post.id)" placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
-                          <button @click="submitComment(post.id)" class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
+                          <div class="flex-1 flex flex-col gap-2">
+                            <textarea rows="3" maxlength="6000" x-model="feed.commentDrafts[post.id]"
+                              @keydown.enter.exact.prevent="submitComment(post.id)"
+                              @keydown.meta.enter.prevent="submitComment(post.id)"
+                              @keydown.ctrl.enter.prevent="submitComment(post.id)"
+                              @dragover.prevent
+                              @drop.prevent="handleCommentFiles(post.id, $event.dataTransfer.files)"
+                              @paste="const items = $event.clipboardData?.items || []; for (const it of items) { if (it.type.startsWith('image/')) { const f = it.getAsFile(); if (f) handleCommentFiles(post.id, [f]); $event.preventDefault(); } }"
+                              placeholder="Leave a comment… (6000 chars) · Markdown · drop images here"
+                              class="p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
+                            <div class="flex items-center gap-2 flex-wrap">
+                              <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-gray-300 dark:border-gray-600 text-[11px] font-semibold text-gray-500 hover:border-orange-500 hover:text-orange-500 transition">
+                                📎<input type="file" accept="image/*" multiple class="hidden" @change="handleCommentFiles(post.id, $event.target.files); $event.target.value = ''">
+                              </label>
+                              <template x-if="(feed.commentImages[post.id] || []).length > 0">
+                                <div class="flex gap-1.5">
+                                  <template x-for="(img, i) in feed.commentImages[post.id]" :key="'cimg-' + post.id + '-' + i">
+                                    <div class="relative group">
+                                      <img :src="img.url" width="40" height="40" style="width:40px;height:40px;" class="rounded object-cover border border-gray-200 dark:border-gray-700">
+                                      <button type="button" @click="removeCommentImage(post.id, i)" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition">×</button>
+                                    </div>
+                                  </template>
+                                </div>
+                              </template>
+                              <button @click="submitComment(post.id)" class="ml-auto px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -3517,6 +3651,7 @@ function dashboardApp() {
       hasMore: true,
       error: null,
       commentDrafts: {},
+      commentImages: {},
       openComments: {},
       commentLists: {},
       commentMeta: {},
@@ -3530,6 +3665,8 @@ function dashboardApp() {
       body: '',
       preview: false,
       editingId: null,
+      images: [],
+      uploading: 0,
       submitting: false
     },
 
@@ -3980,6 +4117,14 @@ async endorsePost(postId) {
     toolRunUrl(key, testedUrl) {
       if (!key || !testedUrl) return '#';
       return this.toolPath(key) + '?url=' + encodeURIComponent(testedUrl);
+    },
+
+    parseImages(raw) {
+      if (!raw) return [];
+      try {
+        const arr = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        return Array.isArray(arr) ? arr : [];
+      } catch { return []; }
     },
 
     parseModuleScores(raw) {
@@ -5145,12 +5290,13 @@ async endorsePost(postId) {
         const res = await fetch(`${API_BASE}/api/posts/${postId}/comments`, {
           method: 'POST',
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ body })
+          body: JSON.stringify({ body, images: this.feed.commentImages[postId] || [] })
         });
         const data = await res.json();
         if (data.success) {
           this.feed.commentLists[postId] = [...(this.feed.commentLists[postId] || []), data.comment];
           this.feed.commentDrafts[postId] = '';
+          this.feed.commentImages[postId] = [];
           const meta = this.feed.commentMeta[postId];
           if (meta) { meta.total = (meta.total || 0) + 1; meta.offset = (meta.offset || 0) + 1; }
           const p = this.feed.posts.find(x => x.id === postId);
@@ -5208,6 +5354,8 @@ async endorsePost(postId) {
       this.composer.body = '';
       this.composer.preview = false;
       this.composer.editingId = null;
+      this.composer.images = [];
+      this.composer.uploading = 0;
       this.composer.submitting = false;
     },
     editDiscussion(post) {
@@ -5219,6 +5367,82 @@ async endorsePost(postId) {
       this.composer.preview = false;
     },
     cancelEdit() { this.closeComposer(); },
+
+
+    // ── Image upload helpers ──
+    async resizeImage(file, maxDim = 1600, quality = 0.85) {
+      let src;
+      try { src = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+      catch {
+        src = await new Promise((res, rej) => {
+          const img = new Image();
+          img.onload = () => res(img);
+          img.onerror = rej;
+          img.src = URL.createObjectURL(file);
+        });
+      }
+      const scale = Math.min(1, maxDim / Math.max(src.width, src.height));
+      const w = Math.round(src.width * scale);
+      const h = Math.round(src.height * scale);
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(src, 0, 0, w, h);
+      const toBlob = (t, q) => new Promise(r => c.toBlob(r, t, q));
+      let blob = await toBlob('image/webp', quality);
+      if (!blob || blob.type !== 'image/webp') blob = await toBlob('image/jpeg', quality);
+      return { blob, width: w, height: h };
+    },
+
+    async uploadImage(file, target) {
+      // target = 'composer' or { postId: N }
+      const MAX = 5 * 1024 * 1024;
+      if (file.size > MAX) { alert('Image too large (max 5MB after resize).'); return; }
+      if (!file.type.startsWith("image/") && !file.name.match(/\.(jpe?g|png|webp|heic|heif|avif)$/i)) {
+        alert('Only images allowed.'); return;
+      }
+      try {
+        if (target === 'composer') this.composer.uploading++;
+        const { blob, width, height } = await this.resizeImage(file);
+        const fd = new FormData();
+        fd.append('file', blob, 'image.' + (blob.type === 'image/webp' ? 'webp' : 'jpg'));
+        fd.append('width', String(width));
+        fd.append('height', String(height));
+        const res = await fetch(API_BASE + '/api/uploads/image', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') },
+          body: fd
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed');
+        const imgObj = { url: data.url, key: data.key, width, height };
+        if (target === 'composer') {
+          if (this.composer.images.length >= 5) { alert('Max 5 images per post.'); return; }
+          this.composer.images.push(imgObj);
+        } else if (target.postId) {
+          if (!this.feed.commentImages[target.postId]) this.feed.commentImages[target.postId] = [];
+          if (this.feed.commentImages[target.postId].length >= 3) { alert('Max 3 images per comment.'); return; }
+          this.feed.commentImages[target.postId].push(imgObj);
+        }
+      } catch (e) {
+        alert('Upload failed: ' + e.message);
+      } finally {
+        if (target === 'composer') this.composer.uploading = Math.max(0, this.composer.uploading - 1);
+      }
+    },
+
+    async handleComposerFiles(files) {
+      for (const f of Array.from(files || [])) await this.uploadImage(f, 'composer');
+    },
+    async handleCommentFiles(postId, files) {
+      for (const f of Array.from(files || [])) await this.uploadImage(f, { postId });
+    },
+    removeComposerImage(i) { this.composer.images.splice(i, 1); },
+    removeCommentImage(postId, i) {
+      const arr = this.feed.commentImages[postId];
+      if (arr) arr.splice(i, 1);
+    },
     canSubmitDiscussion() {
       return this.composer.title.trim().length >= 3
           && this.composer.body.trim().length >= 10
@@ -5232,8 +5456,8 @@ async endorsePost(postId) {
         const url = editing ? `${API_BASE}/api/posts/${editing}` : `${API_BASE}/api/posts`;
         const method = editing ? 'PATCH' : 'POST';
         const payload = editing
-          ? { title: this.composer.title.trim(), body_md: this.composer.body.trim(), category: this.composer.category }
-          : { post_type: 'discussion', category: this.composer.category, title: this.composer.title.trim(), body_md: this.composer.body.trim() };
+          ? { title: this.composer.title.trim(), body_md: this.composer.body.trim(), category: this.composer.category, images: this.composer.images }
+          : { post_type: 'discussion', category: this.composer.category, title: this.composer.title.trim(), body_md: this.composer.body.trim(), images: this.composer.images };
         const res = await fetch(url, {
           method,
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
