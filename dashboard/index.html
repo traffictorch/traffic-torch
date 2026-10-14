@@ -61,6 +61,43 @@
   #settings-content,
   #notifications-section { scroll-margin-top: 100px; }
 
+  /* ── Markdown body ── */
+  .md-body { line-height: 1.65; }
+  .md-body > *:first-child { margin-top: 0; }
+  .md-body > *:last-child { margin-bottom: 0; }
+  .md-body p { margin: 0.6em 0; }
+  .md-body h1, .md-body h2, .md-body h3, .md-body h4 { font-weight: 800; margin: 1em 0 0.5em; line-height: 1.25; }
+  .md-body h1 { font-size: 1.5em; }
+  .md-body h2 { font-size: 1.3em; }
+  .md-body h3 { font-size: 1.1em; }
+  .md-body h4 { font-size: 1em; }
+  .md-body ul, .md-body ol { padding-left: 1.5em; margin: 0.6em 0; }
+  .md-body li { margin: 0.25em 0; }
+  .md-body a { color: #f97316; text-decoration: underline; }
+  .md-body a:hover { color: #ea580c; }
+  .md-body blockquote { border-left: 3px solid rgba(249,115,22,0.5); padding-left: 0.9em; margin: 0.7em 0; color: #6b7280; font-style: italic; }
+  .dark .md-body blockquote { color: #9ca3af; }
+  .md-body code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.88em; padding: 0.15em 0.4em; border-radius: 0.3em; background: rgba(0,0,0,0.06); }
+  .dark .md-body code { background: rgba(255,255,255,0.08); }
+  .md-body pre { margin: 0.8em 0; padding: 0.9em 1em; border-radius: 0.6em; background: #0f172a; color: #e5e7eb; overflow-x: auto; font-size: 0.85em; line-height: 1.5; }
+  .md-body pre code { background: transparent; padding: 0; font-size: 1em; color: inherit; }
+  .md-body table { width: 100%; border-collapse: collapse; margin: 0.8em 0; font-size: 0.9em; }
+  .md-body th, .md-body td { padding: 0.4em 0.7em; border: 1px solid rgba(0,0,0,0.1); text-align: left; }
+  .dark .md-body th, .dark .md-body td { border-color: rgba(255,255,255,0.1); }
+  .md-body th { background: rgba(0,0,0,0.03); font-weight: 700; }
+  .dark .md-body th { background: rgba(255,255,255,0.04); }
+  .md-body hr { border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 1em 0; }
+  .dark .md-body hr { border-top-color: rgba(255,255,255,0.1); }
+  .md-body img { max-width: 100%; height: auto; border-radius: 0.5em; margin: 0.5em 0; }
+  .md-body pre .hljs-keyword, .md-body pre .hljs-built_in, .md-body pre .hljs-type { color: #c792ea; }
+  .md-body pre .hljs-string, .md-body pre .hljs-attr { color: #c3e88d; }
+  .md-body pre .hljs-number, .md-body pre .hljs-literal { color: #f78c6c; }
+  .md-body pre .hljs-comment { color: #6b7280; font-style: italic; }
+  .md-body pre .hljs-function, .md-body pre .hljs-title { color: #82aaff; }
+  .md-body pre .hljs-variable, .md-body pre .hljs-params { color: #e5e7eb; }
+  .md-body pre .hljs-tag, .md-body pre .hljs-name { color: #f07178; }
+  .md-body pre .hljs-attribute { color: #ffcb6b; }
+
   /* ── Mobile tweaks: role pill + profile meta row ── */
   @media (max-width: 639px) {
     .role-pill {
@@ -103,6 +140,8 @@
     })();
   </script>
 
+  <script defer src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <!-- PWA + Icons + Colour scheme -->
@@ -957,7 +996,8 @@
                           · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                         </p>
                         <div x-show="post.note && post.note !== post.page_title" class="mt-2">
-                          <p class="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300" x-text="post._expandedNote ? post.note : excerpt(post.note, 1200)"></p>
+                          <p x-show="!post._expandedNote" class="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300" x-text="plainExcerpt(post.note, 1200)"></p>
+                          <div x-show="post._expandedNote" x-cloak class="md-body text-sm text-gray-700 dark:text-gray-300" x-html="renderMarkdown(post.note)"></div>
                           <button x-show="shouldCollapse(post.note, 1200)" @click="post._expandedNote = !post._expandedNote" type="button"
                                   class="text-xs font-semibold text-orange-500 hover:underline mt-1"
                                   x-text="post._expandedNote ? 'Show less ▲' : 'Read more ▼'"></button>
@@ -1065,7 +1105,8 @@
                                 </div>
                               </template>
                             </div>
-                            <p class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="c._expanded ? c.body : excerpt(c.body, 600)"></p>
+                            <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
+                            <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
                             <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button"
                                     class="text-xs font-semibold text-orange-500 hover:underline mt-1"
                                     x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
@@ -1090,7 +1131,7 @@
                                                     <textarea rows="3" maxlength="6000"
                                  x-model="feed.commentDrafts[post.id]"
                                  @keydown.enter.exact.prevent="submitComment(post.id)"
-                                 placeholder="Leave a comment… (6000 chars) · +5 pts"
+                                 placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                                  <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
@@ -1634,7 +1675,8 @@
                           · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                         </p>
                         <div x-show="post.note && post.note !== post.page_title" class="mt-2">
-                          <p class="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300" x-text="post._expandedNote ? post.note : excerpt(post.note, 1200)"></p>
+                          <p x-show="!post._expandedNote" class="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300" x-text="plainExcerpt(post.note, 1200)"></p>
+                          <div x-show="post._expandedNote" x-cloak class="md-body text-sm text-gray-700 dark:text-gray-300" x-html="renderMarkdown(post.note)"></div>
                           <button x-show="shouldCollapse(post.note, 1200)" @click="post._expandedNote = !post._expandedNote" type="button"
                                   class="text-xs font-semibold text-orange-500 hover:underline mt-1"
                                   x-text="post._expandedNote ? 'Show less ▲' : 'Read more ▼'"></button>
@@ -1742,7 +1784,8 @@
                                 </div>
                               </template>
                             </div>
-                            <p class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="c._expanded ? c.body : excerpt(c.body, 600)"></p>
+                            <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
+                            <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
                             <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button"
                                     class="text-xs font-semibold text-orange-500 hover:underline mt-1"
                                     x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
@@ -1767,7 +1810,7 @@
                                                     <textarea rows="3" maxlength="6000"
                                  x-model="feed.commentDrafts[post.id]"
                                  @keydown.enter.exact.prevent="submitComment(post.id)"
-                                 placeholder="Leave a comment… (6000 chars) · +5 pts"
+                                 placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                                 <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
@@ -4744,6 +4787,59 @@ async endorsePost(postId) {
 
     shouldCollapse(text, max = 600) {
       return !!text && String(text).length > max;
+    },
+
+    plainExcerpt(text, max = 600) {
+      if (!text) return '';
+      const stripped = String(text)
+        .replace(/^#{1,6}\s+/gm, '')
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        .replace(/__([^_]+)__/g, '$1')
+        .replace(/\*([^*]+)\*/g, '$1')
+        .replace(/_([^_]+)_/g, '$1')
+        .replace(/`([^`]+)`/g, '$1')
+        .replace(/```[\s\S]*?```/g, '[code]')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/^\s*[-*+]\s+/gm, '')
+        .replace(/^\s*\d+\.\s+/gm, '')
+        .replace(/^\s*>\s+/gm, '');
+      return this.excerpt(stripped.trim(), max);
+    },
+
+    renderMarkdown(text) {
+      if (!text) return '';
+      const raw = String(text);
+      if (!window.markdownit) {
+        return '<p style="white-space:pre-wrap;margin:0;">' + raw
+          .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;') + '</p>';
+      }
+      if (!window._ttMd) {
+        window._ttMd = window.markdownit({
+          html: false,
+          linkify: true,
+          breaks: true,
+          typographer: false,
+          highlight: function (str, lang) {
+            if (lang && window.hljs && window.hljs.getLanguage(lang)) {
+              try {
+                return '<pre class="hljs"><code>' + window.hljs.highlight(str, { language: lang, ignoreIllegals: true }).value + '</code></pre>';
+              } catch (e) {}
+            }
+            const esc = window._ttMd.utils.escapeHtml(str);
+            return '<pre class="hljs"><code>' + esc + '</code></pre>';
+          }
+        });
+        const defaultLink = window._ttMd.renderer.rules.link_open || function (tokens, idx, options, env, self) {
+          return self.renderToken(tokens, idx, options);
+        };
+        window._ttMd.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+          tokens[idx].attrSet('target', '_blank');
+          tokens[idx].attrSet('rel', 'nofollow ugc noopener');
+          return defaultLink(tokens, idx, options, env, self);
+        };
+      }
+      return window._ttMd.render(raw);
     },
 
     async submitComment(postId) {
