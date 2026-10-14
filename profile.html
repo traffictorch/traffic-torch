@@ -347,7 +347,7 @@
         <!-- Tabs -->
         <div class="flex gap-2 mb-6 flex-wrap justify-center">
           <button @click="activeTab = 'audits'" class="tab-btn" :class="activeTab === 'audits' ? 'active' : ''">
-            Shared Audits
+            Posts
           </button>
           <button @click="activeTab = 'network'" class="tab-btn" :class="activeTab === 'network' ? 'active' : ''">
             Network <span x-text="network_count ? '(' + network_count + ')' : ''"></span>
@@ -364,12 +364,12 @@
         <div x-show="activeTab === 'audits'" x-cloak>
           <div x-show="posts.length === 0" class="glass rounded-2xl p-10 text-center">
             <p class="text-4xl mb-3">📭</p>
-            <p class="text-gray-500">No audits shared yet.</p>
+            <p class="text-gray-500">No posts yet.</p>
           </div>
 
           <div class="space-y-4">
             <template x-for="post in posts" :key="post.id">
-              <article class="glass rounded-2xl overflow-hidden border-l-4"
+              <article x-show="post.post_type === 'audit' || !post.post_type" class="glass rounded-2xl overflow-hidden border-l-4"
                        :class="post.score >= 80 ? 'border-green-500' : post.score >= 60 ? 'border-yellow-500' : 'border-red-500'">
                 <div class="p-4 pb-3">
                   <div class="flex items-start gap-4">
@@ -448,6 +448,89 @@
                   </div>
                 </div>
               </article>
+
+              <article x-show="post.post_type === 'discussion'" x-cloak class="glass rounded-2xl overflow-hidden">
+                <div class="p-5 pb-3">
+                  <div class="flex items-start gap-4">
+                    <img :src="avatarSrc(post)" :alt="post.display_name" width="44" height="44" style="width:44px;height:44px;" class="rounded-full flex-shrink-0 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-start justify-between gap-2 flex-wrap">
+                        <h3 class="font-bold text-base leading-snug">
+                          <a :href="'/torch/' + post.id + '/'" class="hover:text-orange-500 underline decoration-1 underline-offset-2" x-text="post.title || 'Untitled'"></a>
+                        </h3>
+                        <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-purple-500/15 text-purple-500" x-text="post.category"></span>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">
+                        <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="mt-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                    <div x-show="!post._expandedNote" class="md-body" x-html="renderMarkdown(excerpt(post.body_md || post.note || '', 800))"></div>
+                    <div x-show="post._expandedNote" x-cloak class="md-body" x-html="renderMarkdown(post.body_md || post.note || '')"></div>
+                    <button x-show="shouldCollapse(post.body_md || post.note || '', 800)" @click="post._expandedNote = !post._expandedNote" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="post._expandedNote ? 'Show less ▲' : 'Read more ▼'"></button>
+                    <template x-if="post.images && parseImages(post.images).length > 0">
+                      <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <template x-for="(img, idx) in parseImages(post.images)" :key="'pdi-' + post.id + '-' + idx">
+                          <a @click.prevent="openImageLightbox(img.url)" class="cursor-zoom-in">
+                            <img :src="img.url" loading="lazy" class="w-full rounded-lg object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;">
+                          </a>
+                        </template>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </article>
+
+              <article x-show="post.post_type === 'workflow'" x-cloak class="glass rounded-2xl overflow-hidden border-l-4 border-l-purple-500">
+                <div class="p-5 pb-3">
+                  <div class="flex items-start gap-4">
+                    <img :src="avatarSrc(post)" :alt="post.display_name" width="44" height="44" style="width:44px;height:44px;" class="rounded-full flex-shrink-0 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-start justify-between gap-2 flex-wrap">
+                        <div class="flex-1 min-w-0">
+                          <p class="text-[10px] font-black uppercase tracking-wider text-purple-500 mb-1">⚙️ Workflow</p>
+                          <h3 class="font-bold text-base leading-snug">
+                            <a :href="'/torch/' + post.id + '/'" class="hover:text-purple-500 underline decoration-1 underline-offset-2" x-text="post.title || 'Workflow'"></a>
+                            <template x-if="parseWorkflowMeta(post.workflow_meta) && parseWorkflowMeta(post.workflow_meta).version">
+                              <span class="ml-2 px-2 py-0.5 text-[10px] font-black rounded-full bg-purple-500 text-white" x-text="parseWorkflowMeta(post.workflow_meta).version"></span>
+                            </template>
+                          </h3>
+                        </div>
+                        <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-purple-500/15 text-purple-500" x-text="post.category"></span>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">
+                        <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
+                      </p>
+                    </div>
+                  </div>
+                  <template x-if="parseWorkflowMeta(post.workflow_meta) && parseWorkflowMeta(post.workflow_meta).summary">
+                    <p class="mt-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300" x-text="parseWorkflowMeta(post.workflow_meta).summary"></p>
+                  </template>
+                  <template x-if="wfTopChips(parseWorkflowMeta(post.workflow_meta)).length > 0">
+                    <div class="mt-3 flex flex-wrap gap-1.5">
+                      <template x-for="(chip, i) in wfTopChips(parseWorkflowMeta(post.workflow_meta))" :key="'pwfc-' + post.id + '-' + i">
+                        <span class="inline-flex px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-300 text-[11px] font-bold border border-purple-500/20" x-text="chip"></span>
+                      </template>
+                    </div>
+                  </template>
+                  <div class="mt-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                    <div x-show="!post._expandedNote" class="md-body" x-html="renderMarkdown(excerpt(post.body_md || post.note || '', 800))"></div>
+                    <div x-show="post._expandedNote" x-cloak class="md-body" x-html="renderMarkdown(post.body_md || post.note || '')"></div>
+                    <button x-show="shouldCollapse(post.body_md || post.note || '', 800)" @click="post._expandedNote = !post._expandedNote" type="button" class="text-xs font-semibold text-purple-500 hover:underline mt-1" x-text="post._expandedNote ? 'Show less ▲' : 'Read more ▼'"></button>
+                    <template x-if="post.images && parseImages(post.images).length > 0">
+                      <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <template x-for="(img, idx) in parseImages(post.images)" :key="'pwfi-' + post.id + '-' + idx">
+                          <a @click.prevent="openImageLightbox(img.url)" class="cursor-zoom-in">
+                            <img :src="img.url" loading="lazy" class="w-full rounded-lg object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;">
+                          </a>
+                        </template>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </article>
+
             </template>
           </div>
         </div>
@@ -673,6 +756,7 @@ function profilePage() {
     username: '',
     profile: { skills: [], contacts: [], hire_services: [] },
     posts: [],
+    imageLightbox: null,
     network: [],
     network_count: 0,
     inNetwork: false,
@@ -1065,5 +1149,6 @@ async endorsePost(postId) {
 window.profilePage = profilePage;
 </script>
 
+<div id="tt-profile-image-lightbox" x-show="imageLightbox" x-cloak @keydown.escape.window="imageLightbox = null" @click="imageLightbox = null" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483647;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;"><img :src="imageLightbox" @click.stop style="display:block;max-width:min(95vw,1400px);max-height:90vh;width:auto;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 25px 60px -12px rgba(0,0,0,0.8);background:#fff;"><button type="button" @click.stop="imageLightbox = null" aria-label="Close" style="position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-family:system-ui,-apple-system,sans-serif;">×</button></div>
 </body>
 </html>
