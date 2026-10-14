@@ -91,6 +91,8 @@
   .md-body hr { border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 1em 0; }
   .dark .md-body hr { border-top-color: rgba(255,255,255,0.1); }
   .md-body img { max-width: 100%; height: auto; border-radius: 0.5em; margin: 0.5em 0; }
+  .md-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 0.8em 0; border-radius: 0.6em; background: #0f172a; }
+  .md-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
   .md-body pre .hljs-keyword, .md-body pre .hljs-built_in, .md-body pre .hljs-type { color: #c792ea; }
   .md-body pre .hljs-string, .md-body pre .hljs-attr { color: #c3e88d; }
   .md-body pre .hljs-number, .md-body pre .hljs-literal { color: #f78c6c; }
@@ -5247,6 +5249,42 @@ async endorsePost(postId) {
       return this.excerpt(stripped.trim(), max);
     },
 
+    youtubeEmbedSrc(url) {
+      try {
+        const u = new URL(url);
+        const h = u.hostname.replace(/^www\./, '');
+        if (h === 'youtu.be') { const id = u.pathname.slice(1).split('/')[0]; return id ? 'https://www.youtube-nocookie.com/embed/' + id : null; }
+        if (h === 'youtube.com' || h === 'm.youtube.com') {
+          if (u.pathname === '/watch') { const v = u.searchParams.get('v'); return v ? 'https://www.youtube-nocookie.com/embed/' + v : null; }
+          const m = u.pathname.match(/^\/(?:embed|shorts|v)\/([^/?]+)/);
+          if (m) return 'https://www.youtube-nocookie.com/embed/' + m[1];
+        }
+      } catch (e) {}
+      return null;
+    },
+    vimeoEmbedSrc(url) {
+      try {
+        const u = new URL(url);
+        const h = u.hostname.replace(/^www\./, '');
+        if (h === 'vimeo.com' || h === 'player.vimeo.com') {
+          const m = u.pathname.match(/^\/(?:video\/)?(\d+)/);
+          if (m) return 'https://player.vimeo.com/video/' + m[1];
+        }
+      } catch (e) {}
+      return null;
+    },
+    embedFrame(src, title) {
+      return '<div class="md-embed"><iframe src="' + src + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
+    },
+    embedifyHtml(html) {
+      return html.replace(/<p>\s*<a href="([^"]+)"[^>]*>[^<]*<\/a>\s*<\/p>/g, (match, url) => {
+        const yt = this.youtubeEmbedSrc(url);
+        if (yt) return this.embedFrame(yt, 'YouTube video');
+        const vm = this.vimeoEmbedSrc(url);
+        if (vm) return this.embedFrame(vm, 'Vimeo video');
+        return match;
+      });
+    },
     renderMarkdown(text) {
       if (!text) return '';
       const raw = String(text);
@@ -5280,7 +5318,7 @@ async endorsePost(postId) {
           return defaultLink(tokens, idx, options, env, self);
         };
       }
-      return window._ttMd.render(raw);
+      return this.embedifyHtml(window._ttMd.render(raw));
     },
 
     async submitComment(postId) {
