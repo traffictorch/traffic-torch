@@ -954,6 +954,38 @@
 
           <!-- === Profile Feed view === -->
           <div x-show="profileSubTab === 'feed'" class="max-w-2xl mx-auto">
+          <div class="glass rounded-2xl p-4 mb-4">
+            <div x-show="!composer.open" @click="openComposer()" class="cursor-text text-gray-500 dark:text-gray-400 text-sm py-1">
+              ✏️ Start a discussion…
+            </div>
+            <div x-show="composer.open" x-cloak class="space-y-3">
+              <input type="text" x-model="composer.title" maxlength="120"
+                     placeholder="Title — what\'s this about?"
+                     class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-base font-bold outline-none focus:ring-2 focus:ring-orange-500">
+              <div class="flex gap-2">
+                <template x-for="cat in [\'ux\',\'seo\',\'aeo\']" :key="\'comp-\' + cat">
+                  <button type="button" @click="composer.category = cat"
+                          class="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide transition"
+                          :class="composer.category === cat ? \'bg-gradient-to-r from-orange-500 to-pink-600 text-white\' : \'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600\'"
+                          x-text="cat"></button>
+                </template>
+              </div>
+              <textarea x-model="composer.body" maxlength="6000" rows="6"
+                        placeholder="Share an insight, ask a question… Markdown supported: **bold**, # heading, lists, links, code blocks"
+                        class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm resize-y focus:ring-2 focus:ring-orange-500 outline-none"></textarea>
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-xs text-gray-500"><span x-text="composer.body.length"></span> / 6000 · Markdown supported</span>
+                <div class="flex gap-2">
+                  <button type="button" @click="closeComposer()" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition">Cancel</button>
+                  <button type="button" @click="submitDiscussion()" :disabled="!canSubmitDiscussion()"
+                          class="px-5 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg text-sm hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                    <span x-show="!composer.submitting">Post</span>
+                    <span x-show="composer.submitting">Posting…</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
             <div class="glass rounded-2xl p-3 mb-4 flex gap-2">
               <template x-for="cat in ['seo','ux','aeo']" :key="cat">
                 <button @click="setFeedCategory(cat)"
@@ -973,7 +1005,7 @@
             </div>
             <div class="space-y-4" x-show="!feed.loading">
               <template x-for="post in feed.posts" :key="'p-' + post.id">
-                <article class="glass rounded-2xl overflow-hidden border-l-4"
+                <article x-show="post.post_type !== 'discussion'" class="glass rounded-2xl overflow-hidden border-l-4"
                          :class="post.score >= 80 ? 'border-green-500' : post.score >= 60 ? 'border-yellow-500' : 'border-red-500'">
                   <div class="p-4 pb-3">
                     <div class="flex items-start gap-4">
@@ -1135,6 +1167,73 @@
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                                  <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article x-show="post.post_type === 'discussion'" class="glass rounded-2xl overflow-hidden">
+                  <div class="p-5 pb-3">
+                    <div class="flex items-start gap-4">
+                      <img :src="avatarSrc(post)" :alt="post.display_name" width="44" height="44" style="width:44px;height:44px;" class="rounded-full flex-shrink-0 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2 flex-wrap">
+                          <h3 class="font-bold text-base leading-snug">
+                            <a :href="'/torch/' + post.id + '/'" class="hover:text-orange-500 underline decoration-1 underline-offset-2" x-text="post.title || 'Untitled'"></a>
+                          </h3>
+                          <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-purple-500/15 text-purple-500" x-text="post.category"></span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">
+                          by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                          <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
+                          · <span x-text="formatRelativeTime(post.created_at)"></span>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="mt-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                      <div x-show="!post._expandedNote" class="md-body" x-html="renderMarkdown(excerpt(post.body_md || post.note || '', 1200))"></div>
+                      <div x-show="post._expandedNote" x-cloak class="md-body" x-html="renderMarkdown(post.body_md || post.note || '')"></div>
+                      <button x-show="shouldCollapse(post.body_md || post.note || '', 1200)" @click="post._expandedNote = !post._expandedNote" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="post._expandedNote ? 'Show less ▲' : 'Read more ▼'"></button>
+                    </div>
+                  </div>
+                  <div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div>
+                  <div class="px-5 py-3 flex items-center gap-2 flex-wrap">
+                    <button @click="toggleComments(post.id)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">
+                      <span x-text="(post.comment_count || 0) > 0 ? (post.comment_count + ' Comment' + (post.comment_count === 1 ? '' : 's') + ' 💬') : 'Leave a Comment 💬'"></span>
+                    </button>
+                    <button x-show="post.user_id !== user.id" @click="post.in_network ? removeFromNetwork(post.user_id) : addToNetwork(post.user_id)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition whitespace-nowrap" :class="post.in_network ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'" x-text="post.in_network ? 'In Network ✓' : '+ Add to Network'"></button>
+                    <template x-if="post.user_id === user.id">
+                      <div class="flex gap-2 ml-auto">
+                        <button @click="deletePost(post.id)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-red-500 hover:text-red-500 transition">Delete</button>
+                      </div>
+                    </template>
+                  </div>
+                  <div x-show="feed.openComments[post.id]" x-cloak>
+                    <div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div>
+                    <div class="px-5 py-4 space-y-3">
+                      <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                        Comments <span x-text="(feed.commentLists[post.id] || []).length"></span>
+                      </p>
+                      <template x-for="c in (feed.commentLists[post.id] || [])" :key="c.id">
+                        <div class="flex gap-2 items-start">
+                          <img :src="avatarSrc(c)" width="32" height="32" style="width:32px;height:32px;" class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+                          <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
+                            <div class="flex items-baseline gap-2 flex-wrap">
+                              <a :href="'/torcher/' + (c.username || '') + '/'" class="text-xs font-bold hover:text-orange-500" x-text="c.display_name || c.username"></a>
+                              <span x-show="c.total_points > 0" class="points-badge" x-text="'🏅 ' + c.total_points"></span>
+                              <span class="text-[10px] text-gray-500" x-text="formatRelativeTime(c.created_at)"></span>
+                            </div>
+                            <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
+                            <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
+                            <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
+                          </div>
+                        </div>
+                      </template>
+                      <div class="flex gap-2 items-start pt-1">
+                        <img :src="avatarSrc(profile)" width="32" height="32" style="width:32px;height:32px;" class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+                        <div class="flex-1 flex gap-2">
+                          <textarea rows="3" maxlength="6000" x-model="feed.commentDrafts[post.id]" @keydown.enter.exact.prevent="submitComment(post.id)" placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
+                          <button @click="submitComment(post.id)" class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
                     </div>
@@ -1628,6 +1727,38 @@
           </div>
 
           <div x-show="networkSubTab === 'feed'" class="max-w-2xl mx-auto">
+          <div class="glass rounded-2xl p-4 mb-4">
+            <div x-show="!composer.open" @click="openComposer()" class="cursor-text text-gray-500 dark:text-gray-400 text-sm py-1">
+              ✏️ Start a discussion…
+            </div>
+            <div x-show="composer.open" x-cloak class="space-y-3">
+              <input type="text" x-model="composer.title" maxlength="120"
+                     placeholder="Title — what\'s this about?"
+                     class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-base font-bold outline-none focus:ring-2 focus:ring-orange-500">
+              <div class="flex gap-2">
+                <template x-for="cat in [\'ux\',\'seo\',\'aeo\']" :key="\'comp-\' + cat">
+                  <button type="button" @click="composer.category = cat"
+                          class="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide transition"
+                          :class="composer.category === cat ? \'bg-gradient-to-r from-orange-500 to-pink-600 text-white\' : \'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600\'"
+                          x-text="cat"></button>
+                </template>
+              </div>
+              <textarea x-model="composer.body" maxlength="6000" rows="6"
+                        placeholder="Share an insight, ask a question… Markdown supported: **bold**, # heading, lists, links, code blocks"
+                        class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-sm resize-y focus:ring-2 focus:ring-orange-500 outline-none"></textarea>
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-xs text-gray-500"><span x-text="composer.body.length"></span> / 6000 · Markdown supported</span>
+                <div class="flex gap-2">
+                  <button type="button" @click="closeComposer()" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition">Cancel</button>
+                  <button type="button" @click="submitDiscussion()" :disabled="!canSubmitDiscussion()"
+                          class="px-5 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-lg text-sm hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                    <span x-show="!composer.submitting">Post</span>
+                    <span x-show="composer.submitting">Posting…</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
             <div class="glass rounded-2xl p-3 mb-4 flex gap-2">
               <template x-for="cat in ['seo','ux','aeo']" :key="cat">
                 <button @click="setFeedCategory(cat)"
@@ -1652,7 +1783,7 @@
 
             <div class="space-y-4" x-show="!feed.loading">
               <template x-for="post in feed.posts" :key="'n-' + post.id">
-                <article class="glass rounded-2xl overflow-hidden border-l-4"
+                <article x-show="post.post_type !== 'discussion'" class="glass rounded-2xl overflow-hidden border-l-4"
                          :class="post.score >= 80 ? 'border-green-500' : post.score >= 60 ? 'border-yellow-500' : 'border-red-500'">
                   <div class="p-4 pb-3">
                     <div class="flex items-start gap-4">
@@ -1814,6 +1945,73 @@
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                                 <button @click="submitComment(post.id)"
                                   class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article x-show="post.post_type === 'discussion'" class="glass rounded-2xl overflow-hidden">
+                  <div class="p-5 pb-3">
+                    <div class="flex items-start gap-4">
+                      <img :src="avatarSrc(post)" :alt="post.display_name" width="44" height="44" style="width:44px;height:44px;" class="rounded-full flex-shrink-0 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2 flex-wrap">
+                          <h3 class="font-bold text-base leading-snug">
+                            <a :href="'/torch/' + post.id + '/'" class="hover:text-orange-500 underline decoration-1 underline-offset-2" x-text="post.title || 'Untitled'"></a>
+                          </h3>
+                          <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase rounded-full bg-purple-500/15 text-purple-500" x-text="post.category"></span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">
+                          by <a :href="'/torcher/' + (post.username || '') + '/'" class="font-medium text-gray-600 dark:text-gray-400 hover:text-orange-500" x-text="post.display_name || post.username"></a>
+                          <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
+                          · <span x-text="formatRelativeTime(post.created_at)"></span>
+                        </p>
+                      </div>
+                    </div>
+                    <div class="mt-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                      <div x-show="!post._expandedNote" class="md-body" x-html="renderMarkdown(excerpt(post.body_md || post.note || '', 1200))"></div>
+                      <div x-show="post._expandedNote" x-cloak class="md-body" x-html="renderMarkdown(post.body_md || post.note || '')"></div>
+                      <button x-show="shouldCollapse(post.body_md || post.note || '', 1200)" @click="post._expandedNote = !post._expandedNote" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="post._expandedNote ? 'Show less ▲' : 'Read more ▼'"></button>
+                    </div>
+                  </div>
+                  <div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div>
+                  <div class="px-5 py-3 flex items-center gap-2 flex-wrap">
+                    <button @click="toggleComments(post.id)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">
+                      <span x-text="(post.comment_count || 0) > 0 ? (post.comment_count + ' Comment' + (post.comment_count === 1 ? '' : 's') + ' 💬') : 'Leave a Comment 💬'"></span>
+                    </button>
+                    <button x-show="post.user_id !== user.id" @click="post.in_network ? removeFromNetwork(post.user_id) : addToNetwork(post.user_id)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition whitespace-nowrap" :class="post.in_network ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'" x-text="post.in_network ? 'In Network ✓' : '+ Add to Network'"></button>
+                    <template x-if="post.user_id === user.id">
+                      <div class="flex gap-2 ml-auto">
+                        <button @click="deletePost(post.id)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-red-500 hover:text-red-500 transition">Delete</button>
+                      </div>
+                    </template>
+                  </div>
+                  <div x-show="feed.openComments[post.id]" x-cloak>
+                    <div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div>
+                    <div class="px-5 py-4 space-y-3">
+                      <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                        Comments <span x-text="(feed.commentLists[post.id] || []).length"></span>
+                      </p>
+                      <template x-for="c in (feed.commentLists[post.id] || [])" :key="c.id">
+                        <div class="flex gap-2 items-start">
+                          <img :src="avatarSrc(c)" width="32" height="32" style="width:32px;height:32px;" class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+                          <div class="flex-1 min-w-0 bg-gray-100 dark:bg-gray-800/60 rounded-xl px-3 py-2">
+                            <div class="flex items-baseline gap-2 flex-wrap">
+                              <a :href="'/torcher/' + (c.username || '') + '/'" class="text-xs font-bold hover:text-orange-500" x-text="c.display_name || c.username"></a>
+                              <span x-show="c.total_points > 0" class="points-badge" x-text="'🏅 ' + c.total_points"></span>
+                              <span class="text-[10px] text-gray-500" x-text="formatRelativeTime(c.created_at)"></span>
+                            </div>
+                            <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
+                            <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
+                            <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
+                          </div>
+                        </div>
+                      </template>
+                      <div class="flex gap-2 items-start pt-1">
+                        <img :src="avatarSrc(profile)" width="32" height="32" style="width:32px;height:32px;" class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+                        <div class="flex-1 flex gap-2">
+                          <textarea rows="3" maxlength="6000" x-model="feed.commentDrafts[post.id]" @keydown.enter.exact.prevent="submitComment(post.id)" placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
+                          <button @click="submitComment(post.id)" class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
                     </div>
@@ -3235,6 +3433,14 @@ function dashboardApp() {
       commentLists: {},
       commentMeta: {},
       slots: { used: 0, max: 5 }
+    },
+
+    composer: {
+      open: false,
+      title: '',
+      category: 'ux',
+      body: '',
+      submitting: false
     },
 
     get displayedAudits() { return this.recentAudits.slice(0, this.displayCount); },
@@ -4901,6 +5107,48 @@ async endorsePost(postId) {
         await fetch(`${API_BASE}/api/posts/${postId}`, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') } });
         this.feed.posts = this.feed.posts.filter(p => p.id !== postId);
       } catch {}
+    },
+
+    openComposer() {
+      this.composer.open = true;
+    },
+    closeComposer() {
+      this.composer.open = false;
+      this.composer.title = '';
+      this.composer.body = '';
+      this.composer.submitting = false;
+    },
+    canSubmitDiscussion() {
+      return this.composer.title.trim().length >= 3
+          && this.composer.body.trim().length >= 10
+          && !this.composer.submitting;
+    },
+    async submitDiscussion() {
+      if (!this.canSubmitDiscussion()) return;
+      this.composer.submitting = true;
+      try {
+        const res = await fetch(`${API_BASE}/api/posts`, {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            post_type: 'discussion',
+            category: this.composer.category,
+            title: this.composer.title.trim(),
+            body_md: this.composer.body.trim()
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          this.closeComposer();
+          await this.loadFeed(true);
+        } else {
+          alert(data.error || 'Failed to post');
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      } finally {
+        this.composer.submitting = false;
+      }
     },
 
     async editPost(postId) {
