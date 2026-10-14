@@ -974,7 +974,7 @@
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 text-white flex items-center justify-center text-sm font-bold">✏️</span>
-                  <span class="text-sm font-bold">New discussion</span>
+                  <span class="text-sm font-bold" x-text="composer.editingId ? 'Edit discussion' : 'New discussion'"></span>
                 </div>
                 <span class="text-[10px] uppercase tracking-wider font-bold text-gray-400">Markdown ready</span>
               </div>
@@ -989,17 +989,30 @@
                           x-text="cat"></button>
                 </template>
               </div>
-              <textarea x-model="composer.body" maxlength="6000" rows="6"
-                        placeholder="Share an insight, ask a question…&#10;&#10;Markdown supported: **bold**, # heading, lists, links, code blocks"
+              <div class="flex items-center gap-1 mb-1">
+                <button type="button" @click="composer.preview = false"
+                        class="px-3 py-1 rounded-lg text-xs font-bold transition"
+                        :class="!composer.preview ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-orange-500'">Write</button>
+                <button type="button" @click="composer.preview = true"
+                        class="px-3 py-1 rounded-lg text-xs font-bold transition"
+                        :class="composer.preview ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-orange-500'">Preview</button>
+              </div>
+              <textarea x-show="!composer.preview" x-model="composer.body" maxlength="6000" rows="6"
+                        @keydown.meta.enter.prevent="submitDiscussion()" @keydown.ctrl.enter.prevent="submitDiscussion()"
+                        placeholder="Share an insight, ask a question…&#10;&#10;Markdown supported: **bold**, # heading, lists, links, code blocks&#10;Tip: Cmd/Ctrl + Enter to post"
                         class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm resize-y focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15 outline-none transition-all leading-relaxed"></textarea>
+              <div x-show="composer.preview" x-cloak
+                   class="min-h-[9rem] px-4 py-3 rounded-xl border-2 border-dashed border-orange-400/40 bg-orange-500/5 md-body text-sm leading-relaxed text-gray-700 dark:text-gray-300"
+                   x-html="composer.body ? renderMarkdown(composer.body) : '<span class=&quot;text-gray-400 italic&quot;>Nothing to preview yet.</span>'"></div>
               <div class="flex items-center justify-between gap-2 flex-wrap">
                 <span class="text-xs text-gray-500"><span x-text="composer.body.length"></span> / 6000 · <span class="text-orange-500 font-semibold">Markdown supported</span></span>
                 <div class="flex gap-2">
                   <button type="button" @click="closeComposer()" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition">Cancel</button>
                   <button type="button" @click="submitDiscussion()" :disabled="!canSubmitDiscussion()"
                           class="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl text-sm shadow-md shadow-orange-500/25 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none disabled:hover:translate-y-0">
-                    <span x-show="!composer.submitting">Post</span>
-                    <span x-show="composer.submitting">Posting…</span>
+                    <span x-show="!composer.submitting && !composer.editingId">Post</span>
+                    <span x-show="!composer.submitting && composer.editingId">Save</span>
+                    <span x-show="composer.submitting">Saving…</span>
                   </button>
                 </div>
               </div>
@@ -1017,10 +1030,14 @@
               Audit slots: <span class="font-bold text-orange-500" x-text="feed.slots.used"></span> / <span x-text="feed.slots.max"></span>
             </p>
             <div x-show="feed.loading" class="text-center py-8"><div class="spinner mx-auto"></div></div>
-            <div x-show="!feed.loading && feed.posts.length === 0" class="glass rounded-2xl p-8 text-center">
-              <p class="text-4xl mb-3">📭</p>
-              <p class="text-gray-500">No posts in this category yet.</p>
-              <p class="text-sm text-gray-400 mt-2">Run an audit and click "Post to Community" to start.</p>
+            <div x-show="!feed.loading && feed.posts.length === 0" class="glass rounded-2xl p-10 text-center">
+              <p class="text-5xl mb-4">💬</p>
+              <p class="text-gray-700 dark:text-gray-200 font-bold text-lg mb-1">Be the first to start a discussion</p>
+              <p class="text-sm text-gray-500 mb-5">Share an insight, ask a question, or post a finding — no audit needed.</p>
+              <button type="button" @click="openComposer()"
+                      class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold shadow-md shadow-orange-500/30 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all">
+                <span>✏️</span><span>Start a discussion</span><span>→</span>
+              </button>
             </div>
             <div class="space-y-4" x-show="!feed.loading">
               <template x-for="post in feed.posts" :key="'p-' + post.id">
@@ -1182,7 +1199,7 @@
                         <div class="flex-1 flex gap-2">
                                                     <textarea rows="3" maxlength="6000"
                                  x-model="feed.commentDrafts[post.id]"
-                                 @keydown.enter.exact.prevent="submitComment(post.id)"
+                                 @keydown.enter.exact.prevent="submitComment(post.id)" @keydown.meta.enter.prevent="submitComment(post.id)" @keydown.ctrl.enter.prevent="submitComment(post.id)"
                                  placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                                  <button @click="submitComment(post.id)"
@@ -1224,6 +1241,7 @@
                     <button x-show="post.user_id !== user.id" @click="post.in_network ? removeFromNetwork(post.user_id) : addToNetwork(post.user_id)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition whitespace-nowrap" :class="post.in_network ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'" x-text="post.in_network ? 'In Network ✓' : '+ Add to Network'"></button>
                     <template x-if="post.user_id === user.id">
                       <div class="flex gap-2 ml-auto">
+                        <button @click="editDiscussion(post)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">Edit</button>
                         <button @click="deletePost(post.id)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-red-500 hover:text-red-500 transition">Delete</button>
                       </div>
                     </template>
@@ -1242,6 +1260,12 @@
                               <a :href="'/torcher/' + (c.username || '') + '/'" class="text-xs font-bold hover:text-orange-500" x-text="c.display_name || c.username"></a>
                               <span x-show="c.total_points > 0" class="points-badge" x-text="'🏅 ' + c.total_points"></span>
                               <span class="text-[10px] text-gray-500" x-text="formatRelativeTime(c.created_at)"></span>
+                              <template x-if="c.user_id === user.id">
+                                <div class="ml-auto flex gap-2 text-[10px]">
+                                  <button @click="editComment(post.id, c)" class="text-gray-400 hover:text-orange-500">Edit</button>
+                                  <button @click="deleteComment(post.id, c.id)" class="text-gray-400 hover:text-red-500">Delete</button>
+                                </div>
+                              </template>
                             </div>
                             <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
                             <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
@@ -1252,7 +1276,7 @@
                       <div class="flex gap-2 items-start pt-1">
                         <img :src="avatarSrc(profile)" width="32" height="32" style="width:32px;height:32px;" class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
                         <div class="flex-1 flex gap-2">
-                          <textarea rows="3" maxlength="6000" x-model="feed.commentDrafts[post.id]" @keydown.enter.exact.prevent="submitComment(post.id)" placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
+                          <textarea rows="3" maxlength="6000" x-model="feed.commentDrafts[post.id]" @keydown.enter.exact.prevent="submitComment(post.id)" @keydown.meta.enter.prevent="submitComment(post.id)" @keydown.ctrl.enter.prevent="submitComment(post.id)" placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                           <button @click="submitComment(post.id)" class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
@@ -1766,7 +1790,7 @@
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 text-white flex items-center justify-center text-sm font-bold">✏️</span>
-                  <span class="text-sm font-bold">New discussion</span>
+                  <span class="text-sm font-bold" x-text="composer.editingId ? 'Edit discussion' : 'New discussion'"></span>
                 </div>
                 <span class="text-[10px] uppercase tracking-wider font-bold text-gray-400">Markdown ready</span>
               </div>
@@ -1781,17 +1805,30 @@
                           x-text="cat"></button>
                 </template>
               </div>
-              <textarea x-model="composer.body" maxlength="6000" rows="6"
-                        placeholder="Share an insight, ask a question…&#10;&#10;Markdown supported: **bold**, # heading, lists, links, code blocks"
+              <div class="flex items-center gap-1 mb-1">
+                <button type="button" @click="composer.preview = false"
+                        class="px-3 py-1 rounded-lg text-xs font-bold transition"
+                        :class="!composer.preview ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-orange-500'">Write</button>
+                <button type="button" @click="composer.preview = true"
+                        class="px-3 py-1 rounded-lg text-xs font-bold transition"
+                        :class="composer.preview ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-orange-500'">Preview</button>
+              </div>
+              <textarea x-show="!composer.preview" x-model="composer.body" maxlength="6000" rows="6"
+                        @keydown.meta.enter.prevent="submitDiscussion()" @keydown.ctrl.enter.prevent="submitDiscussion()"
+                        placeholder="Share an insight, ask a question…&#10;&#10;Markdown supported: **bold**, # heading, lists, links, code blocks&#10;Tip: Cmd/Ctrl + Enter to post"
                         class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm resize-y focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15 outline-none transition-all leading-relaxed"></textarea>
+              <div x-show="composer.preview" x-cloak
+                   class="min-h-[9rem] px-4 py-3 rounded-xl border-2 border-dashed border-orange-400/40 bg-orange-500/5 md-body text-sm leading-relaxed text-gray-700 dark:text-gray-300"
+                   x-html="composer.body ? renderMarkdown(composer.body) : '<span class=&quot;text-gray-400 italic&quot;>Nothing to preview yet.</span>'"></div>
               <div class="flex items-center justify-between gap-2 flex-wrap">
                 <span class="text-xs text-gray-500"><span x-text="composer.body.length"></span> / 6000 · <span class="text-orange-500 font-semibold">Markdown supported</span></span>
                 <div class="flex gap-2">
                   <button type="button" @click="closeComposer()" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition">Cancel</button>
                   <button type="button" @click="submitDiscussion()" :disabled="!canSubmitDiscussion()"
                           class="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl text-sm shadow-md shadow-orange-500/25 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none disabled:hover:translate-y-0">
-                    <span x-show="!composer.submitting">Post</span>
-                    <span x-show="composer.submitting">Posting…</span>
+                    <span x-show="!composer.submitting && !composer.editingId">Post</span>
+                    <span x-show="!composer.submitting && composer.editingId">Save</span>
+                    <span x-show="composer.submitting">Saving…</span>
                   </button>
                 </div>
               </div>
@@ -1813,10 +1850,14 @@
 
             <div x-show="feed.loading" class="text-center py-8"><div class="spinner mx-auto"></div></div>
 
-            <div x-show="!feed.loading && feed.posts.length === 0" class="glass rounded-2xl p-8 text-center">
-              <p class="text-4xl mb-3">📭</p>
-              <p class="text-gray-500">No posts in this category yet.</p>
-              <p class="text-sm text-gray-400 mt-2">Run an audit and click "Post to Community" to start.</p>
+            <div x-show="!feed.loading && feed.posts.length === 0" class="glass rounded-2xl p-10 text-center">
+              <p class="text-5xl mb-4">💬</p>
+              <p class="text-gray-700 dark:text-gray-200 font-bold text-lg mb-1">Be the first to start a discussion</p>
+              <p class="text-sm text-gray-500 mb-5">Share an insight, ask a question, or post a finding — no audit needed.</p>
+              <button type="button" @click="openComposer()"
+                      class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold shadow-md shadow-orange-500/30 hover:shadow-lg hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all">
+                <span>✏️</span><span>Start a discussion</span><span>→</span>
+              </button>
             </div>
 
             <div class="space-y-4" x-show="!feed.loading">
@@ -1979,7 +2020,7 @@
                         <div class="flex-1 flex gap-2">
                                                     <textarea rows="3" maxlength="6000"
                                  x-model="feed.commentDrafts[post.id]"
-                                 @keydown.enter.exact.prevent="submitComment(post.id)"
+                                 @keydown.enter.exact.prevent="submitComment(post.id)" @keydown.meta.enter.prevent="submitComment(post.id)" @keydown.ctrl.enter.prevent="submitComment(post.id)"
                                  placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts"
                                  class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                                 <button @click="submitComment(post.id)"
@@ -2021,6 +2062,7 @@
                     <button x-show="post.user_id !== user.id" @click="post.in_network ? removeFromNetwork(post.user_id) : addToNetwork(post.user_id)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition whitespace-nowrap" :class="post.in_network ? 'border-green-500 text-green-500' : 'border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white'" x-text="post.in_network ? 'In Network ✓' : '+ Add to Network'"></button>
                     <template x-if="post.user_id === user.id">
                       <div class="flex gap-2 ml-auto">
+                        <button @click="editDiscussion(post)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">Edit</button>
                         <button @click="deletePost(post.id)" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-red-500 hover:text-red-500 transition">Delete</button>
                       </div>
                     </template>
@@ -2039,6 +2081,12 @@
                               <a :href="'/torcher/' + (c.username || '') + '/'" class="text-xs font-bold hover:text-orange-500" x-text="c.display_name || c.username"></a>
                               <span x-show="c.total_points > 0" class="points-badge" x-text="'🏅 ' + c.total_points"></span>
                               <span class="text-[10px] text-gray-500" x-text="formatRelativeTime(c.created_at)"></span>
+                              <template x-if="c.user_id === user.id">
+                                <div class="ml-auto flex gap-2 text-[10px]">
+                                  <button @click="editComment(post.id, c)" class="text-gray-400 hover:text-orange-500">Edit</button>
+                                  <button @click="deleteComment(post.id, c.id)" class="text-gray-400 hover:text-red-500">Delete</button>
+                                </div>
+                              </template>
                             </div>
                             <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
                             <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
@@ -2049,7 +2097,7 @@
                       <div class="flex gap-2 items-start pt-1">
                         <img :src="avatarSrc(profile)" width="32" height="32" style="width:32px;height:32px;" class="rounded-full flex-shrink-0 object-cover" alt="" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
                         <div class="flex-1 flex gap-2">
-                          <textarea rows="3" maxlength="6000" x-model="feed.commentDrafts[post.id]" @keydown.enter.exact.prevent="submitComment(post.id)" placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
+                          <textarea rows="3" maxlength="6000" x-model="feed.commentDrafts[post.id]" @keydown.enter.exact.prevent="submitComment(post.id)" @keydown.meta.enter.prevent="submitComment(post.id)" @keydown.ctrl.enter.prevent="submitComment(post.id)" placeholder="Leave a comment… (6000 chars) · Markdown supported · +5 pts" class="flex-1 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                           <button @click="submitComment(post.id)" class="px-3 py-2 bg-orange-500 text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition">Post +5</button>
                         </div>
                       </div>
@@ -3480,6 +3528,8 @@ function dashboardApp() {
       title: '',
       category: 'seo',
       body: '',
+      preview: false,
+      editingId: null,
       submitting: false
     },
 
@@ -5156,8 +5206,19 @@ async endorsePost(postId) {
       this.composer.open = false;
       this.composer.title = '';
       this.composer.body = '';
+      this.composer.preview = false;
+      this.composer.editingId = null;
       this.composer.submitting = false;
     },
+    editDiscussion(post) {
+      this.composer.open = true;
+      this.composer.editingId = post.id;
+      this.composer.title = post.title || '';
+      this.composer.body = post.body_md || post.note || '';
+      this.composer.category = post.category || 'seo';
+      this.composer.preview = false;
+    },
+    cancelEdit() { this.closeComposer(); },
     canSubmitDiscussion() {
       return this.composer.title.trim().length >= 3
           && this.composer.body.trim().length >= 10
@@ -5166,23 +5227,24 @@ async endorsePost(postId) {
     async submitDiscussion() {
       if (!this.canSubmitDiscussion()) return;
       this.composer.submitting = true;
+      const editing = this.composer.editingId;
       try {
-        const res = await fetch(`${API_BASE}/api/posts`, {
-          method: 'POST',
+        const url = editing ? `${API_BASE}/api/posts/${editing}` : `${API_BASE}/api/posts`;
+        const method = editing ? 'PATCH' : 'POST';
+        const payload = editing
+          ? { title: this.composer.title.trim(), body_md: this.composer.body.trim(), category: this.composer.category }
+          : { post_type: 'discussion', category: this.composer.category, title: this.composer.title.trim(), body_md: this.composer.body.trim() };
+        const res = await fetch(url, {
+          method,
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            post_type: 'discussion',
-            category: this.composer.category,
-            title: this.composer.title.trim(),
-            body_md: this.composer.body.trim()
-          })
+          body: JSON.stringify(payload)
         });
         const data = await res.json();
         if (data.success) {
           this.closeComposer();
           await this.loadFeed(true);
         } else {
-          alert(data.error || 'Failed to post');
+          alert(data.error || (editing ? 'Failed to save' : 'Failed to post'));
         }
       } catch (e) {
         alert('Error: ' + e.message);
