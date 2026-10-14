@@ -5277,13 +5277,21 @@ async endorsePost(postId) {
       return '<div class="md-embed"><iframe src="' + src + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
     },
     embedifyHtml(html) {
-      return html.replace(/<p>\s*<a href="([^"]+)"[^>]*>[^<]*<\/a>\s*<\/p>/g, (match, url) => {
-        const yt = this.youtubeEmbedSrc(url);
-        if (yt) return this.embedFrame(yt, 'YouTube video');
-        const vm = this.vimeoEmbedSrc(url);
-        if (vm) return this.embedFrame(vm, 'Vimeo video');
-        return match;
-      });
+      try {
+        // Match <a href="URL">...</a> possibly wrapped in <p>, with or without extra text
+        return html.replace(/<a href="([^"]+)"[^>]*>[^<]*<\/a>/g, (match, url) => {
+          try {
+            const yt = this.youtubeEmbedSrc(url);
+            if (yt) return this.embedFrame(yt, 'YouTube video');
+            const vm = this.vimeoEmbedSrc(url);
+            if (vm) return this.embedFrame(vm, 'Vimeo video');
+          } catch (e) {}
+          return match;
+        });
+      } catch (e) {
+        console.warn('embedifyHtml failed:', e);
+        return html;
+      }
     },
     renderMarkdown(text) {
       if (!text) return '';
@@ -5318,7 +5326,9 @@ async endorsePost(postId) {
           return defaultLink(tokens, idx, options, env, self);
         };
       }
-      return this.embedifyHtml(window._ttMd.render(raw));
+      let html = window._ttMd.render(raw);
+      try { html = this.embedifyHtml(html); } catch (e) { console.warn('embed wrap failed', e); }
+      return html;
     },
 
     async submitComment(postId) {
