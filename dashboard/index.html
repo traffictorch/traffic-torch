@@ -1021,7 +1021,7 @@
                      placeholder="Title — what's this about?"
                      class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-base font-bold outline-none focus:ring-2 focus:ring-orange-500">
               <div class="flex gap-2">
-                <template x-for="cat in ['seo','ux','aeo']" :key="'comp-' + cat">
+                <template x-for="cat in ['casual','websites','ux','seo','aeo']" :key="'comp-' + cat">
                   <button type="button" @click="composer.category = cat"
                           class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all duration-150"
                           :class="composer.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-md shadow-orange-500/30 scale-105' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-orange-500'"
@@ -1143,7 +1143,7 @@
             </div>
           </div>
             <div class="glass rounded-2xl p-3 mb-4 flex gap-2">
-              <template x-for="cat in ['seo','ux','aeo']" :key="cat">
+              <template x-for="cat in ['casual','websites','ux','seo','aeo']" :key="cat">
                 <button @click="setFeedCategory(cat)"
                         class="flex-1 py-2 rounded-lg text-sm font-bold uppercase tracking-wide transition"
                         :class="feed.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white' : 'text-gray-500 hover:text-orange-500'"
@@ -2102,7 +2102,7 @@
                      placeholder="Title — what's this about?"
                      class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-base font-bold outline-none focus:ring-2 focus:ring-orange-500">
               <div class="flex gap-2">
-                <template x-for="cat in ['seo','ux','aeo']" :key="'comp-' + cat">
+                <template x-for="cat in ['casual','websites','ux','seo','aeo']" :key="'comp-' + cat">
                   <button type="button" @click="composer.category = cat"
                           class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide transition-all duration-150"
                           :class="composer.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white shadow-md shadow-orange-500/30 scale-105' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-orange-500'"
@@ -2224,7 +2224,7 @@
             </div>
           </div>
             <div class="glass rounded-2xl p-3 mb-4 flex gap-2">
-              <template x-for="cat in ['seo','ux','aeo']" :key="cat">
+              <template x-for="cat in ['casual','websites','ux','seo','aeo']" :key="cat">
                 <button @click="setFeedCategory(cat)"
                         class="flex-1 py-2 rounded-lg text-sm font-bold uppercase tracking-wide transition"
                         :class="feed.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white' : 'text-gray-500 hover:text-orange-500'"
@@ -4057,7 +4057,7 @@ function dashboardApp() {
     feed: {
       loading: false,
       loadingMore: false,
-      category: 'seo',
+      category: 'casual',
       posts: [],
       cursor: null,
       hasMore: true,
@@ -4073,7 +4073,7 @@ function dashboardApp() {
     composer: {
       open: false,
       title: '',
-      category: 'seo',
+      category: 'casual',
       body: '',
       preview: false,
       editingId: null,
@@ -6166,6 +6166,8 @@ async endorsePost(postId) {
               <p style="font-size:0.75rem; color:#9ca3af; text-align:right; margin:0.25rem 0 0.9rem;"><span id="tt-edit-post-count">0</span> / 360</p>
               <label style="display:block; font-size:0.8rem; font-weight:600; margin-bottom:0.35rem; color:#6b7280;">Category</label>
               <select id="tt-edit-post-cat" style="width:100%; padding:0.55rem; border-radius:0.5rem; border:1px solid #d1d5db; font-size:0.9rem; margin-bottom:1.25rem; background:transparent; color:inherit;">
+                <option value="casual">Casual</option>
+                <option value="websites">Websites</option>
                 <option value="ux">UX</option>
                 <option value="seo">SEO</option>
                 <option value="aeo">AEO</option>
