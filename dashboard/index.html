@@ -1157,7 +1157,7 @@
             <div class="space-y-4" x-show="!feed.loading">
               <template x-for="post in feed.posts" :key="'p-' + post.id">
                 <div>
-                <article x-show="post.post_type !== 'discussion'" class="glass rounded-2xl overflow-hidden border-l-4"
+                <article x-show="post.post_type === 'audit'" class="glass rounded-2xl overflow-hidden border-l-4"
                          :class="post.score >= 80 ? 'border-green-500' : post.score >= 60 ? 'border-yellow-500' : 'border-red-500'">
                   <div class="p-4 pb-3">
                     <div class="flex items-start gap-4">
@@ -2130,7 +2130,7 @@
             <div class="space-y-4" x-show="!feed.loading">
               <template x-for="post in feed.posts" :key="'n-' + post.id">
                 <div>
-                <article x-show="post.post_type !== 'discussion'" class="glass rounded-2xl overflow-hidden border-l-4"
+                <article x-show="post.post_type === 'audit'" class="glass rounded-2xl overflow-hidden border-l-4"
                          :class="post.score >= 80 ? 'border-green-500' : post.score >= 60 ? 'border-yellow-500' : 'border-red-500'">
                   <div class="p-4 pb-3">
                     <div class="flex items-start gap-4">
@@ -4338,6 +4338,44 @@ async endorsePost(postId) {
       return this.toolPath(key) + '?url=' + encodeURIComponent(testedUrl);
     },
 
+    parseWorkflowMeta(raw) {
+      if (!raw) return null;
+      try {
+        const m = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        return m && typeof m === 'object' ? m : null;
+      } catch { return null; }
+    },
+    wfTopChips(meta) {
+      if (!meta) return [];
+      const order = ['ai_models', 'ai_tools', 'cloud', 'ide', 'hardware', 'databases', 'devops', 'terminal', 'os', 'other_tools'];
+      const out = [];
+      for (const k of order) {
+        const arr = meta[k];
+        if (Array.isArray(arr)) for (const v of arr) { if (out.length < 6) out.push(v); }
+      }
+      return out;
+    },
+    wfAdoptText(meta) {
+      if (!meta) return '';
+      const lines = [];
+      if (meta.version) lines.push('**Workflow ' + meta.version + '**');
+      if (meta.summary) lines.push(meta.summary);
+      lines.push('');
+      const groups = [['hardware','Hardware'],['os','OS'],['ide','IDE'],['terminal','Terminal'],['ai_models','AI Models'],['ai_tools','AI Tools'],['cloud','Cloud'],['databases','Databases'],['devops','DevOps'],['other_tools','Other']];
+      for (const [k, label] of groups) {
+        const arr = meta[k];
+        if (Array.isArray(arr) && arr.length) lines.push('- **' + label + ':** ' + arr.join(', '));
+      }
+      if (meta.repo_url) lines.push('\nRepo: ' + meta.repo_url);
+      return lines.join('\n');
+    },
+    async adoptWorkflow(post) {
+      const meta = this.parseWorkflowMeta(post.workflow_meta);
+      const text = this.wfAdoptText(meta);
+      if (!text) return;
+      try { await navigator.clipboard.writeText(text); alert('Copied workflow config to clipboard'); }
+      catch { prompt('Copy workflow:', text); }
+    },
     parseImages(raw) {
       if (!raw) return [];
       try {
