@@ -5527,7 +5527,11 @@ async endorsePost(postId) {
         });
         const data = await res.json();
         if (data.success) {
+          const postedCat = this.composer.category;
           this.closeComposer();
+          if (!editing && this.feed.category !== postedCat) {
+            this.feed.category = postedCat;
+          }
           await this.loadFeed(true);
         } else {
           alert(data.error || (editing ? 'Failed to save' : 'Failed to post'));
