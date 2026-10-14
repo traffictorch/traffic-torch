@@ -335,14 +335,14 @@ function renderTorchBody(data) {
   <!-- Tab: Torch -->
   <section x-show="activeTab === 'torch'">
     <div class="glass rounded-2xl p-6 mt-4">
-      <h2 class="text-lg font-bold mb-3" x-text="postType === 'discussion' ? 'About this discussion' : 'About this audit'">About this audit</h2>
+      <h2 class="text-lg font-bold mb-3" x-text="postType === 'discussion' ? 'About this discussion' : (postType === 'workflow' ? '⚙️ Workflow details' : 'About this audit')">About this audit</h2>
       <div class="grid grid-cols-2 gap-3 text-sm">
         <div x-show="postType !== 'discussion'"><span class="text-gray-500">Tool:</span> <span class="font-medium">${htmlEscape(toolName)}</span></div>
         <div><span class="text-gray-500">Category:</span> <span class="font-medium uppercase">${htmlEscape(post.category || '')}</span></div>
         <div x-show="postType !== 'discussion'"><span class="text-gray-500">Score:</span> <span class="font-medium">${sc}/100</span></div>
         <div><span class="text-gray-500">Audited:</span> <span class="font-medium">${date}</span></div>
       </div>
-      ${runUrl ? `<div class="mt-5"><a href="${runUrl}" target="_blank" rel="noopener" class="inline-block px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold rounded-xl hover:opacity-90 transition">▶ Run this audit yourself</a></div>` : ''}
+      ${runUrl && (!isDiscussion && !isWorkflow) ? `<div class="mt-5"><a href="${runUrl}" target="_blank" rel="noopener" class="inline-block px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold rounded-xl hover:opacity-90 transition">▶ Run this audit yourself</a></div>` : ''}
     </div>
     ${renderComments()}
   </section>

@@ -61,6 +61,23 @@ export function renderHeadTags(meta, { index = true, type = 'profile' } = {}) {
 export function buildTorchMeta(post, author, id) {
   const display = author.display_name || author.username;
 
+  if (post.post_type === 'workflow') {
+    let wf = null;
+    try { wf = post.workflow_meta ? (typeof post.workflow_meta === 'string' ? JSON.parse(post.workflow_meta) : post.workflow_meta) : null; } catch (e) {}
+    const titleText = (post.title && post.title.trim()) || ('Workflow #' + id);
+    const version = (wf && wf.version) ? (' ' + wf.version) : '';
+    const title = titleText + version + ' — Workflow by @' + author.username + ' · Traffic Torch';
+    const summary = (wf && wf.summary) ? wf.summary : stripMarkdown(post.body_md || post.note || '', 155);
+    const chips = [];
+    if (wf) {
+      ['ai_models','ai_tools','cloud','ide','hardware','databases'].forEach(function (k) { if (Array.isArray(wf[k])) chips.push.apply(chips, wf[k]); });
+    }
+    const description = (summary || ('Workflow shared by @' + author.username + ' on Traffic Torch.')) + (chips.length ? ' · Stack: ' + chips.slice(0, 6).join(', ') : '');
+    const canonical = 'https://traffictorch.net/torch/' + id + '/';
+    const ogImage = 'https://traffictorch.net/og/discussion/' + id + '.png';
+    return { title, description, canonical, ogImage, titleText, display };
+  }
+
   if (post.post_type === 'discussion') {
     const titleText = (post.title && post.title.trim()) || ('Discussion #' + id);
     const title = titleText + ' — Discussion by @' + author.username + ' · Traffic Torch';

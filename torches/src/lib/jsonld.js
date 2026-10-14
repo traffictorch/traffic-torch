@@ -116,8 +116,65 @@ function discussionJsonLd(post, author, id) {
   };
 }
 
+function workflowJsonLd(post, author, id) {
+  const url = SITE + '/torch/' + id + '/';
+  let wf = null;
+  try { wf = post.workflow_meta ? (typeof post.workflow_meta === 'string' ? JSON.parse(post.workflow_meta) : post.workflow_meta) : null; } catch (e) {}
+  const titleText = (post.title && post.title.trim()) || ('Workflow #' + id);
+  const summary = (wf && wf.summary) || stripMarkdown(post.body_md || post.note || '', 500);
+  const keywords = [post.category].concat(wf && Array.isArray(wf.ai_models) ? wf.ai_models : []).concat(wf && Array.isArray(wf.ai_tools) ? wf.ai_tools : []).filter(Boolean);
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Article',
+        '@id': url + '#workflow',
+        url: url,
+        headline: titleText + (wf && wf.version ? ' ' + wf.version : ''),
+        description: summary,
+        articleBody: stripMarkdown(post.body_md || post.note || '').slice(0, 3000),
+        datePublished: new Date(post.created_at).toISOString(),
+        dateModified: new Date(post.created_at).toISOString(),
+        author: {
+          '@type': 'Person',
+          name: author.display_name || author.username,
+          url: SITE + '/torcher/' + author.username + '/'
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Traffic Torch',
+          url: SITE + '/',
+          logo: { '@type': 'ImageObject', url: SITE + '/logo-512.webp' }
+        },
+        articleSection: post.category,
+        keywords: keywords,
+        isPartOf: {
+          '@type': 'CollectionPage',
+          name: 'Community Workflows',
+          url: SITE + '/community/'
+        },
+        speakable: {
+          '@type': 'SpeakableSpecification',
+          cssSelector: ['h1']
+        }
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE + '/' },
+          { '@type': 'ListItem', position: 2, name: 'Community', item: SITE + '/community/' },
+          { '@type': 'ListItem', position: 3, name: '@' + author.username, item: SITE + '/torcher/' + author.username + '/' },
+          { '@type': 'ListItem', position: 4, name: 'Workflow #' + id, item: url }
+        ]
+      }
+    ]
+  };
+}
+
 export function torchJsonLd(post, author, id) {
   if (post.post_type === 'discussion') return discussionJsonLd(post, author, id);
+  if (post.post_type === 'workflow') return workflowJsonLd(post, author, id);
   const url = `${SITE}/torch/${id}/`;
   const domain = post.domain_mode === 'hidden'
     ? (post.domain_label || 'Hidden site')

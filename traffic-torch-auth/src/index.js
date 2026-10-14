@@ -506,8 +506,8 @@ async function setCachedReport(userId, reportType, days, startDate, endDate, dat
 // ============================================================
 const SLOT_MAP = { free: 5, pro: 10, enterprise: 300, guest: 5 };
 const AVATARS = ['owner', 'designer', 'seo'];
-const ROLES = ['owner', 'designer', 'seo', 'developer', 'other'];
-const CATEGORIES = ['ux', 'seo', 'aeo'];
+const ROLES = ['owner', 'designer', 'seo', 'developer', 'ai-lens', 'ai-conductor', 'context-engineer', 'other'];
+const CATEGORIES = ['casual','websites','ux','seo','aeo'];
 
 const POINTS_COMMENT      = 5;
 const POINTS_POST         = 10;
@@ -1688,7 +1688,7 @@ async function handleFeedRoutes(request, env, url) {
   if (url.pathname === '/api/posts' && request.method === 'POST') {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
-    const category = CATEGORIES.includes(body.category) ? body.category : 'ux';
+    const category = CATEGORIES.includes(body.category) ? body.category : 'casual';
     const postType = ['audit','discussion','workflow'].includes(body.post_type) ? body.post_type : 'audit';
     const note = String(body.note || '').slice(0, 6000);
     const bodyMd = body.body_md ? String(body.body_md).slice(0, 6000) : null;
