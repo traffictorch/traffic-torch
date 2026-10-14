@@ -93,6 +93,17 @@
   .md-body img { max-width: 100%; height: auto; border-radius: 0.5em; margin: 0.5em 0; }
   .md-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 0.8em 0; border-radius: 0.6em; background: #0f172a; }
   .md-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+  .og-card { display: flex; gap: 12px; padding: 10px; margin: 0.6em 0; border-radius: 0.6em; border: 1px solid rgba(0,0,0,0.08); background: rgba(0,0,0,0.02); text-decoration: none !important; color: inherit; transition: background 0.15s, border-color 0.15s; overflow: hidden; }
+  .og-card:hover { background: rgba(249,115,22,0.05); border-color: rgba(249,115,22,0.3); }
+  .dark .og-card { border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+  .dark .og-card:hover { background: rgba(249,115,22,0.08); border-color: rgba(249,115,22,0.4); }
+  .og-card-img { width: 120px; height: 90px; object-fit: cover; border-radius: 0.4em; flex-shrink: 0; background: rgba(0,0,0,0.05); }
+  @media (max-width: 500px) { .og-card-img { width: 80px; height: 60px; } }
+  .og-card-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
+  .og-card-domain { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af; font-weight: 700; }
+  .og-card-title { font-size: 14px; font-weight: 700; line-height: 1.3; color: inherit; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .og-card-desc { font-size: 12px; line-height: 1.4; color: #6b7280; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .dark .og-card-desc { color: #9ca3af; }
   .md-body pre .hljs-keyword, .md-body pre .hljs-built_in, .md-body pre .hljs-type { color: #c792ea; }
   .md-body pre .hljs-string, .md-body pre .hljs-attr { color: #c3e88d; }
   .md-body pre .hljs-number, .md-body pre .hljs-literal { color: #f78c6c; }
@@ -5184,6 +5195,7 @@ async endorsePost(postId) {
         this.feed.cursor = data.cursor || null;
         this.feed.hasMore = !!data.cursor;
         this.feed.slots = data.slots || this.feed.slots;
+        this.$nextTick(() => this.enhanceAllOg());
       } catch (e) { this.feed.error = e.message; }
       finally { this.feed.loading = false; }
     },
@@ -5225,6 +5237,7 @@ async endorsePost(postId) {
           has_more: !!data.has_more,
           loading: false
         };
+        this.$nextTick(() => this.enhanceAllOg());
       } catch (e) {
         this.feed.commentMeta[postId] = { ...meta, loading: false };
       }
@@ -5307,6 +5320,41 @@ async endorsePost(postId) {
         return html;
       }
     },
+    ogCardHtml(data, url) {
+      const esc = (s) => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      const img = data.image ? '<img src="' + esc(data.image) + '" alt="" loading="lazy" class="og-card-img" onerror="this.style.display=\'none\'">' : '';
+      return '<a href="' + esc(url) + '" target="_blank" rel="nofollow ugc noopener" class="og-card" data-og-done="1">' + img + '<div class="og-card-body"><div class="og-card-domain">' + esc(data.domain || '') + '</div><div class="og-card-title">' + esc(data.title) + '</div>' + (data.description ? '<div class="og-card-desc">' + esc(data.description) + '</div>' : '') + '</div></a>';
+    },
+    async enhanceOgLinks(root) {
+      if (!root || !root.querySelectorAll) return;
+      const anchors = root.querySelectorAll('a[href^="http"]:not([data-og-done]):not([data-og-loading])');
+      let count = 0;
+      for (const a of anchors) {
+        if (count >= 3) break;
+        const href = a.getAttribute('href');
+        const text = (a.textContent || '').trim();
+        const bare = text === href || text === href.replace(/^https?:\/\//, '').replace(/\/$/, '');
+        if (!bare) continue;
+        if (/youtube\.com|youtu\.be|vimeo\.com/.test(href)) continue;
+        try { if (new URL(href).hostname.endsWith('traffictorch.net')) continue; } catch { continue; }
+        a.setAttribute('data-og-loading', '1');
+        count++;
+        try {
+          const headers = {};
+          const tk = localStorage.getItem('authToken');
+          if (tk) headers['Authorization'] = 'Bearer ' + tk;
+          const res = await fetch(API_BASE + '/api/og-preview?url=' + encodeURIComponent(href), { headers });
+          if (!res.ok) { a.removeAttribute('data-og-loading'); a.setAttribute('data-og-done', '1'); continue; }
+          const data = await res.json();
+          if (!data || !data.title) { a.removeAttribute('data-og-loading'); a.setAttribute('data-og-done', '1'); continue; }
+          a.outerHTML = this.ogCardHtml(data, href);
+        } catch (e) { a.removeAttribute('data-og-loading'); }
+      }
+    },
+    enhanceAllOg() {
+      if (typeof document === 'undefined') return;
+      document.querySelectorAll('.md-body').forEach(el => this.enhanceOgLinks(el));
+    },
     renderMarkdown(text) {
       if (!text) return '';
       const raw = String(text);
@@ -5361,6 +5409,7 @@ async endorsePost(postId) {
           this.feed.commentImages[postId] = [];
           const meta = this.feed.commentMeta[postId];
           if (meta) { meta.total = (meta.total || 0) + 1; meta.offset = (meta.offset || 0) + 1; }
+          this.$nextTick(() => this.enhanceAllOg());
           const p = this.feed.posts.find(x => x.id === postId);
           if (p) p.comment_count = (p.comment_count || 0) + 1;
           if (data.total_points !== undefined) this.profile.total_points = data.total_points;
