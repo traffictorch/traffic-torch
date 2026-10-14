@@ -53,6 +53,11 @@ function injectHead(html, { headTags, jsonLd }) {
   out = out.replace(/<meta\s+name="description"[^>]*>/gi, '');
   out = out.replace(/<link\s+rel="canonical"[^>]*>/gi, '');
   out = out.replace(/<meta\s+name="robots"[^>]*>/gi, '');
+  // Prepend dependency scripts BEFORE Alpine so torchPage() is defined first
+  const prepend = '<script defer src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>\n' +
+    '<script defer src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>\n' +
+    '<script defer src="/torch-page.js"></script>\n';
+  out = out.replace(/<head>/i, '<head>\n' + prepend);
   const block = `\n${headTags}\n${jsonLd}\n${MD_CSS}\n</head>`;
   return out.includes('</head>') ? out.replace('</head>', block) : out;
 }
@@ -73,6 +78,7 @@ function monthsSince(ts) { return ts ? Math.max(0, Math.floor((Date.now() - ts) 
 function fmtDate(ts) { try { return new Date(ts).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }); } catch { return '—'; } }
 
 function torchLabel(post) {
+  if (post.post_type === 'workflow' && post.title && post.title.trim()) return post.title;
   if (post.page_title && post.page_title.trim()) return post.page_title;
   if (post.domain_mode === 'hidden') return post.domain_label || 'Hidden site';
   if (post.url) return new URL(post.url).hostname.replace(/^www\./, '');
@@ -103,7 +109,7 @@ function domainOf(post) {
 }
 
 function roleLabel(role) {
-  const m = { owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', developer: 'Developer', other: 'Member' };
+  const m = { owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', developer: 'Developer', 'ai-lens': 'AI Lenzer', 'ai-conductor': 'AI Conductor', 'context-engineer': 'Context Engineer', other: 'Member' };
   return m[role] || 'Member';
 }
 
@@ -183,11 +189,20 @@ function renderComments() {
 function renderTorchBody(data) {
   const { post, author, more_by_author, related, author_network } = data;
   const isDiscussion = post.post_type === 'discussion';
+  const isWorkflow = post.post_type === 'workflow';
+  let wfMeta = null;
+  if (isWorkflow && post.workflow_meta) {
+    try { wfMeta = typeof post.workflow_meta === 'string' ? JSON.parse(post.workflow_meta) : post.workflow_meta; } catch (e) {}
+  }
+  let postImages = [];
+  if (post.images) {
+    try { const arr = typeof post.images === 'string' ? JSON.parse(post.images) : post.images; if (Array.isArray(arr)) postImages = arr; } catch (e) {}
+  }
   const sc = Number(post.score) || 0;
   const domain = domainOf(post);
   const titleText = htmlEscape(torchLabel(post));
   const displayTitle = isDiscussion ? htmlEscape(post.title || 'Discussion') : titleText;
-  const bodyMd = isDiscussion ? (post.body_md || post.note || '') : (post.note || '');
+  const bodyMd = (isDiscussion || isWorkflow) ? (post.body_md || post.note || '') : (post.note || '');
   const date = fmtDate(post.created_at);
   const toolName = toolDisplay(post.tool);
   const runUrl = post.url && post.tool ? toolRunUrl(post.tool, post.url) : null;
@@ -269,18 +284,19 @@ function renderTorchBody(data) {
 
   <article class="glass rounded-2xl overflow-hidden border-l-4" style="border-left-color:${isDiscussion ? '#f97316' : scoreColor(sc)}">
     <div class="p-6">
-      ${isDiscussion ? '<p class="text-xs font-bold uppercase tracking-wider text-purple-500 mb-4 text-center sm:text-left">💬 Discussion</p>' : '<p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 text-center sm:text-left">' + htmlEscape(toolName) + '</p>'}
+      ${isDiscussion ? '<p class="text-xs font-bold uppercase tracking-wider text-purple-500 mb-4 text-center sm:text-left">💬 Discussion</p>' : (isWorkflow ? '<p class="text-xs font-bold uppercase tracking-wider text-purple-500 mb-4 text-center sm:text-left">⚙️ Workflow' + (wfMeta && wfMeta.version ? ' · ' + htmlEscape(wfMeta.version) : '') + '</p>' : '<p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 text-center sm:text-left">' + htmlEscape(toolName) + '</p>')}
 
       <div class="flex flex-col items-center sm:flex-row sm:items-start gap-6 mb-4">
-        ${!isDiscussion ? '<div class="flex-shrink-0 score-circle" style="--sc:' + sc + ';--color:' + scoreColor(sc) + ';"><div class="score-inner"><p class="score-num" style="color:' + scoreColor(sc) + ';">' + sc + '</p><p class="score-denom">/100</p></div></div>' : ''}
+        ${(!isDiscussion && !isWorkflow) ? '<div class="flex-shrink-0 score-circle" style="--sc:' + sc + ';--color:' + scoreColor(sc) + ';"><div class="score-inner"><p class="score-num" style="color:' + scoreColor(sc) + ';">' + sc + '</p><p class="score-denom">/100</p></div></div>' : ''}
         <div class="flex-1 min-w-0 text-center sm:text-left">
           <h1 class="text-2xl sm:text-3xl font-black leading-tight mb-2">${displayTitle}</h1>
-          <p class="text-sm text-gray-500">${isDiscussion ? '<time datetime="' + new Date(post.created_at).toISOString() + '">' + date + '</time>' : htmlEscape(domain) + ' · <time datetime="' + new Date(post.created_at).toISOString() + '">' + date + '</time>'}</p>
+          <p class="text-sm text-gray-500">${(isDiscussion || isWorkflow) ? '<time datetime="' + new Date(post.created_at).toISOString() + '">' + date + '</time>' : htmlEscape(domain) + ' · <time datetime="' + new Date(post.created_at).toISOString() + '">' + date + '</time>'}</p>
         </div>
       </div>
 
-      ${isDiscussion && bodyMd ? '<div class="mt-5 md-body text-base leading-relaxed text-gray-700 dark:text-gray-300"><div x-show="!bodyExpanded">' + htmlEscape(plainExcerptServer(bodyMd, 1500)) + '</div><div x-show="bodyExpanded" x-cloak x-html="renderMarkdown(bodyMd)"></div><button x-show="shouldCollapse(bodyMd, 1500)" type="button" @click="bodyExpanded = !bodyExpanded" class="text-sm font-semibold text-orange-500 hover:underline mt-2" x-text="bodyExpanded ? \'Show less ▲\' : \'Read more ▼\'"></button></div>' : ''}
-      ${!isDiscussion && post.note ? '<p class="text-base leading-relaxed mt-3 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">' + htmlEscape(post.note) + '</p>' : ''}
+      ${(isDiscussion || isWorkflow) && bodyMd ? '<div class="mt-5 text-base leading-relaxed text-gray-700 dark:text-gray-300"><div :class="bodyExpanded ? \'\' : \'relative max-h-[28rem] overflow-hidden\'"><div class="md-body" x-html="renderMarkdown(bodyMd)">' + htmlEscape(plainExcerptServer(bodyMd, 2000)) + '</div><div x-show="!bodyExpanded" x-cloak class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none"></div></div><button x-show="shouldCollapse(bodyMd, 1500)" type="button" @click="bodyExpanded = !bodyExpanded" class="text-sm font-semibold text-orange-500 hover:underline mt-2" x-text="bodyExpanded ? \'Show less ▲\' : \'Read more ▼\'"></button></div>' : ''}
+      ${!isDiscussion && !isWorkflow && post.note ? '<p class="text-base leading-relaxed mt-3 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">' + htmlEscape(post.note) + '</p>' : ''}
+      ${postImages.length > 0 ? '<div class="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">' + postImages.map(function(img, i) { return '<a href="' + htmlEscape(img.url) + '" target="_blank" rel="noopener"><img src="' + htmlEscape(img.url) + '" loading="lazy" alt="Image ' + (i+1) + '" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;object-fit:cover;"></a>'; }).join('') + '</div>' : ''}
     </div>
     ${modulesHtml ? `<div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div><div class="px-6 py-4 space-y-2">${modulesHtml}</div>` : ''}
   </article>
@@ -377,9 +393,7 @@ function renderTorchBody(data) {
 }
 
 function torchPageScript() {
-  return '<script src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>\n' +
-    '<script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>\n' +
-    '<script src="/torch-page.js" defer></script>';
+  return '';
 }
 
 export { TORCH_PAGE_JS };
