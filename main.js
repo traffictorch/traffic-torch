@@ -940,4 +940,13 @@ window.closeUpgradeModal = closeUpgradeModal;
 // Create Fingerprint
 window.getOrCreateFingerprint = getOrCreateFingerprint;
 
-
+// Global "← Back" handler for blog posts (works in PWA standalone too)
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('[data-back-link]');
+  if (!link) return;
+  if (history.length > 1) {
+    e.preventDefault();
+    history.back();
+  }
+  // else: default href="/" kicks in as fallback
+});
