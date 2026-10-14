@@ -960,13 +960,13 @@
             </div>
             <div x-show="composer.open" x-cloak class="space-y-3">
               <input type="text" x-model="composer.title" maxlength="120"
-                     placeholder="Title — what\'s this about?"
+                     placeholder="Title — what's this about?"
                      class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-base font-bold outline-none focus:ring-2 focus:ring-orange-500">
               <div class="flex gap-2">
-                <template x-for="cat in [\'ux\',\'seo\',\'aeo\']" :key="\'comp-\' + cat">
+                <template x-for="cat in ['ux','seo','aeo']" :key="'comp-' + cat">
                   <button type="button" @click="composer.category = cat"
                           class="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide transition"
-                          :class="composer.category === cat ? \'bg-gradient-to-r from-orange-500 to-pink-600 text-white\' : \'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600\'"
+                          :class="composer.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'"
                           x-text="cat"></button>
                 </template>
               </div>
@@ -1733,13 +1733,13 @@
             </div>
             <div x-show="composer.open" x-cloak class="space-y-3">
               <input type="text" x-model="composer.title" maxlength="120"
-                     placeholder="Title — what\'s this about?"
+                     placeholder="Title — what's this about?"
                      class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 text-base font-bold outline-none focus:ring-2 focus:ring-orange-500">
               <div class="flex gap-2">
-                <template x-for="cat in [\'ux\',\'seo\',\'aeo\']" :key="\'comp-\' + cat">
+                <template x-for="cat in ['ux','seo','aeo']" :key="'comp-' + cat">
                   <button type="button" @click="composer.category = cat"
                           class="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wide transition"
-                          :class="composer.category === cat ? \'bg-gradient-to-r from-orange-500 to-pink-600 text-white\' : \'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600\'"
+                          :class="composer.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'"
                           x-text="cat"></button>
                 </template>
               </div>
