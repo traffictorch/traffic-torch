@@ -956,7 +956,12 @@
                           <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
                           · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                         </p>
-                        <p x-show="post.note && post.note !== post.page_title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
+                        <div x-show="post.note && post.note !== post.page_title" class="mt-2">
+                          <p class="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300" x-text="post._expandedNote ? post.note : excerpt(post.note, 1200)"></p>
+                          <button x-show="shouldCollapse(post.note, 1200)" @click="post._expandedNote = !post._expandedNote" type="button"
+                                  class="text-xs font-semibold text-orange-500 hover:underline mt-1"
+                                  x-text="post._expandedNote ? 'Show less ▲' : 'Read more ▼'"></button>
+                        </div>
                       </div>
                       <img :src="avatarSrc(post)"
                            :alt="post.display_name"
@@ -1037,6 +1042,9 @@
                     <div class="px-4 py-4 space-y-3">
                       <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
                         Comments <span x-text="(feed.commentLists[post.id] || []).length"></span>
+                        <template x-if="feed.commentMeta[post.id] && feed.commentMeta[post.id].total > (feed.commentLists[post.id] || []).length">
+                          <span class="font-normal normal-case text-gray-400 ml-1">of <span x-text="feed.commentMeta[post.id].total"></span></span>
+                        </template>
                       </p>
                       <template x-for="c in (feed.commentLists[post.id] || [])" :key="c.id">
                         <div class="flex gap-2 items-start">
@@ -1057,11 +1065,22 @@
                                 </div>
                               </template>
                             </div>
-                            <p class="text-sm mt-1 leading-snug break-words" x-text="c.body"></p>
+                            <p class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="c._expanded ? c.body : excerpt(c.body, 600)"></p>
+                            <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button"
+                                    class="text-xs font-semibold text-orange-500 hover:underline mt-1"
+                                    x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
                           </div>
                         </div>
                       </template>
-                      <p x-show="(feed.commentLists[post.id] || []).length === 0"
+                      <div x-show="feed.commentMeta[post.id] && feed.commentMeta[post.id].has_more" class="text-center pt-2">
+                        <button @click="loadMoreComments(post.id)" type="button"
+                                :disabled="feed.commentMeta[post.id] && feed.commentMeta[post.id].loading"
+                                class="px-4 py-1.5 text-xs font-semibold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition disabled:opacity-50">
+                          <span x-show="!(feed.commentMeta[post.id] && feed.commentMeta[post.id].loading)">Load more comments</span>
+                          <span x-show="feed.commentMeta[post.id] && feed.commentMeta[post.id].loading">Loading…</span>
+                        </button>
+                      </div>
+                      <p x-show="(feed.commentLists[post.id] || []).length === 0 && !(feed.commentMeta[post.id] && feed.commentMeta[post.id].loading)"
                          class="text-xs text-gray-400 italic text-center py-2">No comments yet. Be the first.</p>
                       <div class="flex gap-2 items-start pt-1">
                         <img :src="avatarSrc(profile)"
@@ -1614,7 +1633,12 @@
                           <span x-show="post.total_points > 0" class="points-badge ml-1" x-text="'🏅 ' + post.total_points"></span>
                           · <span x-text="new Date(post.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })"></span>
                         </p>
-                        <p x-show="post.note && post.note !== post.page_title" class="text-sm leading-relaxed whitespace-pre-wrap mt-2 text-gray-700 dark:text-gray-300" x-text="post.note"></p>
+                        <div x-show="post.note && post.note !== post.page_title" class="mt-2">
+                          <p class="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300" x-text="post._expandedNote ? post.note : excerpt(post.note, 1200)"></p>
+                          <button x-show="shouldCollapse(post.note, 1200)" @click="post._expandedNote = !post._expandedNote" type="button"
+                                  class="text-xs font-semibold text-orange-500 hover:underline mt-1"
+                                  x-text="post._expandedNote ? 'Show less ▲' : 'Read more ▼'"></button>
+                        </div>
                       </div>
                       <img :src="avatarSrc(post)"
                            :alt="post.display_name"
@@ -1695,6 +1719,9 @@
                     <div class="px-4 py-4 space-y-3">
                       <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
                         Comments <span x-text="(feed.commentLists[post.id] || []).length"></span>
+                        <template x-if="feed.commentMeta[post.id] && feed.commentMeta[post.id].total > (feed.commentLists[post.id] || []).length">
+                          <span class="font-normal normal-case text-gray-400 ml-1">of <span x-text="feed.commentMeta[post.id].total"></span></span>
+                        </template>
                       </p>
                       <template x-for="c in (feed.commentLists[post.id] || [])" :key="c.id">
                         <div class="flex gap-2 items-start">
@@ -1715,11 +1742,22 @@
                                 </div>
                               </template>
                             </div>
-                            <p class="text-sm mt-1 leading-snug break-words" x-text="c.body"></p>
+                            <p class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="c._expanded ? c.body : excerpt(c.body, 600)"></p>
+                            <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button"
+                                    class="text-xs font-semibold text-orange-500 hover:underline mt-1"
+                                    x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
                           </div>
                         </div>
                       </template>
-                      <p x-show="(feed.commentLists[post.id] || []).length === 0"
+                      <div x-show="feed.commentMeta[post.id] && feed.commentMeta[post.id].has_more" class="text-center pt-2">
+                        <button @click="loadMoreComments(post.id)" type="button"
+                                :disabled="feed.commentMeta[post.id] && feed.commentMeta[post.id].loading"
+                                class="px-4 py-1.5 text-xs font-semibold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition disabled:opacity-50">
+                          <span x-show="!(feed.commentMeta[post.id] && feed.commentMeta[post.id].loading)">Load more comments</span>
+                          <span x-show="feed.commentMeta[post.id] && feed.commentMeta[post.id].loading">Loading…</span>
+                        </button>
+                      </div>
+                      <p x-show="(feed.commentLists[post.id] || []).length === 0 && !(feed.commentMeta[post.id] && feed.commentMeta[post.id].loading)"
                          class="text-xs text-gray-400 italic text-center py-2">No comments yet. Be the first.</p>
                       <div class="flex gap-2 items-start pt-1">
                         <img :src="avatarSrc(profile)"
@@ -3152,6 +3190,7 @@ function dashboardApp() {
       commentDrafts: {},
       openComments: {},
       commentLists: {},
+      commentMeta: {},
       slots: { used: 0, max: 5 }
     },
 
@@ -4662,10 +4701,49 @@ async endorsePost(postId) {
       if (this.feed.openComments[postId]) { this.feed.openComments[postId] = false; return; }
       this.feed.openComments[postId] = true;
       if (!this.feed.commentLists[postId]) {
-        const res = await fetch(`${API_BASE}/api/posts/${postId}/comments`, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') } });
-        const data = await res.json();
-        this.feed.commentLists[postId] = data.comments || [];
+        await this.loadComments(postId, 0);
       }
+    },
+
+    async loadComments(postId, offset = 0) {
+      const limit = 30;
+      const meta = this.feed.commentMeta[postId] || { total: 0, offset: 0, limit, has_more: false, loading: false };
+      if (meta.loading) return;
+      this.feed.commentMeta[postId] = { ...meta, loading: true };
+      try {
+        const res = await fetch(`${API_BASE}/api/posts/${postId}/comments?offset=${offset}&limit=${limit}`, {
+          headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') }
+        });
+        const data = await res.json();
+        const incoming = data.comments || [];
+        const existing = offset === 0 ? [] : (this.feed.commentLists[postId] || []);
+        this.feed.commentLists[postId] = [...existing, ...incoming];
+        this.feed.commentMeta[postId] = {
+          total: data.total || 0,
+          offset: offset + incoming.length,
+          limit: data.limit || limit,
+          has_more: !!data.has_more,
+          loading: false
+        };
+      } catch (e) {
+        this.feed.commentMeta[postId] = { ...meta, loading: false };
+      }
+    },
+
+    async loadMoreComments(postId) {
+      const meta = this.feed.commentMeta[postId];
+      if (!meta || !meta.has_more || meta.loading) return;
+      await this.loadComments(postId, meta.offset);
+    },
+
+    excerpt(text, max = 600) {
+      if (!text) return '';
+      const str = String(text);
+      return str.length <= max ? str : str.slice(0, max).replace(/\s+\S*$/, '') + '…';
+    },
+
+    shouldCollapse(text, max = 600) {
+      return !!text && String(text).length > max;
     },
 
     async submitComment(postId) {
@@ -4681,6 +4759,8 @@ async endorsePost(postId) {
         if (data.success) {
           this.feed.commentLists[postId] = [...(this.feed.commentLists[postId] || []), data.comment];
           this.feed.commentDrafts[postId] = '';
+          const meta = this.feed.commentMeta[postId];
+          if (meta) { meta.total = (meta.total || 0) + 1; meta.offset = (meta.offset || 0) + 1; }
           const p = this.feed.posts.find(x => x.id === postId);
           if (p) p.comment_count = (p.comment_count || 0) + 1;
           if (data.total_points !== undefined) this.profile.total_points = data.total_points;
@@ -4711,6 +4791,8 @@ async endorsePost(postId) {
         });
         if (res.ok) {
           this.feed.commentLists[postId] = (this.feed.commentLists[postId] || []).filter(c => c.id !== commentId);
+          const meta = this.feed.commentMeta[postId];
+          if (meta) { meta.total = Math.max(0, (meta.total || 1) - 1); meta.offset = Math.max(0, (meta.offset || 1) - 1); }
           const p = this.feed.posts.find(x => x.id === postId);
           if (p) p.comment_count = Math.max(0, (p.comment_count || 1) - 1);
         }
