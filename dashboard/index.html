@@ -987,9 +987,29 @@
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 text-white flex items-center justify-center text-sm font-bold">✏️</span>
-                  <span class="text-sm font-bold" x-text="composer.editingId ? 'Edit discussion' : 'New discussion'"></span>
+                  <span class="text-sm font-bold" x-text="composer.editingId ? 'Edit post' : 'New post'"></span>
                 </div>
                 <span class="text-[10px] uppercase tracking-wider font-bold text-gray-400">Markdown ready</span>
+              </div>
+
+              <div x-show="!composer.editingId" class="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-gray-800/60">
+                <button type="button" @click="composer.postType = 'discussion'"
+                        class="flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5"
+                        :class="composer.postType === 'discussion' ? 'bg-white dark:bg-gray-700 text-orange-500 shadow-sm' : 'text-gray-500 hover:text-orange-500'">
+                  💬 Discussion
+                </button>
+                <button type="button" @click="composer.postType = 'workflow'"
+                        class="flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5"
+                        :class="composer.postType === 'workflow' ? 'bg-white dark:bg-gray-700 text-purple-500 shadow-sm' : 'text-gray-500 hover:text-purple-500'">
+                  ⚙️ Workflow
+                </button>
+              </div>
+
+              <div x-show="composer.postType === 'workflow'" x-cloak class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <input type="text" x-model="composer.wfVersion" maxlength="20" placeholder="Version (e.g. v1.0)"
+                       class="sm:col-span-1 px-4 py-2 rounded-xl border-2 border-purple-200 dark:border-purple-900/60 bg-purple-50/40 dark:bg-purple-950/20 text-sm font-bold outline-none focus:border-purple-500 transition-all">
+                <input type="text" x-model="composer.wfSummary" maxlength="300" placeholder="One-line summary"
+                       class="sm:col-span-2 px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition-all">
               </div>
               <input type="text" x-model="composer.title" maxlength="120"
                      placeholder="Title — what's this about?"
@@ -1016,7 +1036,7 @@
                         @drop.prevent="$el.classList.remove('border-orange-500'); handleComposerFiles($event.dataTransfer.files)"
                         @paste="const items = $event.clipboardData?.items || []; for (const it of items) { if (it.type.startsWith('image/')) { const f = it.getAsFile(); if (f) handleComposerFiles([f]); $event.preventDefault(); } }"
                         @keydown.meta.enter.prevent="submitDiscussion()" @keydown.ctrl.enter.prevent="submitDiscussion()"
-                        placeholder="Share an insight, ask a question…&#10;&#10;Markdown supported: **bold**, # heading, lists, links, code blocks&#10;Tip: Cmd/Ctrl + Enter to post"
+                        :placeholder="composer.postType === 'workflow' ? 'Step-by-step workflow…&#10;&#10;1. First step&#10;2. Second step&#10;3. Third step&#10;&#10;Markdown supported · Cmd/Ctrl + Enter to post' : 'Share an insight, ask a question…&#10;&#10;Markdown supported: **bold**, # heading, lists, links, code blocks&#10;Tip: Cmd/Ctrl + Enter to post'"
                         class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm resize-y focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15 outline-none transition-all leading-relaxed"></textarea>
               <div class="flex items-center gap-2 flex-wrap">
                 <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:border-orange-500 hover:text-orange-500 transition">
@@ -1037,6 +1057,64 @@
                             class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">×</button>
                   </div>
                 </template>
+              </div>
+              <div x-show="composer.postType === 'workflow' && !composer.preview" x-cloak class="space-y-4 p-4 rounded-xl bg-purple-50/40 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/50">
+                <p class="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">⚙️ Your stack</p>
+                <template x-for="cat in workflowCategories" :key="'wfc-' + cat.key">
+                  <div>
+                    <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1.5" x-text="cat.label"></label>
+                    <div class="flex flex-wrap gap-1.5 mb-1.5" x-show="(composer.wfChips[cat.key] || []).length > 0">
+                      <template x-for="(v, i) in (composer.wfChips[cat.key] || [])" :key="cat.key + '-' + i">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-300 text-xs font-bold">
+                          <span x-text="v"></span>
+                          <button type="button" @click="removeWfChip(cat.key, i)" class="ml-0.5 hover:text-red-500">×</button>
+                        </span>
+                      </template>
+                    </div>
+                    <div class="flex gap-1.5 mb-2">
+                      <input type="text" :placeholder="cat.ph" x-model="composer.wfChipInput[cat.key]"
+                             @keydown.enter.prevent="addWfChip(cat.key)"
+                             class="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-black/40 text-xs outline-none focus:border-purple-500 transition">
+                      <button type="button" @click="addWfChip(cat.key)"
+                              class="px-3 py-1.5 rounded-lg bg-purple-500 text-white text-xs font-bold hover:bg-purple-600 transition">Add</button>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                      <template x-for="p in workflowPresets[cat.key]" :key="cat.key + '-p-' + p">
+                        <button type="button" @click="addWfChipValue(cat.key, p)"
+                                x-show="!(composer.wfChips[cat.key] || []).includes(p)"
+                                class="px-2 py-0.5 rounded-full border border-gray-300 dark:border-gray-600 text-[10px] text-gray-500 hover:border-purple-500 hover:text-purple-500 transition"
+                                x-text="p"></button>
+                      </template>
+                    </div>
+                  </div>
+                </template>
+
+                <details class="pt-2 border-t border-purple-200 dark:border-purple-900/50">
+                  <summary class="cursor-pointer text-xs font-bold text-purple-600 dark:text-purple-400 select-none">⚙️ Advanced (decisions, pain points, next steps, repo)</summary>
+                  <div class="mt-3 space-y-3">
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Why these tools (decisions)</label>
+                      <textarea x-model="composer.wfDecisions" maxlength="6000" rows="3"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition resize-y"
+                                placeholder="What you tried and rejected, and why"></textarea>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Pain points</label>
+                      <textarea x-model="composer.wfPain" maxlength="3000" rows="2"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition resize-y"></textarea>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Next steps</label>
+                      <textarea x-model="composer.wfNext" maxlength="2000" rows="2"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition resize-y"></textarea>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Repo URL (optional)</label>
+                      <input type="url" x-model="composer.wfRepo" maxlength="500" placeholder="https://github.com/you/dotfiles"
+                             class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition">
+                    </div>
+                  </div>
+                </details>
               </div>
               <div x-show="composer.preview" x-cloak
                    class="min-h-[9rem] px-4 py-3 rounded-xl border-2 border-dashed border-orange-400/40 bg-orange-500/5 md-body text-sm leading-relaxed text-gray-700 dark:text-gray-300"
@@ -1877,9 +1955,29 @@
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 text-white flex items-center justify-center text-sm font-bold">✏️</span>
-                  <span class="text-sm font-bold" x-text="composer.editingId ? 'Edit discussion' : 'New discussion'"></span>
+                  <span class="text-sm font-bold" x-text="composer.editingId ? 'Edit post' : 'New post'"></span>
                 </div>
                 <span class="text-[10px] uppercase tracking-wider font-bold text-gray-400">Markdown ready</span>
+              </div>
+
+              <div x-show="!composer.editingId" class="flex gap-1 p-1 rounded-xl bg-gray-100 dark:bg-gray-800/60">
+                <button type="button" @click="composer.postType = 'discussion'"
+                        class="flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5"
+                        :class="composer.postType === 'discussion' ? 'bg-white dark:bg-gray-700 text-orange-500 shadow-sm' : 'text-gray-500 hover:text-orange-500'">
+                  💬 Discussion
+                </button>
+                <button type="button" @click="composer.postType = 'workflow'"
+                        class="flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5"
+                        :class="composer.postType === 'workflow' ? 'bg-white dark:bg-gray-700 text-purple-500 shadow-sm' : 'text-gray-500 hover:text-purple-500'">
+                  ⚙️ Workflow
+                </button>
+              </div>
+
+              <div x-show="composer.postType === 'workflow'" x-cloak class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <input type="text" x-model="composer.wfVersion" maxlength="20" placeholder="Version (e.g. v1.0)"
+                       class="sm:col-span-1 px-4 py-2 rounded-xl border-2 border-purple-200 dark:border-purple-900/60 bg-purple-50/40 dark:bg-purple-950/20 text-sm font-bold outline-none focus:border-purple-500 transition-all">
+                <input type="text" x-model="composer.wfSummary" maxlength="300" placeholder="One-line summary"
+                       class="sm:col-span-2 px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition-all">
               </div>
               <input type="text" x-model="composer.title" maxlength="120"
                      placeholder="Title — what's this about?"
@@ -1906,7 +2004,7 @@
                         @drop.prevent="$el.classList.remove('border-orange-500'); handleComposerFiles($event.dataTransfer.files)"
                         @paste="const items = $event.clipboardData?.items || []; for (const it of items) { if (it.type.startsWith('image/')) { const f = it.getAsFile(); if (f) handleComposerFiles([f]); $event.preventDefault(); } }"
                         @keydown.meta.enter.prevent="submitDiscussion()" @keydown.ctrl.enter.prevent="submitDiscussion()"
-                        placeholder="Share an insight, ask a question…&#10;&#10;Markdown supported: **bold**, # heading, lists, links, code blocks&#10;Tip: Cmd/Ctrl + Enter to post"
+                        :placeholder="composer.postType === 'workflow' ? 'Step-by-step workflow…&#10;&#10;1. First step&#10;2. Second step&#10;3. Third step&#10;&#10;Markdown supported · Cmd/Ctrl + Enter to post' : 'Share an insight, ask a question…&#10;&#10;Markdown supported: **bold**, # heading, lists, links, code blocks&#10;Tip: Cmd/Ctrl + Enter to post'"
                         class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm resize-y focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15 outline-none transition-all leading-relaxed"></textarea>
               <div class="flex items-center gap-2 flex-wrap">
                 <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:border-orange-500 hover:text-orange-500 transition">
@@ -1927,6 +2025,64 @@
                             class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition">×</button>
                   </div>
                 </template>
+              </div>
+              <div x-show="composer.postType === 'workflow' && !composer.preview" x-cloak class="space-y-4 p-4 rounded-xl bg-purple-50/40 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/50">
+                <p class="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">⚙️ Your stack</p>
+                <template x-for="cat in workflowCategories" :key="'wfc-' + cat.key">
+                  <div>
+                    <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1.5" x-text="cat.label"></label>
+                    <div class="flex flex-wrap gap-1.5 mb-1.5" x-show="(composer.wfChips[cat.key] || []).length > 0">
+                      <template x-for="(v, i) in (composer.wfChips[cat.key] || [])" :key="cat.key + '-' + i">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-300 text-xs font-bold">
+                          <span x-text="v"></span>
+                          <button type="button" @click="removeWfChip(cat.key, i)" class="ml-0.5 hover:text-red-500">×</button>
+                        </span>
+                      </template>
+                    </div>
+                    <div class="flex gap-1.5 mb-2">
+                      <input type="text" :placeholder="cat.ph" x-model="composer.wfChipInput[cat.key]"
+                             @keydown.enter.prevent="addWfChip(cat.key)"
+                             class="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-black/40 text-xs outline-none focus:border-purple-500 transition">
+                      <button type="button" @click="addWfChip(cat.key)"
+                              class="px-3 py-1.5 rounded-lg bg-purple-500 text-white text-xs font-bold hover:bg-purple-600 transition">Add</button>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                      <template x-for="p in workflowPresets[cat.key]" :key="cat.key + '-p-' + p">
+                        <button type="button" @click="addWfChipValue(cat.key, p)"
+                                x-show="!(composer.wfChips[cat.key] || []).includes(p)"
+                                class="px-2 py-0.5 rounded-full border border-gray-300 dark:border-gray-600 text-[10px] text-gray-500 hover:border-purple-500 hover:text-purple-500 transition"
+                                x-text="p"></button>
+                      </template>
+                    </div>
+                  </div>
+                </template>
+
+                <details class="pt-2 border-t border-purple-200 dark:border-purple-900/50">
+                  <summary class="cursor-pointer text-xs font-bold text-purple-600 dark:text-purple-400 select-none">⚙️ Advanced (decisions, pain points, next steps, repo)</summary>
+                  <div class="mt-3 space-y-3">
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Why these tools (decisions)</label>
+                      <textarea x-model="composer.wfDecisions" maxlength="6000" rows="3"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition resize-y"
+                                placeholder="What you tried and rejected, and why"></textarea>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Pain points</label>
+                      <textarea x-model="composer.wfPain" maxlength="3000" rows="2"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition resize-y"></textarea>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Next steps</label>
+                      <textarea x-model="composer.wfNext" maxlength="2000" rows="2"
+                                class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition resize-y"></textarea>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-600 dark:text-gray-400 mb-1">Repo URL (optional)</label>
+                      <input type="url" x-model="composer.wfRepo" maxlength="500" placeholder="https://github.com/you/dotfiles"
+                             class="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition">
+                    </div>
+                  </div>
+                </details>
               </div>
               <div x-show="composer.preview" x-cloak
                    class="min-h-[9rem] px-4 py-3 rounded-xl border-2 border-dashed border-orange-400/40 bg-orange-500/5 md-body text-sm leading-relaxed text-gray-700 dark:text-gray-300"
@@ -3694,8 +3850,44 @@ function dashboardApp() {
       editingId: null,
       images: [],
       uploading: 0,
-      submitting: false
+      submitting: false,
+      postType: 'discussion',
+      wfVersion: '',
+      wfSummary: '',
+      wfChips: { hardware: [], os: [], ide: [], terminal: [], ai_models: [], ai_tools: [], cloud: [], databases: [], devops: [], other_tools: [] },
+      wfChipInput: {},
+      wfDecisions: '',
+      wfPain: '',
+      wfNext: '',
+      wfRepo: '',
+      wfPreviousId: null
     },
+
+    workflowPresets: {
+      hardware: ['Mac (Apple Silicon)', 'MacBook Pro (Intel)', 'PC Desktop', 'Windows Laptop', 'Linux Desktop', 'Cloud VM', 'Raspberry Pi', 'iPad Pro'],
+      os: ['macOS Sequoia', 'macOS Sonoma', 'macOS Ventura', 'macOS Monterey', 'Windows 11', 'Ubuntu 24.04', 'Debian', 'Fedora', 'Arch'],
+      ide: ['VS Code', 'Cursor', 'Windsurf', 'Zed', 'Neovim', 'JetBrains', 'Sublime Text', 'BBEdit', 'Xcode'],
+      terminal: ['Terminal.app', 'iTerm2', 'Warp', 'Alacritty', 'Kitty', 'WezTerm', 'Ghostty', 'Windows Terminal', 'WSL'],
+      ai_models: ['DeepSeek', 'Claude Opus', 'Claude Sonnet', 'GPT-4o', 'GPT-5', 'Gemini', 'Llama', 'Mistral', 'Qwen', 'Cloudflare Workers AI', 'Ollama'],
+      ai_tools: ['Claude Code', 'Cursor AI', 'GitHub Copilot', 'Cline', 'Aider', 'Continue.dev', 'ChatGPT', 'DeepSeek Chat', 'Windsurf AI', 'Replit Agent'],
+      cloud: ['Cloudflare Workers', 'Cloudflare Pages', 'Vercel', 'Netlify', 'AWS', 'Google Cloud', 'Azure', 'Fly.io', 'Railway', 'Hetzner'],
+      databases: ['Cloudflare D1', 'Supabase', 'Neon', 'PlanetScale', 'Postgres', 'MySQL', 'MongoDB', 'SQLite', 'Turso', 'Redis', 'Upstash'],
+      devops: ['Wrangler', 'GitHub Actions', 'Docker', 'Kubernetes', 'Terraform', 'npm scripts', 'pnpm', 'bun', 'Makefile'],
+      other_tools: ['BBEdit', 'TablePlus', 'Postman', 'Figma', 'Notion', 'Obsidian', 'Linear', 'Raycast', 'Alfred', 'Firefox DevTools', 'Chrome DevTools']
+    },
+
+    workflowCategories: [
+      { key: 'hardware', label: 'Hardware', ph: 'e.g. MacBook Pro 2016' },
+      { key: 'os', label: 'OS', ph: 'e.g. macOS 12.6' },
+      { key: 'ide', label: 'IDE / Editor', ph: 'e.g. VS Code' },
+      { key: 'terminal', label: 'Terminal', ph: 'e.g. iTerm2' },
+      { key: 'ai_models', label: 'AI Models', ph: 'e.g. DeepSeek, Claude' },
+      { key: 'ai_tools', label: 'AI Tools', ph: 'e.g. Cursor, Copilot' },
+      { key: 'cloud', label: 'Cloud', ph: 'e.g. Cloudflare' },
+      { key: 'databases', label: 'Databases', ph: 'e.g. D1' },
+      { key: 'devops', label: 'DevOps', ph: 'e.g. Wrangler' },
+      { key: 'other_tools', label: 'Other Tools', ph: 'e.g. Postman' }
+    ],
 
     get displayedAudits() { return this.recentAudits.slice(0, this.displayCount); },
 
@@ -5468,6 +5660,16 @@ async endorsePost(postId) {
       this.composer.images = [];
       this.composer.uploading = 0;
       this.composer.submitting = false;
+      this.composer.postType = 'discussion';
+      this.composer.wfVersion = '';
+      this.composer.wfSummary = '';
+      this.composer.wfChips = { hardware: [], os: [], ide: [], terminal: [], ai_models: [], ai_tools: [], cloud: [], databases: [], devops: [], other_tools: [] };
+      this.composer.wfChipInput = {};
+      this.composer.wfDecisions = '';
+      this.composer.wfPain = '';
+      this.composer.wfNext = '';
+      this.composer.wfRepo = '';
+      this.composer.wfPreviousId = null;
     },
     editDiscussion(post) {
       this.composer.open = true;
@@ -5550,14 +5752,33 @@ async endorsePost(postId) {
       for (const f of Array.from(files || [])) await this.uploadImage(f, { postId });
     },
     removeComposerImage(i) { this.composer.images.splice(i, 1); },
+
+    addWfChip(cat) {
+      const v = String(this.composer.wfChipInput[cat] || '').trim().slice(0, 60);
+      if (!v) return;
+      if (!Array.isArray(this.composer.wfChips[cat])) this.composer.wfChips[cat] = [];
+      if (this.composer.wfChips[cat].includes(v)) { this.composer.wfChipInput[cat] = ''; return; }
+      if (this.composer.wfChips[cat].length >= 12) return;
+      this.composer.wfChips[cat].push(v);
+      this.composer.wfChipInput[cat] = '';
+    },
+    addWfChipValue(cat, v) {
+      if (!Array.isArray(this.composer.wfChips[cat])) this.composer.wfChips[cat] = [];
+      if (this.composer.wfChips[cat].includes(v)) return;
+      if (this.composer.wfChips[cat].length >= 12) return;
+      this.composer.wfChips[cat].push(v);
+    },
+    removeWfChip(cat, i) { this.composer.wfChips[cat].splice(i, 1); },
     removeCommentImage(postId, i) {
       const arr = this.feed.commentImages[postId];
       if (arr) arr.splice(i, 1);
     },
     canSubmitDiscussion() {
-      return this.composer.title.trim().length >= 3
-          && this.composer.body.trim().length >= 10
-          && !this.composer.submitting;
+      if (this.composer.submitting) return false;
+      if (this.composer.title.trim().length < 3) return false;
+      if (this.composer.body.trim().length < 10) return false;
+      if (this.composer.postType === 'workflow' && !this.composer.wfVersion.trim()) return false;
+      return true;
     },
     async submitDiscussion() {
       if (!this.canSubmitDiscussion()) return;
@@ -5566,9 +5787,32 @@ async endorsePost(postId) {
       try {
         const url = editing ? `${API_BASE}/api/posts/${editing}` : `${API_BASE}/api/posts`;
         const method = editing ? 'PATCH' : 'POST';
+        const wfMeta = this.composer.postType === 'workflow' ? {
+          version: this.composer.wfVersion.trim().slice(0, 20),
+          summary: this.composer.wfSummary.trim().slice(0, 300),
+          hardware: this.composer.wfChips.hardware,
+          os: this.composer.wfChips.os,
+          ide: this.composer.wfChips.ide,
+          terminal: this.composer.wfChips.terminal,
+          ai_models: this.composer.wfChips.ai_models,
+          ai_tools: this.composer.wfChips.ai_tools,
+          cloud: this.composer.wfChips.cloud,
+          databases: this.composer.wfChips.databases,
+          devops: this.composer.wfChips.devops,
+          other_tools: this.composer.wfChips.other_tools,
+          decisions_md: this.composer.wfDecisions.slice(0, 6000),
+          pain_md: this.composer.wfPain.slice(0, 3000),
+          next_md: this.composer.wfNext.slice(0, 2000),
+          repo_url: this.composer.wfRepo.trim().slice(0, 500),
+          previous_id: this.composer.wfPreviousId || null,
+          adopt_count: 0,
+          upvotes: 0,
+          downvotes: 0
+        } : null;
+        const pt = this.composer.postType;
         const payload = editing
-          ? { title: this.composer.title.trim(), body_md: this.composer.body.trim(), category: this.composer.category, images: this.composer.images }
-          : { post_type: 'discussion', category: this.composer.category, title: this.composer.title.trim(), body_md: this.composer.body.trim(), images: this.composer.images };
+          ? { title: this.composer.title.trim(), body_md: this.composer.body.trim(), category: this.composer.category, images: this.composer.images, workflow_meta: wfMeta }
+          : { post_type: pt, category: this.composer.category, title: this.composer.title.trim(), body_md: this.composer.body.trim(), images: this.composer.images, workflow_meta: wfMeta };
         const res = await fetch(url, {
           method,
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken'), 'Content-Type': 'application/json' },
