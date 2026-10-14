@@ -573,6 +573,9 @@
                         <option value="designer">Web Designer</option>
                         <option value="seo">SEO Professional</option>
                         <option value="developer">Developer</option>
+                        <option value="ai-lens">AI Lenzer — directs AI, magnifies human 🔍</option>
+                        <option value="ai-conductor">AI Conductor — orchestrates many models</option>
+                        <option value="context-engineer">Context Engineer — builds the human↔AI bridge</option>
                         <option value="other">Other</option>
                       </select>
                     </div>
@@ -4503,7 +4506,7 @@ async endorsePost(postId) {
       }
     },
     roleLabel(role) {
-      const map = { owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', developer: 'Developer', other: 'Member' };
+      const map = { owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', developer: 'Developer', 'ai-lens': 'AI Lenzer', 'ai-conductor': 'AI Conductor', 'context-engineer': 'Context Engineer', other: 'Member' };
       return map[role] || 'Member';
     },
 
