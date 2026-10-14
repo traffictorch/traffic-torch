@@ -1006,8 +1006,11 @@
               </div>
 
               <div x-show="composer.postType === 'workflow'" x-cloak class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <input type="text" x-model="composer.wfVersion" maxlength="20" placeholder="Version (e.g. v1.0)"
-                       class="sm:col-span-1 px-4 py-2 rounded-xl border-2 border-purple-200 dark:border-purple-900/60 bg-purple-50/40 dark:bg-purple-950/20 text-sm font-bold outline-none focus:border-purple-500 transition-all">
+                <div class="sm:col-span-1">
+                  <input type="text" x-model="composer.wfVersion" maxlength="20" placeholder="Version (e.g. v1.0)"
+                         class="w-full px-4 py-2 rounded-xl border-2 border-purple-200 dark:border-purple-900/60 bg-purple-50/40 dark:bg-purple-950/20 text-sm font-bold outline-none focus:border-purple-500 transition-all">
+                  <p x-show="versionHint()" x-cloak class="text-[11px] text-purple-500 font-semibold mt-0.5 px-1" x-text="versionHint()"></p>
+                </div>
                 <input type="text" x-model="composer.wfSummary" maxlength="300" placeholder="One-line summary"
                        class="sm:col-span-2 px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition-all">
               </div>
@@ -1120,7 +1123,10 @@
                    class="min-h-[9rem] px-4 py-3 rounded-xl border-2 border-dashed border-orange-400/40 bg-orange-500/5 md-body text-sm leading-relaxed text-gray-700 dark:text-gray-300"
                    x-html="composer.body ? renderMarkdown(composer.body) : '<span class=&quot;text-gray-400 italic&quot;>Nothing to preview yet.</span>'"></div>
               <div class="flex items-center justify-between gap-2 flex-wrap">
-                <span class="text-xs text-gray-500"><span x-text="composer.body.length"></span> / 6000 · <span class="text-orange-500 font-semibold">Markdown supported</span></span>
+                <span class="text-xs text-gray-500">
+                  <span x-text="composer.body.length"></span> / 6000 · <span class="text-orange-500 font-semibold">Markdown supported</span>
+                  <template x-if="bodyHint()"><span class="ml-2 text-orange-500 font-semibold" x-text="bodyHint()"></span></template>
+                </span>
                 <div class="flex gap-2">
                   <button type="button" @click="closeComposer()" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition">Cancel</button>
                   <button type="button" @click="submitDiscussion()" :disabled="!canSubmitDiscussion()"
@@ -2081,8 +2087,11 @@
               </div>
 
               <div x-show="composer.postType === 'workflow'" x-cloak class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <input type="text" x-model="composer.wfVersion" maxlength="20" placeholder="Version (e.g. v1.0)"
-                       class="sm:col-span-1 px-4 py-2 rounded-xl border-2 border-purple-200 dark:border-purple-900/60 bg-purple-50/40 dark:bg-purple-950/20 text-sm font-bold outline-none focus:border-purple-500 transition-all">
+                <div class="sm:col-span-1">
+                  <input type="text" x-model="composer.wfVersion" maxlength="20" placeholder="Version (e.g. v1.0)"
+                         class="w-full px-4 py-2 rounded-xl border-2 border-purple-200 dark:border-purple-900/60 bg-purple-50/40 dark:bg-purple-950/20 text-sm font-bold outline-none focus:border-purple-500 transition-all">
+                  <p x-show="versionHint()" x-cloak class="text-[11px] text-purple-500 font-semibold mt-0.5 px-1" x-text="versionHint()"></p>
+                </div>
                 <input type="text" x-model="composer.wfSummary" maxlength="300" placeholder="One-line summary"
                        class="sm:col-span-2 px-4 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm outline-none focus:border-purple-500 transition-all">
               </div>
@@ -2195,7 +2204,10 @@
                    class="min-h-[9rem] px-4 py-3 rounded-xl border-2 border-dashed border-orange-400/40 bg-orange-500/5 md-body text-sm leading-relaxed text-gray-700 dark:text-gray-300"
                    x-html="composer.body ? renderMarkdown(composer.body) : '<span class=&quot;text-gray-400 italic&quot;>Nothing to preview yet.</span>'"></div>
               <div class="flex items-center justify-between gap-2 flex-wrap">
-                <span class="text-xs text-gray-500"><span x-text="composer.body.length"></span> / 6000 · <span class="text-orange-500 font-semibold">Markdown supported</span></span>
+                <span class="text-xs text-gray-500">
+                  <span x-text="composer.body.length"></span> / 6000 · <span class="text-orange-500 font-semibold">Markdown supported</span>
+                  <template x-if="bodyHint()"><span class="ml-2 text-orange-500 font-semibold" x-text="bodyHint()"></span></template>
+                </span>
                 <div class="flex gap-2">
                   <button type="button" @click="closeComposer()" class="px-4 py-2 text-sm font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition">Cancel</button>
                   <button type="button" @click="submitDiscussion()" :disabled="!canSubmitDiscussion()"
@@ -6030,6 +6042,22 @@ async endorsePost(postId) {
     removeCommentImage(postId, i) {
       const arr = this.feed.commentImages[postId];
       if (arr) arr.splice(i, 1);
+    },
+    titleHint() {
+      const L = this.composer.title.trim().length;
+      if (L === 0) return 'Add a title';
+      if (L < 3) return (3 - L) + ' more character' + ((3 - L) === 1 ? '' : 's');
+      return '';
+    },
+    bodyHint() {
+      const L = this.composer.body.trim().length;
+      if (L === 0) return 'Add a body';
+      if (L < 10) return (10 - L) + ' more character' + ((10 - L) === 1 ? '' : 's');
+      return '';
+    },
+    versionHint() {
+      if (this.composer.postType !== 'workflow') return '';
+      return this.composer.wfVersion.trim() ? '' : 'Add a version (e.g. v1.0)';
     },
     canSubmitDiscussion() {
       if (this.composer.submitting) return false;
