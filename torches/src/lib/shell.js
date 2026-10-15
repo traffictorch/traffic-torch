@@ -15,7 +15,13 @@ export async function getShell(env, path) {
     cf: { cacheTtl: 300, cacheEverything: true },
   });
   if (!res.ok) throw new Error(`Shell fetch failed: ${res.status} ${url}`);
-  const text = await res.text();
+  let text = await res.text();
+  // Pre-collapse the desktop sidebar so there is no layout shift on first paint.
+  // main.js will expand it again on non-public pages, so this is safe globally.
+  text = text.replace(
+    /(<aside id="desktopSidebar" class="hidden md:flex)/,
+    '$1 collapsed'
+  );
   SHELL_CACHE.set(key, { text, time: Date.now() });
   return text;
 }

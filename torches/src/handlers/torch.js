@@ -334,7 +334,7 @@ function renderTorchBody(data) {
       })()}
       ${(isDiscussion || isWorkflow) && bodyMd ? '<div class="mt-5 text-base leading-relaxed text-gray-700 dark:text-gray-300"><div :class="bodyExpanded ? \'\' : \'relative max-h-[28rem] overflow-hidden\'"><div class="md-body" x-html="renderMarkdown(bodyMd)">' + htmlEscape(plainExcerptServer(bodyMd, 2000)) + '</div><div x-show="!bodyExpanded" x-cloak class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none"></div></div><button x-show="shouldCollapse(bodyMd, 1500)" type="button" @click="bodyExpanded = !bodyExpanded" class="text-sm font-semibold text-orange-500 hover:underline mt-2" x-text="bodyExpanded ? \'Show less ▲\' : \'Read more ▼\'"></button></div>' : ''}
       ${!isDiscussion && !isWorkflow && post.note ? '<p class="text-base leading-relaxed mt-3 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">' + htmlEscape(post.note) + '</p>' : ''}
-      ${postImages.length > 0 ? '<div class="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">' + postImages.map(function(img, i) { var u = String(img.url).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); return '<a @click.prevent="openImageLightbox(\'' + u + '\')" class="cursor-zoom-in" role="button" tabindex="0"><img src="' + htmlEscape(img.url) + '" loading="lazy" alt="Image ' + (i+1) + '" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;object-fit:cover;"></a>'; }).join('') + '</div>' : ''}
+      ${postImages.length > 0 ? '<div class="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">' + postImages.map(function(img, i) { var u = String(img.url).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); return '<a onclick="(function(e){e.preventDefault();var b=document.getElementById(\'tt-image-lightbox-vanilla\');if(!b){b=document.createElement(\'div\');b.id=\'tt-image-lightbox-vanilla\';b.style.cssText=\'position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out\';b.onclick=function(){b.remove()};var im=document.createElement(\'img\');im.style.cssText=\'max-width:95vw;max-height:90vh;border-radius:12px;background:#fff\';im.src=e.currentTarget.dataset.src;b.appendChild(im);document.body.appendChild(b)}else{b.remove()}})(event)" data-src="' + u + '" class="cursor-zoom-in" role="button" tabindex="0"><img src="' + htmlEscape(img.url) + '" loading="lazy" alt="Image ' + (i+1) + '" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;object-fit:cover;"></a>'; }).join('') + '</div>' : ''}
     </div>
     ${modulesHtml ? `<div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div><div class="px-6 py-4 space-y-2">${modulesHtml}</div>` : ''}
   </article>
@@ -432,7 +432,7 @@ function renderTorchBody(data) {
 
 function torchPageScript() {
   return `<script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('alpine:init', function() {
     if (typeof window.torchPage !== 'function') return;
     var orig = window.torchPage;
     window.torchPage = function() {

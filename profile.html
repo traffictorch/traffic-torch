@@ -145,6 +145,7 @@
 
   <!-- Sidebar -->
   <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 overflow-y-auto sticky top-0 h-screen flex-col self-start">
+  <script>if(/^\/(torcher|torch)\//.test(location.pathname))document.getElementById("desktopSidebar").classList.add("collapsed");</script>
     <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
       <a href="/" class="flex items-center gap-4">
         <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
