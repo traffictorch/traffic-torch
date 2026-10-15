@@ -897,3 +897,70 @@ iframe[src*="vimeo.com"] {
   width: 100%;
   height: 100%;
 }
+
+/* ── Avatar tier rings + role accents ── */
+@property --tt-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+
+.avatar-ring {
+  position: relative;
+  border-radius: 22px;
+  isolation: isolate;
+  transition: transform 0.18s ease;
+}
+.avatar-ring img { display: block; border-radius: 16px; }
+
+/* Free — subtle neutral ring */
+.avatar-ring.tier-free {
+  background: rgba(148,163,184,0.35);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15);
+}
+
+/* Pro — orange/pink gradient ring */
+.avatar-ring.tier-pro {
+  background: linear-gradient(135deg, #f97316, #ec4899);
+  box-shadow: 0 0 0 1px rgba(249,115,22,0.25), 0 8px 28px -8px rgba(249,115,22,0.55);
+}
+
+/* Expert — rotating conic ring */
+.avatar-ring.tier-enterprise {
+  background: conic-gradient(from var(--tt-angle),
+    #8b5cf6, #06b6d4, #ec4899, #f97316, #8b5cf6);
+  animation: tt-rotate 7s linear infinite;
+  box-shadow: 0 0 0 1px rgba(139,92,246,0.3), 0 8px 32px -8px rgba(139,92,246,0.6);
+}
+@keyframes tt-rotate { to { --tt-angle: 360deg; } }
+@media (prefers-reduced-motion: reduce) {
+  .avatar-ring.tier-enterprise { animation: none; }
+}
+
+/* Inner role accent — 1px line just inside the tier ring */
+.avatar-ring.role-ai-lens     { box-shadow: inset 0 0 0 1px #ec4899; }
+.avatar-ring.role-ai-director { box-shadow: inset 0 0 0 1px #8b5cf6; }
+.avatar-ring.role-owner       { box-shadow: inset 0 0 0 1px #f97316; }
+.avatar-ring.role-designer    { box-shadow: inset 0 0 0 1px #06b6d4; }
+.avatar-ring.role-seo         { box-shadow: inset 0 0 0 1px #22c55e; }
+.avatar-ring.role-developer,
+.avatar-ring.role-ai-conductor,
+.avatar-ring.role-context-engineer,
+.avatar-ring.role-other       { box-shadow: inset 0 0 0 1px #64748b; }
+
+/* Pro/Expert ribbons */
+.tier-ribbon {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 2;
+  font-size: 9.5px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  font-family: inherit;
+  pointer-events: none;
+  line-height: 1;
+}
+.tier-pro .tier-ribbon  { background: linear-gradient(135deg, #f97316, #ec4899); }
+.tier-enterprise .tier-ribbon { background: linear-gradient(135deg, #8b5cf6, #06b6d4); }

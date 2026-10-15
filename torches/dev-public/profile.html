@@ -205,15 +205,18 @@
   <!-- Card 1: Avatar -->
   <div class="glass rounded-3xl p-6 flex items-center justify-center min-h-[220px]">
     <template x-if="profile.id">
-      <div class="cursor-pointer relative group"
-           :class="'tier-' + (profile.tier || 'free')"
+      <div class="avatar-ring cursor-pointer relative group"
+           :class="'tier-' + (profile.tier || 'free') + ' role-' + (profile.role || 'owner')"
            :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member — click to enlarge'"
            @click="avatarLightbox = true">
         <img :src="avatarSrc(profile)"
              :alt="profile.display_name"
              class="w-40 h-40 md:w-48 md:h-48 rounded-2xl object-cover shadow-lg transition-transform group-hover:scale-[1.02]"
              onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
-        <span class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Click to enlarge</span>
+        <template x-if="(profile.tier || 'free') !== 'free'">
+          <span class="tier-ribbon" x-text="(profile.tier || 'free') === 'pro' ? 'PRO' : 'EXPERT'"></span>
+        </template>
+        <span class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full pointer-events-none">Click to enlarge</span>
       </div>
     </template>
   </div>

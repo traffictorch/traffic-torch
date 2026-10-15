@@ -400,7 +400,10 @@ function renderTorchBody(data) {
   <section x-show="activeTab === 'author'" x-cloak>
     <div class="glass rounded-2xl p-6 mt-4">
       <div class="flex flex-col sm:flex-row sm:items-end gap-5">
-        <img src="${htmlEscape((author.avatar_url) || '/images/avatars/' + (author.avatar_preset || 'owner') + '.svg')}" alt="" width="96" height="96" style="width:96px;height:96px;" class="rounded-full object-cover flex-shrink-0">
+        <div class="avatar-ring tier-${htmlEscape(author.tier || 'free')} role-${htmlEscape(author.role || 'owner')}" style="padding:6px;">
+          <img src="${htmlEscape((author.avatar_url) || '/images/avatars/' + (author.avatar_preset || 'owner') + '.svg')}" alt="" width="96" height="96" style="width:96px;height:96px;" class="rounded-2xl object-cover">
+          ${(author.tier && author.tier !== 'free') ? '<span class="tier-ribbon">' + (author.tier === 'pro' ? 'PRO' : 'EXPERT') + '</span>' : ''}
+        </div>
         <div class="flex-1 min-w-0">
           <h2 class="text-2xl font-black flex items-center gap-2 flex-wrap min-w-0"><span class="truncate">${htmlEscape(author.display_name || author.username)}</span>${author.verified_at ? `<svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>` : ''}</h2>
           <p class="text-gray-500 flex items-center gap-2 flex-wrap">
