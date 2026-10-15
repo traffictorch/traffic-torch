@@ -63,12 +63,16 @@ function injectHead(html, { headTags, jsonLd }) {
 }
 
 function stripProfileShell(html) {
-  // Swap Alpine factory so the whole shell (lightboxes included) is in torchPage() scope
+  // Swap Alpine factory so the whole shell is in torchPage() scope
   html = html.replace(/ x-data="profilePage\(\)"/, ' x-data="torchPage()"');
   html = html.replace(
     /<script>\s*const API_BASE = [\s\S]*?window\.profilePage = profilePage;\s*<\/script>/,
     ''
   );
+  // Remove the two shell-level Alpine lightboxes. Torch pages use a vanilla-JS onclick lightbox,
+  // so these would fire "imageLightbox/avatarLightbox/avatarSrc/profile is not defined" every load.
+  html = html.replace(/<template x-teleport="body">\s*<div id="tt-profile-image-lightbox"[\s\S]*?<\/template>/, '');
+  html = html.replace(/<template x-teleport="body">\s*<div x-show="avatarLightbox"[\s\S]*?<\/template>/, '');
   return html;
 }
 
