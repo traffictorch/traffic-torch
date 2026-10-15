@@ -374,160 +374,124 @@
             <div x-show="!profile.loading">
 
               <!-- View mode -->
-              <div x-show="profileViewMode === 'view'">
-                <div class="glass rounded-3xl overflow-hidden mb-6">
-                  <div class="p-6">
+<div x-show="profileViewMode === 'view'">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
-                    <!-- TOP: square avatar + details -->
-                    <div class="grid grid-cols-1 md:grid-cols-[176px_1fr] gap-6 items-start">
-                      <template x-if="profile.id">
-                        <div class="mx-auto md:mx-0 cursor-pointer relative group"
-                             :class="'tier-' + (profile.tier || 'free')"
-                             :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member — click to enlarge'"
-                             @click="avatarLightbox = true">
-                          <img :src="avatarSrc(profile)"
-                               :alt="profile.display_name"
-                               class="w-40 h-40 md:w-44 md:h-44 rounded-2xl object-cover shadow-lg transition-transform group-hover:scale-[1.02]"
-                               onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
-                          <span class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Click to enlarge</span>
-                        </div>
-                      </template>
+    <!-- Card 1: Avatar -->
+    <div class="glass rounded-3xl p-6 flex items-center justify-center min-h-[220px]">
+      <div class="cursor-pointer relative group"
+           :class="'tier-' + (profile.tier || 'free')"
+           :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member — click to enlarge'"
+           @click="avatarLightbox = true">
+        <img :src="avatarSrc(profile)"
+             :alt="profile.display_name"
+             class="w-40 h-40 md:w-48 md:h-48 rounded-2xl object-cover shadow-lg transition-transform group-hover:scale-[1.02]"
+             onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+        <span class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Click to enlarge</span>
+      </div>
+    </div>
 
-                      <div class="flex-1 min-w-0 text-center md:text-left">
-                        <h1 class="text-3xl font-black flex items-center justify-center md:justify-start gap-3 flex-wrap min-w-0">
-                          <span class="truncate" x-text="profile.display_name || profile.username || 'Your name'"></span>
-                          <template x-if="profile.verified_at">
-                            <svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
-                          </template>
-                          <span x-show="profile.total_points > 0" class="points-badge points-badge-lg" x-text="'🏅 ' + profile.total_points"></span>
-                        </h1>
+    <!-- Card 2: Identity -->
+    <div class="glass rounded-3xl p-6 flex flex-col justify-center min-h-[220px]">
+      <h1 class="text-3xl font-black flex items-center gap-3 flex-wrap min-w-0">
+        <span class="truncate" x-text="profile.display_name || profile.username || 'Your name'"></span>
+        <template x-if="profile.verified_at">
+          <svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </template>
+        <span x-show="profile.total_points > 0" class="points-badge points-badge-lg" x-text="'🏅 ' + profile.total_points"></span>
+      </h1>
+      <p class="mt-2 text-gray-500 text-lg flex items-center gap-2 flex-wrap">
+        <span>@<span x-text="profile.username || 'username'"></span></span>
+        <span class="role-pill inline-flex items-center gap-1.5 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-500">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+          <span x-text="roleLabel(profile.role)"></span>
+        </span>
+      </p>
+      <div class="mt-3 flex flex-wrap items-center gap-y-1 text-sm text-gray-500">
+        <span x-show="profile.location" class="meta-item"><span class="emoji">📍</span><span x-text="profile.location"></span></span>
+        <span x-show="profile.created_at" class="meta-item"><span class="emoji">📅</span><span>Member since <span x-text="formatDate(profile.created_at)"></span></span></span>
+      </div>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <button type="button" @click="profileViewMode = 'edit'" class="px-4 py-2 rounded-xl font-bold text-sm transition border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white whitespace-nowrap">✏️ Edit Profile</button>
+        <a :href="'/torcher/' + (profile.username || '') + '/'"
+           target="_blank"
+           x-show="profile.username && profile.profile_public"
+           class="px-4 py-2 rounded-xl font-bold text-sm bg-green-500 hover:bg-green-600 text-white transition whitespace-nowrap inline-flex items-center shadow-md shadow-green-500/20">View public →</a>
+      </div>
+    </div>
 
-                        <p class="mt-2 text-gray-500 text-lg flex items-center justify-center md:justify-start gap-2 flex-wrap">
-                          <span>@<span x-text="profile.username || 'username'"></span></span>
-                          <span class="role-pill inline-flex items-center gap-1.5 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-500">
-                            <span class="inline-block w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-                            <span x-text="roleLabel(profile.role)"></span>
-                          </span>
-                        </p>
+    <!-- Card 3: Bio + Skills -->
+    <div class="glass rounded-3xl p-6 flex flex-col">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">📝 About</h2>
+      <p x-show="profile.bio" class="text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
+      <p x-show="!profile.bio" class="text-gray-400 italic text-sm">No bio yet — click Edit Profile to add one.</p>
+      <div x-show="(profile.skills || []).length > 0" x-cloak class="mt-4 flex flex-wrap gap-2">
+        <template x-for="(s, i) in (profile.skills || [])" :key="'dskill-' + i">
+          <span class="inline-flex items-center px-3 py-1 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 text-xs font-bold" x-text="s"></span>
+        </template>
+      </div>
+      <p x-show="(profile.skills || []).length === 0" class="mt-4 text-gray-400 italic text-xs">No skills yet — add them in Edit Profile → Advanced.</p>
+    </div>
 
-                        <p x-show="profile.bio" class="mt-3 text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
-                        <p x-show="!profile.bio" class="mt-3 text-gray-400 italic text-sm">No bio yet — click Edit Profile to add one.</p>
+    <!-- Card 4: Work + Contact + Hire -->
+    <div class="glass rounded-3xl p-6 flex flex-col">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">💼 Work</h2>
 
-                        <div x-show="(profile.skills || []).length > 0" x-cloak class="mt-3 flex flex-wrap items-center justify-center md:justify-start gap-2">
-                          <template x-for="(s, i) in (profile.skills || [])" :key="'dskill-' + i">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 text-xs font-bold" x-text="s"></span>
-                          </template>
-                        </div>
+      <div class="space-y-1.5 text-sm">
+        <p x-show="profile.job_title"><span class="text-gray-500">Job:</span> <span class="ml-1 font-medium" x-text="profile.job_title"></span></p>
+        <p x-show="profile.company"><span class="text-gray-500">Company:</span> <span class="ml-1 font-medium" x-text="profile.company"></span></p>
+      </div>
 
-                        <div class="mt-4 flex flex-wrap items-center justify-center md:justify-start gap-2">
-                          <button type="button" @click="profileViewMode = 'edit'" class="px-4 py-2 rounded-xl font-bold text-sm transition border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white whitespace-nowrap">✏️ Edit Profile</button>
-                          <a :href="'/torcher/' + (profile.username || '') + '/'" target="_blank" x-show="profile.username && profile.profile_public" class="px-4 py-2 rounded-xl font-bold text-sm bg-green-500 hover:bg-green-600 text-white transition whitespace-nowrap inline-flex items-center shadow-md shadow-green-500/20">View public →</a>
-                        </div>
-                      </div>
-                    </div>
+      <div x-show="profile.website_url || profile.social1_url || profile.social2_url" x-cloak class="mt-4 flex flex-wrap gap-2">
+        <a x-show="profile.website_url && profile.website_approved" :href="profile.website_url" target="_blank" rel="ugc nofollow noopener" class="link-btn text-xs">
+          <span class="emoji">🔗</span><span x-text="domainLabel(profile.website_url)"></span>
+        </a>
+        <a x-show="profile.social1_url" :href="profile.social1_url" target="_blank" rel="ugc nofollow noopener" class="link-btn text-xs"><span class="emoji">🔗</span><span x-text="domainLabel(profile.social1_url)"></span></a>
+        <a x-show="profile.social2_url" :href="profile.social2_url" target="_blank" rel="ugc nofollow noopener" class="link-btn text-xs"><span class="emoji">🔗</span><span x-text="domainLabel(profile.social2_url)"></span></a>
+      </div>
 
-                    <!-- ── Contacts card ── -->
-                    <div x-show="(profile.contacts || []).length > 0" x-cloak class="mt-5 glass rounded-2xl p-4 max-w-lg mx-auto">
-                      <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 text-center">📬 Contact</p>
-                      <div class="flex flex-wrap items-center justify-center gap-2">
-                        <template x-for="(c, i) in (profile.contacts || [])" :key="'dc-' + i">
-                          <div class="flex flex-col items-center">
-                            <template x-if="contactsRevealed[i]">
-                              <div class="flex items-center gap-2">
-                                <a x-show="contactHref(c) !== '#'" :href="contactHref(c)" target="_blank" rel="noopener nofollow ugc" class="link-btn text-xs"
-                                   x-text="contactIcon(c.type) + ' ' + (c.label || contactsTypeLabel(c.type))"></a>
-                                <span x-show="contactHref(c) === '#'" class="link-btn text-xs cursor-default">
-                                  <span x-text="contactIcon(c.type) + ' ' + (c.label || contactsTypeLabel(c.type)) + ': '"></span>
-                                  <span class="font-mono ml-1" x-text="(c.partA || '') + (c.partB || '')"></span>
-                                </span>
-                              </div>
-                            </template>
-                            <template x-if="!contactsRevealed[i]">
-                              <button type="button" @click="contactsRevealed[i] = true" class="link-btn text-xs"
-                                      x-text="'🔒 ' + (c.label || contactsTypeLabel(c.type))"></button>
-                            </template>
-                          </div>
-                        </template>
-                      </div>
-                    </div>
+      <div x-show="(profile.contacts || []).length > 0" x-cloak class="mt-4">
+        <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">📬 Contact</p>
+        <div class="flex flex-wrap gap-2">
+          <template x-for="(c, i) in (profile.contacts || [])" :key="'dc-' + i">
+            <div class="flex flex-col items-center">
+              <template x-if="contactsRevealed[i]">
+                <div class="flex items-center gap-2">
+                  <a x-show="contactHref(c) !== '#'" :href="contactHref(c)" target="_blank" rel="noopener nofollow ugc" class="link-btn text-xs" x-text="contactIcon(c.type) + ' ' + (c.label || contactsTypeLabel(c.type))"></a>
+                  <span x-show="contactHref(c) === '#'" class="link-btn text-xs cursor-default">
+                    <span x-text="contactIcon(c.type) + ' ' + (c.label || contactsTypeLabel(c.type)) + ': '"></span>
+                    <span class="font-mono ml-1" x-text="(c.partA || '') + (c.partB || '')"></span>
+                    <button type="button" @click="navigator.clipboard.writeText((c.partA || '') + (c.partB || ''))" class="ml-2 text-orange-500 hover:underline">copy</button>
+                  </span>
+                </div>
+              </template>
+              <template x-if="!contactsRevealed[i]">
+                <button type="button" @click="contactsRevealed[i] = true" class="link-btn text-xs" x-text="'🔒 ' + (c.label || contactsTypeLabel(c.type))"></button>
+              </template>
+            </div>
+          </template>
+        </div>
+      </div>
 
-                    <!-- ── Hire Me card ── -->
-                    <div x-show="profile.available_for_hire == 1 && (profile.hire_headline || (profile.hire_services || []).length || profile.contact_email)" x-cloak
-                         class="mt-5 glass rounded-2xl p-5 max-w-lg mx-auto">
-                      <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 text-center">💼 Available for hire</p>
-                      <template x-if="profile.hire_headline">
-                        <p class="text-lg font-bold text-center mb-3" x-text="profile.hire_headline"></p>
-                      </template>
-                      <template x-if="(profile.hire_services || []).length > 0">
-                        <div class="flex flex-wrap items-center justify-center gap-2 mb-3">
-                          <template x-for="(s, i) in profile.hire_services" :key="'dhs-' + i">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-400 text-xs font-bold" x-text="s"></span>
-                          </template>
-                        </div>
-                      </template>
-                      <template x-if="profile.contact_email">
-                        <div class="text-center">
-                          <a :href="'mailto:' + profile.contact_email"
-                             class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90">✉️ Get in touch</a>
-                        </div>
-                      </template>
-                    </div>
-                    <p x-show="!profile.bio" class="mt-5 text-gray-400 italic">No bio yet — click Edit Profile to add one.</p>
+      <div x-show="profile.available_for_hire == 1 && (profile.hire_headline || (profile.hire_services || []).length || profile.contact_email)" x-cloak class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <p class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">💼 Available for hire</p>
+        <p x-show="profile.hire_headline" class="font-bold text-base" x-text="profile.hire_headline"></p>
+        <div x-show="(profile.hire_services || []).length > 0" class="mt-2 flex flex-wrap gap-2">
+          <template x-for="(s, i) in (profile.hire_services || [])" :key="'dhs-' + i">
+            <span class="inline-flex items-center px-3 py-1 rounded-full bg-purple-500/15 text-purple-600 dark:text-purple-400 text-xs font-bold" x-text="s"></span>
+          </template>
+        </div>
+        <a x-show="profile.contact_email" :href="'mailto:' + profile.contact_email" class="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 text-white text-sm font-bold hover:opacity-90">✉️ Get in touch</a>
+      </div>
 
-                    <div class="mt-5 mb-4 flex flex-wrap items-center justify-center gap-y-2 text-sm text-gray-500">
-                      <span x-show="profile.job_title" class="meta-item">
-                        <span class="emoji">💼</span><span x-text="profile.job_title"></span>
-                      </span>
-                      <span x-show="profile.company" class="meta-item">
-                        <span class="emoji">🏢</span><span x-text="profile.company"></span>
-                      </span>
-                      <span x-show="profile.location" class="meta-item">
-                        <span class="emoji">📍</span><span x-text="profile.location"></span>
-                      </span>
-                      <span x-show="profile.created_at" class="meta-item">
-                        <span class="emoji">📅</span><span>Member since <span x-text="formatShortDate(profile.created_at)"></span></span>
-                      </span>
-                    </div>
+      <p x-show="!profile.job_title && !profile.company && !profile.website_url && !profile.social1_url && !profile.social2_url && (profile.contacts || []).length === 0 && profile.available_for_hire != 1"
+         class="text-gray-400 italic text-sm">No work info yet — add job, links, or contacts in Edit Profile.</p>
+    </div>
 
-                    <div class="mt-5 mb-4 flex flex-wrap items-center justify-center gap-4">
-                      <a x-show="profile.website_url" :href="profile.website_url" target="_blank" rel="ugc nofollow noopener" class="link-btn">
-                        🔗 <span x-text="domainLabel(profile.website_url)"></span><template x-if="profile.verified_at"><span class="text-green-500 font-bold ml-1" title="Verified owner">✓</span></template>
-                      </a>
-                      <a x-show="profile.social1_url" :href="profile.social1_url" target="_blank" rel="ugc nofollow noopener" class="link-btn">
-                        🔗 <span x-text="domainLabel(profile.social1_url)"></span>
-                      </a>
-                      <a x-show="profile.social2_url" :href="profile.social2_url" target="_blank" rel="ugc nofollow noopener" class="link-btn">
-                        🔗 <span x-text="domainLabel(profile.social2_url)"></span>
-                      </a>
-                    </div>
-
-<div class="mt-7 grid grid-cols-2 sm:grid-cols-5 gap-3 max-w-2xl mx-auto">
-  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-    <p class="text-2xl font-black text-orange-500" x-text="feed.slots.used"></p>
-    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🔥 Audits shared</p>
-  </div>
-  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-    <p class="text-2xl font-black text-orange-500" x-text="network.list.length"></p>
-    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🤝 Network</p>
-  </div>
-  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-    <p class="text-2xl font-black text-orange-500" x-text="profile.total_points || 0"></p>
-    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">🏅 Points</p>
-  </div>
-  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-    <p class="text-2xl font-black text-orange-500" x-text="profile.endorsement_count || 0"></p>
-    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">⭐ Endorsements</p>
-  </div>
-  <div class="text-center p-1 rounded-xl bg-gray-100 dark:bg-gray-900/60">
-    <p class="text-2xl font-black text-orange-500" x-text="monthsSince(profile.created_at)"></p>
-    <p class="text-xs uppercase tracking-wider text-gray-500 mt-1">📅 Months here</p>
   </div>
 </div>
-                  </div>
-                </div>
-              </div>
 
-              <!-- Edit mode -->
+<!-- Edit mode -->
               <div x-show="profileViewMode === 'edit'">
                 <div class="glass rounded-2xl p-6">
                   <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
