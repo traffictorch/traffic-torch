@@ -930,7 +930,7 @@ async function handleProfileRoutes(request, env, url) {
     profile.endorsement_count = totalEndorseRow && totalEndorseRow.c ? totalEndorseRow.c : 0;
 
     const posts = await env.MY_BINDING.prepare(
-      `SELECT id, category, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, created_at
+      `SELECT id, category, post_type, title, body_md, note, tool, url, page_title, score, images, workflow_meta, domain_mode, domain_label, module_scores, created_at
          FROM posts WHERE user_id = ? AND status = 'published'
          ORDER BY created_at DESC LIMIT 30`
     ).bind(target.id).all();
