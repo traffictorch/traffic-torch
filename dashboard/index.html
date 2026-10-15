@@ -511,7 +511,7 @@
                     <div>
                       <label class="block text-sm font-medium mb-3">Avatar</label>
                       <div class="grid grid-cols-3 gap-4">
-                        <template x-for="preset in ['owner','designer','seo']" :key="preset">
+                        <template x-for="preset in ['ai-lenzer','owner','designer','seo','ai-director']" :key="preset">
                           <button type="button" @click="pickPreset(preset)"
                                   class="p-4 rounded-2xl border-2 transition flex flex-col items-center gap-2"
                                   :class="profile.avatar_preset === preset ? 'border-orange-500 bg-orange-500/10' : 'border-gray-300 dark:border-gray-600 hover:border-orange-400'">
