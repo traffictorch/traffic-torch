@@ -799,11 +799,17 @@ async function handleProfileRoutes(request, env, url) {
     if (ROLES.includes(body.role)) { fields.push('role = ?'); params.push(body.role); }
     if (typeof body.bio === 'string') { fields.push('bio = ?'); params.push(body.bio.slice(0, 160)); }
     if (typeof body.website_url === 'string') {
-      fields.push('website_url = ?'); params.push(body.website_url.slice(0, 300));
+      const cur = await env.MY_BINDING.prepare('SELECT website_url FROM users WHERE id = ?').bind(user.id).first();
+      const newUrl = body.website_url.slice(0, 300);
+      const urlChanged = (cur && cur.website_url || '') !== newUrl;
+      fields.push('website_url = ?'); params.push(newUrl);
       fields.push('website_approved = 1');
-      fields.push('verified_domain = NULL');
-      fields.push('verified_token = NULL');
-      fields.push('verified_at = NULL');
+      // Only invalidate the verification if the URL actually changed.
+      if (urlChanged) {
+        fields.push('verified_domain = NULL');
+        fields.push('verified_token = NULL');
+        fields.push('verified_at = NULL');
+      }
     }
     if (typeof body.social1_url === 'string') { fields.push('social1_url = ?'); params.push(body.social1_url.slice(0, 300)); }
     if (typeof body.social2_url === 'string') { fields.push('social2_url = ?'); params.push(body.social2_url.slice(0, 300)); }
