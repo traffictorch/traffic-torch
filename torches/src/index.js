@@ -48,7 +48,36 @@ export default {
       if (/^\/tools\/[^/]+\/torches\/?$/.test(path)) return handleToolFeedReal(request, env);
       if (path.startsWith('/tools/')) return fetch(request);
 
-      return new Response('Not found', { status: 404 });
+      // ── Local dev fallback ──
+      // 1. If ASSETS binding exists (dev only) and the path is a static file, serve it
+      // 2. Otherwise proxy to SITE_ORIGIN (prod) so /dashboard/, /blog/, /login/ etc work locally
+      if (env.ASSETS && !path.startsWith('/api/')) {
+        try {
+          const assetRes = await env.ASSETS.fetch(request);
+          if (assetRes.status !== 404) return assetRes;
+        } catch {}
+      }
+
+      // Try to proxy to prod (dev only — in prod this branch is unreachable
+      // because every public path is handled above).
+      try {
+        const proxyUrl = env.SITE_ORIGIN + path + (url.search || '');
+        const init = {
+          method: request.method,
+          headers: request.headers,
+          redirect: 'manual',
+        };
+        if (request.method !== 'GET' && request.method !== 'HEAD') {
+          init.body = request.body;
+        }
+        const res = await fetch(proxyUrl, init);
+        return new Response(res.body, {
+          status: res.status,
+          headers: res.headers,
+        });
+      } catch (e) {
+        return new Response('Not found', { status: 404 });
+      }
     } catch (err) {
       console.error('[torches-page-render] error:', err.message, err.stack);
       return new Response(`Render error: ${err.message}`, {
