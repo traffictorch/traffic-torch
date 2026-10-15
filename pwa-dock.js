@@ -111,20 +111,16 @@
       return li;
     };
 
-    // Recent tools submenu (5 most recent, else disabled)
+    // Recent tools submenu — hide section entirely when empty
     const recent = getRecent().slice(0, 5);
     if (recent.length) {
       recent.forEach(url => {
         const t = TOOLS.find(x => url.startsWith(x.url));
         list.appendChild(item(t ? t.em : '🔗', t ? t.nm : url, { href: url }));
       });
-    } else {
-      list.appendChild(item('🕒', 'No recent tools yet', { disabled: true }));
+      list.appendChild(el('div', 'tt-pwa-menu-sep'));
     }
 
-    list.appendChild(el('div', 'tt-pwa-menu-sep'));
-
-    list.appendChild(item('⭐', 'Favourite Tools', { disabled: true, meta: 'soon' }));
     list.appendChild(item('📋', 'Copy Current URL', {
       onClick: async () => {
         try { await navigator.clipboard.writeText(location.href); toast('URL copied'); }
@@ -144,10 +140,19 @@
         else toast('Already installed or not available');
       }
     }));
+    list.appendChild(item('⚙️', 'Settings', { href: '/dashboard/#settings' }));
+    list.appendChild(item('⭐', 'Favourite Tools', { disabled: true, meta: 'soon' }));
+
     list.appendChild(el('div', 'tt-pwa-menu-sep'));
-    list.appendChild(item('📴', navigator.onLine ? 'Online' : 'Offline', { disabled: true, meta: navigator.onLine ? 'ok' : 'no net' }));
-    list.appendChild(item('⚙️', 'Settings', { disabled: true, meta: 'soon' }));
-    list.appendChild(item('❓', 'Help & Guides', { href: '/ai-ux-seo-help-guides/' }));
+
+    // Main navigation
+    list.appendChild(item('🔥', 'All Tools',   { href: '/ai-seo-ux-tools/' }));
+    list.appendChild(item('📚', 'Help Guides', { href: '/ai-ux-seo-help-guides/' }));
+    list.appendChild(item('📰', 'News & Blog', { href: '/news/' }));
+    list.appendChild(item('🏆', 'Leaderboard', { href: '/leader-board/' }));
+    list.appendChild(item('💎', 'Go Pro',      { href: '/pro/' }));
+    list.appendChild(item('👤', 'Profile',     { href: '/profile.html' }));
+    list.appendChild(item('📊', 'Whitepaper',  { href: '/research/traffic-torch-whitepaper/' }));
 
     body.appendChild(list);
     return makeSheet('ttPwaMenuSheet', '☰ Menu', body);
@@ -171,6 +176,13 @@
     const tools   = btn('tt-act-tools',   '🔥', 'Tools');
     const share   = btn('tt-act-share',   '📤', 'Share');
     const menu    = btn('tt-act-menu',    '☰', 'Menu');
+    const offlineDot = el('span', 'tt-offline-dot');
+    offlineDot.hidden = true;
+    $('.tt-ico', menu).appendChild(offlineDot);
+    const syncOnlineDot = () => { offlineDot.hidden = navigator.onLine; };
+    syncOnlineDot();
+    window.addEventListener('online',  syncOnlineDot);
+    window.addEventListener('offline', syncOnlineDot);
 
     // Back/Forward state
     const refreshNav = () => {

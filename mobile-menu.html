@@ -1,12 +1,12 @@
-<!-- mobile-menu.html – Portal + Beams dropdowns + tools + account links -->
+<!-- mobile-menu.html – Portal + Dashboard dropdowns + tools + account links -->
 <nav class="flex flex-col gap-6 py-20 px-4 text-xl">
 
-  <!-- ═══ Portal dropdown ═══ -->
+  <!-- ═══ Portal dropdown (expanded by default) ═══ -->
   <div>
     <button
       type="button" role="menuitem"
       class="pro-menu-link group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-      aria-expanded="false" aria-controls="proportal-mobile-content" data-category="proportal-mobile">
+      aria-expanded="true" aria-controls="proportal-mobile-content" data-category="proportal-mobile">
       <span class="flex items-center gap-2">🚦 Portal</span>
       <span class="flex items-center gap-2">
         <span data-pro-badge-slot></span>
@@ -19,14 +19,24 @@
         </a>
       </span>
     </button>
-    <div id="proportal-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="proportal-mobile">
-     <a href="/dashboard/#profile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="profile">👤 Profile</a>
-	 <a href="javascript:void(0)" id="tt-beams-inbox-link-mobile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem] flex items-center gap-2">
+    <div id="proportal-mobile-content" class="pl-8 flex flex-col gap-3" data-category-content="proportal-mobile">
+      <a href="/dashboard/#profile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="profile">👤 Profile</a>
+      <a href="javascript:void(0)" id="tt-beams-inbox-link-mobile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem] flex items-center gap-2">
         🔦 Beams
         <span id="tt-beams-count-mobile" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
       </a>
-      <a href="/dashboard/#dashboard" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="dashboard">📊 Dashboard</a>
       <a href="/dashboard/#network" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="network">🕸️ Network</a>
+    </div>
+  </div>
+
+  <!-- ═══ Dashboard dropdown ═══ -->
+  <div>
+    <button type="button" role="menuitem"
+      class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
+      aria-expanded="false" aria-controls="dashboard-mobile-content" data-category="dashboard-mobile">
+      📊 Dashboard <span class="text-sm transition-transform">▼</span>
+    </button>
+    <div id="dashboard-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="dashboard-mobile">
       <a href="/dashboard/#audits" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="audits">📋 Audits</a>
       <a href="/dashboard/#analytics" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="analytics">📈 Analytics</a>
       <a href="/dashboard/#realtime" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="realtime">🔴 Real‑time</a>
@@ -74,7 +84,7 @@
   </button>
   <div id="ai-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="ai-mobile">
     <a href="/aeo-performance-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🚀 AEO Performance</a>
-    <a href="/aeo-log-analyzer/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📋 AEO Log Analyzer</a>   
+    <a href="/aeo-log-analyzer/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📋 AEO Log Analyzer</a>
     <a href="/ai-search-optimization-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🔍 AEO Audit</a>
     <a href="/ai-voice-search-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🎙️ AI Voice Search</a>
     <a href="/ai-audit-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🤖 AI Content</a>
@@ -120,7 +130,6 @@
   <!-- Upgrade -->
   <a href="/upgrade/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🚀 Upgrade</a>
 
-  <!-- Login -->
   <!-- ─── Auth section (dynamic) ─── -->
   <div class="mt-2 pt-2 border-t border-white/10 dark:border-white/5">
 

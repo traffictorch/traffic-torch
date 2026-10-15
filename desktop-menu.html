@@ -1,16 +1,16 @@
-<!-- desktop-menu.html – Portal + Beams dropdowns + tools + account links -->
+<!-- desktop-menu.html – Portal + Dashboard dropdowns + tools + account links -->
 <nav class="p-2 space-y-4 flex-1">
 
-  <!-- ═══ Portal dropdown ═══ -->
+  <!-- ═══ Portal dropdown (expanded by default) ═══ -->
   <div>
     <button
       type="button"
       role="menuitem"
       class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none pro-menu-link"
-      aria-expanded="false"
+      aria-expanded="true"
       aria-controls="proportal-content"
       data-category="proportal"
-      title="Portal – Notifications, Dashboard, Analytics, Integrations & Settings"
+      title="Portal – Profile, Beams & Network"
     >
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🚦</span>
       <span class="sidebar-text font-semibold flex-1 text-left">Portal</span>
@@ -25,7 +25,7 @@
         </a>
       </span>
     </button>
-    <div id="proportal-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="proportal">
+    <div id="proportal-content" class="pl-0 md:pl-10 space-y-3 mt-1" data-category-content="proportal">
       <a href="/dashboard/#profile" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="profile">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">👤</span>
         <span class="sidebar-text hidden md:block">Profile</span>
@@ -35,14 +35,29 @@
         <span class="sidebar-text hidden md:block flex-1">Beams</span>
         <span id="tt-beams-count" class="hidden text-xs font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">0</span>
       </a>
-      <a href="/dashboard/#dashboard" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="dashboard">
-        <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📊</span>
-        <span class="sidebar-text hidden md:block">Dashboard</span>
-      </a>
       <a href="/dashboard/#network" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="network">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🕸️</span>
         <span class="sidebar-text hidden md:block">Network</span>
       </a>
+    </div>
+  </div>
+
+  <!-- ═══ Dashboard dropdown ═══ -->
+  <div>
+    <button
+      type="button"
+      role="menuitem"
+      class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
+      aria-expanded="false"
+      aria-controls="dashboard-content"
+      data-category="dashboard"
+      title="Dashboard – Audits, Analytics, Real-time, Search Console, Integrations, Upgrade & Settings"
+    >
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📊</span>
+      <span class="sidebar-text font-semibold flex-1 text-left">Dashboard</span>
+      <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
+    </button>
+    <div id="dashboard-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="dashboard">
       <a href="/dashboard/#audits" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="audits">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📋</span>
         <span class="sidebar-text hidden md:block">Audits</span>
@@ -267,7 +282,6 @@
     <span class="sidebar-text hidden md:block">Upgrade</span>
   </a>
 
-  <!-- Login -->
   <!-- ─── Auth section (dynamic) ─── -->
   <div class="mt-2 border-t border-white/10 dark:border-white/5 pt-4">
 
