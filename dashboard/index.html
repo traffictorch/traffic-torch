@@ -4231,6 +4231,11 @@ function dashboardApp() {
       });
 
       this.openBeams = () => {
+        // Beams requires auth. Logged-out users get a friendly prompt instead of a dead click.
+        if (!this.isAuthenticated) {
+          this.showLoginModal ? this.showLoginModal() : (window.location.href = '/login/');
+          return;
+        }
         const link = document.getElementById('tt-beams-inbox-link')
                   || document.getElementById('tt-beams-inbox-link-mobile');
         if (link) link.click();
