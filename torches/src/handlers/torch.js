@@ -160,8 +160,10 @@ function renderComments() {
                 </div>
               </template>
             </div>
-            <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
-            <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
+            <div :class="!c._expanded && shouldCollapse(c.body, 600) ? 'relative max-h-[10rem] overflow-hidden' : ''">
+              <div class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
+              <div x-show="!c._expanded && shouldCollapse(c.body, 600)" x-cloak class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-100 dark:from-gray-800/60 to-transparent pointer-events-none"></div>
+            </div>
             <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
             <template x-if="c.images">
               <div class="mt-2 flex flex-wrap gap-1.5">
