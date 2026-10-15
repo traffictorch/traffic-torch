@@ -893,50 +893,6 @@
               <!-- Notifications section -->
               <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
 
-                <div x-show="push.supported && !pushBannerDismissed && isAuthenticated"
-                     x-cloak
-                     class="mb-6 p-4 rounded-2xl border border-orange-500/30 bg-gradient-to-r from-orange-500/10 to-pink-500/10">
-
-                  <div class="flex items-start gap-3 mb-3">
-                    <span class="text-2xl flex-shrink-0">🔔</span>
-                    <div class="flex-1 min-w-0">
-                      <p class="font-bold text-sm" x-show="!push.subscribed">Turn on push notifications for this device</p>
-                      <p class="font-bold text-sm text-green-600 dark:text-green-400" x-show="push.subscribed">✅ Push notifications are ON for this device</p>
-                      <p class="text-xs text-gray-500 mt-0.5" x-show="!push.subscribed">Instant alerts for comments, network connections, and messages — even when Traffic Torch is closed.</p>
-                      <p class="text-xs text-gray-500 mt-0.5" x-show="push.subscribed">You'll be notified on this device. Manage what you get below.</p>
-                    </div>
-                  </div>
-
-                  <div class="flex gap-2 flex-wrap items-center">
-                    <button @click="enablePush()" :disabled="push.loading" x-show="!push.subscribed"
-                            class="px-4 py-2 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-sm rounded-lg hover:opacity-90 transition disabled:opacity-50">
-                      <span x-show="!push.loading">Enable now</span>
-                      <span x-show="push.loading">Enabling…</span>
-                    </button>
-                    <button @click="disablePush()" :disabled="push.loading" x-show="push.subscribed"
-                            class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 transition disabled:opacity-50">
-                      Turn off
-                    </button>
-                    <button @click="activeDashboardTab = 'settings'; window.scrollTo({top:0,behavior:'smooth'})"
-                            class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                      More settings
-                    </button>
-                    <button @click="dismissPushBanner()" type="button"
-                            class="px-2 py-2 ml-auto text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                            aria-label="Dismiss">✕</button>
-                  </div>
-                </div>
-
-                <!-- iOS non-installed guidance -->
-                <div x-show="!push.supported && iosNeedsInstall() && isAuthenticated"
-                     x-cloak
-                     class="mb-6 p-4 rounded-2xl border border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 flex flex-wrap items-center gap-3">
-                  <span class="text-2xl flex-shrink-0">📲</span>
-                  <div class="flex-1 min-w-[200px]">
-                    <p class="font-bold text-sm">Add Traffic Torch to your Home Screen to enable push</p>
-                    <p class="text-xs text-gray-500 mt-0.5">On iPhone, Safari only supports notifications for apps installed to your Home Screen. Tap <strong>Share → Add to Home Screen</strong>, then reopen Traffic Torch from the icon.</p>
-                  </div>
-                </div>
                 <div id="notifications-section" class="flex flex-wrap items-center justify-between gap-3 mb-6">
                   <h3 class="text-xl font-bold">🔔 Notifications</h3>
                   <div class="flex gap-2 flex-wrap">
