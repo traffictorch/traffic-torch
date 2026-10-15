@@ -376,67 +376,54 @@
               <!-- View mode -->
               <div x-show="profileViewMode === 'view'">
                 <div class="glass rounded-3xl overflow-hidden mb-6">
-                  <div class="px-6 pb-6 -mt-14 relative">
+                  <div class="p-6">
 
-<div class="flex flex-col items-center sm:flex-row sm:items-end gap-5 profile-header-flex">
-  <template x-if="profile.id">
-    <div class="avatar-ring mx-auto sm:mx-0 cursor-pointer"
-         style="padding: 6px;"
-         :class="'tier-' + (profile.tier || 'free')"
-         :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member — click to enlarge'"
-         @click="avatarLightbox = true">
-      <img :src="avatarSrc(profile)"
-           :alt="profile.display_name"
-           width="72" height="72" style="width:72px;height:72px;"
-           class="object-cover"
-           onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
-    </div>
-  </template>
-  <div class="flex-1 min-w-0 sm:pb-2 profile-info">
-    <h1 class="text-3xl font-black flex items-center gap-3 flex-wrap min-w-0">
+                    <!-- TOP: square avatar + details -->
+                    <div class="grid grid-cols-1 md:grid-cols-[176px_1fr] gap-6 items-start">
+                      <template x-if="profile.id">
+                        <div class="mx-auto md:mx-0 cursor-pointer relative group"
+                             :class="'tier-' + (profile.tier || 'free')"
+                             :title="(profile.tier || 'free').charAt(0).toUpperCase() + (profile.tier || 'free').slice(1) + ' member — click to enlarge'"
+                             @click="avatarLightbox = true">
+                          <img :src="avatarSrc(profile)"
+                               :alt="profile.display_name"
+                               class="w-40 h-40 md:w-44 md:h-44 rounded-2xl object-cover shadow-lg transition-transform group-hover:scale-[1.02]"
+                               onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+                          <span class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Click to enlarge</span>
+                        </div>
+                      </template>
+
+                      <div class="flex-1 min-w-0 text-center md:text-left">
+                        <h1 class="text-3xl font-black flex items-center justify-center md:justify-start gap-3 flex-wrap min-w-0">
                           <span class="truncate" x-text="profile.display_name || profile.username || 'Your name'"></span>
                           <template x-if="profile.verified_at">
-                            <svg viewBox="0 0 24 24" aria-label="Verified website owner"
-                                 xmlns="http://www.w3.org/2000/svg"
-                                 style="width:26px;height:26px;flex-shrink:0;display:inline-block;vertical-align:middle;">
-                              <circle cx="12" cy="12" r="11" fill="#22c55e"/>
-                              <path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6"
-                                    stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                            </svg>
+                            <svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
                           </template>
-                          <span x-show="profile.total_points > 0"
-                                class="points-badge points-badge-lg"
-                                x-text="'🏅 ' + profile.total_points"></span>
+                          <span x-show="profile.total_points > 0" class="points-badge points-badge-lg" x-text="'🏅 ' + profile.total_points"></span>
                         </h1>
-                        <p class="text-gray-500 text-lg flex items-center gap-2 flex-wrap">
+
+                        <p class="mt-2 text-gray-500 text-lg flex items-center justify-center md:justify-start gap-2 flex-wrap">
                           <span>@<span x-text="profile.username || 'username'"></span></span>
                           <span class="role-pill inline-flex items-center gap-1.5 px-2.5 py-1 text-[0.7rem] font-bold uppercase tracking-wide rounded-full border border-orange-500/40 bg-orange-500/10 text-orange-500">
                             <span class="inline-block w-1.5 h-1.5 rounded-full bg-orange-500"></span>
                             <span x-text="roleLabel(profile.role)"></span>
                           </span>
                         </p>
-                      </div>
-<div class="flex gap-2 sm:pb-2 flex-wrap items-center justify-center sm:justify-start flex-shrink-0 profile-actions">
-  <button type="button" @click="profileViewMode = 'edit'"
-                                class="px-4 py-2 rounded-xl font-bold text-sm transition border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white whitespace-nowrap">
-                          ✏️ Edit Profile
-                        </button>
-                        <a :href="'/torcher/' + (profile.username || '') + '/'"
-                           target="_blank"
-                           x-show="profile.username && profile.profile_public"
-                           class="px-4 py-2 rounded-xl font-bold text-sm bg-green-500 hover:bg-green-600 text-white transition whitespace-nowrap inline-flex items-center shadow-md shadow-green-500/20">
-                          View public →
-                        </a>
-                      </div>
-                    </div>
 
-                    <p x-show="profile.bio" class="mt-5 mb-2 py-4 text-center text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
+                        <p x-show="profile.bio" class="mt-3 text-gray-700 dark:text-gray-300 leading-relaxed" x-text="profile.bio"></p>
+                        <p x-show="!profile.bio" class="mt-3 text-gray-400 italic text-sm">No bio yet — click Edit Profile to add one.</p>
 
-                    <!-- ── Skills chip row ── -->
-                    <div x-show="(profile.skills || []).length > 0" x-cloak class="mt-3 flex flex-wrap items-center justify-center gap-2">
-                      <template x-for="(s, i) in (profile.skills || [])" :key="'dskill-' + i">
-                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 text-xs font-bold" x-text="s"></span>
-                      </template>
+                        <div x-show="(profile.skills || []).length > 0" x-cloak class="mt-3 flex flex-wrap items-center justify-center md:justify-start gap-2">
+                          <template x-for="(s, i) in (profile.skills || [])" :key="'dskill-' + i">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full bg-orange-500/15 text-orange-600 dark:text-orange-400 text-xs font-bold" x-text="s"></span>
+                          </template>
+                        </div>
+
+                        <div class="mt-4 flex flex-wrap items-center justify-center md:justify-start gap-2">
+                          <button type="button" @click="profileViewMode = 'edit'" class="px-4 py-2 rounded-xl font-bold text-sm transition border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white whitespace-nowrap">✏️ Edit Profile</button>
+                          <a :href="'/torcher/' + (profile.username || '') + '/'" target="_blank" x-show="profile.username && profile.profile_public" class="px-4 py-2 rounded-xl font-bold text-sm bg-green-500 hover:bg-green-600 text-white transition whitespace-nowrap inline-flex items-center shadow-md shadow-green-500/20">View public →</a>
+                        </div>
+                      </div>
                     </div>
 
                     <!-- ── Contacts card ── -->
