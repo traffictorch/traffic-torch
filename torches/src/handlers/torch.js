@@ -471,7 +471,28 @@ function torchPageScript() {
       return obj;
     };
   });
-  </script>`;
+  
+  // Delegated image-lightbox — CSP blocks inline onclick, so bind once
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[data-tt-lightbox]');
+    if (!a) return;
+    e.preventDefault();
+    var b = document.getElementById('tt-image-lightbox-vanilla');
+    if (b) { b.remove(); return; }
+    b = document.createElement('div');
+    b.id = 'tt-image-lightbox-vanilla';
+    b.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out';
+    b.onclick = function(){ b.remove(); };
+    var im = document.createElement('img');
+    im.style.cssText = 'max-width:95vw;max-height:90vh;border-radius:12px;background:#fff';
+    im.src = a.getAttribute('data-tt-lightbox');
+    b.appendChild(im);
+    document.body.appendChild(b);
+  }, true);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') { var b = document.getElementById('tt-image-lightbox-vanilla'); if (b) b.remove(); }
+  });
+</script>`;
 }
 
 export { TORCH_PAGE_JS };
