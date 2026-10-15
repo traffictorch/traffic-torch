@@ -506,7 +506,7 @@ async function setCachedReport(userId, reportType, days, startDate, endDate, dat
 // ============================================================
 const SLOT_MAP = { free: 5, pro: 10, enterprise: 300, guest: 5 };
 const AVATARS = ['owner', 'designer', 'seo'];
-const ROLES = ['owner', 'designer', 'seo', 'developer', 'ai-lens', 'ai-conductor', 'context-engineer', 'other'];
+const ROLES = ['ai-lens', 'owner', 'designer', 'seo', 'ai-director', 'developer', 'ai-conductor', 'context-engineer', 'other'];
 const CATEGORIES = ['casual','websites','ux','seo','aeo'];
 
 const POINTS_COMMENT      = 5;

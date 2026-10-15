@@ -561,14 +561,11 @@
                     <div>
                       <label class="block text-sm font-medium mb-1">Role</label>
                       <select x-model="profile.role" class="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50">
-                        <option value="owner">Website Owner</option>
-                        <option value="designer">Web Designer</option>
-                        <option value="seo">SEO Professional</option>
-                        <option value="developer">Developer</option>
-                        <option value="ai-lens">AI Lenzer — directs AI, magnifies human 🔍</option>
-                        <option value="ai-conductor">AI Conductor — orchestrates many models</option>
-                        <option value="context-engineer">Context Engineer — builds the human↔AI bridge</option>
-                        <option value="other">Other</option>
+                        <option value="ai-lens">🔍 AI Lenzer</option>
+                        <option value="owner">🏢 Website Owner</option>
+                        <option value="designer">🎨 Web Designer</option>
+                        <option value="seo">📈 SEO Professional</option>
+                        <option value="ai-director">🎬 AI Director</option>
                       </select>
                     </div>
 
@@ -4532,7 +4529,7 @@ async endorsePost(postId) {
       }
     },
     roleLabel(role) {
-      const map = { owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', developer: 'Developer', 'ai-lens': 'AI Lenzer', 'ai-conductor': 'AI Conductor', 'context-engineer': 'Context Engineer', other: 'Member' };
+      const map = { 'ai-lens': 'AI Lenzer', owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', 'ai-director': 'AI Director', developer: 'Developer', 'ai-conductor': 'AI Conductor', 'context-engineer': 'Context Engineer', other: 'Member' };
       return map[role] || 'Member';
     },
 

@@ -1033,10 +1033,14 @@ async endorsePost(postId) {
     },
     roleLabel(role) {
       const map = {
+        'ai-lens': 'AI Lenzer',
         owner: 'Website Owner',
         designer: 'Web Designer',
         seo: 'SEO Professional',
+        'ai-director': 'AI Director',
         developer: 'Developer',
+        'ai-conductor': 'AI Conductor',
+        'context-engineer': 'Context Engineer',
         other: 'Member'
       };
       return map[role] || 'Member';
