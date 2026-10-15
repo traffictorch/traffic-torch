@@ -1061,7 +1061,7 @@ async function handleTorchRoutes(request, env, url) {
         avatar_url: post.avatar_r2_key
           ? `https://traffic-torch-auth.traffictorch.workers.dev/api/profile/avatar/${post.user_id}?v=${post.avatar_updated_at || 0}`
           : null,
-        role: post.role, bio: post.bio,
+        role: post.role, tier: post.tier || 'free', bio: post.bio,
         website_url: post.website_url, website_approved: post.website_approved,
         social1_url: post.social1_url, social2_url: post.social2_url,
         job_title: post.job_title, company: post.company, location: post.location,
