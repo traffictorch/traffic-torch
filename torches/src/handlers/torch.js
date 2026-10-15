@@ -78,7 +78,12 @@ function stripProfileShell(html) {
 
 function scoreColor(s) { return s >= 80 ? '#22c55e' : s >= 60 ? '#eab308' : '#ef4444'; }
 function scoreClass(s) { return s >= 80 ? 'text-green-500' : s >= 60 ? 'text-yellow-500' : 'text-red-500'; }
-function monthsSince(ts) { return ts ? Math.max(0, Math.floor((Date.now() - ts) / (86400000 * 30))) : 0; }
+function monthsSince(ts) {
+  if (!ts) return 0;
+  const t = typeof ts === 'number' ? ts : new Date(ts).getTime();
+  if (!Number.isFinite(t)) return 0;
+  return Math.max(0, Math.floor((Date.now() - t) / (86400000 * 30)));
+}
 function fmtDate(ts) { try { return new Date(ts).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }); } catch { return '—'; } }
 
 function torchLabel(post) {
