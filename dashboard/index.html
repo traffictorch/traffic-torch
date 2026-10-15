@@ -4590,6 +4590,12 @@ async endorsePost(postId) {
       return s >= 80 ? 'bg-green-500' : s >= 60 ? 'bg-yellow-500' : 'bg-red-500';
     },
 
+    formatDate(ts) {
+      try {
+        const d = new Date(ts);
+        return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      } catch { return '—'; }
+    },
     formatShortDate(ts) {
       try { return new Date(ts).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }); }
       catch { return '—'; }
