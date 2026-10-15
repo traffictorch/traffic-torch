@@ -128,7 +128,7 @@ function renderMiniCard(post, { showAuthor } = {}) {
     ? `<a href="/torcher/${htmlEscape(post.username)}/" class="text-xs text-gray-500 hover:text-orange-500">@${htmlEscape(post.username)}</a>`
     : '';
   return `<a href="/torch/${post.id}/" class="glass rounded-xl overflow-hidden flex flex-col hover:bg-white/10 transition group">
-    <img src="/og/torch/${post.id}.png"
+    <img src="/og/${(post.tool && post.tool.trim()) ? 'torch' : 'discussion'}/${post.id}.png"
          alt=""
          loading="lazy"
          class="w-full object-cover bg-gray-100 dark:bg-gray-800"

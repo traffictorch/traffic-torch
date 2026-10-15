@@ -380,7 +380,7 @@
 
           <div class="space-y-4">
             <template x-for="post in posts" :key="post.id">
-              <article x-show="post.post_type === 'audit' || !post.post_type" class="glass rounded-2xl overflow-hidden border-l-4"
+              <article x-show="post.tool && post.tool.trim()" class="glass rounded-2xl overflow-hidden border-l-4"
                        :class="post.score >= 80 ? 'border-green-500' : post.score >= 60 ? 'border-yellow-500' : 'border-red-500'">
                 <div class="p-4 pb-3">
                   <div class="flex items-start gap-4">
@@ -461,7 +461,7 @@
                 </div>
               </article>
 
-              <article x-show="post.post_type === 'discussion'" x-cloak class="glass rounded-2xl overflow-hidden">
+              <article x-show="!post.tool || !post.tool.trim()" x-cloak class="glass rounded-2xl overflow-hidden">
                 <div class="p-5 pb-3">
                   <div class="flex items-start gap-4">
                     <img :src="avatarSrc(post)" :alt="post.display_name" width="44" height="44" style="width:44px;height:44px;" class="rounded-full flex-shrink-0 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
@@ -497,7 +497,7 @@
                 </div>
               </article>
 
-              <article x-show="post.post_type === 'workflow'" x-cloak class="glass rounded-2xl overflow-hidden border-l-4 border-l-purple-500">
+              <article x-show="false" x-cloak class="glass rounded-2xl overflow-hidden border-l-4 border-l-purple-500">
                 <div class="p-5 pb-3">
                   <div class="flex items-start gap-4">
                     <img :src="avatarSrc(post)" :alt="post.display_name" width="44" height="44" style="width:44px;height:44px;" class="rounded-full flex-shrink-0 object-cover" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
