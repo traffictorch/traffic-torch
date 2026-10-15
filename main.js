@@ -1,5 +1,7 @@
 // Global Main JS
 
+import './pwa-dock.js';
+
 const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
 // Messages module — script-tag injected so Vite doesn't try to bundle it
