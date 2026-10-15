@@ -301,8 +301,14 @@ if (sidebar && (collapseBtn || desktopMenuToggle)) {
   };
   collapseBtn?.addEventListener('click', toggleSidebar);
   desktopMenuToggle?.addEventListener('click', toggleSidebar);
-  // Start expanded
-  if (sidebar.classList.contains('collapsed')) toggleSidebar();
+  // Public-facing pages (/torcher/*, /torch/*) start collapsed by default.
+  // All other pages start expanded.
+  const isPublicPage = /^\/(torcher|torch)\//.test(window.location.pathname);
+  if (isPublicPage) {
+    if (!sidebar.classList.contains('collapsed')) toggleSidebar();
+  } else {
+    if (sidebar.classList.contains('collapsed')) toggleSidebar();
+  }
 }
 
 // Login/Register Modal (mobile-first, Tailwind, dark mode)
