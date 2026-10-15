@@ -184,7 +184,7 @@
       instBtn = btn('tt-act-bell', '🔔', 'Alerts');
       instBtn.addEventListener('click', () => { location.href = '/dashboard/#notifications-section'; });
     } else if (!standalone) {
-      instBtn = btn('tt-act-install', '⬇️', 'Install');
+      instBtn = btn('tt-act-install', '📲', 'Install');
       instBtn.addEventListener('click', () => {
         if (typeof window.triggerPWAInstall === 'function') window.triggerPWAInstall();
         else toast('Install via browser menu');
