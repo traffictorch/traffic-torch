@@ -868,3 +868,32 @@ p a:hover, li a:hover {
     text-align: center;
   }
 }
+
+/* ── Global responsive iframe (YouTube, Vimeo, etc.) ── */
+iframe[src*="youtube.com"],
+iframe[src*="youtube-nocookie.com"],
+iframe[src*="youtu.be"],
+iframe[src*="vimeo.com"] {
+  max-width: 100% !important;
+  width: 100% !important;
+  aspect-ratio: 16 / 9 !important;
+  height: auto !important;
+  border: 0;
+  border-radius: 0.5em;
+  display: block;
+}
+.md-embed {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  margin: 0.8em 0;
+  border-radius: 0.6em;
+  background: #0f172a;
+}
+.md-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}

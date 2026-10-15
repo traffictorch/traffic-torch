@@ -12,7 +12,11 @@
 
   <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/style.css?v=1.0"></noscript>
-  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}
+    .md-body iframe, .md-embed iframe { max-width:100%; aspect-ratio:16/9; height:auto; border:0; border-radius:.6em; }
+    .md-embed { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; margin:.8em 0; border-radius:.6em; background:#0f172a; }
+    .md-embed iframe { position:absolute; inset:0; width:100%; height:100%; }
+  </style>
   <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
   <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local.css?v=1.0"></noscript>
 
@@ -114,10 +118,16 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://static.cloudflareinsights.com">
   <link rel="dns-prefetch" href="https://js.stripe.com">
+  <script defer src="https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/dist/markdown-it.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
 <div x-data="profilePage()" x-init="init()" class="flex flex-1 min-h-screen">
+  <template x-teleport="body">
+    <div id="tt-profile-image-lightbox" x-show="imageLightbox" x-cloak @keydown.escape.window="imageLightbox = null" @click="imageLightbox = null" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483647;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;"><img :src="imageLightbox" @click.stop style="display:block;max-width:min(95vw,1400px);max-height:90vh;width:auto;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 25px 60px -12px rgba(0,0,0,0.8);background:#fff;"><button type="button" @click.stop="imageLightbox = null" aria-label="Close" style="position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-family:system-ui,-apple-system,sans-serif;">×</button></div>
+  </template>
+
 
   <!-- ── Avatar lightbox (bulletproof, 2-element) ── -->
   <template x-teleport="body">
@@ -167,7 +177,7 @@
       </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8 flex-1 max-w-3xl">
+    <main class="container mx-auto px-4 py-8 flex-1 max-w-5xl">
 
       <!-- Loading -->
       <div x-show="loading" class="text-center py-20">
@@ -419,6 +429,7 @@
                     <a :href="post.url" target="_blank" rel="ugc nofollow noopener"
                        class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-gray-300 dark:border-gray-600 hover:border-orange-500 hover:text-orange-500 transition">Visit page →</a>
                   </template>
+                  <a :href="torchLink(post)" class="ml-auto px-3 py-1.5 text-xs font-semibold rounded-lg border border-orange-500/50 text-orange-500 hover:bg-orange-500 hover:text-white transition whitespace-nowrap" x-text="commentLinkLabel(post)"></a>
                 </div>
 
                 <div x-show="post._showDetails" x-cloak>
@@ -479,6 +490,9 @@
                       </div>
                     </template>
                   </div>
+                  <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <a :href="torchLink(post)" class="inline-flex items-center text-xs font-semibold text-orange-500 hover:underline" x-text="commentLinkLabel(post)"></a>
+                  </div>
                 </div>
               </article>
 
@@ -527,6 +541,9 @@
                         </template>
                       </div>
                     </template>
+                  </div>
+                  <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                    <a :href="torchLink(post)" class="inline-flex items-center text-xs font-semibold text-purple-500 hover:underline" x-text="commentLinkLabel(post)"></a>
                   </div>
                 </div>
               </article>
@@ -745,6 +762,114 @@ const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
 function profilePage() {
   return {
+
+    commentLinkLabel(post) {
+      const n = post.comment_count || 0;
+      if (n === 0) return '💬 Start a discussion →';
+      return '💬 ' + n + ' Comment' + (n === 1 ? '' : 's') + ' →';
+    },
+    torchLink(post) { return '/torch/' + post.id + '/'; },
+
+    // ── Utility methods (shared with dashboard) ──
+    renderMarkdown(text) {
+      if (!text) return '';
+      const raw = String(text);
+      if (!window.markdownit) {
+        return '<p style="white-space:pre-wrap;margin:0;">' + raw
+          .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/"/g,'&quot;').replace(/'/g,'&#39;') + '</p>';
+      }
+      if (!window._ttMd) {
+        window._ttMd = window.markdownit({ html:false, linkify:true, breaks:true });
+        const d = window._ttMd.renderer.rules.link_open || function(t,i,o,e,self){return self.renderToken(t,i,o);};
+        window._ttMd.renderer.rules.link_open = function(t,i,o,e,self){t[i].attrSet('target','_blank');t[i].attrSet('rel','nofollow ugc noopener');return d(t,i,o,e,self);};
+      }
+      let html = window._ttMd.render(raw);
+      try { html = this.embedifyHtml(html); } catch(e){}
+      return html;
+    },
+    excerpt(text, max = 600) {
+      if (!text) return '';
+      const str = String(text);
+      return str.length <= max ? str : str.slice(0, max).replace(/\s+\S*$/, '') + '…';
+    },
+    shouldCollapse(text, max = 600) { return !!text && String(text).length > max; },
+    parseImages(raw) {
+      if (!raw) return [];
+      try { const a = typeof raw === 'string' ? JSON.parse(raw) : raw; return Array.isArray(a) ? a : []; } catch { return []; }
+    },
+    parseWorkflowMeta(raw) {
+      if (!raw) return null;
+      try { const m = typeof raw === 'string' ? JSON.parse(raw) : raw; return m && typeof m === 'object' ? m : null; } catch { return null; }
+    },
+    wfTopChips(meta) {
+      if (!meta) return [];
+      const order = ['ai_models','ai_tools','cloud','ide','hardware','databases','devops','terminal','os','other_tools'];
+      const out = [];
+      for (const k of order) { const arr = meta[k]; if (Array.isArray(arr)) for (const v of arr) { if (out.length < 6) out.push(v); } }
+      return out;
+    },
+    youtubeEmbedSrc(url) {
+      try {
+        const u = new URL(url); const h = u.hostname.replace(/^www\./,'');
+        if (h === 'youtu.be') { const id = u.pathname.slice(1).split('/')[0]; return id ? 'https://www.youtube-nocookie.com/embed/'+id : null; }
+        if (h === 'youtube.com' || h === 'm.youtube.com') {
+          if (u.pathname === '/watch') { const v = u.searchParams.get('v'); return v ? 'https://www.youtube-nocookie.com/embed/'+v : null; }
+          const m = u.pathname.match(/^\/(?:embed|shorts|v)\/([^/?]+)/);
+          if (m) return 'https://www.youtube-nocookie.com/embed/'+m[1];
+        }
+      } catch {}
+      return null;
+    },
+    vimeoEmbedSrc(url) {
+      try {
+        const u = new URL(url); const h = u.hostname.replace(/^www\./,'');
+        if (h === 'vimeo.com' || h === 'player.vimeo.com') {
+          const m = u.pathname.match(/^\/(?:video\/)?(\d+)/);
+          if (m) return 'https://player.vimeo.com/video/'+m[1];
+        }
+      } catch {}
+      return null;
+    },
+    embedFrame(src, title) {
+      return '<div class="md-embed"><iframe src="'+src+'" title="'+title+'" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
+    },
+    embedifyHtml(html) {
+      try {
+        return html.replace(/<a href="([^"]+)"[^>]*>[^<]*<\/a>/g, (m, url) => {
+          const yt = this.youtubeEmbedSrc(url); if (yt) return this.embedFrame(yt,'YouTube video');
+          const vm = this.vimeoEmbedSrc(url);  if (vm) return this.embedFrame(vm,'Vimeo video');
+          return m;
+        });
+      } catch { return html; }
+    },
+    openImageLightbox(url) { if (url) this.imageLightbox = url; },
+    formatRelativeTime(ts) {
+      const d = Date.now() - ts, m = Math.floor(d/60000);
+      if (m < 1) return 'Just now'; if (m < 60) return m+'m ago';
+      const h = Math.floor(m/60); if (h < 24) return h+'h ago';
+      const dd = Math.floor(h/24); if (dd < 7) return dd+'d ago';
+      return new Date(ts).toLocaleDateString();
+    },
+    contactHref(c) {
+      const v = (c.value || '').trim(); if (!v) return '#';
+      switch (c.type) {
+        case 'email': return 'mailto:'+v;
+        case 'whatsapp': return 'https://wa.me/'+v.replace(/\D/g,'');
+        case 'telegram': return 'https://t.me/'+v.replace(/^@/,'');
+        case 'phone': return 'tel:'+v;
+        case 'linkedin': return v.startsWith('http') ? v : 'https://linkedin.com/in/'+v;
+        case 'x': return v.startsWith('http') ? v : 'https://x.com/'+v.replace(/^@/,'');
+        case 'other-url': return v.startsWith('http') ? v : 'https://'+v;
+        default: return '#';
+      }
+    },
+    contactIcon(type) {
+      return ({email:'📧',whatsapp:'💬',telegram:'✈️',wechat:'💬',signal:'🔒',phone:'📞',linkedin:'💼',x:'𝕏','other-url':'🔗'})[type] || '📬';
+    },
+    contactsTypeLabel(type) {
+      return ({email:'Email',whatsapp:'WhatsApp',telegram:'Telegram',wechat:'WeChat',signal:'Signal',phone:'Phone',linkedin:'LinkedIn',x:'X / Twitter','other-url':'Link'})[type] || 'Contact';
+    },
     loading: true,
 
     avatarSrc(o) {
@@ -1149,6 +1274,6 @@ async endorsePost(postId) {
 window.profilePage = profilePage;
 </script>
 
-<div id="tt-profile-image-lightbox" x-show="imageLightbox" x-cloak @keydown.escape.window="imageLightbox = null" @click="imageLightbox = null" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483647;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;"><img :src="imageLightbox" @click.stop style="display:block;max-width:min(95vw,1400px);max-height:90vh;width:auto;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 25px 60px -12px rgba(0,0,0,0.8);background:#fff;"><button type="button" @click.stop="imageLightbox = null" aria-label="Close" style="position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-family:system-ui,-apple-system,sans-serif;">×</button></div>
+
 </body>
 </html>
