@@ -173,7 +173,7 @@ function renderComments() {
             <template x-if="c.images">
               <div class="mt-2 flex flex-wrap gap-1.5">
                 <template x-for="(img, idx) in parseImages(c.images)" :key="'ci-' + c.id + '-' + idx">
-                  <a @click.prevent="openImageLightbox(img.url)" class="cursor-zoom-in" role="button" tabindex="0">
+                  <a :data-tt-lightbox="img.url" class="cursor-zoom-in" role="button" tabindex="0">
                     <img :src="img.url" loading="lazy" alt="" class="rounded-md object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="width:80px;height:80px;">
                   </a>
                 </template>
