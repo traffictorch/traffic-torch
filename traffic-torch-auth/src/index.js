@@ -1612,11 +1612,13 @@ async function handleFeedRoutes(request, env, url) {
     const cursor = parseInt(url.searchParams.get('cursor') || '0', 10) || 0;
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '20', 10) || 20, 30);
     const toolFilter = url.searchParams.get('tool');
+    const postTypeFilter = url.searchParams.get('post_type');
 
     const args = [];
     let where = "p.status = 'published'";
     if (CATEGORIES.includes(category)) { where += ' AND p.category = ?'; args.push(category); }
     if (toolFilter) { where += ' AND p.tool = ?'; args.push(toolFilter); }
+    if (postTypeFilter && ['audit','discussion','workflow'].includes(postTypeFilter)) { where += ' AND p.post_type = ?'; args.push(postTypeFilter); }
     if (cursor) { where += ' AND p.created_at < ?'; args.push(cursor); }
 
     if (user) {
