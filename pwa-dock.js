@@ -134,19 +134,18 @@
         if (btn) btn.click(); else toast('Theme toggle unavailable');
       }
     }));
-    list.appendChild(item('📥', 'Install App', {
-      onClick: () => {
-        if (typeof window.triggerPWAInstall === 'function') window.triggerPWAInstall();
-        else toast('Already installed or not available');
-      }
-    }));
     list.appendChild(item('⚙️', 'Settings', { href: '/dashboard/#settings' }));
     list.appendChild(item('⭐', 'Favourite Tools', { disabled: true, meta: 'soon' }));
 
     list.appendChild(el('div', 'tt-pwa-menu-sep'));
 
     // Main navigation
-    list.appendChild(item('🔥', 'All Tools',   { href: '/ai-seo-ux-tools/' }));
+    list.appendChild(item('🔥', 'All Tools', {
+      onClick: () => {
+        closeSheet(document.getElementById('ttPwaMenuSheet'));
+        setTimeout(() => openSheet(document.getElementById('ttPwaToolsSheet') || buildToolsSheet()), 180);
+      }
+    }));
     list.appendChild(item('📚', 'Help Guides', { href: '/ai-ux-seo-help-guides/' }));
     list.appendChild(item('📰', 'News & Blog', { href: '/news/' }));
     list.appendChild(item('🏆', 'Leaderboard', { href: '/leader-board/' }));
@@ -173,9 +172,24 @@
 
     const back    = btn('tt-act-back',    '◀', 'Back');
     const fwd     = btn('tt-act-fwd',     '▶', 'Forward');
-    const tools   = btn('tt-act-tools',   '🔥', 'Tools');
     const share   = btn('tt-act-share',   '📤', 'Share');
     const menu    = btn('tt-act-menu',    '☰', 'Menu');
+
+    // Install / Notifications — one slot, swaps on state
+    const standalone = isStandalone();
+    let loggedIn = false;
+    try { loggedIn = !!localStorage.getItem('authToken'); } catch {}
+    let instBtn = null;
+    if (standalone && loggedIn) {
+      instBtn = btn('tt-act-bell', '🔔', 'Alerts');
+      instBtn.addEventListener('click', () => { location.href = '/dashboard/#notifications-section'; });
+    } else if (!standalone) {
+      instBtn = btn('tt-act-install', '⬇️', 'Install');
+      instBtn.addEventListener('click', () => {
+        if (typeof window.triggerPWAInstall === 'function') window.triggerPWAInstall();
+        else toast('Install via browser menu');
+      });
+    }
     const offlineDot = el('span', 'tt-offline-dot');
     offlineDot.hidden = true;
     $('.tt-ico', menu).appendChild(offlineDot);
@@ -193,7 +207,6 @@
 
     back.addEventListener('click', () => { if (history.length > 1) history.back(); });
     fwd.addEventListener('click',  () => { history.forward(); });
-    tools.addEventListener('click', () => openSheet(document.getElementById('ttPwaToolsSheet') || buildToolsSheet()));
     menu.addEventListener('click',  () => openSheet(document.getElementById('ttPwaMenuSheet')  || buildMenuSheet()));
 
     share.addEventListener('click', async () => {
@@ -206,7 +219,10 @@
       }
     });
 
-    dock.append(back, fwd, tools, share, menu);
+    const items = [back, fwd];
+    if (instBtn) items.push(instBtn);
+    items.push(share, menu);
+    dock.append(...items);
     document.body.appendChild(dock);
 
     // Slide-in
@@ -217,6 +233,29 @@
 
     refreshNav();
     window.addEventListener('popstate', refreshNav);
+
+    // Hide on scroll-down, show on scroll-up. Works in browser + PWA identically.
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const delta = y - lastY;
+        if (y > 80 && delta > 6) {
+          dock.classList.remove('tt-ready');
+          dock.classList.add('tt-hide');
+        } else if (delta < -6 || y <= 80) {
+          dock.classList.remove('tt-hide');
+          dock.classList.add('tt-ready');
+        }
+        lastY = y;
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
     return dock;
   }
 
