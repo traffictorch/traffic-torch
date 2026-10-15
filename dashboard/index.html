@@ -336,10 +336,10 @@
                       :class="profileSubTab === 'feed' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
                 Feed
               </button>
-              <button @click="profileSubTab = 'workflows'"
+              <button @click="profileSubTab = 'workflows'; loadWorkflows()"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
                       :class="profileSubTab === 'workflows' ? 'bg-orange-500 text-white' : 'bg-gray-200 dark:bg-gray-700'">
-                ⚙️ Workflows <span x-text="feed.posts.filter(p => p.post_type === 'workflow').length ? '(' + feed.posts.filter(p => p.post_type === 'workflow').length + ')' : ''"></span>
+                ⚙️ Workflows <span x-text="workflows.list.length ? '(' + workflows.list.length + ')' : ''"></span>
               </button>
               <button @click="profileSubTab = 'mine'; loadNetwork()"
                       class="px-4 py-2 rounded-lg text-sm font-medium transition"
@@ -1536,13 +1536,14 @@
 
           <!-- === Workflows view === -->
           <div x-show="profileSubTab === 'workflows'" x-cloak class="max-w-2xl mx-auto">
-            <div x-show="feed.posts.filter(p => p.post_type === 'workflow').length === 0" class="glass rounded-2xl p-10 text-center">
+            <div x-show="workflows.loading" class="text-center py-8"><div class="spinner mx-auto"></div></div>
+            <div x-show="workflows.list.length === 0 && !workflows.loading" class="glass rounded-2xl p-10 text-center">
               <p class="text-4xl mb-3">⚙️</p>
               <p class="text-gray-500">No workflows yet.</p>
               <p class="text-sm text-gray-400 mt-2">Share a workflow from the Feed tab.</p>
             </div>
             <div class="space-y-4">
-              <template x-for="post in feed.posts.filter(p => p.post_type === 'workflow')" :key="'wf-' + post.id">
+              <template x-for="post in workflows.list" :key="'wf-' + post.id">
                 <article class="glass rounded-2xl overflow-hidden border-l-4 border-l-purple-500">
                   <div class="p-5 pb-3">
                     <div class="flex items-start gap-4">
@@ -3910,6 +3911,7 @@ function dashboardApp() {
     networkSubTab: 'feed',
     profileSubTab: 'profile',
     discover: { loading: false, users: [], hasMore: false, error: null, addLoading: {} },
+    workflows: { list: [], loading: false, error: null },
     activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, type: 'all', category: 'all', tool: 'all', time: 'all', scope: 'network', filterUser: null, filterUsername: null },
 
     messageSettingsPolicy: 'all',
@@ -5584,6 +5586,19 @@ async endorsePost(postId) {
     },
 
     // ===== NETWORK =====
+    async loadWorkflows() {
+      this.workflows.loading = true;
+      this.workflows.error = null;
+      try {
+        const token = localStorage.getItem('authToken');
+        const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+        const res = await fetch(`${API_BASE}/api/feed?post_type=workflow&limit=30`, { headers });
+        const data = await res.json();
+        this.workflows.list = data.posts || [];
+      } catch (e) { this.workflows.error = e.message; }
+      finally { this.workflows.loading = false; }
+    },
+
     async loadNetwork() {
       this.network.loading = true;
       this.network.addLoading = {};
