@@ -63,8 +63,8 @@ function injectHead(html, { headTags, jsonLd }) {
 }
 
 function stripProfileShell(html) {
-  html = html.replace(/ x-data="profilePage\(\)"/, '');
-  html = html.replace(/ x-init="init\(\)"/, '');
+  // Swap Alpine factory so the whole shell (lightboxes included) is in torchPage() scope
+  html = html.replace(/ x-data="profilePage\(\)"/, ' x-data="torchPage()"');
   html = html.replace(
     /<script>\s*const API_BASE = [\s\S]*?window\.profilePage = profilePage;\s*<\/script>/,
     ''
@@ -159,6 +159,24 @@ function renderComments() {
             <p x-show="!c._expanded" class="text-sm mt-1 leading-snug break-words whitespace-pre-wrap" x-text="plainExcerpt(c.body, 600)"></p>
             <div x-show="c._expanded" x-cloak class="md-body text-sm mt-1 break-words" x-html="renderMarkdown(c.body)"></div>
             <button x-show="shouldCollapse(c.body, 600)" @click="c._expanded = !c._expanded" type="button" class="text-xs font-semibold text-orange-500 hover:underline mt-1" x-text="c._expanded ? 'Show less ▲' : 'Read more ▼'"></button>
+            <template x-if="c.images">
+              <div class="mt-2 flex flex-wrap gap-1.5">
+                <template x-for="(img, idx) in parseImages(c.images)" :key="'ci-' + c.id + '-' + idx">
+                  <a @click.prevent="openImageLightbox(img.url)" class="cursor-zoom-in" role="button" tabindex="0">
+                    <img :src="img.url" loading="lazy" alt="" class="rounded-md object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="width:80px;height:80px;">
+                  </a>
+                </template>
+              </div>
+            </template>
+            <template x-if="c.files">
+              <div class="mt-2 flex flex-wrap gap-1.5">
+                <template x-for="(f, idx) in parseImages(c.files)" :key="'cf-' + c.id + '-' + idx">
+                  <a :href="f.url" target="_blank" rel="noopener" download class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-gray-200 dark:bg-gray-700 text-xs text-gray-700 dark:text-gray-300 hover:bg-orange-500/20 transition">
+                    <span>📎</span><span x-text="f.name || 'file'"></span>
+                  </a>
+                </template>
+              </div>
+            </template>
           </div>
         </div>
       </template>
@@ -202,7 +220,15 @@ function renderTorchBody(data) {
   const domain = domainOf(post);
   const titleText = htmlEscape(torchLabel(post));
   const displayTitle = isDiscussion ? htmlEscape(post.title || 'Discussion') : titleText;
-  const bodyMd = (isDiscussion || isWorkflow) ? (post.body_md || post.note || '') : (post.note || '');
+  let bodyMd = (isDiscussion || isWorkflow) ? (post.body_md || post.note || '') : (post.note || '');
+  // Workflow posts store a UI-copy preamble in body_md. Strip it here so the real markdown shows.
+  if (isWorkflow && bodyMd) {
+    bodyMd = bodyMd
+      .replace(/^Summary:[^\n]*\n/i, '')
+      .replace(/^Category:[^\n]*\n/i, '')
+      .replace(/Chips\s*[—-]\s*pick\/type these:[\s\S]*?Body \(step-by-step workflow\):\s*\n?(markdown\s*\n?)?/i, '')
+      .trim();
+  }
   const date = fmtDate(post.created_at);
   const toolName = toolDisplay(post.tool);
   const runUrl = post.url && post.tool ? toolRunUrl(post.tool, post.url) : null;
@@ -294,9 +320,21 @@ function renderTorchBody(data) {
         </div>
       </div>
 
+      ${isWorkflow && wfMeta && wfMeta.summary ? '<p class="mt-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300">' + htmlEscape(wfMeta.summary) + '</p>' : ''}
+      ${(function() {
+        if (!isWorkflow || !wfMeta) return '';
+        var keys = ['ai_models','ai_tools','cloud','ide','hardware','databases','devops','terminal','os','other_tools'];
+        var chips = [];
+        for (var i = 0; i < keys.length; i++) {
+          var arr = wfMeta[keys[i]];
+          if (Array.isArray(arr)) for (var j = 0; j < arr.length; j++) { if (chips.length < 8) chips.push(arr[j]); }
+        }
+        if (!chips.length) return '';
+        return '<div class="mt-3 flex flex-wrap gap-1.5">' + chips.map(function(c) { return '<span class="inline-flex px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-300 text-[11px] font-bold border border-purple-500/20">' + htmlEscape(c) + '</span>'; }).join('') + '</div>';
+      })()}
       ${(isDiscussion || isWorkflow) && bodyMd ? '<div class="mt-5 text-base leading-relaxed text-gray-700 dark:text-gray-300"><div :class="bodyExpanded ? \'\' : \'relative max-h-[28rem] overflow-hidden\'"><div class="md-body" x-html="renderMarkdown(bodyMd)">' + htmlEscape(plainExcerptServer(bodyMd, 2000)) + '</div><div x-show="!bodyExpanded" x-cloak class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none"></div></div><button x-show="shouldCollapse(bodyMd, 1500)" type="button" @click="bodyExpanded = !bodyExpanded" class="text-sm font-semibold text-orange-500 hover:underline mt-2" x-text="bodyExpanded ? \'Show less ▲\' : \'Read more ▼\'"></button></div>' : ''}
       ${!isDiscussion && !isWorkflow && post.note ? '<p class="text-base leading-relaxed mt-3 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">' + htmlEscape(post.note) + '</p>' : ''}
-      ${postImages.length > 0 ? '<div class="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">' + postImages.map(function(img, i) { return '<a href="' + htmlEscape(img.url) + '" target="_blank" rel="noopener"><img src="' + htmlEscape(img.url) + '" loading="lazy" alt="Image ' + (i+1) + '" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;object-fit:cover;"></a>'; }).join('') + '</div>' : ''}
+      ${postImages.length > 0 ? '<div class="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">' + postImages.map(function(img, i) { var u = String(img.url).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); return '<a @click.prevent="openImageLightbox(\'' + u + '\')" class="cursor-zoom-in" role="button" tabindex="0"><img src="' + htmlEscape(img.url) + '" loading="lazy" alt="Image ' + (i+1) + '" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;object-fit:cover;"></a>'; }).join('') + '</div>' : ''}
     </div>
     ${modulesHtml ? `<div class="border-t border-dashed border-gray-200 dark:border-gray-700"></div><div class="px-6 py-4 space-y-2">${modulesHtml}</div>` : ''}
   </article>
@@ -393,7 +431,41 @@ function renderTorchBody(data) {
 }
 
 function torchPageScript() {
-  return '';
+  return `<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.torchPage !== 'function') return;
+    var orig = window.torchPage;
+    window.torchPage = function() {
+      var obj = orig.apply(this, arguments);
+      if (!obj.openImageLightbox) obj.openImageLightbox = function(u) { if (u) this.imageLightbox = u; };
+      if (!obj.parseImages) obj.parseImages = function(raw) {
+        if (!raw) return [];
+        try { var a = typeof raw === 'string' ? JSON.parse(raw) : raw; return Array.isArray(a) ? a : []; } catch (e) { return []; }
+      };
+      if (!obj.formatTime && obj.formatRelativeTime) obj.formatTime = obj.formatRelativeTime;
+      if (!obj.formatTime) obj.formatTime = function(ts) { try { return new Date(ts).toLocaleString(); } catch (e) { return ''; } };
+      if (!obj.plainExcerpt) obj.plainExcerpt = function(t, m) { t = String(t || ''); m = m || 600; return t.length <= m ? t : t.slice(0, m).replace(/\s+\S*$/, '') + '\u2026'; };
+      if (!obj.shouldCollapse) obj.shouldCollapse = function(t, m) { return !!t && String(t).length > (m || 600); };
+      if (!obj.renderMarkdown) obj.renderMarkdown = function(t) {
+        if (!t) return '';
+        if (window.markdownit) {
+          if (!window._ttMdTorch) {
+            window._ttMdTorch = window.markdownit({ html: false, linkify: true, breaks: true });
+            var defaultLink = window._ttMdTorch.renderer.rules.link_open || function(tokens, idx, options, env, self) { return self.renderToken(tokens, idx, options); };
+            window._ttMdTorch.renderer.rules.link_open = function(tokens, idx, options, env, self) {
+              tokens[idx].attrSet('target', '_blank');
+              tokens[idx].attrSet('rel', 'nofollow ugc noopener');
+              return defaultLink(tokens, idx, options, env, self);
+            };
+          }
+          return window._ttMdTorch.render(String(t));
+        }
+        return '<p style="white-space:pre-wrap">' + String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</p>';
+      };
+      return obj;
+    };
+  });
+  </script>`;
 }
 
 export { TORCH_PAGE_JS };
@@ -437,8 +509,8 @@ export async function handleTorch(request, env) {
   const mainEnd = html.indexOf('</main>');
   if (mainStart !== -1 && mainEnd !== -1) {
     const embedded = `<script id="torch-data" type="application/json">${JSON.stringify({ torch_id: id, author_id: author.id, author_username: author.username, endorse_count: post.endorse_count || 0, post_type: post.post_type || 'audit', title: post.title || null, body_md: post.body_md || post.note || null })}</script>`;
-    const wrapped = `<div x-data="torchPage()" x-init="init()">\n${renderTorchBody(data)}\n${embedded}\n</div>\n${torchPageScript()}`;
-    html = html.slice(0, mainStart) + wrapped + html.slice(mainEnd + '</main>'.length);
+    const injected = `${renderTorchBody(data)}\n${embedded}\n${torchPageScript()}`;
+    html = html.slice(0, mainStart) + injected + html.slice(mainEnd + '</main>'.length);
   }
 
   return new Response(html, {
