@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bgOth" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#64748b"/>
+      <stop offset="1" stop-color="#334155"/>
+    </linearGradient>
+    <radialGradient id="glowOth" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bgOth)"/>
+  <circle cx="200" cy="200" r="160" fill="url(#glowOth)"/>
+
+  <!-- Person outline -->
+  <circle cx="200" cy="165" r="44" fill="none" stroke="#ffffff" stroke-width="10"/>
+  <path d="M 110 310 C 110 250 155 230 200 230 C 245 230 290 250 290 310" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- Small asterisk / dot accent -->
+  <circle cx="270" cy="115" r="10" fill="#94a3b8" opacity="0.9"/>
+</svg>
