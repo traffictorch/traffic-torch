@@ -157,39 +157,54 @@ function showIOSInstallInstructions() {
   if (document.getElementById('ios-install-modal')) return;
   const modal = document.createElement('div');
   modal.id = 'ios-install-modal';
-  modal.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow:hidden;';
+  modal.style.position = 'fixed';
+  modal.style.inset = '0';
+  modal.style.background = 'rgba(0,0,0,0.8)';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.zIndex = '2147483647';
+  modal.style.overflow = 'hidden';
+  modal.style.padding = '20px';
+  modal.style.boxSizing = 'border-box';
+  modal.style.backdropFilter = 'blur(8px)';
+  modal.style.transition = 'opacity 300ms';
   modal.innerHTML = `
-    <div style="background:rgba(17,24,39,0.97);backdrop-filter:blur(16px);border-radius:24px;padding:28px 24px;max-width:440px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.6);border:1px solid rgba(165,180,252,0.2);animation:slide-up 0.3s ease-out;box-sizing:border-box;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <h3 style="font-size:19px;font-weight:800;color:#fff;margin:0;background:linear-gradient(90deg,#fb923c,#db2777);-webkit-background-clip:text;background-clip:text;color:transparent;">Install Traffic Torch</h3>
-        <button type="button" data-close-ios style="font-size:26px;line-height:1;color:#9ca3af;background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:8px;">×</button>
+    <div style="background: rgba(17,24,39,0.95); backdrop-filter: blur(16px); border-radius: 24px; padding: 28px 24px; max-width: 440px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6); border: 1px solid rgba(165,180,252,0.2); animation: slide-up 0.3s ease-out; box-sizing: border-box;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h3 style="font-size: 20px; font-weight: 700; color: #ffffff; margin: 0;">Install Traffic Torch</h3>
+        <button type="button" data-close-ios style="font-size: 32px; line-height: 1; color: #9ca3af; background: none; border: none; cursor: pointer; padding: 0 4px;">×</button>
       </div>
-      <p style="color:#d1d5db;font-size:14px;margin:0 0 20px;">Add Traffic Torch to your Home Screen for quick access — works exactly like a native app.</p>
-      <ol style="color:#f3f4f6;margin:0;padding:0;list-style:none;">
-        <li style="display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;">
-          <span style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:rgba(165,180,252,0.18);color:#a5b4fc;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;">1</span>
-          <div style="line-height:1.5;">
-            <div style="font-weight:600;color:#fff;">Tap the <strong>Share</strong> button</div>
-            <div style="color:#9ca3af;font-size:13px;margin-top:2px;">It looks like a square with an arrow pointing up. Its position varies — top or bottom bar depending on your iOS version.</div>
+      <ol style="color: #f3f4f6; margin: 0; padding-left: 20px; font-size: 17px; line-height: 1.6; font-weight: 500;">
+        <li style="display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px;">
+          <span style="font-weight: 700; color: #a5b4fc; flex-shrink: 0;">1.</span>
+          <div style="color: #f3f4f6;">
+            In Safari tap the <strong style="color: #ffffff; font-weight: 600;">Share</strong> button
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="display: inline; vertical-align: middle; margin-left: 6px;">
+              <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+              <path d="M12 14V1"></path>
+              <path d="m8 5 4-4 4 4"></path>
+            </svg>
+            <div style="font-size: 12.5px; color: #9ca3af; font-weight: 400; font-style: italic; margin-top: 6px;">Depending on iOS version, it may be in the bottom bar or hidden in the <strong style="color:#c7d2fe; font-style:normal;">⋯</strong> menu.</div>
           </div>
         </li>
-        <li style="display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;">
-          <span style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:rgba(165,180,252,0.18);color:#a5b4fc;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;">2</span>
-          <div style="line-height:1.5;">
-            <div style="font-weight:600;color:#fff;">Scroll and tap <strong>Add to Home Screen</strong></div>
-            <div style="color:#9ca3af;font-size:13px;margin-top:2px;">You may need to scroll the Share menu to find it.</div>
-          </div>
-        </li>
-        <li style="display:flex;align-items:flex-start;gap:14px;">
-          <span style="flex-shrink:0;width:28px;height:28px;border-radius:50%;background:rgba(165,180,252,0.18);color:#a5b4fc;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;">3</span>
-          <div style="line-height:1.5;">
-            <div style="font-weight:600;color:#fff;">Tap <strong>Add</strong> in the top right</div>
-            <div style="color:#9ca3af;font-size:13px;margin-top:2px;">The Traffic Torch icon will appear on your Home Screen.</div>
+        <li style="display: flex; align-items: flex-start; gap: 14px;">
+          <span style="font-weight: 700; color: #a5b4fc; flex-shrink: 0;">2.</span>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: #f3f4f6;">
+            Scroll down and tap Add to Home Screen
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00eaff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="display: inline; vertical-align: middle;">
+              <rect x="3" y="3" width="18" height="18" rx="4" ry="4"></rect>
+              <path d="M12 7v10"></path>
+              <path d="M7 12h10"></path>
+            </svg>
           </div>
         </li>
       </ol>
-      <button type="button" data-close-ios style="margin-top:24px;width:100%;padding:12px;border-radius:12px;border:none;background:linear-gradient(90deg,#f97316,#ec4899);color:#fff;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit;">Got it</button>
-    </div>`;
+      <p style="margin-top: 28px; text-align: center; font-size: 14px; color: #9ca3af;">
+        PWA quick access apps! 📱 💻
+      </p>
+    </div>
+  `;
   document.body.appendChild(modal);
   document.body.style.overflow = 'hidden';
   const close = (e) => {
