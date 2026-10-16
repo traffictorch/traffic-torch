@@ -130,11 +130,13 @@ async function getSnapshot(env, ctx, requestedDate) {
     current = await buildLists();
     ctx.waitUntil(env.BOT_IPS.put(LATEST_KEY, JSON.stringify(current), { expirationTtl: 172800 }));
   }
+  const daysOld = (Date.now() - Date.parse(requestedDate)) / 86400000;
+  const isRecent = daysOld >= 0 && daysOld < 3;
   return {
     ...current,
     requestedDate,
-    source: 'current',
-    approximate: true,
+    source: isRecent ? 'live' : 'current',
+    approximate: !isRecent,
     note: 'No archived list for this date. Verified against the current published ranges — some genuine hits from this period may be flagged as unverified.'
   };
 }

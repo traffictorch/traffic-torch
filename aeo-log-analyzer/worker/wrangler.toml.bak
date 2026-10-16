@@ -1,0 +1,17 @@
+name = "aeo-bot-ips"
+main = "src/index.js"
+compatibility_date = "2026-09-11"
+preview_urls = false
+
+[observability]
+enabled = true
+
+# KV namespace for cached IP lists.
+# Create it first with: wrangler kv namespace create BOT_IPS
+# Then paste the id below.
+[[kv_namespaces]]
+binding = "BOT_IPS"
+id = "59549cbbcb874187bd7b70a1881a9f27"
+
+[triggers]
+crons = ["0 3 * * *"]  # daily at 3am UTC

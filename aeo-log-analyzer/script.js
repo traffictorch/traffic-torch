@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // 3. Fetch snapshot for this log's date range
       progress.textContent = 'Loading IP snapshot for log date…';
-      const snapshot = await getSnapshot(entries.length ? entries[0].time : null);
+      const snapshot = await getSnapshot(toIsoDate(entries[0]?.time) || null);
       const ipLists = snapshot.lists;
 
       // 4. Aggregate
@@ -292,6 +292,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const scoreCardHtml = renderAiAccessScoreCard({ score: aiScore, checks: aiChecks });
 
       results.innerHTML = scoreCardHtml + reportHtml;
+
+      // auto-scroll to the freshly rendered report
+      setTimeout(() => {
+        const h = [...document.querySelectorAll('h2')].find(el => el.textContent.trim() === 'Log Analysis Report');
+        const t = h?.closest('.max-w-6xl');
+        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
       results.classList.remove('hidden');
       loading.classList.add('hidden');
 
@@ -370,6 +377,16 @@ document.addEventListener('DOMContentLoaded', () => {
       'cloudflare-csv': 'Cloudflare CSV',
       'unknown': 'Unknown'
     }[f] || f;
+  }
+
+  function toIsoDate(ts) {
+    if (!ts) return null;
+    const m = String(ts).match(/^(\d{2})\/([A-Za-z]{3})\/(\d{4})/);
+    if (!m) return null;
+    const months = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+    const mm = months[m[2]];
+    if (!mm) return null;
+    return `${m[3]}-${mm}-${m[1]}`;
   }
 
   async function getSnapshot(date) {
