@@ -1,6 +1,6 @@
 // script.js — AEO Log Analyzer controller
 import { streamLogFile, FORMATS } from './log-parser.js';
-import { aggregateByBot } from './ip-matcher.js';
+import { aggregateByBot, setRegistry, applyRdnsFallback } from './ip-matcher.js';
 import { renderReport } from './report-renderer.js';
 import { renderContributions } from './contributions.js?v=1.0';
 import { canRunTool } from '/main.js?v=1.2';
@@ -209,9 +209,10 @@ document.addEventListener('DOMContentLoaded', () => {
     progress.textContent = 'Reading file…';
 
     try {
-      // 1. Fetch IP lists (with caching)
-      progress.textContent = 'Loading bot IP lists…';
-      const ipLists = await getIpLists();
+      // 1. Fetch registry once per session
+      progress.textContent = 'Loading bot registry…';
+      const bots = await getRegistry();
+      setRegistry(bots);
 
       // 2. Parse log
       progress.textContent = 'Parsing log file…';
@@ -242,9 +243,29 @@ document.addEventListener('DOMContentLoaded', () => {
         );
       }
 
-      // 3. Aggregate
+      // 3. Fetch snapshot for this log's date range
+      progress.textContent = 'Loading IP snapshot for log date…';
+      const snapshot = await getSnapshot(entries.length ? entries[0].time : null);
+      const ipLists = snapshot.lists;
+
+      // 4. Aggregate
       progress.textContent = 'Matching against bot IP lists…';
-      const buckets = aggregateByBot(entries, ipLists);
+      const buckets = aggregateByBot(entries, ipLists, {
+        snapshotDate: snapshot.version || null,
+        snapshotSource: snapshot.source || 'live',
+        approximate: !!snapshot.approximate,
+      });
+
+      // 4b. Reverse-DNS fallback for Google/Bing spoofs
+      progress.textContent = 'Reverse-DNS check on unverified IPs…';
+      try {
+        const rdns = await applyRdnsFallback(buckets, IP_API);
+        if (rdns.matched > 0) {
+          console.info(`[aeo-log] rDNS resolved ${rdns.matched} of ${rdns.checked} unverified IPs`);
+        }
+      } catch (e) {
+        console.warn('[aeo-log] rDNS pass failed:', e.message);
+      }
 
       if (buckets.length === 0) {
         throw new Error(`Parsed ${parsed.toLocaleString()} lines with user agents. No known crawler user agents matched.`);
@@ -258,7 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
           filename: file.name,
           format: formatLabel(format),
           totalLines,
-          parsedEntries: parsed
+          parsedEntries: parsed,
+          snapshotDate: snapshot.version || null,
+          snapshotSource: snapshot.source || 'live',
+          approximate: !!snapshot.approximate,
+          snapshotNote: snapshot.note || null,
         }
       });
 
@@ -347,28 +372,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }[f] || f;
   }
 
-  async function getIpLists() {
-    // Check localStorage cache
+  async function getSnapshot(date) {
+    const key = 'aeo_snapshot_' + (date || 'latest');
     try {
-      const cached = JSON.parse(localStorage.getItem(IP_CACHE_KEY) || 'null');
-      if (cached && (Date.now() - cached.fetchedAt) < IP_CACHE_TTL) {
-        return cached.lists;
+      const cached = JSON.parse(localStorage.getItem(key) || 'null');
+      if (cached && (Date.now() - cached._cachedAt) < 6 * 60 * 60 * 1000) {
+        return cached;
       }
     } catch {}
-
-    const res = await fetch(IP_API, { method: 'GET' });
-    if (!res.ok) throw new Error(`IP list service returned ${res.status}`);
+    const endpoint = date ? `${IP_API}snapshot?date=${encodeURIComponent(date)}` : IP_API;
+    const res = await fetch(endpoint);
+    if (!res.ok) throw new Error(`IP service returned ${res.status}`);
     const data = await res.json();
-    if (!data.lists) throw new Error('IP list service returned malformed data');
+    if (!data.lists) throw new Error('IP service returned malformed data');
+    data._cachedAt = Date.now();
+    try { localStorage.setItem(key, JSON.stringify(data)); } catch {}
+    return data;
+  }
 
+  async function getRegistry() {
+    const key = 'aeo_bot_registry';
     try {
-      localStorage.setItem(IP_CACHE_KEY, JSON.stringify({
-        fetchedAt: Date.now(),
-        lists: data.lists
-      }));
+      const cached = JSON.parse(localStorage.getItem(key) || 'null');
+      if (cached && (Date.now() - cached._cachedAt) < 24 * 60 * 60 * 1000) {
+        return cached.bots;
+      }
     } catch {}
-
-    return data.lists;
+    const res = await fetch(`${IP_API}registry`);
+    if (!res.ok) throw new Error(`Registry returned ${res.status}`);
+    const data = await res.json();
+    try { localStorage.setItem(key, JSON.stringify({ ...data, _cachedAt: Date.now() })); } catch {}
+    return data.bots;
   }
 
   function exportJson(buckets) {

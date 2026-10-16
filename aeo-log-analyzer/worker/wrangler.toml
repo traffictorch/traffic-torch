@@ -14,4 +14,4 @@ binding = "BOT_IPS"
 id = "59549cbbcb874187bd7b70a1881a9f27"
 
 [triggers]
-crons = ["0 3 * * *"]  # daily at 3am UTC
+crons = ["0 3 * * 1"]  # daily at 3am UTC
