@@ -514,7 +514,7 @@
                     <div>
                       <label class="block text-sm font-medium mb-3">Avatar</label>
                       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-                        <template x-for="preset in ['ai-lenzer','ai-director','owner','developer','designer','seo','other']" :key="preset">
+                        <template x-for="preset in ['ai-lenzer','ai-director','owner','developer','designer','seo','creator','other']" :key="preset">
                           <button type="button" @click="pickPreset(preset)"
                                   class="p-2 sm:p-3 rounded-xl border-2 transition flex flex-col items-center gap-1.5"
                                   :class="profile.avatar_preset === preset ? 'border-orange-500 bg-orange-500/10' : 'border-gray-300 dark:border-gray-600 hover:border-orange-400'">
@@ -569,6 +569,7 @@
                         <option value="designer">🎨 Web Designer</option>
                         <option value="seo">📈 SEO Professional</option>
                         <option value="ai-director">🎬 AI Director</option>
+                        <option value="creator">✍️ Content Creator</option>
                       </select>
                     </div>
 
@@ -4532,7 +4533,7 @@ async endorsePost(postId) {
       }
     },
     roleLabel(role) {
-      const map = { 'ai-lens': 'AI Lenzer', owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', 'ai-director': 'AI Director', developer: 'Developer', 'ai-conductor': 'AI Conductor', 'context-engineer': 'Context Engineer', other: 'Member' };
+      const map = { 'ai-lens': 'AI Lenzer', owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', 'ai-director': 'AI Director', creator: 'Content Creator', developer: 'Developer', 'ai-conductor': 'AI Conductor', 'context-engineer': 'Context Engineer', other: 'Member' };
       return map[role] || 'Member';
     },
 

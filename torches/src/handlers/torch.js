@@ -118,7 +118,7 @@ function domainOf(post) {
 }
 
 function roleLabel(role) {
-  const m = { 'ai-lens': 'AI Lenzer', owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', 'ai-director': 'AI Director', developer: 'Developer', 'ai-conductor': 'AI Conductor', 'context-engineer': 'Context Engineer', other: 'Member' };
+  const m = { 'ai-lens': 'AI Lenzer', owner: 'Website Owner', designer: 'Web Designer', seo: 'SEO Professional', 'ai-director': 'AI Director', creator: 'Content Creator', developer: 'Developer', 'ai-conductor': 'AI Conductor', 'context-engineer': 'Context Engineer', other: 'Member' };
   return m[role] || 'Member';
 }
 
