@@ -2,6 +2,46 @@
 import { streamLogFile, FORMATS } from './log-parser.js';
 import { aggregateByBot, setRegistry, applyRdnsFallback } from './ip-matcher.js';
 import { renderReport } from './report-renderer.js';
+
+// ── Demo data shown before any log is uploaded ──
+const DEMO_BUCKETS = [
+  { bot:'Googlebot', displayName:'Googlebot', group:'Google', hasPublishedIps:true,
+    total:412, verifiedCount:412, rdnsVerifiedCount:0, unverifiedCount:0, anonymizedCount:0, uaOnlyCount:0,
+    statusClasses:{2:398,3:8,4:6,5:0}, statuses:[[200,398],[301,8],[404,6]],
+    firstSeen:'12/Mar/2026:08:14:22 +0000', firstVerified:'12/Mar/2026:08:14:22 +0000', lastSeen:'16/Oct/2026:22:41:03 +0000',
+    topPaths:[['/',98],['/blog/',54],['/sitemap.xml',12],['/about/',9],['/contact/',5]],
+    unverifiedIps:[], anonymizedIps:[], topIps:[],
+    suspiciousStatuses:{401:0,403:0,429:0,503:0} },
+  { bot:'Bingbot', displayName:'Bingbot', group:'Microsoft', hasPublishedIps:true,
+    total:96, verifiedCount:96, rdnsVerifiedCount:0, unverifiedCount:0, anonymizedCount:0, uaOnlyCount:0,
+    statusClasses:{2:90,3:4,4:2,5:0}, statuses:[[200,90],[301,4],[404,2]],
+    firstSeen:'22/Feb/2026:06:11:09 +0000', firstVerified:'22/Feb/2026:06:11:09 +0000', lastSeen:'16/Oct/2026:20:55:12 +0000',
+    topPaths:[['/',32],['/blog/',14],['/docs/',8]],
+    unverifiedIps:[], anonymizedIps:[], topIps:[],
+    suspiciousStatuses:{401:0,403:0,429:0,503:0} },
+  { bot:'GPTBot', displayName:'GPTBot', group:'OpenAI', hasPublishedIps:true,
+    total:187, verifiedCount:171, rdnsVerifiedCount:0, unverifiedCount:16, anonymizedCount:0, uaOnlyCount:0,
+    statusClasses:{2:180,3:3,4:4,5:0}, statuses:[[200,180],[301,3],[404,4]],
+    firstSeen:'08/May/2026:14:22:11 +0000', firstVerified:'08/May/2026:14:22:11 +0000', lastSeen:'16/Oct/2026:19:03:44 +0000',
+    topPaths:[['/',41],['/blog/aeo-guide/',23],['/docs/',15],['/blog/',11]],
+    unverifiedIps:[['45.148.10.99',16]], anonymizedIps:[], topIps:[],
+    suspiciousStatuses:{401:0,403:0,429:0,503:0} },
+  { bot:'PerplexityBot', displayName:'PerplexityBot', group:'Perplexity', hasPublishedIps:true,
+    total:54, verifiedCount:38, rdnsVerifiedCount:0, unverifiedCount:16, anonymizedCount:0, uaOnlyCount:0,
+    statusClasses:{2:50,3:2,4:2,5:0}, statuses:[[200,50],[301,2],[404,2]],
+    firstSeen:'19/Aug/2026:11:02:30 +0000', firstVerified:'19/Aug/2026:11:02:30 +0000', lastSeen:'15/Oct/2026:09:14:01 +0000',
+    topPaths:[['/',18],['/blog/',11],['/pricing/',4]],
+    unverifiedIps:[['103.224.182.251',16]], anonymizedIps:[], topIps:[],
+    suspiciousStatuses:{401:0,403:0,429:0,503:0} },
+  { bot:'CCBot', displayName:'CCBot', group:'Common Crawl', hasPublishedIps:false,
+    total:22, verifiedCount:0, rdnsVerifiedCount:0, unverifiedCount:0, anonymizedCount:0, uaOnlyCount:22,
+    statusClasses:{2:22,3:0,4:0,5:0}, statuses:[[200,22]],
+    firstSeen:'03/Jan/2026:01:22:00 +0000', firstVerified:null, lastSeen:'14/Oct/2026:11:15:00 +0000',
+    topPaths:[['/',9],['/blog/',5],['/docs/',3]],
+    unverifiedIps:[], anonymizedIps:[], topIps:[],
+    suspiciousStatuses:{401:0,403:0,429:0,503:0} },
+];
+
 import { renderContributions } from './contributions.js?v=1.0';
 import { canRunTool } from '/main.js?v=1.2';
 import { initShareModule } from '/share-module.js';
@@ -174,6 +214,26 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   if (!fileInput) return;
+
+  // ── Robust drag-and-drop: stop browser from opening the file on drop ──
+  ['dragenter','dragover'].forEach(ev => {
+    document.addEventListener(ev, e => {
+      if (e.target.closest('#drop-zone')) {
+        e.preventDefault();
+        if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+        dropZone.classList.add('drag-over');
+      }
+    });
+  });
+  ['dragleave','dragend'].forEach(ev => {
+    document.addEventListener(ev, e => {
+      if (e.target.closest('#drop-zone')) dropZone.classList.remove('drag-over');
+    });
+  });
+  document.addEventListener('drop', e => {
+    if (e.target.closest('#drop-zone')) e.preventDefault();
+  });
+
 
   fileInput.addEventListener('change', async () => {
     if (!fileInput.files[0]) return;
@@ -468,3 +528,40 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 });
+
+// ── Demo report: shown on load until a real log is uploaded ──
+window.addEventListener('load', () => {
+  const resultsEl = document.getElementById('results');
+  if (!resultsEl) return;
+  if (resultsEl.innerHTML.trim()) return;
+
+  try {
+    const { score: demoScore, checks: demoChecks } = computeAiAccessScore(DEMO_BUCKETS);
+    const demoScoreCard = renderAiAccessScoreCard({ score: demoScore, checks: demoChecks });
+    const demoReport = renderReport({
+      buckets: DEMO_BUCKETS,
+      meta: {
+        filename: 'sample-access.log',
+        format: 'Apache combined',
+        totalLines: 771,
+        parsedEntries: 771,
+        snapshotDate: new Date().toISOString().slice(0, 10) + 'T00:00:00.000Z',
+        snapshotSource: 'live',
+        approximate: false,
+        snapshotNote: null,
+      }
+    });
+    resultsEl.innerHTML = `
+      <div class="max-w-6xl mx-auto px-2 mb-4">
+        <div class="p-3 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-sm text-green-800 dark:text-green-200 text-center">
+          <strong>Sample report</strong> — demo data, so you can see what the tool produces. Drop your own log above to replace it.
+        </div>
+      </div>
+      ${demoScoreCard}${demoReport}
+    `;
+    resultsEl.classList.remove('hidden');
+  } catch (e) {
+    console.warn('[aeo-log] demo render failed:', e);
+  }
+});
+
