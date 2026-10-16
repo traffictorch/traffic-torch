@@ -215,24 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!fileInput) return;
 
-  // ── Robust drag-and-drop: stop browser from opening the file on drop ──
-  ['dragenter','dragover'].forEach(ev => {
-    document.addEventListener(ev, e => {
-      if (e.target.closest('#drop-zone')) {
-        e.preventDefault();
-        if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
-        dropZone.classList.add('drag-over');
-      }
-    });
-  });
-  ['dragleave','dragend'].forEach(ev => {
-    document.addEventListener(ev, e => {
-      if (e.target.closest('#drop-zone')) dropZone.classList.remove('drag-over');
-    });
-  });
-  document.addEventListener('drop', e => {
-    if (e.target.closest('#drop-zone')) e.preventDefault();
-  });
 
 
   fileInput.addEventListener('change', async () => {
@@ -249,18 +231,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  ['dragenter', 'dragover'].forEach(ev => {
-    dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  // ── Drag-and-drop (capture phase — Firefox-safe) ──
+  const inZone = el => el && el.closest && el.closest('#drop-zone');
+
+  ['dragenter','dragover'].forEach(ev => {
+    document.addEventListener(ev, e => {
+      if (!inZone(e.target)) return;
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+      dropZone.classList.add('drag-over');
+    }, true);
   });
-  ['dragleave', 'drop'].forEach(ev => {
-    dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('drag-over'); });
-  });
-  dropZone.addEventListener('drop', async e => {
+
+  document.addEventListener('dragleave', e => {
+    if (!inZone(e.target)) return;
+    if (inZone(e.relatedTarget)) return;
+    dropZone.classList.remove('drag-over');
+  }, true);
+
+  document.addEventListener('dragend', e => {
+    if (!inZone(e.target)) return;
+    dropZone.classList.remove('drag-over');
+  }, true);
+
+  document.addEventListener('drop', async e => {
+    if (!inZone(e.target)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    dropZone.classList.remove('drag-over');
     const f = e.dataTransfer?.files?.[0];
+    console.log('[aeo-log] drop fired · file:', f?.name, '· size:', f?.size);
     if (!f) return;
     if (!(await canRunTool('aeo-log-analyzer'))) return;
     handleFile(f);
-  });
+  }, true);
+
 
   async function handleFile(file) {
     errorBox.classList.add('hidden');
@@ -353,12 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       results.innerHTML = scoreCardHtml + reportHtml;
 
-      // auto-scroll to the freshly rendered report
-      setTimeout(() => {
-        const h = [...document.querySelectorAll('h2')].find(el => el.textContent.trim() === 'Log Analysis Report');
-        const t = h?.closest('.max-w-6xl');
-        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 80);
       results.classList.remove('hidden');
       loading.classList.add('hidden');
 
