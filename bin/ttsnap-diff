@@ -1,0 +1,31 @@
+#!/bin/bash
+# ttsnap-diff — snapshot, then diff against the previous snapshot
+set -e
+
+PATH_ARG="${1:-/torcher/traffictorch/}"
+BASE="${TT_BASE:-http://localhost:8000}"
+TS=$(date +%Y%m%d-%H%M%S)
+SLUG=$(echo "$PATH_ARG" | tr '/?=&' '----' | sed 's/^-*//;s/-*$//')
+LATEST="/tmp/tt-${SLUG}-LATEST.html"
+NEW="/tmp/tt-${SLUG}-${TS}.html"
+
+if ! curl -sf "$BASE$PATH_ARG" > "$NEW"; then
+  echo "✗ Fetch failed — dev server running? ($BASE)"
+  exit 1
+fi
+
+echo "→ $NEW ($(wc -c < "$NEW" | xargs) bytes)"
+
+if [ -f "$LATEST" ]; then
+  echo "→ diff vs $LATEST"
+  echo ""
+  diff -u "$LATEST" "$NEW" | head -80 || true
+  echo ""
+  echo "(showing first 80 lines of diff — full diff: diff -u $LATEST $NEW)"
+else
+  echo "(no previous snapshot — this is now the baseline)"
+fi
+
+cp "$NEW" "$LATEST"
+echo ""
+echo "Latest: $LATEST"

@@ -1,0 +1,73 @@
+#!/bin/bash
+# ttsnap — snapshot worker-rendered HTML locally for inspection
+# Usage: ./bin/ttsnap [path]   (default: /torcher/traffictorch/)
+#        npm run snap [-- path]
+
+set -e
+
+PATH_ARG="${1:-/torcher/traffictorch/}"
+BASE="${TT_BASE:-http://localhost:8000}"
+TS=$(date +%Y%m%d-%H%M%S)
+SLUG=$(echo "$PATH_ARG" | tr '/?=&' '----' | sed 's/^-*//;s/-*$//')
+OUT="/tmp/tt-${SLUG:-page}-${TS}.html"
+
+echo "→ GET $BASE$PATH_ARG"
+if ! curl -sf "$BASE$PATH_ARG" > "$OUT"; then
+  echo "✗ Fetch failed — is the dev server running?"
+  echo "  Start: cd torches && npx wrangler@4.16.1 dev --config wrangler.dev.toml --port 8000"
+  exit 1
+fi
+
+SIZE=$(wc -c < "$OUT" | xargs)
+LINES=$(wc -l < "$OUT" | xargs)
+echo "✓ $OUT"
+echo "  $SIZE bytes · $LINES lines"
+echo ""
+
+echo "── Structure ──"
+printf "  %-18s %s\n" "divs:"      "$(grep -o '<div' "$OUT" | wc -l | xargs)"
+printf "  %-18s %s\n" "Alpine roots:" "$(grep -o 'x-data=' "$OUT" | wc -l | xargs)"
+printf "  %-18s %s\n" "x-show:"     "$(grep -o 'x-show=' "$OUT" | wc -l | xargs)"
+printf "  %-18s %s\n" "x-for:"      "$(grep -o 'x-for=' "$OUT" | wc -l | xargs)"
+printf "  %-18s %s\n" "templates:"  "$(grep -o '<template' "$OUT" | wc -l | xargs)"
+printf "  %-18s %s\n" "scripts:"    "$(grep -o '<script' "$OUT" | wc -l | xargs)"
+printf "  %-18s %s\n" "inline style:" "$(grep -o '<style' "$OUT" | wc -l | xargs)"
+echo ""
+
+echo "── Sanity checks ──"
+WARN=0
+
+if [ "$(grep -c 'x-data=' "$OUT")" -eq 0 ]; then
+  printf "  ⚠ no x-data root — Alpine will not run\n"; WARN=1
+fi
+if grep -q 'renderMarkdown' "$OUT" && ! grep -q 'markdown-it' "$OUT"; then
+  printf "  ⚠ renderMarkdown used but markdown-it not loaded\n"; WARN=1
+fi
+if grep -q 'openImageLightbox' "$OUT" && ! grep -q 'data-tt-lightbox' "$OUT"; then
+  printf "  ⚠ openImageLightbox used but no data-tt-lightbox fallback\n"; WARN=1
+fi
+if grep -q 'Untitled' "$OUT"; then
+  printf "  ⚠ 'Untitled' present — post titles may be missing\n"
+fi
+if grep -q '>NaN<\|NaN</p>\|NaN<' "$OUT"; then
+  printf "  ⚠ NaN detected — likely date math\n"; WARN=1
+fi
+if grep -q 'Cannot read\|undefined is not' "$OUT"; then
+  printf "  ⚠ runtime error baked into HTML\n"; WARN=1
+fi
+if grep -q 'x-text="post\.title[^.]' "$OUT"; then
+  printf "  ℹ x-text=\"post.title…\" — verify API field exists\n"
+fi
+
+[ "$WARN" -eq 0 ] && printf "  ✓ no blocking issues found\n"
+echo ""
+
+echo "File: $OUT"
+if [ "${TT_OPEN:-0}" = "1" ]; then
+  echo "Opening (unstyled — use View Source in browser for the real markup)…"
+  open "$OUT" 2>/dev/null || true
+fi
+if [ "${TT_VIEW_SOURCE:-0}" = "1" ]; then
+  # Firefox opens file:// URLs directly in source view — much more useful
+  open -a Firefox "view-source:file://$OUT" 2>/dev/null || open "$OUT" 2>/dev/null || true
+fi
