@@ -972,6 +972,53 @@ async function handleProfileRoutes(request, env, url) {
   return null;
 }
 
+function tokenizeTitle(s) {
+  if (!s) return [];
+  const STOP = new Set(['the','a','an','and','or','but','of','to','in','on','at','for','with','by','is','are','was','were','be','been','being','have','has','had','do','does','did','will','would','could','should','may','might','must','can','this','that','these','those','it','its','as','if','then','than','so','such','no','not','only','own','same','too','very','just','now','from','into','over','under','about','after','before','while','also','more','most','some','any','all','one','two','new','old']);
+  return String(s).toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length >= 3 && !STOP.has(w));
+}
+
+function workflowChips(meta) {
+  if (!meta) return [];
+  try {
+    const m = typeof meta === 'string' ? JSON.parse(meta) : meta;
+    if (!m || typeof m !== 'object') return [];
+    const out = [];
+    const keys = ['ai_models','ai_tools','cloud','ide','hardware','databases','devops','terminal','os','other_tools'];
+    for (const k of keys) if (Array.isArray(m[k])) for (const v of m[k]) out.push(v);
+    return out;
+  } catch { return []; }
+}
+
+function rankRelatedPosts(current, candidates, limit) {
+  if (!candidates || !candidates.length) return [];
+  const curTokens = new Set(tokenizeTitle(current.title || current.page_title || ''));
+  const curChips = new Set(workflowChips(current.workflow_meta));
+  const curCat = current.category || '';
+  const curTool = current.tool || '';
+  const curScore = Number(current.score) || 0;
+  const curType = current.post_type || 'audit';
+  const curIsAudit = curType === 'audit' && !!curTool;
+
+  const scored = candidates.map(c => {
+    let sc = 0;
+    if (curCat && c.category === curCat) sc += 4;
+    if (curTool && c.tool === curTool) sc += 3;
+    if (curType && c.post_type === curType) sc += 1;
+    if (curIsAudit && Number(c.score) && Math.abs(curScore - Number(c.score)) <= 10) sc += 1;
+    for (const t of tokenizeTitle(c.title || c.page_title || '')) if (curTokens.has(t)) sc += 2;
+    for (const chip of workflowChips(c.workflow_meta)) if (curChips.has(chip)) sc += 2;
+    sc += Math.random();
+    return { c, sc };
+  });
+
+  scored.sort((a, b) => b.sc - a.sc);
+  return scored.slice(0, limit).map(x => x.c);
+}
+
 async function handleTorchRoutes(request, env, url) {
   const user = await getUserFromToken(request, env);
   if (url.pathname.match(/^\/api\/torch\/\d+$/) && request.method === 'GET') {
@@ -1013,12 +1060,13 @@ async function handleTorchRoutes(request, env, url) {
       networkList = withAvatars(net.results);
     }
 
-    const moreByAuthor = await env.MY_BINDING.prepare(
-      `SELECT id, tool, url, page_title, score, domain_mode, domain_label, created_at
+    const moreByAuthorRaw = await env.MY_BINDING.prepare(
+      `SELECT id, category, post_type, title, tool, url, page_title, score, workflow_meta, domain_mode, domain_label, created_at
          FROM posts
         WHERE user_id = ? AND status = 'published' AND id != ?
-        ORDER BY created_at DESC LIMIT 3`
+        ORDER BY created_at DESC LIMIT 15`
     ).bind(post.user_id, id).all();
+    const moreByAuthorResults = rankRelatedPosts(post, moreByAuthorRaw.results || [], 3);
 
     const since = Date.now() - 90 * 86400 * 1000;
     const related = await env.MY_BINDING.prepare(
@@ -1071,7 +1119,7 @@ async function handleTorchRoutes(request, env, url) {
         audit_count: post.audit_count, network_count: networkCount,
       },
       author_network: networkList,
-      more_by_author: moreByAuthor.results || [],
+      more_by_author: moreByAuthorResults,
       related: related.results || [],
     });
   }
