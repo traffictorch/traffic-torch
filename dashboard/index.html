@@ -513,13 +513,13 @@
                   <div class="space-y-6">
                     <div>
                       <label class="block text-sm font-medium mb-3">Avatar</label>
-                      <div class="grid grid-cols-3 gap-4">
+                      <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
                         <template x-for="preset in ['ai-lenzer','owner','designer','seo','ai-director']" :key="preset">
                           <button type="button" @click="pickPreset(preset)"
-                                  class="p-4 rounded-2xl border-2 transition flex flex-col items-center gap-2"
+                                  class="p-2 sm:p-3 rounded-xl border-2 transition flex flex-col items-center gap-1.5"
                                   :class="profile.avatar_preset === preset ? 'border-orange-500 bg-orange-500/10' : 'border-gray-300 dark:border-gray-600 hover:border-orange-400'">
-                            <img :src="`/images/avatars/${preset}.svg`" :alt="preset" width="80" height="80" style="width:80px;height:80px;" class="rounded-full object-cover" loading="lazy">
-                            <span class="text-sm font-medium capitalize" x-text="preset"></span>
+                            <img :src="`/images/avatars/${preset}.svg`" :alt="preset" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover sm:!w-16 sm:!h-16" loading="lazy">
+                            <span class="text-[11px] sm:text-xs font-medium capitalize" x-text="preset"></span>
                           </button>
                         </template>
                       </div>
