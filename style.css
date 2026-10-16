@@ -926,11 +926,14 @@ iframe[src*="vimeo.com"] {
 .avatar-ring.tier-enterprise {
   background: conic-gradient(from var(--tt-angle),
     #8b5cf6, #06b6d4, #ec4899, #f97316, #8b5cf6);
-  animation: tt-rotate 12s linear infinite;
   box-shadow: 0 0 0 1px rgba(139,92,246,0.3), 0 8px 32px -8px rgba(139,92,246,0.6);
-  will-change: background;
+  /* Static by default — rotation is a hover reward only, so no per-frame cost at rest */
   transform: translateZ(0);
   contain: layout paint;
+}
+.avatar-ring.tier-enterprise:hover {
+  animation: tt-rotate 3s linear infinite;
+  will-change: background;
 }
 @keyframes tt-rotate { to { --tt-angle: 360deg; } }
 @media (prefers-reduced-motion: reduce) {
