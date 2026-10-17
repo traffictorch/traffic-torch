@@ -63,6 +63,16 @@
               <span class="w-2 h-2 rounded-full bg-gray-500"></span> <span id="rtMeText">Checking…</span>
             </a>
             <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+            <button id="menuToggle" class="md:hidden text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition" aria-label="Open menu">☰</button>
+          </div>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-md">
+          <div class="relative h-full w-full max-w-sm ml-auto bg-white dark:bg-gray-950 shadow-2xl flex flex-col">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10">
+              <span class="font-bold text-lg">Menu</span>
+              <button id="close-mobile-menu" class="text-3xl text-gray-500 dark:text-gray-300 hover:text-orange-400" aria-label="Close menu">×</button>
+            </div>
+            <div id="mobile-menu-placeholder" class="flex-1 overflow-y-auto px-4 py-6"></div>
           </div>
         </div>
       </header>
@@ -97,7 +107,23 @@
 
         <!-- ============== PROPOSALS LIST ============== -->
         <div x-show="view === 'proposals'" x-cloak>
-          <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+
+          <!-- Loading spinner -->
+          <div x-show="loading" class="text-center py-16">
+            <div class="inline-block w-10 h-10 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Loading proposals…</p>
+          </div>
+
+          <!-- Error banner -->
+          <div x-show="loadError && !loading" class="mb-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4 flex items-center justify-between gap-3">
+            <div>
+              <p class="font-semibold text-red-600 dark:text-red-400 text-sm">Could not load proposals</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="loadError"></p>
+            </div>
+            <button @click="init()" class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-semibold whitespace-nowrap">Retry</button>
+          </div>
+
+          <div x-show="!loading" class="flex items-center justify-between mb-4 flex-wrap gap-3">
             <div class="flex gap-2 flex-wrap">
               <button @click="filterPhase = 'all'" :class="filterPhase === 'all' ? 'bg-orange-500 text-white' : 'bg-white/60 dark:bg-black/40 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10'" class="px-3 py-1.5 rounded-lg text-xs font-semibold">All</button>
               <button @click="filterPhase = 'draft'" :class="filterPhase === 'draft' ? 'bg-orange-500 text-white' : 'bg-white/60 dark:bg-black/40 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10'" class="px-3 py-1.5 rounded-lg text-xs font-semibold">Draft</button>
@@ -140,7 +166,12 @@
                 </div>
               </article>
             </template>
-            <div x-show="filteredProposals().length === 0" class="text-center py-12 text-gray-500 dark:text-gray-400">No proposals in this phase.</div>
+            <div x-show="!loading && !loadError && filteredProposals().length === 0" class="text-center py-16">
+              <div class="text-5xl mb-4">🗳️</div>
+              <h3 class="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">No proposals in this phase</h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Try a different filter, or draft a new proposal.</p>
+              <button @click="view = 'new'" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm transition">Draft a proposal →</button>
+            </div>
           </div>
         </div>
 
@@ -426,6 +457,8 @@ function roundTable() {
   return {
     view: 'proposals',
     filterPhase: 'all',
+    loading: true,
+    loadError: null,
     current: { phase:'draft', tallies:{yes:0,no:0,abstain:0}, voteCount:0, eligible:0, quorum_pct:0.2, threshold_pct:0.66, myVote:null, draftDaysLeft:0, comments:[], kind:'', category:'', title:'', author:'', createdAt:'', bench_objection:null, body:'', slug:'' },
     newComment: '',
     toastMsg: '',
@@ -451,6 +484,9 @@ function roundTable() {
     async init() {
       const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       this._esc = esc;
+
+      this.loading = true;
+      this.loadError = null;
 
       // Load real proposals
       try {
@@ -684,6 +720,45 @@ function roundTable() {
   } catch (e) {
     badge.classList.remove('hidden');
     text.textContent = 'Log in to participate';
+  }
+})();
+</script>
+
+<script>
+// ---- Mobile menu (standalone, works even if main.js doesn't run here) ----
+(function setupMobileMenu() {
+  function init() {
+    var menu = document.getElementById('mobileMenu');
+    var openBtn = document.getElementById('menuToggle');
+    var closeBtn = document.getElementById('close-mobile-menu');
+    if (!menu || !openBtn) return;
+    openBtn.addEventListener('click', function() {
+      menu.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+    if (closeBtn) closeBtn.addEventListener('click', function() {
+      menu.classList.add('hidden');
+      document.body.style.overflow = '';
+    });
+    menu.addEventListener('click', function(e) {
+      if (e.target === menu) {
+        menu.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+    });
+    // Load menu content if not already
+    var ph = document.getElementById('mobile-menu-placeholder');
+    if (ph && !ph.dataset.loaded) {
+      fetch('/mobile-menu.html').then(function(r){ return r.text(); }).then(function(html){
+        ph.innerHTML = html;
+        ph.dataset.loaded = '1';
+      }).catch(function(){ ph.innerHTML = '<p class="text-sm text-gray-500">Menu unavailable</p>'; });
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();
 </script>
