@@ -3,24 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="alternate" hreflang="en" href="https://traffictorch.net/community/round-table/">
   <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/community/round-table/">
+
   <title>Round Table — Decentralized Governance • Traffic Torch</title>
-  <meta name="description" content="Community governance for Traffic Torch. Equal authority. No admins. Every decision on the record.">
+  <meta name="description" content="Community governance for Traffic Torch. Every entity equal. No admins. Every decision on the record, tamper-evident, and reversible.">
+
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://traffictorch.net/community/round-table/">
+
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <meta property="og:title" content="Round Table — Traffic Torch Governance">
+  <meta property="og:description" content="Decentralized governance. Equal authority. Every decision on the record.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/community/round-table/">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Round Table — Traffic Torch Governance">
+  <meta name="twitter:description" content="Decentralized governance. Equal authority. No admins.">
+  <meta name="twitter:site" content="@Guitaralize">
+
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="/manifest.json">
+
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
   <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/style.css?v=1.0"></noscript>
-<style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
-<link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
-<noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local.css?v=1.0"></noscript>
+
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local.css?v=1.0"></noscript>
+
   <script>
     (function() {
       const saved = localStorage.getItem('theme');
@@ -29,76 +51,73 @@
       else document.documentElement.classList.remove('dark');
     })();
   </script>
+
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
   <style>[x-cloak]{display:none !important}</style>
   <script src="/shared/avatar.js?v=1.0"></script>
 </head>
+
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
 <div x-data="roundTable()" x-init="init()" class="flex flex-1 min-h-screen">
+
   <div class="flex flex-1 min-h-screen">
 
     <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex-col self-start">
       <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
         <a href="/" class="flex items-center gap-4">
-          <img src="/logo-160w.webp" alt="Traffic Torch" class="w-10 rounded-xl" width="40" height="40" loading="eager">
-          <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
         </a>
       </div>
       <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
       <div class="p-4 border-t border-white/10 dark:border-white/5">
-        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 rounded-lg transition">←</button>
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">←</button>
       </div>
     </aside>
 
     <div class="flex-1 flex flex-col">
       <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
-        <div class="container mx-auto px-6 py-4 flex items-center">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
           <a href="/" class="flex items-center gap-4 md:hidden">
-            <img src="/logo-100w.webp" alt="Traffic Torch" class="w-10 rounded-xl" width="40" height="40" loading="eager">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
             <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
           </a>
-          <div class="flex items-center gap-3 ml-auto">
-            <a id="rtMeBadge" href="/login/" class="hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-gray-500/10 border border-gray-500/30 rounded-full text-xs font-semibold text-gray-600 dark:text-gray-400 hover:border-orange-400 transition">
-              <span class="w-2 h-2 rounded-full bg-gray-500"></span> <span id="rtMeText">Checking…</span>
-            </a>
-            <button id="menuToggle" class="md:hidden text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition" aria-label="Open menu">☰</button>
-            <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition" aria-label="Toggle sidebar">☰</button>
-            <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
-          </div>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
         </div>
-        <div id="mobileMenu" class="hidden md:hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-md">
-          <div class="relative h-full w-full max-w-sm ml-auto bg-white dark:bg-gray-950 shadow-2xl flex flex-col">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/10">
-              <span class="font-bold text-lg">Menu</span>
-              <button id="close-mobile-menu" class="text-3xl text-gray-500 dark:text-gray-300 hover:text-orange-400" aria-label="Close menu">×</button>
-            </div>
-            <div id="mobile-menu-placeholder" class="flex-1 overflow-y-auto px-4 py-6"></div>
-          </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
         </div>
       </header>
 
       <main class="container mx-auto px-4 py-6 max-w-7xl">
 
-        <!-- Hero -->
         <section class="text-center mb-8">
           <h1 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">🗳️ The Round Table</h1>
           <p class="text-lg max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
-            Decentralized governance for Traffic Torch. Every entity has equal authority. No admins. No override. Every decision is on the record, tamper-evident, and reversible.
+            Decentralized governance for Traffic Torch. Every entity equal. No admins. Every decision on the record, tamper-evident, and reversible.
           </p>
-          <div class="mt-4 flex items-center justify-center gap-4 text-sm text-gray-600 dark:text-gray-400 flex-wrap">
-            <span>📜 <strong class="text-gray-900 dark:text-gray-100">7</strong> open proposals</span>
-            <span>·</span>
-            <span>🧑‍🤝‍🧑 <strong class="text-gray-900 dark:text-gray-100">28</strong> eligible entities</span>
-            <span>·</span>
-            <span>⏳ Round Table Day in <strong class="text-gray-900 dark:text-gray-100">3 days</strong></span>
+          <div class="mt-4 flex items-center justify-center gap-3 flex-wrap text-sm">
+            <span x-show="me.authenticated && me.eligible" x-cloak class="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full font-semibold text-emerald-600 dark:text-emerald-400">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span> You're eligible to vote
+            </span>
+            <span x-show="me.authenticated && !me.eligible" x-cloak class="inline-flex items-center gap-2 px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/30 rounded-full font-semibold text-yellow-600 dark:text-yellow-400">
+              <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+              <span x-text="me.reason === 'account_too_new' ? 'Voting opens in ' + me.days_until_eligible + ' days' : 'Complete your profile to vote'"></span>
+            </span>
+            <a x-show="!me.authenticated" x-cloak href="/login/" class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-500/10 border border-gray-500/30 rounded-full font-semibold text-gray-600 dark:text-gray-400 hover:border-orange-400 transition">
+              <span class="w-2 h-2 rounded-full bg-gray-500"></span> Log in to participate
+            </a>
           </div>
         </section>
 
-        <!-- Tabs -->
         <nav class="flex flex-wrap justify-center gap-2 mb-8">
           <template x-for="tab in tabs" :key="tab.id">
-            <button @click="view = tab.id; if(tab.id==='bench') loadBench(); if(tab.id==='executions') loadExecutions(); if(tab.id==='audit') loadAudit();"
+            <button @click="switchTab(tab.id)"
                     class="px-4 py-2 rounded-lg text-sm font-medium transition"
                     :class="view === tab.id ? 'bg-orange-500 text-white' : 'bg-white/60 dark:bg-black/40 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-black/60 border border-gray-200 dark:border-white/10'">
               <span x-text="tab.label"></span>
@@ -106,22 +125,19 @@
           </template>
         </nav>
 
-        <!-- ============== PROPOSALS LIST ============== -->
+        <!-- PROPOSALS -->
         <div x-show="view === 'proposals'" x-cloak>
-
-          <!-- Loading spinner -->
           <div x-show="loading" class="text-center py-16">
             <div class="inline-block w-10 h-10 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mb-4"></div>
             <p class="text-sm text-gray-500 dark:text-gray-400">Loading proposals…</p>
           </div>
 
-          <!-- Error banner -->
           <div x-show="loadError && !loading" class="mb-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4 flex items-center justify-between gap-3">
             <div>
               <p class="font-semibold text-red-600 dark:text-red-400 text-sm">Could not load proposals</p>
               <p class="text-xs text-gray-600 dark:text-gray-400 mt-1" x-text="loadError"></p>
             </div>
-            <button @click="init()" class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-semibold whitespace-nowrap">Retry</button>
+            <button @click="loadProposals()" class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-semibold whitespace-nowrap">Retry</button>
           </div>
 
           <div x-show="!loading" class="flex items-center justify-between mb-4 flex-wrap gap-3">
@@ -135,7 +151,7 @@
             <button @click="view = 'new'" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-semibold transition">+ New Proposal</button>
           </div>
 
-          <div class="grid gap-3">
+          <div x-show="!loading" class="grid gap-3">
             <template x-for="p in filteredProposals()" :key="p.id">
               <article @click="openProposal(p)" class="cursor-pointer bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-5 hover:border-orange-400/60 transition">
                 <div class="flex items-start justify-between gap-4 flex-wrap">
@@ -155,7 +171,7 @@
                     <div x-show="p.phase === 'vote'" class="mb-1">
                       <span class="font-semibold text-gray-900 dark:text-gray-100" x-text="p.voteDaysLeft + 'd'"></span> left
                     </div>
-                    <div>💬 <span x-text="p.comments.length"></span> · 🗳️ <span x-text="p.voteCount"></span>/<span x-text="p.eligible"></span></div>
+                    <div>💬 <span x-text="(p.comments || []).length"></span> · 🗳️ <span x-text="p.voteCount"></span>/<span x-text="p.eligible"></span></div>
                   </div>
                 </div>
                 <div x-show="p.phase === 'vote'" class="mt-4">
@@ -167,90 +183,92 @@
                 </div>
               </article>
             </template>
-            <div x-show="!loading && !loadError && filteredProposals().length === 0" class="text-center py-16">
-              <div class="text-5xl mb-4">🗳️</div>
-              <h3 class="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">No proposals in this phase</h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Try a different filter, or draft a new proposal.</p>
-              <button @click="view = 'new'" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm transition">Draft a proposal →</button>
-            </div>
+          </div>
+
+          <div x-show="!loading && !loadError && filteredProposals().length === 0" class="text-center py-16">
+            <div class="text-5xl mb-4">🗳️</div>
+            <h3 class="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">No proposals in this phase</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Try a different filter, or draft a new proposal.</p>
+            <button @click="view = 'new'" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm transition">Draft a proposal →</button>
           </div>
         </div>
 
-        <!-- ============== PROPOSAL DETAIL ============== -->
+        <!-- DETAIL -->
         <div x-show="view === 'detail'" x-cloak>
           <button @click="backToList()" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-400 mb-4">← Back to proposals</button>
 
           <article class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6 mb-4">
             <div class="flex items-center gap-2 mb-3 flex-wrap">
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider" :class="phaseClass(current.phase)" x-text="current.phase"></span>
-              <span class="text-xs text-gray-500 dark:text-gray-400" x-text="current.kind"></span>
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider" :class="phaseClass(current?.phase)" x-text="current?.phase"></span>
+              <span class="text-xs text-gray-500 dark:text-gray-400" x-text="current?.kind"></span>
               <span class="text-xs text-gray-400">·</span>
-              <span class="text-xs text-gray-500 dark:text-gray-400" x-text="current.category"></span>
+              <span class="text-xs text-gray-500 dark:text-gray-400" x-text="current?.category"></span>
             </div>
-            <h1 class="text-2xl font-bold mb-2" x-text="current.title"></h1>
+            <h1 class="text-2xl font-bold mb-2" x-text="current?.title"></h1>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              <span x-text="current.author"></span> · <span x-text="current.createdAt"></span>
-              <span x-show="current.bench_objection" class="ml-3 text-red-500 font-semibold">⚠️ Objection filed by Objector's Bench</span>
+              <span x-text="current?.author"></span> · <span x-text="current?.createdAt"></span>
             </p>
-            <div class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300" x-html="current.body"></div>
+            <div class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 whitespace-pre-wrap" x-text="current?.body"></div>
           </article>
 
-          <!-- Vote UI -->
           <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6 mb-4">
             <h2 class="text-lg font-bold mb-3">Tally</h2>
-            <div x-show="current.phase === 'vote'">
+
+            <div x-show="current?.phase === 'vote'">
               <div class="flex h-3 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-800 mb-3">
-                <div class="bg-emerald-500 transition-all" :style="'width:' + pct(current.tallies.yes, current.voteCount) + '%'"></div>
-                <div class="bg-red-500 transition-all" :style="'width:' + pct(current.tallies.no, current.voteCount) + '%'"></div>
-                <div class="bg-gray-400 transition-all" :style="'width:' + pct(current.tallies.abstain, current.voteCount) + '%'"></div>
+                <div class="bg-emerald-500 transition-all" :style="'width:' + pct(current?.tallies?.yes ?? 0, current?.voteCount ?? 0) + '%'"></div>
+                <div class="bg-red-500 transition-all" :style="'width:' + pct(current?.tallies?.no ?? 0, current?.voteCount ?? 0) + '%'"></div>
+                <div class="bg-gray-400 transition-all" :style="'width:' + pct(current?.tallies?.abstain ?? 0, current?.voteCount ?? 0) + '%'"></div>
               </div>
               <div class="flex items-center justify-between mb-4 text-sm flex-wrap gap-2">
                 <div class="flex gap-4">
-                  <span class="text-emerald-600 dark:text-emerald-400">✓ <strong x-text="current.tallies.yes"></strong> Yes</span>
-                  <span class="text-red-600 dark:text-red-400">✗ <strong x-text="current.tallies.no"></strong> No</span>
-                  <span class="text-gray-500 dark:text-gray-400">◯ <strong x-text="current.tallies.abstain"></strong> Abstain</span>
+                  <span class="text-emerald-600 dark:text-emerald-400">✓ <strong x-text="current?.tallies?.yes ?? 0"></strong> Yes</span>
+                  <span class="text-red-600 dark:text-red-400">✗ <strong x-text="current?.tallies?.no ?? 0"></strong> No</span>
+                  <span class="text-gray-500 dark:text-gray-400">◯ <strong x-text="current?.tallies?.abstain ?? 0"></strong> Abstain</span>
                 </div>
                 <div class="text-xs text-gray-500 dark:text-gray-400">
-                  <strong x-text="current.voteCount"></strong> of <strong x-text="current.eligible"></strong> eligible · quorum <span x-text="Math.round(current.quorum_pct*100) + '%'"></span> · pass <span x-text="Math.round(current.threshold_pct*100) + '%'"></span>
+                  <strong x-text="current?.voteCount ?? 0"></strong> of <strong x-text="current?.eligible ?? 0"></strong> eligible
+                  · quorum <span x-text="Math.round((current?.quorum_pct ?? 0.2) * 100) + '%'"></span>
+                  · pass <span x-text="Math.round((current?.threshold_pct ?? 0.66) * 100) + '%'"></span>
                 </div>
               </div>
               <div class="flex flex-wrap gap-2 mb-3">
-                <button @click="castVote('yes')" :class="current.myVote === 'yes' ? 'ring-2 ring-emerald-500' : ''" class="flex-1 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition">Vote Yes</button>
-                <button @click="castVote('no')" :class="current.myVote === 'no' ? 'ring-2 ring-red-500' : ''" class="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Vote No</button>
-                <button @click="castVote('abstain')" :class="current.myVote === 'abstain' ? 'ring-2 ring-gray-500' : ''" class="flex-1 px-4 py-2.5 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition">Abstain</button>
+                <button @click="castVote('yes')" :class="current?.myVote === 'yes' ? 'ring-2 ring-emerald-500' : ''" class="flex-1 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition">Vote Yes</button>
+                <button @click="castVote('no')" :class="current?.myVote === 'no' ? 'ring-2 ring-red-500' : ''" class="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Vote No</button>
+                <button @click="castVote('abstain')" :class="current?.myVote === 'abstain' ? 'ring-2 ring-gray-500' : ''" class="flex-1 px-4 py-2.5 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition">Abstain</button>
               </div>
-              <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Your vote is changeable until the vote closes. <span x-show="current.myVote" x-text="'Currently: ' + current.myVote"></span></p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Your vote is changeable until the vote closes. <span x-show="current?.myVote" x-text="'Currently: ' + (current?.myVote || '')"></span></p>
             </div>
-            <div x-show="current.phase === 'passed' || current.phase === 'rejected'" class="text-center py-4">
-              <div class="text-2xl font-bold mb-1" :class="current.phase === 'passed' ? 'text-emerald-500' : 'text-red-500'" x-text="current.phase === 'passed' ? '✓ Passed' : '✗ Rejected'"></div>
+
+            <div x-show="current?.phase === 'passed' || current?.phase === 'rejected'" class="text-center py-4">
+              <div class="text-2xl font-bold mb-1" :class="current?.phase === 'passed' ? 'text-emerald-500' : 'text-red-500'" x-text="current?.phase === 'passed' ? '✓ Passed' : '✗ Rejected'"></div>
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                Yes <span x-text="current.tallies.yes"></span> · No <span x-text="current.tallies.no"></span> · Abstain <span x-text="current.tallies.abstain"></span>
+                Yes <span x-text="current?.tallies?.yes ?? 0"></span> · No <span x-text="current?.tallies?.no ?? 0"></span> · Abstain <span x-text="current?.tallies?.abstain ?? 0"></span>
               </p>
-              <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Reconsider window opens in Round Table Day. <button @click="view = 'history'" class="text-orange-500 hover:underline">View history →</button></p>
             </div>
-            <div x-show="current.phase === 'draft'" class="text-center py-4 text-gray-500 dark:text-gray-400">
-              <p>In draft. Comment period ends in <strong x-text="current.draftDaysLeft + 'd'"></strong>.</p>
-              <button @click="toast('Opening a vote would require the comment period to complete first.')" class="mt-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded-lg">Open Vote →</button>
+
+            <div x-show="current?.phase === 'draft'" class="text-center py-4 text-gray-500 dark:text-gray-400">
+              <p>In draft. Comment period ends in <strong x-text="(current?.draftDaysLeft ?? 0) + 'd'"></strong>.</p>
+              <button @click="openVote()" class="mt-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm rounded-lg font-semibold">Open Vote →</button>
             </div>
           </div>
 
-          <!-- Discussion -->
           <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
-            <h2 class="text-lg font-bold mb-4">Discussion <span class="text-sm font-normal text-gray-500" x-text="'(' + current.comments.length + ')'"></span></h2>
+            <h2 class="text-lg font-bold mb-4">Discussion <span class="text-sm font-normal text-gray-500" x-text="'(' + (current?.comments?.length ?? 0) + ')'"></span></h2>
             <div class="space-y-4 mb-6">
-              <template x-for="c in current.comments" :key="c.id">
+              <template x-for="c in (current?.comments || [])" :key="c.id">
                 <div class="flex gap-3">
-                  <div class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0" x-text="c.author.charAt(0).toUpperCase()"></div>
+                  <div class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0" x-text="(c.author || '?').charAt(0).toUpperCase()"></div>
                   <div class="flex-1">
                     <div class="text-sm">
                       <strong x-text="c.author"></strong>
                       <span class="text-gray-500 dark:text-gray-400 text-xs ml-2" x-text="c.createdAt"></span>
                     </div>
-                    <p class="text-sm text-gray-700 dark:text-gray-300 mt-1" x-text="c.body"></p>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mt-1 whitespace-pre-wrap" x-text="c.body_md"></p>
                   </div>
                 </div>
               </template>
-              <div x-show="current.comments.length === 0" class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No comments yet. Be the first.</div>
+              <div x-show="(current?.comments?.length ?? 0) === 0" class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No comments yet. Be the first.</div>
             </div>
             <div class="flex gap-2">
               <input x-model="newComment" @keydown.enter="submitComment()" placeholder="Add your comment…" class="flex-1 px-4 py-2.5 bg-white/80 dark:bg-black/60 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:outline-none focus:border-orange-400">
@@ -259,7 +277,7 @@
           </div>
         </div>
 
-        <!-- ============== NEW PROPOSAL ============== -->
+        <!-- NEW PROPOSAL -->
         <div x-show="view === 'new'" x-cloak class="max-w-3xl mx-auto">
           <button @click="view = 'proposals'" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-400 mb-4">← Back to proposals</button>
           <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
@@ -304,15 +322,21 @@
           </div>
         </div>
 
-        <!-- ============== BENCH ============== -->
+        <!-- BENCH -->
         <div x-show="view === 'bench'" x-cloak class="max-w-4xl mx-auto">
           <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6 mb-4">
             <h2 class="text-xl font-bold mb-2">🛡️ The Objector's Bench</h2>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Five entities, randomly selected by sortition, serve 30-day terms. Any one of them can pause a vote for 72 hours to force reflection. They can never pass or block a proposal — only slow it down.</p>
-            <div class="grid md:grid-cols-2 gap-3">
+
+            <div x-show="benchMembers.length === 0" class="text-center py-8">
+              <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">No bench seated. Draw one to begin.</p>
+              <button @click="drawBench()" class="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg text-sm">Draw Bench</button>
+            </div>
+
+            <div x-show="benchMembers.length > 0" class="grid md:grid-cols-2 gap-3">
               <template x-for="m in benchMembers" :key="m.id">
                 <div class="flex items-center gap-3 p-3 bg-white/40 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-lg">
-                  <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold" x-text="m.name.charAt(0)"></div>
+                  <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold" x-text="(m.name || '?').charAt(0).toUpperCase()"></div>
                   <div class="flex-1">
                     <div class="font-semibold text-sm" x-text="m.name"></div>
                     <div class="text-xs text-gray-500 dark:text-gray-400">Term ends <span x-text="m.termEnds"></span></div>
@@ -322,141 +346,95 @@
               </template>
             </div>
           </div>
-          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
-            <h3 class="font-bold mb-3">Recent Objections</h3>
-            <div class="space-y-2 text-sm">
-              <div class="flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-                <span class="text-red-500">⚠️</span>
-                <div class="flex-1">
-                  <p class="font-semibold text-gray-900 dark:text-gray-100">Pause on "Set Default Thresholds"</p>
-                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Filed by user #12 · 8 hours ago · Resumes in 64h</p>
-                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 italic">"The proposed 66% pass threshold may be too low for meta changes. Suggest 75% for rule changes specifically."</p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <!-- ============== AUDIT ============== -->
+        <!-- AUDIT -->
         <div x-show="view === 'audit'" x-cloak class="max-w-4xl mx-auto">
-          <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 mb-4">
-            <div class="flex items-center gap-3 mb-2">
-              <span class="text-3xl">✓</span>
-              <h2 class="text-xl font-bold text-emerald-600 dark:text-emerald-400" x-text="auditResult ? (auditResult.intact ? 'Audit Chain Intact' : 'Audit Chain Broken') : 'Checking...'"></h2>
-            </div>
-            <p class="text-sm text-gray-700 dark:text-gray-300"><span x-show="auditResult" x-text="auditResult ? ('Chain count: ' + auditResult.chain_count + '. Votes tampered: ' + auditResult.votes_tampered.length + '.') : ''"></span></p>
+          <div x-show="!auditResult" class="text-center py-12">
+            <div class="inline-block w-10 h-10 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Verifying chain…</p>
           </div>
-          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
-            <h3 class="font-bold mb-3">Recent Chain Entries</h3>
-            <div class="space-y-1 text-xs font-mono text-gray-700 dark:text-gray-300">
-              <div class="flex gap-3 p-2 rounded hover:bg-white/5"><span class="text-gray-500">#1247</span><span class="text-emerald-500">vote.cast</span><span class="truncate">entity:u12 → proposal:rt0002 → yes</span><span class="text-orange-500 ml-auto">a3f9c2...</span></div>
-              <div class="flex gap-3 p-2 rounded hover:bg-white/5"><span class="text-gray-500">#1246</span><span class="text-emerald-500">comment.create</span><span class="truncate">entity:u8 → proposal:rt0001</span><span class="text-orange-500 ml-auto">b7d4e1...</span></div>
-              <div class="flex gap-3 p-2 rounded hover:bg-white/5"><span class="text-gray-500">#1245</span><span class="text-emerald-500">vote.cast</span><span class="truncate">entity:u4 → proposal:rt0003 → no</span><span class="text-orange-500 ml-auto">c2a8f5...</span></div>
-              <div class="flex gap-3 p-2 rounded hover:bg-white/5"><span class="text-gray-500">#1244</span><span class="text-emerald-500">proposal.open_vote</span><span class="truncate">proposal:rt0002 → eligible:28</span><span class="text-orange-500 ml-auto">d9e3b7...</span></div>
+
+          <div x-show="auditResult" class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 mb-4" :class="auditResult?.intact ? '' : '!bg-red-500/10 !border-red-500/30'">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-3xl" x-text="auditResult?.intact ? '✓' : '✗'"></span>
+              <h2 class="text-xl font-bold" :class="auditResult?.intact ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'" x-text="auditResult?.intact ? 'Audit Chain Intact' : 'Audit Chain Broken'"></h2>
             </div>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-4">Anyone can run the full verification at <code class="px-1.5 py-0.5 bg-black/20 rounded">/api/rt/audit/verify</code> — no login required.</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              <strong x-text="auditResult?.chain_count ?? 0"></strong> chain entries.
+              <span x-show="(auditResult?.votes_tampered || []).length > 0" class="text-red-500 font-semibold" x-text="'⚠️ ' + (auditResult?.votes_tampered?.length || 0) + ' vote(s) tampered'"></span>
+            </p>
+            <p x-show="auditResult?.broken_at" class="text-xs text-red-500 mt-2" x-text="'Broken at: ' + (auditResult?.broken_at || '')"></p>
           </div>
         </div>
 
-        <!-- ============== EXECUTIONS ============== -->
+        <!-- EXECUTIONS -->
         <div x-show="view === 'executions'" x-cloak class="max-w-4xl mx-auto">
           <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
             <h2 class="text-xl font-bold mb-2">⚡ Execution Log</h2>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Every passed resolution that led to a real change. Config changes apply automatically. Code proposals link to a PR.</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Every passed resolution that led to a real change.</p>
+
             <div x-show="executions.length === 0" class="text-center py-12 text-gray-500 dark:text-gray-400">
               <div class="text-5xl mb-3">⚡</div>
               <p class="text-sm">No executions yet. Once a proposal passes, its effect shows up here.</p>
             </div>
+
             <div x-show="executions.length > 0" class="space-y-2">
               <template x-for="ex in executions" :key="ex.id">
                 <div class="p-4 border border-gray-200 dark:border-white/10 rounded-lg">
                   <div class="flex items-start justify-between gap-3 flex-wrap">
                     <div>
                       <p class="font-semibold text-sm" x-text="ex.title || ex.slug"></p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" x-text="ex.target + ' · ' + ex.status + ' · ' + new Date((ex.created_at||0)*1000).toLocaleDateString()"></p>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1" x-text="ex.target + ' · ' + ex.status + ' · ' + new Date((ex.created_at || 0) * 1000).toLocaleDateString()"></p>
                     </div>
-                    <a x-show="ex.external_ref" :href="ex.external_ref" target="_blank" rel="noopener" class="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full font-semibold hover:underline">✓ View →</a>
+                    <a x-show="ex.external_ref" :href="ex.external_ref" target="_blank" rel="noopener" class="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full font-semibold hover:underline">View →</a>
                   </div>
                 </div>
               </template>
-              <!-- fallback fake sample below (hidden if executions load) -->
-              <div class="hidden">
-                <div class="flex items-start justify-between gap-3 flex-wrap">
-                  <div>
-                    <p class="font-semibold text-sm">Set quorum to 25%</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Config · passed 3 days ago · applied immediately</p>
-                  </div>
-                  <span class="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full font-semibold">✓ Executed</span>
-                </div>
-              </div>
-              <div class="p-4 border border-gray-200 dark:border-white/10 rounded-lg">
-                <div class="flex items-start justify-between gap-3 flex-wrap">
-                  <div>
-                    <p class="font-semibold text-sm">Add WebAuthn passkey requirement</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Code · passed 10 days ago · PR #142 merged</p>
-                  </div>
-                  <a href="#" class="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full font-semibold hover:underline">✓ Merged →</a>
-                </div>
-              </div>
-              <div class="p-4 border border-yellow-500/30 bg-yellow-500/5 rounded-lg">
-              </div>
             </div>
           </div>
         </div>
 
-        <!-- ============== HISTORY ============== -->
+        <!-- HISTORY -->
         <div x-show="view === 'history'" x-cloak class="max-w-4xl mx-auto">
-          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
-            <h2 class="text-xl font-bold mb-2">📜 Decision History</h2>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Every decision ever made, in order. Each can be reopened during its 30-day reconsider window on Round Table Day.</p>
-            <div class="relative border-l-2 border-orange-500/30 ml-4 space-y-6">
-              <div class="ml-6 relative">
-                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-orange-500 border-4 border-gray-50 dark:border-gray-950"></div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Today</p>
-                <p class="font-semibold text-sm">Objector's Bench established</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Passed 22/28 (79%) · Bench terms now active</p>
-              </div>
-              <div class="ml-6 relative">
-                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-emerald-500 border-4 border-gray-50 dark:border-gray-950"></div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">3 days ago</p>
-                <p class="font-semibold text-sm">Default thresholds set to 66%/20%</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Passed 18/28 (64%) · Executed immediately</p>
-              </div>
-              <div class="ml-6 relative">
-                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-red-500 border-4 border-gray-50 dark:border-gray-950"></div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">8 days ago</p>
-                <p class="font-semibold text-sm">Mandatory karma minimum for proposals</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Rejected 6/28 (21%) · Blocked by 25%+ opposed</p>
-              </div>
-              <div class="ml-6 relative">
-                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-orange-500 border-4 border-gray-50 dark:border-gray-950"></div>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">14 days ago</p>
-                <p class="font-semibold text-sm">Round Table Constitution ratified</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Passed 26/28 (93%) · Foundation of all subsequent rules</p>
-              </div>
-            </div>
+          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6 text-center py-16">
+            <div class="text-5xl mb-4">📜</div>
+            <h3 class="text-lg font-bold mb-2">Decision History</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Full decision timeline coming soon. For now, browse passed and rejected proposals in the Proposals tab.</p>
           </div>
         </div>
-</main>
+
+      </main>
+
+      <div id="footer-placeholder"></div>
     </div>
   </div>
 
-  <!-- Toast -->
-  <div x-show="toastMsg" x-transition x-cloak class="fixed bottom-6 right-6 z-50 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-5 py-3 rounded-lg shadow-lg text-sm font-semibold" x-text="toastMsg"></div>
-
 </div>
 
+<div x-data="roundTable()" x-show="toastMsg" x-transition x-cloak class="fixed bottom-6 right-6 z-[200] bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-5 py-3 rounded-lg shadow-2xl text-sm font-semibold max-w-sm" x-text="toastMsg"></div>
+
+<script src="/main.js?v=1.2" type="module"></script>
+<script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+
 <script>
+const RT_API = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
 function roundTable() {
   return {
     view: 'proposals',
     filterPhase: 'all',
+    current: null,
     loading: true,
     loadError: null,
-    current: { phase:'draft', tallies:{yes:0,no:0,abstain:0}, voteCount:0, eligible:0, quorum_pct:0.2, threshold_pct:0.66, myVote:null, draftDaysLeft:0, comments:[], kind:'', category:'', title:'', author:'', createdAt:'', bench_objection:null, body:'', slug:'' },
     newComment: '',
     toastMsg: '',
     draft: { title: '', kind: 'advisory', category: 'feature', body: '' },
+    proposals: [],
+    benchMembers: [],
+    auditResult: null,
+    executions: [],
+    me: { authenticated: false, eligible: false, reason: null, days_until_eligible: 0 },
     tabs: [
       { id: 'proposals', label: '📋 Proposals' },
       { id: 'bench', label: '🛡️ Bench' },
@@ -464,386 +442,257 @@ function roundTable() {
       { id: 'executions', label: '⚡ Executions' },
       { id: 'history', label: '📜 History' },
     ],
-    proposals: [],
-    apiBase: 'https://traffic-torch-auth.traffictorch.workers.dev',
+
     token() { return localStorage.getItem('authToken') || ''; },
     authHeaders() {
       const t = this.token();
-      return t ? { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+      const h = { 'Content-Type': 'application/json' };
+      if (t) h['Authorization'] = 'Bearer ' + t;
+      return h;
     },
     async fetchAPI(path, opts = {}) {
-      const res = await fetch(this.apiBase + path, { ...opts, headers: { ...this.authHeaders(), ...(opts.headers || {}) } });
+      const res = await fetch(RT_API + path, {
+        ...opts,
+        headers: { ...this.authHeaders(), ...(opts.headers || {}) },
+      });
       try { return await res.json(); } catch { return { error: 'HTTP ' + res.status }; }
     },
+
     async init() {
-      const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-      this._esc = esc;
-
-      this.loading = true;
-      this.loadError = null;
-
-      // Load real proposals
-      try {
-        const data = await this.fetchAPI('/api/rt/proposals');
-        if (data.proposals && Array.isArray(data.proposals)) {
-          this.proposals = data.proposals.map(p => ({
-            ...p,
-            summary: esc((p.body_md || '').slice(0, 160)),
-            body: p.body_md || '',
-            voteCount: (p.tally_yes||0) + (p.tally_no||0) + (p.tally_abstain||0),
-            tallies: { yes: p.tally_yes||0, no: p.tally_no||0, abstain: p.tally_abstain||0 },
-            eligible: p.eligible_count || 0,
-            author: p.author_entity_id === 'system' ? 'system' : 'u' + p.author_entity_id,
-            createdAt: new Date((p.created_at||0)*1000).toLocaleDateString(),
-            comments: [],
-            myVote: null,
-            voteDaysLeft: p.vote_ends_at ? Math.max(0, Math.ceil((p.vote_ends_at - Date.now()/1000) / 86400)) : 0,
-            draftDaysLeft: 0,
-          }));
-        }
-      } catch (e) {
-        this.loadError = e.message || 'Network error';
-        this.toast('Could not load proposals: ' + e.message);
-      }
-
+      await Promise.all([this.loadMe(), this.loadProposals()]);
       try {
         const slug = new URLSearchParams(location.search).get('p');
         if (slug) {
           const match = this.proposals.find(x => x.slug === slug);
           if (match) await this.openProposal(match);
         }
-      } catch(e) {}
-      this.loading = false;
+      } catch (e) {}
     },
-    async loadProposal(p) {
+
+    async loadMe() {
+      try { const d = await this.fetchAPI('/api/rt/me'); this.me = d || this.me; } catch (e) {}
+    },
+
+    async loadProposals() {
+      this.loading = true;
+      this.loadError = null;
       try {
-        const data = await this.fetchAPI('/api/rt/proposals/' + p.slug);
-        if (data.error && data.error === 'Not found') {
-          this.toast('Proposal not found');
-          this.backToList();
-          return;
-        }
-        if (data.proposal) {
-          this.current = {
-            ...p,
-            ...data.proposal,
-            summary: p.summary,
-            body: data.proposal.body_md || '',
-            tallies: data.tally || { yes:0, no:0, abstain:0 },
-            voteCount: (data.tally?.yes||0) + (data.tally?.no||0) + (data.tally?.abstain||0),
-            eligible: data.proposal.eligible_count || 0,
-            comments: (data.comments || []).map(c => ({ ...c, author: 'u' + c.entity_id, createdAt: new Date((c.created_at||0)*1000).toLocaleDateString() })),
-            myVote: null,
-          };
-        }
-      } catch (e) { this.toast('Could not load proposal: ' + e.message); }
+        const data = await this.fetchAPI('/api/rt/proposals');
+        this.proposals = (data.proposals || []).map(p => ({
+          ...p,
+          author: p.author_entity_id === 'system' ? 'system' : ('u' + p.author_entity_id),
+          createdAt: new Date((p.created_at || 0) * 1000).toLocaleDateString(),
+          summary: (p.body_md || '').slice(0, 160),
+          body: p.body_md || '',
+          voteCount: (p.tally_yes || 0) + (p.tally_no || 0) + (p.tally_abstain || 0),
+          tallies: { yes: p.tally_yes || 0, no: p.tally_no || 0, abstain: p.tally_abstain || 0 },
+          eligible: p.eligible_count || 0,
+          comments: [],
+          myVote: null,
+          voteDaysLeft: p.vote_ends_at ? Math.max(0, Math.ceil((p.vote_ends_at - Date.now() / 1000) / 86400)) : 0,
+          draftDaysLeft: 0,
+        }));
+      } catch (e) {
+        this.loadError = e.message || 'Network error';
+      } finally {
+        this.loading = false;
+      }
     },
-    _oldInit() {
-      const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-      this.proposals = [
-        { id:'rt0000', title:'Ratify the Round Table Constitution', kind:'meta', category:'meta', phase:'vote',
-          author:'system', createdAt:'14 days ago', summary:'The complete ruleset. Equal authority. No admin. Tamper-evident. Reversible.',
-          body:'<p><strong>Article 1.</strong> Every entity has equal authority. No entity can override another. No entity can grant themselves special powers.</p><p><strong>Article 2.</strong> Every decision is recorded in an append-only audit chain. Anyone can verify the chain at any time.</p><p><strong>Article 3.</strong> Any decision can be reconsidered within 30 days of passing, if 10% of eligible entities request it.</p><p><strong>Article 4.</strong> The Objector\u2019s Bench exists to slow, never to stop. It has no veto power.</p><p><strong>Article 5.</strong> This document is itself amendable, by the same rules it defines.</p>',
-          tallies:{yes:18,no:3,abstain:2}, voteCount:23, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:3, draftDaysLeft:0, myVote:null, bench_objection:null,
-          comments:[
-            { id:1, author:'Mira Chen', createdAt:'2 hours ago', body:'Article 4 is the most important — it removes the temptation to build an emergency brake that becomes an admin.' },
-            { id:2, author:'Dev Patel', createdAt:'5 hours ago', body:'I\'d add an Article 6 about how new entities get voting rights. But that can be a follow-up proposal.' },
-          ] },
-        { id:'rt0001', title:'Define "Entity" — Account Age + Activity', kind:'meta', category:'meta', phase:'vote',
-          author:'system', createdAt:'10 days ago', summary:'Account \u22657 days old + one prior comment or vote. Passkey optional for now, mandatory later.',
-          body:'<p>An <em>entity</em> is a registered account that:</p><ul><li>Is at least 7 days old</li><li>Has made at least one comment or prior vote</li><li>Has a complete profile</li></ul><p>Passkeys will be required in a future amendment, but not now.</p>',
-          tallies:{yes:14,no:5,abstain:1}, voteCount:20, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:4, draftDaysLeft:0, myVote:null, bench_objection:null, comments:[] },
-        { id:'rt0002', title:'Set Default Thresholds', kind:'meta', category:'meta', phase:'draft',
-          author:'system', createdAt:'7 days ago', summary:'Quorum 20% / Pass 66% / Block 25%. Meta: 75% pass + 30-day comment period.',
-          body:'<p>Standard votes: pass at 66% YES, block at 25% NO. Quorum 20% or 10 entities, whichever is higher.</p><p>Meta (rule-changing) votes: pass at 75% YES, 30-day minimum comment period.</p>',
-          tallies:{yes:0,no:0,abstain:0}, voteCount:0, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:0, draftDaysLeft:7, myVote:null, bench_objection:null, comments:[] },
-        { id:'rt0003', title:'Establish the Objector\'s Bench', kind:'meta', category:'meta', phase:'passed',
-          author:'system', createdAt:'14 days ago', summary:'Five members, sortition, 30-day terms. Can pause a vote 72h. Cannot block.',
-          body:'<p>Any one Bench member can file an objection during an open vote. The vote pauses for 72 hours. A public reason must be posted. After 72h, the vote resumes automatically — unless the filer rescinds the objection.</p>',
-          tallies:{yes:22,no:4,abstain:2}, voteCount:28, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:0, draftDaysLeft:0, myVote:'yes', bench_objection:null, comments:[] },
-        { id:'rt0004', title:'Define the Execution Bridge', kind:'meta', category:'meta', phase:'passed',
-          author:'system', createdAt:'14 days ago', summary:'v1: config proposals write to D1 directly. Code proposals require a PR + audit.',
-          body:'<p><strong>Config proposals:</strong> the auth worker applies the change to <code>rt_config</code> immediately on pass.</p><p><strong>Code proposals:</strong> require a linked PR. The vote records intent; a human merges the PR; a GitHub webhook confirms the merge.</p>',
-          tallies:{yes:20,no:6,abstain:2}, voteCount:28, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:0, draftDaysLeft:0, myVote:'yes', bench_objection:null, comments:[] },
-        { id:'rt0005', title:'The Reconsider Window', kind:'meta', category:'meta', phase:'rejected',
-          author:'system', createdAt:'14 days ago', summary:'10% of entities can reopen any resolution within 30 days.',
-          body:'<p>If 10% of eligible entities sign a reconsider request within 30 days of a resolution passing, a new vote opens on the same proposal. If the reconsider vote reverses the outcome, the original is marked <code>reversed</code>.</p><p><em>Rejected this round:</em> objectors argued the 10% threshold was too low.</p>',
-          tallies:{yes:8,no:14,abstain:6}, voteCount:28, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:0, draftDaysLeft:0, myVote:'no', bench_objection:null, comments:[] },
-        { id:'rt0006', title:'First Feature Proposal (open)', kind:'advisory', category:'feature', phase:'draft',
-          author:'system', createdAt:'14 days ago', summary:'Reserved for the community\'s first real product decision.',
-          body:'<p>This slot is empty by design. The first feature proposal will come from the community after the founding rules pass.</p>',
-          tallies:{yes:0,no:0,abstain:0}, voteCount:0, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:0, draftDaysLeft:2, myVote:null, bench_objection:null, comments:[] },
-      ];
-      this.proposals.forEach(p => { p.summary = esc(p.summary); });
+
+    switchTab(id) {
+      this.view = id;
+      if (id === 'bench') this.loadBench();
+      if (id === 'executions') this.loadExecutions();
+      if (id === 'audit') this.loadAudit();
     },
-    phaseClass(phase) {
-      return {
-        draft: 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300',
-        vote: 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300',
-        passed: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300',
-        rejected: 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300',
-      }[phase] || 'bg-gray-200 dark:bg-gray-700';
-    },
+
     filteredProposals() {
       if (this.filterPhase === 'all') return this.proposals;
       return this.proposals.filter(p => p.phase === this.filterPhase);
     },
+
+    phaseClass(phase) {
+      const map = {
+        draft: 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300',
+        vote: 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300',
+        passed: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300',
+        rejected: 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300',
+        withdrawn: 'bg-gray-200 dark:bg-gray-700 text-gray-500',
+      };
+      return map[phase] || map.draft;
+    },
+
+    pct(n, total) { if (!total) return 0; return Math.round(((n || 0) / total) * 100); },
+
     async openProposal(p) {
-      this.current = p;
+      this.current = { ...p, comments: p.comments || [], tallies: p.tallies || { yes: 0, no: 0, abstain: 0 }, voteCount: p.voteCount || 0 };
       this.view = 'detail';
       try {
         const url = new URL(location.href);
         url.searchParams.set('p', p.slug);
         history.pushState({}, '', url);
         document.title = (p.title || 'Proposal') + ' — Round Table — Traffic Torch';
-        document.querySelectorAll('meta[property="og:title"], meta[name="twitter:title"]').forEach(el => el.setAttribute('content', p.title || ''));
-        const can = document.querySelector('link[rel="canonical"]');
-        if (can) can.setAttribute('href', url.href);
-      } catch(e) {}
-      await this.loadProposal(p);
-      window.scrollTo({top:0, behavior:'smooth'});
+      } catch (e) {}
+      await this.loadProposal(p.slug);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
+
     backToList() {
       this.view = 'proposals';
-      this.current = { phase:'draft', tallies:{yes:0,no:0,abstain:0}, voteCount:0, eligible:0, quorum_pct:0.2, threshold_pct:0.66, myVote:null, draftDaysLeft:0, comments:[], kind:'', category:'', title:'', author:'', createdAt:'', bench_objection:null, body:'', slug:'' };
+      this.current = null;
       try {
         history.pushState({}, '', location.pathname);
         document.title = 'Round Table — Decentralized Governance • Traffic Torch';
-      } catch(e) {}
+      } catch (e) {}
     },
+
+    async loadProposal(slug) {
+      try {
+        const data = await this.fetchAPI('/api/rt/proposals/' + slug);
+        if (data.error) {
+          this.toast(data.error === 'Not found' ? 'Proposal not found' : 'Error: ' + data.error);
+          this.backToList();
+          return;
+        }
+        const p = data.proposal;
+        this.current = {
+          ...this.current,
+          ...p,
+          tallies: data.tally || { yes: 0, no: 0, abstain: 0 },
+          voteCount: (data.tally?.yes || 0) + (data.tally?.no || 0) + (data.tally?.abstain || 0),
+          comments: (data.comments || []).map(c => ({
+            ...c,
+            author: 'u' + c.entity_id,
+            createdAt: new Date((c.created_at || 0) * 1000).toLocaleDateString(),
+          })),
+          myVote: null,
+          author: p.author_entity_id === 'system' ? 'system' : ('u' + p.author_entity_id),
+          createdAt: new Date((p.created_at || 0) * 1000).toLocaleDateString(),
+          body: p.body_md || '',
+          draftDaysLeft: 0,
+        };
+      } catch (e) {
+        this.toast('Error: ' + e.message);
+      }
+    },
+
     async castVote(choice) {
       if (!this.current || this.current.phase !== 'vote') return;
       if (!this.token()) { this.toast('Log in to vote'); return; }
       try {
-        const data = await this.fetchAPI('/api/rt/proposals/' + this.current.slug + '/vote', { method:'POST', body: JSON.stringify({ choice }) });
+        const data = await this.fetchAPI('/api/rt/proposals/' + this.current.slug + '/vote', {
+          method: 'POST',
+          body: JSON.stringify({ choice }),
+        });
         if (data.error) { this.toast('Vote failed: ' + data.error); return; }
         const c = this.current;
-        if (c.myVote) c.tallies[c.myVote] = Math.max(0, c.tallies[c.myVote] - 1);
-        else c.voteCount++;
+        if (c.myVote) c.tallies[c.myVote] = Math.max(0, (c.tallies[c.myVote] || 0) - 1);
+        else c.voteCount = (c.voteCount || 0) + 1;
         c.myVote = choice;
-        c.tallies[choice]++;
+        c.tallies[choice] = (c.tallies[choice] || 0) + 1;
         this.toast('Vote recorded: ' + choice);
-      } catch (e) { this.toast('Vote error: ' + e.message); }
+      } catch (e) { this.toast('Error: ' + e.message); }
     },
+
+    async openVote() {
+      if (!this.current) return;
+      if (!this.token()) { this.toast('Log in first'); return; }
+      try {
+        const data = await this.fetchAPI('/api/rt/proposals/' + this.current.slug + '/open-vote', { method: 'POST' });
+        if (data.error) { this.toast('Failed: ' + data.error); return; }
+        this.toast('Vote opened');
+        await this.loadProposal(this.current.slug);
+      } catch (e) { this.toast('Error: ' + e.message); }
+    },
+
     async submitComment() {
       if (!this.newComment.trim() || !this.current) return;
       if (!this.token()) { this.toast('Log in to comment'); return; }
       try {
-        const data = await this.fetchAPI('/api/rt/proposals/' + this.current.slug + '/comments', { method:'POST', body: JSON.stringify({ body_md: this.newComment.trim() }) });
-        if (data.error) { this.toast('Comment failed: ' + data.error); return; }
-        this.current.comments.push({ id: data.id, author: 'You', createdAt: 'just now', body: this.newComment.trim() });
+        const data = await this.fetchAPI('/api/rt/proposals/' + this.current.slug + '/comments', {
+          method: 'POST',
+          body: JSON.stringify({ body_md: this.newComment.trim() }),
+        });
+        if (data.error) { this.toast('Failed: ' + data.error); return; }
+        this.current.comments = this.current.comments || [];
+        this.current.comments.push({
+          id: data.id,
+          author: 'You',
+          createdAt: 'just now',
+          body_md: this.newComment.trim(),
+        });
         this.newComment = '';
         this.toast('Comment posted');
-      } catch (e) { this.toast('Comment error: ' + e.message); }
+      } catch (e) { this.toast('Error: ' + e.message); }
     },
+
     async submitProposal() {
-      if (!this.draft.title.trim()) { this.toast('Give your proposal a title'); return; }
-      if (!this.token()) { this.toast('Log in to submit'); return; }
+      if (!this.draft.title.trim()) { this.toast('Give it a title'); return; }
+      if (!this.token()) { this.toast('Log in first'); return; }
       try {
         const data = await this.fetchAPI('/api/rt/proposals', {
-          method:'POST',
-          body: JSON.stringify({ title: this.draft.title, body_md: this.draft.body, kind: this.draft.kind, category: this.draft.category })
+          method: 'POST',
+          body: JSON.stringify({
+            title: this.draft.title,
+            body_md: this.draft.body,
+            kind: this.draft.kind,
+            category: this.draft.category,
+          }),
         });
-        if (data.error) { this.toast('Submit failed: ' + data.error); return; }
+        if (data.error) { this.toast('Failed: ' + data.error); return; }
         this.toast('Draft created: ' + data.slug);
         this.draft = { title: '', kind: 'advisory', category: 'feature', body: '' };
         this.view = 'proposals';
-        await this.init();
-      } catch (e) { this.toast('Submit error: ' + e.message); }
+        await this.loadProposals();
+      } catch (e) { this.toast('Error: ' + e.message); }
     },
-    pct(n, total) { return total ? Math.round(n / total * 100) : 0; },
-    benchMembers: [],
-    objections: [],
-    executions: [],
-    auditResult: null,
+
     async loadBench() {
       try {
-        const [b, ex] = await Promise.all([ this.fetchAPI('/api/rt/bench'), this.fetchAPI('/api/rt/objections') ]);
-        this.benchMembers = (b.bench || []).map(x => ({
-          id: x.id, name: 'u' + x.entity_id,
-          termEnds: new Date((x.term_ends_at||0)*1000).toLocaleDateString()
+        const d = await this.fetchAPI('/api/rt/bench');
+        this.benchMembers = (d.bench || []).map(x => ({
+          id: x.id,
+          name: 'u' + x.entity_id,
+          termEnds: new Date((x.term_ends_at || 0) * 1000).toLocaleDateString(),
         }));
-        this.objections = ex.objections || [];
       } catch (e) { this.toast('Bench load failed: ' + e.message); }
     },
+
+    async drawBench() {
+      if (!this.token()) { this.toast('Log in to draw'); return; }
+      try {
+        const d = await this.fetchAPI('/api/rt/bench/draw', { method: 'POST' });
+        if (d.error) { this.toast('Failed: ' + d.error); return; }
+        await this.loadBench();
+        this.toast('Bench drawn');
+      } catch (e) { this.toast('Error: ' + e.message); }
+    },
+
     async loadExecutions() {
       try {
         const d = await this.fetchAPI('/api/rt/executions');
         this.executions = d.executions || [];
       } catch (e) { this.toast('Executions load failed: ' + e.message); }
     },
+
     async loadAudit() {
+      this.auditResult = null;
       try {
         const d = await this.fetchAPI('/api/rt/audit/verify');
         this.auditResult = d;
       } catch (e) { this.toast('Audit load failed: ' + e.message); }
     },
+
     toast(msg) {
       this.toastMsg = msg;
       clearTimeout(this._t);
-      this._t = setTimeout(() => this.toastMsg = '', 2500);
-    }
+      this._t = setTimeout(() => { this.toastMsg = ''; }, 2800);
+    },
   };
 }
+
+window.roundTable = roundTable;
 </script>
 
-<script>
-(async () => {
-  const badge = document.getElementById('rtMeBadge');
-  const text = document.getElementById('rtMeText');
-  if (!badge || !text) return;
-  const token = localStorage.getItem('tt_token') || localStorage.getItem('token') || localStorage.getItem('jwt');
-  const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
-  try {
-    const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/rt/me', { headers });
-    const data = await res.json();
-    badge.classList.remove('hidden');
-    if (!data.authenticated) {
-      badge.className = 'hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-gray-500/10 border border-gray-500/30 rounded-full text-xs font-semibold text-gray-600 dark:text-gray-400 hover:border-orange-400 transition';
-      text.textContent = 'Log in to participate';
-      badge.href = '/login/';
-    } else if (data.eligible) {
-      badge.className = 'hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs font-semibold text-emerald-600 dark:text-emerald-400';
-      text.textContent = "You're eligible to vote";
-      badge.href = '#';
-    } else {
-      badge.className = 'hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-xs font-semibold text-yellow-600 dark:text-yellow-400';
-      if (data.reason === 'account_too_new') {
-        text.textContent = 'You can vote in ' + data.days_until_eligible + ' days';
-      } else {
-        text.textContent = 'Complete your profile to vote';
-      }
-      badge.href = '/profile.html';
-    }
-  } catch (e) {
-    badge.classList.remove('hidden');
-    text.textContent = 'Log in to participate';
-  }
-})();
-</script>
-
-<script>
-// ---- Mobile menu (standalone, works even if main.js doesn't run here) ----
-(function setupMobileMenu() {
-  function init() {
-    var menu = document.getElementById('mobileMenu');
-    var openBtn = document.getElementById('menuToggle');
-    var closeBtn = document.getElementById('close-mobile-menu');
-    if (!menu || !openBtn) return;
-    openBtn.addEventListener('click', function() {
-      menu.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    });
-    if (closeBtn) closeBtn.addEventListener('click', function() {
-      menu.classList.add('hidden');
-      document.body.style.overflow = '';
-    });
-    menu.addEventListener('click', function(e) {
-      if (e.target === menu) {
-        menu.classList.add('hidden');
-        document.body.style.overflow = '';
-      }
-    });
-    // Load menu content if not already
-    var ph = document.getElementById('mobile-menu-placeholder');
-    if (ph && !ph.dataset.loaded) {
-      fetch('/mobile-menu.html').then(function(r){ return r.text(); }).then(function(html){
-        ph.innerHTML = html;
-        ph.dataset.loaded = '1';
-      }).catch(function(){ ph.innerHTML = '<p class="text-sm text-gray-500">Menu unavailable</p>'; });
-    }
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
-</script>
-<div id="footer-placeholder"></div>
-<script>
-(function(){
-  function runScripts(root){
-    Array.from(root.querySelectorAll('script')).forEach(function(old){
-      var fresh = document.createElement('script');
-      if (old.src) fresh.src = old.src;
-      else fresh.textContent = old.textContent;
-      old.parentNode.replaceChild(fresh, old);
-    });
-  }
-  function load(id, url){
-    var el = document.getElementById(id);
-    if (!el || el.dataset.loaded) return;
-    if (el.children.length > 0) { el.dataset.loaded = '1'; el.classList.remove('opacity-0'); return; }
-    fetch(url).then(function(r){ return r.text(); }).then(function(html){
-      el.innerHTML = html;
-      el.dataset.loaded = '1';
-      el.classList.remove('opacity-0');
-      runScripts(el);
-    }).catch(function(){});
-  }
-  function boot(){
-    load('desktop-menu-placeholder', '/desktop-menu.html');
-    load('mobile-menu-placeholder', '/mobile-menu.html');
-    load('footer-placeholder', '/footer.html');
-
-    var tt = document.getElementById('themeToggle');
-    if (tt && !tt.dataset.wired) {
-      tt.dataset.wired = '1';
-      var sync = function(){ tt.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙'; };
-      sync();
-      tt.addEventListener('click', function(){
-        var dark = document.documentElement.classList.toggle('dark');
-        try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch(e){}
-        sync();
-      });
-    }
-
-    var sb = document.getElementById('sidebarCollapse');
-    var aside = document.getElementById('desktopSidebar');
-    if (sb && aside && !sb.dataset.wired) {
-      sb.dataset.wired = '1';
-      sb.addEventListener('click', function(){
-        aside.classList.toggle('w-64');
-        aside.classList.toggle('w-20');
-      });
-    }
-
-    var dt = document.getElementById('desktopMenuToggle');
-    if (dt && aside && !dt.dataset.wired) {
-      dt.dataset.wired = '1';
-      dt.addEventListener('click', function(){
-        aside.classList.toggle('hidden');
-      });
-    }
-
-    var mo = document.getElementById('menuToggle');
-    var mm = document.getElementById('mobileMenu');
-    if (mo && mm && !mo.dataset.wired) {
-      mo.dataset.wired = '1';
-      mo.addEventListener('click', function(){
-        mm.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-      });
-    }
-    var mc = document.getElementById('close-mobile-menu');
-    if (mc && mm && !mc.dataset.wired) {
-      mc.dataset.wired = '1';
-      mc.addEventListener('click', function(){
-        mm.classList.add('hidden');
-        document.body.style.overflow = '';
-      });
-    }
-    if (mm && !mm.dataset.wired) {
-      mm.dataset.wired = '1';
-      mm.addEventListener('click', function(e){
-        if (e.target === mm) { mm.classList.add('hidden'); document.body.style.overflow = ''; }
-      });
-    }
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
-})();
-</script>
 </body>
 </html>
