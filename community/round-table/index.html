@@ -45,6 +45,7 @@
           <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
         </a>
       </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
       <div class="p-4 border-t border-white/10 dark:border-white/5">
         <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 rounded-lg transition">←</button>
       </div>
@@ -144,8 +145,8 @@
         </div>
 
         <!-- ============== PROPOSAL DETAIL ============== -->
-        <div x-show="view === 'detail' && current" x-cloak>
-          <button @click="view = 'proposals'" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-400 mb-4">← Back to proposals</button>
+        <div x-show="view === 'detail'" x-cloak>
+          <button @click="backToList()" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-400 mb-4">← Back to proposals</button>
 
           <article class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6 mb-4">
             <div class="flex items-center gap-2 mb-3 flex-wrap">
@@ -416,7 +417,7 @@ function roundTable() {
   return {
     view: 'proposals',
     filterPhase: 'all',
-    current: null,
+    current: { phase:'draft', tallies:{yes:0,no:0,abstain:0}, voteCount:0, eligible:0, quorum_pct:0.2, threshold_pct:0.66, myVote:null, draftDaysLeft:0, comments:[], kind:'', category:'', title:'', author:'', createdAt:'', bench_objection:null, body:'', slug:'' },
     newComment: '',
     toastMsg: '',
     draft: { title: '', kind: 'advisory', category: 'feature', body: '' },
@@ -462,6 +463,14 @@ function roundTable() {
           }));
         }
       } catch (e) { this.toast('Could not load proposals: ' + e.message); }
+
+      try {
+        const slug = new URLSearchParams(location.search).get('p');
+        if (slug) {
+          const match = this.proposals.find(x => x.slug === slug);
+          if (match) await this.openProposal(match);
+        }
+      } catch(e) {}
     },
     async loadProposal(p) {
       try {
@@ -531,7 +540,29 @@ function roundTable() {
       if (this.filterPhase === 'all') return this.proposals;
       return this.proposals.filter(p => p.phase === this.filterPhase);
     },
-    async openProposal(p) { this.current = p; this.view = 'detail'; await this.loadProposal(p); window.scrollTo({top:0, behavior:'smooth'}); },
+    async openProposal(p) {
+      this.current = p;
+      this.view = 'detail';
+      try {
+        const url = new URL(location.href);
+        url.searchParams.set('p', p.slug);
+        history.pushState({}, '', url);
+        document.title = (p.title || 'Proposal') + ' — Round Table — Traffic Torch';
+        document.querySelectorAll('meta[property="og:title"], meta[name="twitter:title"]').forEach(el => el.setAttribute('content', p.title || ''));
+        const can = document.querySelector('link[rel="canonical"]');
+        if (can) can.setAttribute('href', url.href);
+      } catch(e) {}
+      await this.loadProposal(p);
+      window.scrollTo({top:0, behavior:'smooth'});
+    },
+    backToList() {
+      this.view = 'proposals';
+      this.current = current: { phase:'draft', tallies:{yes:0,no:0,abstain:0}, voteCount:0, eligible:0, quorum_pct:0.2, threshold_pct:0.66, myVote:null, draftDaysLeft:0, comments:[], kind:'', category:'', title:'', author:'', createdAt:'', bench_objection:null, body:'', slug:'' };
+      try {
+        history.pushState({}, '', location.pathname);
+        document.title = 'Round Table — Decentralized Governance • Traffic Torch';
+      } catch(e) {}
+    },
     async castVote(choice) {
       if (!this.current || this.current.phase !== 'vote') return;
       if (!this.token()) { this.toast('Log in to vote'); return; }
