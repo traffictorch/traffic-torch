@@ -35,3 +35,22 @@ https://traffictorch.net/torch/15/
 - All patches as Node scripts in /tmp/ then run with node
 - Always `node --check` before `wrangler deploy`
 - No long walls of text — short focused instructions
+
+
+## Round Table (v1)
+
+Decentralized governance. **No admins. No override.**
+
+- **Page:** /community/round-table/ (source: community/round-table/index.html)
+- **API:** traffic-torch-auth/src/round-table.js under /api/rt/*
+- **Tables:** rt_proposals, rt_votes, rt_comments, rt_resolutions, rt_entities, rt_bench, rt_objections, rt_audit_chain, rt_audit_checkpoints, rt_reconsiders, rt_reconsider_signatures, rt_config, rt_executions
+- **Cadence:** max 3 binding votes at once; Round Table Day = 1st Monday monthly; auto-close per kind
+- **Audit:** hash-chained SHA-256; verify at /api/rt/audit/verify
+- **Config exec:** config proposals with "SET key=value" in body apply to rt_config on pass
+- **Code exec:** code proposals require linked_pr_url; merged SHA recorded via /api/rt/resolutions/:id/mark-merged
+- **Self-amending:** thresholds read from rt_config at proposal-create time
+
+### Deploy
+Auth worker first, then Pages:
+  cd traffic-torch-auth && npx wrangler@4.16.1 deploy
+  cd .. && npm run build && find dist -type d -name node_modules -exec rm -rf {} + && npx wrangler@4.16.1 pages deploy dist --project-name=traffic-torch --branch=main --commit-dirty=true

@@ -1,6 +1,7 @@
 import { handleMessageRoutes, handleCleanupMessages } from './messages.js';
 import { UserInbox } from './durable/UserInbox.js';
 import { handleAvatarRoutes } from './avatar.js';
+import { handleRoundTableRoutes } from './round-table.js';
 
 export { UserInbox };
 
@@ -3307,6 +3308,10 @@ export default {
       }
       if (url.pathname === '/api/internal/cleanup-messages') {
         return handleCleanupMessages(request, env);
+      }
+
+      if (url.pathname.startsWith('/api/rt/')) {
+        return await handleRoundTableRoutes(request, env, url, { corsResponse, verifyJWT });
       }
 
       return corsResponse('Not found', 404);

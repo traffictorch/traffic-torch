@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/community/round-table/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/community/round-table/">
+  <title>Round Table — Decentralized Governance • Traffic Torch</title>
+  <meta name="description" content="Community governance for Traffic Torch. Equal authority. No admins. Every decision on the record.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/community/round-table/">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style.css?v=1.0"></noscript>
+<style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+<link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+<noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local.css?v=1.0"></noscript>
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+    })();
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
+  <style>[x-cloak]{display:none !important}</style>
+  <script src="/shared/avatar.js?v=1.0"></script>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+
+<div x-data="roundTable()" x-init="init()" class="flex flex-1 min-h-screen">
+  <div class="flex flex-1 min-h-screen">
+
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex-col self-start">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" alt="Traffic Torch" class="w-10 rounded-xl" width="40" height="40" loading="eager">
+          <span class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
+        </a>
+      </div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 rounded-lg transition">←</button>
+      </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col">
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4">
+            <img src="/logo-100w.webp" alt="Traffic Torch" class="w-10 rounded-xl" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="flex items-center gap-3">
+            <a id="rtMeBadge" href="/login/" class="hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-gray-500/10 border border-gray-500/30 rounded-full text-xs font-semibold text-gray-600 dark:text-gray-400 hover:border-orange-400 transition">
+              <span class="w-2 h-2 rounded-full bg-gray-500"></span> <span id="rtMeText">Checking…</span>
+            </a>
+            <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="container mx-auto px-4 py-6 max-w-7xl">
+
+        <!-- Hero -->
+        <section class="text-center mb-8">
+          <h1 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">🗳️ The Round Table</h1>
+          <p class="text-lg max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
+            Decentralized governance for Traffic Torch. Every entity has equal authority. No admins. No override. Every decision is on the record, tamper-evident, and reversible.
+          </p>
+          <div class="mt-4 flex items-center justify-center gap-4 text-sm text-gray-600 dark:text-gray-400 flex-wrap">
+            <span>📜 <strong class="text-gray-900 dark:text-gray-100">7</strong> open proposals</span>
+            <span>·</span>
+            <span>🧑‍🤝‍🧑 <strong class="text-gray-900 dark:text-gray-100">28</strong> eligible entities</span>
+            <span>·</span>
+            <span>⏳ Round Table Day in <strong class="text-gray-900 dark:text-gray-100">3 days</strong></span>
+          </div>
+        </section>
+
+        <!-- Tabs -->
+        <nav class="flex flex-wrap justify-center gap-2 mb-8">
+          <template x-for="tab in tabs" :key="tab.id">
+            <button @click="view = tab.id"
+                    class="px-4 py-2 rounded-lg text-sm font-medium transition"
+                    :class="view === tab.id ? 'bg-orange-500 text-white' : 'bg-white/60 dark:bg-black/40 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-black/60 border border-gray-200 dark:border-white/10'">
+              <span x-text="tab.label"></span>
+            </button>
+          </template>
+        </nav>
+
+        <!-- ============== PROPOSALS LIST ============== -->
+        <div x-show="view === 'proposals'" x-cloak>
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+            <div class="flex gap-2 flex-wrap">
+              <button @click="filterPhase = 'all'" :class="filterPhase === 'all' ? 'bg-orange-500 text-white' : 'bg-white/60 dark:bg-black/40 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10'" class="px-3 py-1.5 rounded-lg text-xs font-semibold">All</button>
+              <button @click="filterPhase = 'draft'" :class="filterPhase === 'draft' ? 'bg-orange-500 text-white' : 'bg-white/60 dark:bg-black/40 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10'" class="px-3 py-1.5 rounded-lg text-xs font-semibold">Draft</button>
+              <button @click="filterPhase = 'vote'" :class="filterPhase === 'vote' ? 'bg-orange-500 text-white' : 'bg-white/60 dark:bg-black/40 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10'" class="px-3 py-1.5 rounded-lg text-xs font-semibold">Voting</button>
+              <button @click="filterPhase = 'passed'" :class="filterPhase === 'passed' ? 'bg-orange-500 text-white' : 'bg-white/60 dark:bg-black/40 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10'" class="px-3 py-1.5 rounded-lg text-xs font-semibold">Passed</button>
+              <button @click="filterPhase = 'rejected'" :class="filterPhase === 'rejected' ? 'bg-orange-500 text-white' : 'bg-white/60 dark:bg-black/40 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10'" class="px-3 py-1.5 rounded-lg text-xs font-semibold">Rejected</button>
+            </div>
+            <button @click="view = 'new'" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-semibold transition">+ New Proposal</button>
+          </div>
+
+          <div class="grid gap-3">
+            <template x-for="p in filteredProposals()" :key="p.id">
+              <article @click="openProposal(p)" class="cursor-pointer bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-5 hover:border-orange-400/60 transition">
+                <div class="flex items-start justify-between gap-4 flex-wrap">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-2 flex-wrap">
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider" :class="phaseClass(p.phase)" x-text="p.phase"></span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400" x-text="p.kind"></span>
+                      <span class="text-xs text-gray-400">·</span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400" x-text="p.category"></span>
+                      <span class="text-xs text-gray-400">·</span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400" x-text="'by ' + p.author"></span>
+                    </div>
+                    <h3 class="text-lg font-bold mb-1" x-text="p.title"></h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2" x-text="p.summary"></p>
+                  </div>
+                  <div class="text-right text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                    <div x-show="p.phase === 'vote'" class="mb-1">
+                      <span class="font-semibold text-gray-900 dark:text-gray-100" x-text="p.voteDaysLeft + 'd'"></span> left
+                    </div>
+                    <div>💬 <span x-text="p.comments.length"></span> · 🗳️ <span x-text="p.voteCount"></span>/<span x-text="p.eligible"></span></div>
+                  </div>
+                </div>
+                <div x-show="p.phase === 'vote'" class="mt-4">
+                  <div class="flex h-2 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-800">
+                    <div class="bg-emerald-500" :style="'width:' + pct(p.tallies.yes, p.voteCount) + '%'"></div>
+                    <div class="bg-red-500" :style="'width:' + pct(p.tallies.no, p.voteCount) + '%'"></div>
+                    <div class="bg-gray-400" :style="'width:' + pct(p.tallies.abstain, p.voteCount) + '%'"></div>
+                  </div>
+                </div>
+              </article>
+            </template>
+            <div x-show="filteredProposals().length === 0" class="text-center py-12 text-gray-500 dark:text-gray-400">No proposals in this phase.</div>
+          </div>
+        </div>
+
+        <!-- ============== PROPOSAL DETAIL ============== -->
+        <div x-show="view === 'detail' && current" x-cloak>
+          <button @click="view = 'proposals'" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-400 mb-4">← Back to proposals</button>
+
+          <article class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6 mb-4">
+            <div class="flex items-center gap-2 mb-3 flex-wrap">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider" :class="phaseClass(current.phase)" x-text="current.phase"></span>
+              <span class="text-xs text-gray-500 dark:text-gray-400" x-text="current.kind"></span>
+              <span class="text-xs text-gray-400">·</span>
+              <span class="text-xs text-gray-500 dark:text-gray-400" x-text="current.category"></span>
+            </div>
+            <h1 class="text-2xl font-bold mb-2" x-text="current.title"></h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              <span x-text="current.author"></span> · <span x-text="current.createdAt"></span>
+              <span x-show="current.bench_objection" class="ml-3 text-red-500 font-semibold">⚠️ Objection filed by Objector's Bench</span>
+            </p>
+            <div class="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300" x-html="current.body"></div>
+          </article>
+
+          <!-- Vote UI -->
+          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6 mb-4">
+            <h2 class="text-lg font-bold mb-3">Tally</h2>
+            <div x-show="current.phase === 'vote'">
+              <div class="flex h-3 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-800 mb-3">
+                <div class="bg-emerald-500 transition-all" :style="'width:' + pct(current.tallies.yes, current.voteCount) + '%'"></div>
+                <div class="bg-red-500 transition-all" :style="'width:' + pct(current.tallies.no, current.voteCount) + '%'"></div>
+                <div class="bg-gray-400 transition-all" :style="'width:' + pct(current.tallies.abstain, current.voteCount) + '%'"></div>
+              </div>
+              <div class="flex items-center justify-between mb-4 text-sm flex-wrap gap-2">
+                <div class="flex gap-4">
+                  <span class="text-emerald-600 dark:text-emerald-400">✓ <strong x-text="current.tallies.yes"></strong> Yes</span>
+                  <span class="text-red-600 dark:text-red-400">✗ <strong x-text="current.tallies.no"></strong> No</span>
+                  <span class="text-gray-500 dark:text-gray-400">◯ <strong x-text="current.tallies.abstain"></strong> Abstain</span>
+                </div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">
+                  <strong x-text="current.voteCount"></strong> of <strong x-text="current.eligible"></strong> eligible · quorum <span x-text="Math.round(current.quorum_pct*100) + '%'"></span> · pass <span x-text="Math.round(current.threshold_pct*100) + '%'"></span>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-3">
+                <button @click="castVote('yes')" :class="current.myVote === 'yes' ? 'ring-2 ring-emerald-500' : ''" class="flex-1 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition">Vote Yes</button>
+                <button @click="castVote('no')" :class="current.myVote === 'no' ? 'ring-2 ring-red-500' : ''" class="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">Vote No</button>
+                <button @click="castVote('abstain')" :class="current.myVote === 'abstain' ? 'ring-2 ring-gray-500' : ''" class="flex-1 px-4 py-2.5 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg transition">Abstain</button>
+              </div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 text-center">Your vote is changeable until the vote closes. <span x-show="current.myVote" x-text="'Currently: ' + current.myVote"></span></p>
+            </div>
+            <div x-show="current.phase === 'passed' || current.phase === 'rejected'" class="text-center py-4">
+              <div class="text-2xl font-bold mb-1" :class="current.phase === 'passed' ? 'text-emerald-500' : 'text-red-500'" x-text="current.phase === 'passed' ? '✓ Passed' : '✗ Rejected'"></div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                Yes <span x-text="current.tallies.yes"></span> · No <span x-text="current.tallies.no"></span> · Abstain <span x-text="current.tallies.abstain"></span>
+              </p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Reconsider window opens in Round Table Day. <button @click="view = 'history'" class="text-orange-500 hover:underline">View history →</button></p>
+            </div>
+            <div x-show="current.phase === 'draft'" class="text-center py-4 text-gray-500 dark:text-gray-400">
+              <p>In draft. Comment period ends in <strong x-text="current.draftDaysLeft + 'd'"></strong>.</p>
+              <button @click="toast('Opening a vote would require the comment period to complete first.')" class="mt-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm rounded-lg">Open Vote →</button>
+            </div>
+          </div>
+
+          <!-- Discussion -->
+          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
+            <h2 class="text-lg font-bold mb-4">Discussion <span class="text-sm font-normal text-gray-500" x-text="'(' + current.comments.length + ')'"></span></h2>
+            <div class="space-y-4 mb-6">
+              <template x-for="c in current.comments" :key="c.id">
+                <div class="flex gap-3">
+                  <div class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0" x-text="c.author.charAt(0).toUpperCase()"></div>
+                  <div class="flex-1">
+                    <div class="text-sm">
+                      <strong x-text="c.author"></strong>
+                      <span class="text-gray-500 dark:text-gray-400 text-xs ml-2" x-text="c.createdAt"></span>
+                    </div>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mt-1" x-text="c.body"></p>
+                  </div>
+                </div>
+              </template>
+              <div x-show="current.comments.length === 0" class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">No comments yet. Be the first.</div>
+            </div>
+            <div class="flex gap-2">
+              <input x-model="newComment" @keydown.enter="submitComment()" placeholder="Add your comment…" class="flex-1 px-4 py-2.5 bg-white/80 dark:bg-black/60 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:outline-none focus:border-orange-400">
+              <button @click="submitComment()" class="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg text-sm transition">Post</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============== NEW PROPOSAL ============== -->
+        <div x-show="view === 'new'" x-cloak class="max-w-3xl mx-auto">
+          <button @click="view = 'proposals'" class="text-sm text-gray-500 dark:text-gray-400 hover:text-orange-400 mb-4">← Back to proposals</button>
+          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
+            <h2 class="text-xl font-bold mb-4">Draft a New Proposal</h2>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-semibold mb-1.5">Title</label>
+                <input x-model="draft.title" placeholder="A clear, specific title" class="w-full px-4 py-2.5 bg-white/80 dark:bg-black/60 border border-gray-200 dark:border-white/10 rounded-lg text-sm focus:outline-none focus:border-orange-400">
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-sm font-semibold mb-1.5">Kind</label>
+                  <select x-model="draft.kind" class="w-full px-4 py-2.5 bg-white/80 dark:bg-black/60 border border-gray-200 dark:border-white/10 rounded-lg text-sm">
+                    <option value="advisory">Advisory (signal only)</option>
+                    <option value="config">Config (changes a setting)</option>
+                    <option value="meta">Meta (changes the rules)</option>
+                    <option value="code">Code (needs a PR)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold mb-1.5">Category</label>
+                  <select x-model="draft.category" class="w-full px-4 py-2.5 bg-white/80 dark:bg-black/60 border border-gray-200 dark:border-white/10 rounded-lg text-sm">
+                    <option value="feature">Feature</option>
+                    <option value="policy">Policy</option>
+                    <option value="meta">Meta</option>
+                    <option value="security">Security</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-1.5">Body <span class="text-xs text-gray-500 font-normal">(markdown supported)</span></label>
+                <textarea x-model="draft.body" rows="10" placeholder="Explain the proposal, the reasoning, and the intended outcome…" class="w-full px-4 py-3 bg-white/80 dark:bg-black/60 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-mono focus:outline-none focus:border-orange-400"></textarea>
+              </div>
+              <div class="p-3 bg-indigo-500/10 border border-indigo-500/30 rounded-lg text-xs text-indigo-700 dark:text-indigo-300">
+                <strong>Before you submit:</strong> Meta proposals get a 30-day comment period. Config 14 days. Advisory 7 days. One active proposal per entity at a time.
+              </div>
+              <div class="flex gap-2 justify-end">
+                <button @click="view = 'proposals'" class="px-4 py-2.5 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg text-sm">Cancel</button>
+                <button @click="submitProposal()" class="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg text-sm">Submit Draft</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============== BENCH ============== -->
+        <div x-show="view === 'bench'" x-cloak class="max-w-4xl mx-auto">
+          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6 mb-4">
+            <h2 class="text-xl font-bold mb-2">🛡️ The Objector's Bench</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Five entities, randomly selected by sortition, serve 30-day terms. Any one of them can pause a vote for 72 hours to force reflection. They can never pass or block a proposal — only slow it down.</p>
+            <div class="grid md:grid-cols-2 gap-3">
+              <template x-for="m in bench" :key="m.id">
+                <div class="flex items-center gap-3 p-3 bg-white/40 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-lg">
+                  <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold" x-text="m.name.charAt(0)"></div>
+                  <div class="flex-1">
+                    <div class="font-semibold text-sm" x-text="m.name"></div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">Term ends <span x-text="m.termEnds"></span></div>
+                  </div>
+                  <span class="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full font-semibold">Active</span>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
+            <h3 class="font-bold mb-3">Recent Objections</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex items-start gap-3 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                <span class="text-red-500">⚠️</span>
+                <div class="flex-1">
+                  <p class="font-semibold text-gray-900 dark:text-gray-100">Pause on "Set Default Thresholds"</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">Filed by user #12 · 8 hours ago · Resumes in 64h</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 italic">"The proposed 66% pass threshold may be too low for meta changes. Suggest 75% for rule changes specifically."</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============== AUDIT ============== -->
+        <div x-show="view === 'audit'" x-cloak class="max-w-4xl mx-auto">
+          <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 mb-4">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-3xl">✓</span>
+              <h2 class="text-xl font-bold text-emerald-600 dark:text-emerald-400">Audit Chain Intact</h2>
+            </div>
+            <p class="text-sm text-gray-700 dark:text-gray-300">Every vote, comment, and resolution is hashed with the previous row. Last verification: <strong>2 minutes ago</strong>. <strong>1,247 rows</strong> checked from last checkpoint. No tampering detected.</p>
+          </div>
+          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
+            <h3 class="font-bold mb-3">Recent Chain Entries</h3>
+            <div class="space-y-1 text-xs font-mono text-gray-700 dark:text-gray-300">
+              <div class="flex gap-3 p-2 rounded hover:bg-white/5"><span class="text-gray-500">#1247</span><span class="text-emerald-500">vote.cast</span><span class="truncate">entity:u12 → proposal:rt0002 → yes</span><span class="text-orange-500 ml-auto">a3f9c2...</span></div>
+              <div class="flex gap-3 p-2 rounded hover:bg-white/5"><span class="text-gray-500">#1246</span><span class="text-emerald-500">comment.create</span><span class="truncate">entity:u8 → proposal:rt0001</span><span class="text-orange-500 ml-auto">b7d4e1...</span></div>
+              <div class="flex gap-3 p-2 rounded hover:bg-white/5"><span class="text-gray-500">#1245</span><span class="text-emerald-500">vote.cast</span><span class="truncate">entity:u4 → proposal:rt0003 → no</span><span class="text-orange-500 ml-auto">c2a8f5...</span></div>
+              <div class="flex gap-3 p-2 rounded hover:bg-white/5"><span class="text-gray-500">#1244</span><span class="text-emerald-500">proposal.open_vote</span><span class="truncate">proposal:rt0002 → eligible:28</span><span class="text-orange-500 ml-auto">d9e3b7...</span></div>
+            </div>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-4">Anyone can run the full verification at <code class="px-1.5 py-0.5 bg-black/20 rounded">/api/rt/audit/verify</code> — no login required.</p>
+          </div>
+        </div>
+
+        <!-- ============== EXECUTIONS ============== -->
+        <div x-show="view === 'executions'" x-cloak class="max-w-4xl mx-auto">
+          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
+            <h2 class="text-xl font-bold mb-2">⚡ Execution Log</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Every passed resolution that led to a real change. Config changes apply automatically. Code proposals link to a PR.</p>
+            <div class="space-y-2">
+              <div class="p-4 border border-gray-200 dark:border-white/10 rounded-lg">
+                <div class="flex items-start justify-between gap-3 flex-wrap">
+                  <div>
+                    <p class="font-semibold text-sm">Set quorum to 25%</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Config · passed 3 days ago · applied immediately</p>
+                  </div>
+                  <span class="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full font-semibold">✓ Executed</span>
+                </div>
+              </div>
+              <div class="p-4 border border-gray-200 dark:border-white/10 rounded-lg">
+                <div class="flex items-start justify-between gap-3 flex-wrap">
+                  <div>
+                    <p class="font-semibold text-sm">Add WebAuthn passkey requirement</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Code · passed 10 days ago · PR #142 merged</p>
+                  </div>
+                  <a href="#" class="text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-full font-semibold hover:underline">✓ Merged →</a>
+                </div>
+              </div>
+              <div class="p-4 border border-yellow-500/30 bg-yellow-500/5 rounded-lg">
+                <div class="flex items-start justify-between gap-3 flex-wrap">
+                  <div>
+                    <p class="font-semibold text-sm">Rename "Objector's Bench" to "Council of Elders"</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Code · passed 2 days ago · waiting for linked PR</p>
+                  </div>
+                  <span class="text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 rounded-full font-semibold">⏳ Pending PR</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============== HISTORY ============== -->
+        <div x-show="view === 'history'" x-cloak class="max-w-4xl mx-auto">
+          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
+            <h2 class="text-xl font-bold mb-2">📜 Decision History</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Every decision ever made, in order. Each can be reopened during its 30-day reconsider window on Round Table Day.</p>
+            <div class="relative border-l-2 border-orange-500/30 ml-4 space-y-6">
+              <div class="ml-6 relative">
+                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-orange-500 border-4 border-gray-50 dark:border-gray-950"></div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Today</p>
+                <p class="font-semibold text-sm">Objector's Bench established</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Passed 22/28 (79%) · Bench terms now active</p>
+              </div>
+              <div class="ml-6 relative">
+                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-emerald-500 border-4 border-gray-50 dark:border-gray-950"></div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">3 days ago</p>
+                <p class="font-semibold text-sm">Default thresholds set to 66%/20%</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Passed 18/28 (64%) · Executed immediately</p>
+              </div>
+              <div class="ml-6 relative">
+                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-red-500 border-4 border-gray-50 dark:border-gray-950"></div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">8 days ago</p>
+                <p class="font-semibold text-sm">Mandatory karma minimum for proposals</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Rejected 6/28 (21%) · Blocked by 25%+ opposed</p>
+              </div>
+              <div class="ml-6 relative">
+                <div class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-orange-500 border-4 border-gray-50 dark:border-gray-950"></div>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">14 days ago</p>
+                <p class="font-semibold text-sm">Round Table Constitution ratified</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Passed 26/28 (93%) · Foundation of all subsequent rules</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="mt-12 pt-6 border-t border-gray-200 dark:border-white/10 text-center text-xs text-gray-500 dark:text-gray-400">
+          <a href="/community/" class="text-orange-500 hover:underline">← Back to Community</a>
+          <span class="mx-2">·</span>
+          <span>Demo mode — all data is fake. Real system coming soon.</span>
+        </footer>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div x-show="toastMsg" x-transition x-cloak class="fixed bottom-6 right-6 z-50 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-5 py-3 rounded-lg shadow-lg text-sm font-semibold" x-text="toastMsg"></div>
+
+</div>
+
+<script>
+function roundTable() {
+  return {
+    view: 'proposals',
+    filterPhase: 'all',
+    current: null,
+    newComment: '',
+    toastMsg: '',
+    draft: { title: '', kind: 'advisory', category: 'feature', body: '' },
+    tabs: [
+      { id: 'proposals', label: '📋 Proposals' },
+      { id: 'bench', label: '🛡️ Bench' },
+      { id: 'audit', label: '🔐 Audit' },
+      { id: 'executions', label: '⚡ Executions' },
+      { id: 'history', label: '📜 History' },
+    ],
+    proposals: [],
+    bench: [
+      { id: 1, name: 'Mira Chen', termEnds: '12 days' },
+      { id: 2, name: 'Dev Patel', termEnds: '12 days' },
+      { id: 3, name: 'Sam Ortiz', termEnds: '12 days' },
+      { id: 4, name: 'Robin Zhao', termEnds: '12 days' },
+      { id: 5, name: 'Alex Kim', termEnds: '12 days' },
+    ],
+    init() {
+      const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      this.proposals = [
+        { id:'rt0000', title:'Ratify the Round Table Constitution', kind:'meta', category:'meta', phase:'vote',
+          author:'system', createdAt:'14 days ago', summary:'The complete ruleset. Equal authority. No admin. Tamper-evident. Reversible.',
+          body:'<p><strong>Article 1.</strong> Every entity has equal authority. No entity can override another. No entity can grant themselves special powers.</p><p><strong>Article 2.</strong> Every decision is recorded in an append-only audit chain. Anyone can verify the chain at any time.</p><p><strong>Article 3.</strong> Any decision can be reconsidered within 30 days of passing, if 10% of eligible entities request it.</p><p><strong>Article 4.</strong> The Objector\u2019s Bench exists to slow, never to stop. It has no veto power.</p><p><strong>Article 5.</strong> This document is itself amendable, by the same rules it defines.</p>',
+          tallies:{yes:18,no:3,abstain:2}, voteCount:23, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:3, draftDaysLeft:0, myVote:null, bench_objection:null,
+          comments:[
+            { id:1, author:'Mira Chen', createdAt:'2 hours ago', body:'Article 4 is the most important — it removes the temptation to build an emergency brake that becomes an admin.' },
+            { id:2, author:'Dev Patel', createdAt:'5 hours ago', body:'I\'d add an Article 6 about how new entities get voting rights. But that can be a follow-up proposal.' },
+          ] },
+        { id:'rt0001', title:'Define "Entity" — Account Age + Activity', kind:'meta', category:'meta', phase:'vote',
+          author:'system', createdAt:'10 days ago', summary:'Account \u22657 days old + one prior comment or vote. Passkey optional for now, mandatory later.',
+          body:'<p>An <em>entity</em> is a registered account that:</p><ul><li>Is at least 7 days old</li><li>Has made at least one comment or prior vote</li><li>Has a complete profile</li></ul><p>Passkeys will be required in a future amendment, but not now.</p>',
+          tallies:{yes:14,no:5,abstain:1}, voteCount:20, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:4, draftDaysLeft:0, myVote:null, bench_objection:null, comments:[] },
+        { id:'rt0002', title:'Set Default Thresholds', kind:'meta', category:'meta', phase:'draft',
+          author:'system', createdAt:'7 days ago', summary:'Quorum 20% / Pass 66% / Block 25%. Meta: 75% pass + 30-day comment period.',
+          body:'<p>Standard votes: pass at 66% YES, block at 25% NO. Quorum 20% or 10 entities, whichever is higher.</p><p>Meta (rule-changing) votes: pass at 75% YES, 30-day minimum comment period.</p>',
+          tallies:{yes:0,no:0,abstain:0}, voteCount:0, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:0, draftDaysLeft:7, myVote:null, bench_objection:null, comments:[] },
+        { id:'rt0003', title:'Establish the Objector\'s Bench', kind:'meta', category:'meta', phase:'passed',
+          author:'system', createdAt:'14 days ago', summary:'Five members, sortition, 30-day terms. Can pause a vote 72h. Cannot block.',
+          body:'<p>Any one Bench member can file an objection during an open vote. The vote pauses for 72 hours. A public reason must be posted. After 72h, the vote resumes automatically — unless the filer rescinds the objection.</p>',
+          tallies:{yes:22,no:4,abstain:2}, voteCount:28, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:0, draftDaysLeft:0, myVote:'yes', bench_objection:null, comments:[] },
+        { id:'rt0004', title:'Define the Execution Bridge', kind:'meta', category:'meta', phase:'passed',
+          author:'system', createdAt:'14 days ago', summary:'v1: config proposals write to D1 directly. Code proposals require a PR + audit.',
+          body:'<p><strong>Config proposals:</strong> the auth worker applies the change to <code>rt_config</code> immediately on pass.</p><p><strong>Code proposals:</strong> require a linked PR. The vote records intent; a human merges the PR; a GitHub webhook confirms the merge.</p>',
+          tallies:{yes:20,no:6,abstain:2}, voteCount:28, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:0, draftDaysLeft:0, myVote:'yes', bench_objection:null, comments:[] },
+        { id:'rt0005', title:'The Reconsider Window', kind:'meta', category:'meta', phase:'rejected',
+          author:'system', createdAt:'14 days ago', summary:'10% of entities can reopen any resolution within 30 days.',
+          body:'<p>If 10% of eligible entities sign a reconsider request within 30 days of a resolution passing, a new vote opens on the same proposal. If the reconsider vote reverses the outcome, the original is marked <code>reversed</code>.</p><p><em>Rejected this round:</em> objectors argued the 10% threshold was too low.</p>',
+          tallies:{yes:8,no:14,abstain:6}, voteCount:28, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:0, draftDaysLeft:0, myVote:'no', bench_objection:null, comments:[] },
+        { id:'rt0006', title:'First Feature Proposal (open)', kind:'advisory', category:'feature', phase:'draft',
+          author:'system', createdAt:'14 days ago', summary:'Reserved for the community\'s first real product decision.',
+          body:'<p>This slot is empty by design. The first feature proposal will come from the community after the founding rules pass.</p>',
+          tallies:{yes:0,no:0,abstain:0}, voteCount:0, eligible:28, quorum_pct:0.20, threshold_pct:0.66, voteDaysLeft:0, draftDaysLeft:2, myVote:null, bench_objection:null, comments:[] },
+      ];
+      this.proposals.forEach(p => { p.summary = esc(p.summary); });
+    },
+    phaseClass(phase) {
+      return {
+        draft: 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300',
+        vote: 'bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300',
+        passed: 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300',
+        rejected: 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300',
+      }[phase] || 'bg-gray-200 dark:bg-gray-700';
+    },
+    filteredProposals() {
+      if (this.filterPhase === 'all') return this.proposals;
+      return this.proposals.filter(p => p.phase === this.filterPhase);
+    },
+    openProposal(p) { this.current = p; this.view = 'detail'; window.scrollTo({top:0, behavior:'smooth'}); },
+    castVote(choice) {
+      if (!this.current || this.current.phase !== 'vote') return;
+      const c = this.current;
+      if (c.myVote) c.tallies[c.myVote]--;
+      else c.voteCount++;
+      c.myVote = choice;
+      c.tallies[choice]++;
+      this.toast('Vote recorded: ' + choice);
+    },
+    submitComment() {
+      if (!this.newComment.trim() || !this.current) return;
+      this.current.comments.push({ id: Date.now(), author: 'You', createdAt: 'just now', body: this.newComment.trim() });
+      this.newComment = '';
+      this.toast('Comment posted');
+    },
+    submitProposal() {
+      if (!this.draft.title.trim()) { this.toast('Give your proposal a title'); return; }
+      this.toast('Draft created. It will appear in the list once the API is live.');
+      this.draft = { title: '', kind: 'advisory', category: 'feature', body: '' };
+      this.view = 'proposals';
+    },
+    pct(n, total) { return total ? Math.round(n / total * 100) : 0; },
+    toast(msg) {
+      this.toastMsg = msg;
+      clearTimeout(this._t);
+      this._t = setTimeout(() => this.toastMsg = '', 2500);
+    }
+  };
+}
+</script>
+
+<script>
+(async () => {
+  const badge = document.getElementById('rtMeBadge');
+  const text = document.getElementById('rtMeText');
+  if (!badge || !text) return;
+  const token = localStorage.getItem('tt_token') || localStorage.getItem('token') || localStorage.getItem('jwt');
+  const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+  try {
+    const res = await fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/rt/me', { headers });
+    const data = await res.json();
+    badge.classList.remove('hidden');
+    if (!data.authenticated) {
+      badge.className = 'hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-gray-500/10 border border-gray-500/30 rounded-full text-xs font-semibold text-gray-600 dark:text-gray-400 hover:border-orange-400 transition';
+      text.textContent = 'Log in to participate';
+      badge.href = '/login/';
+    } else if (data.eligible) {
+      badge.className = 'hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs font-semibold text-emerald-600 dark:text-emerald-400';
+      text.textContent = "You're eligible to vote";
+      badge.href = '#';
+    } else {
+      badge.className = 'hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-xs font-semibold text-yellow-600 dark:text-yellow-400';
+      if (data.reason === 'account_too_new') {
+        text.textContent = 'You can vote in ' + data.days_until_eligible + ' days';
+      } else {
+        text.textContent = 'Complete your profile to vote';
+      }
+      badge.href = '/profile.html';
+    }
+  } catch (e) {
+    badge.classList.remove('hidden');
+    text.textContent = 'Log in to participate';
+  }
+})();
+</script>
+</body>
+</html>

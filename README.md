@@ -129,3 +129,9 @@ git clone https://github.com/traffictorch/traffic-torch.git
 cd traffic-torch
 npm install
 npm run dev
+
+## Community Governance
+
+Traffic Torch has a **Round Table** — a decentralized governance system where every eligible entity has equal authority. Proposals, discussion, consensus voting, audit-chained results. No admins, no override.
+
+See /community/round-table/ on the live site or HANDOFF.md for technical details.
