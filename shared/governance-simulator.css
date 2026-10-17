@@ -241,3 +241,45 @@
   .gs-outcome-label { font-size: 1.25rem; }
   .gs-outcome-icon { font-size: 2.5rem; }
 }
+
+/* ============================================================ */
+/* Compact mode — for embedding inline on busy pages (home etc) */
+/* ============================================================ */
+.gs-compact { padding: 1rem; border-radius: 0.75rem; }
+.gs-compact .gs-header { margin-bottom: 0.5rem; }
+.gs-compact .gs-title { font-size: 1rem; }
+.gs-compact .gs-stage { min-height: 165px; padding: 0.75rem; margin-bottom: 0.5rem; }
+.gs-compact .gs-phase-heading { font-size: 0.65rem; margin-bottom: 0.5rem; }
+.gs-compact .gs-proposal-title { font-size: 0.9rem; }
+.gs-compact .gs-proposal-body { font-size: 0.72rem; line-height: 1.4; }
+.gs-compact .gs-comment { font-size: 0.72rem; padding: 0.4rem 0.6rem; }
+.gs-compact .gs-tally-legend { font-size: 0.7rem; gap: 0.6rem; }
+.gs-compact .gs-outcome-icon { font-size: 2rem; }
+.gs-compact .gs-outcome-label { font-size: 1.1rem; }
+.gs-compact .gs-outcome-reason { font-size: 0.72rem; line-height: 1.4; }
+.gs-compact .gs-outcome { padding: 0.75rem 0.5rem; }
+.gs-compact .gs-execution { padding: 0.6rem; gap: 0.6rem; }
+.gs-compact .gs-execution-icon { font-size: 1.25rem; }
+.gs-compact .gs-execution-desc { font-size: 0.75rem; }
+.gs-compact .gs-done { padding: 0.75rem 0.5rem; }
+.gs-compact .gs-done-icon { font-size: 1.75rem; margin-bottom: 0.25rem; }
+.gs-compact .gs-done-text { font-size: 0.75rem; margin-bottom: 0.5rem; }
+.gs-compact-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.gs-btn-compact {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.7rem;
+}
+.gs-see-full {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--gs-brand);
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+}
+.gs-see-full:hover { opacity: 0.8; }

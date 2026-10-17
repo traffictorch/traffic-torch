@@ -14,7 +14,8 @@
     brandColor: '#ff8a3d',
     scenarios: window.GOVERNANCE_SIM_SCENARIOS || [],
     defaultScenario: 'config-pass',
-    autoplay: true
+    autoplay: true,
+    compact: false
   };
 
   function esc(s) {
@@ -48,21 +49,31 @@
   }
 
   Simulator.prototype.buildUI = function () {
-    this.el.innerHTML =
-      '<div class="gs-root" style="--gs-brand:' + esc(this.config.brandColor) + '">' +
-        '<div class="gs-header">' +
-          '<div class="gs-title">' + esc(this.config.brand) + '</div>' +
-          '<div class="gs-subtitle">A 30-second walkthrough — no account, no vote, no commitment</div>' +
-        '</div>' +
-        '<div class="gs-tabs" id="gs-tabs"></div>' +
-        '<div class="gs-stage" id="gs-stage"></div>' +
-        '<div class="gs-progress"><div class="gs-progress-bar" id="gs-progress-bar"></div></div>' +
-        '<div class="gs-controls">' +
+    var compact = !!this.config.compact;
+    var rootCls = 'gs-root' + (compact ? ' gs-compact' : '');
+    var headerHtml = '<div class="gs-header">' +
+      '<div class="gs-title">' + esc(this.config.brand) + '</div>' +
+      (compact ? '' : '<div class="gs-subtitle">A 30-second walkthrough — no account, no vote, no commitment</div>') +
+      '</div>';
+    var tabsHtml = compact ? '' : '<div class="gs-tabs" id="gs-tabs"></div>';
+    var controlsHtml = compact
+      ? '<div class="gs-compact-footer">' +
+          '<button class="gs-btn gs-btn-compact" id="gs-play" type="button">⏸ Pause</button>' +
+          '<a class="gs-see-full" href="/simulator/">See all 5 scenarios →</a>' +
+        '</div>'
+      : '<div class="gs-controls">' +
           '<button class="gs-btn gs-btn-primary" id="gs-play" type="button">▶ Play</button>' +
           '<button class="gs-btn" id="gs-step" type="button">Step →</button>' +
           '<button class="gs-btn" id="gs-reset" type="button">↻ Reset</button>' +
           '<div class="gs-phase-label" id="gs-phase-label"></div>' +
-        '</div>' +
+        '</div>';
+    this.el.innerHTML =
+      '<div class="' + rootCls + '" style="--gs-brand:' + esc(this.config.brandColor) + '">' +
+        headerHtml +
+        tabsHtml +
+        '<div class="gs-stage" id="gs-stage"></div>' +
+        '<div class="gs-progress"><div class="gs-progress-bar" id="gs-progress-bar"></div></div>' +
+        controlsHtml +
         '<div class="gs-footer" id="gs-footer"></div>' +
       '</div>';
     this.renderTabs();
@@ -70,6 +81,7 @@
   };
 
   Simulator.prototype.renderTabs = function () {
+    if (this.config.compact) return;
     var tabs = this.el.querySelector('#gs-tabs');
     if (!tabs) return;
     var self = this;
@@ -86,9 +98,27 @@
 
   Simulator.prototype.bind = function () {
     var self = this;
-    this.el.querySelector('#gs-play').addEventListener('click', function () { self.toggle(); });
-    this.el.querySelector('#gs-step').addEventListener('click', function () { self.step(); });
-    this.el.querySelector('#gs-reset').addEventListener('click', function () { self.reset(); });
+    var play = this.el.querySelector('#gs-play');
+    if (play) play.addEventListener('click', function () { self.toggle(); });
+    var step = this.el.querySelector('#gs-step');
+    if (step) step.addEventListener('click', function () { self.step(); });
+    var reset = this.el.querySelector('#gs-reset');
+    if (reset) reset.addEventListener('click', function () { self.reset(); });
+
+    // Compact mode: only autoplay when in viewport
+    if (this.config.compact && 'IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            if (!self.playing) self.play();
+          } else {
+            if (self.playing) self.pause();
+          }
+        });
+      }, { threshold: 0.25 });
+      observer.observe(this.el);
+      this._observer = observer;
+    }
   };
 
   Simulator.prototype.loadScenario = function (id, opts) {
@@ -190,7 +220,7 @@
   Simulator.prototype.render = function () {
     this.renderStage();
     var lbl = this.el.querySelector('#gs-phase-label');
-    if (lbl) lbl.textContent = 'Phase: ' + this.phase;
+    if (lbl && !this.config.compact) lbl.textContent = 'Phase: ' + this.phase;
     this.updatePlayBtn();
   };
 
@@ -315,7 +345,7 @@
     if (btn) btn.textContent = this.playing ? '⏸ Pause' : '▶ Play';
   };
 
-  Simulator.prototype.destroy = function () { this.stop(); this.el.innerHTML = ''; };
+  Simulator.prototype.destroy = function () { this.stop(); if (this._observer) this._observer.disconnect(); this.el.innerHTML = ''; };
 
   // Public API
   window.GovernanceSimulator = {

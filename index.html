@@ -219,6 +219,8 @@
       }
     })();
   </script>
+  <link rel="preload" as="style" href="/shared/governance-simulator.css" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/shared/governance-simulator.css"></noscript>
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col" data-sidebar-start="collapsed">
@@ -336,6 +338,14 @@
                 <div id="chamber-out" class="chamber-out"></div>
               </section>
             </div>
+
+            <section id="governance-simulator" class="max-w-4xl mx-auto my-10 px-4" aria-labelledby="gov-sim-heading">
+  <div class="text-center mb-4">
+    <h2 id="gov-sim-heading" class="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">See how community governance works</h2>
+    <p class="text-sm text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">30 seconds. Five real scenarios. No account needed — watch a proposal move from idea to decision.</p>
+  </div>
+  <div id="home-sim" style="min-height:340px"></div>
+</section>
 
             <section id="share-module" class="share-module-host hidden max-w-4xl mx-auto px-2 py-6"></section>
           </section>
@@ -1258,5 +1268,27 @@
     <p><strong>Website:</strong> <a href="https://traffictorch.net/">Traffic Torch</a></p>
   </noscript>
 
+<script src="/shared/governance-scenarios.js"></script>
+<script src="/shared/governance-simulator.js"></script>
+<script>
+  (function () {
+    function boot() {
+      var el = document.getElementById('home-sim');
+      if (!el || !window.GovernanceSimulator) return;
+      window.GovernanceSimulator.init(el, {
+        brand: 'Governance in practice',
+        brandColor: '#ff8a3d',
+        compact: true,
+        autoplay: false,
+        defaultScenario: 'config-pass'
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+  })();
+</script>
 </body>
 </html>
