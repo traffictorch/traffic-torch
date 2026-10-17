@@ -253,8 +253,8 @@
                 <div class="flex items-start justify-between gap-4 flex-wrap">
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2 mb-2 flex-wrap">
-                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider" :class="phaseClass(p.phase)" x-text="p.phase"></span>
-                      <span class="text-xs text-gray-500 dark:text-gray-400" x-text="p.kind"></span>
+                      <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider cursor-help" :class="phaseClass(p.phase)" :title="phaseTooltip(p.phase)" x-text="p.phase"></span>
+                      <span class="text-xs text-gray-500 dark:text-gray-400 cursor-help border-b border-dotted border-gray-400/40" :title="kindTooltip(p.kind)" x-text="p.kind"></span>
                       <span class="text-xs text-gray-400">·</span>
                       <span class="text-xs text-gray-500 dark:text-gray-400" x-text="p.category"></span>
                       <span class="text-xs text-gray-400">·</span>
@@ -283,9 +283,12 @@
 
           <div x-show="!loading && !loadError && filteredProposals().length === 0" class="text-center py-16">
             <div class="text-5xl mb-4">🗳️</div>
-            <h3 class="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100">No proposals in this phase</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Try a different filter, or draft a new proposal.</p>
-            <button @click="switchTab('new')" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm transition">Draft a proposal →</button>
+            <h3 class="text-lg font-bold mb-2 text-gray-900 dark:text-gray-100" x-text="emptyStateText().title"></h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 max-w-md mx-auto" x-text="emptyStateText().body"></p>
+            <div class="flex items-center justify-center gap-2 flex-wrap">
+              <button @click="switchTab('new')" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm transition">Draft a proposal →</button>
+              <button x-show="filterPhase !== 'all'" @click="clearFilter()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/60 dark:bg-black/40 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 font-semibold text-sm transition hover:border-orange-400">Clear filter</button>
+            </div>
           </div>
         </div>
 
@@ -315,18 +318,19 @@
                 <div class="bg-red-500 transition-all" :style="'width:' + pct(current?.tallies?.no ?? 0, current?.voteCount ?? 0) + '%'"></div>
                 <div class="bg-gray-400 transition-all" :style="'width:' + pct(current?.tallies?.abstain ?? 0, current?.voteCount ?? 0) + '%'"></div>
               </div>
-              <div class="flex items-center justify-between mb-4 text-sm flex-wrap gap-2">
-                <div class="flex gap-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 text-sm gap-2">
+                <div class="flex gap-4 flex-wrap">
                   <span class="text-emerald-600 dark:text-emerald-400">✓ <strong x-text="current?.tallies?.yes ?? 0"></strong> Yes</span>
                   <span class="text-red-600 dark:text-red-400">✗ <strong x-text="current?.tallies?.no ?? 0"></strong> No</span>
                   <span class="text-gray-500 dark:text-gray-400">◯ <strong x-text="current?.tallies?.abstain ?? 0"></strong> Abstain</span>
                 </div>
                 <div class="text-xs text-gray-500 dark:text-gray-400">
                   <strong x-text="current?.voteCount ?? 0"></strong> of <strong x-text="current?.eligible ?? 0"></strong> eligible
-                  · quorum <span x-text="Math.round((current?.quorum_pct ?? 0.2) * 100) + '%'"></span>
-                  · pass <span x-text="Math.round((current?.threshold_pct ?? 0.66) * 100) + '%'"></span>
+                  · <span class="cursor-help border-b border-dotted border-gray-400/40" title="Minimum turnout required for the vote to count">quorum <span x-text="Math.round((current?.quorum_pct ?? 0.2) * 100) + '%'"></span></span>
+                  · <span class="cursor-help border-b border-dotted border-gray-400/40" title="Minimum YES share to pass. Must also beat the block threshold.">pass <span x-text="Math.round((current?.threshold_pct ?? 0.66) * 100) + '%'"></span></span>
                 </div>
               </div>
+              <p class="text-xs text-center text-red-500/90 dark:text-red-400/90 mb-3">⚠ Block wins: 25%+ NO fails the proposal even at 66%+ YES</p>
               <div class="flex flex-wrap gap-2 mb-3">
                 <button @click="castVote('yes')" :class="current?.myVote === 'yes' ? 'ring-2 ring-emerald-500' : ''" class="flex-1 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition min-w-[100px]">Vote Yes</button>
                 <button @click="castVote('no')" :class="current?.myVote === 'no' ? 'ring-2 ring-red-500' : ''" class="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition min-w-[100px]">Vote No</button>
@@ -717,6 +721,39 @@ function roundTable() {
       if (id === 'bench') this.loadBench();
       if (id === 'executions') this.loadExecutions();
       if (id === 'audit') this.loadAudit();
+    },
+
+    kindTooltip(kind) {
+      const map = {
+        meta: 'Rule change — requires 75% YES and a 72h delay before applying.',
+        config: 'Setting change — applies immediately when it passes.',
+        advisory: 'Signal only — records opinion, no automatic change.',
+        code: 'Code proposal — requires a linked PR and human review before merge.'
+      };
+      return map[kind] || 'Proposal kind';
+    },
+
+    phaseTooltip(phase) {
+      const map = {
+        draft: 'Comment period ongoing — voting not open yet',
+        vote: 'Voting is live — cast or change your vote until close',
+        passed: 'Passed — the effect is on record',
+        rejected: 'Rejected by the community',
+        withdrawn: 'Withdrawn by the author'
+      };
+      return map[phase] || phase;
+    },
+
+    clearFilter() { this.filterPhase = 'all'; },
+
+    emptyStateText() {
+      const f = this.filterPhase;
+      if (f === 'all') return { title: 'The Round Table is waiting for its first proposal', body: 'Be the first to shape the direction. Draft an advisory, config, or meta proposal and start the discussion.' };
+      if (f === 'draft') return { title: 'No drafts in progress', body: 'Drafts are proposals still gathering comments before a vote opens.' };
+      if (f === 'vote') return { title: 'No live votes right now', body: 'When a proposal opens for voting, it will appear here.' };
+      if (f === 'passed') return { title: 'No passed proposals yet', body: 'The first passed proposal will appear here with its final tally.' };
+      if (f === 'rejected') return { title: 'No rejected proposals', body: 'Rejected proposals are kept on record permanently.' };
+      return { title: 'No proposals in this phase', body: 'Try a different filter.' };
     },
 
     filteredProposals() {
