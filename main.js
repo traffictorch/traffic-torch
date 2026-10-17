@@ -829,7 +829,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================================
 document.addEventListener('DOMContentLoaded', () => {
   // Desktop menu
-  fetch('/desktop-menu.html')
+  fetch('/desktop-menu.html?v=2.0')
     .then(response => {
       if (!response.ok) throw new Error('Desktop menu fetch failed: ' + response.status);
       return response.text();
