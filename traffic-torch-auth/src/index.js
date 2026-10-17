@@ -1164,7 +1164,7 @@ async function handleSitemapRoutes(request, env, url) {
         { loc: '/',                                  priority: '1.0', changefreq: 'weekly' },
         { loc: '/community/',                        priority: '0.9', changefreq: 'daily' },
         { loc: '/leader-board/',                     priority: '0.9', changefreq: 'daily' },
-        { loc: '/news/',                             priority: '0.8', changefreq: 'weekly' },
+        { loc: '/blog/',                             priority: '0.8', changefreq: 'weekly' },
         { loc: '/ai-ux-seo-help-guides/',            priority: '0.8', changefreq: 'weekly' },
         { loc: '/ai-seo-ux-tools/',                  priority: '0.8', changefreq: 'weekly' },
         { loc: '/apps/',                             priority: '0.6', changefreq: 'monthly' },

@@ -147,7 +147,7 @@
       }
     }));
     list.appendChild(item('📚', 'Help Guides', { href: '/ai-ux-seo-help-guides/' }));
-    list.appendChild(item('📰', 'News & Blog', { href: '/news/' }));
+    list.appendChild(item('📰', 'News & Blog', { href: '/blog/' }));
     list.appendChild(item('🏆', 'Leaderboard', { href: '/leader-board/' }));
     list.appendChild(item('💎', 'Go Pro',      { href: '/pro/' }));
     list.appendChild(item('👤', 'Profile',     { href: '/profile.html' }));

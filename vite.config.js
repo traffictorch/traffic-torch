@@ -29,7 +29,7 @@ export default defineConfig({
         'pro': resolve(__dirname, 'pro/index.html'),
         'privacy': resolve(__dirname, 'privacy/index.html'),
         'terms': resolve(__dirname, 'terms/index.html'),
-        'news': resolve(__dirname, 'news/index.html'),
+        'blog': resolve(__dirname, 'blog/index.html'),
         '404': resolve(__dirname, '404.html')
         // Blog posts are static → handled by Cloudflare Pages copy step (no need in input)
       }

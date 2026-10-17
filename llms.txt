@@ -26,7 +26,7 @@ Traffic Torch is a modern, all-in-one SEO + UX intelligence platform built with 
 - [AI SEO & UX Tools Hub](https://traffictorch.net/ai-seo-ux-tools/)
 - [About Us](https://traffictorch.net/about/)
 - [Contact](https://traffictorch.net/contact/)
-- [News](https://traffictorch.net/news/)
+- [News](https://traffictorch.net/blog/)
 - [Community](https://traffictorch.net/community/)
 - [Help Guides Hub](https://traffictorch.net/ai-ux-seo-help-guides/)
 - [Traffic Torch Whitepaper](https://traffictorch.net/research/traffic-torch-whitepaper/)

@@ -4,7 +4,9 @@
 /blog/posts/ubi-is-coming.html /blog/posts/ubi-is-coming/ 301
 /blog/posts/ai-content-detection-guide.html /blog/posts/ai-content-detection-guide/ 301
 /blog/posts/ai-voice-search-help-guide.html /blog/posts/ai-voice-search-help-guide/ 301
-/news.html /news/ 301
+/news.html /blog/ 301
+/news/ /blog/ 301
+/news/* /blog/:splat 301
 /state-of-seo-geo-2026.html /blog/posts/state-of-seo-geo-2026/ 301
 /seo-entity-extractor-tool// /seo-entity-extractor-tool/ 301
 
