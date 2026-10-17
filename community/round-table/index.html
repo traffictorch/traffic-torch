@@ -149,7 +149,7 @@
             The Round Table
           </h1>
           <p class="text-lg md:text-xl max-w-3xl mx-auto mb-5 text-gray-700 dark:text-gray-300 leading-relaxed">
-            Every entity equal. No admins. Every decision on the record, tamper-evident, and reversible.
+            Every entity equal. No admins inside the system. Every decision on the record, tamper-evident, and reversible.
           </p>
           <div class="flex items-center justify-center gap-3 flex-wrap text-sm mb-5">
             <span x-show="me.loaded && me.authenticated && me.eligible" x-cloak class="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full font-semibold text-emerald-600 dark:text-emerald-400">
@@ -200,7 +200,7 @@
             <div class="p-5 bg-white/60 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-2xl">
               <div class="text-3xl mb-2">⚖️</div>
               <h3 class="font-bold mb-1 text-sm">3. Vote</h3>
-              <p class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">Quorum 20%. Pass 66%. Block 25% NO. Objector's Bench can pause 72h.</p>
+              <p class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">Quorum 20%. <strong>Block beats pass:</strong> 25% NO stops a vote even at 66% YES. Meta changes need 75% YES.</p>
             </div>
             <div class="p-5 bg-white/60 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-2xl">
               <div class="text-3xl mb-2">⚡</div>
@@ -538,7 +538,7 @@
                 <span>Who can vote?</span>
                 <span class="text-orange-500 group-open:rotate-180 transition-transform text-lg">▼</span>
               </summary>
-              <p class="px-5 pb-4 text-sm text-gray-600 dark:text-gray-400">Any entity whose account is at least 7 days old and who has either a verified profile or prior community activity. New accounts become eligible automatically after aging up.</p>
+              <p class="px-5 pb-4 text-sm text-gray-600 dark:text-gray-400">An <strong>entity</strong> is a human-operated account that is: (1) at least 7 days old, (2) has prior community activity (a comment or a vote), and (3) has a verified profile or public profile. New accounts become eligible automatically after aging up. <strong>Bots and AI agents are not entities</strong> — if the community ever wants to authorize them, that requires a Meta proposal by vote.</p>
             </details>
             <details class="group bg-white/60 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
               <summary class="flex justify-between items-center gap-3 cursor-pointer px-5 py-4 font-semibold text-sm hover:text-orange-500 transition list-none">
@@ -566,7 +566,8 @@
                 <span>What stops a hostile takeover?</span>
                 <span class="text-orange-500 group-open:rotate-180 transition-transform text-lg">▼</span>
               </summary>
-              <p class="px-5 pb-4 text-sm text-gray-600 dark:text-gray-400">Equal authority (no admin to hijack). Block threshold at 25% NO (protects minority). Eligibility snapshot at vote-open (no last-minute floods). Signed resolutions and a public audit chain that makes any tampering visible to everyone.</p>
+              <p class="px-5 pb-4 text-sm text-gray-600 dark:text-gray-400">Equal authority — there is no admin inside the system to hijack. The block threshold at 25% NO protects minority positions even when the majority is large. Eligibility is snapshotted at vote-open, so nobody can flood the electorate at the last minute. And the public audit chain makes any tampering visible to everyone.</p>
+              <p class="px-5 pb-4 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-white/5 pt-3 mt-2"><strong>Honest disclosure:</strong> there are no admins inside the Round Table, but the site maintainer holds infrastructure authority outside it — Cloudflare deployments, database access, and PR merges. That authority is disclosed, not hidden. See the <a href="/community/round-table/founding/" class="text-orange-500 hover:underline">founding document</a> for the exact list of what the maintainer can and cannot do.</p>
             </details>
             <details class="group bg-white/60 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
               <summary class="flex justify-between items-center gap-3 cursor-pointer px-5 py-4 font-semibold text-sm hover:text-orange-500 transition list-none">
@@ -574,6 +575,32 @@
                 <span class="text-orange-500 group-open:rotate-180 transition-transform text-lg">▼</span>
               </summary>
               <p class="px-5 pb-4 text-sm text-gray-600 dark:text-gray-400">The 7 founding proposals were seeded by the maintainer on 17 October 2026 as the bootstrap set. Details — including the exact proposal bodies and reasoning — are documented in the <a href="/community/round-table/founding/" class="text-orange-500 hover:underline">founding document</a>. Any entity can vote against them.</p>
+            </details>
+            <details class="group bg-white/60 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
+              <summary class="flex justify-between items-center gap-3 cursor-pointer px-5 py-4 font-semibold text-sm hover:text-orange-500 transition list-none">
+                <span>What are the exact voting rules?</span>
+                <span class="text-orange-500 group-open:rotate-180 transition-transform text-lg">▼</span>
+              </summary>
+              <div class="px-5 pb-4 text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                <p><strong>Quorum:</strong> at least 20% of eligible entities must vote, with a floor of 10 votes. Below that, no quorum — no result.</p>
+                <p><strong>Block beats pass:</strong> if 25% or more of voters say NO, the proposal fails — even at 66% YES. The effective pass bar is therefore 75% YES.</p>
+                <p><strong>Pass threshold:</strong> 66% YES for ordinary proposals, <strong>75% YES for Meta proposals</strong> (which change the rules).</p>
+                <p><strong>Meta apply delay:</strong> if a Meta proposal passes and includes a config directive (like changing thresholds), the change is queued and applied 72 hours later — giving the community time to trigger a reconsider before it lands.</p>
+              </div>
+            </details>
+            <details class="group bg-white/60 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
+              <summary class="flex justify-between items-center gap-3 cursor-pointer px-5 py-4 font-semibold text-sm hover:text-orange-500 transition list-none">
+                <span>Are votes private?</span>
+                <span class="text-orange-500 group-open:rotate-180 transition-transform text-lg">▼</span>
+              </summary>
+              <p class="px-5 pb-4 text-sm text-gray-600 dark:text-gray-400">Votes are <strong>public</strong> — your yes, no, or abstain is visible to everyone on the proposal page, and the tally is live. There is no anonymous voting mode. This is a deliberate trade-off: public votes make the outcome auditable and honest, at the cost of potentially creating social pressure. Comments and reasoning are optional and encouraged.</p>
+            </details>
+            <details class="group bg-white/60 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden">
+              <summary class="flex justify-between items-center gap-3 cursor-pointer px-5 py-4 font-semibold text-sm hover:text-orange-500 transition list-none">
+                <span>What happens if I don't vote?</span>
+                <span class="text-orange-500 group-open:rotate-180 transition-transform text-lg">▼</span>
+              </summary>
+              <p class="px-5 pb-4 text-sm text-gray-600 dark:text-gray-400">Nothing. Abstaining by not voting is different from voting "abstain". Not voting reduces the total votes counted and can contribute to no-quorum. Voting "abstain" counts toward quorum but not toward the pass threshold. If you don't care about a proposal, you can safely abstain — either by clicking Abstain or by ignoring it entirely.</p>
             </details>
           </div>
         </section>

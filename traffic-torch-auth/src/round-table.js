@@ -137,9 +137,16 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
     const eligible = await env.MY_BINDING.prepare(
       "SELECT COUNT(*) AS n FROM rt_entities WHERE status = 'active'"
     ).first();
+    let effectiveThreshold = prop.threshold_pct;
+    if (prop.kind === 'meta') {
+      const cfgRow = await env.MY_BINDING.prepare(
+        "SELECT value FROM rt_config WHERE key = 'default_threshold_pct_meta'"
+      ).first();
+      effectiveThreshold = cfgRow ? parseFloat(cfgRow.value) : 0.75;
+    }
     await env.MY_BINDING.prepare(
-      "UPDATE rt_proposals SET phase='vote', vote_starts_at=?, vote_ends_at=?, eligible_count=? WHERE id=?"
-    ).bind(now, voteEnd, eligible?.n || 0, prop.id).run();
+      "UPDATE rt_proposals SET phase='vote', vote_starts_at=?, vote_ends_at=?, eligible_count=?, threshold_pct=? WHERE id=?"
+    ).bind(now, voteEnd, eligible?.n || 0, effectiveThreshold, prop.id).run();
     return corsResponse(JSON.stringify({ ok: true, vote_starts_at: now, vote_ends_at: voteEnd }));
   }
 
@@ -219,22 +226,34 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
     await env.MY_BINDING.prepare(
       "UPDATE rt_proposals SET phase = ?, resolution_id = ? WHERE id = ?"
     ).bind(newPhase, resId, prop.id).run();
-    // ---- Session 8A: apply config on pass ----
-    if (outcome === 'passed' && prop.kind === 'config') {
+    // ---- Session 8A + Tier 2: apply config on pass (delayed 72h for meta) ----
+    if (outcome === 'passed' && (prop.kind === 'config' || prop.kind === 'meta')) {
       const directives = parseConfigDirectives(prop.body_md || '');
-      const appliedKeys = [];
-      for (const [k, v] of Object.entries(directives)) {
-        if (!/^default_(quorum_pct|threshold_pct|block_pct)$/.test(k)) continue;
-        await env.MY_BINDING.prepare(
-          'INSERT OR REPLACE INTO rt_config (key, value, set_by_resolution_id, set_at) VALUES (?, ?, ?, ?)'
-        ).bind(k, String(v), resId, Math.floor(Date.now()/1000)).run();
-        appliedKeys.push(k + '=' + v);
-      }
       const execId = 'exec_' + Date.now();
-      await env.MY_BINDING.prepare(
-        'INSERT INTO rt_executions (id, resolution_id, target, status, payload, created_at, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
-      ).bind(execId, resId, 'config', appliedKeys.length ? 'succeeded' : 'skipped',
-             JSON.stringify(directives), Math.floor(Date.now()/1000), Math.floor(Date.now()/1000)).run();
+      const nowTs = Math.floor(Date.now()/1000);
+
+      if (prop.kind === 'meta') {
+        // Meta: queue for delayed apply (72h). Reconsider can fire before this lands.
+        await env.MY_BINDING.prepare(
+          'INSERT INTO rt_executions (id, resolution_id, target, status, payload, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+        ).bind(execId, resId, 'config', 'pending_delay',
+               JSON.stringify({ directives, apply_at: nowTs + 259200 }),
+               nowTs).run();
+      } else {
+        // Config: apply immediately (existing behavior)
+        const appliedKeys = [];
+        for (const [k, v] of Object.entries(directives)) {
+          if (!/^default_(quorum_pct|threshold_pct|block_pct|threshold_pct_meta)$/.test(k)) continue;
+          await env.MY_BINDING.prepare(
+            'INSERT OR REPLACE INTO rt_config (key, value, set_by_resolution_id, set_at) VALUES (?, ?, ?, ?)'
+          ).bind(k, String(v), resId, nowTs).run();
+          appliedKeys.push(k + '=' + v);
+        }
+        await env.MY_BINDING.prepare(
+          'INSERT INTO rt_executions (id, resolution_id, target, status, payload, created_at, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+        ).bind(execId, resId, 'config', appliedKeys.length ? 'succeeded' : 'skipped',
+               JSON.stringify(directives), nowTs, nowTs).run();
+      }
     }
     // ---- Session 8B: create pending_merge execution for code proposals ----
     if (outcome === 'passed' && prop.kind === 'code') {
@@ -436,6 +455,10 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
       'SELECT id FROM rt_objections WHERE proposal_id = ? AND expires_at > ?'
     ).bind(prop.id, now).first();
     if (existing) return corsResponse(JSON.stringify({ error: 'Already has an active objection' }), 400);
+    const recent = await env.MY_BINDING.prepare(
+      'SELECT id FROM rt_objections WHERE proposal_id = ? AND bench_entity = ? AND created_at > ?'
+    ).bind(prop.id, entId, now - 30 * 86400).first();
+    if (recent) return corsResponse(JSON.stringify({ error: 'You have filed a recent objection on this proposal (30-day cooldown)' }), 429);
     const objId = 'obj_' + Date.now();
     const expiresAt = now + 72 * 3600;
     await env.MY_BINDING.prepare(
@@ -561,6 +584,26 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
 
   // ---- Session 8A: read config ----
   if (path === '/api/rt/config' && method === 'GET') {
+    const nowTs = Math.floor(Date.now()/1000);
+    const due = await env.MY_BINDING.prepare(
+      "SELECT id, resolution_id, payload FROM rt_executions WHERE status = 'pending_delay'"
+    ).all();
+    for (const ex of (due.results || [])) {
+      try {
+        const payload = JSON.parse(ex.payload || '{}');
+        if ((payload.apply_at || 0) > nowTs) continue;
+        const directives = payload.directives || {};
+        for (const [k, v] of Object.entries(directives)) {
+          if (!/^default_(quorum_pct|threshold_pct|block_pct|threshold_pct_meta)$/.test(k)) continue;
+          await env.MY_BINDING.prepare(
+            'INSERT OR REPLACE INTO rt_config (key, value, set_by_resolution_id, set_at) VALUES (?, ?, ?, ?)'
+          ).bind(k, String(v), ex.resolution_id, nowTs).run();
+        }
+        await env.MY_BINDING.prepare(
+          "UPDATE rt_executions SET status = 'succeeded', completed_at = ? WHERE id = ?"
+        ).bind(nowTs, ex.id).run();
+      } catch (e) { /* skip malformed */ }
+    }
     const rows = await env.MY_BINDING.prepare('SELECT key, value, set_at FROM rt_config ORDER BY key').all();
     return corsResponse(JSON.stringify({ config: rows.results || [] }));
   }
