@@ -53,17 +53,18 @@
 
     <div class="flex-1 flex flex-col">
       <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-6 py-4 flex items-center">
           <a href="/" class="flex items-center gap-4 md:hidden">
             <img src="/logo-100w.webp" alt="Traffic Torch" class="w-10 rounded-xl" width="40" height="40" loading="eager">
             <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
           </a>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 ml-auto">
             <a id="rtMeBadge" href="/login/" class="hidden md:inline-flex items-center gap-2 px-3 py-1.5 bg-gray-500/10 border border-gray-500/30 rounded-full text-xs font-semibold text-gray-600 dark:text-gray-400 hover:border-orange-400 transition">
               <span class="w-2 h-2 rounded-full bg-gray-500"></span> <span id="rtMeText">Checking…</span>
             </a>
-            <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
             <button id="menuToggle" class="md:hidden text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition" aria-label="Open menu">☰</button>
+            <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition" aria-label="Toggle sidebar">☰</button>
+            <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">🌙</button>
           </div>
         </div>
         <div id="mobileMenu" class="hidden md:hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-md">
@@ -436,14 +437,7 @@
             </div>
           </div>
         </div>
-
-        <footer class="mt-12 pt-6 border-t border-gray-200 dark:border-white/10 text-center text-xs text-gray-500 dark:text-gray-400">
-          <a href="/community/" class="text-orange-500 hover:underline">← Back to Community</a>
-          <span class="mx-2">·</span>
-          <span>Demo mode — all data is fake. Real system coming soon.</span>
-        </footer>
-
-      </main>
+</main>
     </div>
   </div>
 
@@ -764,6 +758,91 @@ function roundTable() {
   } else {
     init();
   }
+})();
+</script>
+<div id="footer-placeholder"></div>
+<script>
+(function(){
+  function runScripts(root){
+    Array.from(root.querySelectorAll('script')).forEach(function(old){
+      var fresh = document.createElement('script');
+      if (old.src) fresh.src = old.src;
+      else fresh.textContent = old.textContent;
+      old.parentNode.replaceChild(fresh, old);
+    });
+  }
+  function load(id, url){
+    var el = document.getElementById(id);
+    if (!el || el.dataset.loaded) return;
+    if (el.children.length > 0) { el.dataset.loaded = '1'; el.classList.remove('opacity-0'); return; }
+    fetch(url).then(function(r){ return r.text(); }).then(function(html){
+      el.innerHTML = html;
+      el.dataset.loaded = '1';
+      el.classList.remove('opacity-0');
+      runScripts(el);
+    }).catch(function(){});
+  }
+  function boot(){
+    load('desktop-menu-placeholder', '/desktop-menu.html');
+    load('mobile-menu-placeholder', '/mobile-menu.html');
+    load('footer-placeholder', '/footer.html');
+
+    var tt = document.getElementById('themeToggle');
+    if (tt && !tt.dataset.wired) {
+      tt.dataset.wired = '1';
+      var sync = function(){ tt.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙'; };
+      sync();
+      tt.addEventListener('click', function(){
+        var dark = document.documentElement.classList.toggle('dark');
+        try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch(e){}
+        sync();
+      });
+    }
+
+    var sb = document.getElementById('sidebarCollapse');
+    var aside = document.getElementById('desktopSidebar');
+    if (sb && aside && !sb.dataset.wired) {
+      sb.dataset.wired = '1';
+      sb.addEventListener('click', function(){
+        aside.classList.toggle('w-64');
+        aside.classList.toggle('w-20');
+      });
+    }
+
+    var dt = document.getElementById('desktopMenuToggle');
+    if (dt && aside && !dt.dataset.wired) {
+      dt.dataset.wired = '1';
+      dt.addEventListener('click', function(){
+        aside.classList.toggle('hidden');
+      });
+    }
+
+    var mo = document.getElementById('menuToggle');
+    var mm = document.getElementById('mobileMenu');
+    if (mo && mm && !mo.dataset.wired) {
+      mo.dataset.wired = '1';
+      mo.addEventListener('click', function(){
+        mm.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+    }
+    var mc = document.getElementById('close-mobile-menu');
+    if (mc && mm && !mc.dataset.wired) {
+      mc.dataset.wired = '1';
+      mc.addEventListener('click', function(){
+        mm.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+    }
+    if (mm && !mm.dataset.wired) {
+      mm.dataset.wired = '1';
+      mm.addEventListener('click', function(e){
+        if (e.target === mm) { mm.classList.add('hidden'); document.body.style.overflow = ''; }
+      });
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();
 </script>
 </body>
