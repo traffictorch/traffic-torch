@@ -1,0 +1,43 @@
+name: Audit Chain Snapshot
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # Daily at 00:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch audit chain head
+        id: fetch
+        run: |
+          set -e
+          DATE=$(date -u +%Y-%m-%d)
+          TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          BUST=$(date +%s)
+          if ! RESPONSE=$(curl -sf "https://traffic-torch-auth.traffictorch.workers.dev/api/rt/audit/head?b=$BUST"); then
+            echo "::error::Failed to fetch audit head"
+            exit 1
+          fi
+          mkdir -p audit-history
+          echo "$RESPONSE" | jq --arg ts "$TS" '. + {snapshot_at: $ts}' > "audit-history/$DATE.json"
+          cat "audit-history/$DATE.json"
+          echo "date=$DATE" >> $GITHUB_OUTPUT
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "audit-bot"
+          git config user.email "audit-bot@users.noreply.github.com"
+          if [ -z "$(git status --porcelain audit-history/)" ]; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git add audit-history/
+          git commit -m "Audit snapshot ${{ steps.fetch.outputs.date }}"
+          git push

@@ -179,11 +179,13 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
       await env.MY_BINDING.prepare(
         `UPDATE rt_proposals SET ${decCol} = MAX(0, ${decCol} - 1), ${incCol} = ${incCol} + 1 WHERE id = ?`
       ).bind(prop.id).run();
+      await writeAudit(env, 'rt_votes', 'update', { proposal_id: prop.id, entity_id: entityId, from: existing.choice, to: choice });
     } else {
       await env.MY_BINDING.prepare('INSERT INTO rt_votes (proposal_id, entity_id, choice, cast_at) VALUES (?, ?, ?, ?)').bind(prop.id, entityId, choice, now).run();
       await env.MY_BINDING.prepare(
         `UPDATE rt_proposals SET tally_${choice} = tally_${choice} + 1 WHERE id = ?`
       ).bind(prop.id).run();
+      await writeAudit(env, 'rt_votes', 'insert', { proposal_id: prop.id, entity_id: entityId, choice });
     }
     return corsResponse(JSON.stringify({ ok: true, choice }));
   }
@@ -307,6 +309,7 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
     await env.MY_BINDING.prepare(
       'INSERT INTO rt_comments (id, proposal_id, entity_id, parent_id, body_md, created_at) VALUES (?, ?, ?, ?, ?, ?)'
     ).bind(id, prop.id, entityId, body.parent_id || null, text, Math.floor(Date.now()/1000)).run();
+    await writeAudit(env, 'rt_comments', 'insert', { id, proposal_id: prop.id, entity_id: entityId });
     return corsResponse(JSON.stringify({ ok: true, id }));
   }
 
@@ -366,6 +369,7 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
     await env.MY_BINDING.prepare(
       'INSERT INTO rt_proposals (id, author_entity_id, slug, title, body_md, kind, category, phase, created_at, quorum_pct, threshold_pct, block_pct) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
     ).bind(id, entityId, slug, title, bodyMd, kind, category, 'draft', now, q, t, b).run();
+    await writeAudit(env, 'rt_proposals', 'insert', { id, slug, author: entityId, kind, category });
     return corsResponse(JSON.stringify({ ok: true, id, slug }));
   }
 
@@ -468,6 +472,39 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
   }
 
   // ---- Session 6: audit verify ----
+
+  if (pathParts.length === 4 && pathParts[2] === 'audit' && pathParts[3] === 'head' && method === 'GET') {
+    try {
+      const lastRow = await env.MY_BINDING.prepare(
+        'SELECT row_id, this_hash, created_at FROM rt_audit_chain ORDER BY created_at DESC LIMIT 1'
+      ).first();
+      const count = await env.MY_BINDING.prepare(
+        'SELECT COUNT(*) AS n FROM rt_audit_chain'
+      ).first();
+      const allRows = await env.MY_BINDING.prepare(
+        'SELECT row_id, table_name, action, payload, prev_hash, this_hash FROM rt_audit_chain ORDER BY created_at ASC'
+      ).all();
+      let intact = true;
+      let prev = 'GENESIS';
+      for (const row of (allRows.results || [])) {
+        const expect = await sha256Hex(prev + '|' + row.table_name + '|' + row.action + '|' + row.payload);
+        if (expect !== row.this_hash || row.prev_hash !== prev) { intact = false; break; }
+        prev = row.this_hash;
+      }
+      const res = corsResponse(JSON.stringify({
+        head_hash: lastRow?.this_hash || null,
+        last_row_id: lastRow?.row_id || null,
+        chain_count: count?.n || 0,
+        last_timestamp: lastRow?.created_at || null,
+        verified_intact: intact,
+        snapshot_at: Math.floor(Date.now() / 1000)
+      }));
+      res.headers.set('Cache-Control', 'no-store');
+      return res;
+    } catch (e) {
+      return corsResponse(JSON.stringify({ error: e.message }), 500);
+    }
+  }
 
   if (pathParts.length === 4 && pathParts[2] === 'audit' && pathParts[3] === 'verify' && method === 'GET') {
     try {
