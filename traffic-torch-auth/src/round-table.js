@@ -11,9 +11,10 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
   if (path === '/api/rt/proposals' && method === 'GET') {
     try {
       const rows = await env.MY_BINDING.prepare(
-        `SELECT id, slug, title, kind, category, phase, created_at,
+        `SELECT id, slug, title, body_md, kind, category, phase, created_at,
                 vote_starts_at, vote_ends_at, quorum_pct, threshold_pct,
-                block_pct, eligible_count
+                block_pct, eligible_count, author_entity_id,
+                tally_yes, tally_no, tally_abstain, resolution_id
          FROM rt_proposals ORDER BY created_at DESC LIMIT 50`
       ).all();
       const listRes = corsResponse(JSON.stringify({ proposals: rows.results || [] }));
@@ -29,8 +30,8 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
     const slug = m[1];
     try {
       const p = await env.MY_BINDING.prepare(
-        `SELECT * FROM rt_proposals WHERE slug = ?`
-      ).bind(slug).first();
+        `SELECT * FROM rt_proposals WHERE slug = ? OR id = ? LIMIT 1`
+      ).bind(slug, slug).first();
       if (!p) return corsResponse(JSON.stringify({ error: 'Not found' }), 404);
 
       const tally = {
@@ -446,6 +447,7 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
   // ---- Session 6: audit verify ----
 
   if (pathParts.length === 4 && pathParts[2] === 'audit' && pathParts[3] === 'verify' && method === 'GET') {
+    try {
     const rows = await env.MY_BINDING.prepare(
       'SELECT row_id, table_name, action, payload, prev_hash, this_hash FROM rt_audit_chain ORDER BY created_at ASC'
     ).all();
@@ -468,12 +470,22 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
       const h = await sha256Hex(JSON.stringify(vs.results || []));
       if (h !== r.votes_hash) voteMismatches.push(r.id);
     }
-    return corsResponse(JSON.stringify({
+    const res = corsResponse(JSON.stringify({
       intact: intact && voteMismatches.length === 0,
       chain_count: (rows.results || []).length,
       broken_at: brokenAt,
       votes_tampered: voteMismatches
     }));
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
+    } catch (e) {
+      const res = corsResponse(JSON.stringify({
+        intact: false, chain_count: 0, broken_at: null,
+        votes_tampered: [], error: e.message
+      }), 500);
+      res.headers.set('Cache-Control', 'no-store');
+      return res;
+    }
   }
 
   // ---- Session 7: reconsider window ----
