@@ -1,0 +1,243 @@
+/* Governance Simulator — scoped, no dependencies, dark-mode aware */
+
+.gs-root {
+  --gs-brand: #ff8a3d;
+  --gs-bg: rgba(255,255,255,0.6);
+  --gs-border: rgba(0,0,0,0.1);
+  --gs-text: #1f2937;
+  --gs-muted: #6b7280;
+  --gs-pass: #10b981;
+  --gs-fail: #ef4444;
+  --gs-block: #f59e0b;
+  --gs-abstain: #9ca3af;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--gs-text);
+  background: var(--gs-bg);
+  border: 1px solid var(--gs-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  max-width: 100%;
+  backdrop-filter: blur(12px);
+}
+.dark .gs-root {
+  --gs-bg: rgba(0,0,0,0.4);
+  --gs-border: rgba(255,255,255,0.1);
+  --gs-text: #e5e7eb;
+  --gs-muted: #9ca3af;
+}
+.gs-header { margin-bottom: 1rem; }
+.gs-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, var(--gs-brand), #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.25rem;
+}
+.gs-subtitle { font-size: 0.8rem; color: var(--gs-muted); }
+
+.gs-tabs {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--gs-border);
+  scrollbar-width: thin;
+}
+.gs-tab {
+  flex-shrink: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--gs-border);
+  background: transparent;
+  color: var(--gs-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.gs-tab:hover { border-color: var(--gs-brand); color: var(--gs-text); }
+.gs-tab-active {
+  background: var(--gs-brand);
+  color: #fff;
+  border-color: var(--gs-brand);
+}
+
+.gs-stage {
+  min-height: 220px;
+  padding: 1.25rem;
+  background: rgba(255,255,255,0.4);
+  border: 1px solid var(--gs-border);
+  border-radius: 0.75rem;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+.dark .gs-stage { background: rgba(0,0,0,0.3); }
+
+.gs-phase-heading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gs-muted);
+  margin-bottom: 0.75rem;
+}
+
+.gs-phase { animation: gs-fade 0.4s ease; }
+@keyframes gs-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Proposing */
+.gs-proposal-card { padding: 0.75rem; background: rgba(255,255,255,0.5); border-radius: 0.5rem; border: 1px solid var(--gs-border); }
+.dark .gs-proposal-card { background: rgba(0,0,0,0.3); }
+.gs-badges { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.gs-badge { padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+.gs-badge-kind { background: rgba(255,138,61,0.15); color: var(--gs-brand); }
+.gs-badge-cat { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+.gs-badge-author { background: rgba(107,114,128,0.15); color: var(--gs-muted); }
+.gs-proposal-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; }
+.gs-proposal-body { font-size: 0.8rem; color: var(--gs-muted); line-height: 1.5; }
+
+/* Discussing */
+.gs-comments { display: flex; flex-direction: column; gap: 0.5rem; }
+.gs-comment {
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,0.5);
+  border-radius: 0.5rem;
+  border-left: 3px solid var(--gs-brand);
+  animation: gs-fade 0.3s ease;
+  font-size: 0.8rem;
+}
+.dark .gs-comment { background: rgba(0,0,0,0.3); }
+.gs-comment-author { font-weight: 700; margin-right: 0.5rem; color: var(--gs-brand); font-size: 0.75rem; }
+.gs-comment-body { color: var(--gs-text); }
+.gs-empty { text-align: center; padding: 2rem; color: var(--gs-muted); font-size: 0.8rem; font-style: italic; }
+
+/* Voting */
+.gs-tally-bar {
+  display: flex;
+  height: 14px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.1);
+  margin-bottom: 0.75rem;
+}
+.dark .gs-tally-bar { background: rgba(255,255,255,0.1); }
+.gs-tally-yes { background: var(--gs-pass); transition: width 0.15s linear; }
+.gs-tally-no { background: var(--gs-fail); transition: width 0.15s linear; }
+.gs-tally-abstain { background: var(--gs-abstain); transition: width 0.15s linear; }
+.gs-tally-legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.8rem; margin-bottom: 0.75rem; }
+.gs-tally-yes-t { color: var(--gs-pass); font-weight: 600; }
+.gs-tally-no-t { color: var(--gs-fail); font-weight: 600; }
+.gs-tally-abstain-t { color: var(--gs-muted); font-weight: 600; }
+.gs-tally-meta { margin-left: auto; color: var(--gs-muted); font-size: 0.75rem; }
+.gs-tally-rules {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--gs-muted);
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--gs-border);
+}
+
+/* Deciding */
+.gs-outcome { text-align: center; padding: 1.5rem 1rem; border-radius: 0.75rem; }
+.gs-outcome-icon { font-size: 3rem; line-height: 1; margin-bottom: 0.5rem; }
+.gs-outcome-label {
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+.gs-outcome-reason { font-size: 0.85rem; color: var(--gs-muted); line-height: 1.5; max-width: 500px; margin: 0 auto; }
+.gs-outcome-passed { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); }
+.gs-outcome-passed .gs-outcome-label { color: var(--gs-pass); }
+.gs-outcome-rejected { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); }
+.gs-outcome-rejected .gs-outcome-label { color: var(--gs-fail); }
+.gs-outcome-blocked { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); }
+.gs-outcome-blocked .gs-outcome-label { color: var(--gs-block); }
+.gs-outcome-no_quorum { background: rgba(156,163,175,0.1); border: 1px solid rgba(156,163,175,0.3); }
+.gs-outcome-no_quorum .gs-outcome-label { color: var(--gs-abstain); }
+
+/* Executing */
+.gs-execution {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.25);
+  border-radius: 0.75rem;
+  animation: gs-fade 0.4s ease;
+}
+.gs-execution-none { background: rgba(156,163,175,0.08); border-color: rgba(156,163,175,0.25); opacity: 0.7; }
+.gs-execution-icon { font-size: 2rem; flex-shrink: 0; }
+.gs-execution-type { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gs-muted); margin-bottom: 0.25rem; }
+.gs-execution-desc { font-size: 0.85rem; line-height: 1.5; }
+
+/* Done */
+.gs-done { text-align: center; padding: 1.5rem 1rem; }
+.gs-done-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.gs-done-text { font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; }
+
+/* Progress + Controls */
+.gs-progress {
+  height: 4px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+.dark .gs-progress { background: rgba(255,255,255,0.1); }
+.gs-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gs-brand), #ec4899);
+  transition: width 0.1s linear;
+}
+.gs-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.gs-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--gs-border);
+  background: transparent;
+  color: var(--gs-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.gs-btn:hover { border-color: var(--gs-brand); }
+.gs-btn-primary {
+  background: linear-gradient(135deg, var(--gs-brand), #ec4899);
+  color: #fff;
+  border: none;
+}
+.gs-btn-primary:hover { opacity: 0.9; }
+.gs-phase-label {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--gs-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .gs-root { padding: 1rem; border-radius: 0.75rem; }
+  .gs-stage { padding: 0.75rem; min-height: 200px; }
+  .gs-title { font-size: 1.1rem; }
+  .gs-tally-legend { font-size: 0.75rem; gap: 0.75rem; }
+  .gs-tally-meta { margin-left: 0; width: 100%; }
+  .gs-proposal-title { font-size: 0.95rem; }
+  .gs-outcome-label { font-size: 1.25rem; }
+  .gs-outcome-icon { font-size: 2.5rem; }
+}
