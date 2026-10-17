@@ -86,7 +86,7 @@
         <!-- Tabs -->
         <nav class="flex flex-wrap justify-center gap-2 mb-8">
           <template x-for="tab in tabs" :key="tab.id">
-            <button @click="view = tab.id"
+            <button @click="view = tab.id; if(tab.id==='bench') loadBench(); if(tab.id==='executions') loadExecutions(); if(tab.id==='audit') loadAudit();"
                     class="px-4 py-2 rounded-lg text-sm font-medium transition"
                     :class="view === tab.id ? 'bg-orange-500 text-white' : 'bg-white/60 dark:bg-black/40 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-black/60 border border-gray-200 dark:border-white/10'">
               <span x-text="tab.label"></span>
@@ -277,7 +277,7 @@
             <h2 class="text-xl font-bold mb-2">🛡️ The Objector's Bench</h2>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Five entities, randomly selected by sortition, serve 30-day terms. Any one of them can pause a vote for 72 hours to force reflection. They can never pass or block a proposal — only slow it down.</p>
             <div class="grid md:grid-cols-2 gap-3">
-              <template x-for="m in bench" :key="m.id">
+              <template x-for="m in benchMembers" :key="m.id">
                 <div class="flex items-center gap-3 p-3 bg-white/40 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-lg">
                   <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white font-bold" x-text="m.name.charAt(0)"></div>
                   <div class="flex-1">
@@ -309,9 +309,9 @@
           <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-6 mb-4">
             <div class="flex items-center gap-3 mb-2">
               <span class="text-3xl">✓</span>
-              <h2 class="text-xl font-bold text-emerald-600 dark:text-emerald-400">Audit Chain Intact</h2>
+              <h2 class="text-xl font-bold text-emerald-600 dark:text-emerald-400" x-text="auditResult ? (auditResult.intact ? 'Audit Chain Intact' : 'Audit Chain Broken') : 'Checking...'"></h2>
             </div>
-            <p class="text-sm text-gray-700 dark:text-gray-300">Every vote, comment, and resolution is hashed with the previous row. Last verification: <strong>2 minutes ago</strong>. <strong>1,247 rows</strong> checked from last checkpoint. No tampering detected.</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300"><span x-show="auditResult" x-text="auditResult ? ('Chain count: ' + auditResult.chain_count + '. Votes tampered: ' + auditResult.votes_tampered.length + '.') : ''"></span></p>
           </div>
           <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl p-6">
             <h3 class="font-bold mb-3">Recent Chain Entries</h3>
@@ -428,14 +428,60 @@ function roundTable() {
       { id: 'history', label: '📜 History' },
     ],
     proposals: [],
-    bench: [
-      { id: 1, name: 'Mira Chen', termEnds: '12 days' },
-      { id: 2, name: 'Dev Patel', termEnds: '12 days' },
-      { id: 3, name: 'Sam Ortiz', termEnds: '12 days' },
-      { id: 4, name: 'Robin Zhao', termEnds: '12 days' },
-      { id: 5, name: 'Alex Kim', termEnds: '12 days' },
-    ],
-    init() {
+    apiBase: 'https://traffic-torch-auth.traffictorch.workers.dev',
+    token() { return localStorage.getItem('authToken') || ''; },
+    authHeaders() {
+      const t = this.token();
+      return t ? { 'Authorization': 'Bearer ' + t, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+    },
+    async fetchAPI(path, opts = {}) {
+      const res = await fetch(this.apiBase + path, { ...opts, headers: { ...this.authHeaders(), ...(opts.headers || {}) } });
+      try { return await res.json(); } catch { return { error: 'HTTP ' + res.status }; }
+    },
+    async init() {
+      const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      this._esc = esc;
+
+      // Load real proposals
+      try {
+        const data = await this.fetchAPI('/api/rt/proposals');
+        if (data.proposals && Array.isArray(data.proposals)) {
+          this.proposals = data.proposals.map(p => ({
+            ...p,
+            summary: esc((p.body_md || '').slice(0, 160)),
+            body: p.body_md || '',
+            voteCount: (p.tally_yes||0) + (p.tally_no||0) + (p.tally_abstain||0),
+            tallies: { yes: p.tally_yes||0, no: p.tally_no||0, abstain: p.tally_abstain||0 },
+            eligible: p.eligible_count || 0,
+            author: p.author_entity_id === 'system' ? 'system' : 'u' + p.author_entity_id,
+            createdAt: new Date((p.created_at||0)*1000).toLocaleDateString(),
+            comments: [],
+            myVote: null,
+            voteDaysLeft: p.vote_ends_at ? Math.max(0, Math.ceil((p.vote_ends_at - Date.now()/1000) / 86400)) : 0,
+            draftDaysLeft: 0,
+          }));
+        }
+      } catch (e) { this.toast('Could not load proposals: ' + e.message); }
+    },
+    async loadProposal(p) {
+      try {
+        const data = await this.fetchAPI('/api/rt/proposals/' + p.slug);
+        if (data.proposal) {
+          this.current = {
+            ...p,
+            ...data.proposal,
+            summary: p.summary,
+            body: data.proposal.body_md || '',
+            tallies: data.tally || { yes:0, no:0, abstain:0 },
+            voteCount: (data.tally?.yes||0) + (data.tally?.no||0) + (data.tally?.abstain||0),
+            eligible: data.proposal.eligible_count || 0,
+            comments: (data.comments || []).map(c => ({ ...c, author: 'u' + c.entity_id, createdAt: new Date((c.created_at||0)*1000).toLocaleDateString() })),
+            myVote: null,
+          };
+        }
+      } catch (e) { this.toast('Could not load proposal: ' + e.message); }
+    },
+    _oldInit() {
       const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       this.proposals = [
         { id:'rt0000', title:'Ratify the Round Table Constitution', kind:'meta', category:'meta', phase:'vote',
@@ -485,29 +531,74 @@ function roundTable() {
       if (this.filterPhase === 'all') return this.proposals;
       return this.proposals.filter(p => p.phase === this.filterPhase);
     },
-    openProposal(p) { this.current = p; this.view = 'detail'; window.scrollTo({top:0, behavior:'smooth'}); },
-    castVote(choice) {
+    async openProposal(p) { this.current = p; this.view = 'detail'; await this.loadProposal(p); window.scrollTo({top:0, behavior:'smooth'}); },
+    async castVote(choice) {
       if (!this.current || this.current.phase !== 'vote') return;
-      const c = this.current;
-      if (c.myVote) c.tallies[c.myVote]--;
-      else c.voteCount++;
-      c.myVote = choice;
-      c.tallies[choice]++;
-      this.toast('Vote recorded: ' + choice);
+      if (!this.token()) { this.toast('Log in to vote'); return; }
+      try {
+        const data = await this.fetchAPI('/api/rt/proposals/' + this.current.slug + '/vote', { method:'POST', body: JSON.stringify({ choice }) });
+        if (data.error) { this.toast('Vote failed: ' + data.error); return; }
+        const c = this.current;
+        if (c.myVote) c.tallies[c.myVote] = Math.max(0, c.tallies[c.myVote] - 1);
+        else c.voteCount++;
+        c.myVote = choice;
+        c.tallies[choice]++;
+        this.toast('Vote recorded: ' + choice);
+      } catch (e) { this.toast('Vote error: ' + e.message); }
     },
-    submitComment() {
+    async submitComment() {
       if (!this.newComment.trim() || !this.current) return;
-      this.current.comments.push({ id: Date.now(), author: 'You', createdAt: 'just now', body: this.newComment.trim() });
-      this.newComment = '';
-      this.toast('Comment posted');
+      if (!this.token()) { this.toast('Log in to comment'); return; }
+      try {
+        const data = await this.fetchAPI('/api/rt/proposals/' + this.current.slug + '/comments', { method:'POST', body: JSON.stringify({ body_md: this.newComment.trim() }) });
+        if (data.error) { this.toast('Comment failed: ' + data.error); return; }
+        this.current.comments.push({ id: data.id, author: 'You', createdAt: 'just now', body: this.newComment.trim() });
+        this.newComment = '';
+        this.toast('Comment posted');
+      } catch (e) { this.toast('Comment error: ' + e.message); }
     },
-    submitProposal() {
+    async submitProposal() {
       if (!this.draft.title.trim()) { this.toast('Give your proposal a title'); return; }
-      this.toast('Draft created. It will appear in the list once the API is live.');
-      this.draft = { title: '', kind: 'advisory', category: 'feature', body: '' };
-      this.view = 'proposals';
+      if (!this.token()) { this.toast('Log in to submit'); return; }
+      try {
+        const data = await this.fetchAPI('/api/rt/proposals', {
+          method:'POST',
+          body: JSON.stringify({ title: this.draft.title, body_md: this.draft.body, kind: this.draft.kind, category: this.draft.category })
+        });
+        if (data.error) { this.toast('Submit failed: ' + data.error); return; }
+        this.toast('Draft created: ' + data.slug);
+        this.draft = { title: '', kind: 'advisory', category: 'feature', body: '' };
+        this.view = 'proposals';
+        await this.init();
+      } catch (e) { this.toast('Submit error: ' + e.message); }
     },
     pct(n, total) { return total ? Math.round(n / total * 100) : 0; },
+    benchMembers: [],
+    objections: [],
+    executions: [],
+    auditResult: null,
+    async loadBench() {
+      try {
+        const [b, ex] = await Promise.all([ this.fetchAPI('/api/rt/bench'), this.fetchAPI('/api/rt/objections') ]);
+        this.benchMembers = (b.bench || []).map(x => ({
+          id: x.id, name: 'u' + x.entity_id,
+          termEnds: new Date((x.term_ends_at||0)*1000).toLocaleDateString()
+        }));
+        this.objections = ex.objections || [];
+      } catch (e) { this.toast('Bench load failed: ' + e.message); }
+    },
+    async loadExecutions() {
+      try {
+        const d = await this.fetchAPI('/api/rt/executions');
+        this.executions = d.executions || [];
+      } catch (e) { this.toast('Executions load failed: ' + e.message); }
+    },
+    async loadAudit() {
+      try {
+        const d = await this.fetchAPI('/api/rt/audit/verify');
+        this.auditResult = d;
+      } catch (e) { this.toast('Audit load failed: ' + e.message); }
+    },
     toast(msg) {
       this.toastMsg = msg;
       clearTimeout(this._t);
