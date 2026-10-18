@@ -22,6 +22,8 @@ new_sqlite_classes = ["UserInbox"]
 
 [vars]
 PUBLIC_ANALYTICS_USER_ID = "53"
+CLOUDFLARE_ZONE_ID = "1f540c2d99879c88980b8c93cef325d5"
+CLOUDFLARE_ACCOUNT_ID = "d061d4d2078ee9128b033e6d27e7c768"
 
 [observability]
 enabled = true

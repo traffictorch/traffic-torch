@@ -324,6 +324,13 @@ async function ensureTables(env) {
     )`
   ).run();
   await env.MY_BINDING.prepare(
+    `CREATE TABLE IF NOT EXISTS public_cloudflare_cache (
+      cache_key TEXT PRIMARY KEY,
+      data TEXT NOT NULL,
+      updated_at INTEGER NOT NULL
+    )`
+  ).run();
+  await env.MY_BINDING.prepare(
     `CREATE TABLE IF NOT EXISTS api_keys (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
@@ -2353,6 +2360,207 @@ async function handleFeedRoutes(request, env, url) {
     }
   }
 
+  // GET /api/public/cloudflare (public, cached, no auth)
+  if (url.pathname === '/api/public/cloudflare' && request.method === 'GET') {
+    const CF_TTL = 6 * 3600;
+    const nowSec = Math.floor(Date.now() / 1000);
+    const cors = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'public, max-age=1800, s-maxage=1800'
+    };
+
+    // Cache hit
+    try {
+      const row = await env.MY_BINDING.prepare(
+        "SELECT data, updated_at FROM public_cloudflare_cache WHERE cache_key = 'site'"
+      ).first();
+      if (row && (nowSec - row.updated_at) < CF_TTL) {
+        return new Response(row.data, { status: 200, headers: Object.assign({ 'X-Data-Source': 'cache', 'X-Cache-Age': String(nowSec - row.updated_at) }, cors) });
+      }
+    } catch (e) { /* fresh */ }
+
+    try {
+      const zoneId = env.CLOUDFLARE_ZONE_ID;
+      const token  = env.CLOUDFLARE_API_TOKEN;
+      if (!zoneId || !token) throw new Error('CLOUDFLARE_ZONE_ID / CLOUDFLARE_API_TOKEN not configured');
+
+      const fmt = (d) => d.toISOString().replace(/\.\d{3}Z$/, 'Z');
+      const end   = new Date(); end.setUTCDate(end.getUTCDate() - 1); end.setUTCHours(23,59,59,0);
+      const start28 = new Date(end); start28.setUTCDate(start28.getUTCDate() - 27); start28.setUTCHours(0,0,0,0);
+      const start7  = new Date(end); start7.setUTCDate(start7.getUTCDate() - 6);  start7.setUTCHours(0,0,0,0);
+      const prev7End = new Date(start7); prev7End.setUTCSeconds(prev7End.getUTCSeconds() - 1);
+      const prev7Start = new Date(prev7End); prev7Start.setUTCDate(prev7Start.getUTCDate() - 6); prev7Start.setUTCHours(0,0,0,0);
+
+      const gql = `
+        query {
+          viewer {
+            zones(filter: {zoneTag: "${zoneId}"}) {
+              overview7: httpRequestsAdaptiveGroups(limit:1, filter:{datetime_geq:"${fmt(start7)}", datetime_leq:"${fmt(end)}"}) {
+                count
+                sum { visits edgeResponseBytes }
+              }
+              prev7: httpRequestsAdaptiveGroups(limit:1, filter:{datetime_geq:"${fmt(prev7Start)}", datetime_leq:"${fmt(prev7End)}"}) {
+                count
+                sum { visits edgeResponseBytes }
+              }
+              overview28: httpRequestsAdaptiveGroups(limit:1, filter:{datetime_geq:"${fmt(start28)}", datetime_leq:"${fmt(end)}"}) {
+                count
+                sum { visits edgeResponseBytes }
+              }
+              daily: httpRequestsAdaptiveGroups(limit:100, filter:{datetime_geq:"${fmt(start28)}", datetime_leq:"${fmt(end)}"}, orderBy:[date_ASC]) {
+                dimensions { date }
+                count
+                sum { visits edgeResponseBytes }
+              }
+              paths: httpRequestsAdaptiveGroups(limit:10, filter:{datetime_geq:"${fmt(start28)}", datetime_leq:"${fmt(end)}"}, orderBy:[sum_visits_DESC]) {
+                dimensions { clientRequestPath }
+                sum { visits }
+              }
+              countries: httpRequestsAdaptiveGroups(limit:10, filter:{datetime_geq:"${fmt(start28)}", datetime_leq:"${fmt(end)}"}, orderBy:[sum_visits_DESC]) {
+                dimensions { clientCountryName }
+                sum { visits }
+              }
+              status: httpRequestsAdaptiveGroups(limit:20, filter:{datetime_geq:"${fmt(start28)}", datetime_leq:"${fmt(end)}"}) {
+                dimensions { edgeResponseStatus }
+                count
+              }
+              agents: httpRequestsAdaptiveGroups(limit:500, filter:{datetime_geq:"${fmt(start28)}", datetime_leq:"${fmt(end)}"}, orderBy:[count_DESC]) {
+                dimensions { userAgent }
+                count
+              }
+            }
+          }
+        }
+      `;
+
+      const cfRes = await fetch('https://api.cloudflare.com/client/v4/graphql', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: gql })
+      });
+      const cfJson = await cfRes.json();
+      if (!cfJson.data || !cfJson.data.viewer) {
+        throw new Error('Cloudflare GraphQL: ' + JSON.stringify(cfJson.errors || cfJson));
+      }
+      const z = cfJson.data.viewer.zones[0];
+
+      const sum = (arr, field) => (arr || []).reduce((a, r) => a + ((r.sum && r.sum[field]) || 0), 0);
+      const pick = (r) => r ? {
+        requests: r.count || 0,
+        visits: (r.sum && r.sum.visits) || 0,
+        edgeResponseBytes: (r.sum && r.sum.edgeResponseBytes) || 0
+      } : { requests:0, visits:0, edgeResponseBytes:0 };
+      const g7  = pick(z.overview7[0]);
+      const gp7 = pick(z.prev7[0]);
+      const g28 = pick(z.overview28[0]);
+
+      // AI + search crawler patterns
+      const AI = [
+        ['GPTBot','OpenAI'], ['ChatGPT-User','OpenAI'], ['OAI-SearchBot','OpenAI'],
+        ['ClaudeBot','Anthropic'], ['Claude-Web','Anthropic'], ['anthropic-ai','Anthropic'],
+        ['Google-Extended','Google'],
+        ['Meta-ExternalAgent','Meta'], ['FacebookBot','Meta'],
+        ['Bytespider','ByteDance'],
+        ['Amazonbot','Amazon'],
+        ['Applebot-Extended','Apple'],
+        ['CCBot','Common Crawl'],
+        ['cohere-ai','Cohere'],
+        ['Diffbot','Diffbot'],
+        ['PerplexityBot','Perplexity'],
+        ['YouBot','You.com'],
+        ['AI2Bot','AllenAI'],
+        ['Timpibot','Timpi'],
+        ['omgili','Omgili'],
+        ['ImagesiftBot','Imagesift'],
+        ['img2dataset','LAION'],
+        ['aiHitBot','aiHit'],
+        ['PetalBot','Huawei']
+      ];
+      const SEARCH = [
+        ['Googlebot','Google'], ['bingbot','Microsoft'], ['YandexBot','Yandex'],
+        ['DuckDuckBot','DuckDuckGo'], ['Baiduspider','Baidu'], ['Slurp','Yahoo']
+      ];
+
+      const aiMap = {}, searchMap = {};
+      (z.agents || []).forEach(r => {
+        const ua = (r.dimensions && r.dimensions.userAgent) || '';
+        const req = r.count || 0;
+        if (!ua || !req) return;
+        // AI first (more specific patterns like Applebot-Extended)
+        for (const [name, op] of AI) {
+          if (ua.toLowerCase().includes(name.toLowerCase())) {
+            aiMap[name] = aiMap[name] || { name, operator: op, requests: 0 };
+            aiMap[name].requests += req;
+            return;
+          }
+        }
+        for (const [name, op] of SEARCH) {
+          if (ua.toLowerCase().includes(name.toLowerCase())) {
+            searchMap[name] = searchMap[name] || { name, operator: op, requests: 0 };
+            searchMap[name].requests += req;
+            return;
+          }
+        }
+      });
+
+      const daily = (z.daily || []).map(r => ({
+        date: (r.dimensions && r.dimensions.date) || '',
+        requests: r.count || 0,
+        visits: (r.sum && r.sum.visits) || 0,
+        bytes: (r.sum && r.sum.edgeResponseBytes) || 0
+      })).sort((a, b) => a.date.localeCompare(b.date));
+
+      const top_paths = (z.paths || []).map(r => ({
+        path: (r.dimensions && r.dimensions.clientRequestPath) || '/',
+        visits: (r.sum && r.sum.visits) || 0
+      }));
+
+      const countries = (z.countries || []).map(r => ({
+        country: (r.dimensions && r.dimensions.clientCountryName) || 'XX',
+        visits: (r.sum && r.sum.visits) || 0
+      }));
+
+      const status_codes = (z.status || []).map(r => ({
+        status: (r.dimensions && r.dimensions.edgeResponseStatus) || 0,
+        requests: r.count || 0
+      })).sort((a, b) => b.requests - a.requests);
+
+      const result = {
+        updated_at: Date.now(),
+        zone: 'traffictorch.net',
+        windows: {
+          end_date: end.toISOString().slice(0, 10),
+          d7:  { start: start7.toISOString().slice(0, 10),  end: end.toISOString().slice(0, 10) },
+          d28: { start: start28.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10) }
+        },
+        overview_7d:  { requests: g7.requests,  visits: g7.visits,  bytes: g7.edgeResponseBytes },
+        prev_7d:      { requests: gp7.requests, visits: gp7.visits, bytes: gp7.edgeResponseBytes },
+        overview_28d: { requests: g28.requests, visits: g28.visits, bytes: g28.edgeResponseBytes },
+        daily,
+        top_paths,
+        countries,
+        status_codes,
+        ai_crawlers:     Object.values(aiMap).sort((a,b) => b.requests - a.requests),
+        search_crawlers: Object.values(searchMap).sort((a,b) => b.requests - a.requests)
+      };
+
+      const payload = JSON.stringify(result);
+      try {
+        await env.MY_BINDING.prepare(
+          "INSERT OR REPLACE INTO public_cloudflare_cache (cache_key, data, updated_at) VALUES ('site', ?, ?)"
+        ).bind(payload, nowSec).run();
+      } catch (e) { console.error('cf cache write:', e.message); }
+
+      return new Response(payload, { status: 200, headers: Object.assign({ 'X-Data-Source': 'fresh' }, cors) });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: err.message || 'Cloudflare fetch failed' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+  }
+
   // GET /api/contributions/leaderboard
   if (url.pathname === '/api/contributions/leaderboard' && request.method === 'GET') {
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '12', 10) || 12, 30);
@@ -2469,6 +2677,7 @@ async function handleNewRoutes(request, env, url) {
     p === '/api/contributions/leaderboard' ||
     p === '/api/contributions/recent' ||
     p === '/api/public/analytics' ||
+    p === '/api/public/cloudflare' ||
     p === '/api/notifications' ||
     p === '/api/notifications/read' ||
     p === '/api/notifications/clear' ||
