@@ -1,0 +1,1620 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Optimized SEO Title & Description for On-Page Checker -->
+  <title>Keyword Optimizer & SEO Checker – Audit Tool | Traffic Torch</title>
+  <meta name="description" content="Free on-page SEO checker with AI semantic audit: hybrid deterministic + AI analysis for keyword placement, intent, entity coverage, semantic coverage (exact/variant/partial placement grading), meta tags, headings, images, schema. Priority fixes and ranking forecasts.">
+  <meta name="keywords" content="on page seo checker, free on page seo tool, seo audit tool, keyword optimizer, website seo checker, on-page optimization, seo analysis tool, ai semantic seo audit, semantic coverage seo">
+
+  <!-- Robots & Canonical -->
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/keyword-tool/">
+  
+    <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <!-- hreflang -->
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/keyword-tool/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/keyword-tool/">
+
+  <!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+  <meta property="og:title" content="Free On-Page SEO Checker & Keyword Optimizer – Instant Audit Tool | Traffic Torch">
+  <meta property="og:description" content="Audit webpages instantly with hybrid on-page SEO analysis: deterministic checks + AI semantic audit + per-placement semantic coverage grading. Get intent, entity coverage, keyword placement, meta, headings, images, schema fixes and ranking forecasts.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/keyword-tool/">
+  <meta property="og:image" content="https://traffictorch.net/keyword-tool/images/keyword-torch-tool.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free On-Page SEO Checker & Keyword Optimizer – Instant Audit Tool | Traffic Torch">
+  <meta name="twitter:description" content="Audit webpages instantly with hybrid on-page SEO analysis: deterministic checks + AI semantic audit + per-placement semantic coverage grading. Get intent, entity coverage, keyword placement, meta, headings, images, schema fixes and ranking forecasts.">
+  <meta name="twitter:image" content="https://traffictorch.net/keyword-tool/images/keyword-torch-tool.webp">
+  <meta name="twitter:site" content="@Guitaralize"> 
+
+<!-- Structured Data (JSON-LD) - Merged Single Block -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Free On-Page Keyword Optimization & SEO Checker Tool",
+      "description": "Instant hybrid on-page SEO audit: deterministic checks for keyword placement, meta tags, headings, alt text, internal linking, URL, schema and technical SEO — combined with an AI semantic layer that evaluates search intent, entity coverage, AEO answerability and E-E-A-T signals, plus a per-placement semantic coverage layer that grades exact, variant, partial or absent keyword usage in the title, meta, H1, H2s, image alts, internal anchors and URL slug. Get a 0–100 score, deep-dive modules, priority fixes, and ranking improvement forecasts.",
+      "url": "https://traffictorch.net/keyword-tool/",
+      "speakable": {
+  "@type": "SpeakableSpecification",
+  "cssSelector": [
+    "#faq",
+    "p.text-xl.text-gray-600.dark\\:text-gray-300.mb-4.max-w-3xl.mx-auto",
+    ".max-w-4xl.mx-auto.my-16 details div.mt-8",
+    "section.max-w-4xl.mx-auto.mt-12.mb-12 p.text-2xl.md\\:text-3xl.font-bold.text-center.mb-10.leading-tight",
+    "div.max-w-4xl.mx-auto.my-16 details div.mt-8 section.space-y-5:first-child"
+  ]
+},
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Traffic Torch Keyword Optimizer",
+      "applicationCategory": "BusinessApplication, UtilitiesApplication, SEO Tool",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "USD"
+      },
+      "description": "Free hybrid on-page keyword optimization tool. Deterministic checks (55 pts) for keyword placement in title, meta description, headings, alt text, internal anchors, URL, schema and technical SEO — plus a Cloudflare Workers AI semantic layer (15 pts) that evaluates search intent, entity coverage, AEO answerability and E-E-A-T signals, and a Semantic Coverage layer (30 pts) that grades every on-page placement as exact, variant, partial or absent. Delivers an instant 0–100 score, prioritised fixes, and predictive ranking impact.",
+      "url": "https://traffictorch.net/keyword-tool/",
+      "image": "https://traffictorch.net/keyword-tool/images/keyword-torch-tool.webp"
+    },
+    {
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/keyword-tool/"
+      },
+      "headline": "Free Keyword Optimizer: Perfect On-Page SEO for Any Page",
+      "description": "Instant hybrid on-page keyword audit tool. Deterministic keyword placement checks (55 pts) combined with an AI semantic analysis (15 pts) of intent, entities, AEO answerability and E-E-A-T, plus a per-placement Semantic Coverage audit (30 pts) that grades exact, variant, partial or absent keyword usage across title, meta, H1, H2s, image alts, anchors and URL slug. Get a 0–100 score, priority fixes, and ranking forecasts.",
+      "url": "https://traffictorch.net/keyword-tool/",
+      "image": [
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/keyword-tool/images/keyword-torch-tool.webp",
+          "contentUrl": "https://traffictorch.net/keyword-tool/images/keyword-torch-tool.webp",
+          "width": 1200,
+          "height": 630,
+          "caption": "Traffic Torch Keyword Tool dashboard: hybrid on-page audit covering keyword placement, meta tags, headings, image alts, anchor text, URL, schema, AI semantic analysis and per-placement semantic coverage with 0–100 score, priority fixes and ranking forecasts"
+        },
+        {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/images/tool-banners/keyword-tool-infographic-1200w.webp",
+          "contentUrl": "https://traffictorch.net/images/tool-banners/keyword-tool-infographic-1200w.webp",
+          "width": 1200,
+          "height": 375,
+          "caption": "Traffic Torch Keyword Tool overview: keyword discovery, search volume & difficulty scores, competition analysis, and hybrid on-page SEO optimization insights"
+        }
+      ],
+      "author": {
+        "@type": "Person",
+        "name": "Traffic Torch Team",
+        "url": "https://traffictorch.net"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/logo-512.webp"
+        }
+      },
+      "datePublished": "2025-12-21T14:56:00+11:00",
+      "dateModified": "2026-10-03T10:00:00+11:00"
+    },
+    {
+      "@type": "Person",
+      "name": "Ylia Callan",
+      "url": "https://yliacallan.github.io/",
+      "sameAs": [
+      "https://g.dev/traffictorch",
+      "https://github.com/traffictorch/",
+      "https://orcid.org/0009-0006-4084-0241",
+      "https://www.wikidata.org/wiki/Q139815165",
+      "https://zenodo.org/records/20149616",
+      "https://github.com/traffictorch/traffic-torch",
+      "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+      "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+      "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+      "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+      "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+      "https://www.framer.com/marketplace/plugins/traffic-torch/",
+      "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+      "https://github.com/marketplace/actions/traffic-torch-audit",
+      "https://www.linkedin.com/in/ylia-callan-8b889976/",
+      "https://x.com/Guitaralize"
+     ],
+      "image": "/images/ylia-callan-320w.webp",
+      "jobTitle": "Founder & Builder",
+      "description": "Musician, Author, Web Designer, and Creator of Privacy-First AI SEO/UX Tools like Traffic Torch",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Traffic Torch Keyword Audit Tool",
+          "item": "https://traffictorch.net/keyword-tool/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://traffictorch.net/keyword-tool/#faq",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/keyword-tool/"
+      },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Meta Title & Description in SEO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Meta title (the <title> tag) is the clickable headline in search results, while the meta description is the short summary below it. In 2026, they must align with user intent, incorporate the primary keyword naturally near the start, stay within 50-60 characters for titles and 150-160 for descriptions, and support E-E-A-T signals for AI overviews and rich snippets. Traffic Torch scans these instantly for keyword presence, length issues, and CTR potential, to boost visibility and clicks."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is H1 & Headings optimization?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The H1 tag is the main on-page heading that defines the page's core topic (ideally one per page, matching search intent and often aligning with the title tag). H2–H6 create a logical hierarchy for subtopics, improving readability, accessibility, and semantic understanding for search engines and AI in 2026. Traffic Torch audits check for keyword inclusion in the primary H1, proper nesting (no skipped levels), and overall structure, offering deep-dive insights."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Content Depth & Semantic Coverage in SEO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Modern SEO no longer rewards keyword density. Google's BERT and MUM models, plus AI Overviews and AI-powered search engines, evaluate meaning, not repetition. In 2026, what matters is whether your page fully covers the entities, subtopics and questions a top-ranking result would. Traffic Torch's AI semantic layer predicts the search intent behind your target keyword, generates the entities and questions a page should cover, and scores how completely your content addresses them — alongside readability, sentence length and paragraph structure. A second AI layer then grades each individual placement (title, meta, H1, H2s, image alts, internal anchors, URL slug) as exact, variant, partial or absent, so you can see where a close variant still counts and where a partial or absent verdict is costing you points. Together these replace the old 1–2% keyword density target with semantic coverage, intent alignment, and AEO answerability."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Image Alt Text for SEO & Accessibility?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Alt text (the alt attribute on <img> tags) describes images for screen readers, accessibility compliance (WCAG), and search engines, enabling Google Images rankings and providing contextual signals. In 2026, write descriptive, natural alt text (include keywords only if relevant to the image and page topic), avoid stuffing, and use empty alt=\"\" for purely decorative images. Traffic Torch scans all images for keyword matches, completeness, and relevance, then delivers alt suggestions to improve UX, accessibility scores, and extra traffic from image search."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Anchor Text in internal linking?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Anchor text is the visible, clickable text in an <a> tag for internal links. It helps search engines understand the linked page's topic, builds topical clusters, and improves site navigation. In 2026, use natural, descriptive phrases with keyword variations (avoid exact-match overuse or generic terms like \"click here\"). Traffic Torch analyses internal anchors for target keyword presence and diversity, highlights over-optimization risks, and recommends optimized alternatives to strengthen internal authority and user flow."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is URL & Schema in on-page SEO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "URL structure should be clean, readable, and include the target keyword (hyphen-separated, short, no parameters). Schema markup (JSON-LD preferred) is structured data that explicitly tells search engines about your content (e.g., Article, FAQ, Product), enabling rich snippets, enhanced visibility in AI results, and higher CTR. In 2026, both reinforce relevance and trust. Traffic Torch checks URLs or HTML for keyword inclusion and scans for valid schema presence, then provides implementation code snippets and fixes to unlock rich results and predictive ranking improvements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the hybrid AI semantic audit work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Traffic Torch uses a three-layer scoring model. The first layer (55 points) is deterministic — hard facts like keyword presence in the title, H1, meta description, image alt text, internal anchors, URL and schema, plus technical hygiene (viewport, robots, canonical, Open Graph), content depth and readability. The second layer (15 points) runs an AI semantic audit via Cloudflare Workers AI. It predicts the search intent behind your keyword, generates the entities and questions a top-ranking page would cover, and scores your page on entity coverage, AEO answerability, semantic coverage and E-E-A-T signals (author, citation, experience, trust). The third layer (30 points) is the Semantic Coverage audit — the same AI classifies every on-page placement (title, meta description, H1, H2s, image alts, internal anchors and URL slug) as exact, variant, partial or absent, then weights them by placement importance (title and H1 count most; image alts and anchors least). All three scores are combined into a single 0–100 result with a transparent breakdown, so you always know which part of the score comes from deterministic checks, which from AI interpretation, and which from per-placement semantic grading."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Main Styles -->
+  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/keyword-tool/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style.css?v=1.0">
+    <link rel="stylesheet" href="/keyword-tool/style.css?v=1.0">
+  </noscript>
+
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
+  </noscript>
+
+  <link rel="stylesheet" media="print" href="/keyword-tool/print.css?v=1.1">
+  
+  <link rel="preload" as="style" href="/leader-board/high-scores-widget.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/leader-board/high-scores-widget.css?v=1.0"></noscript>
+  <script src="/leader-board/high-scores-widget.js?v=1.0" defer></script>
+  <script src="/leader-board/submit-score.js?v=1.0" defer></script>
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+  
+  <script src="/shared/avatar.js?v=1.0"></script>
+  <script src="/shared/contributions-renderer.js?v=1.0" type="module"></script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+<div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+<div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+<main class="container mx-auto px-2 py-4 max-w-7xl">
+    <div class="text-center mb-16">
+      <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent mb-3">
+        Keyword Placement Audit & Optimizer Tool
+      </h1>
+      <p class="text-xl text-gray-600 dark:text-gray-300 mb-4 max-w-3xl mx-auto">
+        Hybrid SEO audit tool: deterministic keyword checks + AI semantic analysis + per-placement semantic coverage grading. Enter any URL/HTML and target keywords.
+      </p>
+
+<!-- Traffic Torch Keyword Placement Audit Form - URL + Keyword + Code Analysis -->
+<div class="max-w-4xl mx-auto mb-10 space-y-4 px-4 py-2">
+
+  <form id="audit-form" novalidate class="space-y-10">
+
+    <!-- URL + Keyword Section -->
+    <div>
+
+      <div class="flex flex-col md:flex-row gap-4">
+        <input
+          type="text"
+          id="target-keyword"
+          name="keyword"
+          placeholder="enter target keyword..."
+          aria-label="Enter target keyword"
+          aria-describedby="keyword-help"
+          required
+          class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+          autocomplete="off"
+          spellcheck="false"
+       >
+        <p id="keyword-help" class="sr-only">
+            Enter the main target keyword or phrase you want to audit for placement and optimization
+       </p>
+        
+        <input
+          type="text"
+          id="page-url"
+          name="url"
+          placeholder="yourpage.com/blog-post"
+          aria-label="Enter page URL to analyze"
+          aria-describedby="url-help"
+          required
+          class="flex-1 px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+          autocomplete="url"
+          inputmode="url"
+          spellcheck="false"
+          data-lpignore="true"
+       >
+        <p id="url-help" class="sr-only">
+            Enter the full URL of the page you want to analyze for keyword placement and on-page optimization
+       </p>
+
+        <button
+          type="button"
+          id="url-analyze-btn"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2"
+        >
+          Analyze URL 
+          <span class="text-xl">🗝️</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Code Analysis Section -->
+    <div class="pt-8 border-t border-gray-200 dark:border-gray-700">
+      <!-- Centered gradient title (kept your styling) -->
+      <h2 class="text-2xl md:text-3xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight text-center mb-3">
+        Or use Code Analysis 📄
+      </h2>
+
+      <!-- Centered description -->
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center max-w-md mx-auto">
+        Paste the full HTML of the page.
+      </p>
+
+      <textarea
+        id="code-input"
+        name="htmlcode"
+        rows="2"
+        placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Best Wireless Headphones Review 2026&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your full page HTML here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
+        class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[120px] shadow-sm"
+        aria-label="Paste HTML code for Keyword Placement Audit"
+        aria-describedby="code-help"
+        autocomplete="off"
+        spellcheck="false"
+        data-vscode-ignore="true"
+      ></textarea>
+      <p id="code-help" class="sr-only mt-2">
+        Paste the complete HTML source code of the page for keyword placement, semantic coverage, and optimization analysis
+      </p>
+
+      <!-- Centered Analyze Code button -->
+      <div class="mt-8 flex justify-center">
+        <button
+          type="button"
+          id="code-analyze-btn"
+          class="px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+        >
+          Analyze Code 
+          <span class="text-xl">🗝️</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+ </div>
+
+    <!-- Results container (JS will populate this) -->
+    <div id="results" class="hidden space-y-16 mt-16">
+      <!-- Your existing cards/Chart.js output goes here -->
+    </div>
+    
+    <!-- 🏆 Leaderboard -->
+<section id="tt-lb-anchor" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mt-16 mb-8">
+  <div class="tt-lb"
+       data-tool="keyword-tool"
+       data-limit="12"
+       data-title="Top Keyword Tool Scores"></div>
+</section>
+
+<!-- 🏅 Top Contributors -->
+<section id="tt-contrib-anchor" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mt-8 mb-8">
+  <div class="tt-contrib"
+       data-limit="12"
+       data-title="Top Contributors"></div>
+</section>
+
+<link rel="preload" as="style" href="/leader-board/contributions-widget.css" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/leader-board/contributions-widget.css"></noscript>
+<script src="/leader-board/contributions-widget.js" defer></script>
+    
+        <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
+  </div>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
+	
+	      <!-- Deep Dive into Key Modules -->
+      <section id="deep-dive" class="py-6 bg-gray dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-2">
+          <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+            Deep Dive into Key Modules
+          </h2>
+          <div id="module-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center lg:justify-start">
+            <!-- Cards generated dynamically -->
+          </div>
+        </div>
+      </section>
+      
+        <!-- SEO Keyword Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      Keyword Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/keyword-research-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔑</div>
+        <h3 class="text-green-500 dark:text-green-300 text-2xl font-bold mb-3">Keyword Research Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Long-tail keyword generator</p>
+      </div>
+    </a>
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">VS Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-red-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-red-500 dark:text-red-300 text-2xl font-bold mb-3">More SEO - UX - AI Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>   
+      
+    <div class="center-btn-container mt-4 mb-4">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
+    data-text="https://traffictorch.net/keyword-tool/"
+  >
+    Copy Link? 🔗
+  </button>
+</div>
+
+<!-- How Keyword Checker / Placement Tool Works – Powered by Traffic Torch -->
+<div class="max-w-4xl mx-auto my-16">
+  <details>
+    <summary class="px-3 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      How the Keyword Checker Works?
+      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 py-10 bg-gray dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
+
+      <!-- 1. Home Dashboard -->
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">🏠 The Home Dashboard – Your Central Hub</h2>
+        <p class="leading-relaxed">
+          The <strong>Traffic Torch Dashboard</strong> is your single point of control. From here you can:
+        </p>
+        <ul class="list-disc list-inside text-base space-y-2 ml-4">
+          <li><strong>Run any of our 15+ audit tools</strong> – simply enter a URL and pick the tool you need (including this Keyword Checker).</li>
+          <li><strong>View your Google Analytics 4 and Search Console data</strong> – connect your accounts to see real‑time metrics, trends, top content, and traffic sources.</li>
+          <li><strong>Access your audit history</strong> – every scan is saved, so you can revisit, re‑run, or share past reports.</li>
+          <li><strong>Ask Traffic Torch AI</strong> – get instant, context‑aware advice on any audit result, directly from the dashboard.</li>
+        </ul>
+        <p class="leading-relaxed">
+          Everything is built for speed and privacy – your analytics credentials are never stored on our servers.
+        </p>
+      </section>
+
+      <!-- 2. Analytics Integration -->
+      <section class="space-y-5">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">📊 Google Analytics 4 & Search Console</h3>
+        <p class="leading-relaxed">
+          Connect your GA4 and GSC properties once, and the dashboard automatically pulls in:
+        </p>
+        <ul class="list-disc list-inside text-base space-y-1 ml-4">
+          <li><strong>Key metrics</strong> – sessions, users, pageviews, conversion rate, clicks, impressions, CTR, and average position.</li>
+          <li><strong>Trend charts</strong> – visualise daily performance for any date range (7, 14, 30 days, or custom for Enterprise).</li>
+          <li><strong>Top content & converting pages</strong> – see which pages drive the most traffic and conversions.</li>
+          <li><strong>Traffic sources, device breakdown, and geographic data</strong> – understand where your visitors come from.</li>
+          <li><strong>Real‑time view</strong> (Enterprise) – see active users and events as they happen.</li>
+        </ul>
+        <p class="leading-relaxed">
+          All data is cached for performance, and you can refresh at any time. For guest users, we provide demo data so you can explore the interface without connecting an account.
+        </p>
+      </section>
+
+      <!-- 3. Report Dashboard & Audit History -->
+      <section class="space-y-5">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">📋 Report Dashboard – Your Audit History</h3>
+        <p class="leading-relaxed">
+          Every audit you run is automatically saved to your <strong>Audit History</strong>. From there you can:
+        </p>
+        <ul class="list-disc list-inside text-base space-y-1 ml-4">
+          <li><strong>Review past results</strong> – quickly see the tool used, URL, and timestamp.</li>
+          <li><strong>Re‑run any audit</strong> – click “Scan” to re‑evaluate the same URL with the same tool.</li>
+          <li><strong>Copy the URL</strong> – share the audit link with team members or clients.</li>
+          <li><strong>Delete audits</strong> – keep your history clean.</li>
+        </ul>
+        <p class="leading-relaxed">
+          For Pro and Enterprise users, the history is stored in the cloud and syncs across devices. Free users get local storage with a 5‑audit limit.
+        </p>
+      </section>
+
+      <!-- 4. Ask Traffic Torch AI (replaces AI fixes) -->
+      <section class="space-y-5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-6 rounded-xl">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">🧠 Ask Traffic Torch AI – Your Personal Assistant</h3>
+        <p class="leading-relaxed">
+          <strong>Now available on every tool!</strong> After running an audit, click the “Ask Traffic Torch AI” button to get:
+        </p>
+        <ul class="list-disc list-inside text-base space-y-1 ml-4">
+          <li><strong>Actionable recommendations</strong> – tailored fixes based on your specific page and tool results.</li>
+          <li><strong>Context‑aware answers</strong> – ask follow‑up questions about any metric or suggestion.</li>
+          <li><strong>No fake advice</strong> – the AI is trained to be honest and will tell you if it’s unsure.</li>
+          <li><strong>Seamless integration</strong> – works across all tools (SEO Intent, UX, Local, Product, Entity, Topical, Schema, GEO, Voice, AI Content, Quit Risk, Keyword Research, and more).</li>
+        </ul>
+        <p class="leading-relaxed">
+          The AI uses the latest LLM technology to interpret your audit data and provide clear, step‑by‑step guidance. It’s like having a senior SEO consultant on your team – always available.
+        </p>
+        <p class="text-sm italic">* The AI assistant is a beta feature – your feedback helps us improve it.</p>
+      </section>
+
+      <!-- 5. The Three Pillars of Traffic Torch -->
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">The Three Pillars of Traffic Torch</h3>
+        <p class="leading-relaxed">
+          All our tools are built around three core principles – <strong>UX Health</strong>, <strong>SEO Intent</strong>, and <strong>AI Search (AEO)</strong>. This tool focuses on the second and third pillars, blending deterministic keyword checks with two AI layers: a page-level semantic audit and a per-placement semantic coverage audit.
+        </p>
+        <div class="grid md:grid-cols-3 gap-6 text-base">
+          <div class="p-6 bg-white/10 dark:bg-black/20 rounded-2xl border border-purple-200 dark:border-purple-800">
+            <div class="text-4xl mb-3">🧠</div>
+            <h4 class="font-bold text-lg text-purple-600 dark:text-purple-400">UX Health</h4>
+            <p class="mt-2 text-sm">Readability, navigation, accessibility, mobile/PWA readiness, and performance proxies. Shows where users get stuck or leave.</p>
+          </div>
+          <div class="p-6 bg-white/10 dark:bg-black/20 rounded-2xl border border-blue-200 dark:border-blue-800">
+            <div class="text-4xl mb-3">🎯</div>
+            <h4 class="font-bold text-lg text-blue-600 dark:text-blue-400">SEO Intent</h4>
+            <p class="mt-2 text-sm">E‑E‑A‑T signals (Experience, Expertise, Authoritativeness, Trustworthiness), content depth, readability, and schema markup – aligns your content with search intent. <strong>Keyword placement is a key component of this pillar.</strong></p>
+          </div>
+          <div class="p-6 bg-white/10 dark:bg-black/20 rounded-2xl border border-green-200 dark:border-green-800">
+            <div class="text-4xl mb-3">🤖</div>
+            <h4 class="font-bold text-lg text-green-600 dark:text-green-400">AI Search (AEO)</h4>
+            <p class="mt-2 text-sm">Answerability, structured data, EEAT, scannability, conversational tone, originality, and anti‑AI safety – optimised for AI‑powered search engines (Perplexity, Gemini, ChatGPT).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Tool-specific details (Keyword Checker) -->
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">🔍 What This Tool Specifically Audits</h3>
+        <p class="leading-relaxed">
+          This free on-page SEO checker and keyword optimizer scores any webpage against your target keyword using a <strong>three-layer hybrid audit</strong> — deterministic checks, a page-level AI semantic audit, and a per-placement semantic coverage audit — and delivers a comprehensive report instantly.
+        </p>
+        <p class="leading-relaxed">
+          The tool fetches your page HTML through a secure proxy, then runs three layers of analysis. Deterministic checks run entirely in your browser. Two AI layers — a page-level semantic audit and a per-placement semantic coverage audit — send a text excerpt of your page (title, meta description, H1, headings, image alt text, schema types, and first ~3,500 characters of body content) to our Cloudflare Workers AI endpoint. Results are cached against a content hash for up to 7 days, so identical audits are fast — but any page edit produces a fresh analysis. Nothing else is stored or logged.
+        </p>
+        <ul class="space-y-4 text-base list-disc list-inside ml-4">
+          <li><strong>Meta Title & Description</strong> — keyword placement, optimal length, uniqueness, and CTR appeal.</li>
+          <li><strong>H1–H6 Headings & Content</strong> — relevance, semantic depth, and E-E-A-T signals.</li>
+          <li><strong>URL Structure</strong> — keyword inclusion, readability, and canonical tags.</li>
+          <li><strong>Image Alt Tags & Anchors</strong> — descriptive text, accessibility, and internal linking relevance.</li>
+          <li><strong>Structured Data (Schema)</strong> — valid JSON-LD detection and rich snippet opportunities.</li>
+          <li><strong>Technical SEO</strong> — viewport, robots, html lang, Open Graph, canonical.</li>
+          <li><strong>AI Semantic Audit</strong> — search intent, entity coverage, AEO answerability, and E-E-A-T (author, citation, experience, trust).</li>
+          <li><strong>Semantic Coverage</strong> — grades every on-page placement (title, meta description, H1, H2s, image alts, internal anchors and URL slug) as exact, variant, partial or absent, so you can see where a close variant still counts and where a partial or absent verdict is costing you points.</li>
+        </ul>
+        <p class="leading-relaxed">
+          Get a visual <strong>SEO Score</strong> with gauges, deep‑dive modules, prioritized fixes ranked by impact, and predictive ranking forecasts.
+        </p>
+        <p class="leading-relaxed font-medium">
+          Fully mobile‑friendly with dark/light modes. Actionable, educational insights to elevate rankings and UX quickly.
+        </p>
+      </section>
+
+      <!-- Key Insight -->
+      <section class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-6 rounded-xl">
+        <h3 class="text-xl font-bold mb-3 text-indigo-600 dark:text-indigo-400">Key Insight</h3>
+        <p class="text-sm leading-relaxed">
+          On-page optimization is the core factor you control. Master these elements with our free tool to build stronger relevance and drive sustainable traffic growth.
+        </p>
+      </section>
+
+      <section class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 p-6 rounded-xl">
+        <h4 class="text-2xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">Keyword Placement Tool</h4>
+        <p class="text-base leading-relaxed">
+          We built Traffic Torch to cut through the noise. No fluff, no dark patterns – just honest, actionable data about your site’s findability and user experience. Use it to fix what’s broken, and let your users (and search engines) do the rest.
+        </p>
+      </section>
+
+    </div>
+  </details>
+</div>
+
+<!-- Expandable On-Page SEO Checklist Accordion -->
+<section class="py-6 px-3 max-w-6xl mx-auto">
+  <details class="group">
+    <summary class="px-3 py-4 text-1xl text-center font-black bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl cursor-pointer flex justify-center items-center gap-4 shadow-xl hover:shadow-2xl transition-all duration-300">
+      <span>SEO Keyword Checklist 🗝️</span>
+      <span class="text-3xl transition-transform duration-500 group-open:rotate-180">↓</span>
+    </summary>
+    
+    <div class="mt-12 space-y-12">
+      <!-- Introductory Good vs Bad Practices -->
+      <div class="bg-gray dark:bg-gray-800/70 backdrop-blur rounded-3xl p-2 shadow-2xl border border-gray-200 dark:border-gray-700">
+        <h2 class="text-3xl font-bold text-center mb-10 text-orange-600 dark:text-orange-400">
+        Keyword SEO Practices: What to Do & What to Avoid?
+        </h2>
+        <div class="grid md:grid-cols-2 gap-8 text-lg">
+          <div class="space-y-6">
+            <h3 class="text-2xl font-bold text-green-600 dark:text-green-400">✅ Best Practices to Implement</h3>
+            <ul class="space-y-4 list-disc list-inside text-gray-700 dark:text-gray-300">
+              <li>Place primary keyword naturally in title, H1, and first paragraph.</li>
+              <li>Cover the entities, subtopics and questions a top-ranking page would include.</li>
+              <li>Use descriptive, keyword-relevant alt text for all images.</li>
+              <li>Create compelling meta descriptions with emotional hooks and calls-to-action.</li>
+              <li>Structure content with logical heading hierarchy (one H1, multiple H2/H3).</li>
+              <li>Include internal links with descriptive anchor text to related pages.</li>
+              <li>Add relevant schema markup to enable rich snippets.</li>
+              <li>Align page format (blog, product, service, comparison) with the search intent behind the keyword.</li>
+            </ul>
+          </div>
+          <div class="space-y-6">
+            <h4 class="text-2xl font-bold text-red-600 dark:text-red-400">❌ Common Mistakes to Avoid</h4>
+            <ul class="space-y-4 list-disc list-inside text-gray-700 dark:text-gray-300">
+              <li>Keyword stuffing or unnatural repetition.</li>
+              <li>Chasing a 1–2% keyword density target — modern search evaluates meaning, not repetition.</li>
+              <li>Duplicate or missing title tags and meta descriptions.</li>
+              <li>Images without alt text or with generic filenames.</li>
+              <li>Long paragraphs without subheadings or scannable formatting.</li>
+              <li>Broken internal links or irrelevant external links.</li>
+              <li>Blocking important content with noindex or robots.txt errors.</li>
+              <li>Mismatching page format with the search intent behind the keyword.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="text-center mt-10 text-xl font-medium text-gray-800 dark:text-gray-100">
+          Following these guidelines helps search engines understand and trust your content while delivering superior user experience.
+        </p>
+      </div>
+
+      <!-- Checklist Cards Grid -->
+      <div class="grid md:grid-cols-2 gap-10">
+        <!-- Title, Meta & Core Elements -->
+        <div class="checklist-card bg-gradient-to-br from-green-900/20 to-emerald-900/20 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+          <h3 class="text-2xl font-bold mb-8 text-green-700 dark:text-green-300 flex items-center gap-4">
+            <span class="text-3xl">🗝️</span> Title, Meta &amp; Core Optimization
+          </h3>
+          <div class="space-y-8 text-lg">
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">❌</span>
+              <div class="text-gray-900 dark:text-gray-100">Generic, duplicate, or overly long title tags hurting CTR.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">📈</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>Title Tag Audit</strong>: Optimal length (50–60 chars), primary keyword front-loading, uniqueness &amp; compelling suggestions.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">📜</span>
+              <div class="text-gray-900 dark:text-gray-100">Weak or missing meta descriptions.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">✅</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>Meta Description Optimization</strong>: Ideal length (150–160 chars), keyword integration, emotional hooks &amp; CTR examples.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🔍</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>Canonical & Robots Tags</strong>: Prevent duplicate issues and guide crawlers effectively.</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Keyword & Content Structure -->
+        <div class="checklist-card bg-gradient-to-br from-emerald-900/20 to-teal-900/20 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+          <h3 class="text-2xl font-bold mb-8 text-orange-500 dark:text-orange-300 flex items-center gap-4">
+            <span class="text-3xl">🔑</span> Keyword &amp; Semantic Placement
+          </h3>
+          <div class="space-y-8 text-lg">
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">⚠️</span>
+              <div class="text-gray-900 dark:text-gray-100">Keyword stuffing, thin content, or missing semantic entities.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🎯</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>Keyword &amp; Intent Alignment</strong>: Natural placement in key positions, plus page format matching the search intent behind the keyword.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🧠</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>AI Semantic Coverage</strong>: Entity coverage, subtopic completeness, and question answerability as predicted by the AI layer.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🏗️</span>
+              <div class="text-gray-900 dark:text-gray-100">Poor heading hierarchy or lack of structure.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">📑</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>H1–H6 Audit</strong>: Single H1, logical nesting, keyword integration &amp; content outline improvements.</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Media & Structured Data -->
+        <div class="checklist-card bg-gradient-to-br from-teal-900/20 to-cyan-900/20 dark:from-teal-900/30 dark:to-cyan-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+          <h3 class="text-2xl font-bold mb-8 text-red-400 flex items-center gap-4">
+            <span class="text-3xl">🖼️</span> Images, Schema &amp; Linking
+          </h3>
+          <div class="space-y-8 text-lg">
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">❌</span>
+              <div class="text-gray-900 dark:text-gray-100">Missing alt text or unoptimized images.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">⚡</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>Image Optimization Check</strong>: Descriptive alts, filenames, size/compression flags.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🏷️</span>
+              <div class="text-gray-900 dark:text-gray-100">Absent or invalid schema markup.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🌟</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>Schema Validation</strong>: Type detection, errors, rich results potential.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🔗</span>
+              <div class="text-gray-900 dark:text-gray-100">Weak internal linking or irrelevant anchors.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🕸️</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>Linking Audit</strong>: Internal depth, descriptive anchors, external quality.</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Master Score & Outcomes -->
+        <div class="checklist-card bg-gradient-to-br from-cyan-900/20 to-green-900/20 dark:from-cyan-900/30 dark:to-green-900/30 rounded-2xl p-2 shadow-2xl hover:shadow-3xl hover:-translate-y-3 transition-all duration-300">
+          <h3 class="text-2xl font-bold mb-8 text-green-700 dark:text-green-300 text-center flex items-center justify-center gap-4">
+            <span class="text-3xl">📊</span> Overall Score &amp; Actionable Insights
+          </h3>
+          <div class="space-y-8 text-lg max-w-4xl mx-auto">
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">❓</span>
+              <div class="text-gray-900 dark:text-gray-100">Lack of clear on-page SEO health overview.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">✅</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>Hybrid 0–100 Score</strong>: Deterministic (55) + AI Semantic (15) + Semantic Coverage (30), aggregated transparently.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🤔</span>
+              <div class="text-gray-900 dark:text-gray-100">Unprioritized or generic recommendations.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">✅</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>Prioritized Fixes</strong>: Ranked by potential impact + ease of implementation.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🔒</span>
+              <div class="text-gray-900 dark:text-gray-100">Privacy risks with server-side tools.</div>
+            </div>
+            <div class="flex items-start gap-7">
+              <span class="text-2xl">🛡️</span>
+              <div class="text-gray-900 dark:text-gray-100"><strong>Instant Report</strong>: Mobile-optimized, educational breakdowns, predictive forecasts. Content-hash AI caching for speed without staleness.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-16">
+        <p class="text-2xl font-semibold max-w-3xl mx-auto text-gray-800 dark:text-gray-100">
+          Master this free on-page SEO checklist with our instant audit tool. Unlock fixes and boost your search performance.
+        </p>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- Why it Matters Accordion -->
+<div class="max-w-4xl mx-auto my-16">
+  <details>
+    <summary class="px-2 py-5 text-1xl text-center font-black bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl cursor-pointer flex justify-between items-center gap-4 shadow-2xl hover:shadow-3xl transition-all duration-300">
+      Why Keyword Optimization Matters?
+      <span class="text-3xl transition-transform duration-300 [details[open]>&]:rotate-180">↓</span>
+    </summary>
+    <div class="mt-8 px-2 py-10 bg-gray dark:bg-gray-800 rounded-2xl shadow-inner space-y-10 text-gray-800 dark:text-gray-100">
+      <section class="space-y-5">
+        <h2 class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">On-Page Is Your Core Ranking Foundation</h2>
+        <p class="leading-relaxed">
+          Search engines prioritize pages that clearly demonstrate relevance, authority, and user value through on-page elements.
+        </p>
+        <p class="leading-relaxed">
+          Excelling in on-page SEO directly boosts visibility, engagement, and sustained organic performance.
+        </p> 
+      </section>
+      <section class="space-y-6">
+        <h3 class="text-2xl font-bold text-purple-600 dark:text-purple-400">Proven Real-World Benefits</h3>
+        <div class="space-y-5 text-sm text-gray-800 dark:text-gray-100">
+          <div class="flex gap-4">
+            <div class="text-2xl">📈</div>
+            <div>
+              <strong>Higher Click-Through Rates</strong><br>
+              Keyword-optimized titles and metas drive significantly better CTR in search results.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-2xl">🔝</div>
+            <div>
+              <strong>Improved Rankings</strong><br>
+              Strong relevance and intent signals elevate positions in competitive SERPs.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-2xl">⭐</div>
+            <div>
+              <strong>Enhanced Visibility</strong><br>
+              Valid schema unlocks rich snippets and featured elements.
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-2xl">😊</div>
+            <div>
+              <strong>Better User Experience</strong><br>
+              Structured, accessible content reduces bounce rates and increases engagement.
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/30 p-6 rounded-xl">
+        <h3 class="text-xl font-bold mb-3">The Bottom Line</h3>
+        <p class="text-sm leading-relaxed text-gray-800 dark:text-gray-100">
+          While external factors vary, you fully control on-page excellence, optimize it to gain a lasting edge.
+        </p>
+        <p class="text-sm font-medium mt-4 text-gray-800 dark:text-gray-100">
+          Use our on-page SEO checker to audit, refine, and grow your traffic confidently.
+        </p>
+      </section>
+      <p class="text-center text-sm italic opacity-70 mt-6 text-gray-800 dark:text-gray-100">
+        Perfect on-page → Top organic search results.
+      </p>
+    </div>
+  </details>
+</div>
+
+<section id="faq" class="container mx-auto px-2 py-6 bg-gray dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+  <h2 class="text-4xl md:text-4xl font-extrabold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+    Frequently Asked Questions about On-Page Keyword SEO
+  </h2>
+  <div class="space-y-6 max-w-6xl mx-auto">
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is Meta Title & Description in SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Meta title (the &lt;title&gt; tag) is the clickable headline in search results, while the meta description is the short summary below it. In 2026, they must align with user intent, incorporate the primary keyword naturally near the start, stay within 50-60 characters for titles and 150-160 for descriptions, and support E-E-A-T signals for AI overviews and rich snippets. Traffic Torch scans these instantly for keyword presence, length issues, and CTR potential, to boost visibility and clicks.
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is H1 & Headings optimization?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        The H1 tag is the main on-page heading that defines the page's core topic (ideally one per page, matching search intent and often aligning with the title tag). H2–H6 create a logical hierarchy for subtopics, improving readability, accessibility, and semantic understanding for search engines and AI in 2026. Traffic Torch audits check for keyword inclusion in the primary H1, proper nesting (no skipped levels), and overall structure, offering deep-dive insights.
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is Content Depth & Semantic Coverage in SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Modern SEO no longer rewards keyword density. Google's BERT and MUM models, plus AI Overviews and AI-powered search engines, evaluate meaning, not repetition. In 2026, what matters is whether your page fully covers the entities, subtopics and questions a top-ranking result would. Traffic Torch's AI semantic layer predicts the search intent behind your target keyword, generates the entities and questions a page should cover, and scores how completely your content addresses them — alongside readability, sentence length and paragraph structure. A second AI layer then grades each individual placement (title, meta, H1, H2s, image alts, internal anchors, URL slug) as exact, variant, partial or absent, so you can see where a close variant still counts and where a partial or absent verdict is costing you points. Together these replace the old 1–2% keyword density target with semantic coverage, intent alignment, and AEO answerability.
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is Image Alt Text for SEO & Accessibility?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Alt text (the alt attribute on &lt;img&gt; tags) describes images for screen readers, accessibility compliance (WCAG), and search engines, enabling Google Images rankings and providing contextual signals. In 2026, write descriptive, natural alt text (include keywords only if relevant to the image and page topic), avoid stuffing, and use empty alt="" for purely decorative images. Traffic Torch scans all images for keyword matches, completeness, and relevance, then delivers alt suggestions to improve UX, accessibility scores, and extra traffic from image search.
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is Anchor Text in internal linking?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Anchor text is the visible, clickable text in an &lt;a&gt; tag for internal links. It helps search engines understand the linked page's topic, builds topical clusters, and improves site navigation. In 2026, use natural, descriptive phrases with keyword variations (avoid exact-match overuse or generic terms like "click here"). Traffic Torch analyses internal anchors for target keyword presence and diversity, highlights over-optimization risks, and recommends optimized alternatives to strengthen internal authority and user flow.
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        What is URL & Schema in on-page SEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        URL structure should be clean, readable, and include the target keyword (hyphen-separated, short, no parameters). Schema markup (JSON-LD preferred) is structured data that explicitly tells search engines about your content (e.g., Article, FAQ, Product), enabling rich snippets, enhanced visibility in AI results, and higher CTR. In 2026, both reinforce relevance and trust. Traffic Torch checks URLs or HTML for keyword inclusion and scans for valid schema presence, then provides implementation code snippets and fixes to unlock rich results and predictive ranking improvements.
+      </div>
+    </details>
+
+    <details class="group border border-gray-300 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm bg-gray-50 dark:bg-gray-800 transition-all duration-300">
+      <summary class="flex justify-between items-center px-6 py-5 font-semibold text-lg cursor-pointer list-none group-hover:bg-gray-100 dark:group-hover:bg-gray-700 transition-colors">
+        How does the hybrid AI semantic audit work?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-5 pt-2 text-gray-700 dark:text-gray-300">
+        Traffic Torch uses a three-layer scoring model. The first layer (55 points) is deterministic — hard facts like keyword presence in the title, H1, meta description, image alt text, internal anchors, URL and schema, plus technical hygiene (viewport, robots, canonical, Open Graph), content depth and readability. The second layer (15 points) runs an AI semantic audit via Cloudflare Workers AI. It predicts the search intent behind your keyword, generates the entities and questions a top-ranking page would cover, and scores your page on entity coverage, AEO answerability, semantic coverage and E-E-A-T signals (author, citation, experience, trust). The third layer (30 points) is the Semantic Coverage audit — the same AI classifies every on-page placement (title, meta description, H1, H2s, image alts, internal anchors and URL slug) as exact, variant, partial or absent, then weights them by placement importance (title and H1 count most; image alts and anchors least). All three scores are combined into a single 0–100 result with a transparent breakdown, so you always know which part of the score comes from deterministic checks, which from AI interpretation, and which from per-placement semantic grading.
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- WHAT IS MODERN KEYWORD STRATEGY -->
+<section id="what-is" class="max-w-4xl mx-auto mt-12 mb-12 px-2 sm:px-6 lg:px-8">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    What is a Modern Keyword Strategy?
+  </h2>
+
+  <p class="text-2xl md:text-3xl font-bold text-center mb-10 leading-tight text-gray-900 dark:text-gray-100">
+    <strong>Modern keyword strategy means selecting, grouping, and targeting terms that actually drive qualified traffic. While perfectly aligning with user intent, business goals, and current search behavior.</strong>
+  </p>
+
+  <div class="text-xl leading-relaxed text-center text-gray-700 dark:text-gray-300 max-w-3xl mx-auto space-y-6">
+    <p>Most sites still hunt high-volume keywords: chase vanity metrics, force-fit terms, write generic content around them.</p>
+    <p>Today that produces low-quality traffic, high bounce rates, and fragile rankings that vanish on every update.</p>
+    <p class="font-semibold text-purple-700 dark:text-purple-300">
+      Real keyword success now depends on these interconnected principles:
+    </p>
+    <ul class="list-none space-y-3 font-medium text-gray-500 max-w-lg mx-auto">
+      <li>→ True user intent & SERP understanding.</li>
+      <li>→ Commercial value & conversion potential.</li>
+      <li>→ Topic clusters & semantic depth.</li>
+      <li>→ Realistic competitiveness & opportunity scoring.</li>
+    </ul>
+    <p class="pt-4">
+      <a href="/"><strong>Traffic Torch</strong></a> Keyword Tool instantly analyzes any keyword or seed → scores opportunity → groups semantically → shows intent type, difficulty, value, and gaps.
+    </p>
+  </div>
+</section>
+
+<!-- 6 HIGH-IMPACT MOVES FOR KEYWORD DOMINANCE    -->
+<div id="promo-high-impact-cards" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 pb-12">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    6 High-Impact Moves to Master Keyword Strategy
+  </h2>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30 p-7 rounded-2xl border border-purple-100 dark:border-purple-800/40">
+      <span class="text-4xl flex-shrink-0">1</span>
+      <div>
+        <strong>Start with user-first intent analysis</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Study top 10 SERP — classify informational, commercial, transactional, local. Then build content that matches exactly.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 p-7 rounded-2xl border border-pink-100 dark:border-pink-800/40">
+      <span class="text-4xl flex-shrink-0">2</span>
+      <div>
+        <strong>Prioritize commercial & conversion value</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Score keywords by real business potential (not just volume). Focus on terms that drive leads, sales, or qualified traffic.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-rose-50 to-red-50 dark:from-rose-900/30 dark:to-red-900/30 p-7 rounded-2xl border border-rose-100 dark:border-rose-800/40">
+      <span class="text-4xl flex-shrink-0">3</span>
+      <div>
+        <strong>Build topic clusters, not single pages</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Group related terms semantically. Create pillar + cluster content structure that signals topical authority to Google.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 p-7 rounded-2xl border border-indigo-100 dark:border-indigo-800/40">
+      <span class="text-4xl flex-shrink-0">4</span>
+      <div>
+        <strong>Use realistic difficulty & opportunity scoring</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Combine keyword difficulty, SERP features, domain strength, and intent match, Target winnable, high-value terms first.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/30 dark:to-cyan-900/30 p-7 rounded-2xl border border-blue-100 dark:border-blue-800/40">
+      <span class="text-4xl flex-shrink-0">5</span>
+      <div>
+        <strong>Monitor freshness & seasonal trends</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Prioritize keywords that reward recent content. Catch rising queries early and refresh core pages regularly.</span>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-5 bg-gradient-to-br from-cyan-50 to-teal-50 dark:from-cyan-900/30 dark:to-teal-900/30 p-7 rounded-2xl border border-cyan-100 dark:border-cyan-800/40">
+      <span class="text-4xl flex-shrink-0">6</span>
+      <div>
+        <strong>Competitive keyword gap domination</strong><br>
+        <span class="text-gray-600 dark:text-gray-400">Find terms competitors rank for that you miss. Especially long-tail and question-based search queries.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMPARISON TABLE – OLD vs MODERN KEYWORD      -->
+<section id="promo-old-vs-modern-seo" class="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 py-6">
+  <h2 class="text-4xl md:text-4xl font-black text-center mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+    Old Keyword Hunting vs Modern Keyword Mastery
+  </h2>
+
+  <div class="overflow-x-auto rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
+    <table class="w-full text-left min-w-[640px]">
+      <thead class="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+        <tr>
+          <th class="px-6 py-5 text-lg font-semibold">Factor</th>
+          <th class="px-6 py-5 text-lg font-semibold">Old-School Keyword Hunting</th>
+          <th class="px-6 py-5 text-lg font-semibold">Modern Keyword Mastery Focus</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr>
+          <td class="px-6 py-5 font-medium">Primary Goal:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Rank for highest volume keywords.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Drive qualified, converting traffic.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Selection Criteria:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">High search volume, low difficulty.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent match + commercial value + realistic win probability.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Content Approach:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">One page per keyword.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Topic clusters + semantic depth + pillar content.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Optimization Focus:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Exact-match phrases & density.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent alignment, entity coverage, exact/variant placement coverage, user-first answers, conversational natural language.</td>
+        </tr>
+        <tr>
+          <td class="px-6 py-5 font-medium">Competitive Analysis:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Mostly Keyword difficulty score.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">SERP features, content gaps, intent alignment, freshness.</td>
+        </tr>
+        <tr class="bg-gray-50 dark:bg-gray-900/50">
+          <td class="px-6 py-5 font-medium">Future-Proofing:</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Vulnerable to algorithm shifts.</td>
+          <td class="px-6 py-5 text-gray-700 dark:text-gray-300">Intent + value + topical authority = resilient traffic.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="text-center mt-10 text-lg text-gray-500 dark:text-gray-400">
+    Modern keyword strategy isn’t about ranking for everything. It’s about ranking for the right search queries that actually grow your business.
+  </p>
+</section>
+
+<!-- ===== Integrations ===== -->
+<section id="integrations-teaser" class="py-12 max-w-6xl mx-auto px-4">
+  <div class="text-center mb-8">
+    <h2 class="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+      Works Where You Work
+    </h2>
+    <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 mt-3 max-w-2xl mx-auto">
+      Browser extensions, developer tools and CMS/design plugins — the same audit engine, wherever you build.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <!-- Browser Extensions -->
+    <a href="/integrations/browser-extensions/"
+       class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group"
+       title="Traffic Torch Browser Extensions – Chrome, Firefox & Edge"
+       aria-label="Explore Traffic Torch browser extensions for Chrome, Firefox and Edge">
+      <div class="text-4xl mb-3" aria-hidden="true">🌐</div>
+      <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">
+        Browser Extensions
+      </h3>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        Chrome, Firefox and Edge. Audit any page you're already looking at, in one click.
+      </p>
+      <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+    </a>
+
+    <!-- Developer Tools -->
+    <a href="/integrations/developer-tools/"
+       class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group"
+       title="Traffic Torch Developer Tools – VS Code, GitHub Action & API"
+       aria-label="Explore Traffic Torch developer tools for VS Code, GitHub and the REST API">
+      <div class="text-4xl mb-3" aria-hidden="true">🛠️</div>
+      <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">
+        Developer Tools
+      </h3>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        VS Code extension, GitHub Action and the REST Developer API with webhooks.
+      </p>
+      <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+    </a>
+
+    <!-- Plugins -->
+    <a href="/integrations/plugins/"
+       class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group"
+       title="Traffic Torch Plugins – WordPress, Figma & Framer"
+       aria-label="Explore Traffic Torch plugins for WordPress, Figma and Framer">
+      <div class="text-4xl mb-3" aria-hidden="true">🎨</div>
+      <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">
+        CMS &amp; Design Plugins
+      </h3>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        WordPress, Figma and Framer. Audit SEO and UX where you actually build.
+      </p>
+      <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+    </a>
+
+  </div>
+</section>
+  
+   <!-- Author Bio -->
+<section id="author-bio" class="max-w-5xl mx-auto my-12 px-4 author-bio author-box">
+  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <!-- Hero Gradient Header: Gradient only, no solid bg -->
+    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+      <div class="flex flex-col items-center gap-6 mb-6">
+        <!-- Traffic Torch Logo Only in Hero -->
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: Instant 360° SEO + UX Health Analysis, Audit and Optimization Toolkit" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+      <p class="text-lg md:text-2xl text-gray-400 dark:text-gray-200 max-w-4xl mx-auto font-medium">
+          Dedicated to Precision On-Page Keyword Optimization.
+      </p>
+    </div>
+    <!-- Main Content Area: Transparent, inherits page bg -->
+    <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+      <!-- Tool Mission Description -->
+      <div class="space-y-6">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+        This Keyword On-Page SEO Audit Tool distills years of correlation research and real-world testing into a fast, accurate diagnostic that reveals hidden optimization gaps in seconds.
+        </p>
+      </div>
+      <!-- Creator Entity -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+            <img src="/images/ylia-callan-320w.webp" 
+                 srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+                 sizes="(max-width: 768px) 96px, 128px"
+                 alt="Ylia Callan – Founder of Traffic Torch" 
+                 class="w-full h-full object-cover object-center" loading="lazy">
+          </div>
+          <div class="space-y-4 text-center md:text-left">
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+              Musician • Author • Researcher • Web Designer • TAFE NSW Australia • Creator of privacy-first SEO keyword tools. 
+              Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+            </p>
+            <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+              <a href="https://g.dev/traffictorch" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Google</a>
+              <a href="https://github.com/traffictorch" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">GitHub</a>
+              <a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">LinkedIn</a>
+              <a href="https://x.com/Guitaralize" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">X</a>
+              <a href="https://yliacallan.github.io/music/" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Ylia</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Tech Stack for E-E-A-T -->
+      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Stack Setup</h3>
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Hosted via <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub</a> for blazing-fast static delivery and effortless updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, performance optimizations, and Workers AI for the semantic analysis layer.
+        </p>
+        <p class="text-sm md:text-base text-gray-600 dark:text-gray-400 italic mt-4 max-w-3xl mx-auto">
+            Informed by ongoing analysis of search algorithm updates, ranking factor studies, and performance data from hundreds of optimized pages.
+        </p>
+          <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2025-12-21</p>
+          <p>Last updated: 2026-10-03</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+
+<section class="bottom-banner" aria-label="Traffic Torch visual summary">
+  <picture style="--banner-ratio: 31.25%;"> <!-- 500 / 1600 -->
+<img src="/images/tool-banners/keyword-tool-infographic-1200w.webp" srcset="/images/tool-banners/keyword-tool-infographic-480w.webp 480w, /images/tool-banners/keyword-tool-infographic-800w.webp 800w, /images/tool-banners/keyword-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch Keyword Tool – keyword discovery and SEO optimization insights" width="1200" height="375" loading="lazy" decoding="async">
+  </picture>
+</section>
+
+          <div id="contributions-section"></div>
+      </main>
+
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="/main.js?v=1.2" type="module"></script>
+  <script src="/keyword-tool/plugin-solutions.js?v=1.0" type="module"></script>
+  <script src="/keyword-tool/module-explanations.js?v=1.0" type="module"></script>
+  <script src="/keyword-tool/script.js?v=1.1" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+  
+  <script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
+  
+<!-- ===== UPGRADE MODAL ===== -->
+  <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+    <div class="relative w-full max-w-md bg-white/10 dark:bg-gray-900/80 backdrop-blur-2xl rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto" id="upgradeModalContent" style="-webkit-overflow-scrolling: touch;">
+      <div class="sticky top-0 z-10 flex justify-end" style="margin-bottom: -3rem; pointer-events: none;">
+        <button onclick="window.closeUpgradeModal()" class="w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 text-white dark:text-gray-200 text-2xl font-bold transition" style="border: none; outline: none; pointer-events: auto; backdrop-filter: blur(4px);">&times;</button>
+      </div>
+      <div class="text-5xl mb-4">🚀</div>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Daily Limit Reached</h2>
+      <p class="mt-2 text-gray-600 dark:text-gray-300">You’ve used all your free audits today.<br>Choose a plan to continue:</p>
+      <div class="mt-6 space-y-4">
+        <a href="/upgrade/" class="block w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg text-center">Upgrade to Pro <br> $6/month or $48/year or $198/lifetime</a>
+        <a href="/upgrade/" class="block w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow-lg text-center">Upgrade to Enterprise <br> $68/month or $680/year</a>
+      </div>
+      <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">Pro: 25 audits/day • Enterprise: 300 audits/day + real‑time analytics</p>
+      <button onclick="window.closeUpgradeModal()" class="mt-4 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 underline">Maybe later</button>
+    </div>
+  </div>
+  
+  <noscript>
+  <div>
+    <h2>Keyword Placement Audit &amp; Optimizer Tool</h2>
+    <p>This free on-page SEO checker and keyword optimizer analyzes any webpage against your target keyword using a three-layer hybrid audit — deterministic checks, an AI semantic audit, and a per-placement semantic coverage audit — and delivers a comprehensive report.</p>
+    
+    <h2>How the Keyword Placement Tool Works</h2>
+    <p>Enter a target keyword/phrase and a page URL (or full HTML) to receive an instant audit of keyword usage, semantic coverage, on-page SEO health, and prioritized improvement recommendations.</p>
+    
+    <h2>What Our Keyword Placement Tool Audits</h2>
+    <ul>
+      <li><strong>Meta Title &amp; Description</strong> — keyword placement, optimal length, uniqueness, and CTR appeal.</li>
+      <li><strong>H1–H6 Headings &amp; Content</strong> — relevance, semantic depth, topical coverage, and E-E-A-T signals.</li>
+      <li><strong>URL Structure</strong> — keyword inclusion, readability, and canonical signals.</li>
+      <li><strong>Image Alt Tags &amp; Anchor Text</strong> — descriptive usage, accessibility, and internal linking relevance.</li>
+      <li><strong>Structured Data (Schema)</strong> — valid JSON-LD markup and rich snippet opportunities.</li>
+      <li><strong>Technical SEO</strong> — viewport, robots, html lang, Open Graph, canonical.</li>
+      <li><strong>AI Semantic Audit</strong> — search intent prediction, entity coverage, AEO answerability, and E-E-A-T signals.</li>
+      <li><strong>Semantic Coverage</strong> — per-placement grading (title, meta description, H1, H2s, image alts, internal anchors, URL slug) as exact, variant, partial or absent.</li>
+    </ul>
+
+    <h2>Key Metrics &amp; Modules</h2>
+    <p>The tool provides:</p>
+    <ul>
+      <li>Hybrid 0–100 on-page SEO score (55 deterministic + 15 AI semantic + 30 semantic coverage)</li>
+      <li>Search intent classification and page-intent match analysis</li>
+      <li>Entity coverage and AEO answerability scoring</li>
+      <li>Per-placement semantic coverage (exact / variant / partial / absent) across title, meta, H1, H2s, image alts, anchors, URL</li>
+      <li>E-E-A-T signal breakdown (author, citation, experience, trust)</li>
+      <li>Content gap identification against expected top-ranking coverage</li>
+    </ul>
+
+    <h2>Metric Fix Recommendations</h2>
+    <h3>High-Impact Fixes</h3>
+    <ul>
+      <li>Include primary keyword naturally in meta title (front-loaded), H1, and first 100 words of content.</li>
+      <li>Optimize meta description with keyword + compelling CTR elements (under 160 characters).</li>
+      <li>Ensure keyword appears in URL slug for better relevance signals.</li>
+      <li>Cover the entities, subtopics and questions a top-ranking page would include.</li>
+      <li>Add descriptive keyword-relevant alt text to images.</li>
+      <li>Strengthen internal links with optimized anchor text.</li>
+      <li>Match page format (blog, product, service, comparison) with the search intent behind the keyword.</li>
+    </ul>
+
+    <h2>Best Practices for Keyword Optimization</h2>
+    <p>Focus on user-first intent matching, natural language usage, and building comprehensive topic coverage. Modern search evaluates meaning and intent, not keyword repetition. Ditch the 1–2% density target and focus on entity coverage and semantic depth. Semantic variants that express the same service or topic count — you don't need to repeat the exact keyword phrase everywhere.</p>
+
+    <h2>Navigation</h2>
+    <ul>
+      <li><a href="https://traffictorch.net/">Home</a></li>
+      <li><a href="https://traffictorch.net/keyword-tool/">Keyword Placement Tool</a></li>
+      <li><a href="https://traffictorch.net/keyword-vs-tool/">Keyword Gap Analysis</a></li>
+      <li><a href="https://traffictorch.net/blog/posts/seo-keyword-help-guide/">Keyword Placement Help Guide</a></li>
+    </ul>
+
+    <p><strong>Traffic Torch</strong> – Instant 360° SEO &amp; UX Health Analysis. All reports are mobile-friendly and designed to educate users on improvements.</p>
+  </div>
+</noscript>
+  
+</body>
+</html>

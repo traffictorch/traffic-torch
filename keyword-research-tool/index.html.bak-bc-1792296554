@@ -1,0 +1,1252 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+<!-- Optimized SEO Title & Description -->
+<title>Keyword Research Tool - Smart Suggestions for SEO | Traffic Torch</title>
+<meta name="description" content="Free AI-powered keyword research: Enter a keyword or URL to find intelligent long-tail phrases optimized for classic SEO, Answer Engines and Generative Search.">
+
+<!-- Robots & Canonical -->
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://traffictorch.net/keyword-research-tool/">
+
+<!-- Theme Color -->
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/keyword-research-tool/">
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/keyword-research-tool/">
+
+<!-- Open Graph Tags (Facebook, LinkedIn, etc.) -->
+<meta property="og:title" content="AI Keyword Research Tool - Smarter Suggestions for SEO, AEO, GEO & AIO | Traffic Torch">
+<meta property="og:description" content="Instant free AI keyword ideas: 10–20 high-impact long-tail phrases tailored to your keyword or page content. Optimized for traditional search, answer engines, generative results, and AI-first visibility. Private, fast, no tracking.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://traffictorch.net/keyword-research-tool/">
+<meta property="og:image" content="https://traffictorch.net/keyword-research-tool/images/keyword-research-tool.webp">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+<meta property="og:image:alt" content="Futuristic neon circuit grid with glowing torch flame and text: Keyword Research - SEO · AEO · GEO · AIO">
+<meta property="og:site_name" content="Traffic Torch">
+
+<!-- Twitter Cards (X) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Keyword Research Tool - Smarter Suggestions for SEO, AEO, GEO & AIO | Traffic Torch">
+<meta name="twitter:description" content="Instant free AI keyword ideas: 10–20 high-impact long-tail phrases tailored to your keyword or page content. Optimized for traditional search, answer engines, generative results, and AI-first visibility. Private, fast, no tracking.">
+<meta name="twitter:image" content="https://traffictorch.net/keyword-research-tool/images/keyword-research-tool.webp">
+<meta name="twitter:image:alt" content="Futuristic neon circuit grid with glowing torch flame and text: Keyword Research - SEO · AEO · GEO · AIO">
+<meta name="twitter:site" content="@Guitaralize">
+  
+<!-- Structured Data (JSON-LD) - Merged & Optimized -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://traffictorch.net/#website",
+      "url": "https://traffictorch.net/",
+      "name": "Traffic Torch",
+      "description": "AI-powered SEO and UX tools - instant keyword research, semantic analysis, and optimization insights.",
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://traffictorch.net/keyword-research-tool/#webpage",
+      "url": "https://traffictorch.net/keyword-research-tool/",
+      "name": "AI Keyword Research Tool",
+      "description": "Free AI-powered keyword research: Enter a keyword or URL to get 10–20 intelligent long-tail phrases optimized for classic SEO, Answer Engines (AEO), Generative Engines (GEO), and AI-first search visibility. Powered by Cloudflare Worker AI Model: gemma-4-26b-a4b-it - instant and private.",
+      "isPartOf": {
+        "@id": "https://traffictorch.net/#website"
+      },
+      "primaryImageOfPage": {
+        "@id": "https://traffictorch.net/keyword-research-tool/images/keyword-research-tool.webp"
+      },
+      "image": [
+        "https://traffictorch.net/keyword-research-tool/images/keyword-research-tool.webp",
+        "https://traffictorch.net/keyword-research-tool/images/keyword-research-tool-banner-800x260.webp"
+      ],
+      "datePublished": "2026-03-20T01:14:00+11:00",
+      "dateModified": "2026-09-08T07:22:00+11:00",
+      "author": {
+        "@id": "https://traffictorch.net/#person"
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "breadcrumb": {
+        "@id": "https://traffictorch.net/keyword-research-tool/#breadcrumb"
+      },
+      "mainEntity": {
+        "@id": "https://traffictorch.net/keyword-research-tool/#software"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://traffictorch.net/keyword-research-tool/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://traffictorch.net/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Keyword Research Tool",
+          "item": "https://traffictorch.net/keyword-research-tool/"
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://traffictorch.net/keyword-research-tool/#software",
+      "name": "Traffic Torch Keyword Research Tool",
+      "applicationCategory": "BusinessApplication, UtilitiesApplication, SEO Tool",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "description": "Free AI keyword research tool. Get 10–20 smart long-tail suggestions optimized for SEO, AEO (Answer Engines), GEO (Generative Engines), and AIO (AI-first search). Analyzes your keyword and optional URL for contextual, high-impact phrases.",
+      "url": "https://traffictorch.net/keyword-research-tool/",
+      "image": [
+        "https://traffictorch.net/keyword-research-tool/images/keyword-research-tool.webp",
+        "https://traffictorch.net/keyword-research-tool/images/keyword-research-tool-banner-800x260.webp"
+      ],
+      "author": {
+        "@id": "https://traffictorch.net/#person"
+      },
+      "publisher": {
+        "@id": "https://traffictorch.net/#organization"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://traffictorch.net/#organization",
+      "name": "Traffic Torch",
+      "url": "https://traffictorch.net/",
+      "logo": "https://traffictorch.net/logo-512.webp"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://traffictorch.net/#person",
+      "name": "Ylia Callan",
+      "jobTitle": "Founder & Lead Developer",
+      "worksFor": {
+        "@id": "https://traffictorch.net/#organization"
+      },
+      "url": "https://traffictorch.net",
+      "sameAs": [
+      "https://g.dev/traffictorch",
+      "https://github.com/traffictorch/",
+      "https://orcid.org/0009-0006-4084-0241",
+      "https://www.wikidata.org/wiki/Q139815165",
+      "https://zenodo.org/records/20149616",
+      "https://github.com/traffictorch/traffic-torch",
+      "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+      "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+      "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+      "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+      "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+      "https://www.framer.com/marketplace/plugins/traffic-torch/",
+      "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+      "https://github.com/marketplace/actions/traffic-torch-audit",
+      "https://www.linkedin.com/in/ylia-callan-8b889976/",
+      "https://x.com/Guitaralize"
+     ],
+      "image": "https://traffictorch.net/images/ylia-callan.webp"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do these keyword suggestions improve SEO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our AI-generated suggestions go far beyond generic lists. By analyzing your main keyword and (if provided) your page content, the tool identifies high-impact long-tail phrases, natural question formats, buyer-intent terms, and topic-aligned variations. These help you target low-competition, high-conversion opportunities, build topical authority with semantically related keywords, improve on-page relevance and content depth, boost click-through rates with natural user-focused phrasing, and support internal linking, FAQ sections, and content clusters. The result: better rankings, more organic traffic, and stronger discoverability across search engines."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does this help with AEO and GEO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Suggestions prioritize natural-language questions, direct-answer phrasing, entity-rich terms, unique angles, and citation-friendly language. Exactly what modern answer engines and generative AI search systems reward for top visibility."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are these suggestions suitable for voice search and AI-first results?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes — many suggestions are long-tail, conversational, and question-based, which perform strongly in voice assistants (Siri, Alexa, Google Assistant) and emerging AI-driven search interfaces."
+          }
+        },
+		{
+      "@type": "Question",
+      "name": "How accurate are the keyword suggestions from this tool?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Very accurate for intent and relevance. The AI understands your input keyword and page content (if provided). Suggestions are long-tail, conversational, and optimized for real user queries across search and AI engines. They’re not scraped, they’re intelligently generated."
+        }
+      }
+      ]
+    }
+  ]
+}
+</script>
+  
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <link rel="manifest" href="/manifest.json">
+
+
+    <!-- Main Styles -->
+  <link rel="dns-prefetch" href="https://static.cloudflareinsights.com">
+
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/keyword-research-tool/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style.css?v=1.0">
+    <link rel="stylesheet" href="/keyword-research-tool/style.css?v=1.0">
+  </noscript>
+
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
+  </noscript>
+
+  <link rel="stylesheet" media="print" href="/keyword-research-tool/print.css?v=1.1">
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+  
+  <script src="/shared/avatar.js?v=1.0"></script>
+  <script src="/shared/contributions-renderer.js?v=1.0" type="module"></script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch - SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+<div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+<div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+      
+    <main class="container mx-auto px-2 py-4 max-w-7xl">
+        <div class="text-center mb-10">
+          <h1 class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight">
+            Keyword Generator & Research Tool
+          </h1>
+
+<p class="mt-2 text-center text-lg text-gray-800 dark:text-gray-200 max-w-3xl mx-auto">
+  <a href="/"><strong>Traffic Torch</strong></a> AI analyzes the query and page content to suggest 10–20 high-impact phrases optimized for 
+  <strong class="text-orange-600 dark:text-orange-400">classic SEO</strong>, 
+  <strong class="text-blue-600 dark:text-blue-400">AEO (Answer Engines)</strong>, and
+  <strong class="text-purple-600 dark:text-purple-400">GEO (Generative Engines)</strong>.
+</p>
+    </div>
+
+<!-- Traffic Torch Keyword Research Tool Form -->
+<div class="max-w-4xl mx-auto space-y-4 px-2 py-2">
+
+  <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+
+    <form id="keywordForm" novalidate class="space-y-10">
+
+      <!-- Keyword + URL Section -->
+      <div class="space-y-6">
+        <div class="flex flex-col md:flex-row gap-4">
+          <!-- Main Keywords / Seed -->
+          <div class="flex-1">
+            <label for="seed" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Main keywords or topics
+            </label>
+            <input
+              type="text"
+              id="seed"
+              name="seed"
+              placeholder="wireless headphones, noise cancelling"
+              aria-label="Enter main keywords or topics"
+              aria-describedby="seed-help"
+              required
+              class="w-full px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+              autocomplete="off"
+              spellcheck="false"
+           >
+            <p id="seed-help" class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              Enter one or more seed keywords (recommended)
+            </p>
+          </div>
+
+          <!-- Website URL (optional) -->
+          <div class="flex-1">
+            <label for="url" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Website URL (optional)
+            </label>
+            <input
+              type="text"
+              id="url"
+              name="url"
+              placeholder="example.com/page"
+              aria-label="Enter website URL to analyze"
+              aria-describedby="url-help"
+              class="w-full px-6 py-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-lg shadow-sm"
+              autocomplete="url"
+              inputmode="url"
+              spellcheck="false"
+              data-lpignore="true"
+           >
+            <p id="url-help" class="sr-only">
+              Enter your website URL to analyze current keyword usage and ranking opportunities
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          id="url-analyze-btn"
+          class="w-full py-4 px-6 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold text-lg rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+        >
+          Analyze with URL 
+          <span class="text-xl">🔑</span>
+        </button>
+      </div>
+
+      <!-- Code Analysis Section -->
+      <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+        <label class="block text-center font-medium text-red-700 dark:text-red-300 mb-3">
+          📄 Or paste full HTML Code
+        </label>
+
+        <textarea
+          id="code-input"
+          name="htmlcode"
+          rows="2"
+          placeholder="<!DOCTYPE html>&#10;<html lang=&quot;en&quot;>&#10;&lt;head&gt;&#10;  &lt;title&gt;Best Wireless Headphones 2026&lt;/title&gt;&#10;&lt;/head&gt;&#10;&lt;body&gt;&#10;    &lt;!-- Paste your full page HTML here --&gt;&#10;&lt;/body&gt;&#10;&lt;/html&gt;"
+          class="w-full px-6 py-5 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-orange-500 focus:border-transparent transition-all text-base font-mono resize-y min-h-[120px] shadow-sm"
+          aria-label="Paste HTML code for keyword research"
+          aria-describedby="code-help"
+          autocomplete="off"
+          spellcheck="false"
+          data-vscode-ignore="true"
+        ></textarea>
+        <p id="code-help" class="sr-only mt-2">
+          Paste the complete HTML source code of the page for on-page keyword, semantic terms, and topic clustering analysis
+        </p>
+
+        <button
+          type="button"
+          id="code-analyze-btn"
+          class="mt-6 w-full py-4 px-6 bg-gradient-to-r from-orange-500 to-pink-600 hover:from-orange-600 hover:to-pink-700 text-white font-semibold text-lg rounded-2xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+        >
+          Analyze with Code 
+          <span class="text-xl">🔑</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- In-place Epic Laser Spinner (hidden until submit) — wraps spinner, progress text and tip so they hide together -->
+<div id="loader" class="hidden mt-6 py-8">
+  <div class="flex flex-col items-center justify-center text-center">
+    <svg class="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 block mx-auto" viewBox="0 0 100 100" role="status" aria-label="Loading">
+      <defs>
+        <linearGradient id="ttg-loader-laser" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%"   stop-color="#f97316"/>
+          <stop offset="50%"  stop-color="#ec4899"/>
+          <stop offset="100%" stop-color="#a855f7"/>
+        </linearGradient>
+      </defs>
+      <!-- Track ring -->
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" stroke-width="10"/>
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#374151" stroke-width="10" class="hidden dark:block"/>
+      <!-- Spinning gradient arc — SMIL engine, iPhone-safe -->
+      <circle cx="50" cy="50" r="40" fill="none" stroke="url(#ttg-loader-laser)" stroke-width="10" stroke-linecap="round" stroke-dasharray="80 200">
+        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="0.9s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+
+    <!-- Progress text below the circle -->
+    <h3 id="progress-text" class="mt-8 text-2xl md:text-3xl lg:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-center w-full">
+      Analyzing...
+    </h3>
+
+    <!-- Educational tip below the progress text -->
+    <p id="progress-tip" class="mt-6 text-lg md:text-xl text-center text-gray-600 dark:text-gray-500 max-w-md mx-auto w-full">
+      Fetching page content securely via our CORS proxy...
+    </p>
+  </div>
+</div>
+
+    <!-- Results Section (hidden until complete) -->
+    <div id="results" class="mt-12 hidden">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 md:p-4">
+        <div class="text-center mb-8">
+          <span class="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold text-lg">
+            Intent Detected:
+          </span>
+        </div>
+        
+        <div id="analyzed-page-title" 
+		     class="text-3xl font-black text-center mb-8 text-gray-900 dark:text-white hidden"
+		     role="heading" 
+		     aria-level="2">
+		</div>
+
+        <h2 class="text-3xl font-black text-center mb-8 text-gray-900 dark:text-white">
+          Suggested Keyword Phrases
+        </h2>
+    
+
+        <div class="grid gap-6 md:grid-cols-2" id="suggestionsGrid">
+          <!-- Suggestions injected here by JS -->
+        </div>
+
+        <div class="mt-10 text-center">
+          <p class="text-gray-600 dark:text-gray-500">
+            These phrases are chosen to match intent. 
+          </p>
+        </div>
+
+<!-- Share Dashboard Container -->
+<div id="share-dashboard-container" class="mt-16"></div>
+
+      </div>
+    </div>
+    
+    <!-- ═══════ Ask AI Section (always visible) ═══════ -->
+<div id="ask-ai-section" class="mt-20 max-w-4xl mx-auto px-2">
+  <h2 class="text-3xl font-black text-center mb-2">🤖 Ask Traffic Torch AI For Keywords</h2>
+  <p class="text-center text-gray-600 dark:text-gray-400 mb-6">
+    Get tailored answers about keyword suggestions, content gaps, and optimisation strategies.
+  </p>
+  <div class="flex flex-col sm:flex-row gap-4">
+    <textarea id="ai-question-input" placeholder="e.g., Which suggestions are best for my niche? How do I use these keywords in content?" rows="3" class="flex-1 p-4 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:outline-none resize-y min-h-[60px]"></textarea>
+    <button id="ask-ai-btn" class="px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition disabled:opacity-50 shadow-lg whitespace-nowrap">Ask Traffic Torch AI</button>
+  </div>
+  <div id="ai-answer-container" class="mt-6 hidden">
+    <div id="ai-answer-content" class="bg-gray-100 dark:bg-gray-800 rounded-2xl p-6 text-gray-800 dark:text-gray-200 whitespace-pre-wrap leading-relaxed border border-gray-200 dark:border-gray-700"></div>
+  </div>
+</div>
+    
+        <!-- ===== GA4 & GSC Dashboards ===== -->
+<div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+
+    <!-- GA4 Card -->
+    <div id="ga4-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-orange-500 dark:text-orange-400">Google Analytics 4</h4>
+        <span id="ga4-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="ga4-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Sessions</p>
+          <p id="ga4-sessions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Users</p>
+          <p id="ga4-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">New Users</p>
+          <p id="ga4-new-users" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Page Views</p>
+          <p id="ga4-views" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#analytics';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    📊 Analytics
+  </div>
+  <div id="ga4-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+    <!-- GSC Card -->
+    <div id="gsc-card" class="relative glass rounded-2xl p-6 bg-gradient-to-br from-white/10 to-white/5 dark:from-gray-900/40 dark:to-black/30 border-2 border-transparent bg-clip-padding shadow-2xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all duration-300">
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 opacity-30 blur-sm -z-10"></div>
+      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-cyan-500 to-emerald-500 p-[2px] -z-10">
+        <div class="bg-gray-50 dark:bg-gray-950 rounded-2xl h-full w-full"></div>
+      </div>
+
+      <div class="flex justify-between items-start mb-4">
+        <h4 class="text-xl font-extrabold text-blue-500 dark:text-blue-400">Search Console</h4>
+        <span id="gsc-status" class="inline-flex items-center px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-semibold rounded-full border border-yellow-500/30">● Loading…</span>
+      </div>
+
+      <div id="gsc-last-updated" class="text-xs text-gray-400 mb-4">Loading data…</div>
+
+      <div class="grid grid-cols-2 gap-5">
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Total Clicks</p>
+          <p id="gsc-clicks" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Impressions</p>
+          <p id="gsc-impressions" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">CTR</p>
+          <p id="gsc-ctr" class="text-3xl font-black">—</p>
+        </div>
+        <div class="text-center p-3 rounded-xl bg-white/5 dark:bg-black/20 backdrop-blur-sm border border-white/10 dark:border-white/5">
+          <p class="text-xs uppercase tracking-wider text-gray-400">Avg Position</p>
+          <p id="gsc-position" class="text-3xl font-black">—</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+<div class="mt-4 text-center">
+  <div onclick="window.location.href='https://traffictorch.net/dashboard/#gsc';" 
+       style="display: inline-block !important; padding: 0.6rem 1.8rem !important; background: linear-gradient(135deg, #f97316, #ec4899) !important; color: white !important; font-weight: 700 !important; border-radius: 0.75rem !important; text-decoration: none !important; font-size: 0.9rem !important; opacity: 1 !important; visibility: visible !important; box-shadow: 0 4px 12px rgba(249,115,22,0.4) !important; transition: all 0.2s !important; cursor: pointer !important; z-index: 10 !important; position: relative !important;">
+    🌐 Search Console
+  </div>
+  <div id="gsc-extra-cta" class="mt-2 text-xs"></div>
+</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
+
+<!-- SEO Tools Section -->
+<div class="my-16"></div>
+<div class="tools-grid max-w-7xl mx-auto px-2">
+      <h2 class="text-4xl md:text-4xl font-black text-center mb-4 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
+      SEO Keyword Tools
+      </h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <a href="/keyword-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🗝️</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">Keyword Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">On-page keyword placement</p>
+      </div>
+    </a>
+    <a href="/keyword-vs-tool/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-red-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-red-500/30 group-hover:border-red-400 transition-all">
+        <div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🆚</div>
+        <h3 class="text-orange-500 dark:text-orange-300 text-2xl font-bold mb-3">VS Tool</h3>
+        <p class="text-gray-800 dark:text-gray-100">Competitive keyword gap analysis</p>
+      </div>
+    </a>
+    <a href="/ai-seo-ux-tools/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50">
+      <div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all">
+        <div class="text-green-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div>
+        <h3 class="text-green-400 text-2xl font-bold mb-3">More SEO - UX - AIO Tools</h3>
+        <p class="text-gray-800 dark:text-gray-100">Advanced optimization tools</p>
+      </div>
+    </a>
+  </div>
+</div>
+    
+        <div class="center-btn-container mt-4 mb-4">
+  <button
+    class="copy-link-btn"
+    onclick="navigator.clipboard?.writeText(this.dataset.text) || (function(b){let i=document.createElement('input');i.value=b.dataset.text;document.body.appendChild(i);i.select();document.execCommand('copy');i.remove();})(this); this.textContent='Copied ✓';setTimeout(()=>this.textContent='Copy Link? 🔗',1600);"
+    data-text="https://traffictorch.net/keyword-research-tool/"
+  >
+    Copy Link? 🔗
+  </button>
+</div>
+
+<section id="keyword-research-features-checklist" class="py-6 px-2 max-w-6xl mx-auto">
+  
+  <!-- NEW: Ecosystem intro -->
+  <div class="text-center mb-12 space-y-4">
+    <h2 class="text-3xl md:text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+      The Traffic Torch Ecosystem – All Tools, One Dashboard
+    </h2>
+    <p class="text-lg max-w-3xl mx-auto text-gray-700 dark:text-gray-300">
+      This keyword tool is part of a complete SEO & AI optimization suite. From the <strong>Home Dashboard</strong> you can:
+    </p>
+    <ul class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
+      <li>✅ Run any of 15+ tools</li>
+      <li>✅ Connect GA4 &amp; Search Console</li>
+      <li>✅ View audit history</li>
+      <li>✅ Ask Traffic Torch AI for instant advice</li>
+    </ul>
+  </div>
+
+  <!-- Original feature grid (slightly adapted) -->
+  <div class="grid md:grid-cols-2 gap-10">
+    <!-- Smarter Than Basic Lists -->
+    <div class="challenge-card bg-gradient-to-br from-blue-900/20 to-indigo-900/20 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl p-4 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-center gap-6 mb-6">
+        <span class="text-5xl">🧠</span>
+        <p class="text-xl font-semibold text-gray-800 dark:text-gray-200">Generic keyword lists?</p>
+      </div>
+      <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Relying on shallow or outdated suggestions that ignore your actual content.</p>
+      <div class="mt-6 flex items-center gap-6">
+        <span class="text-5xl">✅</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">AI-Powered Deep Analysis</p>
+          <p class="text-lg text-gray-700 dark:text-gray-300">Cloudflare Worker AI Model: <strong>gemma-4-26b-a4b-it</strong> understands your keyword + page topics to deliver relevant, high-impact long-tail phrases and natural variations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page Topic Integration -->
+    <div class="challenge-card bg-gradient-to-br from-indigo-900/20 to-purple-900/20 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl p-4 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-center gap-6 mb-6">
+        <span class="text-5xl">📄</span>
+        <p class="text-xl font-semibold text-gray-800 dark:text-gray-200">Suggestions disconnected from your page?</p>
+      </div>
+      <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Keyword ideas that don't align with your existing content or brand.</p>
+      <div class="mt-6 flex items-center gap-6">
+        <span class="text-5xl">🎯</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Page-Aware Topic Mixing</p>
+          <p class="text-lg text-gray-700 dark:text-gray-300">If you add a URL, AI extracts your top 3 topics and weaves them into every suggestion — making them on‑brand and highly relevant.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Multi-Engine Optimization -->
+    <div class="challenge-card bg-gradient-to-br from-purple-900/20 to-pink-900/20 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl p-4 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-center gap-6 mb-6">
+        <span class="text-5xl">🔮</span>
+        <p class="text-xl font-semibold text-gray-800 dark:text-gray-200">Only classic SEO focus?</p>
+      </div>
+      <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Missing out on visibility in answer engines, generative results, and AI-driven search.</p>
+      <div class="mt-6 flex items-center gap-6">
+        <span class="text-5xl">🚀</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">SEO + AEO + GEO + AIO Ready</p>
+          <p class="text-lg text-gray-700 dark:text-gray-300">Suggestions optimized for traditional rankings, direct‑answer formats, citation‑friendly phrasing, and AI‑first interfaces. Future‑proof your content.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flexible & Fast -->
+    <div class="challenge-card bg-gradient-to-br from-pink-900/20 to-rose-900/20 dark:from-pink-900/30 dark:to-rose-900/30 rounded-2xl p-4 shadow-2xl hover:shadow-3xl hover:-translate-y-2 transition-all duration-300">
+      <div class="flex items-center gap-6 mb-6">
+        <span class="text-5xl">⚡</span>
+        <p class="text-xl font-semibold text-gray-800 dark:text-gray-200">Slow or complicated tools?</p>
+      </div>
+      <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">Waiting for slow APIs or dealing with limited inputs.</p>
+      <div class="mt-6 flex items-center gap-6">
+        <span class="text-5xl">🔓</span>
+        <div>
+          <p class="font-bold text-green-500 text-xl">Instant & Flexible</p>
+          <p class="text-lg text-gray-700 dark:text-gray-300">Keyword only, URL only, or both. Edge‑fast AI processing with up to 20 targeted, copy‑ready suggestions in seconds.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW: Call to action for the AI assistant -->
+  <div class="mt-16 text-center bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 p-8 rounded-2xl border border-indigo-200 dark:border-indigo-800">
+    <h3 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">🧠 Need even more help?</h3>
+    <p class="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mt-2">
+      After generating suggestions, click <strong>“Ask Traffic Torch AI”</strong> on the results page for tailored content strategies, cluster ideas, and advanced gap analysis – all powered by the same LLM that drives the dashboard.
+    </p>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-4 italic">Available across all 15+ tools in the Traffic Torch suite.</p>
+  </div>
+
+</section>
+
+<section id="keyword-research-seo-checklist" class="py-16 px-2 max-w-6xl mx-auto bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900">
+  <h2 class="text-3xl md:text-3xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
+    How to Use These Keyword Suggestions - Step-by-Step Checklist
+  </h2>
+  <p class="text-center text-xl mb-14 max-w-4xl mx-auto text-gray-800 dark:text-gray-200">
+    Once you have your 10–20 AI-generated keyword phrases, follow this practical checklist to turn them into real SEO, AEO, GEO, and AIO improvements.
+  </p>
+
+  <div class="max-w-4xl mx-auto space-y-10">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+      <h3 class="text-2xl font-bold mb-6 text-indigo-700 dark:text-indigo-400 flex items-center gap-4">
+        <span class="text-4xl">1</span> Review & Prioritize Suggestions
+      </h3>
+      <ul class="space-y-4 text-lg text-gray-700 dark:text-gray-300 list-disc pl-8">
+        <li>Scan for long-tail phrases with clear buyer or question intent</li>
+        <li>Highlight ones that match your page’s top 3 topics (if URL or HTML was provided)</li>
+        <li>Pick 5–8 strongest candidates for implementation</li>
+      </ul>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+      <h3 class="text-2xl font-bold mb-6 text-purple-700 dark:text-purple-400 flex items-center gap-4">
+        <span class="text-4xl">2</span> Map to On-Page Elements
+      </h3>
+      <ul class="space-y-4 text-lg text-gray-700 dark:text-gray-300 list-disc pl-8">
+        <li>Title & H1: Use 1 primary long-tail keyword</li>
+        <li>Introduction & conclusion: Include question-based phrases</li>
+        <li>Image alt text & internal links: Add conversational variants</li>
+      </ul>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+      <h3 class="text-2xl font-bold mb-6 text-pink-700 dark:text-pink-400 flex items-center gap-4">
+        <span class="text-4xl">3</span> Optimize for AEO & GEO
+      </h3>
+      <ul class="space-y-4 text-lg text-gray-700 dark:text-gray-300 list-disc pl-8">
+        <li>Add FAQ schema with 3–5 question-style suggestions</li>
+        <li>Write direct-answer paragraphs for top 2–3 phrases</li>
+        <li>Use entity-rich language and unique insights in content</li>
+        <li>Include statistics or lists where suggestions fit</li>
+      </ul>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700">
+      <h3 class="text-2xl font-bold mb-6 text-rose-700 dark:text-rose-400 flex items-center gap-4">
+        <span class="text-4xl">4</span> Track & Iterate
+      </h3>
+      <ul class="space-y-4 text-lg text-gray-700 dark:text-gray-300 list-disc pl-8">
+        <li>Monitor rankings for primary keywords in Google Search Console</li>
+        <li>Check answer engine visibility (Perplexity, ChatGPT Search)</li>
+        <li>Re-run the tool after updates to find new gaps</li>
+        <li>Build content clusters around related suggestion groups</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="text-center mt-16">
+    <p class="text-2xl font-semibold max-w-3xl mx-auto text-gray-800 dark:text-gray-200">
+      Follow this checklist and turn the keyword suggestions into measurable SEO, AEO, GEO, and AIO wins.
+    </p>
+  </div>
+</section>
+
+<!-- FAQ Accordion -->
+<div id="faq" class="mt-12 max-w-4xl mx-auto px-2">
+  <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-gray-200 mb-8">Frequently Asked Questions</h2>
+  
+  <div class="space-y-4">
+<details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
+  <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
+    How do these keyword suggestions improve SEO?
+    <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+  </summary>
+  <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
+    Our AI-generated suggestions go far beyond generic lists. By analyzing your main keyword and (if provided) your page content, the tool identifies high-impact long-tail phrases, natural question formats, buyer-intent terms, and topic-aligned variations. These help you:
+    <ul class="list-disc pl-6 mt-3 space-y-2">
+      <li>Target low-competition, high-conversion opportunities.</li>
+      <li>Build topical authority with semantically related keywords.</li>
+      <li>Improve on-page relevance and content depth.</li>
+      <li>Boost click-through rates with natural, user-focused phrasing.</li>
+      <li>Support internal linking, FAQ sections, and content clusters.</li>
+    </ul>
+    The result: better rankings, more organic traffic, and stronger discoverability across search engines.
+  </div>
+</details>
+
+    <details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
+        How does this help with AEO and GEO?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
+        Suggestions prioritize natural-language questions, direct-answer phrasing, entity-rich terms, unique angles, and citation-friendly language. Exactly what modern answer engines and generative AI search systems reward for top visibility.
+      </div>
+    </details>
+
+    <details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
+        Are these suggestions suitable for voice search and AI-first results?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
+        Yes — many suggestions are long-tail, conversational, and question-based, which perform strongly in voice assistants (Siri, Alexa, Google Assistant) and emerging AI-driven search interfaces.
+      </div>
+    </details>
+
+    <details class="group rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition">
+      <summary class="flex justify-between items-center cursor-pointer p-6 text-lg font-medium text-gray-800 dark:text-gray-200">
+        How accurate are the keyword suggestions from this tool?
+        <span class="ml-4 text-gray-500 dark:text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+      </summary>
+      <div class="px-6 pb-6 text-gray-800 dark:text-gray-200">
+        Very accurate for intent and relevance. The AI understands your input keyword and page content (if provided). Suggestions are long-tail, conversational, and optimized for real user queries across search and AI engines. They’re not scraped, they’re intelligently generated.
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- ===== Integrations ===== -->
+<section id="integrations-teaser" class="py-12 max-w-6xl mx-auto px-4">
+  <div class="text-center mb-8">
+    <h2 class="text-2xl md:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-600">
+      Works Where You Work
+    </h2>
+    <p class="text-base md:text-lg text-gray-600 dark:text-gray-400 mt-3 max-w-2xl mx-auto">
+      Browser extensions, developer tools and CMS/design plugins — the same audit engine, wherever you build.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <!-- Browser Extensions -->
+    <a href="/integrations/browser-extensions/"
+       class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group"
+       title="Traffic Torch Browser Extensions – Chrome, Firefox & Edge"
+       aria-label="Explore Traffic Torch browser extensions for Chrome, Firefox and Edge">
+      <div class="text-4xl mb-3" aria-hidden="true">🌐</div>
+      <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">
+        Browser Extensions
+      </h3>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        Chrome, Firefox and Edge. Audit any page you're already looking at, in one click.
+      </p>
+      <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+    </a>
+
+    <!-- Developer Tools -->
+    <a href="/integrations/developer-tools/"
+       class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group"
+       title="Traffic Torch Developer Tools – VS Code, GitHub Action & API"
+       aria-label="Explore Traffic Torch developer tools for VS Code, GitHub and the REST API">
+      <div class="text-4xl mb-3" aria-hidden="true">🛠️</div>
+      <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">
+        Developer Tools
+      </h3>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        VS Code extension, GitHub Action and the REST Developer API with webhooks.
+      </p>
+      <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+    </a>
+
+    <!-- Plugins -->
+    <a href="/integrations/plugins/"
+       class="glass rounded-2xl p-6 bg-white/5 dark:bg-black/20 border border-white/10 dark:border-white/5 hover:border-orange-400 transition group"
+       title="Traffic Torch Plugins – WordPress, Figma & Framer"
+       aria-label="Explore Traffic Torch plugins for WordPress, Figma and Framer">
+      <div class="text-4xl mb-3" aria-hidden="true">🎨</div>
+      <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 group-hover:text-orange-500 transition">
+        CMS &amp; Design Plugins
+      </h3>
+      <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        WordPress, Figma and Framer. Audit SEO and UX where you actually build.
+      </p>
+      <span class="mt-4 inline-block text-sm text-orange-500 font-semibold">Explore →</span>
+    </a>
+
+  </div>
+</section>
+
+<!-- Author Bio -->
+<section id="author-bio" class="max-w-5xl mx-auto my-12 px-2 author-bio author-box">
+  <div class="rounded-3xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <!-- Hero Gradient Header -->
+    <div class="bg-gradient-to-br from-orange-500 via-purple-600 to-cyan-600 py-12 px-2 text-center relative">
+      <div class="flex flex-col items-center gap-6 mb-6">
+        <!-- Traffic Torch Logo Only in Hero -->
+        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w, /logo-480w.webp 480w" sizes="(max-width: 768px) 100px, 160px" alt="Traffic Torch: AI Keyword Research Tool - SEO, AEO, GEO & AIO Optimization" class="w-24 h-24 md:w-40 md:h-40 rounded-full shadow-xl object-cover border-4 border-white" width="160" height="160" loading="lazy">
+      </div>
+      <h2 class="text-3xl md:text-5xl font-black text-white mb-3">Traffic Torch</h2>
+      <p class="text-lg md:text-2xl text-white/90 max-w-4xl mx-auto font-medium">
+        AI-Powered Keyword Research Tool
+      </p>
+    </div>
+    <!-- Main Content Area -->
+    <div class="p-2 md:p-12 space-y-10 text-center md:text-left">
+      <!-- Tool Mission Description -->
+      <div class="space-y-6">
+        <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Our AI instantly analyzes your keyword and optional URL, extracts the page’s top topics, and delivers 10–20 high-impact keyword phrases optimized for classic SEO rankings, Answer Engine Optimization (AEO), Generative Engine Optimization (GEO), and emerging AI-first search visibility.
+        </p>
+      </div>
+      <!-- Creator Entity -->
+      <div class="space-y-6 bg-gray-50/50 dark:bg-gray-900/30 p-2 md:p-8 rounded-2xl backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden shadow-xl border-4 border-orange-400 dark:border-orange-500 flex-shrink-0">
+            <img src="/images/ylia-callan-320w.webp" 
+                 srcset="/images/ylia-callan-160w.webp 160w, /images/ylia-callan-320w.webp 320w, /images/ylia-callan-480w.webp 480w"
+                 sizes="(max-width: 768px) 96px, 128px"
+                 alt="Ylia Callan – Founder of Traffic Torch" 
+                 class="w-full h-full object-cover object-center" loading="lazy">
+          </div>
+          <div class="space-y-4 text-center md:text-left">
+            <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-2">Ylia Callan – Lead Developer</h3>
+            <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed">
+              Musician • Author • Researcher • Web Designer • TAFE NSW Australia • Creator of privacy-first keyword research tools. 
+              Bridging creativity, consciousness exploration, and modern technology to build meaningful, performant, and user-centric experiences.
+            </p>
+            <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
+              <a href="https://g.dev/traffictorch" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Google</a>
+              <a href="https://github.com/traffictorch" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">GitHub</a>
+              <a href="https://www.linkedin.com/in/ylia-callan-8b889976/" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">LinkedIn</a>
+              <a href="https://x.com/Guitaralize" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">X</a>
+              <a href="https://yliacallan.github.io/" target="_blank" rel="noopener noreferrer" 
+                 class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-full text-sm font-medium hover:bg-orange-100 dark:hover:bg-gray-700 transition">Ylia</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Tech Stack -->
+      <div class="space-y-6 pt-8 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-2xl md:text-3xl font-black text-orange-500 mb-4">Server Stacks</h3>
+        <p class="text-base md:text-lg text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">
+          Hosted via <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">GitHub</a> for blazing-fast static delivery and updates. Protected and accelerated globally by <a href="https://www.cloudflare.com/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Cloudflare</a> with edge CDN, security, and performance optimizations.
+        </p>
+        <p class="text-sm md:text-base text-gray-800 dark:text-gray-200 italic mt-4 max-w-3xl mx-auto">
+          Powered by real-time Cloudflare AI for intelligent, privacy-first keyword research.
+        </p>
+        <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+          <p>Published: 2026-03-20</p>
+          <p>Last updated: 2026-09-08</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bottom-banner" aria-label="Traffic Torch keyword research tool summary">
+  <picture>
+    <source
+      media="(max-width: 640px)"
+      srcset="https://traffictorch.net/keyword-research-tool/images/keyword-research-tool-banner-480x156.webp">
+    <source
+      media="(min-width: 641px)"
+      srcset="https://traffictorch.net/keyword-research-tool/images/keyword-research-tool-banner-800x260.webp">
+    <img
+      src="https://traffictorch.net/keyword-research-tool/images/keyword-research-tool-banner-800x260.webp"
+      alt="Keyword Research Tool - AI Powered discovery for high impact long tail keyword suggestions"
+      width="800"
+      height="257"
+      loading="lazy"
+      decoding="async">
+  </picture>
+</section>
+
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
+
+	<!-- Breadcrumbs -->
+<div class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+    <a href="/">Traffic Torch</a>
+  </p>
+  <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+    <span id="page-name"></span>
+  </p>
+</div>
+
+<script>
+  // Set page name
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch - ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+          <div id="contributions-section"></div>
+      </main>
+
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+</div>
+</div>
+
+  <script src="/main.js?v=1.2" type="module"></script>
+  <script src="/keyword-research-tool/script.js?v=1.1" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+  
+  <script>
+  (function() {
+    const token = localStorage.getItem('authToken');
+    const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
+
+    function setGA4Status(text, cls, bg) {
+      const el = document.getElementById('ga4-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+    function setGSCStatus(text, cls, bg) {
+      const el = document.getElementById('gsc-status');
+      if (el) { el.textContent = '● ' + text; el.className = 'inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full border ' + cls + ' ' + bg; }
+    }
+
+    function setExtraCTA(containerId, html) {
+      const el = document.getElementById(containerId);
+      if (el) el.innerHTML = html;
+    }
+
+    if (!token) {
+      setGA4Status('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      setGSCStatus('Not connected', 'text-yellow-400', 'bg-yellow-500/20 border-yellow-500/30');
+      document.getElementById('ga4-last-updated').textContent = 'Last updated: demo data';
+      document.getElementById('gsc-last-updated').textContent = 'Last updated: demo data';
+      setExtraCTA('ga4-extra-cta', '');
+      setExtraCTA('gsc-extra-cta', '');
+      return;
+    }
+
+    (async function fetchData() {
+      try {
+        const res = await fetch(API_BASE + '/api/account-info', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const accountInfo = await res.json();
+        const ga4Connected = accountInfo.ga4Connected || false;
+        const gscConnected = accountInfo.gscConnected || false;
+
+        if (ga4Connected) {
+          try {
+            const r = await fetch(API_BASE + '/api/ga4/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const sessions = rows.reduce((s, r) => s + (r.metrics[0] || 0), 0);
+            const users = rows.reduce((s, r) => s + (r.metrics[1] || 0), 0);
+            const views = rows.reduce((s, r) => s + (r.metrics[2] || 0), 0);
+            const newUsers = Math.round(users * 0.25);
+            document.getElementById('ga4-sessions').textContent = sessions;
+            document.getElementById('ga4-users').textContent = users;
+            document.getElementById('ga4-new-users').textContent = newUsers;
+            document.getElementById('ga4-views').textContent = views;
+            document.getElementById('ga4-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGA4Status('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('ga4-extra-cta', '');
+          } catch (e) {
+            setGA4Status('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGA4Status('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('ga4-last-updated').textContent = 'Not connected';
+          setExtraCTA('ga4-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GA4</a>');
+        }
+
+        if (gscConnected) {
+          try {
+            const r = await fetch(API_BASE + '/api/gsc/cached-report?type=overview&days=7', {
+              headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const d = await r.json();
+            const rows = d.data || [];
+            const clicks = rows.reduce((s, r) => s + (r.clicks || 0), 0);
+            const impressions = rows.reduce((s, r) => s + (r.impressions || 0), 0);
+            const ctr = impressions ? (clicks / impressions) : 0;
+            const position = rows.length ? (rows.reduce((s, r) => s + (r.position || 0), 0) / rows.length) : 0;
+            document.getElementById('gsc-clicks').textContent = clicks;
+            document.getElementById('gsc-impressions').textContent = impressions;
+            document.getElementById('gsc-ctr').textContent = (ctr * 100).toFixed(2) + '%';
+            document.getElementById('gsc-position').textContent = position.toFixed(1);
+            document.getElementById('gsc-last-updated').textContent = 'Last updated: ' + new Date().toLocaleString();
+            setGSCStatus('Connected', 'text-green-400', 'bg-green-500/20 border-green-500/30');
+            setExtraCTA('gsc-extra-cta', '');
+          } catch (e) {
+            setGSCStatus('Error', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          }
+        } else {
+          setGSCStatus('Not connected', 'text-red-400', 'bg-red-500/20 border-red-500/30');
+          document.getElementById('gsc-last-updated').textContent = 'Not connected';
+          setExtraCTA('gsc-extra-cta', '<a href="/dashboard/#integrations" class="text-orange-500 hover:underline">Connect GSC</a>');
+        }
+      } catch (err) {
+        console.error('Homepage cards error:', err);
+        setExtraCTA('ga4-extra-cta', '');
+        setExtraCTA('gsc-extra-cta', '');
+      }
+    })();
+  })();
+</script>
+  
+<!-- ===== UPGRADE MODAL ===== -->
+  <div id="upgradeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+    <div class="relative w-full max-w-md bg-white/10 dark:bg-gray-900/80 backdrop-blur-2xl rounded-2xl p-8 text-center border border-white/20 dark:border-white/5 shadow-2xl transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto" id="upgradeModalContent" style="-webkit-overflow-scrolling: touch;">
+      <div class="sticky top-0 z-10 flex justify-end" style="margin-bottom: -3rem; pointer-events: none;">
+        <button onclick="window.closeUpgradeModal()" class="w-10 h-10 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 dark:bg-white/20 dark:hover:bg-white/40 text-white dark:text-gray-200 text-2xl font-bold transition" style="border: none; outline: none; pointer-events: auto; backdrop-filter: blur(4px);">&times;</button>
+      </div>
+      <div class="text-5xl mb-4">🚀</div>
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Daily Limit Reached</h2>
+      <p class="mt-2 text-gray-600 dark:text-gray-300">You’ve used all your free audits today.<br>Choose a plan to continue:</p>
+      <div class="mt-6 space-y-4">
+        <a href="/upgrade/" class="block w-full py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:opacity-90 transition shadow-lg text-center">Upgrade to Pro <br> $6/month or $48/year or $198/lifetime</a>
+        <a href="/upgrade/" class="block w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow-lg text-center">Upgrade to Enterprise <br> $68/month or $680/year</a>
+      </div>
+      <p class="mt-4 text-xs text-gray-400 dark:text-gray-500">Pro: 25 audits/day • Enterprise: 300 audits/day + real‑time analytics</p>
+      <button onclick="window.closeUpgradeModal()" class="mt-4 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 underline">Maybe later</button>
+    </div>
+  </div>
+  
+  <noscript>
+  <div class="max-w-4xl mx-auto px-6 py-12">
+    <h2 class="text-4xl font-bold text-gray-800 dark:text-gray-200 mb-6">Keyword Research Tool - Traffic Torch</h2>
+    
+    <p class="text-xl text-gray-700 dark:text-gray-300 mb-8">
+      Traffic Torch's Keyword Research Tool helps you discover high-impact keywords for your content strategy. 
+      Enter a seed keyword and optionally a target URL or page HTML to receive intelligent, data-driven keyword suggestions.
+    </p>
+
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mt-12 mb-4">What This Tool Audits &amp; Analyzes</h2>
+    <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300">
+      <li><strong>Seed Keyword Analysis</strong>: Evaluates the main keyword you provide and identifies related topics, search intent, and semantic variations.</li>
+      <li><strong>Page Content Extraction (if URL provided)</strong>: When you enter a webpage URL, the tool fetches and analyzes the page content to extract key topics, existing keyword usage, and content gaps.</li>
+      <li><strong>HTML Code Analysis (alternative input)</strong>: Paste your page HTML directly for on-the-fly analysis without needing a live URL.</li>
+      <li><strong>Competitive &amp; Semantic Keyword Generation</strong>: Generates high-value keyword suggestions including long-tail variations, question-based keywords, and topic clusters.</li>
+    </ul>
+
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mt-12 mb-4">How It Works</h2>
+    <p class="text-gray-700 dark:text-gray-300 mb-6">
+      The tool combines your seed keyword with optional page context (URL or HTML) and uses advanced AI to produce actionable keyword recommendations. 
+      These suggestions are designed to improve your SEO performance, content relevance, and ranking potential.
+    </p>
+
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mt-12 mb-6">Typical Tool Results Include:</h2>
+    
+    <div class="space-y-10">
+      <section>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Analyzed Keyword</h3>
+        <p class="text-gray-700 dark:text-gray-300">Example: "best running shoes" or "AI content tools 2026"</p>
+      </section>
+
+      <section>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Generated Keyword Suggestions</h3>
+        <p class="text-gray-700 dark:text-gray-300 mb-4">
+          A rich list of high-potential keywords such as:
+        </p>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-700 dark:text-gray-300">
+          <li>best running shoes for flat feet</li>
+          <li>lightweight marathon running shoes 2026</li>
+          <li>how to choose running shoes for beginners</li>
+          <li>sustainable eco-friendly running shoes</li>
+          <li>running shoes with best cushioning</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Key Benefits &amp; Recommendations</h3>
+        <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300">
+          <li>Target long-tail keywords with lower competition and higher conversion potential.</li>
+          <li>Fill content gaps identified from your existing page (if URL/HTML provided).</li>
+          <li>Build topic clusters for better topical authority and SEO performance.</li>
+          <li>Improve on-page optimization by incorporating suggested terms naturally.</li>
+        </ul>
+      </section>
+    </div>
+
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mt-12 mb-4">Why Use Traffic Torch Keyword Research?</h2>
+    <p class="text-gray-700 dark:text-gray-300">
+      Unlike basic keyword tools, Traffic Torch combines semantic understanding, page context awareness, and practical recommendations. 
+      All reports are designed to be mobile-friendly, educational, and actionable for both beginners and experienced SEO professionals.
+    </p>
+    
+        <p><strong>Try it:</strong> Enter a Seed phrase + URL or paste your HTML in our <a href="https://traffictorch.net/keyword-research-tool/">Keyword Research Tool</a></p>
+
+    <div class="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
+      <p class="text-sm text-gray-600 dark:text-gray-400">
+        <a href="https://traffictorch.net/" class="text-blue-600 dark:text-blue-400 hover:underline">← Back to Traffic Torch Home</a>
+      </p>
+    </div>
+  </div>
+</noscript>
+
+</body>
+</html>

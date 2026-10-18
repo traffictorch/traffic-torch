@@ -1,0 +1,1112 @@
+<!DOCTYPE html> 
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Latest News, Help Guides and Development Updates on Traffic Torch</title>
+    <meta name="description" content="Stay updated with Traffic Torch news: SEO tool help guides, educational posts, audit tool and development process, how to improve seo and UX turorials.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://traffictorch.net/blog/">
+<meta property="og:title" content="Traffic Torch News and AI SEO & UX Development Updates">
+<meta property="og:description" content="Stay updated with Traffic Torch news: SEO tool help guides, educational posts, audit tool and development process, how to improve seo and UX turorials.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://traffictorch.net/blog/">
+<meta property="og:image" content="https://traffictorch.net/blog/images/featured.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Traffic Torch">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Traffic Torch News – AI SEO & UX Updates">
+<meta name="twitter:description" content="Stay updated with Traffic Torch news: SEO tool help guides, educational posts, audit tool and development process, how to improve seo and UX turorials.">
+<meta name="twitter:image" content="https://traffictorch.net/blog/images/featured.webp">
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Traffic Torch News & SEO Blog",
+  "description": "Latest educational articles, guides, and updates on modern SEO, UX optimization, AI search strategies, content authenticity, keyword research, competitive analysis, and predictive ranking techniques.",
+  "url": "https://traffictorch.net/blog/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Traffic Torch Blog",
+  "description": "In-depth educational content covering SEO best practices, UX health signals, AI-powered search optimization, keyword strategies, content humanization, bounce rate reduction, local SEO tactics, and tool usage guides.",
+  "url": "https://traffictorch.net/blog/",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Traffic Torch",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://traffictorch.net/logo-512.webp"
+    }
+  },
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Traffic Torch",
+    "url": "https://traffictorch.net/"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Traffic Torch",
+  "url": "https://traffictorch.net/",
+  "logo": "https://traffictorch.net/logo-512.webp",
+  "sameAs": [
+         "https://g.dev/traffictorch",
+         "https://github.com/traffictorch/",
+         "https://orcid.org/0009-0006-4084-0241",
+         "https://www.wikidata.org/wiki/Q139815165",
+         "https://zenodo.org/records/20149616",
+         "https://github.com/traffictorch/traffic-torch",
+         "https://chromewebstore.google.com/detail/traffic-torch-tools/ngfkdkgjjipecoklnoidfcfidpdafegl",
+         "https://addons.mozilla.org/en-US/firefox/addon/traffic-torch-tools/",
+         "https://microsoftedge.microsoft.com/addons/detail/traffic-torch-tools/cbbabinigplbmdbnkpkeocchccfalemb",
+         "https://marketplace.visualstudio.com/items?itemName=traffic-torch.traffic-torch-dev-tools",
+         "https://wordpress.org/plugins/traffic-torch-ai-geo-and-seo-tools/",
+         "https://www.framer.com/marketplace/plugins/traffic-torch/",
+         "https://www.figma.com/community/plugin/1624971170654319802/traffic-torch-seo-toolkit",
+         "https://github.com/marketplace/actions/traffic-torch-audit",
+         "https://www.linkedin.com/in/ylia-callan-8b889976/",
+         "https://x.com/Guitaralize"
+     ]
+}
+</script>
+
+<!-- BreadcrumbList for consistent site hierarchy -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://traffictorch.net/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "News & Blog",
+      "item": "https://traffictorch.net/blog/"
+    }
+  ]
+}
+</script>
+  <meta name="color-scheme" content="dark light">
+    <!-- Theme Color -->
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <!-- hreflang -->
+<link rel="alternate" hreflang="en" href="https://traffictorch.net/blog/">
+<link rel="alternate" hreflang="x-default" href="https://traffictorch.net/blog/">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+  <!-- Main Styles -->
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+
+  <!-- Preload critical CSS -->
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style.css?v=1.0">
+  </noscript>
+
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
+  </noscript>
+
+  <script>
+    // Apply dark class to <html> immediately (fixes Tailwind dark: variants)
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+  <!-- Main Layout Container - Desktop flex with sidebar -->
+  <div class="flex flex-1 min-h-screen">
+    <!-- Desktop-only Sticky Collapsible Sidebar (hidden on mobile) -->
+	<aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start">      
+	<!-- Sidebar Header with Logo -->
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+            <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch – SEO • UX • AI Analysis Tools" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+<!-- Menu Items -->
+<div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <!-- Collapse/Expand Button - Always visible -->
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition">
+          ←
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content Area (full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header (unchanged logic, but adjusted for desktop sidebar) -->
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <!-- Logo hidden on desktop since in sidebar -->
+          <a href="/" class="flex items-center gap-4 md:hidden">
+          <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch SEO Analysis Tools Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch
+            </p>
+          </a>
+          <!-- Empty spacer on mobile to balance -->
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1">☰</button>
+         
+          <!-- New: Desktop Sidebar Toggle Hamburger (hidden on mobile, right side) -->
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4">
+            ☰
+          </button>
+         
+          <!-- Theme Toggle -->
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl">
+            🌙
+          </button>
+        </div>
+        <!-- Mobile Menu Dropdown (unchanged) -->
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">
+			  ×
+			</button>
+<div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+<!-- Updated news/ feed section -->
+<main id="main-content" class="container mx-auto px-4 py-4">
+<section class="py-4 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+  <div class="max-w-7xl mx-auto px-2">
+    <h1 class="text-5xl font-black text-center mb-8 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+      Traffic Torch News
+    </h1>
+    <p class="text-center text-xl text-gray-800 dark:text-gray-200 mb-16 max-w-3xl mx-auto">
+      Latest updates on SEO, GEO, AEO & UX tools, insights, help guides and behind-the-scenes development.
+    </p>
+</div>
+    
+<div class="grid gap-12">
+      
+<!-- ====== DYNAMIC NEWS FEED (text‑only) ====== -->
+<section class="container section-spacing" style="padding-top:1rem;">
+  <div class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl p-6 md:p-10 border border-white/10 dark:border-white/5">
+    <h2 style="font-size:1.75rem; font-weight:700; margin-bottom:0.25rem; background: linear-gradient(to right, #f97316, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">
+      Latest Updates
+    </h2>
+    <p style="color:var(--text-secondary, #6b7280); margin-bottom:1.5rem;">Fresh posts from the research team.</p>
+
+    <div id="news-list">
+      <p style="color:var(--text-muted, #9ca3af);">Loading posts…</p>
+    </div>
+  </div>
+</section>
+
+<!-- then your existing grid of old articles -->
+<div class="grid gap-12">
+  <!-- your existing <article> tags stay here -->
+</div>
+
+     <!--  Full Blog Posts -->
+     
+     <!-- Article: Decentralised Government Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/decentralised-government-help-guide/" class="block">
+    <img
+      src="/blog/images/governance/decentralised-government-640w.webp"
+      srcset="/blog/images/governance/decentralised-government-640w.webp 640w,
+              /blog/images/governance/decentralised-government-1200w.webp 1200w"
+      sizes="(max-width: 640px) 640px, 1200px"
+      alt="Decentralised Governance Help Guide – Round Table, votes, Objector's Bench, audit chain, and simulator"
+      class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+      loading="lazy"
+      decoding="async"
+      width="640"
+      height="336">
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Decentralised Governance Help Guide – Round Table, Votes, Objector's Bench &amp; Simulator
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete guide to the Traffic Torch Round Table: proposals, phases, quorum, block thresholds, bench pauses, reconsider windows, the tamper-evident audit chain, and the live simulator.
+      </p>
+    </div>
+  </a>
+</article>
+
+    <!-- Article: Traffic Torch Community Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/social-help-guide/" class="block">
+    <img
+      src="/blog/images/social/social-help-guide-640w.webp"
+      srcset="/blog/images/social/social-help-guide-640w.webp 640w,
+              /blog/images/social/social-help-guide-1200w.webp 1200w"
+      sizes="(max-width: 640px) 640px, 1200px"
+      alt="Traffic Torch Community Help Guide – How to post torches, build a profile, connect with other SEOs, earn points, and climb the leaderboard"
+      class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] sm:aspect-[1200/630] mx-auto"
+      loading="lazy"
+      decoding="async"
+      width="640"
+      height="336">
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Traffic Torch Community Help Guide – Torches, Profiles, Leaderboard &amp; Network
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete guide to the Traffic Torch community: post audit torches, build a public profile, connect with other SEOs, earn points, climb the leaderboard, and subscribe via RSS.
+      </p>
+    </div>
+  </a>
+</article>
+     
+<!-- Article: NUSA Tool Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/nusa-tool-help-guide/" class="block">
+    <picture class="block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/nusa-tool/nusa-dashboard-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/nusa-tool/nusa-dashboard-1200w.webp">
+      <img
+        src="/blog/images/nusa-tool/nusa-dashboard-1200w.webp"
+        alt="NUSA Tool Help Guide – Complete walkthrough of the NUSA three-in-one audit: Quit Risk, Lighthouse Plus, and AEO Performance"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="lazy"
+        decoding="async"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        NUSA Tool Help Guide – Quit Risk, Lighthouse Plus &amp; AEO Performance
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete guide to the NUSA tool: run three audits in one click. Learn how to interpret Quit Risk, Lighthouse Plus and AEO Performance scores, connect GA4/GSC, and get AI-driven fixes.
+      </p>
+    </div>
+  </a>
+</article>
+
+<!-- Article: Pro Dashboard, OFUX & Ask AI Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/" class="block">
+    <picture class="block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/dashboard-ofux-ask-ai/pro-dashboard-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/dashboard-ofux-ask-ai/pro-dashboard-1200w.webp">
+      <img
+        src="/blog/images/dashboard-ofux-ask-ai/pro-dashboard-1200w.webp"
+        alt="Pro Dashboard, OFUX & Ask AI Help Guide – Complete walkthrough of Traffic Torch's new dashboard, all-in-one OFUX audit, and AI-powered assistant"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="lazy"
+        decoding="async"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Pro Dashboard, OFUX &amp; Ask AI Help Guide
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete guide to Traffic Torch's new dashboard, OFUX all-in-one audit, and Ask Traffic Torch AI. Learn how to use analytics, connect GA4/GSC, and get AI-driven fixes.
+      </p>
+    </div>
+  </a>
+</article>
+
+<!-- Article: Lighthouse Plus Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/lighthouse-plus-help-guide/" class="block">
+    <picture class="block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/lighthouse-plus/lighthouse-plus-help-guide-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/lighthouse-plus/lighthouse-plus-help-guide-1200w.webp">
+      <img
+        src="/blog/images/lighthouse-plus/lighthouse-plus-help-guide-1200w.webp"
+        alt="Lighthouse Plus Help Guide 2026 – The 10 modules that decide whether your page performs for humans and is ready for AI agents"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="lazy"
+        decoding="async"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Lighthouse Plus Help Guide 2026
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete 2026 guide to Lighthouse Plus: the 10 modules that decide whether a page performs for humans and is ready for AI agents — Core Web Vitals, Accessibility, PWA, Resource Optimisation, Mobile UX, Agentic Browsing and more.
+      </p>
+    </div>
+  </a>
+</article>
+
+<!-- Article: AEO Performance Help Guide -->
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/aeo-performance-help-guide/" class="block">
+    <picture class="block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/aeo-performance/aeo-performance-help-guide-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/aeo-performance/aeo-performance-help-guide-1200w.webp">
+      <img
+        src="/blog/images/aeo-performance/aeo-performance-help-guide-1200w.webp"
+        alt="AEO Performance Help Guide 2026 – The 9 modules that decide whether AI crawlers can render, parse, and extract your content"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="lazy"
+        decoding="async"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        AEO Performance Help Guide 2026
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Complete 2026 guide to AEO and GEO performance: the 9 modules that decide whether AI crawlers and answer engines can crawl, render, parse, and extract your content.
+      </p>
+    </div>
+  </a>
+</article>
+
+<!-- Article: How to Build a Roach Startup for Near Zero -->     
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/roach-startup-help-guide/" class="block">
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/roach-startup-help-guide/roach-startup-guide-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/roach-startup-help-guide/roach-startup-guide-1200w.webp">
+  <img 
+    src="/blog/images/roach-startup-help-guide/roach-startup-guide-1200w.webp" 
+    alt="Cyberpunk cockroach sheriff riding unicorn with green traffic light - Traffic Torch Roach Startup Guide" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+  </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        How to Build a Roach Startup for Near Zero
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+      The Aussie story of building Traffic Torch - a lean, resilient, privacy-first SEO &amp; UX toolkit in six months for basically the cost of a domain name.
+    </p>
+    </div>
+  </a>
+</article>
+
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/research/traffic-torch-whitepaper/" class="block">
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/research/traffic-torch-whitepaper/images/traffic-torch-whitepaper-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/research/traffic-torch-whitepaper/images/traffic-torch-whitepaper-1200w.webp">
+  <img 
+    src="/research/traffic-torch-whitepaper/images/traffic-torch-whitepaper-1200w.webp" 
+    alt="Traffic Torch Whitepaper – AI SEO privacy-first diagnostics and Cooperative Search Optimization"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+  </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Traffic Torch Whitepaper
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+      Download the definitive whitepaper on transitioning to AI SEO with Traffic Torch - privacy-first diagnostics and Cooperative Search Optimization.
+    </p>
+    </div>
+  </a>
+</article>
+      
+ <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/topical-authority-help-guide/" class="block">
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/topical-authority-help-guide/topical-authority-help-guide-640x336.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/topical-authority-help-guide/topical-authority-help-guide-1200w.webp">
+  <img 
+    src="/blog/images/topical-authority-help-guide/topical-authority-help-guide-1200w.webp" 
+    alt="Topical Authority Help Guide – Build Stronger Topical Depth, Subtopic Coverage, E-E-A-T Signals & Content Clusters | Traffic Torch"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+  </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Topical Authority Help Guide
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+      Complete guide to topical authority: what it is, how search engines & AI apps test it, why subtopic depth beats keywords, and how Traffic Torch audits gaps to help you build stronger authority across Google, Bing & Perplexity.
+    </p>
+    </div>
+  </a>
+</article>
+      
+
+ <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/semantic-entity-help-guide/" class="block">
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-banner-640x336.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp">
+  <img 
+    src="/blog/images/semantic-entity-help-guide/semantic-entity-help-guide-1200w.webp" 
+	alt="Semantic Entity Optimization Guide – Traffic Torch Entity Extractor Audit: Coverage, Salience, Relationships, Practices, Readiness, SEO Entities Analysis"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+  </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Semantic Entity Optimization Help Guide
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+      How to boost modern SEO, local/geo visibility, and answer engine results. Discover how Traffic Torch’s Entity Extractor audits your page across six key semantic layers and the highest-ROI optimizations you can apply today.
+    </p>
+    </div>
+  </a>
+</article>
+      
+ <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/ai-voice-search-help-guide/" class="block">
+<picture class="mb-12 block">
+  <source
+    media="(max-width: 640px)"
+    srcset="/blog/images/ai-voice-search-help-guide/ai-voice-search-help-guide-640w.webp">
+  <source
+    media="(min-width: 641px)"
+    srcset="/blog/images/ai-voice-search-help-guide/ai-voice-search-help-guide-1200w.webp">
+  <img
+    src="/blog/images/ai-voice-search-help-guide/ai-voice-search-help-guide-1200w.webp"
+    alt="2026 AI Voice Search Optimization Guide – Conversational SEO, Featured Snippets, Schema Markup – Traffic Torch"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/720] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        AI Voice Search Help Guide
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+      Complete 2026 guide to optimizing for voice search: conversational keywords, featured snippets, schema markup and AI assistant ranking strategies. Plus the 5 critical modules Traffic Torch uses to evaluate voice search readiness, and the highest-ROI optimizations you can implement right now.
+    </p>
+    </div>
+  </a>
+</article>
+
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/schema-markup-help-guide/" class="block">
+<picture class="mb-12 block">
+  <source
+    media="(max-width: 640px)"
+    srcset="/blog/images/schema-markup-help-guide/schema-markup-hero-640w.webp">
+  <source
+    media="(min-width: 641px)"
+    srcset="/blog/images/schema-markup-help-guide/schema-markup-hero-1200w.webp">
+  <img
+    src="/blog/images/schema-markup-help-guide/schema-markup-hero-1200w.webp"
+    alt="Schema Markup Help Guide 2026 – Unlock Rich Results with JSON-LD: FAQ, HowTo, Review, JobPosting, Course & More – Traffic Torch"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Schema Markup Help Guide
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+  What each schema type is, when to use it, and why it matters for rich results, higher CTR, and better traffic in 2026. From core types like Organization & Article to advanced ones like JobPosting, Course, FactCheck & more.
+      </p>
+    </div>
+  </a>
+</article>
+
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/state-of-seo-geo-2026/" class="block">
+<picture class="mb-12 block">
+  <source
+    media="(max-width: 640px)"
+    srcset="/blog/images/state-of-seo-geo-2026/seo-vs-geo-2026-640w.webp">
+  <source
+    media="(min-width: 641px)"
+    srcset="/blog/images/state-of-seo-geo-2026/seo-vs-geo-2026-1200w.webp">
+  <img
+    src="/blog/images/state-of-seo-geo-2026/seo-vs-geo-2026-1200w.webp"
+    alt="State of SEO & GEO in 2026 – Futuristic digital landscape with torch illuminating search rankings, backlinks, AI Overviews, zero-click trends, and Generative Engine Optimization insights – Traffic Torch"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        State of SEO & GEO in 2026: In-Depth Data from Latest Reports
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+		It’s March 2026 and if you’re still measuring SEO success purely by blue-link position and monthly organic clicks, you’re already playing yesterday’s game. I’ve been watching this shift happen in real time, watching position-one traffic evaporate 58–61% the moment an AI Overview appears, watching teams quietly pivot budgets toward citation tracking instead of keyword rankings, and watching the most forward-thinking SEOs start treating ChatGPT, Gemini and Perplexity as primary search surfaces rather than side experiments. 
+      </p>
+    </div>
+  </a>
+</article>
+      
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/seo-ux-audit-help-guide/" class="block">
+    <picture class="mb-12 block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/seo-ux/seo-ux-audit-help-guide-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/seo-ux/seo-ux-audit-help-guide-1200w.webp">
+      <img
+        src="/blog/images/seo-ux/seo-ux-audit-help-guide-1200w.webp"
+        alt="SEO & UX Audit Help Guide: Master On-Page, Mobile, Performance, Accessibility & More – Traffic Torch"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        The Ultimate SEO & UX Audit Guide: What Traffic Torch Actually Measures & Why It Matters?
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Get a complete breakdown of how Traffic Torch delivers your instant 360° SEO + UX health score. Explore each of the 8 core modules (On-Page SEO, Mobile & PWA, Performance, Accessibility, Content Quality, UX Design, Security, Indexability), exactly how we test them in real time, why each factor drives rankings and user satisfaction in 2025–2026, and the most impactful fixes to climb higher in Google. Ideal for site owners, marketers, and SEOs who want to understand the tool deeply and apply the insights immediately.
+      </p>
+    </div>
+  </a>
+</article>
+      
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/local-seo-help-guide/" class="block">
+    <picture class="mb-12 block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/local-seo/local-seo-help-guide-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/local-seo/local-seo-help-guide-1200w.webp">
+      <img
+        src="/blog/images/local-seo/local-seo-help-guide-1200w.webp"
+        alt="The Ultimate Guide to Local SEO: NAP, Keywords, Schema, Maps, Reviews & Structure – Traffic Torch Help Guide"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="lazy"
+        decoding="async"
+        fetchpriority="high"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Local SEO Mastery: NAP, Keywords, Schema & More – Full Help Guide
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Discover exactly how Traffic Torch audits your local SEO health in seconds. Learn what each module tests (NAP consistency, local keywords & titles, content relevance, maps & visuals, structured data, reviews & site structure), why these signals matter for Google’s local pack rankings in 2025–2026, and the highest-impact fixes to boost visibility, clicks and foot traffic. Perfect for local businesses and SEOs.
+      </p>
+    </div>
+  </a>
+</article>
+      
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/seo-intent-help-guide/" class="block">
+    <picture class="mb-12 block">
+      <source
+        media="(max-width: 640px)"
+        srcset="/blog/images/seo-intent/seo-intent-help-guide-640w.webp">
+      <source
+        media="(min-width: 641px)"
+        srcset="/blog/images/seo-intent/seo-intent-help-guide-1200w.webp">
+      <img
+        src="/blog/images/seo-intent/seo-intent-help-guide-1200w.webp"
+        alt="Mastering SEO Intent: E-E-A-T, Content Depth, Readability & Schema – Complete Help Guide"
+        class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+        loading="lazy"
+        decoding="async"
+        fetchpriority="high"
+        width="1200"
+        height="630">
+    </picture>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Mastering SEO Intent: E-E-A-T, Depth, Readability & Schema – Full Help Guide
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        Discover exactly how Traffic Torch measures search intent alignment. Learn what each module tests (E-E-A-T signals, content depth, readability, schema), why these factors drive rankings in 2025–2026, and the highest-impact fixes to boost your positions and traffic. Perfect for anyone serious about modern SEO.
+      </p>
+    </div>
+  </a>
+</article>
+      
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+    <a href="/blog/posts/product-seo-help-guide/" class="block">
+      <picture class="mb-12 block">
+  <source
+    media="(max-width: 640px)"
+    srcset="/blog/images/product-seo/product-seo-help-guide-640w.webp">
+  <source
+    media="(min-width: 641px)"
+    srcset="/blog/images/product-seo/product-seo-help-guide-1200w.webp">
+  <img
+    src="/blog/images/product-seo/product-seo-help-guide-1200w.webp"
+    alt="Complete guide to product page SEO optimization for better rankings and conversions"
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>
+<div class="p-2 md:p-2">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+            Product SEO Help Guide: Boost Rankings & Sales for Your Ecommerce Pages
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+            In this complete help guide you’ll learn what each module really measures, how the tool calculates scores, why it matters for modern SEO + UX, and the fastest fixes that deliver the biggest wins. Ready to turn your product pages into traffic magnets?
+            </p>
+          </div>
+        </a>
+      </article>
+
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+    <a href="/blog/posts/user-experience-help-guide/" class="block">
+      <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/quit-risk/user-experience-help-guide-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/quit-risk/user-experience-help-guide-1200w.webp">
+  <img 
+    src="/blog/images/quit-risk/user-experience-help-guide-1200w.webp" 
+    alt="Complete guide to lowering website quit risk through better UX and SEO" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+	</picture>        
+		<div class="p-2 md:p-2">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+            User Experience Help Guide: How to Slash Quit Risk & Keep Visitors Longer
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+            In this complete help guide you’ll learn what each module really measures, how the tool calculates scores, why it matters for modern SEO + UX, and the fastest fixes that deliver the biggest wins. Ready to turn leavers into loyal readers and buyers?
+            </p>
+          </div>
+        </a>
+      </article>
+
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/seo-keyword-help-guide/" class="block">
+      <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/seo-keywords/seo-keyword-help-guide-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/seo-keywords/seo-keyword-help-guide-1200w.webp">
+  <img 
+    src="/blog/images/seo-keywords/seo-keyword-help-guide-1200w.webp" 
+    alt="How to Master SEO Keywords - In-depth educational guide covering the six core on-page keyword factors analyzed by Traffic Torch" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>         
+<div class="p-2 md:p-2">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+            SEO Keyword Help Guide: Optimize Your Page for Better Rankings
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+			Struggling to rank higher in search results? Keyword optimization is key: strategically place your target keyword in meta titles, headings, content, images, anchors, and URLs to signal relevance to Google. This guide explains each factor—what it is, how it's tested, and why it matters for SEO and UX.
+            </p>
+          </div>
+        </a>
+      </article>
+      
+<article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/seo-keyword-competition-help-guide/" class="block">
+<picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/seo-keyword-competition-help-guide/seo-keyword-competition-help-guide-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/seo-keyword-competition-help-guide/seo-keyword-competition-help-guide-1200w.webp">
+  <img 
+    src="/blog/images/seo-keyword-competition-help-guide/seo-keyword-competition-help-guide-1200w.webp" 
+    alt="2026 Complete educational guide to Traffic Torch's Keyword VS Tool. Explains scoring logic for meta titles, H1 headings, content density, image alt text, anchor text, URL & schema" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>          
+<div class="p-2 md:p-2">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+            Ultimate Guide to Beating Competitors with in On-Page SEO 2026
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+ Complete educational guide to Traffic Torch's Keyword VS Tool. Explains scoring logic for meta titles, H1 headings, content density, image alt text, anchor text, URL & schema — with history, testing methods, SEO/UX importance and fixes.
+            </p>
+          </div>
+        </a>
+      </article>
+      
+              <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="https://traffictorch.net/blog/posts/ai-search-optimization-help-guide/" class="block">
+<picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/ai-search-optimization-help-guide/ai-search-help-guide-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/ai-search-optimization-help-guide/ai-search-help-guide-1200w.webp">
+  <img 
+    src="/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp" 
+    alt="AI search optimization guide banner with Traffic Torch illuminating SEO strategies: Answerability, EEAT, Structured Data, Scannability, Conversational Tone, Readability, Unique Insights & Anti-AI Safety" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>          <div class="p-2 md:p-2">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Ultimate AI Search Optimization Help Guide: Boost Your SEO with Traffic Torch
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+			AI search optimization is the key to getting your content featured in AI-generated overviews and boosting organic traffic. In this guide, you'll learn how Traffic Torch analyzes your pages across 8 critical metrics to improve visibility in tools like Google's Search Generative Experience (SGE).
+            </p>
+          </div>
+        </a>
+      </article>
+      
+        <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="https://traffictorch.net/blog/posts/ai-content-detection-guide/" class="block">
+<picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/ai-content-detection-guide/ai-content-detection-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp">
+  <img 
+    src="/blog/images/ai-content-detection-guide/ai-content-detection-1200w.webp" 
+    alt="2026 AI Content Detection Guide – Human vs AI Writing Patterns: Perplexity, Burstiness, Repetition, Sentence Length, Vocabulary – Traffic Torch" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>          <div class="p-2 md:p-2">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              How to Detect AI-Generated Content: 5 Metrics + Free AI Audit Tool Help Guide
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Complete guide to the 5 metrics Traffic Torch uses to detect AI-written content. Perplexity, Burstiness, Repetition, Sentence Length & Vocabulary – what they are, exactly how the tool tests them, why they matter for SEO/UX, and how to improve your score.
+            </p>
+          </div>
+        </a>
+      </article>
+
+      
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/developing-traffic-torch-tools/" class="block">
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/developing-traffic-torch-tools/traffic-torch-illuminating-seo-dashboard-640w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/developing-traffic-torch-tools/traffic-torch-illuminating-seo-dashboard-1200w.webp">
+  <img 
+    src="/blog/images/developing-traffic-torch-tools/traffic-torch-illuminating-seo-dashboard-1200w.webp" 
+    alt="Traffic Torch illuminating SEO dashboard – Instant AI-powered 360° SEO and UX health score analysis with competitive gaps and predictive insights" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="lazy"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>          <div class="p-2 md:p-2">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Behind the Scenes: Developing Traffic Torch's AI SEO and UX Tools
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              Explore the recent platform enhancements, including educational infographic banners across all tools. Discover how AI-powered deep-dive modules deliver instant health scores, competitive gap analysis, predictive fixes, and mobile-optimized insights.
+            </p>
+          </div>
+        </a>
+      </article>
+      
+
+      <!-- Oldest Post -->
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+        <a href="/blog/posts/traffic-torch-seo-ux-analysis-tool-build/" class="block">
+  <picture class="mb-12 block">
+  <source 
+    media="(max-width: 640px)" 
+    srcset="/blog/images/traffic-torch-seo-ux-analysis-tool-build/traffic-torch-banner-800w.webp">
+  <source 
+    media="(min-width: 641px)" 
+    srcset="/blog/images/traffic-torch-seo-ux-analysis-tool-build/featured.webp">
+  <img 
+    src="/blog/images/traffic-torch-seo-ux-analysis-tool-build/featured.webp" 
+    alt="Traffic Torch instant SEO and UX analysis dashboard with radar chart and module scores" 
+    class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    width="1200"
+    height="630">
+</picture>          <div class="p-2 md:p-2">
+            <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+              Traffic Torch SEO UX Analysis Tool Build: Behind the Scenes in Development 
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+              At Traffic Torch, we set out to revolutionize free SEO and UX auditing by creating a tool that's truly instant, completely private, and deeply educational. No sign-ups, no servers touching your data, no compromises on speed or quality. 
+             </p>
+          </div>
+        </a>
+      </article>
+      
+            
+      <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all">
+  <a href="/blog/posts/ubi-is-coming/" class="block">
+    <!-- SVG Hero (replaces picture) -->
+    <div class="w-full aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] bg-gradient-to-br from-orange-500/20 to-pink-600/20 flex items-center justify-center p-8">
+      <svg viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full max-h-[60vh]">
+        <!-- Background pattern (subtle) -->
+        <defs>
+          <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f97316" stop-opacity="0.2" />
+            <stop offset="100%" stop-color="#ec4899" stop-opacity="0.2" />
+          </linearGradient>
+          <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#f97316" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#ec4899" stop-opacity="0.8" />
+          </linearGradient>
+        </defs>
+        <rect width="800" height="400" fill="url(#g1)" rx="20" />
+        <!-- Coin with rising arrow -->
+        <circle cx="400" cy="200" r="100" fill="#1f2937" stroke="url(#g2)" stroke-width="6" />
+        <circle cx="400" cy="200" r="80" fill="#111827" />
+        <!-- Dollar sign -->
+        <text x="400" y="230" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="url(#g2)" text-anchor="middle" dominant-baseline="central">$</text>
+        <!-- Rising arrow -->
+        <path d="M300 300 L400 180 L500 300" fill="none" stroke="url(#g2)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+        <polygon points="400,160 390,190 410,190" fill="url(#g2)" />
+        <!-- UBI text -->
+        <text x="400" y="340" font-family="Arial, sans-serif" font-size="50" font-weight="bold" fill="#f97316" text-anchor="middle" letter-spacing="8">UBI</text>
+        <text x="400" y="380" font-family="Arial, sans-serif" font-size="24" fill="#ec4899" text-anchor="middle" letter-spacing="2">PRODUCTIVITY DIVIDEND</text>
+        <!-- Small sparkles -->
+        <circle cx="200" cy="120" r="8" fill="#f97316" opacity="0.6" />
+        <circle cx="600" cy="100" r="10" fill="#ec4899" opacity="0.6" />
+        <circle cx="180" cy="300" r="6" fill="#f97316" opacity="0.5" />
+        <circle cx="620" cy="280" r="7" fill="#ec4899" opacity="0.5" />
+      </svg>
+    </div>
+    <div class="p-2 md:p-2">
+      <h2 class="text-3xl font-bold mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">
+        Universal Basic Income (UBI) is Coming
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+        UBI funded by AI productivity. The Productivity Dividend pays citizens, stabilises government, and rewards investors. Here's how the future can actually work.
+      </p>
+    </div>
+  </a>
+</article>
+
+    </div>
+    
+    </section>
+    
+<!-- Share -->
+ <section class="share-block" aria-label="Share options">
+     <div class="share-row">
+        <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+        <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+         </div>
+        <p class="share-status" aria-live="polite"></p>
+   </section>
+
+<!-- Breadcrumbs – semantic & detectable by analyzer -->
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
+
+<script>
+  // Set page name (unchanged)
+  document.getElementById('page-name').textContent = document.title
+    .replace('Traffic Torch – ', '')
+    .replace(' | Traffic Torch', '')
+    .replace(' Tool', '')
+    .trim();
+</script>
+
+<!-- Last Update Date -->
+<div class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <p class="text-sm text-gray-500 dark:text-gray-400">
+    Last updated: <span>2026-05-19</span>
+  </p>
+</div>
+
+<section class="bottom-banner" aria-label="Traffic Torch visual summary">
+  <picture style="--banner-ratio: 22.36%;"> <!-- 275 / 1230 ≈ 22.36% -->
+<img src="/images/tool-banners/seo-ux-tool-infographic-1200w.webp" srcset="/images/tool-banners/seo-ux-tool-infographic-480w.webp 480w, /images/tool-banners/seo-ux-tool-infographic-800w.webp 800w, /images/tool-banners/seo-ux-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch SEO UX Tool – Instant on-page UX health check with accessibility, mobile usability, Core Web Vitals, visual hierarchy analysis and AI-powered optimization fixes" width="1200" height="268" loading="lazy" decoding="async">
+  </picture>
+</section>
+
+    </main>
+
+<div id="footer-placeholder"></div>
+</div>
+</div>
+    
+<script src="/main.js?v=1.2" type="module"></script>
+<script type="module" src="/shared/google-analytics.js"></script>
+
+<script>
+  (function() {
+    const container = document.getElementById('news-list');
+    if (!container) return;
+
+    fetch('/blog/posts/posts.json')
+      .then(res => {
+        if (!res.ok) throw new Error('Network error');
+        return res.json();
+      })
+      .then(posts => {
+        if (!posts || posts.length === 0) {
+          container.innerHTML = '<p style="color:var(--text-muted, #9ca3af);">No posts yet.</p>';
+          return;
+        }
+
+        // Sort by date descending (newest first)
+        posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        let html = '<div style="display:flex; flex-direction:column; gap:1.25rem;">';
+        posts.forEach(post => {
+          html += `
+            <div style="padding-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.06);">
+              <a href="/blog/posts/${post.slug}/" style="text-decoration:none; display:block;">
+                <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary, #111827); margin-bottom:0.25rem; transition:color 0.2s;" onmouseover="this.style.color='#f97316'" onmouseout="this.style.color=''">
+                  ${post.title}
+                </h3>
+                <p style="color:var(--text-secondary, #6b7280); font-size:0.95rem; margin:0 0 0.25rem 0;">${post.excerpt}</p>
+                <time style="font-size:0.8rem; color:var(--text-muted, #9ca3af);">${post.date}</time>
+              </a>
+            </div>
+          `;
+        });
+        html += '</div>';
+
+        container.innerHTML = html;
+      })
+      .catch(err => {
+        container.innerHTML = '<p style="color:var(--text-muted, #9ca3af);">Could not load updates. Please try again later.</p>';
+        console.warn('Feed fetch error:', err);
+      });
+  })();
+</script>
+  
+</body>
+</html>

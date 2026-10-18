@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+
+  <title>Decentralised Governance Help Guide – Round Table, Votes, Objector's Bench, Audit Chain &amp; Simulator | Traffic Torch</title>
+  <meta name="description" content="How the Traffic Torch Round Table works: proposals, phases, votes, quorum, block thresholds, the Objector's Bench, reconsider windows, the audit chain, and the simulator. Complete guide.">
+
+  <link rel="alternate" hreflang="en" href="https://traffictorch.net/blog/posts/decentralised-government-help-guide/">
+  <link rel="alternate" hreflang="x-default" href="https://traffictorch.net/blog/posts/decentralised-government-help-guide/">
+
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/blog/posts/decentralised-government-help-guide/">
+
+  <meta property="og:title" content="Decentralised Governance Help Guide – Round Table, Votes, Objector's Bench &amp; Simulator">
+  <meta property="og:description" content="Complete guide to the Traffic Torch Round Table: proposals, phases, quorum, block thresholds, Objector's Bench pauses, reconsider windows, the audit chain, and the live simulator.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://traffictorch.net/blog/posts/decentralised-government-help-guide/">
+  <meta property="og:image" content="https://traffictorch.net/blog/images/governance/decentralised-government-1200w.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Decentralised Governance Help Guide – Round Table, Votes, Objector's Bench &amp; Simulator">
+  <meta name="twitter:description" content="Proposals, phases, quorum, block thresholds, bench pauses, reconsider windows, audit chain, simulator. Complete guide.">
+  <meta name="twitter:image" content="https://traffictorch.net/blog/images/governance/decentralised-government-1200w.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://traffictorch.net/#organization",
+        "name": "Traffic Torch",
+        "url": "https://traffictorch.net/",
+        "logo": "https://traffictorch.net/logo-512.webp"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://traffictorch.net/#website",
+        "url": "https://traffictorch.net/",
+        "name": "Traffic Torch",
+        "publisher": { "@id": "https://traffictorch.net/#organization" }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://traffictorch.net/blog/posts/decentralised-government-help-guide/#webpage",
+        "url": "https://traffictorch.net/blog/posts/decentralised-government-help-guide/",
+        "name": "Decentralised Governance Help Guide – Round Table, Votes, Objector's Bench, Audit Chain &amp; Simulator",
+        "description": "Complete guide to the Traffic Torch Round Table: proposals, phases, quorum, block thresholds, bench pauses, reconsider windows, the audit chain, and the simulator.",
+        "isPartOf": { "@id": "https://traffictorch.net/#website" },
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://traffictorch.net/blog/images/governance/decentralised-government-1200w.webp",
+          "width": 1200,
+          "height": 630
+        },
+        "datePublished": "2026-10-18T10:00:00+11:00",
+        "dateModified": "2026-10-18T10:00:00+11:00",
+        "author": { "@type": "Organization", "name": "Traffic Torch", "url": "https://traffictorch.net/" },
+        "publisher": { "@id": "https://traffictorch.net/#organization" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://traffictorch.net/" },
+          { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://traffictorch.net/blog/" },
+          { "@type": "ListItem", "position": 3, "name": "Decentralised Governance Help Guide", "item": "https://traffictorch.net/blog/posts/decentralised-government-help-guide/" }
+        ]
+      },
+      {
+        "@type": "BlogPosting",
+        "headline": "Decentralised Governance Help Guide",
+        "description": "How the Traffic Torch Round Table works: proposals, phases, votes, quorum, block thresholds, Objector's Bench, reconsider windows, audit chain, and simulator.",
+        "image": "https://traffictorch.net/blog/images/governance/decentralised-government-1200w.webp",
+        "datePublished": "2026-10-18T10:00:00+11:00",
+        "dateModified": "2026-10-18T10:00:00+11:00",
+        "author": { "@type": "Organization", "name": "Traffic Torch" },
+        "publisher": { "@id": "https://traffictorch.net/#organization" },
+        "mainEntityOfPage": { "@id": "https://traffictorch.net/blog/posts/decentralised-government-help-guide/#webpage" },
+        "keywords": ["decentralised governance","community governance","sortition","objectors bench","audit chain","tamper evident","reconsider window","block threshold","quorum","meta proposals","config proposals","code proposals"]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://traffictorch.net/blog/posts/decentralised-government-help-guide/#faq",
+        "mainEntity": [
+          { "@type": "Question", "name": "What is the Round Table?", "acceptedAnswer": { "@type": "Answer", "text": "The Round Table is Traffic Torch's community governance system. Every eligible user has equal voting authority, there are no administrators inside the system, and every decision is recorded on a tamper-evident audit chain. Proposals move through four phases — Propose, Discuss, Vote, Execute — with fixed rules that can only be changed by another vote." } },
+          { "@type": "Question", "name": "Do I need an account to view the Round Table?", "acceptedAnswer": { "@type": "Answer", "text": "No. All proposals, votes, comments, bench activity, and the audit chain are publicly readable. You only need an account to submit a proposal, cast a vote, or leave a comment." } },
+          { "@type": "Question", "name": "How is eligibility determined?", "acceptedAnswer": { "@type": "Answer", "text": "An account must be at least 7 days old AND have either a verified profile (email verification or higher) OR a public profile. This is the exact rule the server enforces. It prevents brand-new accounts from voting while remaining open to anyone who has actually participated." } },
+          { "@type": "Question", "name": "What are the four kinds of proposal?", "acceptedAnswer": { "@type": "Answer", "text": "Advisory records community signal but applies no automatic change. Config changes a config key (thresholds, quorum, block) and applies immediately on pass. Meta changes the rules, thresholds, or the constitution itself; it needs 75% YES and applies after a 72-hour delay. Code links to a pull request that a human must merge — nothing auto-merges." } },
+          { "@type": "Question", "name": "Why is the meta threshold higher?", "acceptedAnswer": { "@type": "Answer", "text": "Meta proposals change the rules that govern every other proposal. A 75% threshold instead of 66% adds friction precisely where the risk of gaming is highest. Combined with the 72-hour apply delay and the 30-day reconsider window, it means a rule change can only stick if it survives multiple rounds of scrutiny." } },
+          { "@type": "Question", "name": "What is the 25% block threshold for?", "acceptedAnswer": { "@type": "Answer", "text": "The block protects minority positions. If 25% or more of votes cast are NO, the proposal fails regardless of how many YES votes it received. Without this, a bare 66% majority could steamroll a substantial opposition on every decision. The block makes 66% a necessary but not sufficient condition for passing." } },
+          { "@type": "Question", "name": "Can a bare majority pass anything?", "acceptedAnswer": { "@type": "Answer", "text": "No. Config, Code, and Advisory proposals need 66% YES AND under 25% NO. Meta proposals need 75% YES AND under 25% NO. Quorum must also be met — at least max(10, 20% of eligible). A proposal that clears the pass threshold can still fail on the block." } },
+          { "@type": "Question", "name": "Can a NO minority block a proposal even at 90% YES?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. If NO reaches 25% of votes cast, the proposal fails even at 90% YES. This is intentional: the block exists to stop bare majorities from overriding substantial opposition. The only way to reverse a passed proposal is the reconsider window (see below), and the only way to reverse a blocked proposal is a new proposal with lower opposition." } },
+          { "@type": "Question", "name": "How long do votes last?", "acceptedAnswer": { "@type": "Answer", "text": "Every vote runs 5 days from vote_starts_at to vote_ends_at, regardless of proposal kind. Comment periods before voting opens differ by kind: Meta 30 days, Config 14 days, Code 14 days, Advisory 7 days. An Objector's Bench pause extends vote_ends_at by 72 hours without reducing voters' time." } },
+          { "@type": "Question", "name": "What happens if quorum isn't met?", "acceptedAnswer": { "@type": "Answer", "text": "The proposal returns outcome no_quorum and fails. Quorum is the larger of 10 votes or 20% of eligible. It prevents a tiny minority from closing a proposal when the electorate has not engaged. A no_quorum failure does not consume the proposer's 14-day cooldown as harshly as a rejection — they can resubmit within 7 days." } },
+          { "@type": "Question", "name": "How do I submit a proposal?", "acceptedAnswer": { "@type": "Answer", "text": "Log in, go to /community/round-table/, click New Proposal, choose a kind and category, write the body in Markdown, and submit. The proposal enters the Discuss phase immediately and cannot open a vote until the comment period for that kind has elapsed." } },
+          { "@type": "Question", "name": "What is the Objector's Bench?", "acceptedAnswer": { "@type": "Answer", "text": "The Bench is a small randomly-drawn group of eligible users who can pause any open vote for 72 hours by filing a public objection. It can only slow a vote — it cannot pass, block, or alter any proposal. Each member can file one objection per proposal with a 30-day cooldown, and a pause extends the vote deadline by 72 hours so voters keep their full 5 days." } },
+          { "@type": "Question", "name": "Can the Bench block or pass a proposal?", "acceptedAnswer": { "@type": "Answer", "text": "No. The Bench can only pause. It has no veto, no approval, and no way to alter the outcome. A bench pause is an attention device — it forces extra discussion by extending the vote by 72 hours. The actual decision is still made by the full electorate." } },
+          { "@type": "Question", "name": "How do I trigger a reconsider?", "acceptedAnswer": { "@type": "Answer", "text": "Within 30 days of a proposal passing, 10% of eligible users can sign a reconsider request. If that threshold is reached, a new vote opens on the same proposal with the same rules. A second-pass rejection reverses the original resolution; a second-pass approval confirms it." } },
+          { "@type": "Question", "name": "How do I verify a vote result?", "acceptedAnswer": { "@type": "Answer", "text": "Open the proposal's page and look for the audit chain entries: each vote, comment, close, and execute event is hashed with SHA-256 and chained to the previous entry. The /api/rt/audit/verify endpoint returns an intact-or-broken status for any range. The simulator's audit ticker demonstrates this live — click Tamper on any block and watch every downstream block turn red." } },
+          { "@type": "Question", "name": "Who can change the constitution?", "acceptedAnswer": { "@type": "Answer", "text": "Only a Meta proposal. The constitution is self-amending: it can be changed by the same voting mechanism it defines, and only by clearing 75% YES with under 25% NO, then surviving the 72-hour apply delay and the 30-day reconsider window. No administrator, no founder privilege, no override." } }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+  <link rel="apple-touch-icon" sizes="192x192" href="/logo-192.webp">
+  <link rel="apple-touch-icon" sizes="512x512" href="/logo-512.webp">
+  <meta name="apple-mobile-web-app-title" content="Torch">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" type="image/webp" sizes="192x192" href="/logo-192.webp">
+  <link rel="icon" type="image/webp" sizes="512x512" href="/logo-512.webp">
+
+  <link rel="alternate" type="application/rss+xml" title="Traffic Torch — all torches" href="/torches/feed.xml">
+
+  <link rel="preconnect" href="https://static.cloudflareinsights.com">
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="/blog/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="/style.css?v=1.0">
+    <link rel="stylesheet" href="/blog/style.css?v=1.0">
+  </noscript>
+
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript>
+    <style>html{visibility:visible;opacity:1}</style>
+    <link rel="stylesheet" href="/tailwind-local.css?v=1.0">
+  </noscript>
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+
+  <div class="flex flex-1 min-h-screen">
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start" aria-label="Primary navigation">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">
+            Traffic Torch
+          </span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 dark:hover:bg-white/10 rounded-lg transition" aria-label="Collapse sidebar">←</button>
+      </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col">
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1" aria-label="Open mobile menu">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4" aria-label="Toggle sidebar">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl" aria-label="Toggle theme">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10" aria-label="Mobile menu">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <main class="py-16 bg-gray-50/80 dark:bg-gray-950/80 backdrop-blur-sm">
+        <article class="max-w-7xl mx-auto px-2">
+          <div class="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-2 md:p-4 prose prose-lg dark:prose-invert max-w-none border border-white/10 dark:border-white/5">
+
+            <picture class="mb-12 block">
+              <source media="(max-width: 640px)" srcset="/blog/images/governance/decentralised-government-640w.webp">
+              <source media="(min-width: 641px)" srcset="/blog/images/governance/decentralised-government-1200w.webp">
+              <img
+                src="/blog/images/governance/decentralised-government-1200w.webp"
+                alt="Decentralised governance help guide – Round Table, proposals, votes, Objector's Bench, audit chain, and simulator"
+                class="w-full rounded-2xl shadow-xl object-cover aspect-[1200/630] md:aspect-[4/3] lg:aspect-[16/9] max-h-[60vh] mx-auto"
+                loading="eager" decoding="async" fetchpriority="high" width="1200" height="630">
+            </picture>
+
+            <h1 class="text-3xl text-center md:text-4xl lg:text-5xl font-black mb-5 bg-gradient-to-r from-orange-400 via-pink-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+              Decentralised Governance Help Guide – Round Table, Votes, Objector's Bench, Audit Chain &amp; Simulator
+            </h1>
+
+            <p class="text-xl md:text-2xl text-center font-medium text-gray-700 dark:text-gray-300 mb-10 leading-relaxed max-w-4xl">
+              How the Traffic Torch Round Table turns every decision into a public, verifiable, reversible process — and how you can watch it happen in 30 seconds.
+            </p>
+
+            <div class="prose prose-lg prose-orange dark:prose-invert max-w-none mb-12">
+              <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg">
+                The Traffic Torch <strong>Round Table</strong> is a live governance system running on the same site you're reading now. Every eligible user has equal voting authority. No admin table exists — by design. Every action is hash-chained and publically verifiable. Every decision is reversible. And every rule can be changed, but only by clearing the highest threshold on the site.
+              </p>
+              <p class="text-gray-800 dark:text-gray-200 leading-relaxed text-lg mt-6">
+                This guide walks through the whole system: how proposals work, how votes are decided, how the block threshold protects minorities, how the Objector's Bench can pause but never block, how the audit chain proves nothing was altered, and how the simulator lets you watch the rules play out with no account, no vote, and no commitment.
+              </p>
+            </div>
+
+            <nav id="table-of-contents" class="bg-white dark:bg-gray-900 p-4 md:p-6 mt-10 rounded-2xl shadow-lg mb-12 border border-gray-200 dark:border-gray-700 sticky top-4 z-10">
+              <h2 class="text-2xl md:text-3xl font-black text-center text-gray-800 dark:text-gray-100 mb-6 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Table of Contents</h2>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[600px]">
+                  <thead>
+                    <tr class="bg-gray-100 dark:bg-gray-800/80">
+                      <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Section</th>
+                      <th class="p-4 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 text-center">Quick Link</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-gray-800 dark:text-gray-200">
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">1. What is the Round Table?</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#what-is" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">2. The founding documents</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#founding" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">3. Four kinds of proposal</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#kinds" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">4. Four phases</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#phases" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">5. Eligibility</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#eligibility" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">6. The vote — quorum, thresholds, and the block</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#vote" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">7. The Objector's Bench</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#bench" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">8. The reconsider window</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#reconsider" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">9. Execution by kind</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#execute" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">10. The audit chain</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#audit" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">11. The simulator</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#simulator" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">12. Equal authority — no admins</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#equal" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"><td class="p-4 font-medium border-b border-gray-200 dark:border-gray-700">13. Amending the constitution</td><td class="p-4 text-center border-b border-gray-200 dark:border-gray-700"><a href="#amend" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                    <tr><td class="p-4 font-medium">14. FAQ</td><td class="p-4 text-center"><a href="#faq" class="text-orange-600 dark:text-orange-400 hover:underline">Jump →</a></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="mt-6 text-center text-sm md:text-base text-gray-600 dark:text-gray-400 flex flex-wrap justify-center gap-4 md:gap-6">
+                <a href="#vote" class="text-orange-600 dark:text-orange-400 hover:underline">How votes are decided</a>
+                <a href="#bench" class="text-orange-600 dark:text-orange-400 hover:underline">The Objector's Bench</a>
+                <a href="#simulator" class="text-orange-600 dark:text-orange-400 hover:underline">The simulator</a>
+                <a href="#faq" class="text-orange-600 dark:text-orange-400 hover:underline">Frequently asked questions</a>
+              </div>
+            </nav>
+
+            <div class="mt-12 p-4 md:p-6 rounded-2xl border border-orange-200 dark:border-orange-800 bg-white/5 dark:bg-black/20 backdrop-blur-sm text-center">
+              <p class="text-xl md:text-2xl font-black mb-4 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">See it work</p>
+              <p class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-6 leading-relaxed max-w-2xl mx-auto">
+                Watch a governance decision move from proposal to execution in 30 seconds — no account needed.<br>
+                <span class="text-orange-600 dark:text-orange-400 font-semibold">Free • Public • No commitment.</span>
+              </p>
+              <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="/community/round-table/" class="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold text-base rounded-xl hover:brightness-110 transition-all duration-300 shadow-xl shadow-orange-500/30">Enter the Round Table →</a>
+                <a href="/community/round-table/simulator/" class="inline-block px-6 py-3 bg-white/10 border border-orange-500/40 text-orange-600 dark:text-orange-400 font-bold text-base rounded-xl hover:bg-orange-500/10 transition">Open the simulator →</a>
+              </div>
+            </div>
+
+            <!-- SECTION 1 -->
+            <section id="what-is" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">1. What is the Round Table?</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">The <strong>Round Table</strong> is the governance system that runs inside Traffic Torch. Every eligible user has one vote, and only one vote. No administrator can override a decision. No single account can edit the rules. Every proposal, comment, vote, objection, reconsideration, and execution is recorded on a public chain of hashes so that anyone can verify what actually happened.</p>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-4">It runs on four principles:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Equal authority.</strong> No privileged accounts. There is no admin table in the database. Every rule applies to every user identically, including the person who wrote the code.</li>
+                  <li><strong>Tamper-evident.</strong> Every action produces a SHA-256 hash chained to the previous one. Modify any historic entry and the chain breaks — visibly.</li>
+                  <li><strong>Minority-protected.</strong> The 25% block threshold means a 66% majority is necessary but not sufficient. Substantial opposition can stop any proposal.</li>
+                  <li><strong>Reversible.</strong> Every resolution can be reopened within 30 days by 10% of eligible users. Nothing is permanent.</li>
+                </ul>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">Live URL: <a href="/community/round-table/" class="text-orange-600 dark:text-orange-400 hover:underline">/community/round-table/</a>. The constitution, founding document, and maintainer-powers document are all published alongside.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 2 -->
+            <section id="founding" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">2. The founding documents</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">The system ships with three published documents and seven seed proposals that bootstrap the community from a blank database:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Constitution.</strong> The rules. Amendments require a Meta proposal to clear 75% YES with under 25% NO. <a href="/community/round-table/constitution/" class="text-orange-600 dark:text-orange-400 hover:underline">/community/round-table/constitution/</a></li>
+                  <li><strong>Founding Document.</strong> The origin story and the initial commitments: why the system exists, what it will never do, what early adopters agreed to. <a href="/community/round-table/founding/" class="text-orange-600 dark:text-orange-400 hover:underline">/community/round-table/founding/</a></li>
+                  <li><strong>Maintainer Powers.</strong> A short, explicit list of what the code maintainer can and cannot do. Merging code, applying an already-approved config, running the R2 attachment purge — and nothing else. <a href="/community/round-table/maintainer-powers/" class="text-orange-600 dark:text-orange-400 hover:underline">/community/round-table/maintainer-powers/</a></li>
+                </ul>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">The seven seed proposals are pre-loaded when the governance tables are first created. They cover: ratifying the constitution, electing the first bench, enabling configurable pass thresholds, setting the initial consider window at 30 days, enabling reconsideration, publishing the maintainer powers, and bootstrapping the audit chain. All seven are visible in the feed from day one, so the community isn't starting from an empty board.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 3 -->
+            <section id="kinds" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">3. Four kinds of proposal</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Every proposal has a kind. The kind determines the pass threshold, the apply mechanism, and how the outcome affects the site:</p>
+                <div class="not-prose overflow-x-auto mt-4">
+                  <table class="w-full text-left border-collapse min-w-[600px] text-sm">
+                    <thead>
+                      <tr class="bg-gray-100 dark:bg-gray-800/80">
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Kind</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Threshold</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">What it changes</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">On pass</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-gray-800 dark:text-gray-200">
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Advisory</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">66%</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Nothing structural. Records community signal.</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Recorded only</td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Config</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">66%</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">A config key: thresholds, quorum, block percentage.</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Applied immediately</td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Meta</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>75%</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">The rules themselves — constitution, cadence, meta thresholds.</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Applied after 72-hour delay</td></tr>
+                      <tr><td class="p-3"><strong>Code</strong></td><td class="p-3">66%</td><td class="p-3">A code change, linked to a pull request.</td><td class="p-3">Records intent — human must merge PR</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">The kind is set at creation and cannot be changed afterwards. If a proposal's body drifts from its kind, voters reject it on those grounds — and usually do.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 4 -->
+            <section id="phases" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">4. Four phases</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Every proposal moves through the same four phases in the same order. Each phase has a minimum duration that depends on the kind:</p>
+                <div class="not-prose overflow-x-auto mt-4">
+                  <table class="w-full text-left border-collapse min-w-[500px] text-sm">
+                    <thead>
+                      <tr class="bg-gray-100 dark:bg-gray-800/80">
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Phase</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Duration</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">What can happen</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-gray-800 dark:text-gray-200">
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Propose</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Instant</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Author submits body, kind, category. Enters Discuss immediately.</td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Discuss</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Meta 30d · Config 14d · Code 14d · Advisory 7d</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Comments, amendments by the author, bench discussion.</td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Vote</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">5 days (all kinds)</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">Yes / No / Abstain. Bench objection can extend this by 72h.</td></tr>
+                      <tr><td class="p-3"><strong>Execute</strong></td><td class="p-3">Per kind</td><td class="p-3">Config immediate · Meta 72h delayed · Code pending merge · Advisory recorded</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">A proposal cannot skip a phase. The comment period must fully elapse before the author can open the vote. The vote must fully elapse before it can be closed. The execute step applies exactly what the voter was told would happen.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 5 -->
+            <section id="eligibility" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">5. Eligibility — who can vote</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">The eligibility rule is one line of code and it is the exact rule the server enforces:</p>
+                <pre class="bg-gray-100 dark:bg-black/40 rounded-lg p-4 text-sm overflow-x-auto text-gray-800 dark:text-gray-200"><code>eligible = account_age_days &gt;= 7
+        &amp;&amp; (verified_at IS NOT NULL OR profile_public = 1)</code></pre>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-4">That means: the account must be at least seven days old AND the user must have either verified their profile (email verification or higher) OR made their profile public.</p>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-4">Why this rule?</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Seven days</strong> stops drive-by Sybil attacks. Creating a thousand accounts takes time, and seven days is long enough that farming them isn't worth the trouble for a single vote.</li>
+                  <li><strong>Verification or public profile</strong> ensures the voter has actually engaged with the site — not just signed up and voted on a single proposal.</li>
+                  <li><strong>No token gating, no purchase required.</strong> Governance does not require payment. Anyone can be eligible by simply being a genuine user for a week.</li>
+                </ul>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">The simulator reads this same rule. There is no divergence between what the server does, what the simulator shows, and what the constitution says.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 6 -->
+            <section id="vote" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">6. The vote — quorum, thresholds, and the block</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Three separate rules decide whether a vote passes. All three must be satisfied:</p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Quorum — enough votes to count</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Quorum is the larger of <code class="text-orange-600 dark:text-orange-400">10 votes</code> or <code class="text-orange-600 dark:text-orange-400">20% of eligible users</code>. If the vote closes with fewer votes cast, the outcome is <strong>no_quorum</strong> regardless of the tally.</p>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-4">Why the floor of 10? Small communities can't rely on 20%. At 40 eligible, 20% is 8 — too few to represent real community signal. The floor guarantees a minimum of 10 votes even in a tiny community.</p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Pass threshold — enough YES</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Config, Code, and Advisory proposals need <strong>66% YES</strong>. Meta proposals need <strong>75% YES</strong>. The threshold is computed against <em>all votes cast</em>, including abstain. An abstain therefore dilutes YES and NO equally — it cannot be used as a stealth block.</p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">The 25% block — enough NO to stop it</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">If NO is <strong>25% or more</strong> of votes cast, the proposal fails — regardless of YES. This rule is why 66% is necessary but not sufficient: a bare majority cannot override a substantial opposition.</p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">A worked example</h3>
+                <div class="not-prose overflow-x-auto mt-4">
+                  <table class="w-full text-left border-collapse min-w-[500px] text-sm">
+                    <thead>
+                      <tr class="bg-gray-100 dark:bg-gray-800/80">
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Case</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">YES</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">NO</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Abstain</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Outcome</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-gray-800 dark:text-gray-200">
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Clean pass</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">66</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">24</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">10</td><td class="p-3 border-b border-gray-200 dark:border-gray-700 text-green-600 dark:text-green-400"><strong>Passed</strong></td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Block wins</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">74</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">26</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">0</td><td class="p-3 border-b border-gray-200 dark:border-gray-700 text-red-600 dark:text-red-400"><strong>Blocked</strong></td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700">Below threshold</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">60</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">20</td><td class="p-3 border-b border-gray-200 dark:border-gray-700">20</td><td class="p-3 border-b border-gray-200 dark:border-gray-700 text-red-600 dark:text-red-400"><strong>Rejected</strong></td></tr>
+                      <tr><td class="p-3">Under quorum</td><td class="p-3">6</td><td class="p-3">2</td><td class="p-3">0</td><td class="p-3 text-gray-500 dark:text-gray-400"><strong>No quorum</strong></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">Row 2 is the interesting case: 74% YES still fails because NO reached 26%. The block threshold protects minority positions from being steamrolled by any majority, however large.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 7 -->
+            <section id="bench" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">7. The Objector's Bench</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">The <strong>Objector's Bench</strong> is a small group of eligible users who can pause any open vote by filing a public objection. It exists to give the community time to discuss a live proposal — not to override the vote.</p>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-4">The bench's powers are deliberately narrow:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Pause</strong> — 72 hours, once per bench member per proposal.</li>
+                  <li><strong>Extend the vote deadline</strong> — the pause adds 72 hours to <code>vote_ends_at</code> so voters keep their full 5 days.</li>
+                  <li><strong>Publish the reason</strong> — every objection carries a Markdown reason, publicly readable, and stays in the audit chain.</li>
+                </ul>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">What the bench <strong>cannot</strong> do:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li>Cannot pass a proposal.</li>
+                  <li>Cannot block or veto a proposal.</li>
+                  <li>Cannot alter the tally, the outcome, or the rules.</li>
+                  <li>Cannot pause the same proposal twice.</li>
+                </ul>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">Bench members are selected by sortition (random draw) from the eligible user pool, with staggered term lengths so that no single cohort dominates. Every draw, every objection, and every expiry is on the audit chain.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 8 -->
+            <section id="reconsider" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">8. The reconsider window</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Every passed resolution stays <strong>open for reconsideration for 30 days</strong>. During that window, 10% of eligible users can sign a request to re-run the vote on the same proposal. If the threshold is reached, a second vote opens with the same rules, the same comment history, and the same audit trail.</p>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-4">The second vote overrules the first:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Second vote fails</strong> — the original resolution is reversed. If the proposal was Config, the config change is reverted. If it was Code, the merge SHA is marked reversed and the PR is expected to be reverted.</li>
+                  <li><strong>Second vote passes</strong> — the original resolution stands. No further reconsider is possible on the same proposal.</li>
+                </ul>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">The reconsider mechanism is the safety valve. It means that passing a proposal is not the end of the story — if the community changes its mind within 30 days, it can reverse course without needing a new proposal.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 9 -->
+            <section id="execute" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">9. Execution by kind</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Once a vote passes, execution depends entirely on the kind:</p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Config — immediate</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">The config change applies the moment the vote closes. A one-line write to <code>rt_config</code>. No delay. Reversible via reconsider.</p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Meta — 72-hour delay</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">A Meta proposal queues a <code>pending_delay</code> execution scheduled 72 hours out. During those 72 hours the reconsider window is open. If 10% sign reconsider before the delay elapses, the execution is cancelled and a second vote opens. Otherwise the change applies and the reconsider window stays open for the remaining 27 days.</p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Code — human merge required</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">A Code proposal links to a pull request. When the vote passes, the proposal's state becomes <code>pending_merge</code>. <strong>Nothing auto-merges.</strong> A human maintainer reviews the PR, merges it, and the merge SHA is recorded on the audit chain. Without that human step, the code never lands — which is exactly how it should be.</p>
+
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mt-8">Advisory — recorded only</h3>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">An Advisory proposal changes nothing structural. The tally is recorded as a public signal. The audit chain entry is permanent. It's a way for the community to speak clearly without forcing an action.</p>
+
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 10 -->
+            <section id="audit" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">10. The audit chain</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">Every governance action is recorded in a hash chain. Here's how it works in one sentence: each new entry contains a hash of the previous entry's hash plus the current payload. If any historic entry is ever modified, every subsequent entry's expected hash no longer matches, and the chain is visibly broken.</p>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-4">Concretely:</p>
+                <pre class="bg-gray-100 dark:bg-black/40 rounded-lg p-4 text-sm overflow-x-auto text-gray-800 dark:text-gray-200"><code>entry[n].this_hash = SHA256(entry[n-1].this_hash + "|" + type + "|" + payload)</code></pre>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-4">Every governance table (proposals, votes, comments, objections, resolutions, executions) writes into the chain. <code>/api/rt/audit/verify</code> recomputes every hash from the genesis entry forward and reports intact or broken. <code>/api/rt/audit/head</code> returns the current chain head so external monitors can periodically snapshot it.</p>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">The simulator demonstrates this visually. Open any scenario on <a href="/community/round-table/simulator/" class="text-orange-600 dark:text-orange-400 hover:underline">/community/round-table/simulator/</a>, scroll to the Audit Chain ticker, click the ⚡ tamper button on any block. That block turns red — and every block after it turns yellow, because the chain no longer connects. Click Verify and the alert reads <code>intact: false — broken at block #N</code>.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 11 -->
+            <section id="simulator" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">11. The simulator</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">The simulator is a fully working demo of the governance engine, running in your browser, with no account required. It has three modes:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Compact</strong> — a small embed on the homepage and the Round Table page. No autoplay. Click Play to run a scenario.</li>
+                  <li><strong>Full</strong> — the dedicated page at <a href="/community/round-table/simulator/" class="text-orange-600 dark:text-orange-400 hover:underline">/community/round-table/simulator/</a>. Autoplay, scrubber, transcript, audit ticker, sandbox.</li>
+                  <li><strong>Sandbox</strong> — a tab inside the full page. Sliders for electorate size, turnout, YES/NO split, and proposal kind. Move any slider and the outcome recomputes instantly, using the same rules engine the live server uses.</li>
+                </ul>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">Six scenarios ship by default, each teaching one rule:</p>
+                <div class="not-prose overflow-x-auto mt-4">
+                  <table class="w-full text-left border-collapse min-w-[500px] text-sm">
+                    <thead>
+                      <tr class="bg-gray-100 dark:bg-gray-800/80">
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Scenario</th>
+                        <th class="p-3 font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">Teaches</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-gray-800 dark:text-gray-200">
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Config passes cleanly</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">The clean path through all four phases</td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Block beats pass</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">66%+ YES still fails if NO reaches 25%</td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Meta change</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">75% threshold, 30-day comment, 72h delay</td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Code proposal</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">PR appears, human reviews, SHA recorded</td></tr>
+                      <tr><td class="p-3 border-b border-gray-200 dark:border-gray-700"><strong>Bench + reconsider</strong></td><td class="p-3 border-b border-gray-200 dark:border-gray-700">72h pause, deadline extension, then reconsider reverses</td></tr>
+                      <tr><td class="p-3"><strong>No quorum</strong></td><td class="p-3">40 eligible, 8 votes — floor of 10 fails</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">The simulator reads live rules from <code>/api/rt/config</code> on load. When that call succeeds, the badge reads <strong>Live rules</strong> in green. When it fails, the fallback values ship and the badge reads <strong>Default rules</strong> in amber. Either way the rules shown match what the live worker enforces.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 12 -->
+            <section id="equal" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">12. Equal authority — no admins</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">There is no <code>admin</code> table in the database. There is no <code>is_admin</code> flag on any user row. There is no endpoint that any user can call to override, delete, or rewrite a governance decision, no matter who they are.</p>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-4">What exists instead:</p>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>Every action is a proposal.</strong> Changing a threshold, adding a rule, updating the constitution — all of it is a Meta proposal. None of it can happen outside the vote.</li>
+                  <li><strong>Every action is on the chain.</strong> Deleting a row would break the audit chain and immediately be visible. The only way to reverse a decision is the reconsider window.</li>
+                  <li><strong>The maintainer can only merge code.</strong> The maintainer-powers document specifies exactly what the person running the site can do: merge a PR after a Code proposal passes, apply a Config change the system already queued, and run the R2 attachment purge. Nothing else.</li>
+                </ul>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">This is unusual, and it's intentional. Most "decentralised" systems quietly keep an admin backdoor. This one doesn't. If the community wants to change a rule, it needs the community to agree to the change. If it wants to remove the maintainer, it can — by voting a new one in.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- SECTION 13 -->
+            <section id="amend" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center md:text-left text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">13. Amending the constitution</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">The constitution is self-amending. It can be changed — but only by the same process it describes, and only by clearing the highest barrier on the site. A Meta proposal to change the constitution requires:</p>
+                <ol class="list-decimal pl-6 space-y-2 text-gray-800 dark:text-gray-200">
+                  <li><strong>75% YES</strong> — higher than any other kind.</li>
+                  <li><strong>Under 25% NO</strong> — the block threshold still applies.</li>
+                  <li><strong>Quorum met</strong> — at least max(10, 20% of eligible).</li>
+                  <li><strong>72-hour apply delay</strong> — so the community has three full days to reconsider before the change lands.</li>
+                  <li><strong>30-day reconsider window</strong> — 10% can trigger a second vote at any point in that window.</li>
+                </ol>
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed mt-6">The current constitution is published at <a href="/community/round-table/constitution/" class="text-orange-600 dark:text-orange-400 hover:underline">/community/round-table/constitution/</a>. The founding document is at <a href="/community/round-table/founding/" class="text-orange-600 dark:text-orange-400 hover:underline">/community/round-table/founding/</a>. Every amendment is recorded on the audit chain.</p>
+                <p class="mt-8 text-center md:text-left"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+              </div>
+            </section>
+
+            <!-- FAQ -->
+            <section id="faq" class="mb-20 scroll-mt-24">
+              <h2 class="text-3xl md:text-4xl font-black mt-16 mb-12 text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">14. Frequently Asked Questions</h2>
+              <div class="max-w-4xl mx-auto space-y-4">
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">What is the Round Table?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>Traffic Torch's community governance system. Every eligible user has one vote, no administrators exist inside the system, and every decision is hash-chained and publically verifiable. Proposals move through Propose → Discuss → Vote → Execute with fixed rules that can only be changed by another vote.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">Do I need an account to view the Round Table?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>No. All proposals, votes, comments, bench activity, and the audit chain are publicly readable. You only need an account to submit a proposal, cast a vote, or leave a comment.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">How is eligibility determined?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>An account must be at least 7 days old AND have either a verified profile (email verification or higher) OR a public profile. This is the exact rule the server enforces. It prevents brand-new accounts from voting while remaining open to anyone who has actually participated.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">What are the four kinds of proposal?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>Advisory records community signal but applies no automatic change. Config changes a config key and applies immediately on pass. Meta changes the rules, thresholds, or the constitution; it needs 75% YES and applies after a 72-hour delay. Code links to a pull request that a human must merge — nothing auto-merges.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">Why is the meta threshold higher?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>Meta proposals change the rules that govern every other proposal. A 75% threshold instead of 66% adds friction precisely where the risk of gaming is highest. Combined with the 72-hour apply delay and the 30-day reconsider window, a rule change can only stick if it survives multiple rounds of scrutiny.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">What is the 25% block threshold for?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>The block protects minority positions. If 25% or more of votes cast are NO, the proposal fails regardless of how many YES votes it received. Without this, a bare 66% majority could steamroll a substantial opposition on every decision. The block makes 66% necessary but not sufficient.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">Can a bare majority pass anything?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>No. Config, Code, and Advisory proposals need 66% YES AND under 25% NO. Meta proposals need 75% YES AND under 25% NO. Quorum must also be met. A proposal that clears the pass threshold can still fail on the block.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">Can a NO minority block a proposal even at 90% YES?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>Yes. If NO reaches 25% of votes cast, the proposal fails even at 90% YES. This is intentional: the block exists to stop bare majorities from overriding substantial opposition. The only way to reverse a passed proposal is the reconsider window, and the only way to reverse a blocked proposal is a new proposal with lower opposition.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">How long do votes last?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>Every vote runs 5 days from open to close, regardless of proposal kind. Comment periods differ: Meta 30 days, Config 14 days, Code 14 days, Advisory 7 days. An Objector's Bench pause extends the vote deadline by 72 hours without reducing voters' time.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">What happens if quorum isn't met?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>The proposal returns outcome <code>no_quorum</code> and fails. Quorum is the larger of 10 votes or 20% of eligible. It prevents a tiny minority from closing a proposal when the electorate has not engaged. A no_quorum failure does not consume the proposer's 14-day cooldown as harshly as a rejection.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">How do I submit a proposal?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>Log in, go to <a href="/community/round-table/" class="text-orange-600 dark:text-orange-400 hover:underline">/community/round-table/</a>, click New Proposal, choose a kind and category, write the body in Markdown, and submit. The proposal enters Discuss immediately and cannot open a vote until the comment period for its kind has elapsed.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">What is the Objector's Bench?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>A small randomly-drawn group of eligible users who can pause any open vote for 72 hours by filing a public objection. It can only slow a vote — it cannot pass, block, or alter any proposal. Each member can file one objection per proposal with a 30-day cooldown, and a pause extends the vote deadline by 72 hours so voters keep their full 5 days.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">Can the Bench block or pass a proposal?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>No. The Bench can only pause. It has no veto, no approval, and no way to alter the outcome. A bench pause is an attention device — it forces extra discussion by extending the vote by 72 hours. The actual decision is still made by the full electorate.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">How do I trigger a reconsider?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>Within 30 days of a proposal passing, 10% of eligible users can sign a reconsider request. If that threshold is reached, a new vote opens on the same proposal with the same rules. A second-pass rejection reverses the original resolution; a second-pass approval confirms it.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">How do I verify a vote result?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>Open the proposal's page and look for the audit chain entries. Every vote, comment, close, and execute event is hashed with SHA-256 and chained to the previous entry. <code>/api/rt/audit/verify</code> returns an intact-or-broken status for any range. The simulator's audit ticker demonstrates this live — click Tamper on any block and every downstream block turns red.</p></div></details>
+
+                <details class="group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden"><summary class="flex justify-between items-center cursor-pointer p-4 text-xl font-semibold text-gray-800 dark:text-gray-200 hover:text-orange-500 transition">Who can change the constitution?<span class="text-2xl text-orange-500 group-open:rotate-180 transition-transform">▼</span></summary><div class="px-2 pb-6 pt-2 text-gray-700 dark:text-gray-300 leading-relaxed"><p>Only a Meta proposal. The constitution is self-amending: it can be changed by the same voting mechanism it defines, and only by clearing 75% YES with under 25% NO, then surviving the 72-hour apply delay and the 30-day reconsider window. No administrator, no founder privilege, no override.</p></div></details>
+
+              </div>
+              <p class="mt-6 text-center md:text-left text-sm"><a href="#table-of-contents" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">← Return to TOC</a></p>
+            </section>
+
+            <!-- CONCLUSION -->
+            <section id="conclusion" class="mb-20 scroll-mt-24">
+              <h2 class="text-4xl font-black text-center text-gray-800 dark:text-gray-100 mb-10 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 bg-clip-text text-transparent">See It Work</h2>
+              <div class="prose prose-lg prose-orange dark:prose-invert max-w-none text-center md:text-left">
+                <p class="text-gray-800 dark:text-gray-200 leading-relaxed">This is governance you can actually read, verify, and change. There is no admin panel behind a login. There is no private rulebook. There is no list of privileged accounts. Every rule, every vote, every reason, and every execution is on the audit chain — and the audit chain is public.</p>
+                <p class="mt-4 text-gray-800 dark:text-gray-200 leading-relaxed">The fastest way to understand the system is to watch it in motion: pick a scenario in the simulator, click Play, and see the rules play out. Or jump straight into the Round Table and read the live feed.</p>
+              </div>
+              <div class="text-center mt-12 flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="/community/round-table/" class="inline-block px-8 py-5 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 text-white font-bold text-xl rounded-2xl hover:brightness-110 transition-all shadow-2xl shadow-orange-500/50">Enter the Round Table →</a>
+                <a href="/community/round-table/simulator/" class="inline-block px-8 py-5 bg-white/10 border-2 border-orange-500/40 text-orange-600 dark:text-orange-400 font-bold text-xl rounded-2xl hover:bg-orange-500/10 transition">Watch the Simulator →</a>
+              </div>
+            </section>
+
+          </div>
+        </article>
+
+        <div class="share-block">
+          <strong class="share-label">Share?</strong>
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </div>
+
+        <h2 class="text-3xl font-black text-center mt-10 mb-16 bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">Governance &amp; Community Tools</h2>
+        <div class="tools-grid max-w-7xl mx-auto px-2">
+          <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+            <a href="/community/round-table/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-300"><div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-orange-500/30 group-hover:border-orange-400 transition-all flex flex-col justify-between"><div><div class="text-orange-400 text-7xl mb-6 group-hover:animate-bounce">🏛️</div><h2 class="text-orange-400 text-2xl font-bold mb-3">The Round Table</h2><p class="text-gray-800 dark:text-gray-100">Live proposal feed, voting, comments, bench activity, and audit chain.</p></div><span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Enter →</span></div></a>
+
+            <a href="/community/round-table/simulator/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-pink-500/50 transition-all duration-300"><div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-pink-500/30 group-hover:border-pink-400 transition-all flex flex-col justify-between"><div><div class="text-pink-400 text-7xl mb-6 group-hover:animate-bounce">⚗️</div><h2 class="text-pink-400 text-2xl font-bold mb-3">The Simulator</h2><p class="text-gray-800 dark:text-gray-100">Watch governance in 30 seconds. Six scenarios, sandbox, tamper-evident audit ticker.</p></div><span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Open →</span></div></a>
+
+            <a href="/community/round-table/constitution/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-amber-500/50 transition-all duration-300"><div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-amber-500/30 group-hover:border-amber-400 transition-all flex flex-col justify-between"><div><div class="text-amber-400 text-7xl mb-6 group-hover:animate-bounce">📜</div><h2 class="text-amber-400 text-2xl font-bold mb-3">The Constitution</h2><p class="text-gray-800 dark:text-gray-100">The rules. Self-amending. Changeable only by Meta proposal.</p></div><span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Read →</span></div></a>
+
+            <a href="/community/round-table/founding/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300"><div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-cyan-500/30 group-hover:border-cyan-400 transition-all flex flex-col justify-between"><div><div class="text-cyan-400 text-7xl mb-6 group-hover:animate-bounce">🌱</div><h2 class="text-cyan-400 text-2xl font-bold mb-3">Founding Document</h2><p class="text-gray-800 dark:text-gray-100">The origin story and the initial commitments.</p></div><span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Read →</span></div></a>
+
+            <a href="/community/round-table/maintainer-powers/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-purple-500/50 transition-all duration-300"><div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-purple-500/30 group-hover:border-purple-400 transition-all flex flex-col justify-between"><div><div class="text-purple-400 text-7xl mb-6 group-hover:animate-bounce">🔧</div><h2 class="text-purple-400 text-2xl font-bold mb-3">Maintainer Powers</h2><p class="text-gray-800 dark:text-gray-100">An explicit list of what the code maintainer can and cannot do.</p></div><span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Read →</span></div></a>
+
+            <a href="/ai-ux-seo-help-guides/" class="tool-card group block rounded-3xl overflow-hidden shadow-2xl hover:shadow-indigo-500/50 transition-all duration-300"><div class="h-full bg-white/10 backdrop-blur-xl p-10 border border-indigo-500/30 group-hover:border-indigo-400 transition-all flex flex-col justify-between"><div><div class="text-indigo-400 text-7xl mb-6 group-hover:animate-bounce">📋</div><h2 class="text-indigo-400 text-2xl font-bold mb-3">All Help Guides</h2><p class="text-gray-800 dark:text-gray-100">Practical SEO, UX, and AEO tutorials plus the community guide.</p></div><span class="mt-8 inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">Browse →</span></div></a>
+
+          </div>
+        </div>
+
+        <section class="max-w-7xl mx-auto my-16 px-4">
+          <h2 class="text-2xl md:text-3xl font-black mb-10 text-center bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Related Help Guides</h2>
+          <div class="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all"><a href="/blog/posts/social-help-guide/" class="block"><img src="/blog/images/social/social-help-guide-640w.webp" alt="Traffic Torch Community Help Guide" class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] mx-auto" loading="lazy" decoding="async" width="640" height="336"><div class="p-2"><h3 class="text-xl font-bold mb-3 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch Community Help Guide</h3><p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">Torches, profiles, leaderboard, Beams, activity, and network.</p></div></a></article>
+            <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all"><a href="/blog/posts/nusa-tool-help-guide/" class="block"><img src="/blog/images/nusa-tool/nusa-dashboard-640w.webp" alt="NUSA Tool Help Guide" class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] mx-auto" loading="lazy" decoding="async" width="640" height="336"><div class="p-2"><h3 class="text-xl font-bold mb-3 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">NUSA Tool Help Guide</h3><p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">Quit Risk, Lighthouse Plus &amp; AEO in one click.</p></div></a></article>
+            <article class="bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-orange-500/30 transition-all"><a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/" class="block"><img src="/blog/images/dashboard-ofux-ask-ai/pro-dashboard-640w.webp" alt="Pro Dashboard & Ask AI Help Guide" class="w-full rounded-2xl shadow-xl object-cover aspect-[640/336] mx-auto" loading="lazy" decoding="async" width="640" height="336"><div class="p-2"><h3 class="text-xl font-bold mb-3 bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Pro Dashboard &amp; Ask AI Guide</h3><p class="text-gray-600 dark:text-gray-300 text-base leading-relaxed">Pro dashboard &amp; AI assistant walkthrough.</p></div></a></article>
+          </div>
+        </section>
+
+        <section class="max-w-5xl mx-auto my-24 px-2">
+          <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
+            <div class="bg-gradient-to-br from-purple-600 to-cyan-600 py-12 px-8 text-center">
+              <img src="/logo.webp" alt="Traffic Torch" class="w-40 h-40 rounded-full mx-auto mb-6 object-cover border-8 border-white shadow-xl">
+              <h3 class="text-4xl font-black text-white mb-4">Traffic Torch</h3>
+              <p class="text-xl text-white/90 max-w-3xl mx-auto">SEO • UX • AI Optimization Audit Toolkit</p>
+            </div>
+            <div class="p-2 md:p-4 text-center space-y-8">
+              <p class="text-lg md:text-xl text-gray-800 dark:text-gray-200 leading-relaxed max-w-4xl mx-auto">Traffic Torch distills ongoing correlation research, algorithm update analysis and practical testing into 360° SEO + UX diagnostics, AI-powered fixes, and educational tools. Empowering creators, agencies, and businesses with transparent, evidence-based insights.</p>
+              <div class="text-sm text-gray-600 dark:text-gray-400 italic mt-6">
+                <p>Published: 2026-10-18</p>
+                <p>Last updated: 2026-10-18</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+          <div class="inline-block">
+            <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm"><a href="/">Traffic Torch</a></p>
+            <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1"><span id="page-name"></span></p>
+          </div>
+        </nav>
+
+        <script>
+          document.getElementById('page-name').textContent = document.title
+            .replace('Traffic Torch – ', '')
+            .replace(' | Traffic Torch', '')
+            .trim();
+        </script>
+
+      </main>
+
+      <div id="footer-placeholder"></div>
+    </div>
+  </div>
+
+  <script src="/main.js?v=1.2" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+
+</body>
+</html>
