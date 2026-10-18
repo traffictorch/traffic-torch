@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Analytics — Traffic Torch In the Open</title>
-  <meta name="description" content="Public analytics for Traffic Torch. Real Cloudflare edge data — requests, bandwidth, AI crawler traffic, and security — plus Google Search Console and GA4 aggregates. No personal data. No query text. No referrer URLs.">
+  <meta name="description" content="Public analytics for Traffic Torch. Real Cloudflare edge data — requests, bandwidth, AI crawler traffic, and security — plus Google Search Console aggregates. No personal data. No query text. No referrer URLs.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://traffictorch.net/analytics/">
 
   <meta property="og:title" content="Analytics — Traffic Torch In the Open">
-  <meta property="og:description" content="Real Cloudflare edge data + AI crawler tracking. Public by design.">
+  <meta property="og:description" content="Real Cloudflare edge data + AI crawler tracking + Google Search Console. Public by design.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://traffictorch.net/analytics/">
   <meta property="og:image" content="https://traffictorch.net/blog/images/governance/decentralised-government-1200w.webp">
@@ -100,8 +100,8 @@
         </section>
 
         <div class="bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4 mb-6 text-sm text-gray-700 dark:text-gray-300">
-          <p class="mb-2"><strong>What's public:</strong> request volume, unique visitors, bandwidth, top paths, top countries, status code distribution, per-crawler request counts (AI + search), plus Google Search Console and GA4 aggregates.</p>
-          <p><strong>What's never public:</strong> personal data, search query text, referrer URLs, individual visitor sessions, or IP addresses. <strong>Refresh:</strong> every 6 hours. <strong>Date range:</strong> ends yesterday for Cloudflare, 2 days ago for Google.</p>
+          <p class="mb-2"><strong>What's public:</strong> request volume, unique visitors, bandwidth, top paths, top countries, status code distribution, per-crawler request counts (AI + search), plus Google Search Console aggregates.</p>
+          <p><strong>What's never public:</strong> personal data, search query text, referrer URLs, individual visitor sessions, or IP addresses. <strong>Refresh:</strong> every 6 hours. <strong>Date range:</strong> ends yesterday for Cloudflare, 2 days ago for Search Console.</p>
         </div>
 
         <div id="analytics-meta" class="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
@@ -122,15 +122,14 @@
           <div class="an-pane hidden" data-pane="security"></div>
         </div>
 
-        <details class="bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl p-4 mb-12">
-          <summary class="cursor-pointer font-black text-lg text-gray-800 dark:text-gray-200 list-none flex justify-between items-center">
-            <span>📊 Google Analytics — GA4 &amp; Search Console</span>
-            <span class="text-orange-500">▾</span>
-          </summary>
-          <div id="google-section" class="mt-6">
-            <div class="an-empty">Loading Google data…</div>
+        <section class="bg-white/5 dark:bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl p-5 mb-12">
+          <h2 class="text-xl font-black mb-5 text-gray-800 dark:text-gray-200 flex items-center gap-2">
+            <span>🔍 Google Search Console</span>
+          </h2>
+          <div id="google-section">
+            <div class="an-empty">Loading Search Console data…</div>
           </div>
-        </details>
+        </section>
 
         <section class="max-w-3xl mx-auto my-12 text-center">
           <div class="rounded-3xl border border-orange-200 dark:border-orange-800/40 bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-950/20 dark:to-pink-950/20 p-8">
@@ -488,25 +487,35 @@
     // ─── GOOGLE (bottom section) ───
     function renderGoogle() {
       const el = $('#google-section');
-      if (!G) { el.innerHTML = `<div class="an-empty">Google data unavailable.</div>`; return; }
-      let html = '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">';
-      if (G.ga4) {
-        const g = G.ga4;
-        html += `
-          ${metricCard('Sessions (7d)', fmtNum(g.overview_7d.sessions), null, g.overview_7d.sessions, g.prev_7d.sessions)}
-          ${metricCard('Users (7d)', fmtNum(g.overview_7d.users), null, g.overview_7d.users, g.prev_7d.users)}
-        `;
-      }
-      if (G.gsc) {
-        const s = G.gsc;
-        html += `
-          ${metricCard('Clicks (7d)', fmtNum(s.overview_7d.clicks), null, s.overview_7d.clicks, s.prev_7d.clicks)}
-          ${metricCard('Impressions (7d)', fmtNum(s.overview_7d.impressions), null, s.overview_7d.impressions, s.prev_7d.impressions)}
-        `;
-      }
-      html += '</div>';
-      html += `<p class="text-xs text-gray-500 dark:text-gray-400">Sessions and users from GA4 · clicks and impressions from Google Search Console. Search query text is never exposed.</p>`;
-      el.innerHTML = html;
+      if (!G || !G.gsc) { el.innerHTML = `<div class="an-empty">Search Console data unavailable.</div>`; return; }
+      const s = G.gsc;
+      const ov = s.overview_7d, prev = s.prev_7d;
+      el.innerHTML = `
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          ${metricCard('Clicks (7d)', fmtNum(ov.clicks), null, ov.clicks, prev.clicks)}
+          ${metricCard('Impressions (7d)', fmtNum(ov.impressions), null, ov.impressions, prev.impressions)}
+          ${metricCard('CTR (7d)', fmtPct(ov.ctr, 2), null, ov.ctr, prev.ctr)}
+          ${metricCard('Avg position (7d)', fmtPctPos(ov.position), null, -ov.position, -prev.position)}
+        </div>
+        <h3 class="text-lg font-black mb-3 mt-6 text-gray-800 dark:text-gray-200">Top search pages (28d)</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr class="text-left border-b border-gray-300 dark:border-white/10">
+              <th class="py-2 pr-3">Path</th><th class="py-2 pr-3 text-right">Clicks</th><th class="py-2 pr-3 text-right">Impr.</th><th class="py-2 pr-3 text-right">CTR</th><th class="py-2 text-right">Pos.</th>
+            </tr></thead>
+            <tbody>
+              ${(s.top_pages || []).map(p => `<tr class="border-b border-gray-100 dark:border-white/5">
+                <td class="py-2 pr-3"><a href="${p.path}" class="text-orange-600 dark:text-orange-400 hover:underline break-all">${p.path || '/'}</a></td>
+                <td class="py-2 pr-3 text-right font-mono">${fmtNum(p.clicks)}</td>
+                <td class="py-2 pr-3 text-right font-mono">${fmtNum(p.impressions)}</td>
+                <td class="py-2 pr-3 text-right font-mono">${fmtPct(p.ctr, 2)}</td>
+                <td class="py-2 text-right font-mono">${fmtPctPos(p.position)}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-4">Search query text is never exposed.</p>
+      `;
     }
 
     // ─── INTERPRET (AI summary) ───
