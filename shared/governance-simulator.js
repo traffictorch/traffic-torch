@@ -74,10 +74,16 @@
     this.lastFrame = 0;
     this.liveConfig = null;
     this.configStatus = 'loading';
+    this.isSandbox = false;
+    this.sandboxState = { eligible: 100, turnout: 80, yes_pct: 60, no_pct: 20, kind: 'config' };
 
     this.buildDOM();
     this.loadConfig();
-    this.selectScenario(0);
+    if (this.initFromURL()) {
+      this.selectScenario(this.scenarios.length);
+    } else {
+      this.selectScenario(0);
+    }
   }
 
   Simulator.prototype.effectiveConfig = function () {
@@ -85,10 +91,19 @@
   };
 
   Simulator.prototype.scenario = function () {
+    if (this.isSandbox) {
+      var sb = this.sandboxState;
+      return {
+        id: 'sandbox', title: 'Sandbox', teaches: 'Try your own numbers',
+        kind: sb.kind, eligible: sb.eligible, category: 'sandbox',
+        body_md: '', author: 'you', config: {}, timeline: []
+      };
+    }
     return this.scenarios[this.scenarioIndex];
   };
 
   Simulator.prototype.duration = function () {
+    if (this.isSandbox) return 1;
     var sc = this.scenario();
     if (!sc) return 30;
     var maxT = 0;
@@ -169,7 +184,21 @@
       });
       tabs.appendChild(t);
     });
+    if (this.config.mode !== 'compact') {
+      var sandboxTab = el('button', {
+        class: 'gs-tab gs-tab-sandbox',
+        type: 'button',
+        'data-idx': String(this.scenarios.length),
+        text: '⚗️ Sandbox',
+        onclick: function () { self.selectScenario(self.scenarios.length); }
+      });
+      tabs.appendChild(sandboxTab);
+    }
     root.appendChild(tabs);
+
+    // Sandbox controls (hidden unless sandbox tab active)
+    var sandboxPanel = el('div', { class: 'gs-sandbox-controls' });
+    root.appendChild(sandboxPanel);
 
     // Phase rail
     var rail = el('div', { class: 'gs-rail' }, [
@@ -315,6 +344,7 @@
     });
     scrubberEl.addEventListener('click', function (ev) { seekFromEvent(ev); });
 
+    this.root = root;
     container.appendChild(root);
   };
 
@@ -322,6 +352,7 @@
   // STATE MACHINE — deterministic, recompute from t=0
   // ──────────────────────────────────────────────────────────────
   Simulator.prototype.computeAt = function (t) {
+    if (this.isSandbox) return this.computeSandboxState();
     var sc = this.scenario();
     var rules = R();
     var cfg = this.effectiveConfig();
@@ -612,13 +643,28 @@
 
   Simulator.prototype.selectScenario = function (idx) {
     var self = this;
+    this.container.querySelectorAll('.gs-tab').forEach(function (t, i) {
+      t.classList.toggle('gs-tab-active', i === idx);
+    });
+
+    if (idx >= this.scenarios.length) {
+      this.isSandbox = true;
+      this.currentT = 0;
+      this.chain = [];
+      this.pause();
+      if (this.root) this.root.classList.add('gs-is-sandbox');
+      this.buildSandboxPanel();
+      this.render();
+      this.syncURL();
+      return;
+    }
+
+    this.isSandbox = false;
+    if (this.root) this.root.classList.remove('gs-is-sandbox');
     this.scenarioIndex = idx;
     this.currentT = 0;
     this.tamperedAt = -1;
     this.chain = null;
-    this.container.querySelectorAll('.gs-tab').forEach(function (t, i) {
-      t.classList.toggle('gs-tab-active', i === idx);
-    });
     this.buildChain().then(function (chain) {
       self.chain = chain;
       self.render();
@@ -627,6 +673,7 @@
       self.chain = [];
       self.render();
     });
+    this.syncURL();
   };
 
   Simulator.prototype.destroy = function () {
@@ -932,6 +979,205 @@
       +     (this.configStatus === 'live' ? ' Live config.' : ' Default config.')
       +   '</p>'
       + '</div>';
+  };
+
+
+
+  // ──────────────────────────────────────────────────────────────
+  // SANDBOX
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.computeSandboxState = function () {
+    var sb = this.sandboxState;
+    var rules = R();
+    var totalVotes = Math.floor(sb.eligible * sb.turnout / 100);
+    var yes = Math.floor(totalVotes * sb.yes_pct / 100);
+    var no = Math.floor(totalVotes * sb.no_pct / 100);
+    var abstain = Math.max(0, totalVotes - yes - no);
+    var outcome = rules.computeOutcome({
+      kind: sb.kind,
+      tallies: { yes: yes, no: no, abstain: abstain },
+      eligible: sb.eligible,
+      config: this.effectiveConfig()
+    });
+    return {
+      phase: 'sandbox',
+      yes: yes, no: no, abstain: abstain, eligible: sb.eligible,
+      comments: [],
+      voteStarts: null, voteEnds: null,
+      objectionAt: null, objectionUntil: null,
+      closedAt: null,
+      outcome: outcome,
+      execution: null,
+      reconsidering: false,
+      reversed: false
+    };
+  };
+
+  Simulator.prototype.buildSandboxPanel = function () {
+    var self = this;
+    var sb = this.sandboxState;
+    var panel = this.container.querySelector('.gs-sandbox-controls');
+    if (!panel || panel.dataset.built === '1') {
+      this.updateSandboxLabels();
+      return;
+    }
+    panel.dataset.built = '1';
+    panel.innerHTML = '';
+
+    panel.appendChild(el('div', { class: 'gs-sb-title', text: '⚗️ Sandbox — try your own numbers' }));
+
+    var grid = el('div', { class: 'gs-sb-grid' });
+    this.sbEls = {};
+
+    function slider(label, key, min, max, step, value, suffix) {
+      var valEl = el('b', { class: 'gs-sb-val', text: String(value) + (suffix || '') });
+      var inp = el('input', {
+        type: 'range', min: String(min), max: String(max), step: String(step),
+        'data-sb': key, value: String(value)
+      });
+      inp.addEventListener('input', function () {
+        var v = parseFloat(inp.value);
+        sb[key] = v;
+        // Enforce yes + no <= 100
+        if (sb.yes_pct + sb.no_pct > 100) {
+          if (key === 'yes_pct') sb.no_pct = 100 - sb.yes_pct;
+          else if (key === 'no_pct') sb.yes_pct = 100 - sb.no_pct;
+          // reflect any forced adjustment in the other slider
+          if (self.sbEls.noInp) self.sbEls.noInp.value = String(sb.no_pct);
+          if (self.sbEls.yesInp) self.sbEls.yesInp.value = String(sb.yes_pct);
+        }
+        self.sbEls[key + 'Val'].textContent = String(v) + (suffix || '');
+        self.updateSandboxLabels();
+        self.render();
+        self.syncURL();
+      });
+      self.sbEls[key + 'Val'] = valEl;
+      self.sbEls[key + 'Inp'] = inp;
+      return el('div', { class: 'gs-sb-field' }, [
+        el('label', {}, [label + ' ', valEl]),
+        inp
+      ]);
+    }
+
+    grid.appendChild(slider('Eligible', 'eligible', 10, 200, 1, sb.eligible, ''));
+    grid.appendChild(slider('Turnout', 'turnout', 0, 100, 1, sb.turnout, '%'));
+    grid.appendChild(slider('YES', 'yes_pct', 0, 100, 1, sb.yes_pct, '%'));
+    grid.appendChild(slider('NO', 'no_pct', 0, 100, 1, sb.no_pct, '%'));
+
+    var kindSel = el('select', { class: 'gs-sb-select', 'data-sb': 'kind' }, [
+      el('option', { value: 'advisory', text: 'Advisory' }),
+      el('option', { value: 'config', text: 'Config' }),
+      el('option', { value: 'meta', text: 'Meta' }),
+      el('option', { value: 'code', text: 'Code' })
+    ]);
+    kindSel.value = sb.kind;
+    kindSel.addEventListener('change', function (e) {
+      sb.kind = e.target.value;
+      self.render();
+      self.syncURL();
+    });
+    this.sbEls.kindInp = kindSel;
+    grid.appendChild(el('div', { class: 'gs-sb-field' }, [
+      el('label', { text: 'Kind' }),
+      kindSel
+    ]));
+
+    panel.appendChild(grid);
+
+    var hint = el('div', { class: 'gs-sb-hint' }, [
+      'Abstain: ', el('b', { class: 'gs-sb-abstain', text: '20%' }),
+      ' — remainder after YES + NO'
+    ]);
+    this.sbEls.hint = hint;
+    panel.appendChild(hint);
+
+    var resetBtn = el('button', { class: 'gs-sb-reset', type: 'button', text: '↻ Reset defaults' });
+    resetBtn.addEventListener('click', function () {
+      self.sandboxState = { eligible: 100, turnout: 80, yes_pct: 60, no_pct: 20, kind: 'config' };
+      panel.dataset.built = '';
+      self.buildSandboxPanel();
+      self.render();
+      self.syncURL();
+    });
+    panel.appendChild(resetBtn);
+
+    var copyBtn = el('button', { class: 'gs-sb-copy', type: 'button', text: '📋 Copy link' });
+    copyBtn.addEventListener('click', function () {
+      self.syncURL();
+      var url = window.location.href;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function () {
+          copyBtn.textContent = '✓ Copied';
+          setTimeout(function () { copyBtn.textContent = '📋 Copy link'; }, 1500);
+        }).catch(function () { copyBtn.textContent = '⚠ Copy failed'; });
+      } else {
+        copyBtn.textContent = '⚠ Clipboard unavailable';
+      }
+    });
+    panel.appendChild(copyBtn);
+
+    this.updateSandboxLabels();
+  };
+
+  Simulator.prototype.updateSandboxLabels = function () {
+    var sb = this.sandboxState;
+    if (!this.sbEls || !this.sbEls.hint) return;
+    var abstainPct = Math.max(0, 100 - sb.yes_pct - sb.no_pct);
+    this.sbEls.hint.querySelector('.gs-sb-abstain').textContent = abstainPct + '%';
+  };
+
+  // ──────────────────────────────────────────────────────────────
+  // URL STATE
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.syncURL = function () {
+    if (this.config.mode !== 'full') return;
+    if (!this.isSandbox) {
+      // clear sandbox params if not in sandbox mode
+      var u = new URL(window.location.href);
+      if (u.searchParams.get('s') === 'sandbox') {
+        u.searchParams.delete('s');
+        u.searchParams.delete('eligible');
+        u.searchParams.delete('turnout');
+        u.searchParams.delete('yes');
+        u.searchParams.delete('no');
+        u.searchParams.delete('kind');
+        history.replaceState(null, '', u.toString());
+      }
+      return;
+    }
+    var sb = this.sandboxState;
+    var url = new URL(window.location.href);
+    url.searchParams.set('s', 'sandbox');
+    url.searchParams.set('eligible', String(Math.round(sb.eligible)));
+    url.searchParams.set('turnout', String(Math.round(sb.turnout)));
+    url.searchParams.set('yes', String(Math.round(sb.yes_pct)));
+    url.searchParams.set('no', String(Math.round(sb.no_pct)));
+    url.searchParams.set('kind', sb.kind);
+    history.replaceState(null, '', url.toString());
+  };
+
+  Simulator.prototype.initFromURL = function () {
+    if (this.config.mode !== 'full') return false;
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('s') !== 'sandbox') return false;
+    var clamp = function (v, min, max, dflt) {
+      var n = parseInt(v, 10);
+      if (isNaN(n)) return dflt;
+      return Math.max(min, Math.min(max, n));
+    };
+    this.sandboxState = {
+      eligible: clamp(params.get('eligible'), 10, 200, 100),
+      turnout: clamp(params.get('turnout'), 0, 100, 80),
+      yes_pct: clamp(params.get('yes'), 0, 100, 60),
+      no_pct: clamp(params.get('no'), 0, 100, 20),
+      kind: ['advisory','config','meta','code'].indexOf(params.get('kind')) >= 0
+        ? params.get('kind') : 'config'
+    };
+    // clamp yes + no <= 100
+    if (this.sandboxState.yes_pct + this.sandboxState.no_pct > 100) {
+      this.sandboxState.no_pct = 100 - this.sandboxState.yes_pct;
+    }
+    return true;
   };
 
   // ──────────────────────────────────────────────────────────────
