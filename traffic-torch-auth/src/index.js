@@ -367,6 +367,13 @@ async function ensureTables(env) {
       created_at INTEGER NOT NULL
     )`
   ).run();
+  // migration: add public column if not exists (idempotent)
+  try {
+    const _cc = await env.MY_BINDING.prepare("PRAGMA table_info(contributions)").all();
+    if (!(_cc.results || []).some(c => c.name === 'public')) {
+      await env.MY_BINDING.prepare("ALTER TABLE contributions ADD COLUMN public INTEGER DEFAULT 1").run();
+    }
+  } catch (e) { console.error('contributions.public migration:', e); }
   await env.MY_BINDING.prepare(
     `CREATE TABLE IF NOT EXISTS notifications (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -2046,6 +2053,7 @@ async function handleFeedRoutes(request, env, url) {
     const message = String(body.message || body.details || '').trim().slice(0, 6000); 
     const tool = String(body.tool || '').slice(0, 60);
     const pageUrl = String(body.page_url || '').slice(0, 500);
+    const isPublic = (body.public === false || body.public === 0 || body.public === '0' || body.public === 'false') ? 0 : 1;
     
     const senderName = body.name || user.name || user.username || 'Anonymous';
     const senderEmail = body.email || user.email || 'support@traffictorch.net';
@@ -2054,9 +2062,9 @@ async function handleFeedRoutes(request, env, url) {
     
     const now = Date.now();
     const ins = await env.MY_BINDING.prepare(
-      `INSERT INTO contributions (user_id, type, subject, message, tool, page_url, status, points, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, 'published', ?, ?)`
-    ).bind(user.id, type, subject, message, tool, pageUrl, POINTS_CONTRIBUTION, now).run();
+      `INSERT INTO contributions (user_id, type, subject, message, tool, page_url, status, points, public, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, 'published', ?, ?, ?)`
+    ).bind(user.id, type, subject, message, tool, pageUrl, POINTS_CONTRIBUTION, isPublic, now).run();
 
     const contributionId = ins.meta?.last_row_id || null;
     await awardPoints(env, { userId: user.id, type: 'contribution', points: POINTS_CONTRIBUTION, referenceId: contributionId });
@@ -2116,6 +2124,39 @@ async function handleFeedRoutes(request, env, url) {
       email_sent: emailSuccess,
       email_error: emailError
     });
+  }
+
+  // GET /api/contributions/recent (public feed, no auth)
+  if (url.pathname === '/api/contributions/recent' && request.method === 'GET') {
+    const limitRaw = parseInt(url.searchParams.get('limit') || '60', 10);
+    const limit = Math.min(100, Math.max(1, isNaN(limitRaw) ? 60 : limitRaw));
+    try {
+      const rows = await env.MY_BINDING.prepare(
+        `SELECT c.id, c.type, c.subject, c.message, c.tool, c.page_url, c.status, c.created_at,
+                u.name AS user_name, u.username
+         FROM contributions c
+         LEFT JOIN users u ON u.id = c.user_id
+         WHERE c.public = 1
+         ORDER BY c.created_at DESC
+         LIMIT ?`
+      ).bind(limit).all();
+      const items = (rows.results || []).map(r => ({
+        id: r.id,
+        type: r.type,
+        subject: r.subject || '',
+        message: r.message,
+        tool: r.tool,
+        page_url: r.page_url,
+        status: r.status,
+        created_at: r.created_at,
+        display_name: r.user_name || r.username || 'Anonymous',
+        username: r.username || null
+      }));
+      return feedJson({ contributions: items, count: items.length });
+    } catch (e) {
+      console.error('recent contributions error:', e);
+      return feedJson({ error: 'Failed to load contributions' }, 500);
+    }
   }
 
   // GET /api/contributions/leaderboard
@@ -2232,6 +2273,7 @@ async function handleNewRoutes(request, env, url) {
     p === '/api/blocks' ||
     p === '/api/contributions' ||
     p === '/api/contributions/leaderboard' ||
+    p === '/api/contributions/recent' ||
     p === '/api/notifications' ||
     p === '/api/notifications/read' ||
     p === '/api/notifications/clear' ||
