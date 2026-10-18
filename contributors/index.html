@@ -237,6 +237,11 @@
   <div id="recent-contributions-list" class="space-y-3 max-w-4xl mx-auto">
     <div class="text-center text-gray-500 dark:text-gray-400 text-sm py-8">Loading…</div>
   </div>
+  <div class="text-center mt-6">
+    <button type="button" id="recent-contrib-load-more" class="hidden px-6 py-3 bg-white/10 border border-orange-500/40 text-orange-500 dark:text-orange-400 font-bold rounded-xl hover:bg-orange-500/10 transition">
+      Load more contributions →
+    </button>
+  </div>
 </section>
 
         <section class="mb-16 px-2">
@@ -476,5 +481,121 @@
   });
 </script>
   
+<script>
+(function () {
+  const WORKER = 'https://traffic-torch-auth.traffictorch.workers.dev';
+  const listEl = document.getElementById('recent-contributions-list');
+  const moreBtn = document.getElementById('recent-contrib-load-more');
+  if (!listEl) return;
+
+  const TYPE = {
+    bug:      { icon: '🐛', label: 'Bug',      cls: 'bg-red-500/10 text-red-500 border-red-500/30' },
+    feature:  { icon: '💡', label: 'Feature',  cls: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/30' },
+    feedback: { icon: '💬', label: 'Feedback', cls: 'bg-blue-500/10 text-blue-500 border-blue-500/30' },
+    docs:     { icon: '📖', label: 'Docs',     cls: 'bg-purple-500/10 text-purple-500 border-purple-500/30' }
+  };
+  const STATUS = {
+    published: { label: 'Published', cls: 'bg-green-500/10 text-green-500 border-green-500/30' },
+    pending:   { label: 'Pending',   cls: 'bg-yellow-500/10 text-yellow-500 border-yellow-500/30' },
+    accepted:  { label: 'Accepted',  cls: 'bg-blue-500/10 text-blue-500 border-blue-500/30' },
+    shipped:   { label: 'Shipped',   cls: 'bg-purple-500/10 text-purple-500 border-purple-500/30' }
+  };
+
+  const INITIAL = 6;
+  const PAGE_SIZE = 12;
+
+  let allItems = [];
+  let visibleCount = INITIAL;
+
+  function esc(s) { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+
+  function relTime(ts) {
+    if (!ts) return '';
+    const sec = Math.floor((Date.now() - ts) / 1000);
+    if (sec < 60) return 'just now';
+    if (sec < 3600) return Math.floor(sec / 60) + 'm ago';
+    if (sec < 86400) return Math.floor(sec / 3600) + 'h ago';
+    if (sec < 2592000) return Math.floor(sec / 86400) + 'd ago';
+    return new Date(ts).toLocaleDateString();
+  }
+
+  function renderCard(c) {
+    const tm = TYPE[c.type] || TYPE.feedback;
+    const sm = STATUS[c.status] || STATUS.published;
+    const msg = c.message || '';
+    const preview = msg.length > 120 ? msg.slice(0, 120) + '\u2026' : msg;
+    const author = c.username
+      ? '<a href="/torcher/' + encodeURIComponent(c.username) + '/" class="hover:text-orange-500 hover:underline font-semibold">' + esc(c.display_name) + '</a>'
+      : '<span class="font-semibold">' + esc(c.display_name) + '</span>';
+
+    const details = document.createElement('details');
+    details.className = 'group bg-white/5 dark:bg-black/20 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden';
+    details.innerHTML =
+      '<summary class="cursor-pointer p-4 sm:p-5 list-none [&::-webkit-details-marker]:hidden">' +
+        '<div class="flex flex-wrap items-center gap-2 mb-2">' +
+          '<span class="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full border ' + tm.cls + '">' + tm.icon + ' ' + tm.label + '</span>' +
+          '<span class="inline-flex items-center text-xs font-semibold px-2 py-0.5 rounded-full border ' + sm.cls + '">' + sm.label + '</span>' +
+          (c.tool ? '<span class="text-xs text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full bg-white/5 border border-white/10">' + esc(c.tool) + '</span>' : '') +
+          '<span class="ml-auto text-xs text-gray-500 dark:text-gray-400">' + relTime(c.created_at) + '</span>' +
+        '</div>' +
+        (c.subject ? '<h3 class="font-bold text-gray-900 dark:text-gray-100 mb-1">' + esc(c.subject) + '</h3>' : '') +
+        '<p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">' + esc(preview) + '</p>' +
+        '<div class="mt-2 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">' +
+          '<span>by ' + author + '</span>' +
+          '<span class="text-orange-500 group-open:hidden">Read more \u25BE</span>' +
+          '<span class="text-orange-500 hidden group-open:inline">Show less \u25B4</span>' +
+        '</div>' +
+      '</summary>' +
+      '<div class="px-4 sm:px-5 pb-5 border-t border-white/10 pt-4">' +
+        '<div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed" style="white-space: pre-wrap;">' + esc(msg) + '</div>' +
+      '</div>';
+    return details;
+  }
+
+  function renderVisible() {
+    listEl.innerHTML = '';
+    const shown = allItems.slice(0, visibleCount);
+    if (!shown.length) {
+      listEl.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 text-sm py-8">No public contributions yet. Submit one above to be the first!</div>';
+      if (moreBtn) moreBtn.classList.add('hidden');
+      return;
+    }
+    shown.forEach(function (c) { listEl.appendChild(renderCard(c)); });
+    if (moreBtn) {
+      const hasMore = visibleCount < allItems.length;
+      moreBtn.classList.toggle('hidden', !hasMore);
+      moreBtn.textContent = hasMore ? 'Load more contributions \u2192 (' + (allItems.length - visibleCount) + ' remaining)' : '';
+    }
+  }
+
+  function loadFeed() {
+    listEl.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 text-sm py-8">Loading\u2026</div>';
+    if (moreBtn) moreBtn.classList.add('hidden');
+    fetch(WORKER + '/api/contributions/recent?limit=60')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        allItems = (d && d.contributions) || [];
+        visibleCount = INITIAL;
+        renderVisible();
+      })
+      .catch(function () {
+        listEl.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 text-sm py-8">Could not load contributions.</div>';
+      });
+  }
+
+  if (moreBtn) {
+    moreBtn.addEventListener('click', function () {
+      visibleCount = Math.min(visibleCount + PAGE_SIZE, allItems.length);
+      renderVisible();
+    });
+  }
+
+  window.addEventListener('tt:contrib-submitted', loadFeed);
+  loadFeed();
+})();
+</script>
+
 </body>
+</html>
+
 </html>
