@@ -5805,6 +5805,32 @@ async endorsePost(postId) {
       } catch (e) {}
       return null;
     },
+    tiktokEmbedSrc(url) {
+      try {
+        const u = new URL(url);
+        const h = u.hostname.replace(/^www\./, '');
+        if (h === 'tiktok.com' || h === 'm.tiktok.com') {
+          let m = u.pathname.match(/^\/@[^/]+\/video\/(\d+)/);
+          if (m) return 'https://www.tiktok.com/embed/v2/' + m[1];
+          m = u.pathname.match(/^\/embed\/v?2?\/(\d+)/);
+          if (m) return 'https://www.tiktok.com/embed/v2/' + m[1];
+          m = u.pathname.match(/^\/v\/(\d+)/);
+          if (m) return 'https://www.tiktok.com/embed/v2/' + m[1];
+        }
+      } catch (e) {}
+      return null;
+    },
+    twitterEmbedSrc(url) {
+      try {
+        const u = new URL(url);
+        const h = u.hostname.replace(/^www\./, '').replace(/^mobile\./, '');
+        if (h === 'twitter.com' || h === 'x.com') {
+          const m = u.pathname.match(/^\/[^/]+\/status\/(\d+)/) || u.pathname.match(/^\/i\/web\/status\/(\d+)/);
+          if (m) return 'https://platform.twitter.com/embed/Tweet.html?id=' + m[1];
+        }
+      } catch (e) {}
+      return null;
+    },
     embedFrame(src, title) {
       return '<div class="md-embed"><iframe src="' + src + '" title="' + title + '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
     },
@@ -5817,6 +5843,10 @@ async endorsePost(postId) {
             if (yt) return this.embedFrame(yt, 'YouTube video');
             const vm = this.vimeoEmbedSrc(url);
             if (vm) return this.embedFrame(vm, 'Vimeo video');
+            const tt = this.tiktokEmbedSrc(url);
+            if (tt) return this.embedFrame(tt, 'TikTok video');
+            const tw = this.twitterEmbedSrc(url);
+            if (tw) return this.embedFrame(tw, 'X post');
           } catch (e) {}
           return match;
         });
