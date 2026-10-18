@@ -20,5 +20,8 @@ class_name = "UserInbox"
 tag = "v1"
 new_sqlite_classes = ["UserInbox"]
 
+[vars]
+PUBLIC_ANALYTICS_USER_ID = "53"
+
 [observability]
 enabled = true

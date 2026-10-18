@@ -317,6 +317,13 @@ async function ensureTables(env) {
     )`
   ).run();
   await env.MY_BINDING.prepare(
+    `CREATE TABLE IF NOT EXISTS public_analytics_cache (
+      cache_key TEXT PRIMARY KEY,
+      data TEXT NOT NULL,
+      updated_at INTEGER NOT NULL
+    )`
+  ).run();
+  await env.MY_BINDING.prepare(
     `CREATE TABLE IF NOT EXISTS api_keys (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
@@ -2159,6 +2166,193 @@ async function handleFeedRoutes(request, env, url) {
     }
   }
 
+  // GET /api/public/analytics (public, cached, no auth)
+  if (url.pathname === '/api/public/analytics' && request.method === 'GET') {
+    const CACHE_TTL = 6 * 3600;
+    const nowSec = Math.floor(Date.now() / 1000);
+    const cors = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'public, max-age=1800, s-maxage=1800'
+    };
+
+    // 1. Cache hit
+    try {
+      const row = await env.MY_BINDING.prepare(
+        "SELECT data, updated_at FROM public_analytics_cache WHERE cache_key = 'site'"
+      ).first();
+      if (row && (nowSec - row.updated_at) < CACHE_TTL) {
+        return new Response(row.data, { status: 200, headers: Object.assign({ 'X-Data-Source': 'cache', 'X-Cache-Age': String(nowSec - row.updated_at) }, cors) });
+      }
+    } catch (e) { /* fresh path */ }
+
+    // 2. Fetch fresh
+    try {
+      const ownerId = parseInt(env.PUBLIC_ANALYTICS_USER_ID || '0', 10);
+      if (!ownerId) throw new Error('PUBLIC_ANALYTICS_USER_ID not configured');
+
+      const ga4 = await env.MY_BINDING.prepare('SELECT refresh_token, property_id FROM user_ga4 WHERE user_id = ?').bind(ownerId).first();
+      const gsc = await env.MY_BINDING.prepare('SELECT refresh_token, site_url FROM user_gsc WHERE user_id = ?').bind(ownerId).first();
+
+      const fmt = (d) => d.toISOString().slice(0, 10);
+      const end = new Date(); end.setUTCDate(end.getUTCDate() - 2);
+      const d = (n) => { const x = new Date(end); x.setUTCDate(x.getUTCDate() - n); return x; };
+      const start7 = d(6), start28 = d(27);
+      const prev7End = d(7), prev7Start = d(13);
+      const prev28End = d(28), prev28Start = d(55);
+
+      const result = {
+        updated_at: Date.now(),
+        windows: {
+          end_date: fmt(end),
+          d7: { start: fmt(start7), end: fmt(end) },
+          d28: { start: fmt(start28), end: fmt(end) }
+        },
+        ga4: null, gsc: null, errors: {}
+      };
+
+      // GA4
+      if (ga4 && ga4.property_id && ga4.refresh_token) {
+        try {
+          const token = await refreshAccessToken(decrypt(ga4.refresh_token), env);
+
+          const fetchDaily = async (start, stop) => {
+            const r = await fetchGA4Report(token, ga4.property_id,
+              ['date'], ['sessions','totalUsers','newUsers','screenPageViews','engagementRate'],
+              0, start, stop);
+            return r.rows || [];
+          };
+          const aggregate = (rows) => {
+            let sessions = 0, users = 0, newUsers = 0, pv = 0, eSum = 0, eN = 0;
+            (rows || []).forEach(r => {
+              const m = r.metricValues || [];
+              sessions  += parseFloat(m[0]?.value || 0);
+              users     += parseFloat(m[1]?.value || 0);
+              newUsers  += parseFloat(m[2]?.value || 0);
+              pv        += parseFloat(m[3]?.value || 0);
+              const e = parseFloat(m[4]?.value || 0);
+              if (!isNaN(e)) { eSum += e; eN++; }
+            });
+            return { sessions, users, new_users: newUsers, pageviews: pv, engagement_rate: eN ? eSum / eN : 0 };
+          };
+
+          const [r7, r28, rp7, rp28] = await Promise.all([
+            fetchDaily(fmt(start7), fmt(end)),
+            fetchDaily(fmt(start28), fmt(end)),
+            fetchDaily(fmt(prev7Start), fmt(prev7End)),
+            fetchDaily(fmt(prev28Start), fmt(prev28End))
+          ]);
+
+          const trend = r28.map(r => ({
+            date: r.dimensionValues?.[0]?.value || '',
+            sessions: parseFloat(r.metricValues?.[0]?.value || 0)
+          })).sort((a,b) => a.date.localeCompare(b.date));
+
+          const topPagesRaw = await fetchGA4Report(token, ga4.property_id,
+            ['pagePath'], ['sessions','screenPageViews'], 0, fmt(start28), fmt(end));
+          const top_pages = (topPagesRaw.rows || []).slice(0, 10).map(r => ({
+            path: r.dimensionValues?.[0]?.value || '',
+            sessions: parseFloat(r.metricValues?.[0]?.value || 0),
+            views: parseFloat(r.metricValues?.[1]?.value || 0)
+          }));
+
+          const chanRaw = await fetchGA4Report(token, ga4.property_id,
+            ['sessionDefaultChannelGroup'], ['sessions'], 0, fmt(start28), fmt(end));
+          const channels = (chanRaw.rows || []).map(r => ({
+            channel: r.dimensionValues?.[0]?.value || 'Unassigned',
+            sessions: parseFloat(r.metricValues?.[0]?.value || 0)
+          })).sort((a,b) => b.sessions - a.sessions);
+
+          result.ga4 = {
+            overview_7d: aggregate(r7),
+            overview_28d: aggregate(r28),
+            prev_7d: aggregate(rp7),
+            prev_28d: aggregate(rp28),
+            trend_28d: trend,
+            top_pages, channels
+          };
+        } catch (e) {
+          result.errors.ga4 = e.message || 'GA4 fetch failed';
+        }
+      } else {
+        result.errors.ga4 = 'GA4 not connected';
+      }
+
+      // GSC
+      if (gsc && gsc.site_url && gsc.refresh_token) {
+        try {
+          const token = await refreshAccessToken(decrypt(gsc.refresh_token), env);
+
+          const fetchRange = (start, stop, limit = 100) =>
+            fetchGSCReport(token, gsc.site_url, ['date'], start, stop, limit);
+
+          const aggregateGsc = (rows) => {
+            let clicks = 0, impr = 0, posSum = 0, posN = 0;
+            (rows || []).forEach(r => {
+              clicks += r.clicks || 0;
+              impr   += r.impressions || 0;
+              if (r.position) { posSum += r.position; posN++; }
+            });
+            return { clicks, impressions: impr, ctr: impr ? clicks / impr : 0, position: posN ? posSum / posN : 0 };
+          };
+
+          const [g7, g28, gp7, gp28] = await Promise.all([
+            fetchRange(fmt(start7), fmt(end)),
+            fetchRange(fmt(start28), fmt(end)),
+            fetchRange(fmt(prev7Start), fmt(prev7End)),
+            fetchRange(fmt(prev28Start), fmt(prev28End))
+          ]);
+
+          const gscTrend = (g28.rows || []).map(r => ({
+            date: r.keys?.[0] || '',
+            clicks: r.clicks || 0,
+            impressions: r.impressions || 0
+          })).sort((a,b) => a.date.localeCompare(b.date));
+
+          const gpRaw = await fetchGSCReport(token, gsc.site_url, ['page'], fmt(start28), fmt(end), 10);
+          const gsc_top = (gpRaw.rows || []).map(r => {
+            const u = r.keys?.[0] || '';
+            const pathOnly = u.replace(/^https?:\/\/[^\/]+/, '') || '/';
+            return {
+              path: pathOnly,
+              clicks: r.clicks || 0,
+              impressions: r.impressions || 0,
+              ctr: r.ctr || 0,
+              position: r.position || 0
+            };
+          });
+
+          result.gsc = {
+            overview_7d: aggregateGsc(g7.rows),
+            overview_28d: aggregateGsc(g28.rows),
+            prev_7d: aggregateGsc(gp7.rows),
+            prev_28d: aggregateGsc(gp28.rows),
+            trend_28d: gscTrend,
+            top_pages: gsc_top
+          };
+        } catch (e) {
+          result.errors.gsc = e.message || 'GSC fetch failed';
+        }
+      } else {
+        result.errors.gsc = 'GSC not connected';
+      }
+
+      const payload = JSON.stringify(result);
+      try {
+        await env.MY_BINDING.prepare(
+          "INSERT OR REPLACE INTO public_analytics_cache (cache_key, data, updated_at) VALUES ('site', ?, ?)"
+        ).bind(payload, nowSec).run();
+      } catch (e) { console.error('cache write:', e.message); }
+
+      return new Response(payload, { status: 200, headers: Object.assign({ 'X-Data-Source': 'fresh' }, cors) });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: err.message || 'Analytics fetch failed' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+      });
+    }
+  }
+
   // GET /api/contributions/leaderboard
   if (url.pathname === '/api/contributions/leaderboard' && request.method === 'GET') {
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '12', 10) || 12, 30);
@@ -2274,6 +2468,7 @@ async function handleNewRoutes(request, env, url) {
     p === '/api/contributions' ||
     p === '/api/contributions/leaderboard' ||
     p === '/api/contributions/recent' ||
+    p === '/api/public/analytics' ||
     p === '/api/notifications' ||
     p === '/api/notifications/read' ||
     p === '/api/notifications/clear' ||

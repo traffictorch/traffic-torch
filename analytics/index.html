@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Analytics — Traffic Torch In the Open</title>
+  <meta name="description" content="Public analytics for Traffic Torch. Real GA4 and Google Search Console aggregates — sessions, users, clicks, impressions, top pages, and channel mix. No query text, no referrer URLs, no personal data.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://traffictorch.net/analytics/">
+
+  <meta property="og:title" content="Analytics — Traffic Torch In the Open">
+  <meta property="og:description" content="Real GA4 and GSC aggregates. Sessions, users, clicks, impressions, top pages, channel mix. Public by design.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://traffictorch.net/analytics/">
+  <meta property="og:image" content="https://traffictorch.net/blog/images/governance/decentralised-government-1200w.webp">
+  <meta property="og:site_name" content="Traffic Torch">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Analytics — Traffic Torch In the Open">
+  <meta name="twitter:description" content="Real GA4 and GSC aggregates — public by design.">
+  <meta name="twitter:image" content="https://traffictorch.net/blog/images/governance/decentralised-government-1200w.webp">
+  <meta name="twitter:site" content="@Guitaralize">
+
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f2937" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo-180.webp">
+
+  <link rel="preload" as="style" href="/style.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/style.css?v=1.0"></noscript>
+  <style>html{visibility:hidden;opacity:0;transition:opacity 0.4s ease}</style>
+  <link rel="preload" as="style" href="/tailwind-local.css?v=1.0" onload="this.onload=null;this.rel='stylesheet';document.documentElement.style.visibility='visible';document.documentElement.style.opacity='1'">
+  <noscript><style>html{visibility:visible;opacity:1}</style><link rel="stylesheet" href="/tailwind-local.css?v=1.0"></noscript>
+
+  <script>
+    (function() {
+      const saved = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+    })();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
+
+  <div class="flex flex-1 min-h-screen">
+    <aside id="desktopSidebar" class="hidden md:flex w-64 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-r border-white/10 dark:border-white/5 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0 h-screen flex flex-col self-start" aria-label="Primary navigation">
+      <div class="flex items-center justify-center p-6 border-b border-white/10 dark:border-white/5">
+        <a href="/" class="flex items-center gap-4">
+          <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+          <span id="sidebarTitle" class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent hidden">Traffic Torch</span>
+        </a>
+      </div>
+      <div id="desktop-menu-placeholder" class="menu-fade-in opacity-0 transition-opacity duration-500 ease-in"></div>
+      <div class="p-4 border-t border-white/10 dark:border-white/5">
+        <button id="sidebarCollapse" class="w-full flex items-center justify-center py-3 text-2xl text-gray-500 dark:text-white/70 hover:text-orange-400 hover:bg-white/10 rounded-lg transition" aria-label="Collapse sidebar">←</button>
+      </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col">
+      <header class="sticky top-0 z-50 bg-white/5 dark:bg-black/40 backdrop-blur-xl border-b border-white/10 dark:border-white/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+          <a href="/" class="flex items-center gap-4 md:hidden">
+            <img src="/logo-100w.webp" srcset="/logo-100w.webp 100w, /logo-320w.webp 320w" sizes="70px" alt="Traffic Torch Logo" class="w-10 rounded-xl flex-shrink-0" width="40" height="40" loading="eager">
+            <p class="text-[1.25rem] font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</p>
+          </a>
+          <div class="w-10 md:hidden"></div>
+          <button id="menuToggle" class="md:hidden text-3xl text-gray-500 relative left-0 -top-1" aria-label="Open mobile menu">☰</button>
+          <button id="desktopMenuToggle" class="hidden md:block text-3xl text-gray-500 dark:text-white/90 hover:text-orange-400 transition mr-4" aria-label="Toggle sidebar">☰</button>
+          <button id="themeToggle" class="py-1 px-2 bg-white/10 rounded-full hover:bg-white/20 transition text-xl" aria-label="Toggle theme">🌙</button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-gray-900/95 backdrop-blur-xl border-t border-white/10" aria-label="Mobile menu">
+          <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-800 dark:text-gray-200 text-3xl focus:outline-none" aria-label="Close menu">×</button>
+          <div id="mobile-menu-placeholder"></div>
+        </div>
+      </header>
+
+      <main class="container mx-auto px-3 py-8 max-w-6xl">
+
+        <nav aria-label="breadcrumb" class="max-w-6xl mx-auto px-2 py-2 text-sm mb-6">
+          <ol class="flex flex-wrap items-center gap-2 text-gray-600 dark:text-gray-400">
+            <li><a href="/" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Home</a></li>
+            <li aria-hidden="true" class="opacity-60">›</li>
+            <li aria-current="page" class="font-semibold text-gray-800 dark:text-gray-200">Analytics</li>
+          </ol>
+        </nav>
+
+        <section class="text-center mb-10 px-4">
+          <h1 class="text-3xl md:text-5xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent leading-tight mb-4">
+            Traffic Torch, In the Open
+          </h1>
+          <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            Real GA4 and Google Search Console aggregates — the same numbers the site owner sees in the dashboard. Public because we think analytics shouldn't be private.
+          </p>
+        </section>
+
+        <div class="bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4 mb-6 text-sm text-gray-700 dark:text-gray-300">
+          <p class="mb-2"><strong>What's public:</strong> sessions, users, pageviews, engagement rate, clicks, impressions, CTR, average search position, top pages, and channel mix (Organic Search / Direct / Referral / Organic Social).</p>
+          <p><strong>What's never public:</strong> personal data, search query text, referrer URLs, geographic breakdown, or device split. <strong>Refresh:</strong> every 6 hours. <strong>Date range:</strong> ends 2 days ago (Google's own lag).</p>
+        </div>
+
+        <div id="analytics-meta" class="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+          <span id="analytics-timestamp">Loading…</span>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mb-6 justify-center" role="tablist" aria-label="Analytics tabs">
+          <button type="button" class="an-tab px-4 py-2 rounded-full font-semibold text-sm transition" data-tab="overview" role="tab">📊 Overview</button>
+          <button type="button" class="an-tab px-4 py-2 rounded-full font-semibold text-sm transition" data-tab="trends" role="tab">📈 Trends</button>
+          <button type="button" class="an-tab px-4 py-2 rounded-full font-semibold text-sm transition" data-tab="pages" role="tab">🔥 Top Pages</button>
+          <button type="button" class="an-tab px-4 py-2 rounded-full font-semibold text-sm transition" data-tab="sources" role="tab">🌐 Sources</button>
+          <button type="button" class="an-tab px-4 py-2 rounded-full font-semibold text-sm transition" data-tab="search" role="tab">🔍 Search</button>
+        </div>
+
+        <div id="an-panel" class="mb-12">
+          <div id="tab-overview" class="an-pane" data-pane="overview"></div>
+          <div id="tab-trends" class="an-pane hidden" data-pane="trends"></div>
+          <div id="tab-pages" class="an-pane hidden" data-pane="pages"></div>
+          <div id="tab-sources" class="an-pane hidden" data-pane="sources"></div>
+          <div id="tab-search" class="an-pane hidden" data-pane="search"></div>
+        </div>
+
+        <section class="max-w-3xl mx-auto my-12 text-center">
+          <div class="rounded-3xl border border-orange-200 dark:border-orange-800/40 bg-gradient-to-br from-orange-50 to-pink-50 dark:from-orange-950/20 dark:to-pink-950/20 p-8">
+            <h2 class="text-2xl md:text-3xl font-black mb-3 text-gray-800 dark:text-gray-200">Why make this public?</h2>
+            <p class="text-gray-700 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+              Because hiding analytics is a choice, not a requirement. Sharing real numbers keeps us honest, shows what's working, and lets anyone sanity-check our claims.
+            </p>
+            <a href="/community/round-table/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition shadow-lg">See the governance behind it →</a>
+          </div>
+        </section>
+
+      </main>
+
+      <div id="footer-placeholder"></div>
+    </div>
+  </div>
+
+  <style>
+    .an-tab {
+      background: rgba(148, 163, 184, 0.1);
+      color: #6b7280;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+    .an-tab:hover { border-color: rgba(249, 115, 22, 0.5); color: #f97316; }
+    .an-tab.an-active {
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+    }
+    :root.dark .an-tab { color: #9ca3af; }
+    .an-metric {
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148,163,184,0.15);
+      border-radius: 1rem;
+      padding: 1.25rem;
+    }
+    :root.dark .an-metric { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.08); }
+    .an-metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7280; font-weight: 700; }
+    .an-metric-value { font-size: 1.9rem; font-weight: 900; line-height: 1.1; margin: 0.4rem 0; }
+    .an-metric-delta { font-size: 0.75rem; font-weight: 600; }
+    .an-up { color: #10b981; }
+    .an-down { color: #ef4444; }
+    .an-flat { color: #6b7280; }
+    .an-card { background: rgba(255,255,255,0.5); backdrop-filter: blur(12px); border: 1px solid rgba(148,163,184,0.15); border-radius: 1rem; padding: 1.5rem; }
+    :root.dark .an-card { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.08); }
+    .an-skel { display: inline-block; height: 1em; background: rgba(148,163,184,0.2); border-radius: 0.25em; animation: an-pulse 1.4s infinite ease-in-out; }
+    @keyframes an-pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+    .an-empty { text-align: center; color: #6b7280; font-size: 0.9rem; padding: 2rem 0; }
+    .an-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.4); color: #ef4444; padding: 1rem; border-radius: 0.75rem; font-size: 0.85rem; }
+  </style>
+
+  <script src="/main.js?v=1.2" type="module"></script>
+  <script type="module" src="/shared/google-analytics.js?v=1.0"></script>
+
+  <script>
+  (function () {
+    const API = 'https://traffic-torch-auth.traffictorch.workers.dev/api/public/analytics';
+    let DATA = null;
+    let CHARTS = {};
+
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+    const fmtNum = (n) => !isFinite(n) ? '—' : Math.round(n).toLocaleString();
+    const fmtPct = (n, dec = 1) => !isFinite(n) ? '—' : (n * 100).toFixed(dec) + '%';
+    const fmtPctPos = (n, dec = 1) => !isFinite(n) ? '—' : n.toFixed(dec);
+
+    function delta(cur, prev) {
+      if (!prev || prev === 0) return { text: '—', cls: 'an-flat' };
+      const pct = ((cur - prev) / prev) * 100;
+      const sign = pct > 0 ? '+' : '';
+      return {
+        text: sign + pct.toFixed(1) + '%',
+        cls: pct > 0.5 ? 'an-up' : pct < -0.5 ? 'an-down' : 'an-flat'
+      };
+    }
+
+    function metricCard(label, value, cur, prev) {
+      const d = delta(cur, prev);
+      return `<div class="an-metric">
+        <div class="an-metric-label">${label}</div>
+        <div class="an-metric-value">${value}</div>
+        <div class="an-metric-delta ${d.cls}">${d.text} vs prev 7d</div>
+      </div>`;
+    }
+
+    function fmtDateShort(yyyymmdd) {
+      if (!yyyymmdd || yyyymmdd.length < 8) {
+        if (/^\d{4}-\d{2}-\d{2}$/.test(yyyymmdd)) {
+          const dt = new Date(yyyymmdd + 'T00:00:00Z');
+          return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        }
+        return yyyymmdd;
+      }
+      const y = yyyymmdd.slice(0, 4), m = yyyymmdd.slice(4, 6), d = yyyymmdd.slice(6, 8);
+      const dt = new Date(`${y}-${m}-${d}T00:00:00Z`);
+      return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+
+    function relAgo(ts) {
+      if (!ts) return '';
+      const sec = Math.floor((Date.now() - ts) / 1000);
+      if (sec < 60) return 'just now';
+      if (sec < 3600) return Math.floor(sec / 60) + 'm ago';
+      if (sec < 86400) return Math.floor(sec / 3600) + 'h ago';
+      return Math.floor(sec / 86400) + 'd ago';
+    }
+
+    function setTimestamp() {
+      if (!DATA) return;
+      const ts = DATA.updated_at;
+      const dateLabel = DATA.windows?.end_date || '';
+      $('#analytics-timestamp').textContent =
+        `Data as of ${dateLabel} · refreshed ${relAgo(ts)}`;
+    }
+
+    // ─── OVERVIEW ───
+    function renderOverview() {
+      const el = $('#tab-overview');
+      if (!DATA?.ga4 && !DATA?.gsc) {
+        el.innerHTML = renderError();
+        return;
+      }
+
+      let html = '';
+
+      if (DATA.ga4) {
+        const g = DATA.ga4;
+        html += `<h2 class="text-xl font-black mb-4 text-gray-800 dark:text-gray-200">Site Traffic — last 7 days</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+            ${metricCard('Sessions', fmtNum(g.overview_7d.sessions), g.overview_7d.sessions, g.prev_7d.sessions)}
+            ${metricCard('Users', fmtNum(g.overview_7d.users), g.overview_7d.users, g.prev_7d.users)}
+            ${metricCard('New users', fmtNum(g.overview_7d.new_users), g.overview_7d.new_users, g.prev_7d.new_users)}
+            ${metricCard('Pageviews', fmtNum(g.overview_7d.pageviews), g.overview_7d.pageviews, g.prev_7d.pageviews)}
+          </div>`;
+      } else {
+        html += `<div class="an-empty mb-6">GA4 not connected${DATA.errors?.ga4 ? ' — ' + DATA.errors.ga4 : ''}</div>`;
+      }
+
+      if (DATA.gsc) {
+        const s = DATA.gsc;
+        html += `<h2 class="text-xl font-black mb-4 text-gray-800 dark:text-gray-200">Search Console — last 7 days</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+            ${metricCard('Clicks', fmtNum(s.overview_7d.clicks), s.overview_7d.clicks, s.prev_7d.clicks)}
+            ${metricCard('Impressions', fmtNum(s.overview_7d.impressions), s.overview_7d.impressions, s.prev_7d.impressions)}
+            ${metricCard('CTR', fmtPct(s.overview_7d.ctr, 2), s.overview_7d.ctr, s.prev_7d.ctr)}
+            ${metricCard('Avg position', fmtPctPos(s.overview_7d.position), s.overview_7d.position, s.prev_7d.position)}
+          </div>`;
+      } else {
+        html += `<div class="an-empty mb-6">GSC not connected${DATA.errors?.gsc ? ' — ' + DATA.errors.gsc : ''}</div>`;
+      }
+
+      el.innerHTML = html;
+    }
+
+    // ─── TRENDS ───
+    function renderTrends() {
+      const el = $('#tab-trends');
+      const g = DATA?.ga4, s = DATA?.gsc;
+      if (!g?.trend_28d && !s?.trend_28d) { el.innerHTML = renderError(); return; }
+
+      el.innerHTML = `<div class="an-card"><h2 class="text-xl font-black mb-4 text-gray-800 dark:text-gray-200">28-day trends</h2>
+        <div style="position:relative;height:340px"><canvas id="an-trend-chart"></canvas></div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Sessions (left axis) · Search clicks (right axis)</p>
+      </div>`;
+
+      if (CHARTS.trend) { CHARTS.trend.destroy(); }
+      const labels = (g?.trend_28d || s?.trend_28d || []).map(r => fmtDateShort(r.date));
+      const sessions = (g?.trend_28d || []).map(r => r.sessions);
+      const clicks = (s?.trend_28d || []).map(r => r.clicks);
+
+      const ctx = document.getElementById('an-trend-chart').getContext('2d');
+      CHARTS.trend = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Sessions', data: sessions, borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.1)', tension: 0.3, yAxisID: 'y' },
+            { label: 'Clicks', data: clicks, borderColor: '#ec4899', backgroundColor: 'rgba(236,72,153,0.1)', tension: 0.3, yAxisID: 'y1' }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { position: 'bottom' } },
+          scales: {
+            y:  { position: 'left',  beginAtZero: true, ticks: { precision: 0 } },
+            y1: { position: 'right', beginAtZero: true, ticks: { precision: 0 }, grid: { drawOnChartArea: false } }
+          }
+        }
+      });
+    }
+
+    // ─── TOP PAGES ───
+    function renderPages() {
+      const el = $('#tab-pages');
+      const g = DATA?.ga4?.top_pages || [];
+      const s = DATA?.gsc?.top_pages || [];
+      if (!g.length && !s.length) { el.innerHTML = renderError(); return; }
+
+      let html = '';
+      if (g.length) {
+        html += `<div class="an-card mb-4"><h2 class="text-xl font-black mb-4 text-gray-800 dark:text-gray-200">Top pages by sessions (28d)</h2>
+          <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left border-b border-gray-300 dark:border-white/10">
+            <th class="py-2 pr-3">#</th><th class="py-2 pr-3">Path</th><th class="py-2 pr-3 text-right">Sessions</th><th class="py-2 text-right">Views</th>
+          </tr></thead><tbody>`;
+        g.forEach((p, i) => {
+          html += `<tr class="border-b border-gray-100 dark:border-white/5"><td class="py-2 pr-3 text-gray-500">${i + 1}</td>
+            <td class="py-2 pr-3"><a href="${p.path}" class="text-orange-600 dark:text-orange-400 hover:underline break-all">${p.path || '/'}</a></td>
+            <td class="py-2 pr-3 text-right font-mono">${fmtNum(p.sessions)}</td>
+            <td class="py-2 text-right font-mono">${fmtNum(p.views)}</td></tr>`;
+        });
+        html += `</tbody></table></div></div>`;
+      }
+
+      if (s.length) {
+        html += `<div class="an-card"><h2 class="text-xl font-black mb-4 text-gray-800 dark:text-gray-200">Top search pages (28d)</h2>
+          <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left border-b border-gray-300 dark:border-white/10">
+            <th class="py-2 pr-3">Path</th><th class="py-2 pr-3 text-right">Clicks</th><th class="py-2 pr-3 text-right">Impr.</th><th class="py-2 pr-3 text-right">CTR</th><th class="py-2 text-right">Pos.</th>
+          </tr></thead><tbody>`;
+        s.forEach((p) => {
+          html += `<tr class="border-b border-gray-100 dark:border-white/5">
+            <td class="py-2 pr-3"><a href="${p.path}" class="text-orange-600 dark:text-orange-400 hover:underline break-all">${p.path || '/'}</a></td>
+            <td class="py-2 pr-3 text-right font-mono">${fmtNum(p.clicks)}</td>
+            <td class="py-2 pr-3 text-right font-mono">${fmtNum(p.impressions)}</td>
+            <td class="py-2 pr-3 text-right font-mono">${fmtPct(p.ctr, 2)}</td>
+            <td class="py-2 text-right font-mono">${fmtPctPos(p.position)}</td></tr>`;
+        });
+        html += `</tbody></table></div></div>`;
+      }
+      el.innerHTML = html;
+    }
+
+    // ─── SOURCES ───
+    function renderSources() {
+      const el = $('#tab-sources');
+      const ch = DATA?.ga4?.channels || [];
+      if (!ch.length) { el.innerHTML = renderError(); return; }
+
+      el.innerHTML = `<div class="an-card">
+        <h2 class="text-xl font-black mb-4 text-gray-800 dark:text-gray-200">Traffic sources (28d)</h2>
+        <div class="grid md:grid-cols-2 gap-6 items-center">
+          <div style="position:relative;height:280px"><canvas id="an-sources-chart"></canvas></div>
+          <div><table class="w-full text-sm"><thead><tr class="text-left border-b border-gray-300 dark:border-white/10">
+            <th class="py-2 pr-3">Channel</th><th class="py-2 pr-3 text-right">Sessions</th><th class="py-2 text-right">Share</th>
+          </tr></thead><tbody>${ch.map(c => {
+            const total = ch.reduce((a, x) => a + x.sessions, 0);
+            const share = total ? (c.sessions / total * 100).toFixed(1) : '0';
+            return `<tr class="border-b border-gray-100 dark:border-white/5">
+              <td class="py-2 pr-3">${c.channel}</td>
+              <td class="py-2 pr-3 text-right font-mono">${fmtNum(c.sessions)}</td>
+              <td class="py-2 text-right font-mono">${share}%</td></tr>`;
+          }).join('')}</tbody></table></div>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-4">Channel groups only — no referrer URLs.</p>
+      </div>`;
+
+      if (CHARTS.sources) { CHARTS.sources.destroy(); }
+      const colors = ['#f97316','#ec4899','#8b5cf6','#06b6d4','#10b981','#eab308','#64748b'];
+      const ctx = document.getElementById('an-sources-chart').getContext('2d');
+      CHARTS.sources = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ch.map(c => c.channel),
+          datasets: [{ data: ch.map(c => c.sessions), backgroundColor: colors.slice(0, ch.length), borderWidth: 0 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+    }
+
+    // ─── SEARCH ───
+    function renderSearch() {
+      const el = $('#tab-search');
+      const s = DATA?.gsc;
+      if (!s) { el.innerHTML = renderError(); return; }
+
+      const ov = s.overview_28d;
+      el.innerHTML = `<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        ${metricCard('Clicks (28d)', fmtNum(ov.clicks), ov.clicks, s.prev_28d.clicks)}
+        ${metricCard('Impressions (28d)', fmtNum(ov.impressions), ov.impressions, s.prev_28d.impressions)}
+        ${metricCard('CTR (28d)', fmtPct(ov.ctr, 2), ov.ctr, s.prev_28d.ctr)}
+        ${metricCard('Avg position (28d)', fmtPctPos(ov.position), -ov.position, -s.prev_28d.position)}
+      </div>
+      <div class="an-card">
+        <h2 class="text-xl font-black mb-4 text-gray-800 dark:text-gray-200">Search performance — 28 days</h2>
+        <div style="position:relative;height:340px"><canvas id="an-search-chart"></canvas></div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Clicks (left axis) · Impressions (right axis). <strong>Note:</strong> search query text is never exposed.</p>
+      </div>`;
+
+      if (CHARTS.search) { CHARTS.search.destroy(); }
+      const labels = (s.trend_28d || []).map(r => fmtDateShort(r.date));
+      const clicks = (s.trend_28d || []).map(r => r.clicks);
+      const impressions = (s.trend_28d || []).map(r => r.impressions);
+
+      const ctx = document.getElementById('an-search-chart').getContext('2d');
+      CHARTS.search = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Clicks', data: clicks, borderColor: '#ec4899', backgroundColor: 'rgba(236,72,153,0.1)', tension: 0.3, yAxisID: 'y' },
+            { label: 'Impressions', data: impressions, borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)', tension: 0.3, yAxisID: 'y1' }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: { legend: { position: 'bottom' } },
+          scales: {
+            y:  { position: 'left',  beginAtZero: true, ticks: { precision: 0 } },
+            y1: { position: 'right', beginAtZero: true, ticks: { precision: 0 }, grid: { drawOnChartArea: false } }
+          }
+        }
+      });
+    }
+
+    function renderError() {
+      const errs = DATA?.errors || {};
+      const msgs = Object.entries(errs).map(([k, v]) => `<div>${k.toUpperCase()}: ${v}</div>`).join('');
+      return `<div class="an-error"><strong>Analytics unavailable.</strong>${msgs ? '<div class="mt-2">' + msgs + '</div>' : ''}</div>`;
+    }
+
+    // ─── TAB SWITCHING ───
+    const RENDERERS = {
+      overview: renderOverview,
+      trends: renderTrends,
+      pages: renderPages,
+      sources: renderSources,
+      search: renderSearch
+    };
+
+    function activate(tab) {
+      $$('.an-tab').forEach(b => {
+        b.classList.toggle('an-active', b.dataset.tab === tab);
+      });
+      $$('.an-pane').forEach(p => {
+        p.classList.toggle('hidden', p.dataset.pane !== tab);
+      });
+      const fn = RENDERERS[tab];
+      if (fn) fn();
+    }
+
+    $$('.an-tab').forEach(btn => {
+      btn.addEventListener('click', () => activate(btn.dataset.tab));
+    });
+
+    // ─── LOAD ───
+    function load() {
+      fetch(API).then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+        .then(d => {
+          DATA = d;
+          setTimestamp();
+          activate('overview');
+        })
+        .catch(e => {
+          $('#analytics-timestamp').textContent = 'Analytics unavailable';
+          ['#tab-overview', '#tab-trends', '#tab-pages', '#tab-sources', '#tab-search'].forEach(sel => {
+            $(sel).innerHTML = `<div class="an-error"><strong>Could not load analytics.</strong> ${e.message}</div>`;
+          });
+        });
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
+    else load();
+  })();
+  </script>
+
+</body>
+</html>
