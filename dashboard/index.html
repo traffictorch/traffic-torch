@@ -203,7 +203,7 @@
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
-<div x-data="dashboardApp()" x-init="initDashboard()" class="flex flex-1 min-h-screen">
+<div x-data="dashboardApp()" x-init="initDashboard(); $nextTick(() => initOgEnhance())" class="flex flex-1 min-h-screen">
 
   <!-- ── Image lightbox ── -->
   <template x-teleport="body">
@@ -5870,7 +5870,7 @@ async endorsePost(postId) {
         const text = (a.textContent || '').trim();
         const bare = text === href || text === href.replace(/^https?:\/\//, '').replace(/\/$/, '');
         if (!bare) continue;
-        if (/youtube\.com|youtu\.be|vimeo\.com/.test(href)) continue;
+        if (/youtube\.com|youtu\.be|vimeo\.com|tiktok\.com|twitter\.com|x\.com/.test(href)) continue;
         try { if (new URL(href).hostname.endsWith('traffictorch.net')) continue; } catch { continue; }
         a.setAttribute('data-og-loading', '1');
         count++;
@@ -5889,6 +5889,24 @@ async endorsePost(postId) {
     enhanceAllOg() {
       if (typeof document === 'undefined') return;
       document.querySelectorAll('.md-body').forEach(el => this.enhanceOgLinks(el));
+    },
+    initOgEnhance() {
+      if (typeof document === 'undefined') return;
+      const self = this;
+      const run = () => {
+        document.querySelectorAll('.md-body').forEach(el => {
+          if (el.querySelector('a[href^="http"]:not([data-og-done]):not([data-og-loading])')) {
+            self.enhanceOgLinks(el);
+          }
+        });
+      };
+      run();
+      const obs = new MutationObserver(() => {
+        clearTimeout(self._ogTimer);
+        self._ogTimer = setTimeout(run, 250);
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+      self._ogObserver = obs;
     },
     bodyPlaceholder() {
       if (this.composer.postType === 'workflow') {

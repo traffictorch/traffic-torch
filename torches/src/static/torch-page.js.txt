@@ -93,7 +93,61 @@ function torchPage() {
       } catch (e) {}
       return null;
     },
-        embedFrame(src, title) {
+        ogCardHtml(data, url) {
+      var esc = function (s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); };
+      var img = data.image ? '<img src="' + esc(data.image) + '" alt="" loading="lazy" class="og-card-img" onerror="this.style.display=\'none\'">' : '';
+      return '<a href="' + esc(url) + '" target="_blank" rel="nofollow ugc noopener" class="og-card" data-og-done="1">' + img + '<div class="og-card-body"><div class="og-card-domain">' + esc(data.domain || '') + '</div><div class="og-card-title">' + esc(data.title) + '</div>' + (data.description ? '<div class="og-card-desc">' + esc(data.description) + '</div>' : '') + '</div></a>';
+    },
+    async enhanceOgLinks(root) {
+      if (!root || !root.querySelectorAll) return;
+      var self = this;
+      var anchors = root.querySelectorAll('a[href^="http"]:not([data-og-done]):not([data-og-loading])');
+      var count = 0;
+      var _iter = Array.from(anchors);
+      for (var i = 0; i < _iter.length; i++) {
+        var a = _iter[i];
+        if (count >= 3) break;
+        var href = a.getAttribute('href');
+        var text = (a.textContent || '').trim();
+        var bare = text === href || text === href.replace(/^https?:\/\//, '').replace(/\/$/, '');
+        if (!bare) continue;
+        if (/youtube\.com|youtu\.be|vimeo\.com|tiktok\.com|twitter\.com|x\.com/.test(href)) continue;
+        try { if (new URL(href).hostname.endsWith('traffictorch.net')) continue; } catch (e) { continue; }
+        a.setAttribute('data-og-loading', '1');
+        count++;
+        try {
+          var res = await fetch(API_BASE + '/api/og-preview?url=' + encodeURIComponent(href));
+          if (!res.ok) { a.removeAttribute('data-og-loading'); a.setAttribute('data-og-done', '1'); continue; }
+          var data = await res.json();
+          if (!data || !data.title) { a.removeAttribute('data-og-loading'); a.setAttribute('data-og-done', '1'); continue; }
+          a.outerHTML = self.ogCardHtml(data, href);
+        } catch (e) { a.removeAttribute('data-og-loading'); }
+      }
+    },
+    enhanceAllOg() {
+      if (typeof document === 'undefined') return;
+      var self = this;
+      document.querySelectorAll('.md-body').forEach(function (el) { self.enhanceOgLinks(el); });
+    },
+    initOgEnhance() {
+      if (typeof document === 'undefined') return;
+      var self = this;
+      var run = function () {
+        document.querySelectorAll('.md-body').forEach(function (el) {
+          if (el.querySelector('a[href^="http"]:not([data-og-done]):not([data-og-loading])')) {
+            self.enhanceOgLinks(el);
+          }
+        });
+      };
+      run();
+      var obs = new MutationObserver(function () {
+        clearTimeout(self._ogTimer);
+        self._ogTimer = setTimeout(run, 250);
+      });
+      obs.observe(document.body, { childList: true, subtree: true });
+      self._ogObserver = obs;
+    },
+    embedFrame(src, title) {
       return '<div class="md-embed"><iframe src="' + src + '" title="' + title + '" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
     },
 
@@ -183,6 +237,7 @@ function torchPage() {
         this.checkEndorseStatus();
       }
       await this.loadComments();
+      this.initOgEnhance();
     },
 
     async checkNetwork() {
