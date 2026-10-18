@@ -246,13 +246,74 @@
     tickerWrapper.appendChild(ticker);
     root.appendChild(tickerWrapper);
 
+    // Scrubber
+    var scrubber = el('div', { class: 'gs-scrubber-wrap' }, [
+      el('div', { class: 'gs-scrubber', 'data-role': 'scrubber', tabindex: '0', role: 'slider', 'aria-label': 'Timeline scrubber', 'aria-valuemin': '0' }, [
+        el('div', { class: 'gs-scrubber-track' }),
+        el('div', { class: 'gs-scrubber-progress', 'data-role': 'progress' }),
+        el('div', { class: 'gs-scrubber-handle', 'data-role': 'handle' })
+      ]),
+      el('div', { class: 'gs-scrubber-markers', 'data-role': 'markers' })
+    ]);
+    root.appendChild(scrubber);
+
     // Controls
     var controls = el('div', { class: 'gs-controls' }, [
       el('button', { class: 'gs-btn gs-btn-primary', type: 'button', onclick: function () { self.toggle(); }, 'data-role': 'play', text: '▶ Play' }),
       el('button', { class: 'gs-btn', type: 'button', onclick: function () { self.step(); }, text: 'Step →' }),
-      el('button', { class: 'gs-btn', type: 'button', onclick: function () { self.reset(); }, text: '↻ Reset' })
+      el('button', { class: 'gs-btn', type: 'button', onclick: function () { self.reset(); }, text: '↻ Reset' }),
+      el('label', { class: 'gs-speed-label' }, [
+        'Speed ',
+        el('select', {
+          class: 'gs-speed-select',
+          onchange: function (e) { self.speed = parseFloat(e.target.value) || 1; }
+        }, [
+          el('option', { value: '0.5', text: '0.5×' }),
+          el('option', { value: '1', text: '1×', selected: 'selected' }),
+          el('option', { value: '2', text: '2×' }),
+          el('option', { value: '4', text: '4×' })
+        ])
+      ])
     ]);
     root.appendChild(controls);
+
+    // Text transcript (screen reader fallback + readable log)
+    var transcript = el('details', { class: 'gs-transcript' }, [
+      el('summary', { class: 'gs-transcript-summary', text: '📖 Text transcript' }),
+      el('div', { class: 'gs-transcript-body', 'data-role': 'transcript', 'aria-live': 'polite' })
+    ]);
+    root.appendChild(transcript);
+
+    // Dynamic "What you just watched"
+    var summaryBlock = el('div', { class: 'gs-watched', 'data-role': 'watched' });
+    root.appendChild(summaryBlock);
+
+    // Wire scrubber drag + keyboard
+    var scrubberEl = scrubber.querySelector('[data-role="scrubber"]');
+    var self2 = this;
+    var dragging = false;
+    function seekFromEvent(ev) {
+      var rect = scrubberEl.getBoundingClientRect();
+      var x = (ev.touches ? ev.touches[0].clientX : ev.clientX) - rect.left;
+      var ratio = Math.max(0, Math.min(1, x / rect.width));
+      self2.pause();
+      self2.currentT = ratio * self2.duration();
+      self2.render();
+    }
+    scrubberEl.addEventListener('mousedown', function (ev) { dragging = true; seekFromEvent(ev); });
+    window.addEventListener('mousemove', function (ev) { if (dragging) seekFromEvent(ev); });
+    window.addEventListener('mouseup', function () { dragging = false; });
+    scrubberEl.addEventListener('touchstart', function (ev) { dragging = true; seekFromEvent(ev); }, { passive: true });
+    scrubberEl.addEventListener('touchmove', function (ev) { if (dragging) seekFromEvent(ev); }, { passive: true });
+    scrubberEl.addEventListener('touchend', function () { dragging = false; });
+    scrubberEl.addEventListener('keydown', function (ev) {
+      var dur = self2.duration();
+      if (ev.key === 'ArrowRight') { ev.preventDefault(); self2.pause(); self2.currentT = Math.min(dur, self2.currentT + dur * 0.02); self2.render(); }
+      if (ev.key === 'ArrowLeft')  { ev.preventDefault(); self2.pause(); self2.currentT = Math.max(0, self2.currentT - dur * 0.02); self2.render(); }
+      if (ev.key === 'Home')       { ev.preventDefault(); self2.reset(); }
+      if (ev.key === 'End')        { ev.preventDefault(); self2.pause(); self2.currentT = dur; self2.render(); }
+    });
+    scrubberEl.addEventListener('click', function (ev) { seekFromEvent(ev); });
 
     container.appendChild(root);
   };
@@ -357,6 +418,9 @@
     this.renderInspector(state);
     this.renderExecute(state, sc);
     this.renderTicker(state, sc);
+    this.renderScrubber(state, sc);
+    this.renderTranscript(state, sc);
+    this.renderWatched(state, sc);
     this.renderPlayBtn();
   };
 
@@ -736,6 +800,138 @@
            + '</div></div>';
     }
     panel.innerHTML = html;
+  };
+
+
+
+  // ──────────────────────────────────────────────────────────────
+  // SCRUBBER
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.renderScrubber = function (state, sc) {
+    var dur = this.duration();
+    var ratio = dur > 0 ? Math.min(1, this.currentT / dur) : 0;
+    var progress = this.container.querySelector('[data-role="progress"]');
+    var handle = this.container.querySelector('[data-role="handle"]');
+    var markersEl = this.container.querySelector('[data-role="markers"]');
+    var scrubberEl = this.container.querySelector('[data-role="scrubber"]');
+    if (progress) progress.style.width = (ratio * 100) + '%';
+    if (handle) handle.style.left = (ratio * 100) + '%';
+    if (scrubberEl) {
+      scrubberEl.setAttribute('aria-valuenow', String(Math.round(this.currentT)));
+      scrubberEl.setAttribute('aria-valuemax', String(Math.round(dur)));
+    }
+    if (markersEl) {
+      // Draw one marker per distinct event day
+      var seen = {};
+      var markers = [];
+      sc.timeline.forEach(function (ev) {
+        if (seen[ev.t]) return;
+        seen[ev.t] = true;
+        markers.push(ev);
+      });
+      markersEl.innerHTML = markers.map(function (ev) {
+        var pct = dur > 0 ? (ev.t / dur) * 100 : 0;
+        var label = ev.type.replace('_', ' ');
+        return '<div class="gs-marker-tick" style="left:' + pct + '%" title="Day ' + ev.t + ' · ' + label + '">'
+             + '<span class="gs-marker-dot"></span>'
+             + '<span class="gs-marker-lbl">d' + ev.t + '</span>'
+             + '</div>';
+      }).join('');
+    }
+  };
+
+  // ──────────────────────────────────────────────────────────────
+  // TRANSCRIPT (screen readers + copyable log)
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.renderTranscript = function (state, sc) {
+    var el_ = this.container.querySelector('[data-role="transcript"]');
+    if (!el_) return;
+    var lines = [];
+    sc.timeline.forEach(function (ev) {
+      if (ev.t > this.currentT) return;
+      lines.push('Day ' + ev.t + ' — ' + this.describeEvent(ev, sc));
+    }, this);
+    if (state.outcome) {
+      lines.push('Outcome — ' + state.outcome.reason);
+    }
+    el_.innerHTML = lines.length
+      ? '<ol class="gs-transcript-list">' + lines.map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ol>'
+      : '<div class="gs-transcript-empty">Press Play or Step to see the transcript.</div>';
+  };
+
+  Simulator.prototype.describeEvent = function (ev, sc) {
+    switch (ev.type) {
+      case 'propose':
+        return 'Proposal "' + sc.title + '" (' + sc.kind + ', ' + sc.eligible + ' eligible) submitted.';
+      case 'comment':
+        return ev.author + ' commented: ' + (ev.body || '');
+      case 'open_vote':
+        return 'Voting opens for ' + R().computeVotePeriodDays(sc.kind) + ' days.';
+      case 'vote_batch':
+        return 'Votes cast: ' + (ev.yes || 0) + ' yes, ' + (ev.no || 0) + ' no, ' + (ev.abstain || 0) + ' abstain.';
+      case 'objection':
+        return 'Objector\u2019s Bench (' + ev.bench_member + ') paused the vote for 72 hours: ' + (ev.reason || '') + '. Deadline extended.';
+      case 'resume_vote':
+        return 'Objection expired. Vote resumes with extended deadline.';
+      case 'close_vote':
+        return 'Vote closed.';
+      case 'apply':
+        return 'Applied: ' + (ev.note || 'config change.');
+      case 'awaiting_merge':
+        return 'Awaiting human merge — ' + (ev.pr_url || '');
+      case 'merge':
+        return 'PR merged by human reviewer. Merge SHA: ' + (ev.commit_sha || '');
+      case 'reconsider_sign':
+        return '10% threshold reached (' + (ev.count || 0) + ' signers). Reconsider request triggered.';
+      case 'reconsider_open':
+        return 'Reconsider vote opened on the same proposal.';
+      case 'reversed':
+        return 'Reconsider reversed the original resolution. Original marked reversed.';
+      default:
+        return ev.type;
+    }
+  };
+
+  // ──────────────────────────────────────────────────────────────
+  // DYNAMIC "WHAT YOU JUST WATCHED"
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.renderWatched = function (state, sc) {
+    var el_ = this.container.querySelector('[data-role="watched"]');
+    if (!el_) return;
+    if (!state.outcome) {
+      el_.innerHTML = '<div class="gs-watched-hint">Press Play to see the outcome.</div>';
+      return;
+    }
+    var rules = R();
+    var cfg = this.effectiveConfig();
+    var threshold = rules.thresholdFor(sc.kind, cfg);
+    var q = rules.computeQuorum(sc.eligible, cfg);
+    var outcomeLabel = state.outcome.passed ? 'PASSED' : (state.outcome.outcome === 'no_quorum' ? 'NO QUORUM' : 'REJECTED');
+    var outcomeClass = state.outcome.passed ? 'gs-watched-pass' : (state.outcome.outcome === 'no_quorum' ? 'gs-watched-quorum' : 'gs-watched-fail');
+    var exec = '';
+    if (state.execution) {
+      if (state.execution.type === 'applied') exec = 'Config change applied: ' + esc(state.execution.note || '');
+      else if (state.execution.type === 'merged') exec = 'PR merged — SHA ' + esc(state.execution.commit_sha || '') + '.';
+      else if (state.execution.type === 'awaiting_merge') exec = 'PR linked but not yet merged — human review required.';
+    }
+    el_.innerHTML = ''
+      + '<div class="gs-watched-head ' + outcomeClass + '">'
+      +   '<div class="gs-watched-icon">' + (state.outcome.passed ? '✓' : (state.outcome.outcome === 'no_quorum' ? '·' : '✗')) + '</div>'
+      +   '<div>'
+      +     '<div class="gs-watched-title">' + outcomeLabel + '</div>'
+      +     '<div class="gs-watched-kind">' + esc(sc.kind) + ' · ' + esc(sc.teaches || '') + '</div>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="gs-watched-body">'
+      +   '<p>' + esc(state.outcome.reason) + '</p>'
+      +   (exec ? '<p class="gs-watched-exec">' + exec + '</p>' : '')
+      +   '<p class="gs-watched-rules">Rules used — quorum ' + q + ' votes ('
+      +     Math.round(((cfg && cfg.quorum_pct) || 0.20) * 100) + '%), pass '
+      +     Math.round(threshold * 100) + '%, block '
+      +     Math.round(((cfg && cfg.block_pct) || 0.25) * 100) + '%.'
+      +     (this.configStatus === 'live' ? ' Live config.' : ' Default config.')
+      +   '</p>'
+      + '</div>';
   };
 
   // ──────────────────────────────────────────────────────────────

@@ -593,3 +593,230 @@
 .gs-chamber-count {
   font-size: 12px;
 }
+
+
+/* ────────────────────────────────────────────────────────────── */
+/* gs-scrubber                                                    */
+/* ────────────────────────────────────────────────────────────── */
+.gs-scrubber-wrap {
+  margin: 1rem 0 0.75rem;
+}
+.gs-scrubber {
+  position: relative;
+  height: 28px;
+  cursor: pointer;
+  touch-action: none;
+  padding: 10px 0;
+  outline: none;
+}
+.gs-scrubber:focus-visible .gs-scrubber-track { box-shadow: 0 0 0 2px var(--gs-brand); }
+.gs-scrubber-track {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(148,163,184,0.25);
+  border-radius: 99px;
+}
+.gs-scrubber-progress {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  height: 4px;
+  background: var(--gs-brand);
+  border-radius: 99px;
+  transition: width 0.05s linear;
+}
+.gs-scrubber-handle {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--gs-brand);
+  box-shadow: 0 0 8px rgba(255,138,61,0.6);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.gs-scrubber-markers {
+  position: relative;
+  height: 18px;
+  margin-top: -4px;
+}
+.gs-marker-tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  text-align: center;
+}
+.gs-marker-dot {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gs-muted);
+  margin: 0 auto 2px;
+}
+.gs-marker-lbl {
+  font-size: 8px;
+  font-family: ui-monospace, monospace;
+  color: var(--gs-muted);
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.gs-speed-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--gs-muted);
+  margin-left: auto;
+}
+.gs-speed-select {
+  padding: 0.25rem 0.4rem;
+  border-radius: 0.35rem;
+  border: 1px solid var(--gs-border);
+  background: transparent;
+  color: var(--gs-text);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ────────────────────────────────────────────────────────────── */
+/* gs-transcript                                                  */
+/* ────────────────────────────────────────────────────────────── */
+.gs-transcript {
+  margin: 1rem 0;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--gs-border);
+  border-radius: 0.5rem;
+}
+:root:not(.dark) .gs-transcript { background: rgba(0,0,0,0.03); }
+.gs-transcript-summary {
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gs-muted);
+  list-style: none;
+}
+.gs-transcript-summary::-webkit-details-marker { display: none; }
+.gs-transcript-summary:hover { color: var(--gs-text); }
+.gs-transcript-body { padding: 0 0.75rem 0.75rem; }
+.gs-transcript-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--gs-text);
+}
+.gs-transcript-list li { margin-bottom: 0.35rem; }
+.gs-transcript-empty {
+  font-size: 0.8rem;
+  color: var(--gs-muted);
+  font-style: italic;
+}
+
+/* ────────────────────────────────────────────────────────────── */
+/* gs-watched                                                     */
+/* ────────────────────────────────────────────────────────────── */
+.gs-watched {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--gs-border);
+  border-radius: 0.75rem;
+}
+:root:not(.dark) .gs-watched { background: rgba(0,0,0,0.03); }
+.gs-watched-hint {
+  color: var(--gs-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 0.5rem;
+}
+.gs-watched-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.gs-watched-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #fff;
+  flex-shrink: 0;
+}
+.gs-watched-pass .gs-watched-icon { background: var(--gs-yes); }
+.gs-watched-fail .gs-watched-icon { background: var(--gs-no); }
+.gs-watched-quorum .gs-watched-icon { background: var(--gs-muted); }
+.gs-watched-title {
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+.gs-watched-pass .gs-watched-title { color: var(--gs-yes); }
+.gs-watched-fail .gs-watched-title { color: var(--gs-no); }
+.gs-watched-quorum .gs-watched-title { color: var(--gs-muted); }
+.gs-watched-kind {
+  font-size: 0.75rem;
+  color: var(--gs-muted);
+  margin-top: 0.15rem;
+}
+.gs-watched-body p {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--gs-text);
+}
+.gs-watched-exec {
+  padding: 0.5rem 0.75rem;
+  background: rgba(139,92,246,0.08);
+  border-left: 3px solid #8b5cf6;
+  border-radius: 0.35rem;
+  font-size: 0.8rem;
+}
+.gs-watched-rules {
+  font-size: 0.75rem;
+  color: var(--gs-muted);
+  font-style: italic;
+  margin-top: 0.5rem !important;
+}
+
+/* ────────────────────────────────────────────────────────────── */
+/* MOBILE stacking                                                */
+/* ────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .gs-scrubber { height: 32px; padding: 12px 0; }
+  .gs-scrubber-handle { width: 20px; height: 20px; top: 6px; }
+  .gs-scrubber-markers { height: 14px; }
+  .gs-marker-lbl { font-size: 7px; }
+  .gs-controls { gap: 0.35rem; }
+  .gs-speed-label { width: 100%; margin-left: 0; justify-content: flex-end; }
+  .gs-watched-head { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .gs-watched-icon { width: 32px; height: 32px; font-size: 1rem; }
+  .gs-watched-title { font-size: 0.9rem; }
+  .gs-transcript-list { font-size: 0.75rem; }
+}
+
+/* ────────────────────────────────────────────────────────────── */
+/* prefers-reduced-motion                                         */
+/* ────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .gs-scrubber-progress { transition: none; }
+  .gs-scrubber-handle { box-shadow: none; }
+  .gs-rail-node.gs-node-active { animation: none; }
+  .gs-tally-bar.gs-tally-flash { animation: none; }
+  .gs-block-banner.gs-banner-slam { animation: none; }
+  .gs-exec { animation: none; }
+  .gs-exec-icon-pulse { animation: none; }
+  .gs-dot { transition: none; }
+}
