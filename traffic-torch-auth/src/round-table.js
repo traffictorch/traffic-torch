@@ -468,7 +468,12 @@ export async function handleRoundTableRoutes(request, env, url, helpers) {
     await env.MY_BINDING.prepare(
       'INSERT INTO rt_objections (id, proposal_id, bench_entity, reason_md, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?)'
     ).bind(objId, prop.id, entId, reason, now, expiresAt).run();
-    return corsResponse(JSON.stringify({ ok: true, id: objId, expires_at: expiresAt }));
+    // D4: bench pause extends the vote deadline by 72h (does not consume voter time)
+    await env.MY_BINDING.prepare(
+      'UPDATE rt_proposals SET vote_ends_at = COALESCE(vote_ends_at, ?) + 259200 WHERE id = ?'
+    ).bind(now, prop.id).run();
+    const updated = await env.MY_BINDING.prepare('SELECT vote_ends_at FROM rt_proposals WHERE id = ?').bind(prop.id).first();
+    return corsResponse(JSON.stringify({ ok: true, id: objId, expires_at: expiresAt, vote_ends_at: updated ? updated.vote_ends_at : null }));
   }
 
   // ---- Session 6: audit verify ----
