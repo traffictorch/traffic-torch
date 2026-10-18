@@ -222,11 +222,7 @@
   <style>
   /* mobile-safe-tabs */
   @media (max-width: 480px) {
-    #community-preview [data-cp-tab] {
-      flex: 1 1 auto;
-      min-width: 0;
-      white-space: nowrap;
-    }
+    /* keep cp-tab as flex-shrink-0 so they scroll horizontally instead of crushing */
     #community-preview #cp-panel {
       font-size: 0.9rem;
     }
