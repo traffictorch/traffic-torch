@@ -238,6 +238,8 @@
   .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.4); border-radius: 2px; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
   </style>
+  <link rel="preload" as="style" href="/shared/governance-simulator.css?v=2.0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/shared/governance-simulator.css?v=2.0"></noscript>
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col" data-sidebar-start="collapsed">
@@ -416,6 +418,20 @@
   <li><span class="trust-icon" aria-hidden="true">🎯</span><span>UX + SEO + AEO in one pass</span></li>
   <li><span class="trust-icon" aria-hidden="true">🌐</span><span>Runs in your browser</span></li>
 </ul>
+
+          <!-- ═══════════════ NEW: Homepage Governance Simulator (compact, no autoplay) ═══════════════ -->
+          <section id="home-simulator" class="max-w-4xl mx-auto my-10 px-2 sm:px-4" aria-label="Governance simulator preview">
+            <h2 class="text-center text-2xl md:text-3xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500">
+              See Governance In 30 Seconds
+            </h2>
+            <p class="text-center text-gray-600 dark:text-gray-400 mb-5 max-w-2xl mx-auto text-sm md:text-base px-2">
+              No account, no vote, no commitment. Pick a scenario and watch the rules work.
+            </p>
+            <div id="home-sim-demo"></div>
+            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
+              <a href="/community/round-table/simulator/" class="text-orange-600 dark:text-orange-400 hover:underline font-semibold">Open full simulator →</a>
+            </p>
+          </section>
 
           <!-- ═══════════════ NEW: Community Governance CTA (not autoplay, links) ═══════════════ -->
           <section id="governance-cta" class="max-w-4xl mx-auto my-10 px-4" aria-label="Community governance">
@@ -1492,6 +1508,25 @@
       if (el) el.textContent = (d.posts || []).length;
     }).catch(function(){});
   })();
+  </script>
+
+
+  <!-- Home simulator scripts (defer — non-blocking, ordered) -->
+  <script src="/shared/governance-rules.js?v=2.0" defer></script>
+  <script src="/shared/governance-scenarios.js?v=2.0" defer></script>
+  <script src="/shared/governance-simulator.js?v=2.0" defer></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      var el = document.getElementById('home-sim-demo');
+      if (el && window.GovernanceSimulator) {
+        window.GovernanceSimulator.init(el, {
+          mode: 'compact',
+          brand: 'Governance Simulator',
+          brandColor: '#ff8a3d',
+          autoplay: false
+        });
+      }
+    });
   </script>
 
 </body>
