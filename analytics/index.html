@@ -238,6 +238,7 @@
       return (b / 1024).toFixed(1) + ' KB';
     };
     const fmtPct = (n, dec = 1) => !isFinite(n) ? '—' : (n * 100).toFixed(dec) + '%';
+    const fmtPctPos = (n, dec = 1) => !isFinite(n) ? '—' : n.toFixed(dec);
 
     function delta(cur, prev) {
       if (!prev || prev === 0) return { text: '—', cls: 'an-flat' };
