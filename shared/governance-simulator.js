@@ -1,22 +1,42 @@
-// Governance Simulator — vanilla JS, zero dependencies
-// Usage:
-//   <div id="sim"></div>
-//   <script>GovernanceSimulator.init(document.getElementById('sim'), { brand: 'My DAO' });</script>
+/**
+ * Governance Simulator — renderer v2 (Mission Control)
+ *
+ * Usage:
+ *   GovernanceSimulator.init(element, {
+ *     mode: 'full',        // 'full' | 'compact' | 'sandbox'
+ *     brand: 'Traffic Torch',
+ *     brandColor: '#ff8a3d',
+ *     autoplay: true       // compact mode forces autoplay=false
+ *   });
+ *
+ * Depends on:
+ *   window.GovernanceRules  (shared/governance-rules.js)
+ *   window.GOVERNANCE_SIM_SCENARIOS  (shared/governance-scenarios.js)
+ */
 
-(function () {
+(function (global) {
   'use strict';
 
-  var PHASES = ['proposing', 'discussing', 'voting', 'deciding', 'executing', 'done'];
-  var DURATIONS = { proposing: 3000, discussing: 6000, voting: 8000, deciding: 5000, executing: 5000, done: 3000 };
+  var R = function () { return global.GovernanceRules; };
+  var SIM_API = 'https://traffic-torch-auth.traffictorch.workers.dev';
+  var CONFIG_TIMEOUT_MS = 1500;
 
-  var DEFAULTS = {
-    brand: 'Governance Simulator',
-    brandColor: '#ff8a3d',
-    scenarios: window.GOVERNANCE_SIM_SCENARIOS || [],
-    defaultScenario: 'config-pass',
-    autoplay: true,
-    compact: false
-  };
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) for (var k in attrs) {
+      if (k === 'class') node.className = attrs[k];
+      else if (k === 'text') node.textContent = attrs[k];
+      else if (k === 'html') node.innerHTML = attrs[k];
+      else if (k.slice(0, 2) === 'on') node.addEventListener(k.slice(2), attrs[k]);
+      else if (k.slice(0, 5) === 'data-') node.setAttribute(k, attrs[k]);
+      else if (k === 'style') node.style.cssText = attrs[k];
+      else node.setAttribute(k, attrs[k]);
+    }
+    (children || []).forEach(function (c) {
+      node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return node;
+  }
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -24,337 +44,707 @@
     });
   }
 
-  function pct(n, total) { return total ? Math.round(n / total * 100) : 0; }
+  function pct(n, total) { return total ? Math.round((n / total) * 100) : 0; }
 
-  function Simulator(el, config) {
-    this.el = el;
-    this.config = Object.assign({}, DEFAULTS, config || {});
-    if (!this.config.scenarios.length) {
-      el.innerHTML = '<div class="gs-root"><div class="gs-stage" style="padding:2rem;text-align:center;color:#999">No scenarios loaded. Include governance-scenarios.js first.</div></div>';
+  function Simulator(container, config) {
+    this.container = container;
+    this.config = Object.assign({
+      mode: 'full',
+      brand: 'Governance Simulator',
+      brandColor: '#ff8a3d',
+      autoplay: true
+    }, config || {});
+
+    if (this.config.mode === 'compact') this.config.autoplay = false;
+
+    this.reduceMotion = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    this.scenarios = (global.GOVERNANCE_SIM_SCENARIOS || []);
+    if (!this.scenarios.length) {
+      container.innerHTML = '<div class="gs-error">No scenarios loaded. Include shared/governance-scenarios.js.</div>';
       return;
     }
-    this.scenarios = this.config.scenarios;
-    this.scenarioIndex = Math.max(0, this.scenarios.findIndex(function (s) { return s.id === this.config.defaultScenario; }.bind(this)));
-    this.scenario = this.scenarios[this.scenarioIndex];
-    this.phase = 'proposing';
-    this.phaseProgress = 0;
-    this.visibleComments = 0;
-    this.visibleVotes = { yes: 0, no: 0, abstain: 0 };
-    this.playing = false;
+
+    this.scenarioIndex = 0;
+    this.currentT = 0;
+    this.isPlaying = false;
+    this.speed = 1;
     this.raf = null;
-    this.startTime = 0;
-    this.pausedAt = 0;
-    this.buildUI();
-    this.loadScenario(this.scenario.id, { autostart: this.config.autoplay });
+    this.lastFrame = 0;
+    this.liveConfig = null;
+    this.configStatus = 'loading';
+
+    this.buildDOM();
+    this.loadConfig();
+    this.selectScenario(0);
   }
 
-  Simulator.prototype.buildUI = function () {
-    var compact = !!this.config.compact;
-    var rootCls = 'gs-root' + (compact ? ' gs-compact' : '');
-    var headerHtml = '<div class="gs-header">' +
-      '<div class="gs-title">' + esc(this.config.brand) + '</div>' +
-      (compact ? '' : '<div class="gs-subtitle">A 30-second walkthrough — no account, no vote, no commitment</div>') +
-      '</div>';
-    var tabsHtml = compact ? '' : '<div class="gs-tabs" id="gs-tabs"></div>';
-    var controlsHtml = compact
-      ? '<div class="gs-compact-footer">' +
-          '<button class="gs-btn gs-btn-compact" id="gs-play" type="button">⏸ Pause</button>' +
-          '<a class="gs-see-full" href="/simulator/">See all 5 scenarios →</a>' +
-        '</div>'
-      : '<div class="gs-controls">' +
-          '<button class="gs-btn gs-btn-primary" id="gs-play" type="button">▶ Play</button>' +
-          '<button class="gs-btn" id="gs-step" type="button">Step →</button>' +
-          '<button class="gs-btn" id="gs-reset" type="button">↻ Reset</button>' +
-          '<div class="gs-phase-label" id="gs-phase-label"></div>' +
-        '</div>';
-    this.el.innerHTML =
-      '<div class="' + rootCls + '" style="--gs-brand:' + esc(this.config.brandColor) + '">' +
-        headerHtml +
-        tabsHtml +
-        '<div class="gs-stage" id="gs-stage"></div>' +
-        '<div class="gs-progress"><div class="gs-progress-bar" id="gs-progress-bar"></div></div>' +
-        controlsHtml +
-        '<div class="gs-footer" id="gs-footer"></div>' +
-      '</div>';
-    this.renderTabs();
-    this.bind();
+  Simulator.prototype.effectiveConfig = function () {
+    return this.liveConfig || {};
   };
 
-  Simulator.prototype.renderTabs = function () {
-    if (this.config.compact) return;
-    var tabs = this.el.querySelector('#gs-tabs');
-    if (!tabs) return;
+  Simulator.prototype.scenario = function () {
+    return this.scenarios[this.scenarioIndex];
+  };
+
+  Simulator.prototype.duration = function () {
+    var sc = this.scenario();
+    if (!sc) return 30;
+    var maxT = 0;
+    sc.timeline.forEach(function (ev) { if (ev.t > maxT) maxT = ev.t; });
+    return Math.max(maxT + 3, 15);
+  };
+
+  Simulator.prototype.loadConfig = function () {
     var self = this;
-    tabs.innerHTML = this.scenarios.map(function (s, i) {
-      var label = s.title.length > 42 ? s.title.substring(0, 42) + '…' : s.title;
-      return '<button class="gs-tab' + (i === self.scenarioIndex ? ' gs-tab-active' : '') + '" data-index="' + i + '" type="button" title="' + esc(s.title) + '">' + esc(label) + '</button>';
-    }).join('');
-    Array.prototype.forEach.call(tabs.querySelectorAll('.gs-tab'), function (btn) {
-      btn.addEventListener('click', function () {
-        self.loadScenario(self.scenarios[parseInt(btn.dataset.index, 10)].id, { autostart: false });
+    var started = Date.now();
+    var timer = setTimeout(function () {
+      self.configStatus = 'default';
+      self.updateConfigBadge();
+    }, CONFIG_TIMEOUT_MS);
+
+    fetch(SIM_API + '/api/rt/config')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        clearTimeout(timer);
+        var map = {};
+        (d.config || []).forEach(function (row) {
+          var v = parseFloat(row.value);
+          if (!isNaN(v)) map[row.key] = v;
+        });
+        self.liveConfig = map;
+        self.configStatus = (Date.now() - started < CONFIG_TIMEOUT_MS) ? 'live' : 'default';
+        self.updateConfigBadge();
+      })
+      .catch(function () {
+        clearTimeout(timer);
+        self.configStatus = 'default';
+        self.updateConfigBadge();
+      });
+  };
+
+  Simulator.prototype.updateConfigBadge = function () {
+    var badge = this.container.querySelector('.gs-config-badge');
+    if (!badge) return;
+    if (this.configStatus === 'live') {
+      badge.textContent = 'Live rules';
+      badge.className = 'gs-config-badge gs-config-live';
+    } else if (this.configStatus === 'default') {
+      badge.textContent = 'Default rules';
+      badge.className = 'gs-config-badge gs-config-default';
+    } else {
+      badge.textContent = 'Loading rules…';
+      badge.className = 'gs-config-badge gs-config-loading';
+    }
+  };
+
+  // ──────────────────────────────────────────────────────────────
+  // DOM BUILD
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.buildDOM = function () {
+    var self = this;
+    var container = this.container;
+
+    container.innerHTML = '';
+    var root = el('div', { class: 'gs-root gs-mode-' + this.config.mode });
+    root.style.setProperty('--gs-brand', this.config.brandColor);
+
+    // Header
+    var header = el('div', { class: 'gs-header' }, [
+      el('div', { class: 'gs-title', text: this.config.brand }),
+      el('div', { class: 'gs-config-badge gs-config-loading', text: 'Loading rules…' })
+    ]);
+    root.appendChild(header);
+
+    // Scenario tabs
+    var tabs = el('div', { class: 'gs-tabs' });
+    this.scenarios.forEach(function (sc, i) {
+      var t = el('button', {
+        class: 'gs-tab' + (i === 0 ? ' gs-tab-active' : ''),
+        type: 'button',
+        'data-idx': String(i),
+        text: sc.title,
+        onclick: function () { self.selectScenario(i); }
+      });
+      tabs.appendChild(t);
+    });
+    root.appendChild(tabs);
+
+    // Phase rail
+    var rail = el('div', { class: 'gs-rail' }, [
+      el('div', { class: 'gs-rail-node', 'data-phase': 'propose' }, ['Propose']),
+      el('div', { class: 'gs-rail-line', 'data-line': 'propose-vote' }),
+      el('div', { class: 'gs-rail-node', 'data-phase': 'discuss' }, ['Discuss']),
+      el('div', { class: 'gs-rail-line', 'data-line': 'discuss-vote' }),
+      el('div', { class: 'gs-rail-node', 'data-phase': 'vote' }, ['Vote']),
+      el('div', { class: 'gs-rail-line', 'data-line': 'vote-execute' }),
+      el('div', { class: 'gs-rail-node', 'data-phase': 'execute' }, ['Execute'])
+    ]);
+    root.appendChild(rail);
+
+    // Chamber (SVG dots)
+    var chamber = el('div', { class: 'gs-chamber' });
+    chamber.innerHTML = '<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><text x="200" y="24" text-anchor="middle" class="gs-chamber-label">ELIGIBLE POOL</text><g class="gs-dots"></g><text x="200" y="386" text-anchor="middle" class="gs-chamber-count">—</text></svg>';
+    root.appendChild(chamber);
+
+    // Tally bar
+    var tally = el('div', { class: 'gs-tally-wrap' });
+    tally.innerHTML = [
+      '<div class="gs-tally-bar">',
+      '  <div class="gs-tally-fill gs-tally-yes" style="width:0%"></div>',
+      '  <div class="gs-tally-fill gs-tally-no" style="width:0%"></div>',
+      '  <div class="gs-tally-fill gs-tally-abstain" style="width:0%"></div>',
+      '  <div class="gs-marker gs-marker-quorum" title="Quorum"><span>Q</span></div>',
+      '  <div class="gs-marker gs-marker-pass" title="Pass"><span>P</span></div>',
+      '  <div class="gs-marker gs-marker-block" title="Block"><span>B</span></div>',
+      '</div>',
+      '<div class="gs-tally-legend">',
+      '  <span class="gs-leg gs-leg-yes">✓ <b class="gs-num-yes">0</b> Yes</span>',
+      '  <span class="gs-leg gs-leg-no">✗ <b class="gs-num-no">0</b> No</span>',
+      '  <span class="gs-leg gs-leg-abstain">◯ <b class="gs-num-abstain">0</b> Abstain</span>',
+      '  <span class="gs-leg gs-leg-meta">—</span>',
+      '</div>'
+    ].join('');
+    root.appendChild(tally);
+
+    // BLOCK WINS banner (hidden by default)
+    var blockBanner = el('div', { class: 'gs-block-banner' }, ['BLOCK WINS']);
+    blockBanner.style.display = 'none';
+    root.appendChild(blockBanner);
+
+    // Rule inspector
+    var inspector = el('div', { class: 'gs-inspector' }, [
+      el('div', { class: 'gs-inspector-label', text: 'Rule Inspector' }),
+      el('div', { class: 'gs-inspector-text', text: '—' })
+    ]);
+    root.appendChild(inspector);
+
+    // Execute panel (per-kind)
+    var executePanel = el('div', { class: 'gs-execute-panel', 'data-panel': 'execute' });
+    executePanel.style.display = 'none';
+    root.appendChild(executePanel);
+
+    // Audit chain ticker (full mode: always visible; compact: collapsible)
+    var tickerWrapper;
+    if (this.config.mode === 'compact') {
+      tickerWrapper = el('details', { class: 'gs-ticker-details' });
+      var summary = el('summary', { class: 'gs-ticker-summary', text: 'Show audit chain' });
+      tickerWrapper.appendChild(summary);
+    } else {
+      tickerWrapper = el('div');
+    }
+    var ticker = el('div', { class: 'gs-ticker' }, [
+      el('div', { class: 'gs-ticker-head' }, [
+        el('div', { class: 'gs-ticker-label', text: 'Audit Chain' }),
+        el('button', { class: 'gs-verify-btn', type: 'button', onclick: function () { self.verifyChain(); }, text: 'Verify' })
+      ]),
+      el('div', { class: 'gs-ticker-chain', 'data-role': 'chain' }, [
+        el('div', { class: 'gs-ticker-empty', text: 'Loading chain…' })
+      ])
+    ]);
+    tickerWrapper.appendChild(ticker);
+    root.appendChild(tickerWrapper);
+
+    // Controls
+    var controls = el('div', { class: 'gs-controls' }, [
+      el('button', { class: 'gs-btn gs-btn-primary', type: 'button', onclick: function () { self.toggle(); }, 'data-role': 'play', text: '▶ Play' }),
+      el('button', { class: 'gs-btn', type: 'button', onclick: function () { self.step(); }, text: 'Step →' }),
+      el('button', { class: 'gs-btn', type: 'button', onclick: function () { self.reset(); }, text: '↻ Reset' })
+    ]);
+    root.appendChild(controls);
+
+    container.appendChild(root);
+  };
+
+  // ──────────────────────────────────────────────────────────────
+  // STATE MACHINE — deterministic, recompute from t=0
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.computeAt = function (t) {
+    var sc = this.scenario();
+    var rules = R();
+    var cfg = this.effectiveConfig();
+
+    var state = {
+      phase: 'propose',
+      yes: 0, no: 0, abstain: 0,
+      comments: [],
+      voteStarts: null, voteEnds: null,
+      objectionAt: null, objectionUntil: null,
+      closedAt: null,
+      outcome: null,
+      execution: null,
+      reconsidering: false,
+      reversed: false
+    };
+
+    for (var i = 0; i < sc.timeline.length; i++) {
+      var ev = sc.timeline[i];
+      if (ev.t > t) break;
+
+      switch (ev.type) {
+        case 'propose':
+          state.phase = 'discuss';
+          break;
+        case 'comment':
+          state.comments.push(ev);
+          break;
+        case 'open_vote':
+          state.phase = 'vote';
+          state.voteStarts = ev.t;
+          state.voteEnds = ev.t + rules.computeVotePeriodDays(sc.kind) * 86400;
+          break;
+        case 'vote_batch':
+          state.yes += ev.yes || 0;
+          state.no += ev.no || 0;
+          state.abstain += ev.abstain || 0;
+          break;
+        case 'objection':
+          state.objectionAt = ev.t;
+          state.objectionUntil = ev.pause_until_t;
+          if (state.voteEnds) state.voteEnds += rules.BENCH_PAUSE_SECONDS;
+          break;
+        case 'resume_vote':
+          state.objectionAt = null;
+          state.objectionUntil = null;
+          break;
+        case 'close_vote':
+          state.outcome = rules.computeOutcome({
+            kind: sc.kind,
+            tallies: { yes: state.yes, no: state.no, abstain: state.abstain },
+            eligible: sc.eligible,
+            config: cfg
+          });
+          state.phase = 'execute';
+          state.closedAt = ev.t;
+          break;
+        case 'apply':
+          state.execution = { type: 'applied', note: ev.note };
+          break;
+        case 'awaiting_merge':
+          state.execution = { type: 'awaiting_merge', pr_url: ev.pr_url, note: ev.note };
+          break;
+        case 'merge':
+          state.execution = { type: 'merged', commit_sha: ev.commit_sha, note: ev.note };
+          break;
+        case 'reconsider_sign':
+          state.reconsidering = true;
+          break;
+        case 'reconsider_open':
+          state.yes = 0; state.no = 0; state.abstain = 0;
+          state.phase = 'vote';
+          state.outcome = null;
+          state.execution = null;
+          state.closedAt = null;
+          break;
+        case 'reversed':
+          state.reversed = true;
+          break;
+      }
+    }
+    return state;
+  };
+
+  // ──────────────────────────────────────────────────────────────
+  // RENDER
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.render = function () {
+    var state = this.computeAt(this.currentT);
+    var sc = this.scenario();
+    this.renderRail(state);
+    this.renderChamber(state, sc);
+    this.renderTally(state, sc);
+    this.renderInspector(state);
+    this.renderExecute(state, sc);
+    this.renderTicker(state, sc);
+    this.renderPlayBtn();
+  };
+
+  Simulator.prototype.renderRail = function (state) {
+    var rail = this.container.querySelector('.gs-rail');
+    if (!rail) return;
+    var activePhase = state.phase;
+    // Map phase names to rail node data-phase
+    var phaseMap = { propose: 'propose', discuss: 'discuss', vote: 'vote', execute: 'execute' };
+    rail.querySelectorAll('.gs-rail-node').forEach(function (n) {
+      var p = n.getAttribute('data-phase');
+      n.classList.toggle('gs-node-active', p === phaseMap[activePhase]);
+      n.classList.toggle('gs-node-done', ['propose', 'discuss', 'vote'].indexOf(activePhase) > ['propose', 'discuss', 'vote'].indexOf(p));
+    });
+  };
+
+  Simulator.prototype.renderChamber = function (state, sc) {
+    var g = this.container.querySelector('.gs-dots');
+    if (!g) return;
+    var countEl = this.container.querySelector('.gs-chamber-count');
+    var eligible = sc.eligible || 100;
+    var dotLimit = this.config.mode === 'compact' ? Math.min(50, eligible) : Math.min(100, eligible);
+    var totalVotes = state.yes + state.no + state.abstain;
+    var yesDots = Math.round((state.yes / eligible) * dotLimit);
+    var noDots = Math.round((state.no / eligible) * dotLimit);
+    var abstainDots = Math.round((state.abstain / eligible) * dotLimit);
+    var votedDots = yesDots + noDots + abstainDots;
+
+    // Circle layout
+    var cx = 200, cy = 200, radius = 140;
+    var svgNS = 'http://www.w3.org/2000/svg';
+    g.innerHTML = '';
+
+    for (var i = 0; i < dotLimit; i++) {
+      var angle = (i / dotLimit) * Math.PI * 2 - Math.PI / 2;
+      var x = cx + Math.cos(angle) * radius;
+      var y = cy + Math.sin(angle) * radius;
+      var cls = 'gs-dot gs-dot-dim';
+      if (i < yesDots) cls = 'gs-dot gs-dot-yes';
+      else if (i < yesDots + noDots) cls = 'gs-dot gs-dot-no';
+      else if (i < votedDots) cls = 'gs-dot gs-dot-abstain';
+      var circle = document.createElementNS(svgNS, 'circle');
+      circle.setAttribute('cx', x.toFixed(1));
+      circle.setAttribute('cy', y.toFixed(1));
+      circle.setAttribute('r', '6');
+      circle.setAttribute('class', cls);
+      g.appendChild(circle);
+    }
+
+    if (countEl) {
+      countEl.textContent = totalVotes + ' / ' + eligible + ' voted';
+    }
+  };
+
+  Simulator.prototype.renderTally = function (state, sc) {
+    var rules = R();
+    var cfg = this.effectiveConfig();
+    var eligible = sc.eligible || 100;
+    var total = state.yes + state.no + state.abstain;
+
+    var yesEl = this.container.querySelector('.gs-tally-yes');
+    var noEl = this.container.querySelector('.gs-tally-no');
+    var abstainEl = this.container.querySelector('.gs-tally-abstain');
+    if (yesEl) yesEl.style.width = pct(state.yes, total) + '%';
+    if (noEl) noEl.style.width = pct(state.no, total) + '%';
+    if (abstainEl) abstainEl.style.width = pct(state.abstain, total) + '%';
+
+    var q = rules.computeQuorum(eligible, cfg);
+    var threshold = rules.thresholdFor(sc.kind, cfg);
+    var block = (cfg && cfg.block_pct) || 0.25;
+
+    var qMarker = this.container.querySelector('.gs-marker-quorum');
+    var pMarker = this.container.querySelector('.gs-marker-pass');
+    var bMarker = this.container.querySelector('.gs-marker-block');
+    if (qMarker) qMarker.style.left = Math.min(100, (q / eligible) * 100) + '%';
+    if (pMarker) pMarker.style.left = (threshold * 100) + '%';
+    if (bMarker) bMarker.style.left = (block * 100) + '%';
+
+    this.container.querySelector('.gs-num-yes').textContent = state.yes;
+    this.container.querySelector('.gs-num-no').textContent = state.no;
+    this.container.querySelector('.gs-num-abstain').textContent = state.abstain;
+
+    var metaEl = this.container.querySelector('.gs-leg-meta');
+    if (metaEl) {
+      var totalVotes = state.yes + state.no + state.abstain;
+      var quorumMet = totalVotes >= q;
+      var statusIcon = quorumMet ? '✓' : '·';
+      metaEl.textContent = statusIcon + ' ' + totalVotes + ' votes · ' + q + ' for quorum ('
+                        + Math.round(((cfg && cfg.quorum_pct) || 0.20) * 100) + '%)'
+                        + ' · pass ' + Math.round(threshold * 100) + '%'
+                        + ' · block ' + Math.round(block * 100) + '%';
+    }
+
+    // BLOCK WINS banner
+    var banner = this.container.querySelector('.gs-block-banner');
+    var blocked = state.outcome && state.outcome.blocked;
+    if (banner) {
+      if (blocked) {
+        banner.style.display = 'block';
+        if (!this.reduceMotion) {
+          banner.classList.remove('gs-banner-slam');
+          void banner.offsetWidth;
+          banner.classList.add('gs-banner-slam');
+        }
+        yesEl && yesEl.parentElement.classList.add('gs-tally-flash');
+      } else {
+        banner.style.display = 'none';
+        yesEl && yesEl.parentElement.classList.remove('gs-tally-flash');
+      }
+    }
+  };
+
+  Simulator.prototype.renderInspector = function (state) {
+    var textEl = this.container.querySelector('.gs-inspector-text');
+    if (!textEl) return;
+    if (state.outcome) {
+      textEl.textContent = state.outcome.reason;
+    } else if (state.phase === 'propose') {
+      textEl.textContent = 'Proposal submitted. Comment period begins.';
+    } else if (state.phase === 'discuss') {
+      textEl.textContent = 'Comment period ongoing — ' + state.comments.length + ' comment' + (state.comments.length === 1 ? '' : 's') + ' so far.';
+    } else if (state.phase === 'vote') {
+      textEl.textContent = 'Vote open. ' + (state.yes + state.no + state.abstain) + ' votes cast.';
+    } else {
+      textEl.textContent = '—';
+    }
+  };
+
+  Simulator.prototype.renderPlayBtn = function () {
+    var btn = this.container.querySelector('[data-role="play"]');
+    if (btn) btn.textContent = this.isPlaying ? '❚❚ Pause' : '▶ Play';
+  };
+
+  // ──────────────────────────────────────────────────────────────
+  // PLAYBACK
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.tick = function (now) {
+    if (!this.isPlaying) return;
+    var dt = now - this.lastFrame;
+    this.lastFrame = now;
+    this.currentT += (dt / 1000) * this.speed;
+    if (this.currentT >= this.duration()) {
+      this.currentT = this.duration();
+      this.isPlaying = false;
+    }
+    this.render();
+    if (this.isPlaying) {
+      var self = this;
+      this.raf = requestAnimationFrame(function (n) { self.tick(n); });
+    }
+  };
+
+  Simulator.prototype.play = function () {
+    if (this.isPlaying) return;
+    if (this.currentT >= this.duration()) this.currentT = 0;
+    this.isPlaying = true;
+    this.lastFrame = performance.now();
+    var self = this;
+    this.raf = requestAnimationFrame(function (n) { self.tick(n); });
+    this.renderPlayBtn();
+  };
+
+  Simulator.prototype.pause = function () {
+    this.isPlaying = false;
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.renderPlayBtn();
+  };
+
+  Simulator.prototype.toggle = function () {
+    if (this.isPlaying) this.pause(); else this.play();
+  };
+
+  Simulator.prototype.step = function () {
+    this.pause();
+    var sc = this.scenario();
+    var nextT = Infinity;
+    for (var i = 0; i < sc.timeline.length; i++) {
+      if (sc.timeline[i].t > this.currentT) { nextT = sc.timeline[i].t; break; }
+    }
+    this.currentT = Math.min(nextT === Infinity ? this.duration() : nextT, this.duration());
+    this.render();
+  };
+
+  Simulator.prototype.reset = function () {
+    this.pause();
+    this.currentT = 0;
+    this.render();
+  };
+
+  Simulator.prototype.selectScenario = function (idx) {
+    var self = this;
+    this.scenarioIndex = idx;
+    this.currentT = 0;
+    this.tamperedAt = -1;
+    this.chain = null;
+    this.container.querySelectorAll('.gs-tab').forEach(function (t, i) {
+      t.classList.toggle('gs-tab-active', i === idx);
+    });
+    this.buildChain().then(function (chain) {
+      self.chain = chain;
+      self.render();
+      if (self.config.autoplay && !self.reduceMotion) self.play();
+    }).catch(function () {
+      self.chain = [];
+      self.render();
+    });
+  };
+
+  Simulator.prototype.destroy = function () {
+    this.pause();
+    this.container.innerHTML = '';
+  };
+
+
+
+  // ──────────────────────────────────────────────────────────────
+  // AUDIT CHAIN — precompute hashes for current scenario
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.buildChain = async function () {
+    var sc = this.scenario();
+    var rules = R();
+    var chain = [];
+    var prev = 'GENESIS';
+    var AUDITED = ['propose', 'comment', 'vote_batch', 'objection', 'resume_vote',
+                   'close_vote', 'apply', 'awaiting_merge', 'merge',
+                   'reconsider_sign', 'reconsider_open', 'reversed'];
+    for (var i = 0; i < sc.timeline.length; i++) {
+      var ev = sc.timeline[i];
+      if (AUDITED.indexOf(ev.type) === -1) continue;
+      var payloadObj = {};
+      for (var k in ev) if (k !== 't') payloadObj[k] = ev[k];
+      var payload = JSON.stringify(payloadObj);
+      var hash = await rules.sha256Hex(prev + '|' + ev.type + '|' + payload);
+      chain.push({ eventIndex: i, type: ev.type, t: ev.t, payload: payload, prev: prev, hash: hash });
+      prev = hash;
+    }
+    return chain;
+  };
+
+  Simulator.prototype.renderTicker = function (state, sc) {
+    var chainEl = this.container.querySelector('[data-role="chain"]');
+    if (!chainEl) return;
+    if (!this.chain) {
+      chainEl.innerHTML = '<div class="gs-ticker-empty">Loading chain…</div>';
+      return;
+    }
+    if (!this.chain.length) {
+      chainEl.innerHTML = '<div class="gs-ticker-empty">No events yet.</div>';
+      return;
+    }
+
+    var now = this.currentT;
+    var tampered = this.tamperedAt;
+    var html = '';
+    for (var i = 0; i < this.chain.length; i++) {
+      var entry = this.chain[i];
+      if (entry.t > now) break;
+      var cls = 'gs-ticker-block';
+      if (tampered >= 0 && i === tampered) cls += ' gs-tampered';
+      else if (tampered >= 0 && i > tampered) cls += ' gs-broken';
+      var payloadPreview = entry.payload.length > 40
+        ? entry.payload.slice(0, 37) + '…'
+        : entry.payload;
+      html += '<div class="' + cls + '" data-idx="' + i + '">'
+            +   '<div class="gs-block-head">'
+            +     '<span class="gs-block-type">' + esc(entry.type) + '</span>'
+            +     '<button class="gs-tamper-btn" type="button" data-tamper="' + i + '" title="Simulate tampering">⚡</button>'
+            +   '</div>'
+            +   '<div class="gs-block-hash" title="' + esc(entry.hash) + '">' + esc(entry.hash.slice(0, 10)) + '…</div>'
+            +   '<div class="gs-block-prev">← ' + esc(entry.prev.slice(0, 8)) + '…</div>'
+            +   '<div class="gs-block-payload">' + esc(payloadPreview) + '</div>'
+            + '</div>';
+    }
+
+    chainEl.innerHTML = html || '<div class="gs-ticker-empty">No events yet.</div>';
+
+    var self = this;
+    chainEl.querySelectorAll('[data-tamper]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var idx = parseInt(btn.getAttribute('data-tamper'), 10);
+        if (self.tamperedAt === idx) self.tamperedAt = -1;
+        else self.tamperedAt = idx;
+        self.render();
       });
     });
   };
 
-  Simulator.prototype.bind = function () {
-    var self = this;
-    var play = this.el.querySelector('#gs-play');
-    if (play) play.addEventListener('click', function () { self.toggle(); });
-    var step = this.el.querySelector('#gs-step');
-    if (step) step.addEventListener('click', function () { self.step(); });
-    var reset = this.el.querySelector('#gs-reset');
-    if (reset) reset.addEventListener('click', function () { self.reset(); });
-
-    // Compact mode: only autoplay when in viewport
-    if (this.config.compact && 'IntersectionObserver' in window) {
-      var observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            if (!self.playing) self.play();
-          } else {
-            if (self.playing) self.pause();
-          }
-        });
-      }, { threshold: 0.25 });
-      observer.observe(this.el);
-      this._observer = observer;
+  Simulator.prototype.verifyChain = function () {
+    var chainEl = this.container.querySelector('[data-role="chain"]');
+    if (!chainEl || !this.chain) return;
+    if (this.tamperedAt >= 0) {
+      chainEl.classList.add('gs-verify-fail');
+      chainEl.classList.remove('gs-verify-ok');
+      var alert = document.createElement('div');
+      alert.className = 'gs-verify-alert';
+      alert.textContent = 'intact: false — broken at block #' + (this.tamperedAt + 1);
+      chainEl.insertBefore(alert, chainEl.firstChild);
+      setTimeout(function () { if (alert.parentNode) alert.parentNode.removeChild(alert); }, 3000);
+    } else {
+      chainEl.classList.add('gs-verify-ok');
+      chainEl.classList.remove('gs-verify-fail');
+      var alertOk = document.createElement('div');
+      alertOk.className = 'gs-verify-alert gs-verify-alert-ok';
+      alertOk.textContent = 'intact: true — ' + this.chain.length + ' blocks verified';
+      chainEl.insertBefore(alertOk, chainEl.firstChild);
+      setTimeout(function () { if (alertOk.parentNode) alertOk.parentNode.removeChild(alertOk); }, 3000);
     }
   };
 
-  Simulator.prototype.loadScenario = function (id, opts) {
-    this.stop();
-    this.scenarioIndex = Math.max(0, this.scenarios.findIndex(function (s) { return s.id === id; }));
-    this.scenario = this.scenarios[this.scenarioIndex];
-    this.phase = 'proposing';
-    this.phaseProgress = 0;
-    this.visibleComments = 0;
-    this.visibleVotes = { yes: 0, no: 0, abstain: 0 };
-    this.pausedAt = 0;
-    this.renderTabs();
-    this.render();
-    if (opts && opts.autostart) this.play();
-  };
-
-  Simulator.prototype.play = function () {
-    if (this.playing) return;
-    this.playing = true;
-    this.updatePlayBtn();
-    this.startTime = performance.now() - this.pausedAt;
-    var self = this;
-    this.raf = requestAnimationFrame(function () { self.tick(); });
-  };
-
-  Simulator.prototype.pause = function () {
-    if (!this.playing) return;
-    this.playing = false;
-    this.pausedAt = performance.now() - this.startTime;
-    if (this.raf) cancelAnimationFrame(this.raf);
-    this.updatePlayBtn();
-  };
-
-  Simulator.prototype.toggle = function () { if (this.playing) this.pause(); else this.play(); };
-
-  Simulator.prototype.stop = function () {
-    this.playing = false;
-    if (this.raf) cancelAnimationFrame(this.raf);
-    this.startTime = 0;
-    this.pausedAt = 0;
-    this.updatePlayBtn();
-  };
-
-  Simulator.prototype.reset = function () { this.loadScenario(this.scenario.id, { autostart: false }); };
-
-  Simulator.prototype.step = function () {
-    this.pause();
-    var idx = PHASES.indexOf(this.phase);
-    if (idx >= PHASES.length - 1) return;
-    this.phase = PHASES[idx + 1];
-    this.phaseProgress = 0;
-    this.syncSubState();
-    this.render();
-  };
-
-  Simulator.prototype.syncSubState = function () {
-    if (this.phase === 'discussing') this.visibleComments = 0;
-    else if (this.phase === 'voting') this.visibleVotes = { yes: 0, no: 0, abstain: 0 };
-    else {
-      this.visibleComments = this.scenario.discussion.length;
-      this.visibleVotes = Object.assign({}, this.scenario.votes);
+  // ──────────────────────────────────────────────────────────────
+  // EXECUTE PANEL — per-kind visuals
+  // ──────────────────────────────────────────────────────────────
+  Simulator.prototype.renderExecute = function (state, sc) {
+    var panel = this.container.querySelector('[data-panel="execute"]');
+    if (!panel) return;
+    if (!state.outcome) {
+      panel.style.display = 'none';
+      return;
     }
-  };
-
-  Simulator.prototype.tick = function () {
-    if (!this.playing) return;
-    var elapsed = performance.now() - this.startTime;
-    var dur = DURATIONS[this.phase];
-    this.phaseProgress = Math.min(1, elapsed / dur);
-
-    if (this.phase === 'discussing') {
-      var n = Math.min(this.scenario.discussion.length, Math.floor(this.phaseProgress * this.scenario.discussion.length) + 1);
-      if (n !== this.visibleComments) { this.visibleComments = n; this.renderStage(); }
+    if (state.reversed) {
+      panel.style.display = 'block';
+      panel.innerHTML = '<div class="gs-exec gs-exec-reversed">'
+                      + '<div class="gs-exec-icon">↺</div>'
+                      + '<div class="gs-exec-body">'
+                      + '<div class="gs-exec-title">Resolution reversed</div>'
+                      + '<div class="gs-exec-desc">NO crossed the 25% block threshold on reconsider. The original decision is marked reversed.</div>'
+                      + '</div></div>';
+      return;
     }
-    if (this.phase === 'voting') {
-      var v = this.scenario.votes;
-      var t = this.phaseProgress;
-      this.visibleVotes = { yes: Math.floor(v.yes * t), no: Math.floor(v.no * t), abstain: Math.floor(v.abstain * t) };
-      this.renderStage();
+    if (!state.outcome.passed) {
+      panel.style.display = 'none';
+      return;
     }
+    panel.style.display = 'block';
 
-    var bar = this.el.querySelector('#gs-progress-bar');
-    if (bar) bar.style.width = (this.phaseProgress * 100) + '%';
-
-    if (this.phaseProgress >= 1) {
-      var idx = PHASES.indexOf(this.phase);
-      if (idx >= PHASES.length - 1) { this.playing = false; this.updatePlayBtn(); return; }
-      this.phase = PHASES[idx + 1];
-      this.phaseProgress = 0;
-      this.syncSubState();
-      this.startTime = performance.now();
-      this.render();
-    }
-
-    var self = this;
-    this.raf = requestAnimationFrame(function () { self.tick(); });
-  };
-
-  Simulator.prototype.render = function () {
-    this.renderStage();
-    var lbl = this.el.querySelector('#gs-phase-label');
-    if (lbl && !this.config.compact) lbl.textContent = 'Phase: ' + this.phase;
-    this.updatePlayBtn();
-  };
-
-  Simulator.prototype.renderStage = function () {
-    var stage = this.el.querySelector('#gs-stage');
-    if (!stage) return;
     var html = '';
-    if (this.phase === 'proposing') html = this.renderProposing();
-    else if (this.phase === 'discussing') html = this.renderDiscussing();
-    else if (this.phase === 'voting') html = this.renderVoting();
-    else if (this.phase === 'deciding') html = this.renderDeciding();
-    else if (this.phase === 'executing') html = this.renderExecuting();
-    else html = this.renderDone();
-    stage.innerHTML = html;
-  };
+    var cfg = this.effectiveConfig();
+    var delay = R().computeApplyDelaySeconds(sc.kind);
 
-  Simulator.prototype.renderProposing = function () {
-    var s = this.scenario;
-    return '<div class="gs-phase gs-phase-proposing">' +
-      '<div class="gs-phase-heading">📝 Proposing</div>' +
-      '<div class="gs-proposal-card">' +
-        '<div class="gs-badges">' +
-          '<span class="gs-badge gs-badge-kind">' + esc(s.kind) + '</span>' +
-          '<span class="gs-badge gs-badge-cat">' + esc(s.category) + '</span>' +
-          '<span class="gs-badge gs-badge-author">by ' + esc(s.author) + '</span>' +
-        '</div>' +
-        '<h3 class="gs-proposal-title">' + esc(s.title) + '</h3>' +
-        '<p class="gs-proposal-body">' + esc(s.body) + '</p>' +
-      '</div>' +
-    '</div>';
-  };
-
-  Simulator.prototype.renderDiscussing = function () {
-    var s = this.scenario;
-    var shown = s.discussion.slice(0, this.visibleComments);
-    return '<div class="gs-phase gs-phase-discussing">' +
-      '<div class="gs-phase-heading">💬 Discussing</div>' +
-      '<div class="gs-comments">' +
-        shown.map(function (c) {
-          return '<div class="gs-comment"><span class="gs-comment-author">' + esc(c.author) + '</span><span class="gs-comment-body">' + esc(c.body) + '</span></div>';
-        }).join('') +
-        (this.visibleComments === 0 ? '<div class="gs-empty">Waiting for comments…</div>' : '') +
-      '</div>' +
-    '</div>';
-  };
-
-  Simulator.prototype.renderVoting = function () {
-    var s = this.scenario;
-    var v = this.visibleVotes;
-    var total = v.yes + v.no + v.abstain;
-    return '<div class="gs-phase gs-phase-voting">' +
-      '<div class="gs-phase-heading">⚖️ Voting</div>' +
-      '<div class="gs-tally-bar">' +
-        '<div class="gs-tally-yes" style="width:' + pct(v.yes, total) + '%"></div>' +
-        '<div class="gs-tally-no" style="width:' + pct(v.no, total) + '%"></div>' +
-        '<div class="gs-tally-abstain" style="width:' + pct(v.abstain, total) + '%"></div>' +
-      '</div>' +
-      '<div class="gs-tally-legend">' +
-        '<span class="gs-tally-yes-t">✓ ' + v.yes + ' Yes</span>' +
-        '<span class="gs-tally-no-t">✗ ' + v.no + ' No</span>' +
-        '<span class="gs-tally-abstain-t">◯ ' + v.abstain + ' Abstain</span>' +
-        '<span class="gs-tally-meta">' + total + ' / ' + s.eligible + ' cast</span>' +
-      '</div>' +
-      '<div class="gs-tally-rules">Quorum ' + Math.round(s.quorumPct * 100) + '% · Pass ' + Math.round(s.thresholdPct * 100) + '% · Block ' + Math.round(s.blockPct * 100) + '% NO</div>' +
-    '</div>';
-  };
-
-  Simulator.prototype.renderDeciding = function () {
-    var s = this.scenario;
-    var cls = 'gs-outcome-' + s.outcome;
-    var icons = { passed: '✓', rejected: '✗', blocked: '🛑', no_quorum: '◯' };
-    return '<div class="gs-phase gs-phase-deciding">' +
-      '<div class="gs-phase-heading">📊 Deciding</div>' +
-      '<div class="gs-outcome ' + cls + '">' +
-        '<div class="gs-outcome-icon">' + (icons[s.outcome] || '?') + '</div>' +
-        '<div class="gs-outcome-label">' + esc(s.outcome) + '</div>' +
-        '<div class="gs-outcome-reason">' + esc(s.outcomeReason) + '</div>' +
-      '</div>' +
-    '</div>';
-  };
-
-  Simulator.prototype.renderExecuting = function () {
-    var s = this.scenario;
-    if (!s.execution) {
-      return '<div class="gs-phase gs-phase-executing">' +
-        '<div class="gs-phase-heading">⚡ Executing</div>' +
-        '<div class="gs-execution gs-execution-none">' +
-          '<div class="gs-execution-icon">—</div>' +
-          '<div>No execution — the proposal did not pass.</div>' +
-        '</div>' +
-      '</div>';
+    if (sc.kind === 'config') {
+      html = '<div class="gs-exec gs-exec-config">'
+           + '<div class="gs-exec-icon gs-exec-icon-pulse">⚙️</div>'
+           + '<div class="gs-exec-body">'
+           + '<div class="gs-exec-title">Config applied</div>'
+           + '<div class="gs-exec-desc">' + esc((state.execution && state.execution.note) || 'Setting changes applied immediately.') + '</div>'
+           + '<div class="gs-exec-toggle"><span class="gs-toggle-track"><span class="gs-toggle-knob"></span></span> <span class="gs-toggle-label">Enforced</span></div>'
+           + '</div></div>';
+    } else if (sc.kind === 'meta') {
+      html = '<div class="gs-exec gs-exec-meta">'
+           + '<div class="gs-exec-icon">⏳</div>'
+           + '<div class="gs-exec-body">'
+           + '<div class="gs-exec-title">Meta rule — 72h apply delay</div>'
+           + '<div class="gs-exec-desc">' + esc((state.execution && state.execution.note) || 'Rule change takes effect after 72 hours.') + '</div>'
+           + '<div class="gs-exec-countdown"><span class="gs-countdown-big">72:00:00</span> <span class="gs-countdown-lbl">reconsider window open</span></div>'
+           + '</div></div>';
+    } else if (sc.kind === 'code') {
+      var merged = state.execution && state.execution.type === 'merged';
+      html = '<div class="gs-exec gs-exec-code">'
+           + '<div class="gs-exec-icon">🔀</div>'
+           + '<div class="gs-exec-body">'
+           + '<div class="gs-exec-title">Code proposal</div>'
+           + '<div class="gs-exec-desc">' + esc((state.execution && state.execution.note) || 'Awaiting linked PR and human merge.') + '</div>'
+           + '<div class="gs-pr-card">'
+           + '<div class="gs-pr-url">' + esc((state.execution && state.execution.pr_url) || 'PR not linked yet') + '</div>'
+           + (merged
+               ? '<div class="gs-pr-status gs-pr-merged">✓ Merged — SHA ' + esc((state.execution && state.execution.commit_sha) || '') + '</div>'
+               : '<div class="gs-pr-status gs-pr-waiting">⏳ Awaiting maintainer review — nothing auto-merges</div>')
+           + '</div>'
+           + '</div></div>';
+    } else {
+      html = '<div class="gs-exec gs-exec-advisory">'
+           + '<div class="gs-exec-icon">📢</div>'
+           + '<div class="gs-exec-body">'
+           + '<div class="gs-exec-title">Recorded as community signal</div>'
+           + '<div class="gs-exec-desc">Advisory proposals do not apply any automatic change. The tally is a public record of community intent.</div>'
+           + '</div></div>';
     }
-    return '<div class="gs-phase gs-phase-executing">' +
-      '<div class="gs-phase-heading">⚡ Executing</div>' +
-      '<div class="gs-execution">' +
-        '<div class="gs-execution-icon">' + (s.execution.type === 'code' ? '🔀' : (s.execution.type === 'config' ? '⚙️' : '📢')) + '</div>' +
-        '<div>' +
-          '<div class="gs-execution-type">' + esc(s.execution.type) + '</div>' +
-          '<div class="gs-execution-desc">' + esc(s.execution.description) + '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
+    panel.innerHTML = html;
   };
 
-  Simulator.prototype.renderDone = function () {
-    var s = this.scenario;
-    var summary = s.outcome === 'passed'
-      ? 'This is what a passed ' + s.kind + ' proposal looks like in practice.'
-      : 'Every outcome is recorded — rejections and blocks are part of the permanent record.';
-    return '<div class="gs-phase gs-phase-done">' +
-      '<div class="gs-phase-heading">🏁 Done</div>' +
-      '<div class="gs-done">' +
-        '<div class="gs-done-icon">🎉</div>' +
-        '<div class="gs-done-text">' + esc(summary) + '</div>' +
-        '<button class="gs-btn gs-btn-primary" onclick="this.closest(\'.gs-root\').dispatchEvent(new CustomEvent(\'gs-reset\'))" type="button">↻ Play again</button>' +
-      '</div>' +
-    '</div>';
-  };
-
-  Simulator.prototype.updatePlayBtn = function () {
-    var btn = this.el.querySelector('#gs-play');
-    if (btn) btn.textContent = this.playing ? '⏸ Pause' : '▶ Play';
-  };
-
-  Simulator.prototype.destroy = function () { this.stop(); if (this._observer) this._observer.disconnect(); this.el.innerHTML = ''; };
-
-  // Public API
-  window.GovernanceSimulator = {
-    init: function (el, config) {
-      if (!el) return null;
-      var inst = new Simulator(el, config);
-      // Wire up reset event from "Play again" button
-      el.addEventListener('gs-reset', function () { inst.reset(); inst.play(); });
-      return inst;
+  // ──────────────────────────────────────────────────────────────
+  // PUBLIC API
+  // ──────────────────────────────────────────────────────────────
+  global.GovernanceSimulator = {
+    init: function (container, config) {
+      if (!container) return null;
+      return new Simulator(container, config);
     }
   };
-})();
+})(typeof globalThis !== 'undefined' ? globalThis : window);

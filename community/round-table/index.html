@@ -1019,6 +1019,7 @@ window.roundTable = roundTable;
 })();
 </script>
 
+<script src="/shared/governance-rules.js"></script>
 <script src="/shared/governance-scenarios.js"></script>
 <script src="/shared/governance-simulator.js"></script>
 <script>
@@ -1027,11 +1028,10 @@ window.roundTable = roundTable;
       var el = document.getElementById('rt-sim');
       if (!el || !window.GovernanceSimulator) return;
       window.GovernanceSimulator.init(el, {
+        mode: 'compact',
         brand: 'Governance Simulator',
         brandColor: '#ff8a3d',
-        compact: false,
-        autoplay: false,
-        defaultScenario: 'config-pass'
+        autoplay: false
       });
     }
     if (document.readyState === 'loading') {

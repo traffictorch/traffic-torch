@@ -115,6 +115,7 @@
 </div>
 
 <script src="/main.js?v=1.2" type="module"></script>
+<script src="/shared/governance-rules.js"></script>
 <script src="/shared/governance-scenarios.js"></script>
 <script src="/shared/governance-simulator.js"></script>
 <script>
@@ -123,6 +124,7 @@
       var el = document.getElementById('sim-demo');
       if (!el || !window.GovernanceSimulator) return;
       window.GovernanceSimulator.init(el, {
+        mode: 'full',
         brand: 'Governance Simulator — Traffic Torch',
         brandColor: '#ff8a3d',
         autoplay: true
