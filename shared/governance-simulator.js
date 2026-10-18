@@ -19,7 +19,7 @@
 
   var R = function () { return global.GovernanceRules; };
   var SIM_API = 'https://traffic-torch-auth.traffictorch.workers.dev';
-  var CONFIG_TIMEOUT_MS = 1500;
+  var CONFIG_TIMEOUT_MS = 4000;
 
   function el(tag, attrs, children) {
     var node = document.createElement(tag);
@@ -113,30 +113,46 @@
 
   Simulator.prototype.loadConfig = function () {
     var self = this;
-    var started = Date.now();
-    var timer = setTimeout(function () {
-      self.configStatus = 'default';
-      self.updateConfigBadge();
-    }, CONFIG_TIMEOUT_MS);
-
-    fetch(SIM_API + '/api/rt/config')
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        clearTimeout(timer);
-        var map = {};
-        (d.config || []).forEach(function (row) {
-          var v = parseFloat(row.value);
-          if (!isNaN(v)) map[row.key] = v;
-        });
+    this.fetchConfigWithRetry(2).then(function (map) {
+      if (map) {
         self.liveConfig = map;
-        self.configStatus = (Date.now() - started < CONFIG_TIMEOUT_MS) ? 'live' : 'default';
-        self.updateConfigBadge();
-      })
-      .catch(function () {
-        clearTimeout(timer);
+        self.configStatus = 'live';
+      } else {
         self.configStatus = 'default';
-        self.updateConfigBadge();
-      });
+      }
+      self.updateConfigBadge();
+    });
+  };
+
+  Simulator.prototype.fetchConfigWithRetry = function (attemptsLeft) {
+    var self = this;
+    return new Promise(function (resolve) {
+      var timer = setTimeout(function () { resolve(null); }, CONFIG_TIMEOUT_MS);
+      fetch(SIM_API + '/api/rt/config')
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function (d) {
+          clearTimeout(timer);
+          var map = {};
+          (d.config || []).forEach(function (row) {
+            var v = parseFloat(row.value);
+            if (!isNaN(v)) map[row.key] = v;
+          });
+          resolve(Object.keys(map).length ? map : null);
+        })
+        .catch(function () {
+          clearTimeout(timer);
+          if (attemptsLeft > 1) {
+            setTimeout(function () {
+              self.fetchConfigWithRetry(attemptsLeft - 1).then(resolve);
+            }, 500);
+          } else {
+            resolve(null);
+          }
+        });
+    });
   };
 
   Simulator.prototype.updateConfigBadge = function () {
