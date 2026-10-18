@@ -183,6 +183,37 @@
     .an-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.4); color: #ef4444; padding: 1rem; border-radius: 0.75rem; font-size: 0.85rem; }
     .an-crawler-big { font-size: 3rem; font-weight: 900; line-height: 1; background: linear-gradient(135deg, #f97316, #ec4899); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .an-operator-chip { display: inline-block; padding: 0.25rem 0.65rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid rgba(249,115,22,0.3); margin: 0.15rem; }
+    .an-interpret-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.55rem 1.1rem; border-radius: 99px;
+      background: linear-gradient(135deg, #f97316, #ec4899); color: #fff;
+      font-weight: 700; font-size: 0.85rem; cursor: pointer;
+      border: none; box-shadow: 0 4px 14px rgba(249,115,22,0.3);
+      transition: all 0.15s;
+    }
+    .an-interpret-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(249,115,22,0.45); }
+    .an-interpret-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .an-summary-slot { margin-bottom: 1.25rem; }
+    .an-summary-card {
+      background: linear-gradient(135deg, rgba(249,115,22,0.06), rgba(236,72,153,0.06));
+      border: 1px solid rgba(249,115,22,0.25);
+      border-radius: 1rem; padding: 1.15rem 1.25rem;
+      font-size: 0.92rem; line-height: 1.65; color: #374151;
+      animation: an-fade 0.35s ease;
+    }
+    :root.dark .an-summary-card { color: #d1d5db; background: linear-gradient(135deg, rgba(249,115,22,0.08), rgba(236,72,153,0.08)); }
+    .an-summary-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      margin-bottom: 0.75rem; padding-bottom: 0.6rem; border-bottom: 1px solid rgba(249,115,22,0.2);
+      font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #f97316;
+    }
+    .an-summary-cached { color: #6b7280; font-weight: 600; letter-spacing: 0; text-transform: none; font-size: 0.7rem; }
+    .an-summary-loading { display: flex; align-items: center; gap: 0.6rem; color: #6b7280; font-size: 0.85rem; }
+    .an-spinner { width: 16px; height: 16px; border: 2px solid rgba(249,115,22,0.25); border-top-color: #f97316; border-radius: 50%; animation: an-spin 0.8s linear infinite; }
+    @keyframes an-spin { to { transform: rotate(360deg); } }
+    @keyframes an-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .an-summary-error { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.4); color: #b91c1c; }
+    :root.dark .an-summary-error { color: #fca5a5; }
   </style>
 
   <script src="/main.js?v=1.2" type="module"></script>
@@ -248,7 +279,7 @@
       const o7 = CF.overview_7d, p7 = CF.prev_7d, o28 = CF.overview_28d;
       const perVisit = o7.visits ? o7.requests / o7.visits : 0;
 
-      el.innerHTML = `
+      el.innerHTML = interpretSlotHTML('overview') + `
         <h2 class="text-xl font-black mb-4 text-gray-800 dark:text-gray-200">Edge traffic — last 7 days</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           ${metricCard('Requests', fmtNum(o7.requests), null, o7.requests, p7.requests)}
@@ -270,7 +301,7 @@
       const el = $('[data-pane="traffic"]');
       if (!CF) { el.innerHTML = `<div class="an-error">Cloudflare data unavailable.</div>`; return; }
       const daily = CF.daily || [];
-      el.innerHTML = `
+      el.innerHTML = interpretSlotHTML('traffic') + `
         <div class="an-card mb-4">
           <h2 class="text-xl font-black mb-4 text-gray-800 dark:text-gray-200">Daily requests — 28 days</h2>
           <div style="position:relative;height:320px"><canvas id="cf-daily-chart"></canvas></div>
@@ -353,7 +384,7 @@
           }).join('')}</tbody></table>`;
       };
 
-      el.innerHTML = `
+      el.innerHTML = interpretSlotHTML('crawlers') + `
         <div class="an-card mb-4">
           <div class="grid md:grid-cols-2 gap-6 items-center">
             <div>
@@ -403,7 +434,7 @@
       });
       const total = Object.values(groups).reduce((a, n) => a + n, 0);
 
-      el.innerHTML = `
+      el.innerHTML = interpretSlotHTML('security') + `
         <div class="grid md:grid-cols-2 gap-4">
           <div class="an-card">
             <h2 class="text-xl font-black mb-4 text-gray-800 dark:text-gray-200">Status code distribution (28d)</h2>
@@ -477,6 +508,125 @@
       html += `<p class="text-xs text-gray-500 dark:text-gray-400">Sessions and users from GA4 · clicks and impressions from Google Search Console. Search query text is never exposed.</p>`;
       el.innerHTML = html;
     }
+
+    // ─── INTERPRET (AI summary) ───
+    const INTERPRET_API = 'https://traffic-torch-auth.traffictorch.workers.dev/api/public/interpret';
+    const LS_KEY = 'tt_an_summary_';
+    const memoryCache = {};
+
+    function hashPayload(tab, payload) {
+      // cheap hash — good enough for cache key
+      const str = tab + '|' + JSON.stringify(payload);
+      let h = 0;
+      for (let i = 0; i < str.length; i++) { h = ((h << 5) - h + str.charCodeAt(i)) | 0; }
+      return h.toString(36);
+    }
+
+    function buildPayload(tab) {
+      if (tab === 'overview' && CF) {
+        return {
+          requests: CF.overview_7d.requests, visits: CF.overview_7d.visits, bytes: CF.overview_7d.bytes,
+          prev_requests: CF.prev_7d.requests, prev_visits: CF.prev_7d.visits, prev_bytes: CF.prev_7d.bytes,
+          requests_28d: CF.overview_28d.requests, visits_28d: CF.overview_28d.visits, bytes_28d: CF.overview_28d.bytes
+        };
+      }
+      if (tab === 'traffic' && CF) {
+        const d = CF.daily || [];
+        const vals = d.map(x => x.requests);
+        return {
+          top_countries: (CF.countries || []).slice(0, 6).map(c => ({ country: c.country, visits: c.visits })),
+          top_paths: (CF.top_paths || []).slice(0, 6).map(p => ({ path: p.path, visits: p.visits })),
+          daily_min: Math.min(...vals), daily_max: Math.max(...vals),
+          daily_avg: Math.round(vals.reduce((a,b) => a+b, 0) / (vals.length || 1))
+        };
+      }
+      if (tab === 'crawlers' && CF) {
+        const ai = CF.ai_crawlers || [], sr = CF.search_crawlers || [];
+        return {
+          ai_total: ai.reduce((a,c) => a+c.requests, 0),
+          ai_list: ai.slice(0, 8).map(c => ({ name: c.name, requests: c.requests })),
+          search_total: sr.reduce((a,c) => a+c.requests, 0),
+          search_list: sr.slice(0, 6).map(c => ({ name: c.name, requests: c.requests }))
+        };
+      }
+      if (tab === 'security' && CF) {
+        const codes = CF.status_codes || [];
+        const g = { s2xx: 0, s3xx: 0, s4xx: 0, s5xx: 0 };
+        codes.forEach(c => {
+          const k = 's' + Math.floor(c.status / 100) + 'xx';
+          if (g[k] !== undefined) g[k] += c.requests;
+        });
+        return { ...g, top_codes: codes.slice(0, 6).map(c => ({ status: c.status, requests: c.requests })) };
+      }
+      return {};
+    }
+
+    function getCached(tab, hash) {
+      const key = LS_KEY + tab + '_' + hash;
+      if (memoryCache[key]) return memoryCache[key];
+      try {
+        const v = localStorage.getItem(key);
+        if (v) { memoryCache[key] = v; return v; }
+      } catch (e) {}
+      return null;
+    }
+
+    function setCached(tab, hash, summary) {
+      const key = LS_KEY + tab + '_' + hash;
+      memoryCache[key] = summary;
+      try { localStorage.setItem(key, summary); } catch (e) {}
+    }
+
+    function interpretSlotHTML(tab) {
+      const payload = buildPayload(tab);
+      const hash = hashPayload(tab, payload);
+      const cached = getCached(tab, hash);
+      const slot = `<div class="an-summary-slot" data-slot="${tab}">`;
+      if (cached) {
+        return slot + `<div class="an-summary-card">
+          <div class="an-summary-head"><span>✨ AI Interpret</span><span class="an-summary-cached">cached</span></div>
+          <div>${cached.replace(/\n\n/g, '</p><p style="margin-top:0.75rem">').replace(/\n/g, ' ')}</div>
+        </div></div>`;
+      }
+      return slot + `<button type="button" class="an-interpret-btn" data-interpret="${tab}">✨ Interpret with AI</button></div>`;
+    }
+
+    async function runInterpret(tab) {
+      const slot = document.querySelector(`[data-slot="${tab}"]`);
+      if (!slot) return;
+      const payload = buildPayload(tab);
+      if (!payload || Object.keys(payload).length === 0) return;
+      const hash = hashPayload(tab, payload);
+
+      slot.innerHTML = `<div class="an-summary-card"><div class="an-summary-loading"><span class="an-spinner"></span> Generating summary…</div></div>`;
+
+      try {
+        const r = await fetch(INTERPRET_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tab, payload })
+        });
+        const d = await r.json();
+        if (!r.ok || d.error || !d.summary) throw new Error(d.error || 'No summary returned');
+        const summary = d.summary.trim();
+        setCached(tab, hash, summary);
+        slot.innerHTML = `<div class="an-summary-card">
+          <div class="an-summary-head"><span>✨ AI Interpret</span><span class="an-summary-cached">${d.cached ? 'cached' : 'fresh'}</span></div>
+          <div>${summary.replace(/\n\n/g, '</p><p style="margin-top:0.75rem">').replace(/\n/g, ' ')}</div>
+        </div>`;
+      } catch (err) {
+        slot.innerHTML = `<div class="an-summary-card an-summary-error">
+          <div class="an-summary-head"><span>⚠️ AI Interpret</span></div>
+          <div>Could not generate summary. ${err.message}</div>
+        </div>`;
+      }
+    }
+
+    // event delegation — works after re-render
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-interpret]');
+      if (btn) { btn.disabled = true; runInterpret(btn.dataset.interpret); }
+    });
 
     // ─── TABS ───
     const RENDERERS = { overview: renderOverview, traffic: renderTraffic, crawlers: renderCrawlers, security: renderSecurity };

@@ -1,0 +1,29 @@
+name = "traffic-torch-auth"
+main = "src/index.js"
+compatibility_date = "2026-10-07"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "MY_BINDING"
+database_name = "traffic-torch-db"
+database_id = "d5c9fa6f-178f-4a5b-ae07-eebd161c6371"
+
+[[r2_buckets]]
+binding = "ATTACHMENTS"
+bucket_name = "tt-message-attachments"
+
+[[durable_objects.bindings]]
+name = "USER_INBOX"
+class_name = "UserInbox"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["UserInbox"]
+
+[vars]
+PUBLIC_ANALYTICS_USER_ID = "53"
+CLOUDFLARE_ZONE_ID = "1f540c2d99879c88980b8c93cef325d5"
+CLOUDFLARE_ACCOUNT_ID = "d061d4d2078ee9128b033e6d27e7c768"
+
+[observability]
+enabled = true

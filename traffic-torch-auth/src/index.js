@@ -331,6 +331,14 @@ async function ensureTables(env) {
     )`
   ).run();
   await env.MY_BINDING.prepare(
+    `CREATE TABLE IF NOT EXISTS public_summaries (
+      hash TEXT PRIMARY KEY,
+      tab TEXT NOT NULL,
+      summary TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    )`
+  ).run();
+  await env.MY_BINDING.prepare(
     `CREATE TABLE IF NOT EXISTS api_keys (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
@@ -2561,6 +2569,116 @@ async function handleFeedRoutes(request, env, url) {
     }
   }
 
+  // POST /api/public/interpret (Workers AI summary of a tab, cached)
+  if (url.pathname === '/api/public/interpret' && request.method === 'POST') {
+    const cors = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
+    try {
+      let body;
+      try { body = await request.json(); } catch { return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400, headers: cors }); }
+
+      const tab = String(body.tab || '');
+      if (!['overview','traffic','crawlers','security'].includes(tab)) {
+        return new Response(JSON.stringify({ error: 'Invalid tab' }), { status: 400, headers: cors });
+      }
+
+      const raw = body.payload || {};
+      // Whitelist keys per tab (prevents abuse via arbitrary payloads)
+      const ALLOWED = {
+        overview: ['requests','visits','bytes','prev_requests','prev_visits','prev_bytes','requests_28d','visits_28d','bytes_28d'],
+        traffic:  ['top_countries','top_paths','daily_min','daily_max','daily_avg'],
+        crawlers: ['ai_total','ai_list','search_total','search_list'],
+        security: ['s2xx','s3xx','s4xx','s5xx','top_codes']
+      };
+      const payload = {};
+      for (const k of ALLOWED[tab]) {
+        if (raw[k] !== undefined) payload[k] = raw[k];
+      }
+
+      // Cap sizes for prompt safety
+      if (Array.isArray(payload.ai_list))     payload.ai_list     = payload.ai_list.slice(0, 8);
+      if (Array.isArray(payload.search_list)) payload.search_list = payload.search_list.slice(0, 6);
+      if (Array.isArray(payload.top_countries)) payload.top_countries = payload.top_countries.slice(0, 6);
+      if (Array.isArray(payload.top_paths))   payload.top_paths   = payload.top_paths.slice(0, 6);
+      if (Array.isArray(payload.top_codes))   payload.top_codes   = payload.top_codes.slice(0, 6);
+
+      // Hash key
+      const hashInput = tab + '|' + JSON.stringify(payload);
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(hashInput));
+      const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+
+      // Cache hit (24h max, but real trigger is data change → new hash)
+      const nowSec = Math.floor(Date.now() / 1000);
+      try {
+        const cached = await env.MY_BINDING.prepare(
+          'SELECT summary, created_at FROM public_summaries WHERE hash = ?'
+        ).bind(hash).first();
+        if (cached && (nowSec - cached.created_at) < 86400) {
+          return new Response(JSON.stringify({ summary: cached.summary, cached: true }), { status: 200, headers: cors });
+        }
+      } catch (e) { /* fresh */ }
+
+      // Build prompt per tab
+      const fmt = (n) => Number(n || 0).toLocaleString();
+      const pct = (a, b) => (!b ? '0' : (((a - b) / b) * 100).toFixed(1));
+      let userPrompt = '';
+
+      if (tab === 'overview') {
+        const dReq = pct(payload.requests, payload.prev_requests);
+        const dVis = pct(payload.visits, payload.prev_visits);
+        const dBy  = pct(payload.bytes, payload.prev_bytes);
+        userPrompt = `Last 7 days: ${fmt(payload.requests)} requests, ${fmt(payload.visits)} unique visitors, ${fmt(Math.round((payload.bytes||0)/1048576))} MB bandwidth.
+Change vs previous 7 days: requests ${dReq>=0?'+':''}${dReq}%, visitors ${dVis>=0?'+':''}${dVis}%, bandwidth ${dBy>=0?'+':''}${dBy}%.
+28-day totals: ${fmt(payload.requests_28d)} requests, ${fmt(payload.visits_28d)} visitors.`;
+      } else if (tab === 'traffic') {
+        const cList = (payload.top_countries||[]).map(c => `${c.country} (${fmt(c.visits)})`).join(', ');
+        const pList = (payload.top_paths||[]).map(p => `${p.path} (${fmt(p.visits)})`).join(', ');
+        userPrompt = `Top countries (28d): ${cList}.
+Top paths (28d): ${pList}.
+Daily requests range: min ${fmt(payload.daily_min)}, max ${fmt(payload.daily_max)}, avg ${fmt(payload.daily_avg)}.`;
+      } else if (tab === 'crawlers') {
+        const aList = (payload.ai_list||[]).map(c => `${c.name} ${fmt(c.requests)}`).join(', ');
+        const sList = (payload.search_list||[]).map(c => `${c.name} ${fmt(c.requests)}`).join(', ');
+        userPrompt = `AI crawler traffic (28d): ${fmt(payload.ai_total)} requests total. Breakdown: ${aList}.
+Search crawler traffic (28d): ${fmt(payload.search_total)} requests total. Breakdown: ${sList}.`;
+      } else if (tab === 'security') {
+        const codesList = (payload.top_codes||[]).map(c => `${c.status} ${fmt(c.requests)}`).join(', ');
+        userPrompt = `Status codes (28d): 2xx=${fmt(payload.s2xx)}, 3xx=${fmt(payload.s3xx)}, 4xx=${fmt(payload.s4xx)}, 5xx=${fmt(payload.s5xx)}.
+Top codes: ${codesList}.`;
+      }
+
+      // Call Workers AI
+      let summary = '';
+      try {
+        const ai = await env.AI.run('@cf/meta/llama-3.1-8b-instruct-fast', {
+          messages: [
+            { role: 'system', content: 'You are a friendly data analyst writing for a non-technical reader. Write exactly 2 short paragraphs (max 100 words total) summarising the analytics data. Be specific with numbers. Highlight ONE interesting observation. Use plain English. No marketing language. Do NOT start with "Based on", "Looking at", "This data", or "The data". Dive straight into a factual observation.' },
+            { role: 'user', content: userPrompt }
+          ],
+          max_tokens: 250,
+          temperature: 0.7
+        });
+        summary = String(ai.response || '').trim();
+      } catch (aiErr) {
+        return new Response(JSON.stringify({ error: 'AI inference failed: ' + aiErr.message }), { status: 503, headers: cors });
+      }
+
+      if (!summary) {
+        return new Response(JSON.stringify({ error: 'AI returned empty summary' }), { status: 500, headers: cors });
+      }
+
+      // Save to cache
+      try {
+        await env.MY_BINDING.prepare(
+          'INSERT OR REPLACE INTO public_summaries (hash, tab, summary, created_at) VALUES (?, ?, ?, ?)'
+        ).bind(hash, tab, summary, nowSec).run();
+      } catch (e) { console.error('summary cache write:', e.message); }
+
+      return new Response(JSON.stringify({ summary, cached: false }), { status: 200, headers: cors });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: err.message || 'Interpret failed' }), { status: 500, headers: cors });
+    }
+  }
+
   // GET /api/contributions/leaderboard
   if (url.pathname === '/api/contributions/leaderboard' && request.method === 'GET') {
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '12', 10) || 12, 30);
@@ -2678,6 +2796,7 @@ async function handleNewRoutes(request, env, url) {
     p === '/api/contributions/recent' ||
     p === '/api/public/analytics' ||
     p === '/api/public/cloudflare' ||
+    p === '/api/public/interpret' ||
     p === '/api/notifications' ||
     p === '/api/notifications/read' ||
     p === '/api/notifications/clear' ||
