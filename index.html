@@ -219,6 +219,25 @@
       }
     })();
   </script>
+  <style>
+  /* mobile-safe-tabs */
+  @media (max-width: 480px) {
+    #community-preview [data-cp-tab] {
+      flex: 1 1 auto;
+      min-width: 0;
+      white-space: nowrap;
+    }
+    #community-preview #cp-panel {
+      font-size: 0.9rem;
+    }
+    #governance-cta .flex-1 {
+      min-width: 0;
+    }
+  }
+  .scrollbar-thin::-webkit-scrollbar { height: 4px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.4); border-radius: 2px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  </style>
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col" data-sidebar-start="collapsed">
@@ -265,10 +284,10 @@
              HERO + COMMUNITY WIDGET + NUSA TOOL + TRUST + GOV CTA
              ═══════════════════════════════════════════════════ -->
         <section id="hero-section" class="hero-section text-center" aria-labelledby="hero-heading">
-          <h1 id="hero-heading" class="text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500 bg-clip-text text-transparent mb-3 max-w-4xl mx-auto leading-tight">
+          <h1 id="hero-heading" class="text-2xl sm:text-3xl md:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 dark:from-orange-400 dark:to-pink-500 bg-clip-text text-transparent mb-3 max-w-4xl mx-auto leading-tight">
             SEO, UX &amp; AEO — tools, network, and community governance in one open platform
           </h1>
-          <p class="hero-sub text-base md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-5">
+          <p class="hero-sub text-sm sm:text-base md:text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-5 px-2">
             Audit, discuss, and decide. Traffic Torch combines instant audits with a live community and a decentralized Round Table that shapes the roadmap.
           </p>
 
@@ -285,12 +304,12 @@
                 </div>
                 <a href="/community/" class="flex-shrink-0 px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition">✏️ + Post</a>
               </div>
-              <div class="flex gap-1 p-2 border-b border-gray-200 dark:border-white/10 bg-white/20 dark:bg-black/20 overflow-x-auto scrollbar-thin">
-                <button type="button" data-cp-tab="feed" class="cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition">🗣️ Feed</button>
-                <button type="button" data-cp-tab="network" class="cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition">🕸️ Network</button>
-                <button type="button" data-cp-tab="discover" class="cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition">🔍 Discover</button>
-                <button type="button" data-cp-tab="activity" class="cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition">⚡ Activity</button>
-                <button type="button" data-cp-tab="invite" class="cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition">✉️ Invite</button>
+              <div class="flex gap-1 p-2 border-b border-gray-200 dark:border-white/10 bg-white/20 dark:bg-black/20 overflow-x-auto scrollbar-thin" style="scrollbar-width:thin; -webkit-overflow-scrolling:touch;">
+                <button type="button" data-cp-tab="feed" class="cp-tab flex-shrink-0 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition">🗣️ Feed</button>
+                <button type="button" data-cp-tab="network" class="cp-tab flex-shrink-0 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition">🕸️ Network</button>
+                <button type="button" data-cp-tab="discover" class="cp-tab flex-shrink-0 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition">🔍 Discover</button>
+                <button type="button" data-cp-tab="activity" class="cp-tab flex-shrink-0 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition">⚡ Activity</button>
+                <button type="button" data-cp-tab="invite" class="cp-tab flex-shrink-0 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition">✉️ Invite</button>
               </div>
               <div id="cp-panel" class="hidden">
                 <div data-cp-panel="feed" class="hidden">
@@ -303,7 +322,7 @@
                     <button type="button" data-cp-cat="seo" class="cp-cat px-2 py-0.5 rounded-full text-xs font-semibold">seo</button>
                     <button type="button" data-cp-cat="aeo" class="cp-cat px-2 py-0.5 rounded-full text-xs font-semibold">aeo</button>
                   </div>
-                  <div id="cp-feed-list" class="p-3 max-h-96 overflow-y-auto"></div>
+                  <div id="cp-feed-list" class="p-2 sm:p-3 max-h-96 overflow-y-auto"></div>
                 </div>
                 <div data-cp-panel="network" class="hidden p-2 max-h-96 overflow-y-auto"></div>
                 <div data-cp-panel="discover" class="hidden p-3 max-h-96 overflow-y-auto flex flex-wrap"></div>
@@ -408,9 +427,9 @@
                   <h3 class="text-lg md:text-xl font-black text-gray-900 dark:text-gray-100 mb-1">The Round Table</h3>
                   <p class="text-sm text-gray-700 dark:text-gray-300">Every entity equal. No admins inside the system. Every decision on the record, tamper-evident, and reversible.</p>
                 </div>
-                <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-                  <a href="/community/round-table/" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold text-sm shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-[1.02] transition-all min-h-[44px]">Enter the Round Table <span aria-hidden="true">→</span></a>
-                  <a href="/community/round-table/simulator/" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 border border-orange-500/30 text-orange-500 dark:text-orange-400 font-bold text-sm hover:bg-orange-500/10 transition min-h-[44px]">Watch 30s simulator <span aria-hidden="true">→</span></a>
+                <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:flex-wrap">
+                  <a href="/community/round-table/" class="w-full sm:flex-1 sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold text-sm shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-[1.02] transition-all min-h-[44px]">Enter the Round Table <span aria-hidden="true">→</span></a>
+                  <a href="/community/round-table/simulator/" class="w-full sm:flex-1 sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 border border-orange-500/30 text-orange-500 dark:text-orange-400 font-bold text-sm hover:bg-orange-500/10 transition min-h-[44px]">Watch 30s simulator <span aria-hidden="true">→</span></a>
                 </div>
               </div>
             </div>
