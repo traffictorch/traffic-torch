@@ -78,11 +78,14 @@ export function buildTorchMeta(post, author, id) {
     return { title, description, canonical, ogImage, titleText, display };
   }
 
-  if (post.post_type === 'discussion') {
-    const titleText = (post.title && post.title.trim()) || ('Discussion #' + id);
-    const title = titleText + ' — Discussion by @' + author.username + ' · Traffic Torch';
+  if (post.post_type === 'discussion' || post.post_type === 'roast_toast') {
+    const isRT = post.post_type === 'roast_toast';
+    const label = isRT ? (post.category === 'toast' ? 'Toast' : 'Roast') : 'Discussion';
+    const emoji = isRT ? (post.category === 'toast' ? '🍞 ' : '🔥 ') : '';
+    const titleText = (post.title && post.title.trim()) || (emoji + label + ' #' + id);
+    const title = titleText + ' — ' + label + ' by @' + author.username + ' · Traffic Torch';
     const bodyText = stripMarkdown(post.body_md || post.note || '', 155);
-    const description = bodyText || ('Discussion started by @' + author.username + ' on Traffic Torch.');
+    const description = bodyText || (label + ' shared by @' + author.username + ' on Traffic Torch.');
     const canonical = 'https://traffictorch.net/torch/' + id + '/';
     const ogImage = 'https://traffictorch.net/og/discussion/' + id + '.png';
     return { title, description, canonical, ogImage, titleText, display };

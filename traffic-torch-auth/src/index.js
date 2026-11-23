@@ -27,11 +27,12 @@ async function sha256(str) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-async function signJWT(payload, secret, expiresIn = '7d') {
+async function signJWT(payload, secret, expiresIn = '365d') {
   const header = { alg: 'HS256', typ: 'JWT' };
   const now = Math.floor(Date.now() / 1000);
   let ttl = 7 * 86400;
   if (expiresIn === '7d') ttl = 7 * 86400;
+  else if (expiresIn === '365d') ttl = 365 * 86400;
   else if (expiresIn === '1h') ttl = 3600;
   else if (typeof expiresIn === 'number') ttl = expiresIn;
   const exp = now + ttl;
@@ -537,7 +538,7 @@ async function setCachedReport(userId, reportType, days, startDate, endDate, dat
 const SLOT_MAP = { free: 5, pro: 10, enterprise: 300, guest: 5 };
 const AVATARS = ['owner', 'designer', 'seo'];
 const ROLES = ['ai-lens', 'owner', 'designer', 'seo', 'ai-director', 'creator', 'developer', 'ai-conductor', 'context-engineer', 'other'];
-const CATEGORIES = ['casual','websites','ux','seo','aeo'];
+const CATEGORIES = ['casual','websites','ux','seo','aeo','roast','toast'];
 
 const POINTS_COMMENT      = 5;
 const POINTS_POST         = 10;
@@ -1690,6 +1691,110 @@ async function handleActivityRoutes(request, env, url) {
 async function handleFeedRoutes(request, env, url) {
   const user = await getUserFromToken(request, env);
 
+  // ── Page comments (24-cap, per pathname) ──────────────────
+
+  // GET /api/page-comments?page=/community/
+  if (url.pathname === '/api/page-comments' && request.method === 'GET') {
+    const page = url.searchParams.get('page') || '';
+    if (!page || page.charAt(0) !== '/') {
+      return new Response(JSON.stringify({ error: 'page param required, must start with /' }),
+        { status: 400, headers: { 'Content-Type': 'application/json', ...FEED_CORS } });
+    }
+    const rows = await env.MY_BINDING.prepare(`
+      SELECT c.id, c.user_id, c.body, c.created_at,
+             u.username, u.name AS display_name, u.avatar_preset,
+             u.avatar_r2_key, u.avatar_updated_at, u.role
+      FROM page_comments c
+      JOIN users u ON u.id = c.user_id
+      WHERE c.page_path = ?
+      ORDER BY c.created_at DESC
+      LIMIT 24
+    `).bind(page).all();
+    const items = withAvatars(rows.results || []);
+    const viewerId = user?.id || 0;
+    const viewerRole = user?.role || '';
+    items.forEach(i => {
+      i.can_delete = !!(viewerId && (i.user_id === viewerId || viewerRole === 'owner'));
+    });
+    return new Response(JSON.stringify({ items, count: items.length }),
+      { status: 200, headers: { 'Content-Type': 'application/json', ...FEED_CORS, 'Cache-Control': 'public, max-age=30' } });
+  }
+
+  // POST /api/page-comments
+  if (url.pathname === '/api/page-comments' && request.method === 'POST') {
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Auth required' }),
+        { status: 401, headers: { 'Content-Type': 'application/json', ...FEED_CORS } });
+    }
+    const body = await request.json().catch(() => ({}));
+    const page = String(body.page || '').trim();
+    const text = String(body.body || '').trim();
+    if (!page || page.charAt(0) !== '/') {
+      return new Response(JSON.stringify({ error: 'invalid page' }),
+        { status: 400, headers: { 'Content-Type': 'application/json', ...FEED_CORS } });
+    }
+    if (!text || text.length > 1200) {
+      return new Response(JSON.stringify({ error: 'body must be 1-1200 chars' }),
+        { status: 400, headers: { 'Content-Type': 'application/json', ...FEED_CORS } });
+    }
+    const last = await env.MY_BINDING.prepare(
+      'SELECT created_at FROM page_comments WHERE user_id = ? AND page_path = ? ORDER BY created_at DESC LIMIT 1'
+    ).bind(user.id, page).first();
+    if (last && (Date.now() - last.created_at) < 30000) {
+      return new Response(JSON.stringify({ error: 'Please wait 30s between comments' }),
+        { status: 429, headers: { 'Content-Type': 'application/json', ...FEED_CORS } });
+    }
+    const now = Date.now();
+    const ins = await env.MY_BINDING.prepare(
+      'INSERT INTO page_comments (page_path, user_id, body, created_at) VALUES (?, ?, ?, ?)'
+    ).bind(page, user.id, text, now).run();
+    await env.MY_BINDING.prepare(`
+      DELETE FROM page_comments
+      WHERE page_path = ?
+        AND id NOT IN (
+          SELECT id FROM page_comments WHERE page_path = ? ORDER BY created_at DESC LIMIT 24
+        )
+    `).bind(page, page).run();
+    const newId = ins.meta?.last_row_id;
+    const row = await env.MY_BINDING.prepare(`
+      SELECT c.id, c.user_id, c.body, c.created_at,
+             u.username, u.name AS display_name, u.avatar_preset,
+             u.avatar_r2_key, u.avatar_updated_at, u.role
+      FROM page_comments c
+      JOIN users u ON u.id = c.user_id
+      WHERE c.id = ?
+    `).bind(newId).first();
+    const [comment] = withAvatars([row]);
+    if (comment) comment.can_delete = true;
+    return new Response(JSON.stringify({ success: true, comment }),
+      { status: 200, headers: { 'Content-Type': 'application/json', ...FEED_CORS } });
+  }
+
+  // DELETE /api/page-comments/:id
+  const pcDelMatch = url.pathname.match(/^\/api\/page-comments\/(\d+)$/);
+  if (pcDelMatch && request.method === 'DELETE') {
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Auth required' }),
+        { status: 401, headers: { 'Content-Type': 'application/json', ...FEED_CORS } });
+    }
+    const id = parseInt(pcDelMatch[1], 10);
+    const existing = await env.MY_BINDING.prepare(
+      'SELECT user_id FROM page_comments WHERE id = ?'
+    ).bind(id).first();
+    if (!existing) {
+      return new Response(JSON.stringify({ error: 'not found' }),
+        { status: 404, headers: { 'Content-Type': 'application/json', ...FEED_CORS } });
+    }
+    if (existing.user_id !== user.id && user.role !== 'owner') {
+      return new Response(JSON.stringify({ error: 'forbidden' }),
+        { status: 403, headers: { 'Content-Type': 'application/json', ...FEED_CORS } });
+    }
+    await env.MY_BINDING.prepare('DELETE FROM page_comments WHERE id = ?').bind(id).run();
+    return new Response(JSON.stringify({ success: true }),
+      { status: 200, headers: { 'Content-Type': 'application/json', ...FEED_CORS } });
+  }
+
+
   // GET /api/feed
   if (url.pathname === '/api/feed' && request.method === 'GET') {
     const category = url.searchParams.get('category');
@@ -1775,7 +1880,7 @@ async function handleFeedRoutes(request, env, url) {
     if (!user) return feedJson({ error: 'Unauthorized' }, 401);
     let body; try { body = await request.json(); } catch { return feedJson({ error: 'Invalid JSON' }, 400); }
     const category = CATEGORIES.includes(body.category) ? body.category : 'casual';
-    const postType = ['audit','discussion','workflow'].includes(body.post_type) ? body.post_type : 'audit';
+    const postType = ['audit','discussion','workflow','roast_toast'].includes(body.post_type) ? body.post_type : 'audit';
     const note = String(body.note || '').slice(0, 6000);
     const bodyMd = body.body_md ? String(body.body_md).slice(0, 6000) : null;
     const title = body.title ? String(body.title).slice(0, 120) : null;
@@ -1792,18 +1897,19 @@ async function handleFeedRoutes(request, env, url) {
     const tier = (user.tier || 'free').toLowerCase();
     const max = SLOT_MAP[tier] || 5;
     const count = await env.MY_BINDING.prepare('SELECT COUNT(*) AS c FROM posts WHERE user_id = ?').bind(user.id).first();
-    if ((count?.c || 0) >= max) {
-      const oldest = await env.MY_BINDING.prepare('SELECT id FROM posts WHERE user_id = ? ORDER BY created_at ASC LIMIT 1').bind(user.id).first();
+    if (postType !== 'roast_toast' && (count?.c || 0) >= max) {
+      const oldest = await env.MY_BINDING.prepare('SELECT id FROM posts WHERE user_id = ? AND post_type != ? ORDER BY created_at ASC LIMIT 1').bind(user.id, 'roast_toast').first();
       if (oldest) await env.MY_BINDING.prepare('DELETE FROM posts WHERE id = ?').bind(oldest.id).run();
     }
 
     const now = Date.now();
     const workflowMeta = body.workflow_meta && typeof body.workflow_meta === 'object' ? JSON.stringify(body.workflow_meta).slice(0, 8000) : null;
     const imagesJson = Array.isArray(body.images) && body.images.length ? JSON.stringify(body.images.slice(0, 5)) : null;
+    const thumbnailUrl = body.thumbnail_url || null;
     const ins = await env.MY_BINDING.prepare(
-      `INSERT INTO posts (user_id, category, post_type, title, body_md, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, images, workflow_meta, status, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`
-    ).bind(user.id, category, postType, title, bodyMd, note, tool, urlVal, pageTitle, score, domainMode, domainLabel, moduleScores, imagesJson, workflowMeta, now).run();
+      `INSERT INTO posts (user_id, category, post_type, title, body_md, note, tool, url, page_title, score, domain_mode, domain_label, module_scores, images, workflow_meta, thumbnail_url, status, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', ?)`
+    ).bind(user.id, category, postType, title, bodyMd, note, tool, urlVal, pageTitle, score, domainMode, domainLabel, moduleScores, imagesJson, workflowMeta, thumbnailUrl, now).run();
 
     const postId = ins.meta?.last_row_id || null;
     await awardPoints(env, { userId: user.id, type: 'post', points: POINTS_POST, referenceId: postId });
@@ -2154,8 +2260,8 @@ async function handleFeedRoutes(request, env, url) {
     const limit = Math.min(100, Math.max(1, isNaN(limitRaw) ? 60 : limitRaw));
     try {
       const rows = await env.MY_BINDING.prepare(
-        `SELECT c.id, c.type, c.subject, c.message, c.tool, c.page_url, c.status, c.created_at,
-                u.name AS user_name, u.username
+        `SELECT c.id, c.user_id, c.type, c.subject, c.message, c.tool, c.page_url, c.status, c.created_at,
+                u.name AS user_name, u.username, u.avatar_r2_key, u.avatar_updated_at
          FROM contributions c
          LEFT JOIN users u ON u.id = c.user_id
          WHERE c.public = 1
@@ -2172,7 +2278,11 @@ async function handleFeedRoutes(request, env, url) {
         status: r.status,
         created_at: r.created_at,
         display_name: r.user_name || r.username || 'Anonymous',
-        username: r.username || null
+        username: r.username || null,
+        avatar_r2_key: r.avatar_r2_key || null,
+        avatar_updated_at: r.avatar_updated_at || null,
+        avatar_preset: r.avatar_preset || null,
+        avatar_url: r.avatar_r2_key ? `https://traffic-torch-auth.traffictorch.workers.dev/api/profile/avatar/${(r.avatar_r2_key.match(/^avatars\/(\d+)\//) || [])[1]}?v=${r.avatar_updated_at || 0}` : null
       }));
       return feedJson({ contributions: items, count: items.length });
     } catch (e) {
@@ -2569,6 +2679,193 @@ async function handleFeedRoutes(request, env, url) {
     }
   }
 
+  // ═════════════════════════════════════════════════════════════
+  // Governance AI — interpret (per-card) + ask (SSE streaming)
+  // ═════════════════════════════════════════════════════════════
+
+  // POST /api/public/ask-governance — SSE streaming Q&A about the Round Table
+  if (url.pathname === '/api/public/ask-governance' && request.method === 'POST') {
+    const cors = { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*' };
+    try {
+      let body;
+      try { body = await request.json(); } catch {
+        return new Response('data: {"error":"Invalid JSON"}\n\n', { status: 400, headers: cors });
+      }
+      const question = String(body.question || '').trim().slice(0, 500);
+      if (!question) {
+        return new Response('data: {"error":"question required"}\n\n', { status: 400, headers: cors });
+      }
+
+      // Pull current governance config as context
+      let configCtx = '';
+      try {
+        const rows = await env.MY_BINDING.prepare('SELECT key, value FROM rt_config').all();
+        const cfg = {};
+        (rows.results || []).forEach(r => { cfg[r.key] = r.value; });
+        configCtx = [
+          cfg.default_quorum_pct ? `Quorum threshold: ${Math.round(parseFloat(cfg.default_quorum_pct) * 100)}% of eligible voters must participate.` : '',
+          cfg.default_threshold_pct ? `Pass threshold: ${Math.round(parseFloat(cfg.default_threshold_pct) * 100)}% of yes/no votes must be yes.` : '',
+          cfg.default_threshold_pct_meta ? `Meta-proposal threshold: ${Math.round(parseFloat(cfg.default_threshold_pct_meta) * 100)}% (for constitutional changes).` : '',
+          cfg.default_block_pct ? `Block threshold: ${Math.round(parseFloat(cfg.default_block_pct) * 100)}% of votes can block.` : '',
+          cfg.constitution_text ? `\nConstitution:\n${cfg.constitution_text.slice(0, 4000)}` : ''
+        ].filter(Boolean).join('\n');
+      } catch (e) { /* config fetch failed — proceed with empty context */ }
+
+      const systemPrompt = `You are a helpful, precise governance assistant for the Traffic Torch Round Table — a decentralised governance system where every member entity has equal authority, no admins exist inside the system, and every decision is on the record, tamper-evident, and reversible.
+
+Current rules:
+${configCtx || 'Use general decentralised governance principles.'}
+
+Guidelines:
+- Answer in 2-4 short paragraphs. Plain English. No jargon.
+- Use ONLY the rules above. If a question isn't covered, say: "The current rules don't cover this — that would need a proposal."
+- End with: "This is a plain-English summary, not legal advice."
+
+User question: ${question}`;
+
+      const aiStream = await env.AI.run('@cf/meta/llama-3.1-8b-instruct-fast', {
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: question }
+        ],
+        max_tokens: 500,
+        temperature: 0.6,
+        stream: true
+      });
+
+      // Forward as clean SSE
+      const { readable, writable } = new TransformStream();
+      const writer = writable.getWriter();
+      const encoder = new TextEncoder();
+      const decoder = new TextDecoder();
+      (async () => {
+        const reader = aiStream.getReader();
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const text = decoder.decode(value, { stream: true });
+            // Raw stream is already `data: {...}` — pass through
+            await writer.write(encoder.encode(text));
+          }
+          await writer.write(encoder.encode('\ndata: [DONE]\n\n'));
+        } catch (e) {
+          try { await writer.write(encoder.encode(`data: {"error":"${String(e.message).replace(/"/g, "'")}"}\n\n`)); } catch {}
+        } finally {
+          try { await writer.close(); } catch {}
+        }
+      })();
+
+      return new Response(readable, { status: 200, headers: cors });
+    } catch (err) {
+      return new Response(`data: {"error":"${String(err.message || 'Ask failed').replace(/"/g, "'")}"}\n\n`,
+        { status: 500, headers: cors });
+    }
+  }
+
+  // handleGovernanceInterpret — called by /api/public/interpret when body.system is set
+  async function handleGovernanceInterpret(body, env, cors) {
+    const system = String(body.system || '');
+    const raw = body.payload || {};
+
+  // Whitelist fields per system
+    const ALLOWED = {
+      'governance-proposal': ['proposal_id','title','description','category','phase','votes_for','votes_against','votes_abstain','quorum_pct','threshold_pct','block_pct','objections','resolution_summary','is_meta'],
+      'governance-sim': ['scenario','proposal','entities','steps','result','notes']
+    };
+    const allowedKeys = ALLOWED[system] || [];
+    const payload = {};
+    for (const k of allowedKeys) {
+      if (raw[k] !== undefined) payload[k] = raw[k];
+    }
+
+    // Cap array sizes
+    if (Array.isArray(payload.objections)) payload.objections = payload.objections.slice(0, 5);
+    if (Array.isArray(payload.entities)) payload.entities = payload.entities.slice(0, 10);
+    if (Array.isArray(payload.steps)) payload.steps = payload.steps.slice(0, 15);
+    if (typeof payload.description === 'string') payload.description = payload.description.slice(0, 2000);
+    if (typeof payload.title === 'string') payload.title = payload.title.slice(0, 200);
+
+    // Cache key
+    const hashInput = system + '|' + JSON.stringify(payload);
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(hashInput));
+    const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+    const nowSec = Math.floor(Date.now() / 1000);
+    try {
+      const cached = await env.MY_BINDING.prepare(
+        'SELECT summary, created_at FROM public_summaries WHERE hash = ?'
+      ).bind(hash).first();
+      if (cached && (nowSec - cached.created_at) < 86400) {
+        return new Response(JSON.stringify({ summary: cached.summary, cached: true }), { status: 200, headers: cors });
+      }
+    } catch (e) { /* fresh */ }
+
+    // Build prompt
+    let userPrompt = '';
+    let systemPrompt = '';
+
+    if (system === 'governance-proposal') {
+      const fmt = n => Number(n || 0).toLocaleString();
+      const objections = (payload.objections || []).map(o => (typeof o === 'string' ? o : (o.text || ''))).filter(Boolean);
+      userPrompt = `Proposal: "${payload.title || 'Untitled'}"
+Category: ${payload.category || 'unspecified'}
+Phase: ${payload.phase || 'unknown'}
+${payload.is_meta ? 'This is a meta-proposal (changes the constitution).' : ''}
+
+Description:
+${payload.description || '(no description)'}
+
+Vote tally: ${fmt(payload.votes_for)} for, ${fmt(payload.votes_against)} against, ${fmt(payload.votes_abstain)} abstain
+Thresholds: ${payload.quorum_pct ? 'quorum ' + Math.round(payload.quorum_pct * 100) + '%' : 'quorum n/a'}, ${payload.threshold_pct ? 'pass ' + Math.round(payload.threshold_pct * 100) + '%' : 'pass n/a'}, ${payload.block_pct ? 'block ' + Math.round(payload.block_pct * 100) + '%' : 'block n/a'}
+${objections.length ? 'Objections raised: ' + objections.map(o => '• ' + o).join(' ') : 'No objections raised.'}
+${payload.resolution_summary ? 'Resolution summary: ' + payload.resolution_summary : ''}`;
+
+      systemPrompt = 'You are explaining a governance proposal to a citizen of the Traffic Torch Round Table. Write 2-4 short paragraphs (max 180 words). Cover: (1) what this proposal actually does in plain English, (2) who is affected and how, (3) what to watch for — trade-offs or edge cases. Be specific to the data given. No jargon. No marketing tone. End with "This is a plain-English summary, not a vote recommendation."';
+    } else {
+      const entities = (payload.entities || []).map(e => typeof e === 'string' ? e : `${e.name}(${e.power || '?'})`).join(', ');
+      const steps = (payload.steps || []).map((s, i) => `${i + 1}. ${typeof s === 'string' ? s : (s.label || JSON.stringify(s))}`).join('\n');
+      userPrompt = `Simulation scenario: ${payload.scenario || 'governance simulation'}
+Proposal being simulated: ${payload.proposal || '(none)'}
+Entities: ${entities || '(none)'}
+Steps taken:
+${steps || '(no steps recorded)'}
+Result: ${payload.result || 'unknown'}
+${payload.notes ? 'Notes: ' + String(payload.notes).slice(0, 500) : ''}`;
+
+      systemPrompt = 'You are explaining the results of a governance simulation. Write 2-4 short paragraphs (max 180 words). Cover: (1) what happened in plain English, (2) why — which rule or threshold triggered it, (3) what this means for future proposals. Be specific to the data. No jargon. End with "This is a plain-English summary, not a vote recommendation."';
+    }
+
+    let summary = '';
+    try {
+      const ai = await env.AI.run('@cf/meta/llama-3.1-8b-instruct-fast', {
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        max_tokens: 350,
+        temperature: 0.5
+      });
+      summary = String(ai.response || '').trim();
+    } catch (aiErr) {
+      return new Response(JSON.stringify({ error: 'AI inference failed: ' + aiErr.message }),
+        { status: 503, headers: cors });
+    }
+
+    if (!summary) {
+      return new Response(JSON.stringify({ error: 'AI returned empty summary' }),
+        { status: 500, headers: cors });
+    }
+
+    try {
+      await env.MY_BINDING.prepare(
+        'INSERT OR REPLACE INTO public_summaries (hash, tab, summary, created_at) VALUES (?, ?, ?, ?)'
+      ).bind(hash, system, summary, nowSec).run();
+    } catch (e) { console.error('governance summary cache write:', e.message); }
+
+    return new Response(JSON.stringify({ summary, cached: false }), { status: 200, headers: cors });
+  }
+
   // POST /api/public/interpret (Workers AI summary of a tab, cached)
   if (url.pathname === '/api/public/interpret' && request.method === 'POST') {
     const cors = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
@@ -2576,6 +2873,12 @@ async function handleFeedRoutes(request, env, url) {
       let body;
       try { body = await request.json(); } catch { return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400, headers: cors }); }
 
+      // ── Governance branch — delegates to dedicated handler ──
+      if (body.system === 'governance-proposal' || body.system === 'governance-sim') {
+        return await handleGovernanceInterpret(body, env, cors);
+      }
+
+      // ── Existing audit branch (unchanged) ──
       const tab = String(body.tab || '');
       if (!['overview','traffic','crawlers','security'].includes(tab)) {
         return new Response(JSON.stringify({ error: 'Invalid tab' }), { status: 400, headers: cors });
@@ -2797,6 +3100,7 @@ async function handleNewRoutes(request, env, url) {
     p === '/api/public/analytics' ||
     p === '/api/public/cloudflare' ||
     p === '/api/public/interpret' ||
+    p === '/api/public/ask-governance' ||
     p === '/api/notifications' ||
     p === '/api/notifications/read' ||
     p === '/api/notifications/clear' ||
@@ -2807,7 +3111,9 @@ async function handleNewRoutes(request, env, url) {
     p.startsWith('/api/activity/user/') ||
     p === '/api/user-points/me' ||
     p === '/api/user-points/leaderboard-award' ||
-    /^\/api\/notifications\/\d+$/.test(p);
+    /^\/api\/notifications\/\d+$/.test(p) ||
+    p === '/api/page-comments' ||
+    /^\/api\/page-comments\/\d+$/.test(p);
 
   if (!isNew) return null;
   if (request.method === 'OPTIONS') return new Response(null, { headers: FEED_CORS });
@@ -3022,8 +3328,31 @@ async function handleOgPreviewRoutes(request, env, url) {
 // Main export
 // ============================================================
 export default {
+  async queue(batch, env, ctx) {
+    const TRAFFICTORCH_ID = 53;
+    for (const msg of batch.messages) {
+      try {
+        const body = msg.body || {};
+        const newUserId = body.new_user_id;
+        const addedBy = body.added_by || TRAFFICTORCH_ID;
+        if (!newUserId || !addedBy || newUserId === addedBy) { msg.ack(); continue; }
+        const exists = await env.MY_BINDING.prepare('SELECT 1 FROM users WHERE id = ?').bind(newUserId).first();
+        if (!exists) { msg.ack(); continue; }
+        const already = await env.MY_BINDING.prepare('SELECT 1 FROM network WHERE user_id = ? AND network_user_id = ?').bind(addedBy, newUserId).first();
+        if (already) { msg.ack(); continue; }
+        await env.MY_BINDING.prepare('INSERT OR IGNORE INTO network (user_id, network_user_id, created_at) VALUES (?, ?, ?)').bind(addedBy, newUserId, Date.now()).run();
+        msg.ack();
+      } catch (e) {
+        console.error('network auto-add queue error:', e && e.message);
+        msg.retry();
+      }
+    }
+  },
+
   async fetch(request, env) {
     const url = new URL(request.url);
+
+
 
     // === AVATAR ROUTES — run first ===
     if (url.pathname.startsWith('/api/profile/avatar')) {
@@ -3079,7 +3408,28 @@ export default {
 
     try {
       if (url.pathname === '/api/register' && method === 'POST') {
-        const { name, email, password, promo_code } = await request.json().catch(() => ({}));
+        const body = await request.json().catch(() => ({}));
+        const { name, email, password, promo_code } = body;
+    
+    // --- TURNSTILE VERIFICATION ---
+    const turnstile_token = body.turnstile_token;
+    if (!turnstile_token) {
+      return json({ error: 'Missing security token' }, 400);
+    }
+    const tsRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        secret: env.TURNSTILE_SECRET,
+        response: turnstile_token,
+        remoteip: request.headers.get('CF-Connecting-IP')
+      })
+    });
+    const tsData = await tsRes.json();
+    if (!tsData.success) {
+      return json({ error: 'Security check failed. Please try again.' }, 403);
+    }
+    // ------------------------------
         if (!email || !password || password.length < 8) {
           return corsResponse(JSON.stringify({ error: 'Valid email and password (min 8 chars) required' }), 400);
         }
@@ -3090,6 +3440,11 @@ export default {
           `INSERT INTO users (email, password_hash, name, subscription_status, tier)
            VALUES (?, ?, ?, 'free', 'free') RETURNING id`
         ).bind(email, hash, name || email.split('@')[0]).first();
+        try {
+          if (env.NETWORK_QUEUE) {
+            await env.NETWORK_QUEUE.send({ new_user_id: result.id, added_by: 53 }, { delaySeconds: 732 });
+          }
+        } catch (e) { console.error('auto-add enqueue failed:', e.message); }
         let status = 'free';
         let tier = 'free';
         if (promo_code === 'traffictorchpro') {
@@ -3152,6 +3507,11 @@ export default {
           const result = await env.MY_BINDING.prepare(
             `INSERT INTO users (email, name, subscription_status, tier) VALUES (?, ?, 'free', 'free') RETURNING id`
           ).bind(email, email.split('@')[0]).first();
+          try {
+            if (env.NETWORK_QUEUE) {
+              await env.NETWORK_QUEUE.send({ new_user_id: result.id, added_by: 53 }, { delaySeconds: 732 });
+            }
+          } catch (e) { console.error('auto-add enqueue failed:', e.message); }
           user = { id: result.id, subscription_status: 'free', tier: 'free' };
         }
         const jwt = await signJWT({ id: user.id, status: user.subscription_status, tier: user.tier }, env.JWT_SECRET, '7d');

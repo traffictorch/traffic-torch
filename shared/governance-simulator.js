@@ -386,6 +386,9 @@
       reversed: false
     };
 
+    // Expose current state for external consumers (interpret button)
+    if (typeof global !== 'undefined' && global) { global.__ttSimState = state; }
+
     for (var i = 0; i < sc.timeline.length; i++) {
       var ev = sc.timeline[i];
       if (ev.t > t) break;

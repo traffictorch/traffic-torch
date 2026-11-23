@@ -70,6 +70,13 @@ function stripMarkdown(text, max) {
 function discussionJsonLd(post, author, id) {
   const url = SITE + '/torch/' + id + '/';
   const bodyText = stripMarkdown(post.body_md || post.note || '').slice(0, 500);
+  
+  // Safety fallbacks for old or system posts
+  const pubDate = post.created_at ? new Date(post.created_at).toISOString() : new Date().toISOString();
+  const safeAuthor = author || {};
+  const authorName = safeAuthor.display_name || safeAuthor.username || 'Traffic Torch Member';
+  const authorUrl = safeAuthor.username ? SITE + '/torcher/' + safeAuthor.username + '/' : SITE + '/community/';
+
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -77,14 +84,15 @@ function discussionJsonLd(post, author, id) {
         '@type': 'DiscussionForumPosting',
         '@id': url + '#discussion',
         url: url,
-        headline: (post.title && post.title.trim()) || ('Discussion #' + id),
-        text: bodyText,
-        datePublished: new Date(post.created_at).toISOString(),
-        dateModified: new Date(post.created_at).toISOString(),
+        headline: (post.title && post.title.trim()) || ((post.post_type === 'roast_toast' ? (post.category === 'toast' ? 'Toast #' : 'Roast #') : 'Discussion #') + id),
+        text: bodyText || 'Discussion on Traffic Torch',
+        datePublished: pubDate,
+        dateModified: pubDate,
+        image: post.thumbnail_url || (SITE + '/og/torch/' + id + '.png'),
         author: {
           '@type': 'Person',
-          name: author.display_name || author.username,
-          url: SITE + '/torcher/' + author.username + '/',
+          name: authorName,
+          url: authorUrl,
         },
         publisher: {
           '@type': 'Organization',
@@ -175,6 +183,7 @@ function workflowJsonLd(post, author, id) {
 export function torchJsonLd(post, author, id) {
   if (post.post_type === 'discussion') return discussionJsonLd(post, author, id);
   if (post.post_type === 'workflow') return workflowJsonLd(post, author, id);
+  if (post.post_type === 'roast_toast') return discussionJsonLd(post, author, id);
   const url = `${SITE}/torch/${id}/`;
   const domain = post.domain_mode === 'hidden'
     ? (post.domain_label || 'Hidden site')

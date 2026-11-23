@@ -18,8 +18,7 @@ const ALLOWED_TOOLS = [
   'ai-search-optimization-tool',
   'ai-voice-search-tool',
   'ai-audit-tool',
-  'quit-risk-tool'
-];
+  'quit-risk-tool', 'uxid-tool' ];
 const MAX_LIMIT = 12;
 
 const CORS = {

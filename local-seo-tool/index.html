@@ -257,6 +257,11 @@
   <link rel="preload" as="style" href="/leader-board/high-scores-widget.css?v=1.0" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="/leader-board/high-scores-widget.css?v=1.0"></noscript>
   <script src="/leader-board/high-scores-widget.js?v=1.0" defer></script>
+  <link rel="preload" as="style" href="/leader-board/contributions-widget.css?v=1.0"
+      onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/leader-board/contributions-widget.css?v=1.0"></noscript>
+  <script src="/leader-board/contributions-widget.js?v=1.0" defer></script>
+
   <script src="/leader-board/submit-score.js?v=1.0" defer></script>
   
   <link rel="stylesheet" media="print" href="/local-seo-tool/print.css?v=1.1">
@@ -448,10 +453,6 @@
       <!-- cards/Chart.js output goes here -->
     </div>
     
-    <section id="tt-lb-anchor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
-  <div class="tt-lb" data-tool="local-seo-tool" data-limit="12" data-title="Top Local SEO Scores"></div>
-</section>
-    
         <!-- ===== GA4 & GSC Dashboards ===== -->
 <div id="epic-cards" class="max-w-6xl mx-auto px-2 py-8">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
@@ -565,7 +566,18 @@
     </div>
   </div>
 </section>
+ 
+ <!-- 🏆 Leaderboard --> 
+    <section id="tt-lb-anchor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
+  <div class="tt-lb" data-tool="local-seo-tool" data-limit="12" data-title="Top Local SEO Scores"></div>
+</section>
 
+<!-- 🏅 Top Contributors -->
+<section id="tt-contrib-anchor" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mt-8 mb-8">
+  <div class="tt-contrib"
+       data-limit="12"
+       data-title="Top Contributors"></div>
+</section>
 
 <!-- SEO Tools Section -->
 <div class="my-16"></div>
@@ -1340,13 +1352,16 @@
    </section>
 
 <!-- Breadcrumbs – semantic & detectable by analyzer -->
-<nav aria-label="breadcrumb" class="max-w-6xl mx-auto px-2 py-2 text-sm mb-6">
-          <ol class="flex flex-wrap items-center gap-2 text-gray-600 dark:text-gray-400">
-            <li><a href="/" class="text-orange-600 dark:text-orange-400 hover:underline font-medium">Home</a></li>
-            <li aria-hidden="true" class="opacity-60">›</li>
-            <li aria-current="page" class="font-semibold text-gray-800 dark:text-gray-200"><span id="page-name"></span></li>
-          </ol>
-        </nav>
+<nav aria-label="breadcrumb" class="max-w-5xl mx-auto px-6 py-4 text-center">
+  <div class="inline-block">
+    <p class="font-medium text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition text-sm">
+      <a href="/">Traffic Torch</a>
+    </p>
+    <p class="font-medium text-gray-800 dark:text-gray-200 text-sm mt-1">
+      <span id="page-name"></span>
+    </p>
+  </div>
+</nav>
 
 <script>
   // Set page name (unchanged)

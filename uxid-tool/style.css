@@ -1,0 +1,187 @@
+/* uxid-tool/style.css — scoped tokens, site chrome controls page theme */
+:root {
+  --uxid-bg: #ffffff;
+  --uxid-fg: #111827;
+  --uxid-muted: #6b7280;
+  --uxid-card: #f9fafb;
+  --uxid-border: #e5e7eb;
+  --uxid-cyan: #22d3ee;
+  --uxid-indigo: #6366f1;
+}
+.dark {
+  --uxid-bg: #0b0f19;
+  --uxid-fg: #e5e7eb;
+  --uxid-muted: #9ca3af;
+  --uxid-card: #111827;
+  --uxid-border: #1f2937;
+}
+
+.uxid-main { max-width: 980px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+.uxid-sub { color: var(--uxid-muted); line-height: 1.6; }
+
+.uxid-form { display: flex; flex-wrap: wrap; gap: .75rem; margin: 1.5rem auto; align-items: stretch; justify-content: center; }
+.uxid-form input {
+  flex: 1 1 320px; min-height: 48px; padding: 0 1rem;
+  border: 1px solid var(--uxid-border); border-radius: 12px;
+  background: var(--uxid-card); color: inherit; font-size: 1rem;
+}
+.uxid-form input:focus { outline: 2px solid var(--uxid-cyan); outline-offset: 2px; }
+.uxid-mode { display: inline-flex; border: 1px solid var(--uxid-border); border-radius: 12px; overflow: hidden; }
+.uxid-mode button {
+  border: 0; background: transparent; padding: .6rem 1rem;
+  font-weight: 600; color: var(--uxid-muted); cursor: pointer; min-height: 44px;
+}
+.uxid-mode button.active { background: var(--uxid-cyan); color: #06222a; }
+.uxid-btn-primary {
+  min-height: 48px; padding: 0 1.25rem; border: 0; border-radius: 12px;
+  background: linear-gradient(135deg, var(--uxid-cyan), var(--uxid-indigo));
+  color: #fff; font-weight: 700; cursor: pointer; font-size: 1rem;
+}
+.uxid-btn-primary:hover { filter: brightness(1.08); }
+.uxid-hint { color: var(--uxid-muted); }
+
+.uxid-results { margin-top: 1.5rem; }
+.uxid-hero-card {
+  display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;
+  padding: 1.5rem; border: 1px solid var(--uxid-border);
+  border-radius: 24px; background: var(--uxid-card);
+}
+.uxid-ring { width: 140px; height: 140px; flex: 0 0 auto; }
+.uxid-ring-bg { fill: none; stroke: var(--uxid-border); stroke-width: 10; }
+.uxid-ring-fg { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset .8s ease; }
+.uxid-ring-score { font-size: 2rem; font-weight: 800; fill: var(--uxid-fg); }
+.uxid-ring-label { font-size: .65rem; letter-spacing: .12em; fill: var(--uxid-muted); }
+.uxid-hero-copy h2 { margin: 0 0 .25rem; font-size: 1.4rem; }
+.uxid-hero-copy p { margin: .15rem 0; word-break: break-word; }
+.uxid-note { color: var(--uxid-muted); font-size: .8rem; }
+
+.uxid-stack {
+  margin: 1.5rem 0; padding: 1rem 1.25rem;
+  border: 1px solid var(--uxid-border); border-radius: 18px;
+}
+.uxid-stack h3 { margin: 0 0 .75rem; font-size: 1rem; }
+.uxid-stack-row {
+  display: grid; grid-template-columns: 11rem 1fr 2.5rem;
+  gap: .5rem; align-items: center; margin: .35rem 0; font-size: .8rem;
+}
+.uxid-stack-label { color: var(--uxid-muted); text-transform: capitalize; }
+.uxid-stack-track { height: 8px; background: var(--uxid-border); border-radius: 99px; overflow: hidden; }
+.uxid-stack-fill {
+  height: 100%; background: linear-gradient(90deg, var(--uxid-cyan), var(--uxid-indigo));
+  border-radius: 99px; transition: width .5s ease;
+}
+.uxid-stack-val { text-align: right; font-weight: 700; }
+
+.uxid-cards {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.uxid-card {
+  padding: 1rem; border: 1px solid var(--uxid-border); border-radius: 16px;
+  background: var(--uxid-card);
+  content-visibility: auto; contain-intrinsic-size: 220px;
+}
+.uxid-card-head { display: flex; justify-content: space-between; gap: .5rem; align-items: start; }
+.uxid-card h3 { margin: 0; font-size: .95rem; }
+
+.uxid-detail { color: var(--uxid-muted); font-size: .8rem; margin: .5rem 0; }
+.uxid-evidence { margin: 0; padding-left: 1.1rem; font-size: .78rem; color: var(--uxid-muted); }
+.uxid-evidence li { margin: .15rem 0; }
+
+.uxid-badge {
+  display: inline-block; margin: .35rem 0; padding: .15rem .55rem;
+  border-radius: 99px; font-size: .7rem; font-weight: 700; text-transform: uppercase;
+}
+.uxid-badge-none { background: var(--uxid-border); color: var(--uxid-muted); }
+.uxid-badge-ethical { background: #064e3b; color: #a7f3d0; }
+.uxid-badge-review { background: #78350f; color: #fde68a; }
+.uxid-badge-flagged { background: #7f1d1d; color: #fecaca; }
+
+.uxid-ai-panel {
+  margin-top: 1.5rem; padding: 1.25rem;
+  border: 1px solid var(--uxid-border); border-radius: 18px;
+  background: var(--uxid-card);
+}
+.uxid-fix { padding: .75rem 0; border-bottom: 1px solid var(--uxid-border); }
+.uxid-fix:last-child { border-bottom: 0; }
+.uxid-fix h4 { margin: 0 0 .35rem; }
+.uxid-fix p { margin: .25rem 0; font-size: .9rem; }
+.uxid-loading { color: var(--uxid-muted); }
+.uxid-error { color: #f87171; }
+
+/* AI fixes button placed after results */
+.uxid-ai-cta {
+  margin-top: 1.5rem; padding: 1.25rem;
+  border: 1px solid var(--uxid-border); border-radius: 18px;
+  background: var(--uxid-card); text-align: center;
+}
+
+@media (max-width: 480px) {
+  .uxid-stack-row { grid-template-columns: 7rem 1fr 2rem; font-size: .72rem; }
+  .uxid-hero-card { padding: 1rem; }
+  .uxid-ring { width: 110px; height: 110px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .uxid-ring-fg, .uxid-stack-fill { transition: none; }
+}
+
+
+
+.uxid-spinner-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1.5rem;
+}
+.uxid-spinner-wrap.hidden { display: none; }
+.uxid-spinner { width: 80px; height: 80px; }
+.uxid-spinner-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--uxid-cyan), var(--uxid-indigo));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0;
+}
+.uxid-progress {
+  color: var(--uxid-muted);
+  font-size: 1rem;
+  margin: 0;
+  min-height: 1.5em;
+  text-align: center;
+}
+
+.uxid-error-box {
+  padding: 1.5rem;
+  border: 1px solid #7f1d1d;
+  background: rgba(127, 29, 29, .1);
+  border-radius: 16px;
+  text-align: center;
+}
+
+/* ─── Score pill colour coding ─── */
+
+.dark 
+
+.dark 
+
+.dark 
+
+
+/* ─── FORCED Score pill colour coding ─── */
+.uxid-score-pill {
+  min-width: 2.25rem; text-align: center; padding: .15rem .5rem;
+  border-radius: 99px; font-weight: 700; font-size: .8rem;
+  display: inline-block; background-color: transparent !important;
+}
+.uxid-pill-red { background-color: #fee2e2 !important; color: #991b1b !important; }
+.dark .uxid-pill-red { background-color: rgba(127, 29, 29, 0.35) !important; color: #fca5a5 !important; }
+.uxid-pill-orange { background-color: #ffedd5 !important; color: #9a3412 !important; }
+.dark .uxid-pill-orange { background-color: rgba(124, 45, 18, 0.35) !important; color: #fdba74 !important; }
+.uxid-pill-green { background-color: #dcfce7 !important; color: #166534 !important; }
+.dark .uxid-pill-green { background-color: rgba(20, 83, 45, 0.4) !important; color: #86efac !important; }
+.uxid-pill-neutral { background-color: var(--uxid-border) !important; color: var(--uxid-muted) !important; }

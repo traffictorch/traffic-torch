@@ -157,6 +157,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link rel="preconnect" href="https://static.cloudflareinsights.com">
   <link rel="dns-prefetch" href="https://js.stripe.com">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 flex flex-col">
 
@@ -348,6 +349,7 @@
             <p class="share-status" aria-live="polite"></p>
           </section>
 
+          <div class="cf-turnstile my-4 flex justify-center" data-sitekey="0x4AAAAAAFfuED_8q3w-MKiB" data-theme="auto"></div>
           <button @click="register()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition" :disabled="loading">Register</button>
         </div>
       </div>
@@ -363,7 +365,7 @@
       <a href="/ai-ux-seo-help-guides/" class="hover:text-orange-400 transition">Help Guides</a>
       <a href="/apps/" class="hover:text-orange-400 transition">Apps</a>
       <a href="/pro/" class="hover:text-orange-400 transition">Pricing</a>
-      <a href="/privacy-policy/" class="hover:text-orange-400 transition">Privacy</a>
+      <a href="/privacy/" class="hover:text-orange-400 transition">Privacy</a>
     </div>
     <p>Privacy-first • No tracking • Client-side processing</p>
   </footer>
@@ -393,7 +395,7 @@ const API_BASE = 'https://traffic-torch-auth.traffictorch.workers.dev';
 
 function authApp() {
   return {
-    activeTab: 'magic',
+    activeTab: (new URLSearchParams(location.search).get('tab') === 'register') ? 'register' : 'magic',
     loading: false,
     message: '',
     messageType: 'error',
@@ -500,7 +502,8 @@ function authApp() {
           body: JSON.stringify({ 
             email: this.registerEmail, 
             password: this.registerPassword,
-            promo_code: this.registerPromoCode
+            promo_code: this.registerPromoCode,
+            turnstile_token: document.querySelector('[name="cf-turnstile-response"]')?.value
           })
         });
         const data = await res.json();

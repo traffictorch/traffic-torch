@@ -5,7 +5,7 @@ function torchPage() {
     torchId: null, authorId: null, authorUsername: '',
     activeTab: 'torch',
     comments: [], commentsLoading: false, draft: '', submitting: false, commentError: '',
-    postType: 'audit', bodyMd: '', bodyExpanded: false,
+    postType: 'audit', category: '', bodyMd: '', bodyExpanded: false,
     commentMeta: { total: 0, offset: 0, limit: 30, has_more: false, loading: false },
     isAuthenticated: false, inNetwork: false, isOwnTorch: false, myUserId: null, myAvatar: 'owner',
     endorseCount: 0, viewerEndorsed: false, endorsing: false,
@@ -221,6 +221,7 @@ function torchPage() {
           this.endorseCount = d.endorse_count || 0;
           this.postType = d.post_type || 'audit';
           this.bodyMd = d.body_md || '';
+          this.category = d.category || '';
         } catch (e) {}
       }
       var token = localStorage.getItem('authToken');

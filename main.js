@@ -1,3 +1,17 @@
+import './shared/ai-assistant.js';
+import './shared/footer-beacon.js';
+
+// Follow OS dark/light preference when user hasn't manually chosen a theme
+(function () {
+  if (typeof window === 'undefined' || !window.matchMedia) return;
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  mq.addEventListener('change', function (e) {
+    if (!localStorage.getItem('theme')) {
+      document.documentElement.classList.toggle('dark', e.matches);
+    }
+  });
+})();
+
 // Global Main JS
 
 import './pwa-dock.js';
@@ -953,3 +967,155 @@ document.addEventListener('click', (e) => {
   }
   // else: default href="/" kicks in as fallback
 });
+
+// ============================================================
+// Promo banner — Free Lifetime Pro for logged-out users
+// Shows on every page (top bar). Delay + dismissal configurable.
+// ============================================================
+(function () {
+  const PROMO_DELAY_MS   = 24000;                 // 2000 (test) → 24000 (prod)
+  const DISMISS_KEY      = 'promoBannerDismissedUntil';
+  const DISMISS_HOURS    = 24;
+  const LOGIN_URL        = '/login/?tab=register';
+  const SKIP_PATH_PREFIX = '/login';
+  const PROMO_CODE       = 'traffictorchpro';
+  const BRAND_RED        = '#dc454d';
+
+  function isLoggedIn() {
+    const t = localStorage.getItem('authToken') || localStorage.getItem('torch_token');
+    return t && t !== 'null' && t !== 'undefined';
+  }
+  function isDismissed() {
+    try {
+      const until = localStorage.getItem(DISMISS_KEY);
+      return until && Date.now() < parseInt(until, 10);
+    } catch (_) { return false; }
+  }
+  function dismiss() {
+    const el = document.getElementById('promo-banner');
+    if (el) el.remove();
+    try { localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_HOURS * 3600 * 1000)); } catch (_) {}
+  }
+
+  function buildBanner() {
+    const b = document.createElement('div');
+    b.id = 'promo-banner';
+    b.setAttribute('role', 'dialog');
+    b.setAttribute('aria-label', 'Free Lifetime Pro offer for early adopters');
+    b.className = 'fixed left-0 right-0 top-0 text-white shadow-lg px-4 py-2.5 md:py-2 -translate-y-full opacity-0 transition-all duration-300 ease-out';
+    b.style.backgroundColor = BRAND_RED;
+    b.style.zIndex = '60';
+
+    b.innerHTML = `
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 24px; width: 100%; padding: 0 24px; text-align: center;">
+        <span style="font-weight: 600; font-size: 16px; line-height: 1.5; color: white; text-align: center;">🎁 Free Lifetime Pro for early adopters during Alpha/Beta.</span>
+        
+        <span style="display: flex; align-items: center; gap: 8px; line-height: 1.5;">
+          <span style="opacity: 0.9; font-size: 16px; color: white;">Use code</span>
+          <button type="button" data-promo-code
+                  style="display: inline-flex; align-items: center; justify-content: center; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-weight: 700; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); padding: 6px 12px; border-radius: 6px; color: white; font-size: 16px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
+                  title="Click to copy promo code">
+            ${PROMO_CODE} 📋
+          </button>
+        </span>
+        
+        <a href="${LOGIN_URL}"
+           style="display: inline-flex; align-items: center; justify-content: center; background: white; color: ${BRAND_RED}; font-weight: 700; padding: 6px 16px; border-radius: 8px; text-decoration: none; font-size: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">
+          Activate Pro →
+        </a>
+      </div>
+      <button type="button" data-promo-close
+              style="position: absolute; top: 50%; right: 16px; transform: translateY(-50%); padding: 8px; background: transparent; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 6px;"
+              onmouseover="this.style.background='rgba(255,255,255,0.2)'" 
+              onmouseout="this.style.background='transparent'"
+              aria-label="Dismiss offer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    `;
+
+    b.querySelector('[data-promo-close]').addEventListener('click', dismiss);
+
+    const codeBtn = b.querySelector('[data-promo-code]');
+    codeBtn.addEventListener('click', async () => {
+      let copied = false;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(PROMO_CODE);
+          copied = true;
+        }
+      } catch (_) {}
+      if (!copied) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = PROMO_CODE;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          copied = true;
+        } catch (_) {}
+      }
+      const orig = codeBtn.innerHTML;
+      codeBtn.innerHTML = copied ? '✓ Copied!' : '⚠ Copy failed';
+      codeBtn.classList.add('bg-white/50');
+      setTimeout(() => {
+        codeBtn.innerHTML = orig;
+        codeBtn.classList.remove('bg-white/50');
+      }, 1600);
+    });
+
+    return b;
+  }
+
+  function show() {
+    if (isLoggedIn()) return;
+    if (isDismissed()) return;
+    if (location.pathname.startsWith(SKIP_PATH_PREFIX)) return;
+    if (document.getElementById('promo-banner')) return;
+
+    const b = buildBanner();
+    document.body.appendChild(b);
+    requestAnimationFrame(() => {
+      b.classList.remove('-translate-y-full', 'opacity-0');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(show, PROMO_DELAY_MS), { once: true });
+  } else {
+    setTimeout(show, PROMO_DELAY_MS);
+  }
+})();
+
+// ============================================================
+// PWA State Restore — Prevents cold-start from resetting to Home
+// ============================================================
+(function() {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (!isStandalone) return;
+
+  // 1. Save the current URL when the app goes into the background
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      // Don't save auth or api routes
+      if (!location.pathname.startsWith('/login') && !location.pathname.startsWith('/api')) {
+        localStorage.setItem('pwa_last_url', location.pathname + location.search + location.hash);
+      }
+    }
+  });
+
+  // 2. Restore the URL on cold start (only if we land on the start_url)
+  if (location.pathname === '/' && location.search.includes('utm_source=pwa')) {
+    const lastUrl = localStorage.getItem('pwa_last_url');
+    
+    // Don't redirect to home, login, or the start_url itself
+    if (lastUrl && lastUrl !== '/' && !lastUrl.startsWith('/?utm_source') && !lastUrl.startsWith('/login')) {
+      // Use replace() so the back button still works correctly
+      window.location.replace(lastUrl);
+    }
+  }
+})();

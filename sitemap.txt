@@ -311,3 +311,5 @@
 
 </urlset>
 https://traffictorch.net/community/round-table/
+https://traffictorch.net/uxid-tool/
+https://traffictorch.net/blog/posts/uxid-help-guide/

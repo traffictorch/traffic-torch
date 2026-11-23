@@ -23,13 +23,7 @@ zone_name = "traffictorch.net"
 pattern = "traffictorch.net/torch/*"
 zone_name = "traffictorch.net"
 
-[[routes]]
-pattern = "traffictorch.net/community"
-zone_name = "traffictorch.net"
 
-[[routes]]
-pattern = "traffictorch.net/community/*"
-zone_name = "traffictorch.net"
 
 [[routes]]
 pattern = "traffictorch.net/sitemap.xml"

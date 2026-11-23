@@ -46,12 +46,16 @@
       flex-wrap: wrap !important;
       overflow-x: visible !important;
     }
-    [data-feed-cats] > button:nth-of-type(-n+2),
+    /* Feed filter: 6 categories → 3 per row (2 rows of 3) */
+    [data-feed-cats] > button {
+      flex: 0 0 calc(33.333% - 0.25rem) !important;
+      min-width: 0 !important;
+    }
+    /* Composer: 5 categories → 2 on top, 3 on second row */
     [data-composer-cats] > button:nth-of-type(-n+2) {
       flex: 0 0 calc(50% - 0.1875rem) !important;
       min-width: 0 !important;
     }
-    [data-feed-cats] > button:nth-of-type(n+3),
     [data-composer-cats] > button:nth-of-type(n+3) {
       flex: 0 0 calc(33.333% - 0.25rem) !important;
       min-width: 0 !important;
@@ -207,17 +211,37 @@
 
   <!-- ── Image lightbox ── -->
   <template x-teleport="body">
-    <div x-show="imageLightbox" x-cloak @keydown.escape.window="imageLightbox = null"
-         style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483647;">
-      <div @click="imageLightbox = null"
-           style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;cursor:zoom-out;overflow:hidden;">
-        <img :src="imageLightbox" @click.stop
-             style="display:block;max-width:min(95vw,1400px);max-height:90vh;width:auto;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 25px 60px -12px rgba(0,0,0,0.8);background:#fff;">
-        <button type="button" @click="imageLightbox = null" aria-label="Close"
-                style="position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-family:system-ui,-apple-system,sans-serif;">×</button>
-      </div>
+  <div x-show="imageLightbox" x-cloak
+       @keydown.escape.window="closeImageLightbox()"
+       @keydown.arrow-right.window="nextImage()"
+       @keydown.arrow-left.window="prevImage()"
+       @touchstart.passive="_lbTouchStart($event)"
+       @touchend.passive="_lbTouchEnd($event)"
+       style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483647;">
+    <div @click="closeImageLightbox()"
+         style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;cursor:zoom-out;overflow:hidden;">
+      <template x-if="imageLightbox">
+        <img :src="imageLightbox.images[imageLightbox.index]" @click.stop
+             style="display:block;max-width:min(95vw,1400px);max-height:90vh;width:auto;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 25px 60px -12px rgba(0,0,0,0.8);background:#fff;user-select:none;-webkit-user-drag:none;">
+      </template>
+      <template x-if="imageLightbox && imageLightbox.images.length > 1">
+        <div style="position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);color:#fff;padding:6px 14px;border-radius:9999px;font-size:13px;font-weight:700;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);">
+          <span x-text="imageLightbox.index + 1"></span> / <span x-text="imageLightbox.images.length"></span>
+        </div>
+      </template>
+      <template x-if="imageLightbox && imageLightbox.images.length > 1">
+        <button type="button" @click.stop="prevImage()" aria-label="Previous image"
+                style="position:absolute;left:20px;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);">&#8249;</button>
+      </template>
+      <template x-if="imageLightbox && imageLightbox.images.length > 1">
+        <button type="button" @click.stop="nextImage()" aria-label="Next image"
+                style="position:absolute;right:20px;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);">&#8250;</button>
+      </template>
+      <button type="button" @click.stop="closeImageLightbox()" aria-label="Close"
+              style="position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:9999px;background:rgba(255,255,255,0.15);color:#fff;border:none;font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-family:system-ui,-apple-system,sans-serif;">&#215;</button>
     </div>
-  </template>
+  </div>
+</template>
 
   <!-- ── Avatar lightbox (bulletproof, 2-element) ── -->
   <template x-teleport="body">
@@ -392,9 +416,6 @@
              :alt="profile.display_name"
              class="w-40 h-40 md:w-48 md:h-48 rounded-2xl object-cover shadow-lg transition-transform group-hover:scale-[1.02]"
              onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
-        <template x-if="(profile.tier || 'free') !== 'free'">
-          <span class="tier-ribbon" x-text="(profile.tier || 'free') === 'pro' ? 'PRO' : 'EXPERT'"></span>
-        </template>
         <span class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full pointer-events-none">Click to enlarge</span>
       </div>
     </div>
@@ -991,7 +1012,7 @@
                         @dragover.prevent="$el.classList.add('border-orange-500')"
                         @dragleave.prevent="$el.classList.remove('border-orange-500')"
                         @drop.prevent="$el.classList.remove('border-orange-500'); handleComposerFiles($event.dataTransfer.files)"
-                        @paste="const items = $event.clipboardData?.items || []; for (const it of items) { if (it.type.startsWith('image/')) { const f = it.getAsFile(); if (f) handleComposerFiles([f]); $event.preventDefault(); } }"
+                        @paste="handlePasteComposer($event)"
                         @keydown.meta.enter.prevent="submitDiscussion()" @keydown.ctrl.enter.prevent="submitDiscussion()"
                         placeholder="Write your post2026"
                         class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm resize-y focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15 outline-none transition-all leading-relaxed"></textarea>
@@ -1094,7 +1115,7 @@
             </div>
           </div>
             <div data-feed-cats class="glass rounded-2xl p-2 sm:p-3 mb-4 flex gap-1 sm:gap-2 overflow-x-auto scrollbar-thin">
-              <template x-for="cat in ['casual','websites','ux','seo','aeo']" :key="cat">
+              <template x-for="cat in ['all','casual','websites','ux','seo','aeo']" :key="cat">
                 <button @click="setFeedCategory(cat)"
                         class="flex-shrink-0 sm:flex-1 min-w-[80px] py-2 px-2 rounded-lg text-xs sm:text-sm font-bold uppercase tracking-wide transition whitespace-nowrap"
                         :class="feed.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white' : 'text-gray-500 hover:text-orange-500'"
@@ -1309,7 +1330,7 @@
                       <template x-if="post.images && parseImages(post.images).length > 0">
                         <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
                           <template x-for="(img, idx) in parseImages(post.images)" :key="'pimg-' + post.id + '-' + idx">
-                            <a @click.prevent="openImageLightbox(img.url)" class="cursor-zoom-in">
+                            <a @click.prevent="openImageLightbox(img.url, parseImages(post.images))" class="cursor-zoom-in">
                               <img :src="img.url" loading="lazy" :alt="'image ' + (idx+1)" class="w-full rounded-lg object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;">
                             </a>
                           </template>
@@ -1364,7 +1385,7 @@
                             <template x-if="c.images && parseImages(c.images).length > 0">
                               <div class="mt-2 flex flex-wrap gap-1.5">
                                 <template x-for="(img, idx) in parseImages(c.images)" :key="'cimgr-' + c.id + '-' + idx">
-                                  <a @click.prevent="openImageLightbox(img.url)" class="cursor-zoom-in">
+                                  <a @click.prevent="openImageLightbox(img.url, parseImages(c.images))" class="cursor-zoom-in">
                                     <img :src="img.url" loading="lazy" class="rounded-md object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="width:80px;height:80px;">
                                   </a>
                                 </template>
@@ -1383,7 +1404,7 @@
                               @keydown.ctrl.enter.prevent="submitComment(post.id)"
                               @dragover.prevent
                               @drop.prevent="handleCommentFiles(post.id, $event.dataTransfer.files)"
-                              @paste="const items = $event.clipboardData?.items || []; for (const it of items) { if (it.type.startsWith('image/')) { const f = it.getAsFile(); if (f) handleCommentFiles(post.id, [f]); $event.preventDefault(); } }"
+                              @paste="handlePasteComment($event, post.id)"
                               placeholder="Leave a comment… (6000 chars) · Markdown · drop images here"
                               class="p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                             <div class="flex items-center gap-2 flex-wrap">
@@ -1451,7 +1472,7 @@
                       <template x-if="post.images && parseImages(post.images).length > 0">
                         <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
                           <template x-for="(img, idx) in parseImages(post.images)" :key="'wfimg-' + post.id + '-' + idx">
-                            <a @click.prevent="openImageLightbox(img.url)" class="cursor-zoom-in">
+                            <a @click.prevent="openImageLightbox(img.url, parseImages(post.images))" class="cursor-zoom-in">
                               <img :src="img.url" loading="lazy" :alt="'image ' + (idx+1)" class="w-full rounded-lg object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;">
                             </a>
                           </template>
@@ -1665,7 +1686,7 @@
           </div>
 
           <!-- === Profile Activity view === -->
-          <div x-show="profileSubTab === 'activity'" x-cloak class="max-w-2xl mx-auto">
+          <template x-if="profileSubTab === 'activity'"><div class="max-w-2xl mx-auto">
             <div class="glass rounded-2xl p-3 mb-4">
               <div class="flex flex-wrap items-center gap-2">
                 <span class="text-xs font-bold text-gray-500 uppercase tracking-wider px-2">Type</span>
@@ -1702,7 +1723,7 @@
               </div>
             </template>
             <div x-show="activity.items.length > 0" class="space-y-3">
-              <template x-for="group in groupActivityByDay(activityFiltered())" :key="'pg-'+group.label">
+              <template x-for="group in activity.grouped" :key="'pg-'+group.label">
                 <div class="space-y-2">
                   <div class="text-xs font-bold uppercase tracking-wider text-gray-500 px-1 pt-2" x-text="group.label"></div>
                   <template x-for="item in collapseBursts(group.items)" :key="'pa-'+item.id">
@@ -1824,7 +1845,7 @@
                 📖 Learn more — Activity Feed →
               </a>
             </div>
-          </div>
+          </div></template>
 
           <!-- === Discover view === -->
           <div x-show="profileSubTab === 'discover'" x-cloak class="max-w-4xl mx-auto">
@@ -1956,6 +1977,7 @@
                   <option value="ai-voice-search-tool">Voice Search</option>
                   <option value="ai-audit-tool">AI Content Audit</option>
                   <option value="quit-risk-tool">Quit Risk</option>
+                  <option value="uxid-tool">UXID</option>
                   <option value="keyword-research-tool">Keyword Research</option>
                   <option value="keyword-tool">Keyword Placement</option>
                 </select>
@@ -2128,7 +2150,7 @@
                         @dragover.prevent="$el.classList.add('border-orange-500')"
                         @dragleave.prevent="$el.classList.remove('border-orange-500')"
                         @drop.prevent="$el.classList.remove('border-orange-500'); handleComposerFiles($event.dataTransfer.files)"
-                        @paste="const items = $event.clipboardData?.items || []; for (const it of items) { if (it.type.startsWith('image/')) { const f = it.getAsFile(); if (f) handleComposerFiles([f]); $event.preventDefault(); } }"
+                        @paste="handlePasteComposer($event)"
                         @keydown.meta.enter.prevent="submitDiscussion()" @keydown.ctrl.enter.prevent="submitDiscussion()"
                         placeholder="Write your post2026"
                         class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/70 dark:bg-black/40 text-sm resize-y focus:border-orange-500 focus:ring-4 focus:ring-orange-500/15 outline-none transition-all leading-relaxed"></textarea>
@@ -2231,7 +2253,7 @@
             </div>
           </div>
             <div data-feed-cats class="glass rounded-2xl p-2 sm:p-3 mb-4 flex gap-1 sm:gap-2 overflow-x-auto scrollbar-thin">
-              <template x-for="cat in ['casual','websites','ux','seo','aeo']" :key="cat">
+              <template x-for="cat in ['all','casual','websites','ux','seo','aeo']" :key="cat">
                 <button @click="setFeedCategory(cat)"
                         class="flex-shrink-0 sm:flex-1 min-w-[80px] py-2 px-2 rounded-lg text-xs sm:text-sm font-bold uppercase tracking-wide transition whitespace-nowrap"
                         :class="feed.category === cat ? 'bg-gradient-to-r from-orange-500 to-pink-600 text-white' : 'text-gray-500 hover:text-orange-500'"
@@ -2451,7 +2473,7 @@
                       <template x-if="post.images && parseImages(post.images).length > 0">
                         <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
                           <template x-for="(img, idx) in parseImages(post.images)" :key="'pimg-' + post.id + '-' + idx">
-                            <a @click.prevent="openImageLightbox(img.url)" class="cursor-zoom-in">
+                            <a @click.prevent="openImageLightbox(img.url, parseImages(post.images))" class="cursor-zoom-in">
                               <img :src="img.url" loading="lazy" :alt="'image ' + (idx+1)" class="w-full rounded-lg object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;">
                             </a>
                           </template>
@@ -2506,7 +2528,7 @@
                             <template x-if="c.images && parseImages(c.images).length > 0">
                               <div class="mt-2 flex flex-wrap gap-1.5">
                                 <template x-for="(img, idx) in parseImages(c.images)" :key="'cimgr-' + c.id + '-' + idx">
-                                  <a @click.prevent="openImageLightbox(img.url)" class="cursor-zoom-in">
+                                  <a @click.prevent="openImageLightbox(img.url, parseImages(c.images))" class="cursor-zoom-in">
                                     <img :src="img.url" loading="lazy" class="rounded-md object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="width:80px;height:80px;">
                                   </a>
                                 </template>
@@ -2525,7 +2547,7 @@
                               @keydown.ctrl.enter.prevent="submitComment(post.id)"
                               @dragover.prevent
                               @drop.prevent="handleCommentFiles(post.id, $event.dataTransfer.files)"
-                              @paste="const items = $event.clipboardData?.items || []; for (const it of items) { if (it.type.startsWith('image/')) { const f = it.getAsFile(); if (f) handleCommentFiles(post.id, [f]); $event.preventDefault(); } }"
+                              @paste="handlePasteComment($event, post.id)"
                               placeholder="Leave a comment… (6000 chars) · Markdown · drop images here"
                               class="p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-black/50 focus:ring-2 focus:ring-orange-500 outline-none resize-y min-h-[80px]"></textarea>
                             <div class="flex items-center gap-2 flex-wrap">
@@ -2593,7 +2615,7 @@
                       <template x-if="post.images && parseImages(post.images).length > 0">
                         <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
                           <template x-for="(img, idx) in parseImages(post.images)" :key="'wfimg-' + post.id + '-' + idx">
-                            <a @click.prevent="openImageLightbox(img.url)" class="cursor-zoom-in">
+                            <a @click.prevent="openImageLightbox(img.url, parseImages(post.images))" class="cursor-zoom-in">
                               <img :src="img.url" loading="lazy" :alt="'image ' + (idx+1)" class="w-full rounded-lg object-cover border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;">
                             </a>
                           </template>
@@ -2753,7 +2775,7 @@
             </div>
           </div>
 
-          <div x-show="networkSubTab === 'activity'" x-cloak class="max-w-2xl mx-auto">
+          <template x-if="networkSubTab === 'activity'"><div class="max-w-2xl mx-auto">
             <div class="glass rounded-2xl p-3 mb-4 space-y-2">
               <div class="flex flex-wrap items-center gap-2">
                 <span class="text-xs font-bold text-gray-500 uppercase tracking-wider px-2">Type</span>
@@ -2810,7 +2832,7 @@
               </div>
             </template>
             <div x-show="activity.items.length > 0" class="space-y-3">
-              <template x-for="group in groupActivityByDay(activityFiltered())" :key="'ng-'+group.label">
+              <template x-for="group in activity.grouped" :key="'ng-'+group.label">
                 <div class="space-y-2">
                   <div class="text-xs font-bold uppercase tracking-wider text-gray-500 px-1 pt-2" x-text="group.label"></div>
                   <template x-for="item in collapseBursts(group.items)" :key="'na-'+item.id">
@@ -2932,7 +2954,7 @@
                 📖 Learn more — Activity Feed →
               </a>
             </div>
-          </div>
+          </div></template>
 
           <div x-show="networkSubTab === 'discover'" x-cloak class="max-w-4xl mx-auto">
             <div class="flex items-center justify-between gap-3 flex-wrap mb-4">
@@ -3913,7 +3935,7 @@ function dashboardApp() {
     profileSubTab: 'profile',
     discover: { loading: false, users: [], hasMore: false, error: null, addLoading: {} },
     workflows: { list: [], loading: false, error: null },
-    activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, type: 'all', category: 'all', tool: 'all', time: 'all', scope: 'network', filterUser: null, filterUsername: null },
+    activity: { loading: false, items: [], cursor: null, hasMore: false, error: null, type: 'all', category: 'all', tool: 'all', time: 'all', scope: 'network', filterUser: null, filterUsername: null, grouped: [] },
 
     messageSettingsPolicy: 'all',
     messageSettingsBlocked: 0,
@@ -4067,7 +4089,7 @@ function dashboardApp() {
     feed: {
       loading: false,
       loadingMore: false,
-      category: 'casual',
+      category: 'all',
       posts: [],
       cursor: null,
       hasMore: true,
@@ -4185,6 +4207,26 @@ function dashboardApp() {
       lastUpdated: null
     },
 
+    handlePasteComposer(e) {
+      const items = (e.clipboardData && e.clipboardData.items) || [];
+      for (const it of items) {
+        if (it.type && it.type.startsWith('image/')) {
+          const f = it.getAsFile();
+          if (f) { this.handleComposerFiles([f]); e.preventDefault(); }
+        }
+      }
+    },
+
+    handlePasteComment(e, postId) {
+      const items = (e.clipboardData && e.clipboardData.items) || [];
+      for (const it of items) {
+        if (it.type && it.type.startsWith('image/')) {
+          const f = it.getAsFile();
+          if (f) { this.handleCommentFiles(postId, [f]); e.preventDefault(); }
+        }
+      }
+    },
+
     async initDashboard() {
       const hash = window.location.hash.replace('#', '');
       if (hash === 'beams') {
@@ -4231,15 +4273,21 @@ function dashboardApp() {
         }
       });
 
-      this.openBeams = () => {
+      this.openBeams = (attempt) => {
+        attempt = attempt || 0;
         // Beams requires auth. Logged-out users get a friendly prompt instead of a dead click.
         if (!this.isAuthenticated) {
           this.showLoginModal ? this.showLoginModal() : (window.location.href = '/login/');
           return;
         }
-        const link = document.getElementById('tt-beams-inbox-link')
-                  || document.getElementById('tt-beams-inbox-link-mobile');
-        if (link) link.click();
+        // Sidebar menu is injected asynchronously from /desktop-menu.html — poll until link exists
+        var link = document.getElementById('tt-beams-inbox-link')
+                || document.getElementById('tt-beams-inbox-link-mobile');
+        if (link) { link.click(); return; }
+        if (attempt < 30) {
+          var self = this;
+          setTimeout(function () { self.openBeams(attempt + 1); }, 100);
+        }
       };
 
       window.addEventListener('hashchange', () => {
@@ -5296,8 +5344,8 @@ async endorsePost(postId) {
       if (!url) { alert('Please enter a valid URL'); return; }
       if ((this.user.dailyUsed || 0) >= this.dailyLimit) { alert(`Daily audit limit reached (${this.dailyLimit} runs). Upgrade to Pro for more.`); this.showUpgradeModal(); return; }
       const tool = this.selectedTool;
-      const toolMap = { '/' : '/', 'ofux-tool': '/ofux-tool/', 'lighthouse-plus-tool': '/lighthouse-plus-tool/', 'aeo-performance-tool': '/aeo-performance-tool/', 'seo-intent-tool': '/seo-intent-tool/', 'seo-ux-tool': '/seo-ux-tool/', 'local-seo-tool': '/local-seo-tool/', 'product-seo-tool': '/product-seo-tool/', 'entity': '/seo-entity-extractor-tool/', 'topical': '/topical-authority-audit-tool/', 'schema-generator': '/schema-generator/', 'ai-search-optimization-tool': '/ai-search-optimization-tool/', 'ai-voice-search-tool': '/ai-voice-search-tool/', 'ai-audit-tool': '/ai-audit-tool/', 'quit-risk-tool': '/quit-risk-tool/', 'keyword-research-tool': '/keyword-research-tool/', 'keyword-tool': '/keyword-tool/' };
-      const toolNames = { '/' : 'NUSA', 'ofux-tool': 'OFUX', 'lighthouse-plus-tool': 'Lighthouse Plus', 'aeo-performance-tool': 'AEO Performance', 'seo-intent-tool': 'SEO Intent', 'seo-ux-tool': 'SEO + UX', 'local-seo-tool': 'Local SEO', 'product-seo-tool': 'Product SEO', 'entity': 'Entity Extractor', 'topical': 'Topical Authority', 'schema-generator': 'Schema Generator', 'ai-search-optimization-tool': 'AEO / AI Search', 'ai-voice-search-tool': 'Voice Search', 'ai-audit-tool': 'AI Content Audit', 'quit-risk-tool': 'Quit Risk', 'keyword-research-tool': 'Keyword Research', 'keyword-tool': 'Keyword Placement' };
+      const toolMap = { '/' : '/', 'ofux-tool': '/ofux-tool/', 'lighthouse-plus-tool': '/lighthouse-plus-tool/', 'aeo-performance-tool': '/aeo-performance-tool/', 'seo-intent-tool': '/seo-intent-tool/', 'seo-ux-tool': '/seo-ux-tool/', 'local-seo-tool': '/local-seo-tool/', 'product-seo-tool': '/product-seo-tool/', 'entity': '/seo-entity-extractor-tool/', 'topical': '/topical-authority-audit-tool/', 'schema-generator': '/schema-generator/', 'ai-search-optimization-tool': '/ai-search-optimization-tool/', 'ai-voice-search-tool': '/ai-voice-search-tool/', 'ai-audit-tool': '/ai-audit-tool/', 'quit-risk-tool': '/quit-risk-tool/', 'uxid-tool': '/uxid-tool/', 'keyword-research-tool': '/keyword-research-tool/', 'keyword-tool': '/keyword-tool/' };
+      const toolNames = { '/' : 'NUSA', 'ofux-tool': 'OFUX', 'lighthouse-plus-tool': 'Lighthouse Plus', 'aeo-performance-tool': 'AEO Performance', 'seo-intent-tool': 'SEO Intent', 'seo-ux-tool': 'SEO + UX', 'local-seo-tool': 'Local SEO', 'product-seo-tool': 'Product SEO', 'entity': 'Entity Extractor', 'topical': 'Topical Authority', 'schema-generator': 'Schema Generator', 'ai-search-optimization-tool': 'AEO / AI Search', 'ai-voice-search-tool': 'Voice Search', 'ai-audit-tool': 'AI Content Audit', 'quit-risk-tool': 'Quit Risk', 'uxid-tool': 'UXID', 'keyword-research-tool': 'Keyword Research', 'keyword-tool': 'Keyword Placement' };
       const toolPath = toolMap[tool];
       if (!toolPath) { alert('Tool not found'); return; }
       await this.saveAudit({ url, tool: toolNames[tool] || tool, score: null });
@@ -5690,7 +5738,8 @@ async endorsePost(postId) {
       if (reset) { this.feed.posts = []; this.feed.cursor = null; this.feed.hasMore = true; }
       this.feed.loading = true; this.feed.error = null;
       try {
-        let url = `${API_BASE}/api/feed?category=${this.feed.category}&limit=20`;
+        let url = `${API_BASE}/api/feed?limit=20`;
+        if (this.feed.category && this.feed.category !== 'all') url += `&category=${encodeURIComponent(this.feed.category)}`;
         if (this.feed.cursor) url += `&cursor=${encodeURIComponent(this.feed.cursor)}`;
         const res = await fetch(url, { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('authToken') } });
         const data = await res.json();
@@ -6015,9 +6064,43 @@ async endorsePost(postId) {
       } catch {}
     },
 
-    openImageLightbox(url) {
+    openImageLightbox(url, images = null) {
       if (!url) return;
-      this.imageLightbox = url;
+      const urls = Array.isArray(images)
+        ? images.map(i => typeof i === 'string' ? i : (i && i.url) || '').filter(Boolean)
+        : [url];
+      const idx = Math.max(0, urls.indexOf(url));
+      this.imageLightbox = { images: urls.length ? urls : [url], index: idx };
+      document.body.style.overflow = 'hidden';
+    },
+    closeImageLightbox() {
+      this.imageLightbox = null;
+      document.body.style.overflow = '';
+    },
+    nextImage() {
+      if (!this.imageLightbox) return;
+      const n = this.imageLightbox.images.length;
+      if (n <= 1) return;
+      this.imageLightbox.index = (this.imageLightbox.index + 1) % n;
+    },
+    prevImage() {
+      if (!this.imageLightbox) return;
+      const n = this.imageLightbox.images.length;
+      if (n <= 1) return;
+      this.imageLightbox.index = (this.imageLightbox.index - 1 + n) % n;
+    },
+    _lbTouchStart(e) {
+      this._lbX = e.changedTouches[0].clientX;
+      this._lbY = e.changedTouches[0].clientY;
+    },
+    _lbTouchEnd(e) {
+      if (this._lbX == null) return;
+      const dx = e.changedTouches[0].clientX - this._lbX;
+      const dy = e.changedTouches[0].clientY - this._lbY;
+      this._lbX = this._lbY = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < 0) this.nextImage(); else this.prevImage();
+      }
     },
     openComposer() {
       this.composer.open = true;
@@ -6378,6 +6461,13 @@ async endorsePost(postId) {
       }
     },
 
+    refreshActivityGrouped() {
+      const filtered = this.activity.filterUser
+        ? this.activity.items.filter(i => i.user_id === this.activity.filterUser)
+        : this.activity.items;
+      this.activity.grouped = this.groupActivityByDay(filtered);
+    },
+
     async loadActivity(mode = 'me') {
       const token = localStorage.getItem('authToken');
       if (!token) return;
@@ -6405,6 +6495,8 @@ async endorsePost(postId) {
         this._markNewItems('me');
       } catch (e) { this.activity.error = e.message; }
       finally { this.activity.loading = false; }
+    
+      this.refreshActivityGrouped();
     },
 
     resetActivity(field, value, mode) {

@@ -1,3 +1,7 @@
+# Strip double slashes
+
+# Strip double slashes
+
 /u/*  /u/index.html  200
 
 # .html → clean URL (for files that don't exist in build output)
@@ -8,7 +12,6 @@
 /news/ /blog/ 301
 /news/* /blog/:splat 301
 /state-of-seo-geo-2026.html /blog/posts/state-of-seo-geo-2026/ 301
-/seo-entity-extractor-tool// /seo-entity-extractor-tool/ 301
 
 # Legacy top-level paths → current locations
 /state-of-seo-geo-2026/ /blog/posts/state-of-seo-geo-2026/ 301

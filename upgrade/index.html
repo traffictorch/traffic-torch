@@ -261,6 +261,9 @@
       padding: 1.5rem;
       box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5);
       position: relative;
+      max-height: 90vh; 
+      overflow-y: auto; 
+      margin: auto;
     }
     .dark #checkout-embedded { background: #1f2937; }
     .checkout-close {
@@ -581,7 +584,22 @@ window.upgradeToPlan = async function(plan = 'pro') {
     const checkout = await stripe.initEmbeddedCheckout({ fetchClientSecret });
     window.currentCheckout = checkout;
     checkout.mount('#checkout-mount');
+
+    // Watch for Stripe injecting its iframe and instantly apply the permission
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        for (const node of mutation.addedNodes) {
+          if (node.tagName === 'IFRAME') {
+            node.setAttribute('allow', 'payment *; publickey-credentials-get *');
+            observer.disconnect(); // Stop watching once we've fixed it
+          }
+        }
+      }
+    });
+    observer.observe(mount, { childList: true, subtree: true });
+
     localStorage.setItem('just_upgraded', 'true');
+    
   } catch (err) {
     alert('Upgrade error: ' + err.message);
     container.classList.remove('active');

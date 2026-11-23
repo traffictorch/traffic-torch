@@ -20,7 +20,7 @@
       type="button"
       role="menuitem"
       class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none pro-menu-link"
-      aria-expanded="true"
+      aria-expanded="false"
       aria-controls="proportal-content"
       data-category="proportal"
       title="Portal – Profile, Beams & Network"
@@ -38,7 +38,7 @@
         </a>
       </span>
     </button>
-    <div id="proportal-content" class="pl-0 md:pl-10 space-y-3 mt-1" data-category-content="proportal">
+    <div id="proportal-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="proportal">
       <a href="/dashboard/#profile" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" data-tab="profile">
         <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">👤</span>
         <span class="sidebar-text hidden md:block">Profile</span>
@@ -54,6 +54,39 @@
       </a>
     </div>
   </div>
+  
+    <!-- TT Community -->
+  <button
+    type="button" role="menuitem"
+    class="group w-full flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition focus:outline-none"
+    aria-expanded="false" aria-controls="community-content" data-category="community"
+    title="Community – Feed, Leaderboard, Roast or Toast & Analytics">
+    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🤝</span>
+    <span class="sidebar-text font-semibold flex-1">Community</span>
+    <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
+  </button>
+  <div id="community-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="community">
+    <a href="/community/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch Developer Community">
+    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📰</span>
+    <span class="sidebar-text hidden md:block">Feed</span>
+    </a>
+    <a href="/contributors/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Tool and community contributors">
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🏅</span>
+      <span class="sidebar-text hidden md:block">Contributors</span>
+    </a>
+    <a href="/leader-board/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Leader Board">
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🥇</span>
+      <span class="sidebar-text hidden md:block">Leader Board</span>
+ 	</a>  
+    <a href="/community/roast-or-toast/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch Developer Community">
+    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🔥</span>
+    <span class="sidebar-text hidden md:block">Roast or Toast</span>
+    </a>
+ 	<a href="/analytics/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Public analytics — Cloudflare edge + AI crawlers + Google">
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📊</span>
+      <span class="sidebar-text hidden md:block">Analytics</span>
+    </a> 
+  </div>
 
   <!-- ═══ Dashboard dropdown ═══ -->
   <div>
@@ -66,8 +99,8 @@
       data-category="dashboard"
       title="Dashboard – Audits, Analytics, Real-time, Search Console, Integrations, Upgrade & Settings"
     >
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📊</span>
-      <span class="sidebar-text font-semibold flex-1 text-left">Dashboard</span>
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🎛️</span>
+      <span class="sidebar-text font-semibold flex-1">Dashboard</span>
       <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
     </button>
     <div id="dashboard-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="dashboard">
@@ -117,13 +150,17 @@
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📈</span>
       <span class="sidebar-text hidden md:block">NUSA Tool</span>
     </a>
-    <a href="/ofux-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="UX, SEO Intent and AI Search audit tool with friction points & fixes">
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📊</span>
-      <span class="sidebar-text hidden md:block">OFUX Tool</span>
+    <a href="/uxid-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="UX incentive design — CTA, trust, reciprocity, urgency">
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🥇</span>
+      <span class="sidebar-text hidden md:block">UXID</span>
     </a>
     <a href="/quit-risk-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Predict user quit risk – identify friction points & retention fixes">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚠️</span>
       <span class="sidebar-text hidden md:block">Quit Risk</span>
+    </a>
+    <a href="/ofux-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="UX, SEO Intent and AI Search audit tool with friction points & fixes">
+      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🕵🏻</span>
+      <span class="sidebar-text hidden md:block">OFUX Tool</span>
     </a>
     <a href="/seo-ux-tool/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Full SEO + UX audit tool – combined health score & actionable fixes">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">⚖️</span>
@@ -241,18 +278,6 @@
     <span class="ml-auto text-xl transition-transform sidebar-arrow hidden md:inline">▼</span>
   </button>
   <div id="extras-content" class="pl-0 md:pl-10 space-y-3 mt-1 hidden" data-category-content="extras">
-    <a href="/community/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch Developer Community">
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🤝</span>
-      <span class="sidebar-text hidden md:block">Community</span>
-    </a>
-    <a href="/contributors/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Tool and community contributors">
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🏅</span>
-      <span class="sidebar-text hidden md:block">Contributors</span>
-    </a>
-    <a href="/analytics/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Public analytics — Cloudflare edge + AI crawlers + Google">
-      <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📊</span>
-      <span class="sidebar-text hidden md:block">Analytics</span>
-    </a>
     <a href="/integrations/browser-extensions/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Traffic Torch Browser Extensions">
       <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🌐</span>
       <span class="sidebar-text hidden md:block">Browser Extensions</span>
@@ -274,23 +299,17 @@
       <span class="sidebar-text hidden md:block">WhitePaper</span>
     </a>
   </div>
-
-  <!-- Apps -->
-  <a href="/apps/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Install Traffic Torch as an App">
-    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📱</span>
-    <span class="sidebar-text hidden md:block">PWA Apps</span>
-  </a>
-
+  
   <!-- Help Guides -->
   <a href="/ai-ux-seo-help-guides/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Free guides & tutorials">
     <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📋</span>
     <span class="sidebar-text hidden md:block">Help Guides</span>
   </a>
 
-  <!-- Leader Board -->
-  <a href="/leader-board/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Leader Board">
-    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">🥇</span>
-    <span class="sidebar-text hidden md:block">Leader Board</span>
+  <!-- Apps -->
+  <a href="/apps/" class="sidebar-link flex items-center gap-4 text-lg text-gray-800 dark:text-gray-200 hover:text-orange-400 transition" title="Install Traffic Torch as an App">
+    <span class="text-2xl w-10 flex items-center justify-center flex-shrink-0">📱</span>
+    <span class="sidebar-text hidden md:block">PWA Apps</span>
   </a>
 
   <!-- Upgrade -->

@@ -110,6 +110,53 @@
             <li><strong>Votes record intent; humans ship code.</strong> A passed code proposal doesn't auto-merge — it creates a linked PR that a human reviews. The merge SHA is recorded on the audit chain.</li>
           </ul>
         </section>
+            
+        <!-- Interpret simulation results -->
+        <section id="sim-interpret" class="max-w-2xl mx-auto my-8 px-4" aria-label="Interpret simulation results">
+          <div class="text-center">
+            <button type="button" class="tt-ai-interp-btn" id="sim-interpret-btn">
+              <span>🤖</span><span>Interpret these results</span>
+            </button>
+          </div>
+          <script>
+            window.getSimSnapshot = function () {
+              var s = window.__ttSimState;
+              if (!s || !s.outcome) return null;
+              return {
+                scenario: '',
+                proposal: '',
+                entities: [],
+                steps: [],
+                result: s.outcome.passed ? 'passed' : (s.outcome.blocked ? 'blocked' : 'rejected'),
+                notes: 'Votes — yes: ' + (s.yes || 0) + ', no: ' + (s.no || 0) + ', abstain: ' + (s.abstain || 0) + '. ' +
+                       'Outcome reason: ' + (s.outcome.reason || 'n/a') + '. ' +
+                       (s.execution ? 'Execution: ' + (s.execution.type || s.execution.note || '') : '')
+              };
+            };
+            document.addEventListener('DOMContentLoaded', function () {
+              var btn = document.getElementById('sim-interpret-btn');
+              if (!btn) return;
+              btn.addEventListener('click', function () {
+                var snap = window.getSimSnapshot();
+                if (!snap) {
+                  alert('Run a scenario to completion first, then try Interpret.');
+                  return;
+                }
+                window.ttInterpretSim(snap, btn);
+              });
+            });
+          </script>
+        </section>
+
+        <!-- Ask AI — governance Q&A -->
+        <section class="max-w-2xl mx-auto my-12 px-4" aria-label="Ask AI about governance">
+          <div id="gov-ask-simulator"></div>
+        </section>
+        <script type="module">
+          import('/shared/ai-assistant.js').then(function () {
+            if (window.mountAskAI) window.mountAskAI('#gov-ask-simulator');
+          });
+        </script>
 
         <div class="mt-8 flex gap-3 flex-wrap">
           <a href="/community/round-table/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-xl hover:opacity-90 transition">← Back to the Round Table</a>
@@ -124,9 +171,55 @@
             <p class="text-sm text-gray-700 dark:text-gray-300">The interactive simulator needs JavaScript. You can still read the <a href="/community/round-table/" class="text-orange-500 hover:underline">Round Table page</a> and the <a href="/community/round-table/founding/" class="text-orange-500 hover:underline">founding document</a> without it.</p>
           </div>
         </noscript>
+              <!-- Productivity Bond Model iframe -->
+        <section id="productivity-bond" class="max-w-5xl mx-auto my-16 px-4" aria-labelledby="pbm-heading">
+          <h2 id="pbm-heading" class="text-2xl md:text-3xl font-extrabold text-center mb-2 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-500">
+            📘 The Productivity Bond Model
+          </h2>
+          <p class="text-center text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
+            186 pages of analysis, simulation results, and implementation roadmaps. Live interactive model, MIT-licensed.
+          </p>
+          <div class="rounded-2xl overflow-hidden border border-gray-200 dark:border-white/10 shadow-2xl shadow-indigo-500/10">
+            <iframe
+              src="https://traffictorch.github.io/productivity-bond-model/"
+              title="Productivity Bond Model — interactive demo"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              class="w-full block bg-white"
+              style="height:800px;border:0;">
+            </iframe>
+          </div>
+          <p class="text-center text-sm mt-4 text-gray-500 dark:text-gray-400">
+            <a href="https://traffictorch.github.io/productivity-bond-model/" target="_blank" rel="noopener" class="text-orange-500 hover:underline font-semibold">
+              Open full model in new tab →
+            </a>
+            <span class="mx-2 opacity-50">·</span>
+            <a href="https://github.com/traffictorch/productivity-bond-model" target="_blank" rel="noopener" class="text-orange-500 hover:underline font-semibold">
+              View source on GitHub →
+            </a>
+          </p>
+        </section>
+        
+        <!-- Share -->
+        <section class="share-block" aria-label="Share options">
+          <div class="share-row">
+            <button type="button" class="share-btn" data-native-share hidden>📤 Share?</button>
+            <button type="button" class="share-btn" data-copy>Copy link 🔗</button>
+          </div>
+          <p class="share-status" aria-live="polite"></p>
+        </section>
+
+        <!-- Page comments -->
+        <section class="max-w-2xl mx-auto my-8 px-2">
+          <div id="page-comments"></div>
+        </section>
+        <script type="module">
+          import { mountPageComments } from '/shared/social/page-comments.js';
+          mountPageComments('#page-comments', '/community/round-table/simulator/');
+        </script>
       </main>
 
-      <div id="footer-placeholder"></div>
+<div id="footer-placeholder"></div>
     </div>
   </div>
 </div>

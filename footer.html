@@ -1,188 +1,202 @@
-<!-- Footer -->
-<footer class="relative mt-16 border-t border-white/10 dark:border-white/5 bg-gradient-to-b from-transparent via-orange-500/5 to-indigo-500/10 dark:from-black/40 dark:via-purple-950/20 dark:to-black/60 backdrop-blur-xl overflow-hidden" aria-label="Site footer">
-  <div class="absolute inset-0 pointer-events-none opacity-40 dark:opacity-30" aria-hidden="true">
-    <div class="absolute -top-40 left-1/4 w-96 h-96 rounded-full bg-orange-500/20 blur-3xl"></div>
-    <div class="absolute -top-40 right-1/4 w-96 h-96 rounded-full bg-indigo-500/20 blur-3xl"></div>
-  </div>
+<style>
+.tt-featured-grid{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+@media (min-width:768px){.tt-featured-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media (min-width:1024px){.tt-featured-grid{grid-template-columns:repeat(6,minmax(0,1fr));}}
+.tt-featured-card{display:flex !important;flex-direction:column !important;align-items:flex-start !important;padding:16px !important;min-height:96px;background:#fff;border:1px solid #e5e7eb;border-radius:16px;text-decoration:none !important;color:#111827;transition:border-color .15s,box-shadow .15s;}
+.tt-featured-card:hover{border-color:#fb923c;box-shadow:0 6px 20px -8px rgba(251,146,60,.4);}
+.dark .tt-featured-card{background:#111827;border-color:#1f2937;color:#f3f4f6;}
+.dark .tt-featured-card > div:nth-child(3){color:#9ca3af !important;}
 
-  <div class="relative container mx-auto px-6 max-w-7xl py-14">
+@media (display-mode: standalone){.crawler-only{display:none !important;}}
+</style>
+<div class="pt-16 pb-8 bg-gradient-to-b from-transparent via-orange-50/30 to-pink-50/50 dark:via-orange-950/10 dark:to-pink-950/20 border-t border-gray-200/60 dark:border-gray-800/60">
 
-    <!-- ROUND TABLE BANNER -->
-    <div class="mb-12">
-      <a href="/community/round-table/" class="group block relative overflow-hidden rounded-3xl border border-orange-500/30 dark:border-orange-400/20 bg-gradient-to-r from-orange-500/10 via-pink-500/10 to-indigo-500/10 hover:from-orange-500/20 hover:via-pink-500/20 hover:to-indigo-500/20 p-6 md:p-10 transition-all duration-300 hover:border-orange-500/60 hover:shadow-2xl hover:shadow-orange-500/10" aria-label="Enter the Round Table — decentralized community governance">
-        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" aria-hidden="true">
-          <div class="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-orange-500/30 blur-3xl"></div>
-          <div class="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-indigo-500/30 blur-3xl"></div>
-        </div>
-        <div class="relative flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8">
-          <div class="flex-shrink-0 text-5xl md:text-7xl leading-none select-none" aria-hidden="true">🗳️</div>
-          <div class="flex-1 min-w-0">
-            <div class="inline-flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-wider text-orange-500 dark:text-orange-400">
-              <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>Community Governance
-            </div>
-            <h2 class="text-2xl md:text-3xl font-black text-gray-900 dark:text-white mb-2 leading-tight">The Round Table</h2>
-            <p class="text-gray-700 dark:text-gray-300 text-base md:text-lg max-w-2xl leading-relaxed">Every entity equal. No admins. Every decision on the record. Shape the future of Traffic Torch — proposals, discussion, consensus voting.</p>
-            <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
-              <span class="inline-flex items-center gap-1.5"><span class="font-bold text-orange-500 dark:text-orange-400" data-rt-stat="proposals">7</span> proposals</span>
-              <span aria-hidden="true" class="text-gray-400">·</span>
-              <span class="inline-flex items-center gap-1.5"><span class="font-bold text-orange-500 dark:text-orange-400" data-rt-stat="members">28</span> members</span>
-              <span aria-hidden="true" class="text-gray-400">·</span>
-              <span class="inline-flex items-center gap-1.5"><span class="font-bold text-orange-500 dark:text-orange-400" data-rt-stat="decisions">0</span> decisions made</span>
-            </div>
-          </div>
-          <div class="flex-shrink-0 w-full md:w-auto">
-            <span class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold shadow-lg shadow-orange-500/20 group-hover:shadow-orange-500/40 group-hover:scale-[1.02] transition-all duration-200 min-h-[48px] w-full md:w-auto">
-              Enter the Round Table <span class="group-hover:translate-x-1 transition-transform" aria-hidden="true">→</span>
-            </span>
-          </div>
-        </div>
-      </a>
-    </div>
-
-    <!-- BRAND BAR -->
-    <div class="mb-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-white/10 dark:border-white/5">
-      <a href="/" class="inline-flex items-center gap-3 group" aria-label="Traffic Torch homepage">
-        <img src="/logo-160w.webp" srcset="/logo-160w.webp 160w, /logo-320w.webp 320w" sizes="60px" alt="" class="w-14 h-14 rounded-2xl transition-transform group-hover:scale-110" width="56" height="56" loading="lazy" decoding="async">
+  <section class="max-w-6xl mx-auto px-4 mb-10" aria-label="Brand">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <img src="/logo-160w.webp" alt="Traffic Torch" class="w-14 rounded-2xl shadow-lg" width="56" height="56" loading="lazy">
         <div>
-          <div class="text-2xl font-black bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">Traffic Torch</div>
-          <p class="text-xs text-gray-500 dark:text-gray-400">AI • SEO • UX 360° toolkit</p>
+          <div class="text-2xl font-black bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent">Traffic Torch</div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">Privacy-first audits · 18+ Tools · Freemium</div>
         </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/30 text-green-600 dark:text-green-400 text-xs font-bold">
+          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>All tools live
+        </span>
+        <button type="button" data-tt-search class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-sm font-semibold hover:border-orange-400 hover:shadow-md transition" aria-label="Open Beacon search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <circle cx="12" cy="10" r="3"/>
+            <path d="M12 2v2M12 16v2M4 10h2M18 10h2M5.6 3.6l1.4 1.4M17 15l1.4 1.4M5.6 16.4L7 15M17 5l1.4-1.4"/>
+            <circle cx="12" cy="10" r="7" opacity="0.35"/>
+          </svg>
+          <span>Beacon</span>
+          <kbd class="hidden sm:inline-flex items-center justify-center min-w-[32px] h-[20px] px-1 text-[10px] font-bold bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded">⌘K</kbd>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-4 mb-12" aria-label="Featured tools">
+    <h3 style="font-size:11px;font-weight:900;letter-spacing:0.08em;text-transform:uppercase;color:#6b7280;margin:0 0 14px;" class="dark:text-gray-400">Most used</h3>
+    <div class="tt-featured-grid">
+      <a href="/" class="tt-featured-card">
+        <div style="font-size:28px;line-height:1;margin-bottom:10px;">🎯</div>
+        <div style="font-weight:700;font-size:14px;line-height:1.2;color:inherit;">NUSA</div>
+        <div style="font-size:12px;line-height:1.3;color:#6b7280;margin-top:3px;">Full audit</div>
       </a>
-      <div class="flex flex-wrap items-center gap-3">
-        <a href="https://github.com/traffictorch/traffic-torch" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-400 transition" title="Source code on GitHub">GitHub</a>
-        <span class="text-gray-600 dark:text-gray-700" aria-hidden="true">·</span>
-        <a href="https://www.reddit.com/r/AEO_Community/" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-400 transition" title="Reddit">Reddit</a>
-        <span class="text-gray-600 dark:text-gray-700" aria-hidden="true">·</span>
-        <a href="https://www.facebook.com/groups/aeotools/" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-400 transition" title="Facebook">Facebook</a>
-        <span class="text-gray-600 dark:text-gray-700" aria-hidden="true">·</span>
-        <a href="https://g.dev/traffictorch" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-400 transition" title="Google Developer profile">Google Dev</a>
-        <span class="text-gray-600 dark:text-gray-700" aria-hidden="true">·</span>
-        <a href="https://orcid.org/0009-0006-4084-0241" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-400 transition" title="ORCID research profile">ORCID</a>
+      <a href="/ofux-tool/" class="tt-featured-card">
+        <div style="font-size:28px;line-height:1;margin-bottom:10px;">📊</div>
+        <div style="font-weight:700;font-size:14px;line-height:1.2;color:inherit;">OFUX</div>
+        <div style="font-size:12px;line-height:1.3;color:#6b7280;margin-top:3px;">UX audit</div>
+      </a>
+      <a href="/ai-search-optimization-tool/" class="tt-featured-card">
+        <div style="font-size:28px;line-height:1;margin-bottom:10px;">🔍</div>
+        <div style="font-weight:700;font-size:14px;line-height:1.2;color:inherit;">AI Search</div>
+        <div style="font-size:12px;line-height:1.3;color:#6b7280;margin-top:3px;">AEO</div>
+      </a>
+      <a href="/schema-generator/" class="tt-featured-card">
+        <div style="font-size:28px;line-height:1;margin-bottom:10px;">⚙️</div>
+        <div style="font-weight:700;font-size:14px;line-height:1.2;color:inherit;">Schema</div>
+        <div style="font-size:12px;line-height:1.3;color:#6b7280;margin-top:3px;">JSON-LD</div>
+      </a>
+      <a href="/local-seo-tool/" class="tt-featured-card">
+        <div style="font-size:28px;line-height:1;margin-bottom:10px;">📍</div>
+        <div style="font-weight:700;font-size:14px;line-height:1.2;color:inherit;">Local SEO</div>
+        <div style="font-size:12px;line-height:1.3;color:#6b7280;margin-top:3px;">NAP + map</div>
+      </a>
+      <a href="/ai-ux-seo-help-guides/" class="tt-featured-card">
+        <div style="font-size:28px;line-height:1;margin-bottom:10px;">📋</div>
+        <div style="font-weight:700;font-size:14px;line-height:1.2;color:inherit;">Guides</div>
+        <div style="font-size:12px;line-height:1.3;color:#6b7280;margin-top:3px;">Learn</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-4 mb-12" aria-label="Site links">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <details class="rounded-2xl bg-white/60 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 overflow-hidden group">
+        <summary class="cursor-pointer px-5 py-3 font-bold text-sm hover:bg-white dark:hover:bg-gray-800 transition flex items-center justify-between list-none">
+          <span>⚡ Core Tools</span><span class="text-gray-400 transition-transform group-open:rotate-180">▼</span>
+        </summary>
+        <div class="px-5 pb-4 grid grid-cols-2 gap-y-1 gap-x-3 text-sm">
+          <a href="/" class="py-1 hover:text-orange-500 transition">NUSA</a>
+          <a href="/ofux-tool/" class="py-1 hover:text-orange-500 transition">OFUX</a>
+          <a href="/lighthouse-plus-tool/" class="py-1 hover:text-orange-500 transition">Lighthouse Plus</a>
+          <a href="/aeo-performance-tool/" class="py-1 hover:text-orange-500 transition">AEO Performance</a>
+          <a href="/seo-intent-tool/" class="py-1 hover:text-orange-500 transition">SEO Intent</a>
+          <a href="/seo-ux-tool/" class="py-1 hover:text-orange-500 transition">SEO + UX</a>
+          <a href="/local-seo-tool/" class="py-1 hover:text-orange-500 transition">Local SEO</a>
+          <a href="/product-seo-tool/" class="py-1 hover:text-orange-500 transition">Product SEO</a>
+          <a href="/seo-entity-extractor-tool/" class="py-1 hover:text-orange-500 transition">Entity Extractor</a>
+          <a href="/topical-authority-audit-tool/" class="py-1 hover:text-orange-500 transition">Topical Authority</a>
+          <a href="/schema-generator/" class="py-1 hover:text-orange-500 transition">Schema Generator</a>
+          <a href="/aeo-log-analyzer/" class="py-1 hover:text-orange-500 transition">AEO Log Analyser</a>
+          <a href="/ai-seo-ux-tools/" class="py-1 hover:text-orange-500 transition font-semibold text-orange-500 dark:text-orange-400">All Tools →</a>
+        </div>
+      </details>
+      <details class="rounded-2xl bg-white/60 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 overflow-hidden group">
+        <summary class="cursor-pointer px-5 py-3 font-bold text-sm hover:bg-white dark:hover:bg-gray-800 transition flex items-center justify-between list-none">
+          <span>🤖 AI &amp; Search</span><span class="text-gray-400 transition-transform group-open:rotate-180">▼</span>
+        </summary>
+        <div class="px-5 pb-4 grid grid-cols-2 gap-y-1 gap-x-3 text-sm">
+          <a href="/ai-search-optimization-tool/" class="py-1 hover:text-orange-500 transition">AI Search</a>
+          <a href="/ai-voice-search-tool/" class="py-1 hover:text-orange-500 transition">Voice Search</a>
+          <a href="/ai-audit-tool/" class="py-1 hover:text-orange-500 transition">AI Content Audit</a>
+          <a href="/quit-risk-tool/" class="py-1 hover:text-orange-500 transition">Quit Risk</a>
+          <a href="/uxid-tool/" class="py-1 hover:text-orange-500 transition">🥇 UXID</a>
+          <a href="/keyword-research-tool/" class="py-1 hover:text-orange-500 transition">Keyword Research</a>
+          <a href="/keyword-tool/" class="py-1 hover:text-orange-500 transition">Keyword Placement</a>
+          <a href="/keyword-vs-tool/" class="py-1 hover:text-orange-500 transition">Keyword VS</a>
+          <a href="/ai-seo-ux-tools/" class="py-1 hover:text-orange-500 transition font-semibold">All 17+ tools →</a>
+        </div>
+      </details>
+      <details class="rounded-2xl bg-white/60 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 overflow-hidden group">
+        <summary class="cursor-pointer px-5 py-3 font-bold text-sm hover:bg-white dark:hover:bg-gray-800 transition flex items-center justify-between list-none">
+          <span>👥 Community</span><span class="text-gray-400 transition-transform group-open:rotate-180">▼</span>
+        </summary>
+        <div class="px-5 pb-4 grid grid-cols-2 gap-y-1 gap-x-3 text-sm">
+          <a href="/community/" class="py-1 hover:text-orange-500 transition">Community Feed</a>
+          <a href="/community/round-table/" class="py-1 hover:text-orange-500 transition">Round Table</a>
+          <a href="/community/round-table/simulator/" class="py-1 hover:text-orange-500 transition">Simulator</a>
+          <a href="/leader-board/" class="py-1 hover:text-orange-500 transition">Leaderboard</a>
+          <a href="/contributors/" class="py-1 hover:text-orange-500 transition">Contributors</a>
+          <a href="/discover/" class="py-1 hover:text-orange-500 transition">Discover People</a>
+          <a href="/community/#activity" class="py-1 hover:text-orange-500 transition">Activity Feed</a>
+          <a href="/analytics/" class="py-1 hover:text-orange-500 transition">Public Analytics</a>
+        </div>
+      </details>
+      <details class="rounded-2xl bg-white/60 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 overflow-hidden group">
+        <summary class="cursor-pointer px-5 py-3 font-bold text-sm hover:bg-white dark:hover:bg-gray-800 transition flex items-center justify-between list-none">
+          <span>📚 Learn &amp; Integrate</span><span class="text-gray-400 transition-transform group-open:rotate-180">▼</span>
+        </summary>
+        <div class="px-5 pb-4 grid grid-cols-2 gap-y-1 gap-x-3 text-sm">
+          <a href="/ai-ux-seo-help-guides/" class="py-1 hover:text-orange-500 transition">Help Guides</a>
+          <a href="/blog/" class="py-1 hover:text-orange-500 transition">Blog</a>
+          <a href="/research/traffic-torch-whitepaper/" class="py-1 hover:text-orange-500 transition">Whitepaper</a>
+          <a href="/integrations/" class="py-1 hover:text-orange-500 transition">Integrations</a>
+          <a href="/integrations/browser-extensions/" class="py-1 hover:text-orange-500 transition">Browser Extensions</a>
+          <a href="/integrations/developer-tools/" class="py-1 hover:text-orange-500 transition">Developer Tools</a>
+          <a href="/integrations/plugins/" class="py-1 hover:text-orange-500 transition">CMS Plugins</a>
+          <a href="/rss.xml" class="crawler-only py-1 hover:text-orange-500 transition">RSS Feed</a>
+        </div>
+      </details>
+      <details class="rounded-2xl bg-white/60 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 overflow-hidden group">
+        <summary class="cursor-pointer px-5 py-3 font-bold text-sm hover:bg-white dark:hover:bg-gray-800 transition flex items-center justify-between list-none">
+          <span>💳 Account</span><span class="text-gray-400 transition-transform group-open:rotate-180">▼</span>
+        </summary>
+        <div class="px-5 pb-4 grid grid-cols-2 gap-y-1 gap-x-3 text-sm">
+          <a href="/dashboard/" class="py-1 hover:text-orange-500 transition">Dashboard</a>
+          <a href="/login/" class="py-1 hover:text-orange-500 transition">Sign In</a>
+          <a href="/login/?tab=register" class="py-1 hover:text-orange-500 transition">Create Account</a>
+          <a href="/pro/" class="py-1 hover:text-orange-500 transition">Pro Plans</a>
+          <a href="/upgrade/" class="py-1 hover:text-orange-500 transition">Upgrade</a>
+          <a href="/dashboard/#beams" class="py-1 hover:text-orange-500 transition">Messages</a>
+          <a href="/dashboard/#notifications-section" class="py-1 hover:text-orange-500 transition">Notifications</a>
+        </div>
+      </details>
+      <details class="rounded-2xl bg-white/60 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800 overflow-hidden group">
+        <summary class="cursor-pointer px-5 py-3 font-bold text-sm hover:bg-white dark:hover:bg-gray-800 transition flex items-center justify-between list-none">
+          <span>🏢 Company &amp; Legal</span><span class="text-gray-400 transition-transform group-open:rotate-180">▼</span>
+        </summary>
+        <div class="px-5 pb-4 grid grid-cols-2 gap-y-1 gap-x-3 text-sm">
+          <a href="/about/" class="py-1 hover:text-orange-500 transition">About</a>
+          <a href="/contact/" class="py-1 hover:text-orange-500 transition">Contact</a>
+          <a href="/privacy/" class="py-1 hover:text-orange-500 transition">Privacy</a>
+          <a href="/terms/" class="py-1 hover:text-orange-500 transition">Terms</a>
+          <a href="/sitemap.xml" class="crawler-only py-1 hover:text-orange-500 transition">Sitemap</a>
+          <a href="/llms.txt" class="crawler-only py-1 hover:text-orange-500 transition">llms.txt</a>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-4 border-t border-gray-200/60 dark:border-gray-800/60 pt-6">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600 dark:text-gray-400">
+      <div class="flex items-center gap-4 flex-wrap justify-center sm:justify-start">
+        <span>© <span id="footer-year">2026</span> Traffic Torch</span>
+        <span class="hidden sm:inline opacity-40">·</span>
+        <a href="/privacy/" class="hover:text-orange-500 transition">Privacy</a>
+        <a href="/terms/" class="hover:text-orange-500 transition">Terms</a>
+        <a href="/contact/" class="hover:text-orange-500 transition">Contact</a>
+        <a href="/ai-seo-ux-tools/" class="hover:text-orange-500 transition font-semibold text-orange-500 dark:text-orange-400">All Tools</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/traffictorch/" target="_blank" rel="noopener" aria-label="GitHub" class="w-9 h-9 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:border-orange-400 hover:text-orange-500 transition text-gray-600 dark:text-gray-400">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.2.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.1 0 4.6-2.8 5.6-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
+        </a>
+        <a href="https://www.reddit.com/r/AEO_Community/" target="_blank" rel="noopener" aria-label="Reddit" class="w-9 h-9 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:border-orange-400 hover:text-orange-500 transition text-gray-600 dark:text-gray-400">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm5.01 4.74c.7 0 1.27.57 1.27 1.27 0 .7-.57 1.27-1.27 1.27-.7 0-1.27-.57-1.27-1.27 0-.7.57-1.27 1.27-1.27zM12 19.3c-2.42 0-4.7-.5-5.97-1.06a.98.98 0 1 1 .82-1.79c1.05.47 3.09.9 5.15.9 2.06 0 4.1-.43 5.15-.9a.98.98 0 1 1 .82 1.79c-1.27.56-3.55 1.06-5.97 1.06zm-2.17-7.73c0-.81.66-1.46 1.46-1.46.81 0 1.46.66 1.46 1.46 0 .81-.66 1.46-1.46 1.46-.81 0-1.46-.66-1.46-1.46zm6.88 0c0 .81-.66 1.46-1.46 1.46-.81 0-1.46-.66-1.46-1.46 0-.81.66-1.46 1.46-1.46.81 0 1.46.66 1.46 1.46zM20.3 11.72c.4.16.64.42.64.73 0 .77-.97 1.55-2.73 2.2.03.22.05.44.05.66 0 2.9-3.58 5.25-8 5.25s-8-2.35-8-5.25c0-.22.02-.44.05-.66-1.75-.66-2.72-1.43-2.72-2.2 0-.31.24-.57.64-.73-.01-.15-.02-.3-.02-.46 0-1.55.97-2.87 2.42-3.45-.34-1.24-1.1-3.24-2.62-4.7 0 0-.8-.77-.1-1.4.72-.65 2.06 0 2.06 0 1.72 1.03 2.8 2.28 3.5 3.42 1.08-.44 2.28-.68 3.55-.68 1.26 0 2.47.24 3.55.68.7-1.14 1.78-2.4 3.5-3.42 0 0 1.34-.65 2.06 0 .7.63-.1 1.4-.1 1.4-1.52 1.46-2.28 3.46-2.62 4.7 1.45.58 2.42 1.9 2.42 3.45 0 .16-.01.31-.02.46z"/></svg>
+        </a>
+        <a href="https://www.facebook.com/groups/aeotools/" target="_blank" rel="noopener" aria-label="Facebook" class="w-9 h-9 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:border-orange-400 hover:text-orange-500 transition text-gray-600 dark:text-gray-400">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <button type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top" class="w-9 h-9 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 flex items-center justify-center hover:border-orange-400 hover:text-orange-500 transition text-gray-600 dark:text-gray-400">↑</button>
       </div>
     </div>
+    <p class="text-center text-xs text-gray-500 dark:text-gray-500 mt-4">
+      Built with ⚡ on Cloudflare · Privacy-first · No trackers · Made in Australia
+    </p>
+  </section>
 
-    <!-- LINK GRID -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
-
-      <!-- Governance -->
-      <nav aria-label="Governance">
-        <p class="text-sm font-bold uppercase tracking-wider text-orange-500 dark:text-orange-400 mb-4">🗳️ Governance</p>
-        <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-          <li><a href="/community/round-table/" class="inline-flex items-center gap-1.5 font-semibold hover:text-orange-400 transition" title="Community governance — proposals, votes, consensus">🗳️ Round Table <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-orange-500/20 text-orange-500 dark:text-orange-400">NEW</span></a></li>
-          <li><a href="/community/" class="hover:text-orange-400 transition" title="Community feed and forum">Community Feed</a></li>
-          <li><a href="/contributors/" class="hover:text-orange-400 transition" title="People who built and improved the tools">Contributors</a></li>
-          <li><a href="/leader-board/" class="hover:text-orange-400 transition" title="Top scorers across all tools">Leaderboard</a></li>
-          <li><a href="/discover/" class="hover:text-orange-400 transition" title="Browse the community">Discover</a></li>
-          <li><a href="/profile.html" class="hover:text-orange-400 transition" title="Your profile">Your Profile</a></li>
-        </ul>
-      </nav>
-
-      <!-- SEO & UX Tools -->
-      <nav aria-label="SEO and UX tools">
-        <p class="text-sm font-bold uppercase tracking-wider text-orange-500 dark:text-orange-400 mb-4">🔍 SEO &amp; UX Tools</p>
-        <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-          <li><a href="/" class="hover:text-orange-400 transition" title="NUSA dashboard — full 360° audit">NUSA Dashboard</a></li>
-          <li><a href="/lighthouse-plus-tool/" class="hover:text-orange-400 transition" title="Lighthouse + Core Web Vitals">Lighthouse Plus</a></li>
-          <li><a href="/seo-ux-tool/" class="hover:text-orange-400 transition" title="Homepage SEO + UX audit">SEO + UX Audit</a></li>
-          <li><a href="/topical-authority-audit-tool/" class="hover:text-orange-400 transition" title="Topical authority scoring">Topical Authority</a></li>
-          <li><a href="/seo-entity-extractor-tool/" class="hover:text-orange-400 transition" title="Semantic entity extraction">Entity Extractor</a></li>
-          <li><a href="/local-seo-tool/" class="hover:text-orange-400 transition" title="NAP, schema, local signals">Local SEO</a></li>
-          <li><a href="/product-seo-tool/" class="hover:text-orange-400 transition" title="Product page signals">Product SEO</a></li>
-          <li><a href="/seo-intent-tool/" class="hover:text-orange-400 transition" title="Search intent matching">SEO Intent</a></li>
-          <li><a href="/keyword-tool/" class="hover:text-orange-400 transition" title="On-page keyword placement">Keyword Tool</a></li>
-          <li><a href="/keyword-research-tool/" class="hover:text-orange-400 transition" title="Keyword discovery">Keyword Research</a></li>
-          <li><a href="/keyword-vs-tool/" class="hover:text-orange-400 transition" title="Competitive keyword gap">Keyword vs</a></li>
-          <li><a href="/schema-generator/" class="hover:text-orange-400 transition" title="Generate 18 schema types">Schema Generator</a></li>
-          <li class="pt-1"><a href="/ai-seo-ux-tools/" class="text-xs font-semibold text-orange-500 dark:text-orange-400 hover:underline">All 19 tools →</a></li>
-        </ul>
-      </nav>
-
-      <!-- AEO & AI Tools -->
-      <nav aria-label="AEO and AI tools">
-        <p class="text-sm font-bold uppercase tracking-wider text-orange-500 dark:text-orange-400 mb-4">🤖 AEO &amp; AI Tools</p>
-        <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-          <li><a href="/aeo-performance-tool/" class="hover:text-orange-400 transition" title="Answer engine optimization">AEO Performance</a></li>
-          <li><a href="/aeo-log-analyzer/" class="hover:text-orange-400 transition" title="Server log analysis for AI bots">AEO Log Analyzer</a></li>
-          <li><a href="/ai-search-optimization-tool/" class="hover:text-orange-400 transition" title="Perplexity, Grok, Gemini, ChatGPT Search">AI Search Optimization</a></li>
-          <li><a href="/ai-voice-search-tool/" class="hover:text-orange-400 transition" title="Voice SEO audit">AI Voice Search</a></li>
-          <li><a href="/ai-audit-tool/" class="hover:text-orange-400 transition" title="AI content detection">AI Content Audit</a></li>
-          <li><a href="/quit-risk-tool/" class="hover:text-orange-400 transition" title="UX friction and bounce prediction">Quit Risk</a></li>
-          <li><a href="/ofux-tool/" class="hover:text-orange-400 transition" title="OFUX dashboard">Ofux Dashboard</a></li>
-        </ul>
-      </nav>
-
-      <!-- Learn & Build -->
-      <nav aria-label="Learn and build">
-        <p class="text-sm font-bold uppercase tracking-wider text-orange-500 dark:text-orange-400 mb-4">📚 Learn &amp; Build</p>
-        <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-          <li><a href="/ai-ux-seo-help-guides/" class="hover:text-orange-400 transition" title="Practical guides">Help Guides</a></li>
-          <li><a href="/blog/" class="hover:text-orange-400 transition" title="Blog and updates">Blog</a></li>
-          <li><a href="/blog/" class="hover:text-orange-400 transition" title="News and announcements">News</a></li>
-          <li><a href="/research/traffic-torch-whitepaper/" class="hover:text-orange-400 transition" title="Whitepaper and research">Whitepaper</a></li>
-          <li><a href="/apps/" class="hover:text-orange-400 transition" title="Integrations directory">Apps &amp; Integrations</a></li>
-          <li><a href="/integrations/" class="hover:text-orange-400 transition" title="All integration options">Integrations</a></li>
-          <li><a href="/integrations/developer/api/" class="hover:text-orange-400 transition" title="API documentation">Developer API</a></li>
-          <li><a href="/integrations/browser-extensions/" class="hover:text-orange-400 transition" title="Chrome, Firefox, Edge extensions">Browser Extensions</a></li>
-        </ul>
-      </nav>
-
-      <!-- Company -->
-      <nav aria-label="Company">
-        <p class="text-sm font-bold uppercase tracking-wider text-orange-500 dark:text-orange-400 mb-4">🏢 Company</p>
-        <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-          <li><a href="/about/" class="hover:text-orange-400 transition" title="About Traffic Torch">About</a></li>
-          <li><a href="/contact/" class="hover:text-orange-400 transition" title="Get in touch">Contact</a></li>
-          <li><a href="/pro/" class="hover:text-orange-400 transition" title="Pro plan and dashboard">Pro Portal</a></li>
-          <li><a href="/integrations/plugins/" class="hover:text-orange-400 transition" title="WordPress, Figma, Framer plugins">Plugins</a></li>
-          <li><a href="/privacy/" class="hover:text-orange-400 transition" title="Privacy policy">Privacy</a></li>
-          <li><a href="/terms/" class="hover:text-orange-400 transition" title="Terms of service">Terms</a></li>
-        </ul>
-      </nav>
-
-    </div>
-
-    <!-- BOTTOM -->
-    <div class="mt-12 pt-8 border-t border-white/10 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-600 dark:text-gray-400">
-      <p class="text-center md:text-left">
-        © <span id="footer-year">2026</span> Traffic Torch · Built by the community, for the community. 🔥
-      </p>
-      <div class="flex items-center gap-3 flex-wrap justify-center">
-        <a href="https://doi.org/10.5281/zenodo.20149616" target="_blank" rel="noopener noreferrer" class="hover:text-orange-400 transition">DOI 10.5281/zenodo.20149616</a>
-        <span aria-hidden="true" class="text-gray-700">·</span>
-        <a href="https://github.com/traffictorch/traffic-torch" target="_blank" rel="noopener noreferrer" class="hover:text-orange-400 transition">Source (MIT)</a>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-  (function(){
-    if (window.__rtFooterHydrated) return;
-    window.__rtFooterHydrated = true;
-    var tries = 0;
-    var hydrate = function() {
-      var el = document.querySelector('[data-rt-stat="proposals"]');
-      if (!el && tries++ < 30) return setTimeout(hydrate, 150);
-      if (!el || el.dataset.hydrated) return;
-      el.dataset.hydrated = '1';
-      try {
-        fetch('https://traffic-torch-auth.traffictorch.workers.dev/api/rt/proposals')
-          .then(function(r){ return r.json(); })
-          .then(function(d){
-            var list = d.proposals || [];
-            var decisions = 0;
-            list.forEach(function(p){ if (p.phase === 'passed' || p.phase === 'rejected') decisions++; });
-            document.querySelectorAll('[data-rt-stat="proposals"]').forEach(function(x){ x.textContent = list.length; });
-            document.querySelectorAll('[data-rt-stat="decisions"]').forEach(function(x){ x.textContent = decisions; });
-          })
-          .catch(function(){});
-      } catch(e) {}
-    };
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', hydrate);
-    } else {
-      hydrate();
-    }
-  })();
-  </script>
-</footer>
+</div>

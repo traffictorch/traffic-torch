@@ -2,20 +2,23 @@
 <nav class="flex flex-col gap-6 py-20 px-4 text-xl">
 
   <!-- Round Table — primary governance link -->
-  <a href="/community/round-table/"
-     class="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-orange-500/20 dark:border-orange-400/20 bg-gradient-to-r from-orange-500/10 to-pink-500/10 text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition"
-     title="Round Table — decentralized community governance">
+<a href="/community/round-table/"
+   class="flex items-center justify-between px-3 py-2.5 rounded-lg border border-orange-500/20 dark:border-orange-400/20 bg-gradient-to-r from-orange-500/10 to-pink-500/10 text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition"
+   title="Round Table — decentralized community governance">
+  <div class="flex items-center gap-3 min-w-0">
     <span class="text-2xl">🗳️</span>
-    <span>Round Table</span>
-    <span class="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500 text-white">NEW</span>
-  </a>
+    <span class="whitespace-nowrap">Round Table</span>
+  </div>
+  <span class="flex-shrink-0 ml-2 rounded-full bg-orange-500 text-white font-bold"
+        style="font-size:10px; padding:2px 6px; line-height:1.2;">NEW</span>
+</a>
 
   <!-- ═══ Portal dropdown (expanded by default) ═══ -->
   <div>
     <button
       type="button" role="menuitem"
       class="pro-menu-link group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
-      aria-expanded="true" aria-controls="proportal-mobile-content" data-category="proportal-mobile">
+      aria-expanded="false" aria-controls="proportal-mobile-content" data-category="proportal-mobile">
       <span class="flex items-center gap-2">🚦 Portal</span>
       <span class="flex items-center gap-2">
         <span data-pro-badge-slot></span>
@@ -28,7 +31,7 @@
         </a>
       </span>
     </button>
-    <div id="proportal-mobile-content" class="pl-8 flex flex-col gap-3" data-category-content="proportal-mobile">
+     <div id="proportal-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="proportal-mobile">
       <a href="/dashboard/#profile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="profile">👤 Profile</a>
       <a href="javascript:void(0)" id="tt-beams-inbox-link-mobile" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem] flex items-center gap-2">
         📧 Beams
@@ -37,13 +40,27 @@
       <a href="/dashboard/#network" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="network">🕸️ Network</a>
     </div>
   </div>
+  
+    <!-- Community -->
+  <button type="button" role="menuitem"
+    class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
+    aria-expanded="false" aria-controls="community-mobile-content" data-category="community-mobile">
+    🤝 Community <span class="text-sm transition-transform">▼</span>
+  </button>
+  <div id="community-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="community-mobile">
+    <a href="/community/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📰 Feed</a>
+    <a href="/contributors/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🏅 Contributors</a>
+    <a href="/leader-board/" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🥇 Leader Board</a>
+    <a href="/community/roast-or-toast/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🔥 Roast or Toast</a>   
+    <a href="/analytics/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📊 Analytics</a>  
+ </div>
 
   <!-- ═══ Dashboard dropdown ═══ -->
   <div>
     <button type="button" role="menuitem"
       class="group flex items-center justify-between w-full text-gray-800 dark:text-gray-100 font-semibold hover:text-orange-400 transition focus:outline-none"
       aria-expanded="false" aria-controls="dashboard-mobile-content" data-category="dashboard-mobile">
-      📊 Dashboard <span class="text-sm transition-transform">▼</span>
+      🎛️ Dashboard <span class="text-sm transition-transform">▼</span>
     </button>
     <div id="dashboard-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="dashboard-mobile">
       <a href="/dashboard/#audits" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]" data-tab="audits">📋 Audits</a>
@@ -64,8 +81,9 @@
   </button>
   <div id="ux-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="ux-mobile">
     <a href="/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📈 NUSA Tool</a>
-    <a href="/ofux-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📊 OFUX Tool</a>
+    <a href="/uxid-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🥇 UXID</a>
     <a href="/quit-risk-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚠️ Quit Risk</a>
+    <a href="/ofux-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🕵🏻 OFUX Tool</a>
     <a href="/seo-ux-tool/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">⚖️ SEO + UX</a>
   </div>
 
@@ -118,9 +136,6 @@
     ➕ Extras <span class="text-sm transition-transform">▼</span>
   </button>
   <div id="extras-mobile-content" class="pl-8 flex flex-col gap-3 hidden" data-category-content="extras-mobile">
-    <a href="/community/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🤝 Community</a>
-    <a href="/contributors/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🏅 Contributors</a>
-    <a href="/analytics/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📊 Analytics</a>
     <a href="/integrations/browser-extensions/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🌐 Browser Extensions</a>
     <a href="/integrations/plugins/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🎨 Plugins</a>
     <a href="/integrations/developer-tools/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">🛠️ Developer Tools</a>
@@ -128,14 +143,11 @@
     <a href="/research/traffic-torch-whitepaper/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition block py-1.5 text-[1.125rem]">📝 WhitePaper</a>
   </div>
 
-  <!-- Apps -->
-  <a href="/apps/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">📱 PWA Apps</a>
-
   <!-- Help Guides -->
   <a href="/ai-ux-seo-help-guides/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">📋 Help Guides</a>
 
-  <!-- Leader Board -->
-  <a href="/leader-board/" class="flex items-center gap-3 text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🥇 Leader Board</a>
+  <!-- Apps -->
+  <a href="/apps/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">📱 PWA Apps</a>
 
   <!-- Upgrade -->
   <a href="/upgrade/" class="text-gray-800 dark:text-gray-100 hover:text-orange-400 transition font-semibold block py-1.5 text-[1.125rem]">🚀 Upgrade</a>

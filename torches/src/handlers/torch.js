@@ -87,6 +87,7 @@ function monthsSince(ts) {
 function fmtDate(ts) { try { return new Date(ts).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }); } catch { return '—'; } }
 
 function torchLabel(post) {
+  if (post.post_type === 'roast_toast' && post.title && post.title.trim()) return post.title;
   if (post.post_type === 'workflow' && post.title && post.title.trim()) return post.title;
   if (post.page_title && post.page_title.trim()) return post.page_title;
   if (post.domain_mode === 'hidden') return post.domain_label || 'Hidden site';
@@ -112,6 +113,10 @@ function plainExcerptServer(text, max = 600) {
 }
 
 function domainOf(post) {
+  if (post.post_type === 'roast_toast') {
+    if (post.url) { try { return new URL(post.url).hostname.replace(/^www\./, ''); } catch { return post.url; } }
+    return post.category === 'toast' ? 'Idea · Toast' : 'Idea · Roast';
+  }
   if (post.domain_mode === 'hidden') return post.domain_label || 'Hidden site';
   if (post.url) return new URL(post.url).hostname.replace(/^www\./, '');
   return 'Unknown';
@@ -219,6 +224,7 @@ function renderTorchBody(data) {
   const { post, author, more_by_author, related, author_network } = data;
   const isDiscussion = post.post_type === 'discussion';
   const isWorkflow = post.post_type === 'workflow';
+  const isRoastToast = post.post_type === 'roast_toast';
   let wfMeta = null;
   if (isWorkflow && post.workflow_meta) {
     try { wfMeta = typeof post.workflow_meta === 'string' ? JSON.parse(post.workflow_meta) : post.workflow_meta; } catch (e) {}
@@ -230,8 +236,8 @@ function renderTorchBody(data) {
   const sc = Number(post.score) || 0;
   const domain = domainOf(post);
   const titleText = htmlEscape(torchLabel(post));
-  const displayTitle = isDiscussion ? htmlEscape(post.title || 'Discussion') : titleText;
-  let bodyMd = (isDiscussion || isWorkflow) ? (post.body_md || post.note || '') : (post.note || '');
+  const displayTitle = (isDiscussion || isRoastToast) ? htmlEscape(post.title || (isRoastToast ? 'Roast / Toast' : 'Discussion')) : titleText;
+  let bodyMd = (isDiscussion || isWorkflow || isRoastToast) ? (post.body_md || post.note || '') : (post.note || '');
   // Workflow posts store a UI-copy preamble in body_md. Strip it here so the real markdown shows.
   if (isWorkflow && bodyMd) {
     bodyMd = bodyMd
@@ -262,7 +268,7 @@ function renderTorchBody(data) {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${more_by_author.map(p => renderMiniCard(p)).join('')}</div>
       </section>` : '';
 
-  const relatedHtml = !isDiscussion && (related || []).length
+  const relatedHtml = !isDiscussion && !isRoastToast && (related || []).length
     ? `<section class="mt-8">
         <h2 class="text-lg font-bold mb-3">Similar scores with ${htmlEscape(toolName)}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${related.map(p => renderMiniCard(p, { showAuthor: true })).join('')}</div>
@@ -316,15 +322,15 @@ function renderTorchBody(data) {
     <a href="/" class="hover:underline">Home</a> ›
     <a href="/community/" class="hover:underline">Community</a> ›
     <a href="/torcher/${htmlEscape(author.username)}/" class="hover:underline">@${htmlEscape(author.username)}</a> ›
-    <span>Torch #${post.id}</span>
+    <span>${isRoastToast ? (post.category === 'toast' ? '🍞 Toast' : '🔥 Roast') : 'Torch'} #${post.id}</span>
   </nav>
 
-  <article class="glass rounded-2xl overflow-hidden border-l-4" style="border-left-color:${isDiscussion ? '#f97316' : scoreColor(sc)}">
+  <article class="glass rounded-2xl overflow-hidden border-l-4" style="border-left-color:${isDiscussion ? '#f97316' : (isRoastToast ? (post.category === 'toast' ? '#eab308' : '#ef4444') : scoreColor(sc))}">
     <div class="p-6">
-      ${isDiscussion ? '<p class="text-xs font-bold uppercase tracking-wider text-purple-500 mb-4 text-center sm:text-left">💬 Discussion</p>' : (isWorkflow ? '<p class="text-xs font-bold uppercase tracking-wider text-purple-500 mb-4 text-center sm:text-left">⚙️ Workflow' + (wfMeta && wfMeta.version ? ' · ' + htmlEscape(wfMeta.version) : '') + '</p>' : '<p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 text-center sm:text-left">' + htmlEscape(toolName) + '</p>')}
+      ${isRoastToast ? '<p class="text-xs font-bold uppercase tracking-wider mb-4 text-center sm:text-left ' + (post.category === 'toast' ? 'text-yellow-500' : 'text-red-500') + '">' + (post.category === 'toast' ? '🍞 Toast' : '🔥 Roast') + '</p>' : (isDiscussion ? '<p class="text-xs font-bold uppercase tracking-wider text-purple-500 mb-4 text-center sm:text-left">💬 Discussion</p>' : (isWorkflow ? '<p class="text-xs font-bold uppercase tracking-wider text-purple-500 mb-4 text-center sm:text-left">⚙️ Workflow' + (wfMeta && wfMeta.version ? ' · ' + htmlEscape(wfMeta.version) : '') + '</p>' : '<p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4 text-center sm:text-left">' + htmlEscape(toolName) + '</p>'))}
 
       <div class="flex flex-col items-center sm:flex-row sm:items-start gap-6 mb-4">
-        ${(!isDiscussion && !isWorkflow) ? '<div class="flex-shrink-0 score-circle" style="--sc:' + sc + ';--color:' + scoreColor(sc) + ';"><div class="score-inner"><p class="score-num" style="color:' + scoreColor(sc) + ';">' + sc + '</p><p class="score-denom">/100</p></div></div>' : ''}
+        ${(!isDiscussion && !isWorkflow && !isRoastToast) ? '<div class="flex-shrink-0 score-circle" style="--sc:' + sc + ';--color:' + scoreColor(sc) + ';"><div class="score-inner"><p class="score-num" style="color:' + scoreColor(sc) + ';">' + sc + '</p><p class="score-denom">/100</p></div></div>' : ''}
         <div class="flex-1 min-w-0 text-center sm:text-left">
           <h1 class="text-2xl sm:text-3xl font-black leading-tight mb-2">${displayTitle}</h1>
           <p class="text-sm text-gray-500">${(isDiscussion || isWorkflow) ? '<time datetime="' + new Date(post.created_at).toISOString() + '">' + date + '</time>' : htmlEscape(domain) + ' · <time datetime="' + new Date(post.created_at).toISOString() + '">' + date + '</time>'}</p>
@@ -343,7 +349,7 @@ function renderTorchBody(data) {
         if (!chips.length) return '';
         return '<div class="mt-3 flex flex-wrap gap-1.5">' + chips.map(function(c) { return '<span class="inline-flex px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-300 text-[11px] font-bold border border-purple-500/20">' + htmlEscape(c) + '</span>'; }).join('') + '</div>';
       })()}
-      ${(isDiscussion || isWorkflow) && bodyMd ? '<div class="mt-5 text-base leading-relaxed text-gray-700 dark:text-gray-300"><div :class="bodyExpanded ? \'\' : \'relative max-h-[28rem] overflow-hidden\'"><div class="md-body" x-html="renderMarkdown(bodyMd)">' + htmlEscape(plainExcerptServer(bodyMd, 2000)) + '</div><div x-show="!bodyExpanded" x-cloak class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none"></div></div><button x-show="shouldCollapse(bodyMd, 1500)" type="button" @click="bodyExpanded = !bodyExpanded" class="text-sm font-semibold text-orange-500 hover:underline mt-2" x-text="bodyExpanded ? \'Show less ▲\' : \'Read more ▼\'"></button></div>' : ''}
+      ${(isDiscussion || isWorkflow || isRoastToast) && bodyMd ? '<div class="mt-5 text-base leading-relaxed text-gray-700 dark:text-gray-300"><div :class="bodyExpanded ? \'\' : \'relative max-h-[28rem] overflow-hidden\'"><div class="md-body" x-html="renderMarkdown(bodyMd)">' + htmlEscape(plainExcerptServer(bodyMd, 2000)) + '</div><div x-show="!bodyExpanded" x-cloak class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none"></div></div><button x-show="shouldCollapse(bodyMd, 1500)" type="button" @click="bodyExpanded = !bodyExpanded" class="text-sm font-semibold text-orange-500 hover:underline mt-2" x-text="bodyExpanded ? \'Show less ▲\' : \'Read more ▼\'"></button></div>' : ''}
       ${!isDiscussion && !isWorkflow && post.note ? '<p class="text-base leading-relaxed mt-3 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">' + htmlEscape(post.note) + '</p>' : ''}
       ${postImages.length > 0 ? '<div class="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">' + postImages.map(function(img, i) { var u = String(img.url).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); return '<a data-tt-lightbox="' + u + '" class="cursor-zoom-in" role="button" tabindex="0"><img src="' + htmlEscape(img.url) + '" loading="lazy" alt="Image ' + (i+1) + '" class="w-full rounded-lg border border-gray-200 dark:border-gray-700 hover:opacity-90 transition" style="aspect-ratio:16/9;object-fit:cover;"></a>'; }).join('') + '</div>' : ''}
     </div>
@@ -384,9 +390,9 @@ function renderTorchBody(data) {
   <!-- Tab: Torch -->
   <section x-show="activeTab === 'torch'">
     <div class="glass rounded-2xl p-6 mt-4">
-      <h2 class="text-lg font-bold mb-3" x-text="postType === 'discussion' ? 'About this discussion' : (postType === 'workflow' ? '⚙️ Workflow details' : 'About this audit')">About this audit</h2>
+      <h2 class="text-lg font-bold mb-3" x-text="postType === 'roast_toast' ? (category === 'toast' ? '🍞 About this toast' : '🔥 About this roast') : (postType === 'discussion' ? 'About this discussion' : (postType === 'workflow' ? '⚙️ Workflow details' : 'About this audit'))">About this audit</h2>
       <div class="grid grid-cols-2 gap-3 text-sm">
-        <div x-show="postType !== 'discussion'"><span class="text-gray-500">Tool:</span> <span class="font-medium">${htmlEscape(toolName)}</span></div>
+        <div x-show="postType !== 'discussion' && postType !== 'roast_toast'"><span class="text-gray-500">Tool:</span> <span class="font-medium">${htmlEscape(toolName)}</span></div>
         <div><span class="text-gray-500">Category:</span> <span class="font-medium uppercase">${htmlEscape(post.category || '')}</span></div>
         <div x-show="postType !== 'discussion'"><span class="text-gray-500">Score:</span> <span class="font-medium">${sc}/100</span></div>
         <div><span class="text-gray-500">Audited:</span> <span class="font-medium">${date}</span></div>
@@ -402,7 +408,7 @@ function renderTorchBody(data) {
       <div class="flex flex-col sm:flex-row sm:items-end gap-5">
         <div class="avatar-ring tier-${htmlEscape(author.tier || 'free')} role-${htmlEscape(author.role || 'owner')}" style="padding:6px;">
           <img src="${htmlEscape((author.avatar_url) || '/images/avatars/' + (author.avatar_preset || 'owner') + '.svg')}" alt="" width="96" height="96" style="width:96px;height:96px;" class="rounded-2xl object-cover">
-          ${(author.tier && author.tier !== 'free') ? '<span class="tier-ribbon">' + (author.tier === 'pro' ? 'PRO' : 'EXPERT') + '</span>' : ''}
+          
         </div>
         <div class="flex-1 min-w-0">
           <h2 class="text-2xl font-black flex items-center gap-2 flex-wrap min-w-0"><span class="truncate">${htmlEscape(author.display_name || author.username)}</span>${author.verified_at ? `<svg viewBox="0 0 24 24" aria-label="Verified website owner" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;flex-shrink:0;display:inline-block;vertical-align:middle;"><circle cx="12" cy="12" r="11" fill="#22c55e"/><path d="M6.8 12.4l3.4 3.4 6.9-6.9" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>` : ''}</h2>
@@ -543,7 +549,7 @@ export async function handleTorch(request, env) {
   const mainStart = html.indexOf('<main ');
   const mainEnd = html.indexOf('</main>');
   if (mainStart !== -1 && mainEnd !== -1) {
-    const embedded = `<script id="torch-data" type="application/json">${JSON.stringify({ torch_id: id, author_id: author.id, author_username: author.username, endorse_count: post.endorse_count || 0, post_type: post.post_type || 'audit', title: post.title || null, body_md: post.body_md || post.note || null })}</script>`;
+    const embedded = `<script id="torch-data" type="application/json">${JSON.stringify({ torch_id: id, author_id: author.id, author_username: author.username, endorse_count: post.endorse_count || 0, post_type: post.post_type || 'audit', category: post.category || '', title: post.title || null, body_md: post.body_md || post.note || null })}</script>`;
     const injected = `${renderTorchBody(data)}\n${embedded}\n${torchPageScript()}`;
     html = html.slice(0, mainStart) + injected + html.slice(mainEnd + '</main>'.length);
   }

@@ -16,6 +16,7 @@ export default defineConfig({
         'seo-intent-tool': resolve(__dirname, 'seo-intent-tool/index.html'),
         'product-seo-tool': resolve(__dirname, 'product-seo-tool/index.html'),
         'quit-risk-tool': resolve(__dirname, 'quit-risk-tool/index.html'),
+        'uxid-tool': resolve(__dirname, 'uxid-tool/index.html'),
         'ai-voice-search-tool': resolve(__dirname, 'ai-voice-search-tool/index.html'),
         'ai-audit-tool': resolve(__dirname, 'ai-audit-tool/index.html'),
         'ai-search-optimization-tool': resolve(__dirname, 'ai-search-optimization-tool/index.html'),

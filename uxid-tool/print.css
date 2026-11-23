@@ -1,0 +1,151 @@
+/* /uxid-tool/print.css */
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 11pt;
+    line-height: 1.5;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ──────── COVER PAGE ──────── */
+  body::before {
+    content: "TrafficTorch.net 🥇\A\A UXID Audit Tool 🎯\A\A Report:\A " attr(data-url);
+    display: block;
+    height: 100vh;
+    min-height: 100vh;
+    page-break-after: always;
+    color: #4b5563;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 900;
+    text-align: center;
+    padding-top: 20vh;
+    line-height: 1.4;
+    white-space: pre;
+    font-size: 2rem;
+    text-shadow:
+      -2px -2px 0 #22d3ee,
+      2px -2px 0 #22d3ee,
+      -2px 2px 0 #22d3ee,
+      2px 2px 0 #22d3ee,
+      -2px 0 0 #22d3ee,
+      2px 0 0 #22d3ee,
+      0 -2px 0 #22d3ee,
+      0 2px 0 #22d3ee,
+      0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  /* Start real report content on new page */
+  #uxid-results {
+    page-break-before: always;
+    margin-top: 0 !important;
+  }
+
+  /* Full width + proper padding for print */
+  #uxid-results,
+  #uxid-results .max-w-4xl,
+  #uxid-results .max-w-3xl {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 1cm 1.2cm !important;
+    box-sizing: border-box;
+  }
+
+  /* ──────── FORCE SHOW REPORT CONTENT ──────── */
+  .uxid-hero-card,
+  .uxid-stack,
+  .uxid-cards,
+  .uxid-card,
+  .uxid-ai-panel {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* ──────── PREVENT BREAKS INSIDE IMPORTANT MODULES ──────── */
+  .uxid-hero-card,
+  .uxid-card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ──────── TARGETED HIDING (Site chrome & interactive UI) ──────── */
+  .no-print,
+  header,
+  footer,
+  nav,
+  aside,
+  button,
+  #desktopSidebar,
+  #uxid-form,
+  .uxid-hero,
+  .uxid-ai-cta,
+  .uxid-signals,
+  .uxid-related,
+  .uxid-author-bio,
+  .uxid-banner,
+  .uxid-faq,
+  #tt-lb-anchor,
+  #tt-contrib-anchor,
+  #share-dashboard-container,
+  #contributions-section,
+  details > summary {
+    display: none !important;
+  }
+
+  /* ──────── CLEANUP & READABILITY ──────── */
+  .shadow-lg,
+  .shadow-xl,
+  [class*="shadow"] {
+    box-shadow: none !important;
+  }
+
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  table {
+    page-break-inside: auto;
+    width: 100% !important;
+  }
+
+  /* Better page breaks */
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Grid → Stack for print */
+  .uxid-cards {
+    display: block !important;
+  }
+  .uxid-card {
+    margin-bottom: 1rem !important;
+    border: 1px solid #e5e7eb !important;
+  }
+
+  /* Force colors on rings and pills */
+  .uxid-ring-fg {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .uxid-score-pill {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    border: 1px solid #d1d5db !important;
+  }
+}

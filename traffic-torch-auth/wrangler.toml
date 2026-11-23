@@ -30,3 +30,14 @@ binding = "AI"
 
 [observability]
 enabled = true
+
+# ── Auto-add new users to traffictorch's network after 12m12s ──
+[[queues.producers]]
+queue = "network-auto-add"
+binding = "NETWORK_QUEUE"
+
+[[queues.consumers]]
+queue = "network-auto-add"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 3

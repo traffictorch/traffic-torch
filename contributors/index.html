@@ -267,7 +267,7 @@
             <p class="text-gray-700 dark:text-gray-300 mb-6">
               Run any Traffic Torch tool, spot something wrong, and tell us. Real feedback that changes how a tool works gets a card here.
             </p>
-            <a href="/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition shadow-lg">
+            <a href="/ai-seo-ux-tools/" class="inline-block px-8 py-4 bg-gradient-to-r from-orange-500 to-pink-600 text-white font-bold rounded-xl hover:brightness-110 transition shadow-lg">
               Try a tool →
             </a>
           </div>
@@ -377,6 +377,14 @@
             <img src="/images/tool-banners/seo-intent-tool-infographic-1200w.webp" srcset="/images/tool-banners/seo-intent-tool-infographic-480w.webp 480w, /images/tool-banners/seo-intent-tool-infographic-800w.webp 800w, /images/tool-banners/seo-intent-tool-infographic-1200w.webp 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 976px" alt="Traffic Torch toolkit — SEO, UX, AEO and community" width="1200" height="263" loading="lazy" decoding="async">
           </picture>
         </section>
+              <!-- Page comments -->
+        <section class="max-w-2xl mx-auto my-8 px-2">
+          <div id="page-comments"></div>
+        </section>
+        <script type="module">
+          import { mountPageComments } from '/shared/social/page-comments.js';
+          mountPageComments('#page-comments', '/contributors/');
+        </script>
       </main>
 
       <div id="footer-placeholder"></div>

@@ -305,6 +305,53 @@
             <strong>OFUX is a free, browser-based audit dashboard.</strong> It scores your website across three areas: <strong>UX Health</strong>, <strong>SEO Intent</strong>, and <strong>AI Search (AEO)</strong>. You get one score for each. You get plain-English fixes for every issue. And you get it all in under a minute.
           </p>
         </section>
+        <nav id="page-jump-nav" class="sticky top-16 md:top-20 z-50 bg-white/40 dark:bg-black/50 backdrop-blur-xl border-y border-white/10 dark:border-white/5 my-6" aria-label="Page sections">
+          <div class="max-w-6xl mx-auto px-2">
+            <div class="flex gap-1 sm:gap-2 py-2 text-xs sm:text-sm font-semibold overflow-x-auto sm:overflow-visible sm:flex-wrap sm:justify-center" style="scrollbar-width:thin; -webkit-overflow-scrolling:touch;">
+              <a href="#ofux-tool" class="flex-shrink-0 px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition whitespace-nowrap">⚡ Audit</a>
+              <a href="#community-preview" class="flex-shrink-0 px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition whitespace-nowrap">👥 Community</a>
+              <a href="#ask-ai-section" class="flex-shrink-0 px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition whitespace-nowrap">🤖 Ask AI</a>
+              <a href="#tools-grid" class="flex-shrink-0 px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition whitespace-nowrap">🛠️ Tools</a>
+              <a href="#faq" class="flex-shrink-0 px-3 py-1.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-600 dark:hover:text-orange-400 transition whitespace-nowrap">❓ FAQ</a>
+            </div>
+          </div>
+        </nav>
+
+        <section id="community-preview" class="max-w-4xl mx-auto my-3 px-4" aria-label="Community quick access">
+          <div class="bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-1 p-2 overflow-x-auto scrollbar-thin" style="scrollbar-width:thin; -webkit-overflow-scrolling:touch;">
+              <a href="/community/" class="flex-shrink-0 px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition">✏️ Post</a>
+              <button type="button" data-cp-tab="feed" class="cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition">🗣️ Feed</button>
+              <button type="button" data-cp-tab="network" class="cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition">🕸️ Network</button>
+              <button type="button" data-cp-tab="discover" class="cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition">🔍 Discover</button>
+              <button type="button" data-cp-tab="activity" class="cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition">⚡ Activity</button>
+              <button type="button" data-cp-tab="invite" class="cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition">✉️ Invite</button>
+            </div>
+            <div id="cp-panel" class="hidden">
+              <div data-cp-panel="feed" class="hidden">
+                <div class="flex flex-wrap gap-1 p-2 border-b border-gray-200 dark:border-white/10">
+                  <span class="text-xs font-semibold text-gray-500 mr-1">Filter:</span>
+                  <button type="button" data-cp-cat="all" class="cp-cat px-2 py-0.5 rounded-full text-xs font-semibold">All</button>
+                  <button type="button" data-cp-cat="casual" class="cp-cat px-2 py-0.5 rounded-full text-xs font-semibold">casual</button>
+                  <button type="button" data-cp-cat="websites" class="cp-cat px-2 py-0.5 rounded-full text-xs font-semibold">websites</button>
+                  <button type="button" data-cp-cat="ux" class="cp-cat px-2 py-0.5 rounded-full text-xs font-semibold">ux</button>
+                  <button type="button" data-cp-cat="seo" class="cp-cat px-2 py-0.5 rounded-full text-xs font-semibold">seo</button>
+                  <button type="button" data-cp-cat="aeo" class="cp-cat px-2 py-0.5 rounded-full text-xs font-semibold">aeo</button>
+                </div>
+                <div id="cp-feed-list" class="p-2 sm:p-3 max-h-96 overflow-y-auto"></div>
+              </div>
+              <div data-cp-panel="network" class="hidden p-2 max-h-96 overflow-y-auto"></div>
+              <div data-cp-panel="discover" class="hidden p-3 max-h-96 overflow-y-auto flex flex-wrap"></div>
+              <div data-cp-panel="activity" class="hidden p-2 max-h-96 overflow-y-auto"></div>
+              <div data-cp-panel="invite" class="hidden p-3"></div>
+              <div class="px-3 py-2 border-t border-gray-200 dark:border-white/10 flex items-center justify-between gap-2 text-xs flex-wrap">
+                <a href="/dashboard/#settings-visibility" class="text-gray-500 dark:text-gray-400 hover:text-orange-400">⚙️ Manage what people see →</a>
+                <a href="/community/" class="text-orange-500 dark:text-orange-400 hover:underline font-semibold">View all on community →</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
 
         <section id="ofux-tool" class="max-w-7xl mx-auto px-2 py-2" aria-labelledby="ofux-tool-heading">
 
@@ -332,17 +379,6 @@
             <div class="spinner mx-auto mb-4"></div>
             <p id="progress-text" class="text-xl text-orange-700 dark:text-orange-400 font-medium">Initializing analysis...</p>
           </div>
-          
-        <section id="tt-lb-anchor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
-  		<div class="tt-lb" data-tool="ofux-tool" data-limit="12" data-title="Top OFUX Scores"></div>
-		</section>
-		
-<!-- 🏅 Top Contributors -->
-<section id="tt-contrib-anchor" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mt-8 mb-8">
-  <div class="tt-contrib"
-       data-limit="12"
-       data-title="Top Contributors"></div>
-</section>
 
           <p class="text-center mt-8 mb-8">
             <a href="/blog/posts/pro-dashboard-ofux-ask-ai-help-guide/#ofux-audit"
@@ -667,6 +703,18 @@
             </div>
           </details>
         </section>
+    
+    <!-- 🏆 Leaderboard -->     
+        <section id="tt-lb-anchor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
+  	<div class="tt-lb" data-tool="ofux-tool" data-limit="12" data-title="Top OFUX Scores"></div>
+</section>
+		
+<!-- 🏅 Top Contributors -->
+<section id="tt-contrib-anchor" class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 mt-8 mb-8">
+  <div class="tt-contrib"
+       data-limit="12"
+       data-title="Top Contributors"></div>
+</section>
 
         <!-- ═══════ TOOLS GRID ═══════ -->
         <section id="tools-grid" class="max-w-7xl mx-auto px-2" aria-labelledby="tools-heading">
@@ -1153,5 +1201,143 @@
     <p><strong>Website:</strong> <a href="https://traffictorch.net/">Traffic Torch SEO Toolkit</a></p>
   </noscript>
 
+
+<script>
+(function () {
+  var root = document.getElementById('community-preview');
+  if (!root) return;
+  var API = 'https://traffic-torch-auth.traffictorch.workers.dev';
+  var panel = document.getElementById('cp-panel');
+  var tabs = root.querySelectorAll('.cp-tab');
+  var panels = root.querySelectorAll('[data-cp-panel]');
+  var cats = root.querySelectorAll('.cp-cat');
+  var feedList = document.getElementById('cp-feed-list');
+  var currentTab = null;
+  var currentCat = 'all';
+  var loaded = { feed: false, network: false, discover: false, activity: false, invite: false };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+  function token() { return localStorage.getItem('authToken') || ''; }
+  function authHeaders() { var h = {}; var t = token(); if (t) h['Authorization'] = 'Bearer ' + t; return h; }
+  function api(path) { return API + path; }
+  function setActiveTab(tab) {
+    Array.prototype.forEach.call(tabs, function(btn){
+      var active = btn.getAttribute('data-cp-tab') === tab;
+      btn.className = 'cp-tab flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition ' + (active ? 'bg-orange-500 text-white' : 'text-gray-600 dark:text-gray-400 hover:text-orange-400');
+    });
+  }
+  function setActiveCat(cat) {
+    Array.prototype.forEach.call(cats, function(btn){
+      var active = btn.getAttribute('data-cp-cat') === cat;
+      btn.className = 'cp-cat px-2 py-0.5 rounded-full text-xs font-semibold transition ' + (active ? 'bg-orange-500 text-white' : 'bg-white/40 dark:bg-black/30 text-gray-600 dark:text-gray-400 hover:text-orange-400');
+    });
+  }
+  function closeAll() {
+    currentTab = null;
+    panel.classList.add('hidden');
+    Array.prototype.forEach.call(panels, function(p){ p.classList.add('hidden'); });
+    setActiveTab(null);
+  }
+  function openTab(tab) {
+    currentTab = tab;
+    panel.classList.remove('hidden');
+    Array.prototype.forEach.call(panels, function(p){
+      if (p.getAttribute('data-cp-panel') === tab) p.classList.remove('hidden'); else p.classList.add('hidden');
+    });
+    setActiveTab(tab);
+    if (tab === 'feed' && !loaded.feed) { loadFeed(); loaded.feed = true; }
+    else if (tab === 'network' && !loaded.network) { loadNetwork(); loaded.network = true; }
+    else if (tab === 'discover' && !loaded.discover) { loadDiscover(); loaded.discover = true; }
+    else if (tab === 'activity' && !loaded.activity) { loadActivity(); loaded.activity = true; }
+    else if (tab === 'invite' && !loaded.invite) { loadInvite(); loaded.invite = true; }
+  }
+  function renderFeed(posts) {
+    if (!posts || !posts.length) return '<div class="text-center py-6 text-sm text-gray-500">No posts yet.</div>';
+    return posts.slice(0, 6).map(function(p){
+      var score = p.score != null ? p.score : '—';
+      var cls = (p.score >= 80) ? 'text-green-500' : (p.score >= 60) ? 'text-yellow-500' : (p.score != null) ? 'text-red-500' : 'text-gray-400';
+      return '<a href="/torch/' + esc(p.id || '') + '/" class="block p-2.5 rounded-lg mb-1.5 border border-gray-200 dark:border-white/10 hover:border-orange-400 transition"><div class="flex items-start gap-2"><div class="text-xl font-black ' + cls + ' flex-shrink-0 w-10 text-center">' + esc(score) + '</div><div class="flex-1 min-w-0"><div class="text-sm font-semibold truncate">' + esc(p.page_title || p.title || 'Post') + '</div><div class="text-xs text-gray-500 truncate mt-0.5">by ' + esc(p.display_name || p.username || 'anon') + (p.comment_count ? ' · 💬 ' + p.comment_count : '') + '</div></div></div></a>';
+    }).join('');
+  }
+  function loadFeed() {
+    feedList.innerHTML = '<div class="text-center py-6 text-sm text-gray-500">Loading…</div>';
+    var url = api('/api/feed?limit=10' + (currentCat !== 'all' ? '&category=' + encodeURIComponent(currentCat) : ''));
+    fetch(url, { headers: authHeaders() }).then(function(r){ return r.json(); }).then(function(d){ feedList.innerHTML = renderFeed(d.posts); }).catch(function(){ feedList.innerHTML = '<div class="text-center py-6 text-sm text-red-500">Could not load</div>'; });
+  }
+  function loadNetwork() {
+    var c = root.querySelector('[data-cp-panel="network"]');
+    c.innerHTML = '<div class="text-center py-6 text-sm text-gray-500">Loading…</div>';
+    if (!token()) { c.innerHTML = '<div class="text-center py-6 text-sm text-gray-500"><a href="/login/" class="text-orange-500 hover:underline">Log in</a> to see your network.</div>'; return; }
+    fetch(api('/api/network/list'), { headers: authHeaders() }).then(function(r){ return r.json(); }).then(function(d){
+      var list = d.network || [];
+      if (!list.length) { c.innerHTML = '<div class="text-center py-6 text-sm text-gray-500">No one yet.</div>'; return; }
+      c.innerHTML = list.slice(0, 8).map(function(u){
+        return '<a href="/torcher/' + esc(u.username || '') + '/" class="flex items-center gap-2 p-2 rounded-lg hover:bg-white/40 dark:hover:bg-black/30 transition"><div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">' + esc((u.display_name || u.username || '?').charAt(0).toUpperCase()) + '</div><div class="flex-1 min-w-0"><div class="text-sm font-semibold truncate">' + esc(u.display_name || u.username) + '</div><div class="text-xs text-gray-500 truncate">@' + esc(u.username) + '</div></div></a>';
+      }).join('');
+    }).catch(function(){ c.innerHTML = '<div class="text-center py-6 text-sm text-red-500">Could not load</div>'; });
+  }
+  function loadDiscover() {
+    var c = root.querySelector('[data-cp-panel="discover"]');
+    c.innerHTML = '<div class="text-center py-6 text-sm text-gray-500 w-full">Loading…</div>';
+    if (!token()) { c.innerHTML = '<div class="text-center py-6 text-sm text-gray-500 w-full"><a href="/login/" class="text-orange-500 hover:underline">Log in</a> to discover.</div>'; return; }
+    fetch(api('/api/users/discover?limit=8'), { headers: authHeaders() }).then(function(r){ return r.json(); }).then(function(d){
+      var users = d.users || [];
+      if (!users.length) { c.innerHTML = '<div class="text-center py-6 text-sm text-gray-500 w-full">No suggestions yet.</div>'; return; }
+      c.innerHTML = users.map(function(u){
+        return '<a href="/torcher/' + esc(u.username || '') + '/" class="flex flex-col items-center p-2 rounded-lg hover:bg-white/40 dark:hover:bg-black/30 transition w-[calc(25%-6px)] mr-1.5 mb-1.5"><div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-lg font-bold">' + esc((u.display_name || u.username || '?').charAt(0).toUpperCase()) + '</div><div class="text-xs font-semibold truncate w-full text-center mt-1">' + esc(u.display_name || u.username) + '</div></a>';
+      }).join('');
+    }).catch(function(){ c.innerHTML = '<div class="text-center py-6 text-sm text-red-500 w-full">Could not load</div>'; });
+  }
+  function loadActivity() {
+    var c = root.querySelector('[data-cp-panel="activity"]');
+    c.innerHTML = '<div class="text-center py-6 text-sm text-gray-500">Loading…</div>';
+    if (!token()) { c.innerHTML = '<div class="text-center py-6 text-sm text-gray-500"><a href="/login/" class="text-orange-500 hover:underline">Log in</a> to see activity.</div>'; return; }
+    fetch(api('/api/activity/me?limit=8'), { headers: authHeaders() }).then(function(r){ return r.json(); }).then(function(d){
+      var items = d.items || [];
+      if (!items.length) { c.innerHTML = '<div class="text-center py-6 text-sm text-gray-500">No activity yet.</div>'; return; }
+      var icons = { torch: '🔥', comment: '💬', network: '🤝', contribution: '🛠️', points_milestone: '🏅', rank_change: '📈' };
+      c.innerHTML = items.map(function(it){
+        var ico = icons[it.event_type] || '•';
+        return '<div class="flex items-start gap-2 p-2 border-b border-gray-100 dark:border-white/5 last:border-0"><span class="text-base flex-shrink-0">' + ico + '</span><div class="flex-1 min-w-0 text-xs"><div class="font-semibold">' + esc(it.display_name || it.username || 'Someone') + '</div><div class="text-gray-500 truncate">' + esc(it.target_label || it.event_type) + '</div></div></div>';
+      }).join('');
+    }).catch(function(){ c.innerHTML = '<div class="text-center py-6 text-sm text-red-500">Could not load</div>'; });
+  }
+  function loadInvite() {
+    var c = root.querySelector('[data-cp-panel="invite"]');
+    c.innerHTML = '<div class="flex gap-2"><input id="cp-invite-email" type="email" placeholder="colleague@example.com" class="flex-1 px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-white/10 bg-white/80 dark:bg-black/40"><button type="button" id="cp-invite-send" class="px-3 py-2 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold">Send</button></div><p id="cp-invite-status" class="text-xs text-gray-500 mt-2"></p>';
+    document.getElementById('cp-invite-send').addEventListener('click', function(){
+      var email = (document.getElementById('cp-invite-email').value || '').trim();
+      var st = document.getElementById('cp-invite-status');
+      if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { st.textContent = '⚠️ Invalid email'; st.className = 'text-xs text-red-500 mt-2'; return; }
+      if (!token()) { st.textContent = 'Log in to invite'; st.className = 'text-xs text-red-500 mt-2'; return; }
+      st.textContent = 'Sending…'; st.className = 'text-xs text-gray-500 mt-2';
+      fetch(api('/api/network/invite'), { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()), body: JSON.stringify({ email: email }) })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          st.textContent = d.success ? '✓ Invite sent' : '⚠️ ' + (d.error || 'Failed');
+          st.className = 'text-xs ' + (d.success ? 'text-green-500' : 'text-red-500') + ' mt-2';
+          if (d.success) document.getElementById('cp-invite-email').value = '';
+        })
+        .catch(function(e){ st.textContent = '⚠️ ' + e.message; st.className = 'text-xs text-red-500 mt-2'; });
+    });
+  }
+  Array.prototype.forEach.call(tabs, function(btn){
+    btn.addEventListener('click', function(){
+      var tab = btn.getAttribute('data-cp-tab');
+      if (currentTab === tab) closeAll(); else openTab(tab);
+    });
+  });
+  Array.prototype.forEach.call(cats, function(btn){
+    btn.addEventListener('click', function(){
+      currentCat = btn.getAttribute('data-cp-cat');
+      setActiveCat(currentCat);
+      loaded.feed = false;
+      loadFeed();
+      loaded.feed = true;
+    });
+  });
+  closeAll();
+  setActiveCat('all');
+})();
+</script>
 </body>
 </html>

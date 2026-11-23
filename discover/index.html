@@ -53,12 +53,80 @@
 </div>
 <h1 class="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Discover the Community</h1>
 <p class="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-6">Find experts in your niche, browse public profiles, and connect with others working on SEO, UX, and AEO.</p>
-<div id="discover-container" class="text-center py-12">
+<div id="discover-container" class="py-12">
 <p class="text-sm text-gray-500 mb-4">Log in to see community members you can connect with.</p>
 <a href="/login/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-xl hover:opacity-90 transition">Log in to discover →</a>
 </div>
 </section>
 <noscript><p class="text-center text-sm text-gray-500">Discover requires JavaScript. <a href="/community/" class="text-orange-500 hover:underline">Visit the community feed</a> instead.</p></noscript>
+<script type="module">
+  const API = 'https://traffic-torch-auth.traffictorch.workers.dev';
+  const container = document.getElementById('discover-container');
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+    container.innerHTML = '<div class="text-center"><p class="text-sm text-gray-500 mb-4">Log in to see community members you can connect with.</p><a href="/login/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold rounded-xl hover:opacity-90 transition">Log in to discover →</a></div>';
+  } else {
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+    const avatar = u => {
+      if (u.avatar_url) return u.avatar_url.startsWith('http') ? u.avatar_url : API + u.avatar_url;
+      if (u.avatar_r2_key) {
+        const m = String(u.avatar_r2_key).match(/^avatars\/(\d+)\//);
+        if (m) return API + '/api/profile/avatar/' + m[1] + '?v=' + (u.avatar_updated_at || 0);
+      }
+      return '/images/avatars/' + (u.avatar_preset || 'owner') + '.svg';
+    };
+    container.innerHTML = '<div class="text-center py-6"><div class="inline-block w-9 h-9 rounded-full border-4 border-orange-500 border-t-transparent animate-spin"></div></div>';
+    fetch(API + '/api/users/discover?seed=today&limit=24', { headers: { 'Authorization': 'Bearer ' + token } })
+      .then(r => r.json())
+      .then(d => {
+        const users = d.users || [];
+        if (!users.length) {
+          container.innerHTML = '<div class="text-center"><p class="text-gray-500">No new people to discover yet. Check back later or invite someone.</p></div>';
+          return;
+        }
+        container.innerHTML = '<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-left">' + users.map(u => `
+          <div class="rounded-2xl p-3 flex flex-col items-center text-center bg-white/60 dark:bg-black/30 border border-gray-200 dark:border-white/10">
+            <img src="${esc(avatar(u))}" width="56" height="56" style="width:56px;height:56px;" class="rounded-full object-cover mb-2" alt="" loading="lazy" onerror="this.onerror=null;this.src='/images/avatars/owner.svg';">
+            <a href="/torcher/${esc(u.username)}/" class="font-bold text-sm hover:text-orange-500 truncate w-full">${esc(u.display_name || u.username)}</a>
+            <p class="text-xs text-gray-500 truncate w-full">@${esc(u.username)}</p>
+            <div class="flex items-center gap-2 mt-1.5 text-[10px] text-gray-500">
+              ${u.total_points > 0 ? '<span>🏅 ' + esc(u.total_points) + '</span>' : ''}
+              ${u.torch_count > 0 ? '<span>🔥 ' + esc(u.torch_count) + '</span>' : ''}
+            </div>
+            <button data-uid="${esc(u.id)}" class="disc-add mt-2 w-full py-1.5 text-xs font-bold rounded-lg border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white transition">+ Add</button>
+          </div>`).join('') + '</div>';
+        container.querySelectorAll('.disc-add').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const uid = btn.getAttribute('data-uid');
+            btn.disabled = true;
+            const label = btn.textContent;
+            btn.textContent = '…';
+            try {
+              const res = await fetch(API + '/api/network/add', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: parseInt(uid, 10) })
+              });
+              if (res.ok) {
+                btn.textContent = '✓ Added';
+                btn.classList.remove('border-orange-500', 'text-orange-500');
+                btn.classList.add('border-green-500', 'text-green-500');
+              } else {
+                btn.textContent = '⚠️';
+                btn.disabled = false;
+              }
+            } catch {
+              btn.textContent = '⚠️';
+              btn.disabled = false;
+            }
+          });
+        });
+      })
+      .catch(err => {
+        container.innerHTML = '<div class="text-center"><p class="text-red-500">Could not load: ' + esc(err.message) + '</p></div>';
+      });
+  }
+</script>
 </main>
 <div id="footer-placeholder"></div>
 </div></div></div>
